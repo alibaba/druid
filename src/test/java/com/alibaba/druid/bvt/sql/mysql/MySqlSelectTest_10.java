@@ -54,8 +54,8 @@ public class MySqlSelectTest_10 extends MysqlTest {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        Assert.assertEquals(1, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("group")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_department")));
     }
 }

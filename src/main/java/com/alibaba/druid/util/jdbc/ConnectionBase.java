@@ -121,4 +121,5 @@ public abstract class ConnectionBase implements Connection {
     public boolean isReadOnly() throws SQLException {
         return readOnly;
     }
+
 }

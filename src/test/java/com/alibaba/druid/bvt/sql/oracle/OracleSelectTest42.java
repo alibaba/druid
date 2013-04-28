@@ -17,13 +17,12 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 public class OracleSelectTest42 extends OracleTest {
 
@@ -49,9 +48,9 @@ public class OracleSelectTest42 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(4, visitor.getTables().size());
+        Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(9, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

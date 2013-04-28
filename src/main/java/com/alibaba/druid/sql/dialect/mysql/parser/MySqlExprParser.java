@@ -559,6 +559,14 @@ public class MySqlExprParser extends SQLExprParser {
             accept(Token.LITERAL_CHARS);
         }
         
+        if (identifierEquals("STORAGE")) {
+            lexer.nextToken();
+            SQLExpr expr = expr();
+            if (column instanceof MySqlSQLColumnDefinition) {
+                ((MySqlSQLColumnDefinition) column).setStorage(expr);
+            }
+        }
+        
         super.parseColumnRest(column);
 
         return column;
@@ -710,18 +718,27 @@ public class MySqlExprParser extends SQLExprParser {
 
     public MySqlUnique parseUnique() {
         accept(Token.UNIQUE);
+        
+        if (lexer.token() == Token.KEY) {
+        	lexer.nextToken();
+        }
 
-        MySqlUnique primaryKey = new MySqlUnique();
+        MySqlUnique unique = new MySqlUnique();
 
         if (identifierEquals("USING")) {
             lexer.nextToken();
-            primaryKey.setIndexType(lexer.stringVal());
+            unique.setIndexType(lexer.stringVal());
             lexer.nextToken();
         }
-
+        
+        if (lexer.token() != Token.LPAREN) {
+        	SQLName name = name();
+        	unique.setName(name);
+        }
+        
         accept(Token.LPAREN);
         for (;;) {
-            primaryKey.getColumns().add(this.expr());
+            unique.getColumns().add(this.expr());
             if (!(lexer.token() == (Token.COMMA))) {
                 break;
             } else {
@@ -730,7 +747,7 @@ public class MySqlExprParser extends SQLExprParser {
         }
         accept(Token.RPAREN);
 
-        return primaryKey;
+        return unique;
     }
     
     public MySqlForeignKey parseForeignKey() {

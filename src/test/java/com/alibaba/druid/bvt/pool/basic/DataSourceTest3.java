@@ -21,8 +21,9 @@ import java.util.Properties;
 
 import javax.security.auth.callback.PasswordCallback;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -323,8 +324,17 @@ public class DataSourceTest3 extends TestCase {
     public void test_error_validateConnection_3() throws Exception {
         dataSource.setValidationQuery(null);
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
-        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
-        dataSource.validateConnection(conn);
+        {
+            Exception error = null;
+            try {
+                DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+                dataSource.validateConnection(conn);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
     }
 }

@@ -21,9 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -32,17 +37,35 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     private boolean               ifNotExiists = false;
 
-    private Map<String, String>   tableOptions = new LinkedHashMap<String, String>();
+    private Map<String, SQLObject>   tableOptions = new LinkedHashMap<String, SQLObject>();
 
     protected SQLSelect           query;
 
     private SQLPartitioningClause partitioning;
 
+    private List<SQLCommentHint>  hints        = new ArrayList<SQLCommentHint>();
+
+    private SQLExprTableSource    like;
+
     public MySqlCreateTableStatement(){
 
     }
+    
 
-    private List<SQLCommentHint> hints = new ArrayList<SQLCommentHint>();
+    public SQLExprTableSource getLike() {
+        return like;
+    }
+
+    public void setLike(SQLName like) {
+        this.setLike(new SQLExprTableSource(like));
+    }
+
+    public void setLike(SQLExprTableSource like) {
+        if (like != null) {
+            like.setParent(this);
+        }
+        this.like = like;
+    }
 
     public List<SQLCommentHint> getHints() {
         return hints;
@@ -52,7 +75,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         this.hints = hints;
     }
 
-    public void setTableOptions(Map<String, String> tableOptions) {
+    public void setTableOptions(Map<String, SQLObject> tableOptions) {
         this.tableOptions = tableOptions;
     }
 
@@ -64,7 +87,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         this.partitioning = partitioning;
     }
 
-    public Map<String, String> getTableOptions() {
+    public Map<String, SQLObject> getTableOptions() {
         return tableOptions;
     }
 
@@ -74,35 +97,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setQuery(SQLSelect query) {
         this.query = query;
-    }
-
-    @Override
-    public void output(StringBuffer buf) {
-        if (Type.GLOBAL_TEMPORARY.equals(this.type)) {
-            buf.append("CREATE TEMPORARY TABLE ");
-        } else {
-            buf.append("CREATE TABLE ");
-        }
-
-        if (ifNotExiists) {
-            buf.append("IF NOT EXISTS ");
-        }
-
-        this.tableSource.output(buf);
-        buf.append(" ");
-        buf.append("(");
-        for (int i = 0, size = tableElementList.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(", ");
-            }
-            tableElementList.get(i).output(buf);
-        }
-        buf.append(")");
-
-        if (query != null) {
-            buf.append(" ");
-            query.output(buf);
-        }
     }
 
     public boolean isIfNotExiists() {
@@ -127,7 +121,41 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             this.acceptChild(visitor, getHints());
             this.acceptChild(visitor, getTableSource());
             this.acceptChild(visitor, getTableElementList());
+            this.acceptChild(visitor, getLike());
+            this.acceptChild(visitor, getQuery());
         }
         visitor.endVisit(this);
+    }
+
+    public static class TableSpaceOption extends MySqlObjectImpl {
+
+        private SQLName name;
+        private SQLExpr storage;
+
+        public SQLName getName() {
+            return name;
+        }
+
+        public void setName(SQLName name) {
+            this.name = name;
+        }
+
+        public SQLExpr getStorage() {
+            return storage;
+        }
+
+        public void setStorage(SQLExpr storage) {
+            this.storage = storage;
+        }
+
+        @Override
+        public void accept0(MySqlASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, getName());
+                acceptChild(visitor, getStorage());
+            }
+            visitor.endVisit(this);
+        }
+
     }
 }

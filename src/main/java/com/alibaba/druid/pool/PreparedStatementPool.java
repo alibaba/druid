@@ -89,11 +89,11 @@ public class PreparedStatementPool {
         PreparedStatementKey key = stmtHolder.getKey();
 
         PreparedStatementHolder oldStmtHolder = map.put(key, stmtHolder);
-        
+
         if (oldStmtHolder == stmtHolder) {
             return;
         }
-        
+
         if (oldStmtHolder != null) {
             oldStmtHolder.setPooling(false);
             closeRemovedStatement(oldStmtHolder);
@@ -104,25 +104,27 @@ public class PreparedStatementPool {
         }
 
         stmtHolder.setPooling(true);
-        
+
         if (LOG.isDebugEnabled()) {
             String message = null;
             if (stmtHolder.getStatement() instanceof PreparedStatementProxy) {
                 PreparedStatementProxy stmtProxy = (PreparedStatementProxy) stmtHolder.getStatement();
                 if (stmtProxy instanceof CallableStatementProxy) {
-                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId() + "} enter cache";
+                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId()
+                              + "} enter cache";
                 } else {
-                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", pstmt-" + stmtProxy.getId() + "} enter cache";
+                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", pstmt-" + stmtProxy.getId()
+                              + "} enter cache";
                 }
             } else {
                 message = "stmt enter cache";
             }
-            
+
             LOG.debug(message);
         }
     }
 
-    public void clear() throws SQLException {
+    public void clear() {
         Iterator<Entry<PreparedStatementKey, PreparedStatementHolder>> iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Entry<PreparedStatementKey, PreparedStatementHolder> entry = iter.next();
@@ -133,30 +135,36 @@ public class PreparedStatementPool {
         }
     }
 
-    public void closeRemovedStatement(PreparedStatementHolder holder) throws SQLException {
+    public void closeRemovedStatement(PreparedStatementHolder holder) {
         if (LOG.isDebugEnabled()) {
             String message = null;
             if (holder.getStatement() instanceof PreparedStatementProxy) {
                 PreparedStatementProxy stmtProxy = (PreparedStatementProxy) holder.getStatement();
                 if (stmtProxy instanceof CallableStatementProxy) {
-                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId() + "} exit cache";
+                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId()
+                              + "} exit cache";
                 } else {
-                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", pstmt-" + stmtProxy.getId() + "} exit cache";
+                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", pstmt-" + stmtProxy.getId()
+                              + "} exit cache";
                 }
             } else {
                 message = "stmt exit cache";
             }
-            
+
             LOG.debug(message);
         }
-        
+
         holder.setPooling(false);
         if (holder.isInUse()) {
             return;
         }
 
         if (holder.isEnterOracleImplicitCache()) {
-            OracleUtils.exitImplicitCacheToClose(holder.getStatement());
+            try {
+                OracleUtils.exitImplicitCacheToClose(holder.getStatement());
+            } catch (Exception ex) {
+                LOG.error("exitImplicitCacheToClose error", ex);
+            }
         }
         dataSource.closePreapredStatement(holder);
     }
@@ -181,11 +189,7 @@ public class PreparedStatementPool {
             boolean remove = (size() > dataSource.getMaxPoolPreparedStatementPerConnectionSize());
 
             if (remove) {
-                try {
-                    closeRemovedStatement(eldest.getValue());
-                } catch (SQLException e) {
-                    LOG.error("closeStatement error", e);
-                }
+                closeRemovedStatement(eldest.getValue());
             }
 
             return remove;
