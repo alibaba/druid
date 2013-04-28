@@ -15,13 +15,34 @@ public class MySqlPartitioningDef extends MySqlObjectImpl {
 
     private Values  values;
 
+    private SQLExpr dataDirectory;
+    private SQLExpr indexDirectory;
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, values);
+            acceptChild(visitor, dataDirectory);
+            acceptChild(visitor, indexDirectory);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLExpr getIndexDirectory() {
+        return indexDirectory;
+    }
+
+    public void setIndexDirectory(SQLExpr indexDirectory) {
+        this.indexDirectory = indexDirectory;
+    }
+
+    public SQLExpr getDataDirectory() {
+        return dataDirectory;
+    }
+
+    public void setDataDirectory(SQLExpr dataDirectory) {
+        this.dataDirectory = dataDirectory;
     }
 
     public Values getValues() {

@@ -62,6 +62,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.InValues;
@@ -1257,6 +1258,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(InValues x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlPartitionByList x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlPartitionByList x) {
         
     }
 } //

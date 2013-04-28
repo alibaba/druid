@@ -26,18 +26,18 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class MySqlCreateTableTest42 extends MysqlTest {
+public class MySqlCreateTableTest44 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE rc (" + //
-                     "    a INT NOT NULL, " + //
-                     "    b INT NOT NULL" + //
+        String sql = "CREATE TABLE lc (" + //
+                     "    a INT NULL, " + //
+                     "    b INT NULL" + //
                      ")" + //
-                     "PARTITION BY RANGE COLUMNS(a,b) (" + //
-                     "    PARTITION p0 VALUES LESS THAN (10,5)," + //
-                     "    PARTITION p1 VALUES LESS THAN (20,10)," + //
-                     "    PARTITION p2 VALUES LESS THAN (MAXVALUE,15)," + //
-                     "    PARTITION p3 VALUES LESS THAN (MAXVALUE,MAXVALUE)" + //
+                     "PARTITION BY LIST COLUMNS(a,b) (" + //
+                     "    PARTITION p0 VALUES IN( (0,0), (NULL,NULL) )," + //
+                     "    PARTITION p1 VALUES IN( (0,1), (0,2), (0,3), (1,1), (1,2) )," + //
+                     "    PARTITION p2 VALUES IN( (1,0), (2,0), (2,1), (3,0), (3,1) )," + //
+                     "    PARTITION p3 VALUES IN( (1,3), (2,2), (2,3), (3,2), (3,3) )" + //
                      ");"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -59,17 +59,17 @@ public class MySqlCreateTableTest42 extends MysqlTest {
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("rc")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("lc")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE rc (" + //
-                            "\n\ta INT NOT NULL, " + //
-                            "\n\tb INT NOT NULL" + //
-                            "\n) PARTITION BY RANGE COLUMNS (a, b)(" + //
-                            "\n\tPARTITION p0 VALUES LESS THAN (10, 5), " + //
-                            "\n\tPARTITION p1 VALUES LESS THAN (20, 10), " + //
-                            "\n\tPARTITION p2 VALUES LESS THAN (MAXVALUE, 15), " + //
-                            "\n\tPARTITION p3 VALUES LESS THAN (MAXVALUE, MAXVALUE)" + //
+        Assert.assertEquals("CREATE TABLE lc (" + //
+                            "\n\ta INT NULL, " + //
+                            "\n\tb INT NULL" + //
+                            "\n) PARTITION BY LIST COLUMNS (a, b) (" + //
+                            "\n\tPARTITION p0 VALUES IN ((0, 0), (NULL, NULL)), " + //
+                            "\n\tPARTITION p1 VALUES IN ((0, 1), (0, 2), (0, 3), (1, 1), (1, 2)), " + //
+                            "\n\tPARTITION p2 VALUES IN ((1, 0), (2, 0), (2, 1), (3, 0), (3, 1)), " + //
+                            "\n\tPARTITION p3 VALUES IN ((1, 3), (2, 2), (2, 3), (3, 2), (3, 3))" + //
                             "\n)", output);
 
     }

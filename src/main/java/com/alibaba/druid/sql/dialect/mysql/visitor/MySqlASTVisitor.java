@@ -60,6 +60,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
@@ -555,6 +556,10 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlPartitionByRange x);
 
     void endVisit(MySqlPartitionByRange x);
+    
+    boolean visit(MySqlPartitionByList x);
+
+    void endVisit(MySqlPartitionByList x);
     
     boolean visit(MySqlPartitioningDef x);
 

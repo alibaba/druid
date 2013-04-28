@@ -82,7 +82,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.InValues;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.LessThanValues;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
@@ -94,7 +96,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinitio
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
@@ -1514,7 +1515,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlPartitionByRange x) {
 
@@ -1522,15 +1523,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlPartitionByRange x) {
-        print("PARTITION BY RANGE (");
-        printAndAccept(x.getColumns(), ", ");
-        print(")");
+        print("PARTITION BY RANGE");
+        if (x.getExpr() != null) {
+            print(" (");
+            x.getExpr().accept(this);
+            print(")");
+        } else {
+            print(" COLUMNS (");
+            printAndAccept(x.getColumns(), ", ");
+            print(")");
+        }
 
         if (x.getPartitionCount() != null) {
             print(" PARTITIONS ");
             x.getPartitionCount().accept(this);
         }
-        
+
         List<MySqlPartitioningDef> partitions = x.getPartitions();
         int partitionsSize = partitions.size();
         if (partitionsSize > 0) {
@@ -1549,8 +1557,50 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
-    
-    //MySqlPartitionByRange
+
+    @Override
+    public void endVisit(MySqlPartitionByList x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlPartitionByList x) {
+        print("PARTITION BY LIST ");
+        if (x.getExpr() != null) {
+            print("(");
+            x.getExpr().accept(this);
+            print(") ");
+        } else {
+            print("COLUMNS (");
+            printAndAccept(x.getColumns(), ", ");
+            print(") ");
+        }
+
+        if (x.getPartitionCount() != null) {
+            print(" PARTITIONS ");
+            x.getPartitionCount().accept(this);
+        }
+
+        List<MySqlPartitioningDef> partitions = x.getPartitions();
+        int partitionsSize = partitions.size();
+        if (partitionsSize > 0) {
+            print("(");
+            incrementIndent();
+            for (int i = 0; i < partitionsSize; ++i) {
+                println();
+                partitions.get(i).accept(this);
+                if (i != partitionsSize - 1) {
+                    print(", ");
+                }
+            }
+            decrementIndent();
+            println();
+            print(")");
+        }
+        return false;
+    }
+
+    //
 
     @Override
     public void endVisit(MySqlPartitionByHash x) {
@@ -1564,7 +1614,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         } else {
             print("PARTITION BY HASH (");
         }
-        // 
+        //
         x.getExpr().accept(this);
         print(")");
 
@@ -1572,7 +1622,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(" PARTITIONS ");
             x.getPartitionCount().accept(this);
         }
-        
+
         return false;
     }
 
@@ -2956,12 +3006,28 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
             x.getValues().accept(this);
         }
+        
+        if (x.getDataDirectory() != null) {
+            incrementIndent();
+            println();
+            print("DATA DIRECTORY ");
+            x.getDataDirectory().accept(this);
+            decrementIndent();
+        }
+        if (x.getIndexDirectory() != null) {
+            incrementIndent();
+            println();
+            print("INDEX DIRECTORY ");
+            x.getIndexDirectory().accept(this);
+            decrementIndent();
+        }
+        
         return false;
     }
 
     @Override
     public void endVisit(MySqlPartitioningDef x) {
-        
+
     }
 
     @Override
@@ -2974,7 +3040,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(LessThanValues x) {
-        
+
     }
 
     @Override
@@ -2987,6 +3053,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(InValues x) {
-        
+
     }
+
 } //

@@ -26,18 +26,18 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class MySqlCreateTableTest42 extends MysqlTest {
+public class MySqlCreateTableTest43 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE rc (" + //
-                     "    a INT NOT NULL, " + //
-                     "    b INT NOT NULL" + //
+        String sql = "CREATE TABLE client_firms (" + //
+                     "    id   INT," + //
+                     "    name VARCHAR(35)" + //
                      ")" + //
-                     "PARTITION BY RANGE COLUMNS(a,b) (" + //
-                     "    PARTITION p0 VALUES LESS THAN (10,5)," + //
-                     "    PARTITION p1 VALUES LESS THAN (20,10)," + //
-                     "    PARTITION p2 VALUES LESS THAN (MAXVALUE,15)," + //
-                     "    PARTITION p3 VALUES LESS THAN (MAXVALUE,MAXVALUE)" + //
+                     "PARTITION BY LIST (id) (" + //
+                     "    PARTITION r0 VALUES IN (1, 5, 9, 13, 17, 21)," + //
+                     "    PARTITION r1 VALUES IN (2, 6, 10, 14, 18, 22)," + //
+                     "    PARTITION r2 VALUES IN (3, 7, 11, 15, 19, 23)," + //
+                     "    PARTITION r3 VALUES IN (4, 8, 12, 16, 20, 24)" + //
                      ");"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -59,17 +59,17 @@ public class MySqlCreateTableTest42 extends MysqlTest {
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("rc")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("client_firms")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE rc (" + //
-                            "\n\ta INT NOT NULL, " + //
-                            "\n\tb INT NOT NULL" + //
-                            "\n) PARTITION BY RANGE COLUMNS (a, b)(" + //
-                            "\n\tPARTITION p0 VALUES LESS THAN (10, 5), " + //
-                            "\n\tPARTITION p1 VALUES LESS THAN (20, 10), " + //
-                            "\n\tPARTITION p2 VALUES LESS THAN (MAXVALUE, 15), " + //
-                            "\n\tPARTITION p3 VALUES LESS THAN (MAXVALUE, MAXVALUE)" + //
+        Assert.assertEquals("CREATE TABLE client_firms (" + //
+                            "\n\tid INT, " + //
+                            "\n\tname VARCHAR(35)" + //
+                            "\n) PARTITION BY LIST (id) (" + //
+                            "\n\tPARTITION r0 VALUES IN (1, 5, 9, 13, 17, 21), " + //
+                            "\n\tPARTITION r1 VALUES IN (2, 6, 10, 14, 18, 22), " + //
+                            "\n\tPARTITION r2 VALUES IN (3, 7, 11, 15, 19, 23), " + //
+                            "\n\tPARTITION r3 VALUES IN (4, 8, 12, 16, 20, 24)" + //
                             "\n)", output);
 
     }

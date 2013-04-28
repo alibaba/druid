@@ -75,6 +75,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.InValues;
@@ -1340,6 +1341,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(InValues x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlPartitionByList x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlPartitionByList x) {
         
     }
 
