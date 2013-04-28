@@ -799,7 +799,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void discardConnection(Connection realConnection) {
         JdbcUtils.close(realConnection);
 
-        lock.lock();
+        try {
+            lock.lockInterruptibly();
+        } catch (InterruptedException e) {
+            LOG.error("interrupt");
+            return;
+        }
         try {
             activeCount--;
             discardCount++;
