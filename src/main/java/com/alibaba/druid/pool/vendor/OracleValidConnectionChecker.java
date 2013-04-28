@@ -62,10 +62,6 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
             return false;
         }
 
-        if (valiateQuery == null) {
-            return true;
-        }
-
         try {
             if (conn instanceof DruidPooledConnection) {
                 conn = ((DruidPooledConnection) conn).getConnection();
