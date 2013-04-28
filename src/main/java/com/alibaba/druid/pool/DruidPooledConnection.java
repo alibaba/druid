@@ -149,6 +149,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             try {
                 rawStatement.clearParameters();
             } catch (SQLException ex) {
+                this.handleException(ex);
                 if (rawStatement.getConnection().isClosed()) {
                     return;
                 }
@@ -187,6 +188,10 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     }
 
     public void disable(Throwable error) {
+        if (this.holder != null) {
+            this.holder.clearStatementCache();
+        }
+        
         this.traceEnable = false;
         this.holder = null;
         this.transactionInfo = null;
@@ -292,7 +297,8 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         if (!this.abandoned) {
-            holder.getDataSource().recycle(this);
+            DruidAbstractDataSource dataSource = holder.getDataSource();
+            dataSource.recycle(this);
         }
 
         this.holder = null;

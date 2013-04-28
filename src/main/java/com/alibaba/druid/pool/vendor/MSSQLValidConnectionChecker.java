@@ -45,10 +45,6 @@ public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Seri
             return false;
         }
 
-        if (valiateQuery == null) {
-            return true;
-        }
-
         Statement stmt = null;
 
         try {

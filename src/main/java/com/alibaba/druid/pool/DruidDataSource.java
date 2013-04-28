@@ -576,6 +576,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
+        if (this.validConnectionChecker != null) {
+            return;
+        }
+
         if (this.getValidationQuery() != null && this.getValidationQuery().length() > 0) {
             return;
         }
@@ -795,7 +799,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void discardConnection(Connection realConnection) {
         JdbcUtils.close(realConnection);
 
-        lock.lock();
+        try {
+            lock.lockInterruptibly();
+        } catch (InterruptedException e) {
+            LOG.error("interrupt");
+            return;
+        }
         try {
             activeCount--;
             discardCount++;
@@ -896,6 +905,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                 }
                 this.discardConnection(holder.getConnection());
+                holder.setDiscard(true);
                 pooledConnection.disable(t);
             }
 
@@ -984,22 +994,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 lock.unlock();
             }
         } catch (Throwable e) {
-            JdbcUtils.close(physicalConnection);
+            holder.clearStatementCache();
 
-            try {
-                lock.lockInterruptibly();
-            } catch (InterruptedException interruptEx) {
-                throw new SQLException("interrupt", interruptEx);
+            if (!holder.isDiscard()) {
+                this.discardConnection(physicalConnection);
+                holder.setDiscard(true);
             }
 
-            try {
-                activeCount--;
-                closeCount++;
-            } finally {
-                lock.unlock();
-            }
-
-            throw new SQLException("recyle error", e);
+            LOG.error("recyle error", e);
         }
     }
 

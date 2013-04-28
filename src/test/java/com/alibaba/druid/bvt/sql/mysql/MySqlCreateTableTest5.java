@@ -47,7 +47,7 @@ public class MySqlCreateTableTest5 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
         
-        Assert.assertEquals("utf8", stmt.getTableOptions().get("CHARSET"));
+        Assert.assertEquals("utf8", stmt.getTableOptions().get("CHARSET").toString());
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

@@ -26,6 +26,8 @@ public class MySqlSQLColumnDefinition extends SQLColumnDefinition {
 
     private SQLExpr           onUpdate;
 
+    private SQLExpr           storage;
+
     public MySqlSQLColumnDefinition(){
 
     }
@@ -38,12 +40,21 @@ public class MySqlSQLColumnDefinition extends SQLColumnDefinition {
         this.autoIncrement = autoIncrement;
     }
 
-    
     public SQLExpr getOnUpdate() {
         return onUpdate;
     }
-    
+
     public void setOnUpdate(SQLExpr onUpdate) {
         this.onUpdate = onUpdate;
+    }
+
+    
+    public SQLExpr getStorage() {
+        return storage;
+    }
+
+    
+    public void setStorage(SQLExpr storage) {
+        this.storage = storage;
     }
 }

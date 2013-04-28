@@ -40,11 +40,16 @@ public class ExceptionSorterTest extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("select 1");
 
         stmt.execute();
-        
+
         mockConn.close();
 
-        stmt.close();
-
+        Exception stmtClosedError = null;
+        try {
+            stmt.close();
+        } catch (Exception ex) {
+            stmtClosedError = ex;
+        }
+        Assert.assertNotNull(stmtClosedError);
         conn.close();
     }
 }
