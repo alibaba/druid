@@ -22,28 +22,29 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
+import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockConnectionClosedException;
 
 public abstract class StatementBase implements Statement {
 
-    private Connection connection;
-    private int        fetchDirection;
-    private int        fetchSize;
-    private int        resultSetType;
-    private int        resultSetConcurrency;
-    private int        resultSetHoldability;
-    private int        maxFieldSize;
-    private int        maxRows;
-    private int        queryTimeout;
-    private boolean    escapeProcessing;
-    private String     cursorName;
-    private SQLWarning warnings;
-    private int        updateCount;
-    protected boolean  closed = false;
-    private boolean    poolable;
+    private Connection  connection;
+    private int         fetchDirection;
+    private int         fetchSize;
+    private int         resultSetType;
+    private int         resultSetConcurrency;
+    private int         resultSetHoldability;
+    private int         maxFieldSize;
+    private int         maxRows;
+    private int         queryTimeout;
+    private boolean     escapeProcessing;
+    private String      cursorName;
+    private SQLWarning  warnings;
+    private int         updateCount;
+    protected boolean   closed = false;
+    private boolean     poolable;
 
-    protected ResultSet  generatedKeys;
-    protected ResultSet  resultSet;
+    protected ResultSet generatedKeys;
+    protected ResultSet resultSet;
 
     public StatementBase(Connection connection){
         super();
@@ -62,9 +63,13 @@ public abstract class StatementBase implements Statement {
         if (closed) {
             throw new SQLException();
         }
-        
-        if (this.connection != null && this.connection.isClosed()) {
-            throw new MockConnectionClosedException();
+
+        if (this.connection != null) {
+            if (this.connection instanceof MockConnection) {
+                ((MockConnection) this.connection).checkState();
+            } else if (this.connection.isClosed()) {
+                throw new MockConnectionClosedException();
+            }
         }
     }
 
