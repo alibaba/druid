@@ -931,7 +931,7 @@ public class SQLEvalVisitorUtils {
             return ((Number) val).intValue() == 1;
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(val.getClass() + " not supported.");
     }
 
     public static String castToString(Object val) {
@@ -1165,7 +1165,7 @@ public class SQLEvalVisitorUtils {
             return castToByte(a) + castToByte(b);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static Object div(Object a, Object b) {
@@ -1197,7 +1197,7 @@ public class SQLEvalVisitorUtils {
             return castToByte(a) / castToByte(b);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static boolean gt(Object a, Object b) {
@@ -1207,6 +1207,10 @@ public class SQLEvalVisitorUtils {
 
         if (b == null) {
             return true;
+        }
+
+        if (a instanceof String || b instanceof String) {
+            return ((String) a).compareTo((String) b) > 0;
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1252,7 +1256,7 @@ public class SQLEvalVisitorUtils {
             return d1.compareTo(d2) > 0;
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static boolean gteq(Object a, Object b) {
@@ -1270,6 +1274,10 @@ public class SQLEvalVisitorUtils {
 
         if (b == null) {
             return false;
+        }
+
+        if (a instanceof String || b instanceof String) {
+            return ((String) a).compareTo((String) b) < 0;
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1315,7 +1323,7 @@ public class SQLEvalVisitorUtils {
             return d1.compareTo(d2) < 0;
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static boolean lteq(Object a, Object b) {
@@ -1337,6 +1345,10 @@ public class SQLEvalVisitorUtils {
 
         if (a.equals(b)) {
             return true;
+        }
+
+        if (a instanceof String || b instanceof String) {
+            return castToString(a).equals(castToString(b));
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1378,11 +1390,7 @@ public class SQLEvalVisitorUtils {
             return d1.equals(d2);
         }
 
-        if (a instanceof String || b instanceof String) {
-            return castToString(a).equals(castToString(b));
-        }
-
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static Object add(Object a, Object b) {
@@ -1430,7 +1438,7 @@ public class SQLEvalVisitorUtils {
             return castToString(a) + castToString(b);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static Object sub(Object a, Object b) {
@@ -1514,7 +1522,7 @@ public class SQLEvalVisitorUtils {
             return castToByte(a) * castToByte(b);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static boolean like(String input, String pattern) {
