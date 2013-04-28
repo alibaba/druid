@@ -31,6 +31,8 @@ public class MySqlPartitionByHash extends MySqlObjectImpl implements SQLPartitio
 
     private SQLExpr           partitionCount;
 
+    private boolean           linear;
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -48,13 +50,20 @@ public class MySqlPartitionByHash extends MySqlObjectImpl implements SQLPartitio
         this.partitionCount = partitionCount;
     }
 
-    
     public SQLExpr getExpr() {
         return expr;
     }
 
-    
     public void setExpr(SQLExpr expr) {
         this.expr = expr;
     }
+
+    public boolean isLinear() {
+        return linear;
+    }
+
+    public void setLinear(boolean linear) {
+        this.linear = linear;
+    }
+
 }

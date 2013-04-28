@@ -1496,7 +1496,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlPartitionByKey x) {
-        print("PARTITION BY KEY (");
+        if (x.isLinear()) {
+            print("PARTITION BY LINEAR KEY (");
+        } else {
+            print("PARTITION BY KEY (");
+        }
         printAndAccept(x.getColumns(), ", ");
         print(")");
 
@@ -1514,7 +1518,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlPartitionByHash x) {
-        print("PARTITION BY HASH (");
+        if (x.isLinear()) {
+            print("PARTITION BY LINEAR HASH (");
+        } else {
+            print("PARTITION BY HASH (");
+        }
+        // 
         x.getExpr().accept(this);
         print(")");
 

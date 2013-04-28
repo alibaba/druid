@@ -355,10 +355,21 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             if (identifierEquals("PARTITION")) {
                 lexer.nextToken();
                 accept(Token.BY);
+                
+                boolean linera = false;
+                if (identifierEquals("LINEAR")) {
+                    lexer.nextToken();
+                    linera = true;
+                }
 
                 if (lexer.token() == Token.KEY) {
                     MySqlPartitionByKey clause = new MySqlPartitionByKey();
                     lexer.nextToken();
+                    
+                    if (linera) {
+                        clause.setLinear(true);
+                    }
+                    
                     accept(Token.LPAREN);
                     for (;;) {
                         clause.getColumns().add(this.exprParser.name());
@@ -378,6 +389,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 } else if (identifierEquals("HASH")) {
                     lexer.nextToken();
                     MySqlPartitionByHash clause = new MySqlPartitionByHash();
+                    
+                    if (linera) {
+                        clause.setLinear(true);
+                    }
                     
                     accept(Token.LPAREN);
                     clause.setExpr(this.exprParser.expr());

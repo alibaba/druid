@@ -32,6 +32,8 @@ public class MySqlPartitionByKey extends MySqlObjectImpl implements SQLPartition
 
     private SQLExpr           partitionCount;
 
+    private boolean           linear;
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -55,6 +57,14 @@ public class MySqlPartitionByKey extends MySqlObjectImpl implements SQLPartition
 
     public void setColumns(List<SQLName> columns) {
         this.columns = columns;
+    }
+
+    public boolean isLinear() {
+        return linear;
+    }
+
+    public void setLinear(boolean linear) {
+        this.linear = linear;
     }
 
 }
