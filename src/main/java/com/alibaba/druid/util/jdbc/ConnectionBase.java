@@ -60,6 +60,7 @@ public abstract class ConnectionBase implements Connection {
 
     @Override
     public void setCatalog(String catalog) throws SQLException {
+        checkState();
         this.catalog = catalog;
     }
 
@@ -67,9 +68,14 @@ public abstract class ConnectionBase implements Connection {
     public String getCatalog() throws SQLException {
         return catalog;
     }
+    
+    public void checkState() throws SQLException {
+        
+    }
 
     @Override
     public void setTransactionIsolation(int level) throws SQLException {
+        checkState();
         this.transactionIsolation = level;
     }
 
