@@ -70,6 +70,18 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     private final AtomicLong                                    blobOpenCount           = new AtomicLong();
 
+    private static JdbcDataSourceStat                           global                  = new JdbcDataSourceStat(
+                                                                                                                 "global",
+                                                                                                                 "global");
+
+    public static JdbcDataSourceStat getGlobal() {
+        return global;
+    }
+
+    public static void setGlobal(JdbcDataSourceStat value) {
+        global = value;
+    }
+
     public JdbcDataSourceStat(String name, String url){
         this(name, url, null);
     }

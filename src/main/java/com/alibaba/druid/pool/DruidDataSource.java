@@ -130,6 +130,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private JdbcDataSourceStat               dataSourceStat;
 
+    private boolean                          useGloalDataSourceStat  = false;
+
     public DruidDataSource(){
         this(false);
     }
@@ -149,6 +151,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.setValidationQuery(property);
             }
         }
+        {
+            String property = System.getProperty("druid.useGloalDataSourceStat");
+            if ("true".equals(property)) {
+                this.setUseGloalDataSourceStat(true);
+            } else if ("false".equals(property)) {
+                this.setUseGloalDataSourceStat(false);
+            }
+        }
+    }
+
+    public boolean isUseGloalDataSourceStat() {
+        return useGloalDataSourceStat;
+    }
+
+    public void setUseGloalDataSourceStat(boolean useGloalDataSourceStat) {
+        this.useGloalDataSourceStat = useGloalDataSourceStat;
     }
 
     public String getInitStackTrace() {
@@ -435,7 +453,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
-            dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
+            if (useGloalDataSourceStat) {
+                dataSourceStat = JdbcDataSourceStat.getGlobal();
+            } else {
+                dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
+            }
 
             connections = new DruidConnectionHolder[maxActive];
 
@@ -486,12 +508,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     private void createAndStartDestroyThread() {
-        destoryConnectionThread = new DestroyConnectionThread("Druid-ConnectionPool-Destory");
+        String threadName = "Druid-ConnectionPool-Destory-" + System.identityHashCode(this);
+        destoryConnectionThread = new DestroyConnectionThread(threadName);
         destoryConnectionThread.start();
     }
 
     protected void createAndStartCreatorThread() {
-        createConnectionThread = new CreateConnectionThread("Druid-ConnectionPool-Create");
+        String threadName = "Druid-ConnectionPool-Create-" + System.identityHashCode(this);
+        createConnectionThread = new CreateConnectionThread(threadName);
         createConnectionThread.start();
     }
 

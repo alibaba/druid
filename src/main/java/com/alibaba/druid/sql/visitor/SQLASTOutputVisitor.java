@@ -458,8 +458,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
-    public boolean visit(SQLIdentifierExpr astNode) {
-        print(astNode.getName());
+    public boolean visit(SQLIdentifierExpr x) {
+        print(x.getName());
         return false;
     }
 
