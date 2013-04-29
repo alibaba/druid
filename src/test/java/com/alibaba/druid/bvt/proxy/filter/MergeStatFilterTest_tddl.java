@@ -13,46 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.filter;
+package com.alibaba.druid.bvt.proxy.filter;
 
 import java.sql.Connection;
+import java.sql.Statement;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.Histogram;
-import com.alibaba.druid.util.JdbcUtils;
 
-public class PoolStatFilterTest extends TestCase {
+public class MergeStatFilterTest_tddl extends TestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-
-        dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setFilters("stat");
-        
-        dataSource.init();
+        dataSource.setUrl("jdbc:mock:xx");
+        dataSource.setFilters("mergeStat");
+        dataSource.setDbType("mysql");
     }
 
     protected void tearDown() throws Exception {
-        JdbcUtils.close(dataSource);
+        dataSource.close();
     }
 
-    public void test_stat() throws Exception {
-        
-        Assert.assertTrue(dataSource.isInited());
-        
-        Histogram histogram = dataSource.getDataSourceStat().getConnectionHoldHistogram();
-        
-        Assert.assertEquals(0, histogram.getValue(0));
+    public void test_merge() throws Exception {
+        for (int i = 0; i < 100; ++i) {
+            String tableName = "t_" + i;
+            String sql = "select * from " + tableName + " where " + tableName + ".id = " + i;
+            Connection conn = dataSource.getConnection();
 
-        Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute(sql);
+            stmt.close();
 
-        conn.close();
+            conn.close();
+        }
 
-        Assert.assertEquals(1, histogram.getValue(0));
+        Assert.assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap().size());
+
     }
+
 }
