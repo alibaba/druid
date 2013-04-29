@@ -15,7 +15,7 @@ import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class OracleExceptionSorterTest_closeConn_3 extends TestCase {
+public class OracleExceptionSorterTest_setIsolationLevel extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -43,7 +43,7 @@ public class OracleExceptionSorterTest_closeConn_3 extends TestCase {
             pstmt.execute();
             pstmt.close();
             conn.close();
-            
+
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(1, dataSource.getPoolingCount());
             Assert.assertEquals(1, dataSource.getCreateCount());
@@ -52,15 +52,20 @@ public class OracleExceptionSorterTest_closeConn_3 extends TestCase {
         DruidPooledConnection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
         Assert.assertNotNull(mockConn);
-
-        conn.setAutoCommit(false);
-        conn.setReadOnly(false);
-
+        
         SQLException exception = new SQLException("xx", "xxx", 28);
         mockConn.setError(exception);
 
-        conn.close();
+        Exception setError = null;
+        try {
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        } catch (Exception ex) {
+            setError = ex;
+        }
+        Assert.assertNotNull(setError);
         
+        conn.close();
+
         {
             Connection conn2 = dataSource.getConnection();
             conn2.close();

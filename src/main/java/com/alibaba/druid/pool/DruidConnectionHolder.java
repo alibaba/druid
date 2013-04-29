@@ -48,7 +48,7 @@ public final class DruidConnectionHolder {
 
     private PreparedStatementPool               statementPool;
 
-    private final List<Statement>               statementTrace           = new ArrayList<Statement>();
+    private final List<Statement>               statementTrace           = new ArrayList<Statement>(2);
 
     private final boolean                       defaultReadOnly;
     private final int                           defaultHoldability;

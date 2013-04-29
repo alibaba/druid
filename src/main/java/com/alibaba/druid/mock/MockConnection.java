@@ -469,6 +469,12 @@ public class MockConnection extends ConnectionBase implements Connection {
     public int getNetworkTimeout() throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
+    
+    @Override
+    public void setReadOnly(boolean readOnly) throws SQLException {
+        checkState();
+        super.setReadOnly(readOnly);
+    }
 
     public void handleSleep() {
         if (getConnectProperties() != null) {
