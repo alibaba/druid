@@ -486,12 +486,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     private void createAndStartDestroyThread() {
-        destoryConnectionThread = new DestroyConnectionThread("Druid-ConnectionPool-Destory");
+        String threadName = "Druid-ConnectionPool-Destory-" + System.identityHashCode(this);
+        destoryConnectionThread = new DestroyConnectionThread(threadName);
         destoryConnectionThread.start();
     }
 
     protected void createAndStartCreatorThread() {
-        createConnectionThread = new CreateConnectionThread("Druid-ConnectionPool-Create");
+        String threadName = "Druid-ConnectionPool-Create-" + System.identityHashCode(this);
+        createConnectionThread = new CreateConnectionThread(threadName);
         createConnectionThread.start();
     }
 
