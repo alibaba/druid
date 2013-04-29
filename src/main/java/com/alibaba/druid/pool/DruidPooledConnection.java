@@ -191,7 +191,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         if (this.holder != null) {
             this.holder.clearStatementCache();
         }
-        
+
         this.traceEnable = false;
         this.holder = null;
         this.transactionInfo = null;
@@ -677,9 +677,9 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         checkState();
-        
+
         boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
-        
+
         if (useLocalSessionState) {
             if (autoCommit == holder.isUnderlyingAutoCommit()) {
                 return;
@@ -762,7 +762,12 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public Savepoint setSavepoint(String name) throws SQLException {
         checkState();
 
-        return conn.setSavepoint(name);
+        try {
+            return conn.setSavepoint(name);
+        } catch (SQLException ex) {
+            handleException(ex);
+            return null; // never arrive
+        }
     }
 
     @Override
@@ -810,7 +815,12 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public Clob createClob() throws SQLException {
         checkState();
 
-        return conn.createClob();
+        try {
+            return conn.createClob();
+        } catch (SQLException ex) {
+            handleException(ex);
+            return null; // never arrive
+        }
     }
 
     @Override
@@ -836,7 +846,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     @Override
     public void setReadOnly(boolean readOnly) throws SQLException {
         checkState();
-        
+
         boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
         if (useLocalSessionState) {
             if (readOnly == holder.isUnderlyingReadOnly()) {
@@ -844,7 +854,12 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             }
         }
 
-        conn.setReadOnly(readOnly);
+        try {
+            conn.setReadOnly(readOnly);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
+
         holder.setUnderlyingReadOnly(readOnly);
     }
 
@@ -859,7 +874,11 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void setCatalog(String catalog) throws SQLException {
         checkState();
 
-        conn.setCatalog(catalog);
+        try {
+            conn.setCatalog(catalog);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
     }
 
     @Override
@@ -872,7 +891,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     @Override
     public void setTransactionIsolation(int level) throws SQLException {
         checkState();
-        
+
         boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
         if (useLocalSessionState) {
             if (level == holder.getUnderlyingTransactionIsolation()) {
@@ -880,7 +899,11 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             }
         }
 
-        conn.setTransactionIsolation(level);
+        try {
+            conn.setTransactionIsolation(level);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
         holder.setUnderlyingTransactionIsolation(level);
     }
 
@@ -888,7 +911,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public int getTransactionIsolation() throws SQLException {
         checkState();
 
-        return conn.getTransactionIsolation();
+        return holder.getUnderlyingTransactionIsolation();
     }
 
     @Override
@@ -901,8 +924,11 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     @Override
     public void clearWarnings() throws SQLException {
         checkState();
-
-        conn.clearWarnings();
+        try {
+            conn.clearWarnings();
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
     }
 
     @Override
@@ -922,7 +948,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     @Override
     public void setHoldability(int holdability) throws SQLException {
         checkState();
-        
+
         boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
         if (useLocalSessionState) {
             if (holdability == holder.getUnderlyingHoldability()) {
@@ -945,7 +971,12 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public Savepoint setSavepoint() throws SQLException {
         checkState();
 
-        return conn.setSavepoint();
+        try {
+            return conn.setSavepoint();
+        } catch (SQLException ex) {
+            handleException(ex);
+            return null;
+        }
     }
 
     @Override
@@ -1057,7 +1088,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
         holder.getStatementEventListeners().remove(listener);
     }
-    
+
     public Throwable getDisableError() {
         return disableError;
     }

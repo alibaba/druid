@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool.exception;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -59,6 +60,11 @@ public class OracleExceptionSorterTest_closeConn extends TestCase {
         mockConn.setError(exception);
 
         conn.close();
+        
+        {
+            Connection conn2 = dataSource.getConnection();
+            conn2.close();
+        }
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(2, dataSource.getCreateCount());
