@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
 
+import javax.management.openmbean.TabularData;
+
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -25,26 +27,35 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class TestIdle extends TestCase {
 
+    private DruidDataSource dataSource;
+
     protected void tearDown() throws Exception {
+        JdbcUtils.close(dataSource);
         DruidDataSourceStatManager.cear();
     }
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        TabularData dataSourceList = DruidDataSourceStatManager.getInstance().getDataSourceList();
+        if (dataSourceList.size() > 0) {
+            DruidDataSource first = DruidDataSourceStatManager.getInstance().getDruidDataSourceInstances().iterator().next();
+            System.out.println(first.getInitStackTrace());
+        }
+        Assert.assertEquals(0, dataSourceList.size());
     }
 
     public void test_idle() throws Exception {
         MockDriver driver = new MockDriver();
 
-        DruidDataSource dataSource = new DruidDataSource();
+        dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
         dataSource.setInitialSize(2);
         dataSource.setMaxActive(4);
-//        dataSource.setMaxIdle(4);
+        // dataSource.setMaxIdle(4);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(50 * 1);
         dataSource.setTimeBetweenEvictionRunsMillis(10);
@@ -126,6 +137,5 @@ public class TestIdle extends TestCase {
             Assert.assertEquals("minIdle not equal physical", dataSource.getMinIdle(), driver.getConnections().size());
         }
 
-        dataSource.close();
     }
 }
