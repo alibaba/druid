@@ -15,8 +15,9 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.stat.JdbcConnectionStat;
 

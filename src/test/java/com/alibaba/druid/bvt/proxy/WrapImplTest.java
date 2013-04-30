@@ -26,6 +26,7 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class WrapImplTest extends TestCase {
 
@@ -75,4 +76,8 @@ public class WrapImplTest extends TestCase {
         statement.close();
     }
 
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
 }

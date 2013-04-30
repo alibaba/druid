@@ -455,6 +455,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (useGloalDataSourceStat) {
                 dataSourceStat = JdbcDataSourceStat.getGlobal();
+                if (dataSourceStat == null) {
+                    dataSourceStat = new JdbcDataSourceStat("Global", "Global", this.dbType);
+                    JdbcDataSourceStat.setGlobal(dataSourceStat);
+                }
             } else {
                 dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
             }

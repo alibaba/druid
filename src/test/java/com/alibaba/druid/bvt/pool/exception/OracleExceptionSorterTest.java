@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -18,6 +19,8 @@ public class OracleExceptionSorterTest extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        
         dataSource = new DruidDataSource();
 
         dataSource.setExceptionSorter(new OracleExceptionSorter());
