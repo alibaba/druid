@@ -33,6 +33,7 @@ public class OracleExceptionSorterTest_closeStmt extends TestCase {
         dataSource.setMaxOpenPreparedStatements(100);
     }
 
+    @Override
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());

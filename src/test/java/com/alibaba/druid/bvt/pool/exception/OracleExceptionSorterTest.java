@@ -32,7 +32,8 @@ public class OracleExceptionSorterTest extends TestCase {
         dataSource.setFilters("log4j");
     }
 
-    protected void tearDowN() throws Exception {
+    @Override
+    protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 

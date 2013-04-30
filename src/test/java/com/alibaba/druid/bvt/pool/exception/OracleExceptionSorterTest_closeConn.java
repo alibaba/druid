@@ -33,7 +33,8 @@ public class OracleExceptionSorterTest_closeConn extends TestCase {
         dataSource.setMaxOpenPreparedStatements(100);
     }
 
-    protected void tearDowN() throws Exception {
+    @Override
+    protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
