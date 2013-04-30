@@ -34,7 +34,7 @@ public class OracleExceptionSorterTest_setSavepointWithName extends TestCase {
         dataSource.setMaxOpenPreparedStatements(100);
     }
 
-    protected void tearDowN() throws Exception {
+    protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
     }
 
