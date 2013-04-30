@@ -17,8 +17,9 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
@@ -43,7 +44,7 @@ public class TestIdle extends TestCase {
         dataSource.setDriver(driver);
         dataSource.setInitialSize(2);
         dataSource.setMaxActive(4);
-        dataSource.setMaxIdle(4);
+//        dataSource.setMaxIdle(4);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(50 * 1);
         dataSource.setTimeBetweenEvictionRunsMillis(10);
@@ -118,11 +119,11 @@ public class TestIdle extends TestCase {
                 Assert.assertEquals(count - i - 1, dataSource.getActiveCount());
             }
             Assert.assertEquals(4, driver.getConnections().size());
-            Assert.assertEquals(0, dataSource.getActiveCount());
+            Assert.assertEquals("activeCount not zero", 0, dataSource.getActiveCount());
 
             dataSource.shrink();
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
+            Assert.assertEquals("activeCount not zero", 0, dataSource.getActiveCount());
+            Assert.assertEquals("minIdle not equal physical", dataSource.getMinIdle(), driver.getConnections().size());
         }
 
         dataSource.close();

@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
@@ -74,6 +75,11 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
             error = e;
         }
         Assert.assertNull(error);
+        
+        {
+            Connection conn2 = dataSource.getConnection();
+            conn2.close();
+        }
 
         Assert.assertEquals(1, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
