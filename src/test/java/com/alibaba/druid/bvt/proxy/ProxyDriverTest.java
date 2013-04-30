@@ -18,6 +18,11 @@ package com.alibaba.druid.bvt.proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import org.junit.Assert;
+
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
+
 import junit.framework.TestCase;
 
 public class ProxyDriverTest extends TestCase {
@@ -26,5 +31,10 @@ public class ProxyDriverTest extends TestCase {
         String url = "jdbc:wrap-jdbc:filters=default:name=clobTest:jdbc:derby:memory:clobTestDB;create=true";
         Connection conn = DriverManager.getConnection(url);
         conn.close();
+    }
+    
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 }

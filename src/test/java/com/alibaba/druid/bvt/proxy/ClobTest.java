@@ -27,7 +27,9 @@ import java.sql.Statement;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class ClobTest extends TestCase {
@@ -44,6 +46,13 @@ public class ClobTest extends TestCase {
         conn.close();
     }
 
+    protected void tearDown() throws Exception {
+        dropTable();
+        
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+
     private void createTable() throws SQLException {
         Connection conn = DriverManager.getConnection(create_url);
         Statement stmt = conn.createStatement();
@@ -58,10 +67,6 @@ public class ClobTest extends TestCase {
         stmt.execute("DROP TABLE T_CLOB");
         stmt.close();
         conn.close();
-    }
-
-    protected void tearDown() throws Exception {
-        dropTable();
     }
 
     public void test_clob() throws Exception {

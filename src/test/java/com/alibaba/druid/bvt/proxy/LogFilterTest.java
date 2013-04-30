@@ -24,8 +24,9 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.Properties;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.logging.CommonsLogFilter;
@@ -37,15 +38,21 @@ import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockResultSetMetaData;
 import com.alibaba.druid.mock.MockRowId;
 import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class LogFilterTest extends TestCase {
-
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public void test_logFilter_0() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setRawUrl("jdbc:mock:");

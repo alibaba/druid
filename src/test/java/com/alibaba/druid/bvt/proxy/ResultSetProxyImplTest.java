@@ -20,18 +20,27 @@ import java.sql.Connection;
 import java.sql.NClob;
 import java.sql.Statement;
 
+import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ResultSetProxyImplTest extends TestCase {
 
     String sql = "SELECT 1";
+    
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
 
     public void test_resultset() throws Exception {
 
