@@ -15,17 +15,23 @@
  */
 package com.alibaba.druid.bvt.proxy;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.log4j.Priority;
+import org.junit.Assert;
 
 import com.alibaba.druid.filter.logging.CommonsLogFilter;
 import com.alibaba.druid.filter.logging.LogFilter;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class CommonsLogFilterTest extends TestCase {
-
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public void test_logger() throws Exception {
         CommonsLogFilter filter = new CommonsLogFilter();
 

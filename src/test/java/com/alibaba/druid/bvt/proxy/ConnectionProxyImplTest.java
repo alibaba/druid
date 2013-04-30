@@ -18,16 +18,25 @@ package com.alibaba.druid.bvt.proxy;
 import java.sql.SQLClientInfoException;
 import java.util.Properties;
 
+import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterEventAdapter;
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ConnectionProxyImplTest extends TestCase {
 
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public void test_connection() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         DataSourceProxy dataSource = new DataSourceProxyImpl(null, config);

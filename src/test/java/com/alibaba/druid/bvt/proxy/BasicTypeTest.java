@@ -32,6 +32,8 @@ import java.util.HashMap;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class BasicTypeTest extends TestCase {
@@ -71,6 +73,9 @@ public class BasicTypeTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dropTable();
+        
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     @SuppressWarnings("deprecation")

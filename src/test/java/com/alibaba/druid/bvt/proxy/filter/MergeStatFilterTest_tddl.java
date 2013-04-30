@@ -17,17 +17,35 @@ package com.alibaba.druid.bvt.proxy.filter;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.Set;
 
-import junit.framework.Assert;
+import javax.management.openmbean.TabularData;
+
 import junit.framework.TestCase;
 
+import org.junit.Assert;
+
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class MergeStatFilterTest_tddl extends TestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        TabularData sqlList = JdbcStatManager.getInstance().getSqlList();
+        if (sqlList.size() > 0) {
+            for (Object item : JdbcStatManager.getInstance().getSqlList().values()) {
+                String text = JSONUtils.toJSONString(item);
+                System.out.println(text);
+            }
+        }
+        
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xx");
         dataSource.setFilters("mergeStat");
@@ -35,7 +53,9 @@ public class MergeStatFilterTest_tddl extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        dataSource.close();
+        JdbcUtils.close(dataSource);
+
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_merge() throws Exception {

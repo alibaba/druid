@@ -23,9 +23,11 @@ import java.sql.Statement;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.junit.Assert;
+
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 
@@ -37,6 +39,9 @@ public class StatFilterTest extends TestCase {
 
     public void tearDown() throws Exception {
         JdbcStatManager.getInstance().reset();
+        
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_stat() throws Exception {

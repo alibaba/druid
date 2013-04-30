@@ -297,7 +297,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
         TabularData data = new TabularDataSupport(tabularType);
 
         JdbcDataSourceStat globalStat = JdbcDataSourceStat.getGlobal();
-        {
+        if (globalStat != null) {
             Map<String, JdbcSqlStat> statMap = globalStat.getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
                 if (entry.getValue().getExecuteCount() == 0 && entry.getValue().getRunningCount() == 0) {
@@ -335,7 +335,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
             if (druidDataSourceStat == globalStat) {
                 continue;
             }
-            
+
             Map<String, JdbcSqlStat> statMap = druidDataSourceStat.getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
                 if (entry.getValue().getExecuteCount() == 0 && entry.getValue().getRunningCount() == 0) {

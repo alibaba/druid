@@ -19,6 +19,8 @@ public class GlobalStatTest0 extends TestCase {
     private DruidDataSource dataSourceB;
 
     protected void setUp() throws Exception {
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+        
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:xx_A");
         dataSourceA.setFilters("stat");
@@ -30,13 +32,22 @@ public class GlobalStatTest0 extends TestCase {
         dataSourceB.setUseGloalDataSourceStat(true);
     }
 
+    protected void tearDown() throws Exception {
+        JdbcUtils.close(dataSourceA);
+        JdbcUtils.close(dataSourceB);
+        
+        JdbcDataSourceStat.setGlobal(null);
+        
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+
     public void test_execute() throws Exception {
         {
             Connection conn = dataSourceA.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT 1");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                
+
             }
             rs.close();
             stmt.close();
@@ -47,22 +58,17 @@ public class GlobalStatTest0 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1");
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                
+
             }
             rs.close();
             stmt.close();
             conn.close();
         }
-        
+
         Assert.assertSame(JdbcDataSourceStat.getGlobal(), dataSourceA.getDataSourceStat());
         Assert.assertSame(JdbcDataSourceStat.getGlobal(), dataSourceB.getDataSourceStat());
-        
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getSqlList().size());
-    }
 
-    protected void tearDown() throws Exception {
-        JdbcUtils.close(dataSourceA);
-        JdbcUtils.close(dataSourceB);
+        Assert.assertEquals(1, JdbcStatManager.getInstance().getSqlList().size());
     }
 
 }
