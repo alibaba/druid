@@ -20,8 +20,10 @@ public class NoLoggingImpl implements Log {
     private int infoCount;
     private int errorCount;
     private int warnCount;
+    private Class<?> clazz;
 
     public NoLoggingImpl(Class<?> clazz){
+        this.clazz = clazz;
     }
 
     public boolean isDebugEnabled() {
@@ -29,11 +31,18 @@ public class NoLoggingImpl implements Log {
     }
 
     public void error(String s, Throwable e) {
-        errorCount++;
+        error(s);
+        
+        if (e != null) {
+            e.printStackTrace();
+        }
     }
 
     public void error(String s) {
         errorCount++;
+        if (s != null) {
+            System.err.println(clazz.getClass().getName() + " : " + s);
+        }
     }
 
     public void debug(String s) {

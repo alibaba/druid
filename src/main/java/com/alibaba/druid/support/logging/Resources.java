@@ -263,7 +263,7 @@ public final class Resources extends Object {
         in.close();
         return props;
     }
-
+    
     /**
      * Loads a class
      * 

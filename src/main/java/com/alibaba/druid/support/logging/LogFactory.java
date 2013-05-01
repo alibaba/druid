@@ -24,24 +24,43 @@ public class LogFactory {
 
     static {
         // TODO add slf4j logging
-        
-        //优先选择log4j,而非Apache Common Logging. 因为后者无法设置真实Log调用者的信息
+
+        // 优先选择log4j,而非Apache Common Logging. 因为后者无法设置真实Log调用者的信息
         tryImplementation("org.apache.log4j.Logger", "com.alibaba.druid.support.logging.Log4jImpl");
         tryImplementation("java.util.logging.Logger", "com.alibaba.druid.support.logging.Jdk14LoggingImpl");
         tryImplementation("org.apache.commons.logging.LogFactory",
                           "com.alibaba.druid.support.logging.JakartaCommonsLoggingImpl");
+
+        if (logConstructor == null) {
+            try {
+                logConstructor = NoLoggingImpl.class.getConstructor(Class.class);
+            } catch (Exception e) {
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        }
         tryImplementation("java.lang.Object", "com.alibaba.druid.support.logging.NoLoggingImpl");
     }
 
     @SuppressWarnings("unchecked")
     private static void tryImplementation(String testClassName, String implClassName) {
-        if (logConstructor == null) {
-            try {
-                Resources.classForName(testClassName);
-                Class implClass = Resources.classForName(implClassName);
-                logConstructor = implClass.getConstructor(new Class[] { Class.class });
-            } catch (Throwable t) {
+        if (logConstructor != null) {
+            return;
+        }
+
+        try {
+            Resources.classForName(testClassName);
+            Class implClass = Resources.classForName(implClassName);
+            logConstructor = implClass.getConstructor(new Class[] { Class.class });
+            {
+                Class<?> declareClass = logConstructor.getDeclaringClass();
+                if (!Log.class.isAssignableFrom(declareClass)) {
+                    logConstructor = null;
+                } else {
+                    return;
+                }
             }
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
     }
 
