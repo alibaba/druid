@@ -51,13 +51,10 @@ public class LogFactory {
             Resources.classForName(testClassName);
             Class implClass = Resources.classForName(implClassName);
             logConstructor = implClass.getConstructor(new Class[] { Class.class });
-            {
-                Class<?> declareClass = logConstructor.getDeclaringClass();
-                if (!Log.class.isAssignableFrom(declareClass)) {
-                    logConstructor = null;
-                } else {
-                    return;
-                }
+
+            Class<?> declareClass = logConstructor.getDeclaringClass();
+            if (!Log.class.isAssignableFrom(declareClass)) {
+                logConstructor = null;
             }
         } catch (Throwable t) {
             t.printStackTrace();

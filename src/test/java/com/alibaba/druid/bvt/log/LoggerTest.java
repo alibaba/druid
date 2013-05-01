@@ -19,8 +19,9 @@ import com.alibaba.druid.util.JdbcUtils;
 public class LoggerTest extends TestCase {
 
     private static java.security.ProtectionDomain DOMAIN;
-    
-    private DruidDataSource dataSource;
+
+    private ClassLoader                           contextClassLoader;
+    private DruidDataSource                       dataSource;
 
     static {
         DOMAIN = (java.security.ProtectionDomain) java.security.AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -34,18 +35,18 @@ public class LoggerTest extends TestCase {
     public static class TestLoader extends ClassLoader {
 
         private ClassLoader loader;
-        
+
         private Set<String> definedSet = new HashSet<String>();
 
         public TestLoader(){
             super(null);
             loader = DruidDriver.class.getClassLoader();
         }
-        
+
         public URL getResource(String name) {
             return loader.getResource(name);
         }
-        
+
         public Enumeration<URL> getResources(String name) throws IOException {
             return loader.getResources(name);
         }
@@ -54,11 +55,11 @@ public class LoggerTest extends TestCase {
             if (name.startsWith("java")) {
                 return loader.loadClass(name);
             }
-            
+
             if (definedSet.contains(name)) {
                 return super.loadClass(name);
             }
-            
+
             String resourceName = name.replace('.', '/') + ".class";
             InputStream is = loader.getResourceAsStream(resourceName);
             if (is == null) {
@@ -77,9 +78,9 @@ public class LoggerTest extends TestCase {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            
+
             Class<?> clazz = super.loadClass(name);
-            
+
             return clazz;
         }
     }
@@ -94,9 +95,15 @@ public class LoggerTest extends TestCase {
         Connection conn = dataSource.getConnection();
         conn.close();
     }
-    
+
+    @Override
+    protected void setUp() throws Exception {
+        contextClassLoader = Thread.currentThread().getContextClassLoader();
+    }
+
     @Override
     protected void tearDown() throws Exception {
+        Thread.currentThread().setContextClassLoader(contextClassLoader);
         JdbcUtils.close(dataSource);
     }
 }
