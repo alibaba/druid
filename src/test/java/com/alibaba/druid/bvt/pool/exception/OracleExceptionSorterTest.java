@@ -3,9 +3,9 @@ package com.alibaba.druid.bvt.pool.exception;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -63,15 +63,15 @@ public class OracleExceptionSorterTest extends TestCase {
 
         pstmt.close();
 
-        SQLException commetError = null;
+        SQLException commitError = null;
         try {
             conn.commit();
         } catch (SQLException ex) {
-            commetError = ex;
+            commitError = ex;
         }
         
-        Assert.assertNotNull(commetError);
-        Assert.assertSame(exception, commetError.getCause());
+        Assert.assertNotNull(commitError);
+        Assert.assertSame(exception, commitError.getCause());
         
         conn.close();
     }

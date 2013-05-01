@@ -47,9 +47,13 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -1180,11 +1184,11 @@ public class WallVisitorUtils {
         if (name.startsWith("\"") && name.endsWith("\"")) {
             name = name.substring(1, name.length() - 1);
         }
-        
+
         if (name.startsWith("'") && name.endsWith("'")) {
             name = name.substring(1, name.length() - 1);
         }
-        
+
         if (name.startsWith("`") && name.endsWith("`")) {
             name = name.substring(1, name.length() - 1);
         }
@@ -1293,7 +1297,9 @@ public class WallVisitorUtils {
             allow = config.isTruncateAllow();
             denyMessage = "truncate not allow";
             errorCode = ErrorCode.TRUNCATE_NOT_ALLOW;
-        } else if (x instanceof SQLCreateTableStatement) {
+        } else if (x instanceof SQLCreateTableStatement //
+                   || x instanceof SQLCreateIndexStatement //
+                   || x instanceof SQLCreateViewStatement) {
             allow = config.isCreateTableAllow();
             denyMessage = "create table not allow";
             errorCode = ErrorCode.CREATE_TABLE_NOT_ALLOW;
@@ -1301,7 +1307,9 @@ public class WallVisitorUtils {
             allow = config.isAlterTableAllow();
             denyMessage = "alter table not allow";
             errorCode = ErrorCode.ALTER_TABLE_NOT_ALLOW;
-        } else if (x instanceof SQLDropTableStatement) {
+        } else if (x instanceof SQLDropTableStatement //
+                   || x instanceof SQLDropIndexStatement //
+                   || x instanceof SQLDropViewStatement) {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
             errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;
