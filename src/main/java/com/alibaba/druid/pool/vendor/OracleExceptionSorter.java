@@ -50,6 +50,7 @@ public class OracleExceptionSorter implements ExceptionSorter, Serializable {
             || (error_code == 3113) // end-of-file on communication channel
             || (error_code == 3114) // not connected to ORACLE
             || (error_code >= 12100 && error_code <= 12299) // TNS issues
+            || (error_code == 17410) // No more data to read from socket
         ) {
             return true;
         }
