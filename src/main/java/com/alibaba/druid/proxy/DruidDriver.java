@@ -49,7 +49,7 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDriver implements Driver, DruidDriverMBean {
 
-    private final static Log                                        LOG                      = LogFactory.getLog(DruidDriver.class);
+    private static Log                                              LOG; // lazy init
 
     private final static DruidDriver                                instance                 = new DruidDriver();
 
@@ -90,18 +90,25 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                     mbeanServer.registerMBean(instance, objectName);
                 }
             } catch (Exception ex) {
+                if (LOG == null) {
+                    LOG = LogFactory.getLog(DruidDriver.class);
+                }
                 LOG.error("register druid-driver mbean error", ex);
             }
 
             return true;
         } catch (Exception e) {
+            if (LOG == null) {
+                LOG = LogFactory.getLog(DruidDriver.class);
+            }
+            
             LOG.error("registerDriver error", e);
         }
 
         return false;
     }
 
-    public DruidDriver() {
+    public DruidDriver(){
 
     }
 
