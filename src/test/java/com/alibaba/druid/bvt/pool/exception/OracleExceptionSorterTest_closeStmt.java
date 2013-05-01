@@ -69,15 +69,15 @@ public class OracleExceptionSorterTest_closeStmt extends TestCase {
         Assert.assertNotNull(closedErrror);
         Assert.assertSame(exception, closedErrror);
         
-        SQLException commetError = null;
+        SQLException commitError = null;
         try {
             conn.commit();
         } catch (SQLException ex) {
-            commetError = ex;
+            commitError = ex;
         }
 
-        Assert.assertNotNull(commetError);
-        Assert.assertSame(exception, commetError.getCause());
+        Assert.assertNotNull(commitError);
+        Assert.assertSame(exception, commitError.getCause());
 
         conn.close();
     }

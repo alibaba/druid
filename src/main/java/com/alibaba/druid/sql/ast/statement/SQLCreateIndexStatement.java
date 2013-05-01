@@ -30,17 +30,21 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
 
     private SQLName                    name;
 
-    private SQLName                    table;
+    private SQLTableSource             table;
 
     private List<SQLSelectOrderByItem> items            = new ArrayList<SQLSelectOrderByItem>();
 
     private String                     type;
 
-    public SQLName getTable() {
+    public SQLTableSource getTable() {
         return table;
     }
-
+    
     public void setTable(SQLName table) {
+        this.setTable(new SQLExprTableSource(table));
+    }
+
+    public void setTable(SQLTableSource table) {
         this.table = table;
     }
 

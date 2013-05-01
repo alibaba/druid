@@ -21,10 +21,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-    private SQLExpr           indexName;
-    private SQLExpr           tableName;
+    private SQLExpr            indexName;
+    private SQLExprTableSource tableName;
 
     public SQLExpr getIndexName() {
         return indexName;
@@ -34,11 +34,15 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLSta
         this.indexName = indexName;
     }
 
-    public SQLExpr getTableName() {
+    public SQLExprTableSource getTableName() {
         return tableName;
     }
 
     public void setTableName(SQLExpr tableName) {
+        this.setTableName(new SQLExprTableSource(tableName));
+    }
+    
+    public void setTableName(SQLExprTableSource tableName) {
         this.tableName = tableName;
     }
 
