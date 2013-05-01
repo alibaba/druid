@@ -1,8 +1,8 @@
 package com.alibaba.druid.bvt.pool.exception;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import junit.framework.TestCase;
 
@@ -12,11 +12,12 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class OracleExceptionSorterTest_setCatalog extends TestCase {
+public class OracleExceptionSorterTest_stmt_getResultSetConcurrency extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -36,6 +37,7 @@ public class OracleExceptionSorterTest_setCatalog extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_connect() throws Exception {
@@ -47,36 +49,37 @@ public class OracleExceptionSorterTest_setCatalog extends TestCase {
             pstmt.execute();
             pstmt.close();
             conn.close();
-
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(1, dataSource.getPoolingCount());
-            Assert.assertEquals(1, dataSource.getCreateCount());
         }
 
         DruidPooledConnection conn = dataSource.getConnection();
         MockConnection mockConn = conn.unwrap(MockConnection.class);
         Assert.assertNotNull(mockConn);
-        
+
+        Statement stmt = conn.createStatement();
+
         SQLException exception = new SQLException("xx", "xxx", 28);
         mockConn.setError(exception);
 
-        Exception setError = null;
+        SQLException stmtErrror = null;
         try {
-            conn.setCatalog("xxx");
-        } catch (Exception ex) {
-            setError = ex;
+            stmt.getResultSetConcurrency();
+        } catch (SQLException ex) {
+            stmtErrror = ex;
         }
-        Assert.assertNotNull(setError);
+        Assert.assertNotNull(stmtErrror);
+        Assert.assertSame(exception, stmtErrror);
         
-        conn.close();
-
-        {
-            Connection conn2 = dataSource.getConnection();
-            conn2.close();
+        SQLException commitError = null;
+        try {
+            conn.commit();
+        } catch (SQLException ex) {
+            commitError = ex;
         }
-        Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(1, dataSource.getPoolingCount());
-        Assert.assertEquals(2, dataSource.getCreateCount());
+
+        Assert.assertNotNull(commitError);
+        Assert.assertSame(exception, commitError.getCause());
+
+        conn.close();
     }
 
 }

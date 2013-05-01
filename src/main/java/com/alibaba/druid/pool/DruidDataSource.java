@@ -143,6 +143,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             String property = System.getProperty("druid.testWhileIdle");
             if ("true".equals(property)) {
                 this.setTestWhileIdle(true);
+            } else if ("false".equals(property)) {
+                this.setTestWhileIdle(false);
+            }
+        }
+        {
+            String property = System.getProperty("druid.testOnBorrow");
+            if ("true".equals(property)) {
+                this.setTestOnBorrow(true);
+            } else if ("false".equals(property)) {
+                this.setTestOnBorrow(false);
             }
         }
         {
@@ -157,6 +167,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.setUseGloalDataSourceStat(true);
             } else if ("false".equals(property)) {
                 this.setUseGloalDataSourceStat(false);
+            }
+        }
+        {
+            String property = System.getProperty("druid.filters");
+
+            if (property == null || property.length() == 0) {
+                return;
+            }
+
+            try {
+                this.setFilters(property);
+            } catch (SQLException e) {
+                LOG.error("setFilters error", e);
             }
         }
     }
@@ -374,8 +397,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             this.id = DruidDriver.createDataSourceId();
 
-            loadFilterFromSystemProperty();
-
             if (this.dbType == null || this.dbType.length() == 0) {
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
             }
@@ -523,15 +544,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         createConnectionThread.start();
     }
 
-    private void loadFilterFromSystemProperty() throws SQLException {
-        String property = System.getProperty("druid.filters");
-
-        if (property == null || property.length() == 0) {
-            return;
-        }
-
-        this.setFilters(property);
-    }
 
     /**
      * load filters from SPI ServiceLoader
@@ -1279,15 +1291,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         lock.lock();
         try {
             return activeCount;
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public boolean isBusy() {
-        lock.lock();
-        try {
-            return this.inited && this.activeCount == maxActive && this.poolingCount == 0;
         } finally {
             lock.unlock();
         }
