@@ -57,7 +57,7 @@ public class LogFactory {
                 logConstructor = null;
             }
         } catch (Throwable t) {
-            t.printStackTrace();
+            // skip
         }
     }
 
