@@ -348,6 +348,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
             return MYSQL_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:mariadb:")) {
+            return MARIADB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
             return ORACLE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
@@ -414,6 +416,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DERBY;
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
             return MYSQL;
+        } else if (rawUrl.startsWith("jdbc:mariadb:")) {
+            return MARIADB;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
             return ORACLE;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {

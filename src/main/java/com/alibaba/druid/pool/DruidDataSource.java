@@ -405,7 +405,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 filter.init(this);
             }
 
-            if (this.dbType == JdbcConstants.MYSQL) {
+            if (JdbcConstants.MYSQL.equals(this.dbType) || //
+                JdbcConstants.MARIADB.equals(this.dbType)) {
                 boolean cacheServerConfigurationSet = false;
                 if (this.connectProperties.containsKey("cacheServerConfiguration")) {
                     cacheServerConfigurationSet = true;
@@ -543,7 +544,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         createConnectionThread = new CreateConnectionThread(threadName);
         createConnectionThread.start();
     }
-
 
     /**
      * load filters from SPI ServiceLoader
