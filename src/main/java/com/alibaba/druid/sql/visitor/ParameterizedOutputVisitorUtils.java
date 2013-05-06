@@ -56,6 +56,10 @@ public class ParameterizedOutputVisitorUtils {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlParameterizedOutputVisitor(out);
         }
+        
+        if (JdbcUtils.MARIADB.equals(dbType)) {
+            return new MySqlParameterizedOutputVisitor(out);
+        }
 
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlParameterizedOutputVisitor(out);

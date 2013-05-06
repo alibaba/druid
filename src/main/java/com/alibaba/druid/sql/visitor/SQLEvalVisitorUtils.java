@@ -139,6 +139,10 @@ public class SQLEvalVisitorUtils {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlEvalVisitorImpl();
         }
+        
+        if (JdbcUtils.MARIADB.equals(dbType)) {
+            return new MySqlEvalVisitorImpl();
+        }
 
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlEvalVisitorImpl();
