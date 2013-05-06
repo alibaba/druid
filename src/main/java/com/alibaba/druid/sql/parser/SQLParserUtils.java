@@ -36,6 +36,10 @@ public class SQLParserUtils {
             return new MySqlStatementParser(sql);
         }
 
+        if (JdbcUtils.MARIADB.equals(dbType)) {
+            return new MySqlStatementParser(sql);
+        }
+
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return new PGSQLStatementParser(sql);
         }
@@ -43,7 +47,7 @@ public class SQLParserUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerStatementParser(sql);
         }
-        
+
         if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerStatementParser(sql);
         }
@@ -60,11 +64,9 @@ public class SQLParserUtils {
             return new OracleExprParser(sql);
         }
 
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlExprParser(sql);
-        }
-
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || //
+            JdbcUtils.MARIADB.equals(dbType) || //
+            JdbcUtils.H2.equals(dbType)) {
             return new MySqlExprParser(sql);
         }
 
@@ -75,7 +77,7 @@ public class SQLParserUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerExprParser(sql);
         }
-        
+
         if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerExprParser(sql);
         }

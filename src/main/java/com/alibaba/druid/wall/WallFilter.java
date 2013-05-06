@@ -72,7 +72,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             dbType = JdbcUtils.getDbType(dataSource.getUrl(), null);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType) || JdbcUtils.H2.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || //
+            JdbcUtils.MARIADB.equals(dbType) || //
+            JdbcUtils.H2.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
             }
@@ -541,7 +543,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         if (sqlStat == null) {
             return;
         }
-        
+
         Map<String, WallSqlTableStat> sqlTableStats = sqlStat.getTableStats();
         if (sqlTableStats == null) {
             return;

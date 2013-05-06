@@ -45,11 +45,9 @@ public class SQLUtils {
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
     public static String toSQLString(SQLObject sqlObject, String dbType) {
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return toMySqlString(sqlObject);
-        }
-
-        if (JdbcUtils.H2.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || //
+            JdbcUtils.MARIADB.equals(dbType) || //
+            JdbcUtils.H2.equals(dbType)) {
             return toMySqlString(sqlObject);
         }
 
@@ -139,7 +137,7 @@ public class SQLUtils {
     public static SQLExpr toSQLExpr(String sql) {
         return toSQLExpr(sql, null);
     }
-    
+
     public static String format(String sql, String dbType) {
         return format(sql, dbType, null);
     }
@@ -158,7 +156,7 @@ public class SQLUtils {
     public static String toSQLString(List<SQLStatement> statementList, String dbType) {
         return toSQLString(statementList, dbType, null);
     }
-    
+
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
@@ -183,7 +181,9 @@ public class SQLUtils {
             }
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || //
+            JdbcUtils.MARIADB.equals(dbType) || //
+            JdbcUtils.H2.equals(dbType)) {
             return new MySqlOutputVisitor(out);
         }
 
@@ -194,13 +194,9 @@ public class SQLUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
-        
+
         if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
-        }
-
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlOutputVisitor(out);
         }
 
         return new SQLASTOutputVisitor(out);
@@ -215,7 +211,9 @@ public class SQLUtils {
             }
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || //
+            JdbcUtils.MARIADB.equals(dbType) || //
+            JdbcUtils.H2.equals(dbType)) {
             return new MySqlSchemaStatVisitor();
         }
 
@@ -226,13 +224,9 @@ public class SQLUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerSchemaStatVisitor();
         }
-        
+
         if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerSchemaStatVisitor();
-        }
-
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlSchemaStatVisitor();
         }
 
         return new SchemaStatVisitor();

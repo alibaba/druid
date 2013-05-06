@@ -94,7 +94,9 @@ public class PagerUtils {
 
     private static String limitQueryBlock(SQLSelect select, String dbType, int offset, int count) {
         SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType) || //
+            JdbcConstants.MARIADB.equals(dbType) || //
+            JdbcConstants.H2.equals(dbType)) {
             return limitMySqlQueryBlock((MySqlSelectQueryBlock) queryBlock, dbType, offset, count);
         }
 
@@ -202,6 +204,14 @@ public class PagerUtils {
 
     private static SQLSelectQueryBlock createQueryBlock(String dbType) {
         if (JdbcConstants.MYSQL.equals(dbType)) {
+            return new MySqlSelectQueryBlock();
+        }
+
+        if (JdbcConstants.MARIADB.equals(dbType)) {
+            return new MySqlSelectQueryBlock();
+        }
+
+        if (JdbcConstants.H2.equals(dbType)) {
             return new MySqlSelectQueryBlock();
         }
 
