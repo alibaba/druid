@@ -63,6 +63,7 @@ import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallSqlTableStat;
 import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
@@ -255,8 +256,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
-            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
-            if (!isTop) {
+            boolean noneCondition = WallVisitorUtils.getWallConditionContext() == null;
+            if (!noneCondition) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
                                                                                      + x.getName(), toSQL(x)));
             }
