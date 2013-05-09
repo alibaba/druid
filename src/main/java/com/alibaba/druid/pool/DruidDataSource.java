@@ -91,6 +91,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private static final long                serialVersionUID        = 1L;
 
     // stats
+    private final AtomicLong                 recycleErrorCount       = new AtomicLong();
     private long                             connectCount            = 0L;
     private long                             closeCount              = 0L;
     private final AtomicLong                 connectErrorCount       = new AtomicLong();
@@ -265,6 +266,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         preparedStatementCount.set(0);
         transactionHistogram.reset();
         cachedPreparedStatementDeleteCount.set(0);
+        recycleErrorCount.set(0);
     }
 
     public boolean isEnable() {
@@ -468,12 +470,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initExceptionSorter();
             initValidConnectionChecker();
-
-            if (driver.getClass().getName().equals("com.mysql.jdbc.Driver")) {
-                if (this.isPoolPreparedStatements()) {
-                    LOG.error("mysql should not use 'PoolPreparedStatements'");
-                }
-            }
 
             if (useGloalDataSourceStat) {
                 dataSourceStat = JdbcDataSourceStat.getGlobal();
@@ -1042,7 +1038,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             LOG.error("recyle error", e);
+            recycleErrorCount.incrementAndGet();
         }
+    }
+    
+    public long getRecycleErrorCount() {
+        return recycleErrorCount.get();
     }
 
     public void clearStatementCache() throws SQLException {
