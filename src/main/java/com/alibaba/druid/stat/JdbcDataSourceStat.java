@@ -71,8 +71,8 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final AtomicLong                                    blobOpenCount           = new AtomicLong();
 
     private static JdbcDataSourceStat                           global                  = new JdbcDataSourceStat(
-                                                                                                                 "global",
-                                                                                                                 "global");
+                                                                                                                 "Global",
+                                                                                                                 "Global");
 
     public static JdbcDataSourceStat getGlobal() {
         return global;
