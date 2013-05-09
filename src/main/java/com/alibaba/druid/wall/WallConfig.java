@@ -31,7 +31,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             selectIntoAllow            = true;
     private boolean             selectIntoOutfileAllow     = false;
     private boolean             selectWhereAlwayTrueCheck  = true;
-    private boolean             selectHavingAlwayTrueCheck = true;
+    private boolean             selectHavingAlwayTrueCheck = false;
     private boolean             selectUnionCheck           = true;
     private boolean             createTableAllow           = true;
     private boolean             dropTableAllow             = true;

@@ -678,7 +678,9 @@ public class WallVisitorUtils {
             WallContext context = WallContext.current();
             if (context != null) {
                 if (current.hasPartAlwayTrue() || Boolean.TRUE == value) {
-                    context.incrementWarnnings();
+                    if (!isFirst(x)) {
+                        context.incrementWarnnings();
+                    }
                 }
             }
 
