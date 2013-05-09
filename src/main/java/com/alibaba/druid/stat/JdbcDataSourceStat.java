@@ -113,6 +113,14 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
         sqlStatMap = new LRUCache<String, JdbcSqlStat>(maxSize, 16, 0.75f, false);
     }
+    
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 
     public void reset() {
         blobOpenCount.set(0);
@@ -266,6 +274,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
             if (sqlStat == null) {
                 sqlStat = new JdbcSqlStat(sql);
                 sqlStat.setDbType(this.dbType);
+                sqlStat.setName(this.name);
                 sqlStatMap.put(sql, sqlStat);
             }
 

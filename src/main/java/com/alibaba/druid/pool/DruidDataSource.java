@@ -471,8 +471,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initExceptionSorter();
             initValidConnectionChecker();
 
-            if (useGloalDataSourceStat) {
+            if (isUseGloalDataSourceStat()) {
                 dataSourceStat = JdbcDataSourceStat.getGlobal();
+                if (dataSourceStat.getDbType() == null) {
+                    dataSourceStat.setDbType(this.getDbType());
+                }
                 if (dataSourceStat == null) {
                     dataSourceStat = new JdbcDataSourceStat("Global", "Global", this.dbType);
                     JdbcDataSourceStat.setGlobal(dataSourceStat);
