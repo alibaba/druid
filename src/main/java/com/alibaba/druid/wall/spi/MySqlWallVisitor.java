@@ -63,7 +63,6 @@ import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallSqlTableStat;
 import com.alibaba.druid.wall.WallVisitor;
-import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
@@ -178,13 +177,13 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public boolean visit(Limit x) {
         if (x.getRowCount() instanceof SQLNumericLiteralExpr) {
             WallContext context = WallContext.current();
-            
+
             int rowCount = ((SQLNumericLiteralExpr) x.getRowCount()).getNumber().intValue();
             if (rowCount == 0) {
                 if (context != null) {
                     context.incrementWarnnings();
                 }
-                
+
                 if (!provider.getConfig().isLimitZeroAllow()) {
                     this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.LIMIT_ZERO, "limit row 0",
                                                                            this.toSQL(x)));
@@ -209,8 +208,21 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 if (!checkVar(x.getParent(), x.getName())) {
                     boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
                     if (!isTop) {
-                        violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
-                                                                                             + x.getName(), toSQL(x)));
+                        boolean allow = true;
+                        if (isDeny(varName)) {
+                            allow = false;
+                        }
+
+                        if (allow) {
+                            if (WallVisitorUtils.isWhereOrHaving(x)) {
+                                allow = false;
+                            }
+                        }
+
+                        if (!allow) {
+                            violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
+                                                                                                 + x.getName(), toSQL(x)));
+                        }
                     }
                 }
                 return false;
@@ -248,6 +260,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
         return false;
     }
+    
+    public boolean isDeny(String varName) {
+        if (varName.startsWith("@@")) {
+            varName = varName.substring(2);
+        }
+        
+        return config.getDenyVariants().contains(varName);
+    }
 
     public boolean visit(SQLVariantRefExpr x) {
         String varName = x.getName();
@@ -256,10 +276,23 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
-            boolean noneCondition = WallVisitorUtils.getWallConditionContext() == null;
-            if (!noneCondition) {
-                violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
-                                                                                     + x.getName(), toSQL(x)));
+            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
+            if (!isTop) {
+                boolean allow = true;
+                if (isDeny(varName)) {
+                    allow = false;
+                }
+
+                if (allow) {
+                    if (WallVisitorUtils.isWhereOrHaving(x)) {
+                        allow = false;
+                    }
+                }
+
+                if (!allow) {
+                    violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
+                                                                                         + x.getName(), toSQL(x)));
+                }
             }
         }
 

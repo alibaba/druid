@@ -17,8 +17,9 @@ package com.alibaba.druid.bvt.pool;
 
 import java.lang.reflect.Field;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
@@ -50,6 +51,6 @@ public class ConfigErrorTest3 extends TestCase {
         
         Assert.assertEquals(0, LOG.getErrorCount());
         dataSource.init();
-        Assert.assertEquals(1, LOG.getErrorCount());
+        Assert.assertEquals(0, LOG.getErrorCount());
     }
 }

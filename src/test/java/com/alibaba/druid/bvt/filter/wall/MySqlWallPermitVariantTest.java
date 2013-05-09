@@ -21,6 +21,7 @@ import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * 这个场景测试访问Oracle系统对象
@@ -30,16 +31,16 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallPermitVariantTest extends TestCase {
 
     public void test_allow() throws Exception {
-        WallConfig config = new WallConfig();
-        config.setVariantCheck(false);
+        MySqlWallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setVariantCheck(false);
         
-        Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));
+        Assert.assertTrue(provider.checkValid("select @@version_compile_os FROM X"));
     }
     
     public void test_not_allow() throws Exception {
-        WallConfig config = new WallConfig();
-        config.setVariantCheck(true);
+        MySqlWallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setVariantCheck(true);
         
-        Assert.assertFalse(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));
+        Assert.assertFalse(provider.checkValid("select @@version_compile_os FROM X"));
     }
 }
