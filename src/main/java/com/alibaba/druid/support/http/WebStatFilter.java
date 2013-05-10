@@ -193,7 +193,9 @@ public class WebStatFilter implements Filter {
                 Profiler.release(nanos);
                 
                 Map<ProfileEntryKey, ProfileEntryReqStat> requestStatsMap = Profiler.getStatsMap();
-                uriStat.getProfiletat().record(requestStatsMap);
+                if (uriStat != null) {
+                    uriStat.getProfiletat().record(requestStatsMap);
+                }
                 Profiler.removeLocal();
             }
         }
