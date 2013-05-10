@@ -61,6 +61,23 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
                     return false;
                 }
             }
+            
+            int numberCount = 0;
+            for (int i = name.length() - 1; i >= 0; --i) {
+                char ch = name.charAt(i);
+                if (ch < '0' || ch > '9') {
+                    break;
+                } else {
+                    numberCount++;
+                }
+            }
+            
+            if (numberCount > 1) {
+                int numPos = name.length() - numberCount;
+                String realName = name.substring(0, numPos);
+                print(realName);
+                return false;
+            }
         }
         print(name);
         return false;
