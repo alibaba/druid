@@ -45,6 +45,8 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import org.h2.util.StringUtils;
+
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
@@ -1232,7 +1234,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        throw new UnsupportedOperationException("Not supported by DruidDataSource");
+        if (!StringUtils.equals(username, this.username)) {
+            throw new UnsupportedOperationException("Not supported by DruidDataSource");    
+        }
+        
+        if (!StringUtils.equals(password, this.password)) {
+            throw new UnsupportedOperationException("Not supported by DruidDataSource");    
+        }
+        
+        return getConnection();
     }
 
     public long getCreateCount() {
