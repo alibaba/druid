@@ -191,9 +191,11 @@ public class WebStatFilter implements Filter {
 
             if (isProfileEnable()) {
                 Profiler.release(nanos);
-                
+
                 Map<ProfileEntryKey, ProfileEntryReqStat> requestStatsMap = Profiler.getStatsMap();
-                uriStat.getProfiletat().record(requestStatsMap);
+                if (uriStat != null) {
+                    uriStat.getProfiletat().record(requestStatsMap);
+                }
                 Profiler.removeLocal();
             }
         }
@@ -380,8 +382,9 @@ public class WebStatFilter implements Filter {
         StatFilterContext.getInstance().addContextListener(statFilterContextListener);
 
         this.contextPath = DruidWebUtils.getContextPath(config.getServletContext());
-        webAppStat = new WebAppStat(contextPath, this.sessionStatMaxCount);
-
+        if (webAppStat == null) {
+            webAppStat = new WebAppStat(contextPath, this.sessionStatMaxCount);
+        }
         WebAppStatManager.getInstance().addWebAppStatSet(webAppStat);
     }
 
@@ -408,6 +411,10 @@ public class WebStatFilter implements Filter {
 
     public void setProfileEnable(boolean profileEnable) {
         this.profileEnable = profileEnable;
+    }
+
+    public void setWebAppStat(WebAppStat webAppStat) {
+        this.webAppStat = webAppStat;
     }
 
     public WebAppStat getWebAppStat() {

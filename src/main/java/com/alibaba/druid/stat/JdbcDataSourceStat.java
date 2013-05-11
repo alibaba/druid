@@ -70,9 +70,18 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     private final AtomicLong                                    blobOpenCount           = new AtomicLong();
 
-    private static JdbcDataSourceStat                           global                  = new JdbcDataSourceStat(
-                                                                                                                 "global",
-                                                                                                                 "global");
+    private static JdbcDataSourceStat                           global;
+
+    static {
+        String dbType = null;
+        {
+            String property = System.getProperty("druid.globalDbType");
+            if (property != null && property.length() > 0) {
+                dbType = property;
+            }
+        }
+        global = new JdbcDataSourceStat("Global", "Global", dbType);
+    }
 
     public static JdbcDataSourceStat getGlobal() {
         return global;
@@ -112,6 +121,14 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         }
 
         sqlStatMap = new LRUCache<String, JdbcSqlStat>(maxSize, 16, 0.75f, false);
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 
     public void reset() {
@@ -266,6 +283,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
             if (sqlStat == null) {
                 sqlStat = new JdbcSqlStat(sql);
                 sqlStat.setDbType(this.dbType);
+                sqlStat.setName(this.name);
                 sqlStatMap.put(sql, sqlStat);
             }
 

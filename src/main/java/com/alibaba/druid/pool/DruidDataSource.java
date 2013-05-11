@@ -33,6 +33,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.management.JMException;
 import javax.management.ObjectName;
@@ -44,6 +45,8 @@ import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
+
+import org.h2.util.StringUtils;
 
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
@@ -91,6 +94,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private static final long                serialVersionUID        = 1L;
 
     // stats
+    private final AtomicLong                 recycleErrorCount       = new AtomicLong();
     private long                             connectCount            = 0L;
     private long                             closeCount              = 0L;
     private final AtomicLong                 connectErrorCount       = new AtomicLong();
@@ -265,6 +269,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         preparedStatementCount.set(0);
         transactionHistogram.reset();
         cachedPreparedStatementDeleteCount.set(0);
+        recycleErrorCount.set(0);
     }
 
     public boolean isEnable() {
@@ -379,6 +384,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
+        final ReentrantLock lock = this.lock;
         try {
             lock.lockInterruptibly();
         } catch (InterruptedException e) {
@@ -469,17 +475,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initExceptionSorter();
             initValidConnectionChecker();
 
-            if (driver.getClass().getName().equals("com.mysql.jdbc.Driver")) {
-                if (this.isPoolPreparedStatements()) {
-                    LOG.error("mysql should not use 'PoolPreparedStatements'");
-                }
-            }
-
-            if (useGloalDataSourceStat) {
+            if (isUseGloalDataSourceStat()) {
                 dataSourceStat = JdbcDataSourceStat.getGlobal();
                 if (dataSourceStat == null) {
                     dataSourceStat = new JdbcDataSourceStat("Global", "Global", this.dbType);
                     JdbcDataSourceStat.setGlobal(dataSourceStat);
+                }
+                if (dataSourceStat.getDbType() == null) {
+                    dataSourceStat.setDbType(this.getDbType());
                 }
             } else {
                 dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
@@ -1042,7 +1045,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             LOG.error("recyle error", e);
+            recycleErrorCount.incrementAndGet();
         }
+    }
+    
+    public long getRecycleErrorCount() {
+        return recycleErrorCount.get();
     }
 
     public void clearStatementCache() throws SQLException {
@@ -1228,7 +1236,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        throw new UnsupportedOperationException("Not supported by DruidDataSource");
+        if (!StringUtils.equals(username, this.username)) {
+            throw new UnsupportedOperationException("Not supported by DruidDataSource");    
+        }
+        
+        if (!StringUtils.equals(password, this.password)) {
+            throw new UnsupportedOperationException("Not supported by DruidDataSource");    
+        }
+        
+        return getConnection();
     }
 
     public long getCreateCount() {

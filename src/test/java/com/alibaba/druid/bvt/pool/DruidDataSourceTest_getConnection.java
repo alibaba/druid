@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
+import java.sql.Connection;
+
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -26,10 +28,25 @@ public class DruidDataSourceTest_getConnection extends TestCase {
         dataSource.close();
     }
 
-    public void test_conn_error() throws Exception {
+    public void test_conn_ok() throws Exception {
+        Connection conn = dataSource.getConnection(null, null);
+        conn.close();
+    }
+
+    public void test_conn_user_error() throws Exception {
         Exception error = null;
         try {
-            dataSource.getConnection(null, null);
+            dataSource.getConnection("a", null);
+        } catch (UnsupportedOperationException e) {
+            error = e;
+        }
+        Assert.assertNotNull(error);
+    }
+
+    public void test_conn_password_error() throws Exception {
+        Exception error = null;
+        try {
+            dataSource.getConnection(null, "a");
         } catch (UnsupportedOperationException e) {
             error = e;
         }
