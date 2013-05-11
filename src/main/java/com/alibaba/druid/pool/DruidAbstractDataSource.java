@@ -248,8 +248,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.useLocalSessionState = useLocalSessionState;
     }
 
-
-
     public boolean isOracle() {
         return isOracle;
     }

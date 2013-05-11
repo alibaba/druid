@@ -60,6 +60,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -620,6 +621,40 @@ public class WallVisitorUtils {
         }
 
         return false;
+    }
+
+    public static boolean isWhereOrHaving(SQLObject x) {
+        if (x == null) {
+            return false;
+        }
+        
+        for (;;) {
+            SQLObject parent = x.getParent();
+
+            if (parent == null) {
+                return false;
+            }
+            
+            if (parent instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock query = (SQLSelectQueryBlock) parent;
+                if (query.getWhere() == x) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            if (parent instanceof SQLSelectGroupByClause) {
+                SQLSelectGroupByClause groupBy = (SQLSelectGroupByClause) parent;
+                if (x == groupBy.getHaving()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            x = parent;
+        }
     }
 
     public static class WallConditionContext {
