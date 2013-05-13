@@ -26,6 +26,7 @@ public class LogFactory {
         // TODO add slf4j logging
 
         // 优先选择log4j,而非Apache Common Logging. 因为后者无法设置真实Log调用者的信息
+		tryImplementation("org.slf4j.Logger", "com.alibaba.druid.support.logging.SLF4JImpl");
         tryImplementation("org.apache.log4j.Logger", "com.alibaba.druid.support.logging.Log4jImpl");
         tryImplementation("java.util.logging.Logger", "com.alibaba.druid.support.logging.Jdk14LoggingImpl");
         tryImplementation("org.apache.commons.logging.LogFactory",
