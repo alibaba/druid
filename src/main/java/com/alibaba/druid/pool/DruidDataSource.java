@@ -45,8 +45,6 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
-import org.h2.util.StringUtils;
-
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
@@ -80,6 +78,7 @@ import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.wall.WallFilter;
 
 /**
