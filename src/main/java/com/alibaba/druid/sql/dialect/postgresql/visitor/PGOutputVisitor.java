@@ -329,7 +329,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         print("INSERT INTO ");
 
-        x.getTableName().accept(this);
+        x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             incrementIndent();

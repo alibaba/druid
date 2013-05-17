@@ -124,7 +124,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     public boolean visit(SQLServerInsertStatement x) {
         print("INSERT INTO ");
 
-        x.getTableName().accept(this);
+        x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             incrementIndent();

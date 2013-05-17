@@ -1627,7 +1627,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(InsertIntoClause x) {
         print("INTO ");
 
-        x.getTableName().accept(this);
+        x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             incrementIndent();
