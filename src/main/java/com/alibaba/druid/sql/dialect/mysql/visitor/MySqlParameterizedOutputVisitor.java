@@ -152,7 +152,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
 
         print("INTO ");
 
-        x.getTableName().accept(this);
+        x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             print(" (");

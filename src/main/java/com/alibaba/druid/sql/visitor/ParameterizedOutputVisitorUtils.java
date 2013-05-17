@@ -39,11 +39,11 @@ public class ParameterizedOutputVisitorUtils {
     public static String parameterize(String sql, String dbType) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createParameterizedOutputVisitor(out, dbType);
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         return out.toString();
     }

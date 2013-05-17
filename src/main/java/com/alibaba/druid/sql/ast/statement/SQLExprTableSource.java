@@ -29,7 +29,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public SQLExprTableSource(SQLExpr expr){
-        this.expr = expr;
+        this.setExpr(expr);
     }
 
     public SQLExpr getExpr() {
