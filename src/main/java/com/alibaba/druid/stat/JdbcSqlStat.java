@@ -323,7 +323,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         executeSpanNanoTotalUpdater.set(this, 0);
         executeSpanNanoMaxUpdater.set(this, 0);
         executeNanoSpanMaxOccurTime = 0;
-        runningCountUpdater.set(this, 0);
         concurrentMaxUpdater.set(this, 0);
 
         executeErrorCountUpdater.set(this, 0);
@@ -378,6 +377,87 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         readBytesLengthUpdater.set(this, 0);
         inputStreamOpenCountUpdater.set(this, 0);
         readerOpenCountUpdater.set(this, 0);
+    }
+
+    public JdbcSqlStatValue getValueAndReset() {
+        JdbcSqlStatValue val = new JdbcSqlStatValue();
+
+        val.executeLastStartTime = executeLastStartTime;
+        executeLastStartTime = 0;
+
+        val.executeBatchSizeTotal = executeBatchSizeTotalUpdater.getAndSet(this, 0);
+        val.executeBatchSizeMax = executeBatchSizeMaxUpdater.getAndSet(this, 0);
+
+        val.executeSuccessCount = executeSuccessCountUpdater.getAndSet(this, 0);
+        val.executeSpanNanoTotal = executeSpanNanoTotalUpdater.getAndSet(this, 0);
+        val.executeSpanNanoMax = executeSpanNanoMaxUpdater.getAndSet(this, 0);
+        val.executeNanoSpanMaxOccurTime = executeNanoSpanMaxOccurTime;
+        executeNanoSpanMaxOccurTime = 0;
+
+        val.runningCount = this.runningCount;
+
+        val.concurrentMax = concurrentMaxUpdater.getAndSet(this, 0);
+
+        val.executeErrorCount = executeErrorCountUpdater.getAndSet(this, 0);
+
+        val.executeErrorLast = executeErrorLast;
+        executeErrorLast = null;
+
+        val.executeErrorLastTime = executeErrorLastTime;
+        executeErrorLastTime = 0;
+
+        val.updateCount = updateCountUpdater.getAndSet(this, 0);
+        val.updateCountMax = updateCountMaxUpdater.getAndSet(this, 0);
+        val.fetchRowCount = fetchRowCountUpdater.getAndSet(this, 0);
+        val.fetchRowCountMax = fetchRowCountMaxUpdater.getAndSet(this, 0);
+
+        val.histogram_0_1 = histogram_0_1_Updater.getAndSet(this, 0);
+        val.histogram_1_10 = histogram_1_10_Updater.getAndSet(this, 0);
+        val.histogram_10_100 = histogram_10_100_Updater.getAndSet(this, 0);
+        val.histogram_100_1000 = histogram_100_1000_Updater.getAndSet(this, 0);
+        val.histogram_1000_10000 = histogram_1000_10000_Updater.getAndSet(this, 0);
+        val.histogram_10000_100000 = histogram_10000_100000_Updater.getAndSet(this, 0);
+        val.histogram_100000_1000000 = histogram_100000_1000000_Updater.getAndSet(this, 0);
+        val.histogram_1000000_more = histogram_1000000_more_Updater.getAndSet(this, 0);
+
+        val.lastSlowParameters = lastSlowParameters;
+        lastSlowParameters = null;
+
+        val.inTransactionCount = inTransactionCountUpdater.getAndSet(this, 0);
+        val.resultSetHoldTimeNano = resultSetHoldTimeNanoUpdater.getAndSet(this, 0);
+        val.executeAndResultSetHoldTime = executeAndResultSetHoldTimeUpdater.getAndSet(this, 0);
+
+        val.fetchRowCount_0_1 = fetchRowCount_0_1_Updater.getAndSet(this, 0);
+        val.fetchRowCount_1_10 = fetchRowCount_1_10_Updater.getAndSet(this, 0);
+        val.fetchRowCount_10_100 = fetchRowCount_10_100_Updater.getAndSet(this, 0);
+        val.fetchRowCount_100_1000 = fetchRowCount_100_1000_Updater.getAndSet(this, 0);
+        val.fetchRowCount_1000_10000 = fetchRowCount_1000_10000_Updater.getAndSet(this, 0);
+        val.fetchRowCount_10000_more = fetchRowCount_10000_more_Updater.getAndSet(this, 0);
+
+        val.updateCount_0_1 = updateCount_0_1_Updater.getAndSet(this, 0);
+        val.updateCount_1_10 = updateCount_1_10_Updater.getAndSet(this, 0);
+        val.updateCount_10_100 = updateCount_10_100_Updater.getAndSet(this, 0);
+        val.updateCount_100_1000 = updateCount_100_1000_Updater.getAndSet(this, 0);
+        val.updateCount_1000_10000 = updateCount_1000_10000_Updater.getAndSet(this, 0);
+        val.updateCount_10000_more = updateCount_10000_more_Updater.getAndSet(this, 0);
+
+        val.executeAndResultHoldTime_0_1 = executeAndResultHoldTime_0_1_Updater.getAndSet(this, 0);
+        val.executeAndResultHoldTime_1_10 = executeAndResultHoldTime_1_10_Updater.getAndSet(this, 0);
+        val.executeAndResultHoldTime_10_100 = executeAndResultHoldTime_10_100_Updater.getAndSet(this, 0);
+        val.executeAndResultHoldTime_100_1000 = executeAndResultHoldTime_100_1000_Updater.getAndSet(this, 0);
+        val.executeAndResultHoldTime_1000_10000 = executeAndResultHoldTime_1000_10000_Updater.getAndSet(this, 0);
+        val.executeAndResultHoldTime_10000_100000 = executeAndResultHoldTime_10000_100000_Updater.getAndSet(this, 0);
+        val.executeAndResultHoldTime_100000_1000000 = executeAndResultHoldTime_100000_1000000_Updater.getAndSet(this, 0);
+        val.executeAndResultHoldTime_1000000_more = executeAndResultHoldTime_1000000_more_Updater.getAndSet(this, 0);
+
+        val.blobOpenCount = blobOpenCountUpdater.getAndSet(this, 0);
+        val.clobOpenCount = clobOpenCountUpdater.getAndSet(this, 0);
+        val.readStringLength = readStringLengthUpdater.getAndSet(this, 0);
+        val.readBytesLength = readBytesLengthUpdater.getAndSet(this, 0);
+        val.inputStreamOpenCount = inputStreamOpenCountUpdater.getAndSet(this, 0);
+        val.readerOpenCount = readerOpenCountUpdater.getAndSet(this, 0);
+
+        return val;
     }
 
     public long getConcurrentMax() {

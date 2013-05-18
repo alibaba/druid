@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Iterator;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
@@ -24,6 +25,7 @@ public class TestOnBorrowFileAndNameTest extends TestCase {
         dataSource.setName("com.alibaba.dragoon.monitor");
         dataSource.setMinIdle(0);
         dataSource.setPoolPreparedStatements(false);
+        dataSource.setTestOnBorrow(true);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
 
