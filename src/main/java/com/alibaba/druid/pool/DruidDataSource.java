@@ -1412,8 +1412,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         value.commitCount = commitCount.getAndSet(0);
         value.rollbackCount = rollbackCount.getAndSet(0);
 
-        value.PSCacheHitCount = cachedPreparedStatementHitCount.getAndSet(0);
-        value.PSCacheMissCount = cachedPreparedStatementMissCount.getAndSet(0);
+        value.pstmtCacheHitCount = cachedPreparedStatementHitCount.getAndSet(0);
+        value.pstmtCacheMissCount = cachedPreparedStatementMissCount.getAndSet(0);
 
         value.startTransactionCount = startTransactionCount.getAndSet(0);
         value.transactionHistogram = this.getTransactionHistogram().toArrayAndReset();

@@ -69,27 +69,82 @@ public class JdbcSqlStatValue {
     public int       histogram_100000_1000000;
     public int       histogram_1000000_more;
 
-    public long      executeAndResultHoldTime_0_1;
-    public long      executeAndResultHoldTime_1_10;
-    public int       executeAndResultHoldTime_10_100;
-    public int       executeAndResultHoldTime_100_1000;
-    public int       executeAndResultHoldTime_1000_10000;
-    public int       executeAndResultHoldTime_10000_100000;
-    public int       executeAndResultHoldTime_100000_1000000;
-    public int       executeAndResultHoldTime_1000000_more;
+    public long[] getExecuteHistogram() {
+        return new long[] { histogram_0_1, //
+                histogram_1_10, //
+                histogram_10_100, //
+                histogram_100_1000, //
+                histogram_1000_10000, //
+                histogram_10000_100000, //
+                histogram_100000_1000000, //
+                histogram_1000000_more, //
+        };
+    }
 
-    public long      fetchRowCount_0_1;
-    public long      fetchRowCount_1_10;
-    public long      fetchRowCount_10_100;
-    public int       fetchRowCount_100_1000;
-    public int       fetchRowCount_1000_10000;
-    public int       fetchRowCount_10000_more;
+    public long executeAndResultHoldTime_0_1;
+    public long executeAndResultHoldTime_1_10;
+    public int  executeAndResultHoldTime_10_100;
+    public int  executeAndResultHoldTime_100_1000;
+    public int  executeAndResultHoldTime_1000_10000;
+    public int  executeAndResultHoldTime_10000_100000;
+    public int  executeAndResultHoldTime_100000_1000000;
+    public int  executeAndResultHoldTime_1000000_more;
 
-    public long      updateCount_0_1;
-    public long      updateCount_1_10;
-    public long      updateCount_10_100;
-    public int       updateCount_100_1000;
-    public int       updateCount_1000_10000;
-    public int       updateCount_10000_more;
+    public long[] getExecuteAndResultHoldHistogram() {
+        return new long[] { executeAndResultHoldTime_0_1, //
+                executeAndResultHoldTime_1_10, //
+                executeAndResultHoldTime_10_100, //
+                executeAndResultHoldTime_100_1000, //
+                executeAndResultHoldTime_1000_10000, //
+                executeAndResultHoldTime_10000_100000, //
+                executeAndResultHoldTime_100000_1000000, //
+                executeAndResultHoldTime_1000000_more, //
+        };
+    }
 
+    public long fetchRowCount_0_1;
+    public long fetchRowCount_1_10;
+    public long fetchRowCount_10_100;
+    public int  fetchRowCount_100_1000;
+    public int  fetchRowCount_1000_10000;
+    public int  fetchRowCount_10000_more;
+
+    public long[] getFetchRowHistogram() {
+        return new long[] { fetchRowCount_0_1, //
+                fetchRowCount_1_10, //
+                fetchRowCount_10_100, //
+                fetchRowCount_100_1000, //
+                fetchRowCount_1000_10000, //
+                fetchRowCount_10000_more, //
+        };
+    }
+
+    public long updateCount_0_1;
+    public long updateCount_1_10;
+    public long updateCount_10_100;
+    public int  updateCount_100_1000;
+    public int  updateCount_1000_10000;
+    public int  updateCount_10000_more;
+
+    public long[] getUpdateHistogram() {
+        return new long[] { updateCount_0_1, //
+                updateCount_1_10, //
+                updateCount_10_100, //
+                updateCount_100_1000, //
+                updateCount_1000_10000, //
+                updateCount_10000_more, //
+        };
+    }
+
+    public long getExecuteCount() {
+        return executeErrorCount + executeSuccessCount;
+    }
+
+    public long getExecuteMillisMax() {
+        return executeSpanNanoMax / (1000 * 1000);
+    }
+    
+    public long getExecuteMillisTotal() {
+        return executeSpanNanoTotal / (1000 * 1000);
+    }
 }

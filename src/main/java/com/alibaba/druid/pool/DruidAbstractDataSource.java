@@ -251,6 +251,25 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.useLocalSessionState = useLocalSessionState;
     }
 
+    public DruidDataSourceStatLogger getStatLogger() {
+        return statLogger;
+    }
+    
+    public void setStatLoggerClassName(String className) {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(className);
+            DruidDataSourceStatLogger statLogger = (DruidDataSourceStatLogger) clazz.newInstance();
+            this.setStatLogger(statLogger);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(className, e);
+        }
+    }
+
+    public void setStatLogger(DruidDataSourceStatLogger statLogger) {
+        this.statLogger = statLogger;
+    }
+
     public long getTimeBetweenLogStatsMillis() {
         return timeBetweenLogStatsMillis;
     }

@@ -15,63 +15,86 @@
  */
 package com.alibaba.druid.pool;
 
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 
 public class DruidDataSourceStatValue {
 
-    public int          activeCount;
-    public int          activePeak;
-    public long         activePeakTime;
+    public String                 name;
+    public String                 dbType;
+    public String                 driverClassName;
+    public String                 url;
+    public String                 userName;
+    public List<String>           filterClassNames;
+    public boolean                removeAbandoned;
 
-    public int          poolingCount;
-    public int          poolingPeak;
-    public long         poolingPeakTime;
+    public int                    initialSize;
+    public int                    minIdle;
+    public int                    maxActive;
+    public int                    queryTimeout;
+    public int                    transactionQueryTimeout;
+    public int                    loginTimeout;
+    public String                 validConnectionCheckerClassName;
+    public String                 exceptionSorterClassName;
+    public boolean                testOnBorrow;
+    public boolean                testOnReturn;
+    public boolean                testWhileIdle;
+    public boolean                defaultAutoCommit;
+    public boolean                defaultReadOnly;
+    public int                    defaultTransactionIsolation;
 
-    public long         connectCount;
-    public long         closeCount;
-    public long         waitThreadCount;
-    public long         notEmptyWaitCount;
-    public long         notEmptyWaitNanos;
+    public int                    activeCount;
+    public int                    activePeak;
+    public long                   activePeakTime;
 
-    public String       name;
-    public String       dbType;
-    public String       driverClassName;
-    public String       url;
-    public String       userName;
-    public List<String> filterClassNames;
+    public int                    poolingCount;
+    public int                    poolingPeak;
+    public long                   poolingPeakTime;
 
-    public int          initialSize;
-    public int          minIdle;
-    public int          maxActive;
-    public int          queryTimeout;
-    public int          transactionQueryTimeout;
-    public int          loginTimeout;
-    public String       validConnectionCheckerClassName;
-    public String       exceptionSorterClassName;
-    public boolean      testOnBorrow;
-    public boolean      testOnReturn;
-    public boolean      testWhileIdle;
-    public boolean      defaultAutoCommit;
-    public boolean      defaultReadOnly;
-    public int          defaultTransactionIsolation;
-    public long         logicConnectErrorCount;
-    public long         physicalConnectCount;
-    public long         physicalCloseCount;
-    public long         physicalConnectErrorCount;
-    public long         executeCount;
-    public long         errorCount;
-    public long         commitCount;
-    public long         rollbackCount;
-    public long         PSCacheHitCount;
-    public long         PSCacheMissCount;
-    public long         startTransactionCount;
-    public long[]       transactionHistogram;
-    public long[]       connectionHoldTimeHistogram;
-    public boolean      removeAbandoned;
-    public long         clobOpenCount;
-    public long         blobOpenCount;
-    
+    public long                   connectCount;
+    public long                   closeCount;
+    public long                   waitThreadCount;
+    public long                   notEmptyWaitCount;
+    public long                   notEmptyWaitNanos;
+
+    public long                   logicConnectErrorCount;
+    public long                   physicalConnectCount;
+    public long                   physicalCloseCount;
+    public long                   physicalConnectErrorCount;
+    public long                   executeCount;
+    public long                   errorCount;
+    public long                   commitCount;
+    public long                   rollbackCount;
+    public long                   pstmtCacheHitCount;
+    public long                   pstmtCacheMissCount;
+    public long                   startTransactionCount;
+    public long[]                 transactionHistogram;
+    public long[]                 connectionHoldTimeHistogram;
+
+    public long                   clobOpenCount;
+    public long                   blobOpenCount;
+
     public List<JdbcSqlStatValue> sqlList;
+
+    public Date getPoolingPeakTime() {
+        if (poolingPeakTime <= 0) {
+            return null;
+        }
+
+        return new Date(poolingPeakTime);
+    }
+
+    public Date getActivePeakTime() {
+        if (activePeakTime <= 0) {
+            return null;
+        }
+
+        return new Date(activePeakTime);
+    }
+
+    public long getNotEmptyWaitMillis() {
+        return notEmptyWaitNanos / (1000 * 1000);
+    }
 }
