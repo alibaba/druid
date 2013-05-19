@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.stat;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -257,7 +258,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     }
 
     public Map<String, JdbcSqlStat> getSqlStatMap() {
-        Map<String, JdbcSqlStat> map = new HashMap<String, JdbcSqlStat>();
+        Map<String, JdbcSqlStat> map = new LinkedHashMap<String, JdbcSqlStat>(sqlStatMap.size());
         lock.readLock().lock();
         try {
             map.putAll(sqlStatMap);
@@ -265,6 +266,34 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
             lock.readLock().unlock();
         }
         return map;
+    }
+    
+    public List<JdbcSqlStatValue> getSqlStatMapAndReset() {
+        List<JdbcSqlStat> stats = new ArrayList<JdbcSqlStat>(sqlStatMap.size());
+        lock.writeLock().lock();
+        try {
+            Iterator<Map.Entry<String, JdbcSqlStat>> iter = sqlStatMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, JdbcSqlStat> entry = iter.next();
+                JdbcSqlStat stat = entry.getValue();
+                if (stat.getExecuteCount() == 0 && stat.getRunningCount() == 0) {
+                    stat.setRemoved(true);
+                    iter.remove();
+                } else {
+                    stats.add(entry.getValue());
+                }
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+        
+        List<JdbcSqlStatValue> values = new ArrayList<JdbcSqlStatValue>(stats.size());
+        for (int i = 0; i < stats.size(); ++i) {
+            JdbcSqlStat stat = stats.get(i);
+            JdbcSqlStatValue value = stat.getValueAndReset();
+            values.add(value);
+        }
+        return values;
     }
 
     public JdbcSqlStat getSqlStat(String sql) {
@@ -346,6 +375,10 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public long getClobOpenCount() {
         return clobOpenCount.get();
     }
+    
+    public long getClobOpenCountAndReset() {
+        return clobOpenCount.getAndSet(0);
+    }
 
     public void incrementClobOpenCount() {
         clobOpenCount.incrementAndGet();
@@ -353,6 +386,10 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     public long getBlobOpenCount() {
         return blobOpenCount.get();
+    }
+    
+    public long getBlobOpenCountAndReset() {
+        return blobOpenCount.getAndSet(0);
     }
 
     public void incrementBlobOpenCount() {

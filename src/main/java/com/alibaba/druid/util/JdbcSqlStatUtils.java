@@ -16,6 +16,7 @@
 package com.alibaba.druid.util;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 
 import com.alibaba.druid.stat.JdbcSqlStat;
@@ -40,5 +41,20 @@ public class JdbcSqlStatUtils {
             LOG.error("getData error", e);
             return null;
         }
+    }
+    
+    public static long[] rtrim(long[] array) {
+        int notZeroLen = array.length;
+        for (int i = array.length - 1; i >= 0; --i, notZeroLen--) {
+            if (array[i] != 0) {
+                break;
+            }
+        }
+        
+        if (notZeroLen != array.length) {
+            array = Arrays.copyOf(array, notZeroLen);
+        }
+        
+        return array;
     }
 }

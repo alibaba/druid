@@ -72,4 +72,10 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     void clearStatementCache() throws SQLException;
     
     long getDiscardCount();
+    
+    void setStatLoggerClassName(String className);
+    
+    long getTimeBetweenLogStatsMillis();
+    
+    void setTimeBetweenLogStatsMillis(long timeBetweenLogStatsMillis);
 }
