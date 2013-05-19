@@ -77,6 +77,15 @@ public class Histogram {
         return array;
     }
 
+    public long[] toArrayAndReset() {
+        long[] array = new long[rangeCounters.length()];
+        for (int i = 0; i < rangeCounters.length(); i++) {
+            array[i] = rangeCounters.getAndSet(i, 0);
+        }
+
+        return array;
+    }
+
     public long[] getRanges() {
         return ranges;
     }

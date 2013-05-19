@@ -210,7 +210,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private ObjectName                                 objectName;
 
-    private final AtomicLong                           executeCount                              = new AtomicLong();
+    protected final AtomicLong                         executeCount                              = new AtomicLong();
 
     protected volatile Throwable                       createError;
     protected volatile Throwable                       lastError;
@@ -231,7 +231,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private Boolean                                    useUnfairLock                             = null;
 
-    private boolean                                    useLocalSessionState                       = true;
+    private boolean                                    useLocalSessionState                      = true;
+
+    protected long                                     timeBetweenLogStatsMillis;
+    protected DruidDataSourceStatLogger                statLogger                                = new DruidDataSourceStatLoggerImpl();
 
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
@@ -239,13 +242,40 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
     }
-    
+
     public boolean isUseLocalSessionState() {
         return useLocalSessionState;
     }
-    
+
     public void setUseLocalSessionState(boolean useLocalSessionState) {
         this.useLocalSessionState = useLocalSessionState;
+    }
+
+    public DruidDataSourceStatLogger getStatLogger() {
+        return statLogger;
+    }
+    
+    public void setStatLoggerClassName(String className) {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(className);
+            DruidDataSourceStatLogger statLogger = (DruidDataSourceStatLogger) clazz.newInstance();
+            this.setStatLogger(statLogger);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(className, e);
+        }
+    }
+
+    public void setStatLogger(DruidDataSourceStatLogger statLogger) {
+        this.statLogger = statLogger;
+    }
+
+    public long getTimeBetweenLogStatsMillis() {
+        return timeBetweenLogStatsMillis;
+    }
+
+    public void setTimeBetweenLogStatsMillis(long timeBetweenLogStatsMillis) {
+        this.timeBetweenLogStatsMillis = timeBetweenLogStatsMillis;
     }
 
     public boolean isOracle() {
