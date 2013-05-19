@@ -43,7 +43,7 @@ public class DruidDataSourceStatValue {
     public boolean                testWhileIdle;
     public boolean                defaultAutoCommit;
     public boolean                defaultReadOnly;
-    public int                    defaultTransactionIsolation;
+    public Integer                defaultTransactionIsolation;
 
     public int                    activeCount;
     public int                    activePeak;

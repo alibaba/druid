@@ -382,6 +382,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public JdbcSqlStatValue getValueAndReset() {
         JdbcSqlStatValue val = new JdbcSqlStatValue();
 
+        val.sql = sql;
         val.executeLastStartTime = executeLastStartTime;
         executeLastStartTime = 0;
 

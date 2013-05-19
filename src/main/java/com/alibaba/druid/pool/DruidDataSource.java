@@ -82,6 +82,7 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.wall.WallFilter;
 
+;
 /**
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
@@ -176,14 +177,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         {
             String property = System.getProperty("druid.filters");
 
-            if (property == null || property.length() == 0) {
-                return;
+            if (property != null && property.length() > 0) {
+                try {
+                    this.setFilters(property);
+                } catch (SQLException e) {
+                    LOG.error("setFilters error", e);
+                }
             }
-
-            try {
-                this.setFilters(property);
-            } catch (SQLException e) {
-                LOG.error("setFilters error", e);
+        }
+        {
+            String property = System.getProperty("druid.timeBetweenLogStatsMillis");
+            if (property != null && property.length() > 0) {
+                try {
+                    long value = Long.parseLong(property);
+                    this.setTimeBetweenLogStatsMillis(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'timeBetweenLogStatsMillis'", e);
+                }
             }
         }
     }
@@ -1336,9 +1346,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (statLogger == null) {
             return;
         }
-        
+
         DruidDataSourceStatValue statValue = getStatValueAndReset();
-        
+
         statLogger.log(statValue);
     }
 

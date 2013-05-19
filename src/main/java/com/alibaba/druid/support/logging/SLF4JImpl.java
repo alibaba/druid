@@ -66,6 +66,7 @@ public class SLF4JImpl implements Log {
 	@Override
 	public void info(String msg) {
 		infoCount++;
+		log.log(null, callerFQCN, LocationAwareLogger.INFO_INT, msg, null, null);
 	}
 	
 	@Override
