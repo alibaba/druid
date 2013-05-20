@@ -109,7 +109,7 @@ public class DruidDataSourceStatLoggerImpl implements DruidDataSourceStatLogger 
             if (statValue.sqlList.size() > 0) {
                 for (JdbcSqlStatValue sqlStat : statValue.sqlList) {
                     Map<String, Object> sqlStatMap = new LinkedHashMap<String, Object>();
-                    sqlStatMap.put("sql", sqlStat.sql);
+                    sqlStatMap.put("sql", sqlStat.getSql());
 
                     if (sqlStat.getExecuteCount() > 0) {
                         sqlStatMap.put("executeCount", sqlStat.getExecuteCount());
@@ -121,36 +121,43 @@ public class DruidDataSourceStatLoggerImpl implements DruidDataSourceStatLogger 
                                        rtrim(sqlStat.getExecuteAndResultHoldHistogram()));
                     }
 
-                    if (sqlStat.executeErrorCount > 0) {
-                        sqlStatMap.put("executeErrorCount", sqlStat.executeErrorCount);
+                    long executeErrorCount = sqlStat.getExecuteErrorCount();
+                    if (executeErrorCount > 0) {
+                        sqlStatMap.put("executeErrorCount", executeErrorCount);
                     }
-                    if (sqlStat.runningCount > 0) {
-                        sqlStatMap.put("runningCount", sqlStat.runningCount);
-                    }
-                    sqlStatMap.put("concurrentMax", sqlStat.concurrentMax);
 
-                    if (sqlStat.fetchRowCount > 0) {
-                        sqlStatMap.put("fetchRowCount", sqlStat.fetchRowCount);
-                        sqlStatMap.put("fetchRowCount", sqlStat.fetchRowCountMax);
+                    int runningCount = sqlStat.getRunningCount();
+                    if (runningCount > 0) {
+                        sqlStatMap.put("runningCount", runningCount);
+                    }
+
+                    int concurrentMax = sqlStat.getConcurrentMax();
+                    if (concurrentMax > 0) {
+                        sqlStatMap.put("concurrentMax", concurrentMax);
+                    }
+
+                    if (sqlStat.getFetchRowCount() > 0) {
+                        sqlStatMap.put("fetchRowCount", sqlStat.getFetchRowCount());
+                        sqlStatMap.put("fetchRowCount", sqlStat.getFetchRowCountMax());
                         sqlStatMap.put("fetchRowHistogram", rtrim(sqlStat.getFetchRowHistogram()));
                     }
 
-                    if (sqlStat.updateCount > 0) {
-                        sqlStatMap.put("updateCount", sqlStat.updateCount);
-                        sqlStatMap.put("updateCountMax", sqlStat.updateCountMax);
+                    if (sqlStat.getUpdateCount() > 0) {
+                        sqlStatMap.put("updateCount", sqlStat.getUpdateCount());
+                        sqlStatMap.put("updateCountMax", sqlStat.getUpdateCountMax());
                         sqlStatMap.put("updateHistogram", rtrim(sqlStat.getUpdateHistogram()));
                     }
 
-                    if (sqlStat.inTransactionCount > 0) {
-                        sqlStatMap.put("inTransactionCount", sqlStat.inTransactionCount);
+                    if (sqlStat.getInTransactionCount() > 0) {
+                        sqlStatMap.put("inTransactionCount", sqlStat.getInTransactionCount());
                     }
 
-                    if (sqlStat.clobOpenCount > 0) {
-                        sqlStatMap.put("clobOpenCount", sqlStat.clobOpenCount);
+                    if (sqlStat.getClobOpenCount() > 0) {
+                        sqlStatMap.put("clobOpenCount", sqlStat.getClobOpenCount());
                     }
 
-                    if (sqlStat.blobOpenCount > 0) {
-                        sqlStatMap.put("blobOpenCount", sqlStat.blobOpenCount);
+                    if (sqlStat.getBlobOpenCount() > 0) {
+                        sqlStatMap.put("blobOpenCount", sqlStat.getBlobOpenCount());
                     }
 
                     sqlList.add(sqlStatMap);
