@@ -36,78 +36,78 @@ public class DruidDataSourceStatLoggerImpl implements DruidDataSourceStatLogger 
             Map<String, Object> map = new LinkedHashMap<String, Object>();
 
             map.put("url", statValue.url);
-            map.put("dbType", statValue.dbType);
-            map.put("name", statValue.name);
-            map.put("activeCount", statValue.activeCount);
+            map.put("dbType", statValue.getDbType());
+            map.put("name", statValue.getName());
+            map.put("activeCount", statValue.getActiveCount());
 
             if (statValue.activePeak > 0) {
-                map.put("activePeak", statValue.activePeak);
+                map.put("activePeak", statValue.getActivePeak());
                 map.put("activePeakTime", statValue.getActivePeakTime());
             }
-            map.put("poolingCount", statValue.poolingCount);
-            if (statValue.poolingPeak > 0) {
-                map.put("poolingPeak", statValue.poolingPeak);
+            map.put("poolingCount", statValue.getPoolingCount());
+            if (statValue.getPoolingPeak() > 0) {
+                map.put("poolingPeak", statValue.getPoolingPeak());
                 map.put("poolingPeakTime", statValue.getPoolingPeakTime());
             }
-            map.put("connectCount", statValue.connectCount);
-            map.put("closeCount", statValue.closeCount);
+            map.put("connectCount", statValue.getConnectCount());
+            map.put("closeCount", statValue.getCloseCount());
 
-            if (statValue.waitThreadCount > 0) {
-                map.put("waitThreadCount", statValue.waitThreadCount);
+            if (statValue.getWaitThreadCount() > 0) {
+                map.put("waitThreadCount", statValue.getWaitThreadCount());
             }
-            if (statValue.notEmptyWaitCount > 0) {
-                map.put("notEmptyWaitCount", statValue.notEmptyWaitCount);
+            if (statValue.getNotEmptyWaitCount() > 0) {
+                map.put("notEmptyWaitCount", statValue.getNotEmptyWaitCount());
             }
             if (statValue.getNotEmptyWaitMillis() > 0) {
                 map.put("notEmptyWaitMillis", statValue.getNotEmptyWaitMillis());
             }
-            if (statValue.logicConnectErrorCount > 0) {
-                map.put("logicConnectErrorCount", statValue.logicConnectErrorCount);
+            if (statValue.getLogicConnectErrorCount() > 0) {
+                map.put("logicConnectErrorCount", statValue.getLogicConnectErrorCount());
             }
-            if (statValue.physicalConnectCount > 0) {
-                map.put("physicalConnectCount", statValue.physicalConnectCount);
+            if (statValue.getPhysicalConnectCount() > 0) {
+                map.put("physicalConnectCount", statValue.getPhysicalConnectCount());
             }
-            if (statValue.physicalCloseCount > 0) {
-                map.put("physicalCloseCount", statValue.physicalCloseCount);
+            if (statValue.getPhysicalCloseCount() > 0) {
+                map.put("physicalCloseCount", statValue.getPhysicalCloseCount());
             }
-            if (statValue.physicalConnectErrorCount > 0) {
-                map.put("physicalConnectErrorCount", statValue.physicalConnectErrorCount);
+            if (statValue.getPhysicalConnectErrorCount() > 0) {
+                map.put("physicalConnectErrorCount", statValue.getPhysicalConnectErrorCount());
             }
-            if (statValue.executeCount > 0) {
-                map.put("executeCount", statValue.executeCount);
+            if (statValue.getExecuteCount() > 0) {
+                map.put("executeCount", statValue.getExecuteCount());
             }
-            if (statValue.errorCount > 0) {
-                map.put("errorCount", statValue.errorCount);
+            if (statValue.getErrorCount() > 0) {
+                map.put("errorCount", statValue.getErrorCount());
             }
-            if (statValue.commitCount > 0) {
-                map.put("commitCount", statValue.commitCount);
+            if (statValue.getCommitCount() > 0) {
+                map.put("commitCount", statValue.getCommitCount());
             }
-            if (statValue.rollbackCount > 0) {
-                map.put("rollbackCount", statValue.rollbackCount);
+            if (statValue.getRollbackCount() > 0) {
+                map.put("rollbackCount", statValue.getRollbackCount());
             }
-            if (statValue.pstmtCacheHitCount > 0) {
-                map.put("pstmtCacheHitCount", statValue.pstmtCacheHitCount);
+            if (statValue.getPstmtCacheHitCount() > 0) {
+                map.put("pstmtCacheHitCount", statValue.getPstmtCacheHitCount());
             }
-            if (statValue.pstmtCacheMissCount > 0) {
-                map.put("pstmtCacheMissCount", statValue.pstmtCacheMissCount);
+            if (statValue.getPstmtCacheMissCount() > 0) {
+                map.put("pstmtCacheMissCount", statValue.getPstmtCacheMissCount());
             }
-            if (statValue.startTransactionCount > 0) {
-                map.put("startTransactionCount", statValue.startTransactionCount);
-                map.put("transactionHistogram", rtrim(statValue.transactionHistogram));
+            if (statValue.getStartTransactionCount() > 0) {
+                map.put("startTransactionCount", statValue.getStartTransactionCount());
+                map.put("transactionHistogram", rtrim(statValue.getTransactionHistogram()));
             }
-            if (statValue.connectCount > 0) {
-                map.put("connectionHoldTimeHistogram", rtrim(statValue.connectionHoldTimeHistogram));
+            if (statValue.getConnectCount() > 0) {
+                map.put("connectionHoldTimeHistogram", rtrim(statValue.getConnectionHoldTimeHistogram()));
             }
-            if (statValue.clobOpenCount > 0) {
-                map.put("clobOpenCount", statValue.clobOpenCount);
+            if (statValue.getClobOpenCount() > 0) {
+                map.put("clobOpenCount", statValue.getClobOpenCount());
             }
-            if (statValue.blobOpenCount > 0) {
-                map.put("blobOpenCount", statValue.blobOpenCount);
+            if (statValue.getBlobOpenCount() > 0) {
+                map.put("blobOpenCount", statValue.getBlobOpenCount());
             }
 
             ArrayList<Map<String, Object>> sqlList = new ArrayList<Map<String, Object>>();
             if (statValue.sqlList.size() > 0) {
-                for (JdbcSqlStatValue sqlStat : statValue.sqlList) {
+                for (JdbcSqlStatValue sqlStat : statValue.getSqlList()) {
                     Map<String, Object> sqlStatMap = new LinkedHashMap<String, Object>();
                     sqlStatMap.put("sql", sqlStat.getSql());
 
