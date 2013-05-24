@@ -139,7 +139,7 @@ public class SQLEvalVisitorUtils {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlEvalVisitorImpl();
         }
-        
+
         if (JdbcUtils.MARIADB.equals(dbType)) {
             return new MySqlEvalVisitorImpl();
         }
@@ -1364,19 +1364,23 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Long || b instanceof Long) {
-            return castToLong(a) == castToLong(b);
+            return castToLong(a).equals(castToLong(b));
         }
 
         if (a instanceof Integer || b instanceof Integer) {
-            return castToInteger(a) == castToInteger(b);
+            return castToInteger(a).equals(castToInteger(b));
         }
 
         if (a instanceof Short || b instanceof Short) {
-            return castToShort(a) == castToShort(b);
+            return castToShort(a).equals(castToShort(b));
+        }
+
+        if (a instanceof Boolean || b instanceof Boolean) {
+            return castToBoolean(a).equals(castToBoolean(b));
         }
 
         if (a instanceof Byte || b instanceof Byte) {
-            return castToByte(a) == castToByte(b);
+            return castToByte(a).equals(castToByte(b));
         }
 
         if (a instanceof Date || b instanceof Date) {
@@ -1434,6 +1438,13 @@ public class SQLEvalVisitorUtils {
             return castToShort(a) + castToShort(b);
         }
 
+        if (a instanceof Boolean || b instanceof Boolean) {
+            int aI = 0, bI = 0;
+            if (castToBoolean(a)) aI = 1;
+            if (castToBoolean(b)) bI = 1;
+            return aI + bI;
+        }
+
         if (a instanceof Byte || b instanceof Byte) {
             return castToByte(a) + castToByte(b);
         }
@@ -1486,6 +1497,13 @@ public class SQLEvalVisitorUtils {
             return castToShort(a) - castToShort(b);
         }
 
+        if (a instanceof Boolean || b instanceof Boolean) {
+            int aI = 0, bI = 0;
+            if (castToBoolean(a)) aI = 1;
+            if (castToBoolean(b)) bI = 1;
+            return aI - bI;
+        }
+
         if (a instanceof Byte || b instanceof Byte) {
             return castToByte(a) - castToByte(b);
         }
@@ -1494,7 +1512,8 @@ public class SQLEvalVisitorUtils {
             return castToLong(a) - castToLong(b);
         }
 
-        return SQLEvalVisitor.EVAL_ERROR;
+        // return SQLEvalVisitor.EVAL_ERROR;
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static Object multi(Object a, Object b) {
