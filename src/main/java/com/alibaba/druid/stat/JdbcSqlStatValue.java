@@ -17,57 +17,57 @@ package com.alibaba.druid.stat;
 
 public class JdbcSqlStatValue {
 
-    public String    sql;
-    public long      id;
-    public String    dataSource;
-    public long      executeLastStartTime;
+    protected String    sql;
+    protected long      id;
+    protected String    dataSource;
+    protected long      executeLastStartTime;
 
-    public long      executeBatchSizeTotal;
-    public int       executeBatchSizeMax;
+    protected long      executeBatchSizeTotal;
+    protected int       executeBatchSizeMax;
 
-    public long      executeSuccessCount;
-    public long      executeSpanNanoTotal;
-    public long      executeSpanNanoMax;
-    public int       runningCount;
-    public int       concurrentMax;
-    public long      resultSetHoldTimeNano;
-    public long      executeAndResultSetHoldTime;
+    protected long      executeSuccessCount;
+    protected long      executeSpanNanoTotal;
+    protected long      executeSpanNanoMax;
+    protected int       runningCount;
+    protected int       concurrentMax;
+    protected long      resultSetHoldTimeNano;
+    protected long      executeAndResultSetHoldTime;
 
-    public String    name;
-    public String    file;
-    public String    dbType;
+    protected String    name;
+    protected String    file;
+    protected String    dbType;
 
-    public long      executeNanoSpanMaxOccurTime;
+    protected long      executeNanoSpanMaxOccurTime;
 
-    public long      executeErrorCount;
-    public Throwable executeErrorLast;
-    public long      executeErrorLastTime;
+    protected long      executeErrorCount;
+    protected Throwable executeErrorLast;
+    protected long      executeErrorLastTime;
 
-    public long      updateCount;
-    public long      updateCountMax;
-    public long      fetchRowCount;
-    public long      fetchRowCountMax;
+    protected long      updateCount;
+    protected long      updateCountMax;
+    protected long      fetchRowCount;
+    protected long      fetchRowCountMax;
 
-    public long      inTransactionCount;
+    protected long      inTransactionCount;
 
-    public String    lastSlowParameters;
+    protected String    lastSlowParameters;
 
-    public long      clobOpenCount;
-    public long      blobOpenCount;
-    public long      readStringLength;
-    public long      readBytesLength;
+    protected long      clobOpenCount;
+    protected long      blobOpenCount;
+    protected long      readStringLength;
+    protected long      readBytesLength;
 
-    public long      inputStreamOpenCount;
-    public long      readerOpenCount;
+    protected long      inputStreamOpenCount;
+    protected long      readerOpenCount;
 
-    public long      histogram_0_1;
-    public long      histogram_1_10;
-    public int       histogram_10_100;
-    public int       histogram_100_1000;
-    public int       histogram_1000_10000;
-    public int       histogram_10000_100000;
-    public int       histogram_100000_1000000;
-    public int       histogram_1000000_more;
+    protected long      histogram_0_1;
+    protected long      histogram_1_10;
+    protected int       histogram_10_100;
+    protected int       histogram_100_1000;
+    protected int       histogram_1000_10000;
+    protected int       histogram_10000_100000;
+    protected int       histogram_100000_1000000;
+    protected int       histogram_1000000_more;
 
     public long[] getExecuteHistogram() {
         return new long[] { histogram_0_1, //
@@ -143,8 +143,265 @@ public class JdbcSqlStatValue {
     public long getExecuteMillisMax() {
         return executeSpanNanoMax / (1000 * 1000);
     }
-    
+
     public long getExecuteMillisTotal() {
         return executeSpanNanoTotal / (1000 * 1000);
     }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public long getExecuteLastStartTime() {
+        return executeLastStartTime;
+    }
+
+    public void setExecuteLastStartTime(long executeLastStartTime) {
+        this.executeLastStartTime = executeLastStartTime;
+    }
+
+    public long getExecuteBatchSizeTotal() {
+        return executeBatchSizeTotal;
+    }
+
+    public void setExecuteBatchSizeTotal(long executeBatchSizeTotal) {
+        this.executeBatchSizeTotal = executeBatchSizeTotal;
+    }
+
+    public int getExecuteBatchSizeMax() {
+        return executeBatchSizeMax;
+    }
+
+    public void setExecuteBatchSizeMax(int executeBatchSizeMax) {
+        this.executeBatchSizeMax = executeBatchSizeMax;
+    }
+
+    public long getExecuteSuccessCount() {
+        return executeSuccessCount;
+    }
+
+    public void setExecuteSuccessCount(long executeSuccessCount) {
+        this.executeSuccessCount = executeSuccessCount;
+    }
+
+    public long getExecuteSpanNanoTotal() {
+        return executeSpanNanoTotal;
+    }
+
+    public void setExecuteSpanNanoTotal(long executeSpanNanoTotal) {
+        this.executeSpanNanoTotal = executeSpanNanoTotal;
+    }
+
+    public long getExecuteSpanNanoMax() {
+        return executeSpanNanoMax;
+    }
+
+    public void setExecuteSpanNanoMax(long executeSpanNanoMax) {
+        this.executeSpanNanoMax = executeSpanNanoMax;
+    }
+
+    public int getRunningCount() {
+        return runningCount;
+    }
+
+    public void setRunningCount(int runningCount) {
+        this.runningCount = runningCount;
+    }
+
+    public int getConcurrentMax() {
+        return concurrentMax;
+    }
+
+    public void setConcurrentMax(int concurrentMax) {
+        this.concurrentMax = concurrentMax;
+    }
+
+    public long getResultSetHoldTimeNano() {
+        return resultSetHoldTimeNano;
+    }
+
+    public void setResultSetHoldTimeNano(long resultSetHoldTimeNano) {
+        this.resultSetHoldTimeNano = resultSetHoldTimeNano;
+    }
+
+    public long getExecuteAndResultSetHoldTime() {
+        return executeAndResultSetHoldTime;
+    }
+
+    public void setExecuteAndResultSetHoldTime(long executeAndResultSetHoldTime) {
+        this.executeAndResultSetHoldTime = executeAndResultSetHoldTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public long getExecuteNanoSpanMaxOccurTime() {
+        return executeNanoSpanMaxOccurTime;
+    }
+
+    public void setExecuteNanoSpanMaxOccurTime(long executeNanoSpanMaxOccurTime) {
+        this.executeNanoSpanMaxOccurTime = executeNanoSpanMaxOccurTime;
+    }
+
+    public long getExecuteErrorCount() {
+        return executeErrorCount;
+    }
+
+    public void setExecuteErrorCount(long executeErrorCount) {
+        this.executeErrorCount = executeErrorCount;
+    }
+
+    public Throwable getExecuteErrorLast() {
+        return executeErrorLast;
+    }
+
+    public void setExecuteErrorLast(Throwable executeErrorLast) {
+        this.executeErrorLast = executeErrorLast;
+    }
+
+    public long getExecuteErrorLastTime() {
+        return executeErrorLastTime;
+    }
+
+    public void setExecuteErrorLastTime(long executeErrorLastTime) {
+        this.executeErrorLastTime = executeErrorLastTime;
+    }
+
+    public long getUpdateCount() {
+        return updateCount;
+    }
+
+    public void setUpdateCount(long updateCount) {
+        this.updateCount = updateCount;
+    }
+
+    public long getUpdateCountMax() {
+        return updateCountMax;
+    }
+
+    public void setUpdateCountMax(long updateCountMax) {
+        this.updateCountMax = updateCountMax;
+    }
+
+    public long getFetchRowCount() {
+        return fetchRowCount;
+    }
+
+    public void setFetchRowCount(long fetchRowCount) {
+        this.fetchRowCount = fetchRowCount;
+    }
+
+    public long getFetchRowCountMax() {
+        return fetchRowCountMax;
+    }
+
+    public void setFetchRowCountMax(long fetchRowCountMax) {
+        this.fetchRowCountMax = fetchRowCountMax;
+    }
+
+    public long getInTransactionCount() {
+        return inTransactionCount;
+    }
+
+    public void setInTransactionCount(long inTransactionCount) {
+        this.inTransactionCount = inTransactionCount;
+    }
+
+    public String getLastSlowParameters() {
+        return lastSlowParameters;
+    }
+
+    public void setLastSlowParameters(String lastSlowParameters) {
+        this.lastSlowParameters = lastSlowParameters;
+    }
+
+    public long getClobOpenCount() {
+        return clobOpenCount;
+    }
+
+    public void setClobOpenCount(long clobOpenCount) {
+        this.clobOpenCount = clobOpenCount;
+    }
+
+    public long getBlobOpenCount() {
+        return blobOpenCount;
+    }
+
+    public void setBlobOpenCount(long blobOpenCount) {
+        this.blobOpenCount = blobOpenCount;
+    }
+
+    public long getReadStringLength() {
+        return readStringLength;
+    }
+
+    public void setReadStringLength(long readStringLength) {
+        this.readStringLength = readStringLength;
+    }
+
+    public long getReadBytesLength() {
+        return readBytesLength;
+    }
+
+    public void setReadBytesLength(long readBytesLength) {
+        this.readBytesLength = readBytesLength;
+    }
+
+    public long getInputStreamOpenCount() {
+        return inputStreamOpenCount;
+    }
+
+    public void setInputStreamOpenCount(long inputStreamOpenCount) {
+        this.inputStreamOpenCount = inputStreamOpenCount;
+    }
+
+    public long getReaderOpenCount() {
+        return readerOpenCount;
+    }
+
+    public void setReaderOpenCount(long readerOpenCount) {
+        this.readerOpenCount = readerOpenCount;
+    }
+
 }
