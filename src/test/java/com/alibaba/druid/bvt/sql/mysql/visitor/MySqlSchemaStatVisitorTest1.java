@@ -17,8 +17,9 @@ package com.alibaba.druid.bvt.sql.mysql.visitor;
 
 import java.util.List;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -80,6 +81,14 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
         Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
         Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "id")));
         Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "name")));
+
+        Assert.assertTrue(visitor.getColumn("users", "name").isSelect());
+        Assert.assertTrue(visitor.getColumn("usergroups", "name").isSelect());
+        
+        Assert.assertTrue(visitor.getColumn("users", "groupId").isJoin());
+        Assert.assertTrue(visitor.getColumn("usergroups", "id").isJoin());
+        
+        Assert.assertTrue(visitor.getColumn("users", "groupId").isWhere());
 
     }
 }
