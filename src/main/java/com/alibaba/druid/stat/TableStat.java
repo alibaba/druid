@@ -366,6 +366,11 @@ public class TableStat {
 
         private String              table;
         private String              name;
+        private boolean             where;
+        private boolean             select;
+        private boolean             groupBy;
+        private boolean             having;
+        private boolean             join;
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -384,6 +389,46 @@ public class TableStat {
 
         public void setTable(String table) {
             this.table = table;
+        }
+
+        public boolean isWhere() {
+            return where;
+        }
+
+        public void setWhere(boolean where) {
+            this.where = where;
+        }
+
+        public boolean isSelect() {
+            return select;
+        }
+
+        public void setSelec(boolean select) {
+            this.select = select;
+        }
+
+        public boolean isGroupBy() {
+            return groupBy;
+        }
+
+        public void setGroupBy(boolean groupBy) {
+            this.groupBy = groupBy;
+        }
+
+        public boolean isHaving() {
+            return having;
+        }
+
+        public boolean isJoin() {
+            return join;
+        }
+
+        public void setJoin(boolean join) {
+            this.join = join;
+        }
+
+        public void setHaving(boolean having) {
+            this.having = having;
         }
 
         public String getName() {
