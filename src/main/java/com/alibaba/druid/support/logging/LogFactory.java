@@ -39,7 +39,6 @@ public class LogFactory {
                 throw new IllegalStateException(e.getMessage(), e);
             }
         }
-        tryImplementation("java.lang.Object", "com.alibaba.druid.support.logging.NoLoggingImpl");
     }
 
     @SuppressWarnings("unchecked")
