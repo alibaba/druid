@@ -90,7 +90,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         lastExecuteType = StatementExecuteType.Execute;
         lastExecuteStartNano = -1L;
         lastExecuteTimeNano = -1L;
-        
+
         firstResultSet = createChain().preparedStatement_execute(this);
         return firstResultSet;
     }
@@ -98,26 +98,26 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     @Override
     public ResultSet executeQuery() throws SQLException {
         firstResultSet = true;
-        
+
         updateCount = null;
         lastExecuteSql = sql;
         lastExecuteType = StatementExecuteType.ExecuteQuery;
         lastExecuteStartNano = -1L;
         lastExecuteTimeNano = -1L;
-        
+
         return createChain().preparedStatement_executeQuery(this);
     }
 
     @Override
     public int executeUpdate() throws SQLException {
         firstResultSet = false;
-        
+
         updateCount = null;
         lastExecuteSql = sql;
         lastExecuteType = StatementExecuteType.ExecuteUpdate;
         lastExecuteStartNano = -1L;
         lastExecuteTimeNano = -1L;
-        
+
         updateCount = createChain().preparedStatement_executeUpdate(this);
         return updateCount;
     }
@@ -369,9 +369,109 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setObject(int parameterIndex, Object x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameter(Types.OTHER, null));
+        setObjectParameter(parameterIndex, x);
 
         createChain().preparedStatement_setObject(this, parameterIndex, x);
+    }
+
+    private void setObjectParameter(int parameterIndex, Object x) {
+        if (x == null) {
+            setParameter(parameterIndex, new JdbcParameter(Types.OTHER, null));
+            return;
+        }
+
+        Class<?> clazz = x.getClass();
+        if (clazz == Byte.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.TINYINT, x));
+            return;
+        }
+
+        if (clazz == Short.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.SMALLINT, x));
+            return;
+        }
+
+        if (clazz == Integer.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.INTEGER, x));
+            return;
+        }
+
+        if (clazz == Long.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.BIGINT, x));
+            return;
+        }
+
+        if (clazz == String.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.VARCHAR, x));
+            return;
+        }
+        
+        if (clazz == BigDecimal.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.DECIMAL, x));
+            return;
+        }
+        
+        if (clazz == Float.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.FLOAT, x));
+            return;
+        }
+        
+        if (clazz == Double.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.DOUBLE, x));
+            return;
+        }
+        
+        if (clazz == java.sql.Date.class || clazz == java.util.Date.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.DATE, x));
+            return;
+        }
+        
+        if (clazz == java.sql.Timestamp.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.TIMESTAMP, x));
+            return;
+        }
+        
+        if (clazz == java.sql.Time.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.TIME, x));
+            return;
+        }
+        
+        if (clazz == Boolean.class) {
+            setParameter(parameterIndex, new JdbcParameter(Types.BOOLEAN, x));
+            return;
+        }
+        
+        if (clazz == byte[].class) {
+            setParameter(parameterIndex, new JdbcParameter(TYPE.BYTES, x));
+            return;
+        }
+        
+        if (x instanceof InputStream) {
+            setParameter(parameterIndex, new JdbcParameter(JdbcParameter.TYPE.BinaryInputStream, x));
+            return;
+        }
+        
+        if (x instanceof Reader) {
+            setParameter(parameterIndex, new JdbcParameter(JdbcParameter.TYPE.CharacterInputStream, x));
+            return;
+        }
+        
+        if (x instanceof Clob) {
+            setParameter(parameterIndex, new JdbcParameter(Types.CLOB, x));
+            return;
+        }
+        
+        if (x instanceof NClob) {
+            setParameter(parameterIndex, new JdbcParameter(Types.NCLOB, x));
+            return;
+        }
+        
+        if (x instanceof Blob) {
+            setParameter(parameterIndex, new JdbcParameter(Types.BLOB, x));
+            return;
+        }
+        
+        setParameter(parameterIndex, new JdbcParameter(Types.OTHER, null));
     }
 
     @Override

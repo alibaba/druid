@@ -224,6 +224,7 @@ public class SQLExprParser extends SQLParser {
             case SCHEMA:
             case COLUMN:
             case IF:
+            case END:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
