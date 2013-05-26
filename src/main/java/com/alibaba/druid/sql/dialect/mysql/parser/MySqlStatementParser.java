@@ -2177,7 +2177,9 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setName(this.exprParser.name());
 
             for (;;) {
-                if (identifierEquals("ADD")) {
+                if (lexer.token() == Token.DROP) {
+                    parseAlterDrop(stmt);
+                } else if (identifierEquals("ADD")) {
                     lexer.nextToken();
 
                     if (identifierEquals("COLUMN")) {
