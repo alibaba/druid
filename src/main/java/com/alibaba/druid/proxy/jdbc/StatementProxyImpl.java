@@ -549,4 +549,21 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     public boolean isFirstResultSet() {
         return firstResultSet;
     }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == StatementProxy.class) {
+            return (T) this;
+        }
+        
+        return super.unwrap(iface);
+    }
+    
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        if (iface == StatementProxy.class) {
+            return true;
+        }
+        
+        return super.isWrapperFor(iface);
+    }
 }

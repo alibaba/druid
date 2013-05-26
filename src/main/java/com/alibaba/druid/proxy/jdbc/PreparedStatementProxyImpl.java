@@ -573,4 +573,21 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     public String getLastExecuteSql() {
         return this.sql;
     }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == PreparedStatementProxy.class) {
+            return (T) this;
+        }
+        
+        return super.unwrap(iface);
+    }
+    
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        if (iface == PreparedStatementProxy.class) {
+            return true;
+        }
+        
+        return super.isWrapperFor(iface);
+    }
 }
