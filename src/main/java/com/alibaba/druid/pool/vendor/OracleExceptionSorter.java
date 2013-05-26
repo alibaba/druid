@@ -113,9 +113,11 @@ public class OracleExceptionSorter implements ExceptionSorter, Serializable {
             case 17024: // No data read
             case 17089: // internal error
             case 17409: // invalid buffer length
-            case 17401: //
+            case 17401: // Protocol violation
             case 17410: // No more data to read from socket
             case 17416: // FATAl
+            case 17438: // Internal - Unexpected value
+            case 17442: // Refcursor value is invalid
 
             case 25407: // connection terminated
             case 25408: // can not safely replay call
