@@ -30,7 +30,9 @@ import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLConstaint;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
@@ -921,7 +923,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 }
                 continue;
             } else if (lexer.token() == Token.DROP) {
-                parseAlterTableDrop(stmt);
+                parseAlterDrop(stmt);
                 continue;
             } else if (identifierEquals("DISABLE")) {
                 lexer.nextToken();
@@ -996,9 +998,14 @@ public class OracleStatementParser extends SQLStatementParser {
         return item;
     }
 
-    private void parseAlterTableDrop(OracleAlterTableStatement stmt) {
+    public void parseAlterDrop(SQLAlterTableStatement stmt) {
         lexer.nextToken();
-        if (identifierEquals("PARTITION")) {
+        if (lexer.token() == Token.CONSTRAINT) {
+            lexer.nextToken();
+            SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
+            item.setConstraintName(this.exprParser.name());
+            stmt.getItems().add(item);
+        } else if (identifierEquals("PARTITION")) {
             lexer.nextToken();
             OracleAlterTableDropPartition item = new OracleAlterTableDropPartition();
             item.setName(this.exprParser.name());

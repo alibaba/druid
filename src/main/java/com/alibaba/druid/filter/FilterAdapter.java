@@ -67,6 +67,23 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     public void destory() {
 
     }
+    
+    public void configFromProperties(Properties properties) {
+        
+    }
+    
+    @Override
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface == this.getClass();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) {
+        if (iface == this.getClass()) {
+            return (T) this;
+        }
+        return null;
+    }
 
     @Override
     public Array callableStatement_getArray(FilterChain chain, CallableStatementProxy statement, int parameterIndex)

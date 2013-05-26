@@ -22,18 +22,26 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 /**
- * 这个场景，检测可疑的Having条件
- * @author wenshao
- *
+ * SQLServerWallTest
+ * 
+ * @author RaymondXiu
+ * @version 1.0, 2012-3-18
+ * @see
  */
-public class WallSelectWhereTest0 extends TestCase {
-    private String sql = "SELECT F1, F2 WHERE 1 = 1 OR F1 = ?";
+public class MySqlWallTest_having extends TestCase {
 
-    public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql));
+    public void test_having() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql(//
+        "select id, count(*) from t group by id having 1 = 1"));
     }
     
-    public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+    public void test_having_true_first() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql(//
+        "select id, count(*) from t group by id having 1 = 1 AND count(*) > 2"));
+    }
+
+    public void test_having_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql(//
+        "select id, count(*) from t group by id having count(*) > 2 OR 1 = 1"));
     }
 }

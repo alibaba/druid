@@ -78,4 +78,6 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     long getTimeBetweenLogStatsMillis();
     
     void setTimeBetweenLogStatsMillis(long timeBetweenLogStatsMillis);
+    
+    void setConnectionProperties(String connectionProperties);
 }
