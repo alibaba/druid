@@ -13,7 +13,7 @@ public class JdbcSqlStatTest extends TestCase {
         gc();
         long memoryStart = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
 
-        final int COUNT = 1024 * 1024;
+        final int COUNT = 1000 * 5;
         JdbcSqlStat[] items = new JdbcSqlStat[COUNT];
         for (int i = 0; i < COUNT; ++i) {
             items[i] = new JdbcSqlStat("");
