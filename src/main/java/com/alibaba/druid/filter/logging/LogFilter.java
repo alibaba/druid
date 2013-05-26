@@ -412,7 +412,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     @Override
     protected void statementExecuteAfter(StatementProxy statement, String sql, boolean firstResult) {
         logExecutableSql(statement, sql);
-        
+
         if (statementExecuteAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
             double nanos = statement.getLastExecuteTimeNano();
@@ -436,9 +436,9 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         } else {
             sql = statement.getBatchSql();
         }
-        
+
         logExecutableSql(statement, sql);
-        
+
         if (statementExecuteBatchAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
             double nanos = statement.getLastExecuteTimeNano();
@@ -460,7 +460,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     @Override
     protected void statementExecuteQueryAfter(StatementProxy statement, String sql, ResultSetProxy resultSet) {
         logExecutableSql(statement, sql);
-        
+
         if (statementExecuteQueryAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
             double nanos = statement.getLastExecuteTimeNano();
@@ -809,5 +809,19 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                      + "} clearParameters. ");
 
         chain.preparedStatement_clearParameters(statement);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface == this.getClass() || iface == LogFilter.class;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T unwrap(Class<T> iface) {
+        if (iface == this.getClass() || iface == LogFilter.class) {
+            return (T) this;
+        }
+        return null;
     }
 }

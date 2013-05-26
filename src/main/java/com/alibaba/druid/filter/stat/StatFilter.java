@@ -156,11 +156,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             this.dbType = dataSource.getDbType();
         }
 
-        initFromProperties(dataSource.getConnectProperties());
-        initFromProperties(System.getProperties());
+        configFromProperties(dataSource.getConnectProperties());
+        configFromProperties(System.getProperties());
     }
 
-    private void initFromProperties(Properties properties) {
+    public void configFromProperties(Properties properties) {
         if (properties == null) {
             return;
         }

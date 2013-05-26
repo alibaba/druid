@@ -55,54 +55,74 @@ public class DruidDataSourceStatLoggerImpl implements DruidDataSourceStatLogger 
             if (statValue.getWaitThreadCount() > 0) {
                 map.put("waitThreadCount", statValue.getWaitThreadCount());
             }
+            
             if (statValue.getNotEmptyWaitCount() > 0) {
                 map.put("notEmptyWaitCount", statValue.getNotEmptyWaitCount());
             }
+            
             if (statValue.getNotEmptyWaitMillis() > 0) {
                 map.put("notEmptyWaitMillis", statValue.getNotEmptyWaitMillis());
             }
+            
             if (statValue.getLogicConnectErrorCount() > 0) {
                 map.put("logicConnectErrorCount", statValue.getLogicConnectErrorCount());
             }
+            
             if (statValue.getPhysicalConnectCount() > 0) {
                 map.put("physicalConnectCount", statValue.getPhysicalConnectCount());
             }
+            
             if (statValue.getPhysicalCloseCount() > 0) {
                 map.put("physicalCloseCount", statValue.getPhysicalCloseCount());
             }
+            
             if (statValue.getPhysicalConnectErrorCount() > 0) {
                 map.put("physicalConnectErrorCount", statValue.getPhysicalConnectErrorCount());
             }
+            
             if (statValue.getExecuteCount() > 0) {
                 map.put("executeCount", statValue.getExecuteCount());
             }
+            
             if (statValue.getErrorCount() > 0) {
                 map.put("errorCount", statValue.getErrorCount());
             }
+            
             if (statValue.getCommitCount() > 0) {
                 map.put("commitCount", statValue.getCommitCount());
             }
+            
             if (statValue.getRollbackCount() > 0) {
                 map.put("rollbackCount", statValue.getRollbackCount());
             }
+            
             if (statValue.getPstmtCacheHitCount() > 0) {
                 map.put("pstmtCacheHitCount", statValue.getPstmtCacheHitCount());
             }
+            
             if (statValue.getPstmtCacheMissCount() > 0) {
                 map.put("pstmtCacheMissCount", statValue.getPstmtCacheMissCount());
             }
+            
             if (statValue.getStartTransactionCount() > 0) {
                 map.put("startTransactionCount", statValue.getStartTransactionCount());
                 map.put("transactionHistogram", rtrim(statValue.getTransactionHistogram()));
             }
+            
             if (statValue.getConnectCount() > 0) {
                 map.put("connectionHoldTimeHistogram", rtrim(statValue.getConnectionHoldTimeHistogram()));
             }
+            
             if (statValue.getClobOpenCount() > 0) {
                 map.put("clobOpenCount", statValue.getClobOpenCount());
             }
+            
             if (statValue.getBlobOpenCount() > 0) {
                 map.put("blobOpenCount", statValue.getBlobOpenCount());
+            }
+            
+            if (statValue.getSqlSkipCount() > 0) {
+                map.put("sqlSkipCount", statValue.getSqlSkipCount());
             }
 
             ArrayList<Map<String, Object>> sqlList = new ArrayList<Map<String, Object>>();

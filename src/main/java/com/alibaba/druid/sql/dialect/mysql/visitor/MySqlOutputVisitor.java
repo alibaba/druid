@@ -585,12 +585,16 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
 
+        String varName = x.getName();
         if (x.isGlobal()) {
             print("@@global.");
         } else {
-            String varName = x.getName();
-            if ((!varName.startsWith("@")) && (!varName.equals("?")) && (!varName.startsWith("#"))
-                && (!varName.startsWith("$"))) {
+            if ((!varName.startsWith("@")) // /
+                && (!varName.equals("?")) //
+                && (!varName.startsWith("#")) //
+                && (!varName.startsWith("$")) //
+                && (!varName.startsWith(":"))
+                ) {
                 print("@@");
             }
         }
@@ -3006,7 +3010,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
             x.getValues().accept(this);
         }
-        
+
         if (x.getDataDirectory() != null) {
             incrementIndent();
             println();
@@ -3021,7 +3025,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getIndexDirectory().accept(this);
             decrementIndent();
         }
-        
+
         return false;
     }
 

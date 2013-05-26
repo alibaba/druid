@@ -64,6 +64,10 @@ public class FilterManager {
     }
 
     private static void loadFilterConfig(Properties filterProperties, ClassLoader classLoader) throws IOException {
+        if (classLoader == null) {
+            return;
+        }
+        
         for (Enumeration<URL> e = classLoader.getResources("META-INF/druid-filter.properties"); e.hasMoreElements();) {
             URL url = e.nextElement();
 

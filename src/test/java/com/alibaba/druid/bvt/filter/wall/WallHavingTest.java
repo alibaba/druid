@@ -27,7 +27,7 @@ import com.alibaba.druid.wall.WallUtils;
  *
  */
 public class WallHavingTest extends TestCase {
-    private String sql = "SELECT F1, COUNT(*) FROM T GROUP BY F1 HAVING 1 = 1";
+    private String sql = "SELECT F1, COUNT(*) FROM T GROUP BY F1 HAVING COUNT(*) OR 1 = 1";
 
     public void testMySql() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(sql));

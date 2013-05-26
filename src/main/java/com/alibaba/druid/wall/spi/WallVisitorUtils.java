@@ -203,8 +203,13 @@ public class WallVisitorUtils {
 
             if (Boolean.TRUE == getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck())) {
                 boolean isSimpleConstExpr = false;
-                if (where instanceof SQLBinaryOpExpr) {
-                    SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) where;
+                SQLExpr first = getFirst(where);
+                
+                if (first == where) {
+                    isSimpleConstExpr = true;
+                } else if (first instanceof SQLBinaryOpExpr) {
+                    SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) first;
+
                     if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
                         || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
                         if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
@@ -214,7 +219,7 @@ public class WallVisitorUtils {
                     }
                 }
 
-                if ((!isFirst(where)) && !isSimpleConstExpr) {
+                if (!isSimpleConstExpr) {
                     addViolation(visitor, ErrorCode.ALWAY_TRUE, "select alway true condition not allow", x);
                 }
             }
@@ -229,7 +234,21 @@ public class WallVisitorUtils {
         }
 
         if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck())) {
-            addViolation(visitor, ErrorCode.ALWAY_TRUE, "having alway true condition not allow", x);
+            boolean isSimpleConstExpr = false;
+            if (x instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) x;
+                if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
+                    || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
+                    if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
+                        && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
+                        isSimpleConstExpr = true;
+                    }
+                }
+            }
+            
+            if (!isSimpleConstExpr) {
+                addViolation(visitor, ErrorCode.ALWAY_TRUE, "having alway true condition not allow", x);                
+            }
         }
     }
 
@@ -531,7 +550,7 @@ public class WallVisitorUtils {
                 Object result = getValue(visitor, groupList.get(i));
                 if (Boolean.TRUE == result) {
                     final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
-                    if (wallContext != null) {
+                    if (wallContext != null && i != 0) {
                         wallContext.setPartAlwayTrue(true);
                     }
                     return true;
@@ -602,6 +621,17 @@ public class WallVisitorUtils {
 
         return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
     }
+    
+    public static SQLExpr getFirst(SQLExpr x) {
+        if (x instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binary = (SQLBinaryOpExpr) x;
+            if (binary.getOperator() == SQLBinaryOperator.BooleanAnd || binary.getOperator() == SQLBinaryOperator.BooleanOr) {
+                return getFirst(((SQLBinaryOpExpr) x).getLeft());
+            }
+        }
+        
+        return x;
+    }
 
     public static boolean isFirst(SQLObject x) {
         if (x == null) {
@@ -627,14 +657,14 @@ public class WallVisitorUtils {
         if (x == null) {
             return false;
         }
-        
+
         for (;;) {
             SQLObject parent = x.getParent();
 
             if (parent == null) {
                 return false;
             }
-            
+
             if (parent instanceof SQLSelectQueryBlock) {
                 SQLSelectQueryBlock query = (SQLSelectQueryBlock) parent;
                 if (query.getWhere() == x) {
@@ -643,7 +673,7 @@ public class WallVisitorUtils {
                     return false;
                 }
             }
-            
+
             if (parent instanceof SQLSelectGroupByClause) {
                 SQLSelectGroupByClause groupBy = (SQLSelectGroupByClause) parent;
                 if (x == groupBy.getHaving()) {
@@ -652,7 +682,7 @@ public class WallVisitorUtils {
                     return false;
                 }
             }
-            
+
             x = parent;
         }
     }
