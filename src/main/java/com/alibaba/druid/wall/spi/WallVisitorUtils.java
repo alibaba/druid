@@ -531,7 +531,7 @@ public class WallVisitorUtils {
                 Object result = getValue(visitor, groupList.get(i));
                 if (Boolean.TRUE == result) {
                     final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
-                    if (wallContext != null) {
+                    if (wallContext != null && i != 0) {
                         wallContext.setPartAlwayTrue(true);
                     }
                     return true;
@@ -627,14 +627,14 @@ public class WallVisitorUtils {
         if (x == null) {
             return false;
         }
-        
+
         for (;;) {
             SQLObject parent = x.getParent();
 
             if (parent == null) {
                 return false;
             }
-            
+
             if (parent instanceof SQLSelectQueryBlock) {
                 SQLSelectQueryBlock query = (SQLSelectQueryBlock) parent;
                 if (query.getWhere() == x) {
@@ -643,7 +643,7 @@ public class WallVisitorUtils {
                     return false;
                 }
             }
-            
+
             if (parent instanceof SQLSelectGroupByClause) {
                 SQLSelectGroupByClause groupBy = (SQLSelectGroupByClause) parent;
                 if (x == groupBy.getHaving()) {
@@ -652,7 +652,7 @@ public class WallVisitorUtils {
                     return false;
                 }
             }
-            
+
             x = parent;
         }
     }
