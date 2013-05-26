@@ -1478,6 +1478,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         value.clobOpenCount = this.getDataSourceStat().getClobOpenCountAndReset();
         value.blobOpenCount = this.getDataSourceStat().getBlobOpenCountAndReset();
 
+        value.sqlSkipCount = this.getDataSourceStat().getSkipSqlCountAndReset();
         value.sqlList = this.getDataSourceStat().getSqlStatMapAndReset();
 
         return value;

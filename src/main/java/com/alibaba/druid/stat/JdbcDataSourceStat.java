@@ -52,7 +52,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final JdbcResultSetStat                             resultSetStat           = new JdbcResultSetStat();
     private final JdbcStatementStat                             statementStat           = new JdbcStatementStat();
 
-    private int                                                 maxSqlSize                 = 1000 * 1;
+    private int                                                 maxSqlSize              = 1000 * 1;
 
     private ReentrantReadWriteLock                              lock                    = new ReentrantReadWriteLock();
     private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap;
@@ -139,13 +139,35 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
             }
         };
     }
-    
+
     public int getMaxSqlSize() {
         return this.maxSqlSize;
     }
-    
+
     public void setMaxSqlSize(int value) {
-        this.maxSqlSize = value;
+        if (value == this.maxSqlSize) {
+            return;
+        }
+
+        lock.writeLock().lock();
+        try {
+            if (value < this.maxSqlSize) {
+                int removeCount = this.maxSqlSize - value;
+                Iterator<Map.Entry<String, JdbcSqlStat>> iter = sqlStatMap.entrySet().iterator();
+                while (iter.hasNext()) {
+                    iter.next();
+                    if (removeCount > 0) {
+                        iter.remove();
+                        removeCount--;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            this.maxSqlSize = value;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public String getDbType() {
@@ -155,11 +177,11 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public void setDbType(String dbType) {
         this.dbType = dbType;
     }
-    
+
     public long getSkipSqlCount() {
         return skipSqlCount.get();
     }
-    
+
     public long getSkipSqlCountAndReset() {
         return skipSqlCount.getAndSet(0);
     }
@@ -300,7 +322,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         }
         return map;
     }
-    
+
     public List<JdbcSqlStatValue> getSqlStatMapAndReset() {
         List<JdbcSqlStat> stats = new ArrayList<JdbcSqlStat>(sqlStatMap.size());
         lock.writeLock().lock();
@@ -324,6 +346,9 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         for (int i = 0; i < stats.size(); ++i) {
             JdbcSqlStat stat = stats.get(i);
             JdbcSqlStatValue value = stat.getValueAndReset();
+            if (value.getExecuteCount() == 0 && value.getRunningCount() == 0) {
+                continue;
+            }
             values.add(value);
         }
         return values;
