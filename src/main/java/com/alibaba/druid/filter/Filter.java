@@ -57,11 +57,17 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public interface Filter {
+public interface Filter extends Wrapper {
 
     void init(DataSourceProxy dataSource);
-    
+
     void destory();
+
+    void configFromProperties(Properties properties);
+
+    boolean isWrapperFor(java.lang.Class<?> iface);
+
+    <T> T unwrap(java.lang.Class<T> iface);
 
     ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException;
 
@@ -1277,6 +1283,7 @@ public interface Filter {
     void clob_truncate(FilterChain chain, ClobProxy wrapper, long len) throws SQLException;
 
     void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection connection) throws SQLException;
-    
-    DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException;
+
+    DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis)
+                                                                                                                     throws SQLException;
 }

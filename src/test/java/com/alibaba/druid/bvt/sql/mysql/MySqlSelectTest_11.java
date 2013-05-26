@@ -20,40 +20,49 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.stat.TableStat.Column;
 
-public class MySqlSelectTest_0 extends MysqlTest {
+public class MySqlSelectTest_11 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "SELECT CONCAT(last_name,', ',first_name) AS full_name FROM mytable ORDER BY full_name;";
+        String sql = "select * from users where uid = :uid";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
+
+        SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
+
+        SQLSelect select = selectStmt.getSelect();
+        Assert.assertNotNull(select.getQuery());
+        MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
+        Assert.assertNull(queryBlock.getOrderBy());
+
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getConditions().size());
+        Assert.assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("users")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("SELECT *" + //
+                            "\nFROM users" + //
+                            "\nWHERE uid = :uid", //
+                            output);
     }
 }

@@ -32,7 +32,7 @@ public class UnwrapTest2 extends TestCase {
         dataSource.setValidationQueryTimeout(10);
         dataSource.setQueryTimeout(100);
 
-        dataSource.setFilters("log4j");
+        dataSource.setFilters("mergeStat");
     }
 
     protected void tearDown() throws Exception {

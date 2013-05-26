@@ -46,6 +46,7 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import com.alibaba.druid.Constants;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
@@ -144,8 +145,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public DruidDataSource(boolean fairLock){
         super(fairLock);
 
+        configFromPropety(System.getProperties());
+    }
+
+    public void configFromPropety(Properties properties) {
         {
-            String property = System.getProperty("druid.testWhileIdle");
+            String property = properties.getProperty("druid.testWhileIdle");
             if ("true".equals(property)) {
                 this.setTestWhileIdle(true);
             } else if ("false".equals(property)) {
@@ -153,7 +158,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = System.getProperty("druid.testOnBorrow");
+            String property = properties.getProperty("druid.testOnBorrow");
             if ("true".equals(property)) {
                 this.setTestOnBorrow(true);
             } else if ("false".equals(property)) {
@@ -161,13 +166,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = System.getProperty("druid.validationQuery");
+            String property = properties.getProperty("druid.validationQuery");
             if (property != null && property.length() > 0) {
                 this.setValidationQuery(property);
             }
         }
         {
-            String property = System.getProperty("druid.useGloalDataSourceStat");
+            String property = properties.getProperty("druid.useGloalDataSourceStat");
             if ("true".equals(property)) {
                 this.setUseGloalDataSourceStat(true);
             } else if ("false".equals(property)) {
@@ -175,7 +180,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = System.getProperty("druid.filters");
+            String property = properties.getProperty("druid.filters");
 
             if (property != null && property.length() > 0) {
                 try {
@@ -186,13 +191,26 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = System.getProperty("druid.timeBetweenLogStatsMillis");
+            String property = properties.getProperty("druid.timeBetweenLogStatsMillis");
             if (property != null && property.length() > 0) {
                 try {
                     long value = Long.parseLong(property);
                     this.setTimeBetweenLogStatsMillis(value);
                 } catch (NumberFormatException e) {
                     LOG.error("illegal property 'timeBetweenLogStatsMillis'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty(Constants.DRUID_STAT_SQL_MAX_SIZE);
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    if (dataSourceStat != null) {
+                        dataSourceStat.setMaxSqlSize(value);
+                    }
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property '" + Constants.DRUID_STAT_SQL_MAX_SIZE + "'", e);
                 }
             }
         }
@@ -371,14 +389,41 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public void setConnectProperties(Properties properties) {
         if (properties == null) {
             properties = new Properties();
         }
 
-        if (inited) {
-            if (!this.connectProperties.equals(properties)) {
+        boolean equals;
+        if (properties.size() == this.connectProperties.size()) {
+            equals = true;
+            for (Map.Entry entry : properties.entrySet()) {
+                Object value = this.connectProperties.get(entry.getKey());
+                Object entryValue = entry.getValue();
+                if (value == null && entryValue != null) {
+                    equals = false;
+                    break;
+                }
+
+                if (!value.equals(entry.getValue())) {
+                    equals = false;
+                    break;
+                }
+            }
+        } else {
+            equals = false;
+        }
+
+        if (!equals) {
+            if (inited && LOG.isInfoEnabled()) {
                 LOG.info("connectProperties changed : " + this.connectProperties + " -> " + properties);
+            }
+            
+            configFromPropety(properties);
+
+            for (Filter filter : this.filters) {
+                filter.configFromProperties(properties);
             }
         }
 
@@ -499,7 +544,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     dataSourceStat.setDbType(this.getDbType());
                 }
             } else {
-                dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
+                dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType, this.connectProperties);
             }
 
             connections = new DruidConnectionHolder[maxActive];
@@ -2187,5 +2232,27 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public Lock getLock() {
         return lock;
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) {
+        for (Filter filter : this.filters) {
+            if (filter.isWrapperFor(iface)) {
+                return true;
+            }
+        }
+
+        return super.isWrapperFor(iface);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) {
+        for (Filter filter : this.filters) {
+            if (filter.isWrapperFor(iface)) {
+                return (T) filter;
+            }
+        }
+
+        return super.unwrap(iface);
     }
 }
