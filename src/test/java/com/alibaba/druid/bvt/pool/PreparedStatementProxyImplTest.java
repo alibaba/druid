@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 
 public class PreparedStatementProxyImplTest extends TestCase {
 
@@ -50,7 +50,7 @@ public class PreparedStatementProxyImplTest extends TestCase {
         
         stmt.execute();
         
-        PreparedStatementProxyImpl stmtProxy = stmt.unwrap(PreparedStatementProxyImpl.class);
+        PreparedStatementProxy stmtProxy = stmt.unwrap(PreparedStatementProxy.class);
         Assert.assertNotNull(stmtProxy);
         
         Assert.assertEquals(Types.TINYINT, stmtProxy.getParameters().get(1).getSqlType());
