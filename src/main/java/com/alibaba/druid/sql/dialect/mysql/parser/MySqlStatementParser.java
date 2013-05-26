@@ -35,11 +35,13 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -2342,34 +2344,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                         }
                     }
                     stmt.getItems().add(item);
-                } else if (lexer.token() == Token.DROP) {
-                    lexer.nextToken();
-                    if (lexer.token() == Token.INDEX) {
-                        lexer.nextToken();
-                        SQLName indexName = this.exprParser.name();
-                        SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
-                        item.setIndexName(indexName);
-                        stmt.getItems().add(item);
-                    } else if (lexer.token() == Token.FOREIGN) {
-                        lexer.nextToken();
-                        accept(Token.KEY);
-                        SQLName indexName = this.exprParser.name();
-                        SQLAlterTableDropForeinKey item = new SQLAlterTableDropForeinKey();
-                        item.setIndexName(indexName);
-                        stmt.getItems().add(item);
-                    } else if (lexer.token() == Token.PRIMARY) {
-                        lexer.nextToken();
-                        accept(Token.KEY);
-                        SQLAlterTableDropPrimaryKey item = new SQLAlterTableDropPrimaryKey();
-                        stmt.getItems().add(item);
-                    } else {
-                        if (identifierEquals("COLUMN")) {
-                            lexer.nextToken();
-                        }
-                        SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-                        item.setColumnName(this.exprParser.name());
-                        stmt.getItems().add(item);
-                    }
                 } else if (identifierEquals("DISABLE")) {
                     lexer.nextToken();
 
@@ -2497,6 +2471,41 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         }
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+    }
+
+    public void parseAlterDrop(SQLAlterTableStatement stmt) {
+        lexer.nextToken();
+        if (lexer.token() == Token.INDEX) {
+            lexer.nextToken();
+            SQLName indexName = this.exprParser.name();
+            SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
+            item.setIndexName(indexName);
+            stmt.getItems().add(item);
+        } else if (lexer.token() == Token.FOREIGN) {
+            lexer.nextToken();
+            accept(Token.KEY);
+            SQLName indexName = this.exprParser.name();
+            SQLAlterTableDropForeinKey item = new SQLAlterTableDropForeinKey();
+            item.setIndexName(indexName);
+            stmt.getItems().add(item);
+        } else if (lexer.token() == Token.PRIMARY) {
+            lexer.nextToken();
+            accept(Token.KEY);
+            SQLAlterTableDropPrimaryKey item = new SQLAlterTableDropPrimaryKey();
+            stmt.getItems().add(item);
+        } else  if (lexer.token() == Token.CONSTRAINT) {
+            lexer.nextToken();
+            SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
+            item.setConstraintName(this.exprParser.name());
+            stmt.getItems().add(item);
+        } else if (identifierEquals("COLUMN")) {
+            lexer.nextToken();
+            SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
+            item.setColumnName(this.exprParser.name());
+            stmt.getItems().add(item);
+        } else {
+            super.parseAlterDrop(stmt);
+        }
     }
 
     public SQLStatement parseRename() {
