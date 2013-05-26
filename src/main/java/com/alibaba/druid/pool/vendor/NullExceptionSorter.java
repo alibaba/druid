@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool.vendor;
 
 import java.sql.SQLException;
+import java.util.Properties;
 
 import com.alibaba.druid.pool.ExceptionSorter;
 
@@ -32,4 +33,7 @@ public class NullExceptionSorter implements ExceptionSorter {
         return false;
     }
 
+    public void configFromProperties(Properties properties) {
+        
+    }
 }

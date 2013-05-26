@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
@@ -39,6 +40,11 @@ public class DruidDataSourceTest_exceptionSorter extends TestCase {
             @Override
             public boolean isExceptionFatal(SQLException e) {
                 return true;
+            }
+
+            @Override
+            public void configFromProperties(Properties properties) {
+                
             }
         });
 

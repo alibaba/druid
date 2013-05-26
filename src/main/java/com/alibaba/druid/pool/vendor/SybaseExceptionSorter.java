@@ -17,6 +17,7 @@ package com.alibaba.druid.pool.vendor;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import com.alibaba.druid.pool.ExceptionSorter;
 
@@ -36,5 +37,9 @@ public class SybaseExceptionSorter implements ExceptionSorter, Serializable {
         }
 
         return result;
+    }
+    
+    public void configFromProperties(Properties properties) {
+        
     }
 }

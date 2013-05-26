@@ -18,6 +18,7 @@ package com.alibaba.druid.pool.vendor;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import com.alibaba.druid.pool.ExceptionSorter;
@@ -36,7 +37,11 @@ public class OracleExceptionSorter implements ExceptionSorter, Serializable {
     private Set<Integer>      fatalErrorCodes  = new HashSet<Integer>();
 
     public OracleExceptionSorter(){
-        String property = System.getProperty("druid.oracle.fatalErrorCodes");
+        configFromProperties(System.getProperties());
+    }
+    
+    public void configFromProperties(Properties properties) {
+        String property = properties.getProperty("druid.oracle.fatalErrorCodes");
         if (property != null) {
             String[] items = property.split("\\,");
             for (String item : items) {
@@ -108,6 +113,7 @@ public class OracleExceptionSorter implements ExceptionSorter, Serializable {
             case 17024: // No data read
             case 17089: // internal error
             case 17409: // invalid buffer length
+            case 17401: //
             case 17410: // No more data to read from socket
             case 17416: // FATAl
 
