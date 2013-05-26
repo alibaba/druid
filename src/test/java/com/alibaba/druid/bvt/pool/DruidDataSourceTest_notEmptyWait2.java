@@ -48,7 +48,7 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
                     startLatch.countDown();
                     try {
                         Connection conn = dataSource.getConnection();
-                        Thread.sleep(1);
+                        Thread.sleep(2);
                         conn.close();
                     } catch (Exception e) {
                         // e.printStackTrace();
