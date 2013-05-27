@@ -20,15 +20,25 @@ import static com.alibaba.druid.util.JdbcSqlStatUtils.rtrim;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
-public class DruidDataSourceStatLoggerImpl implements DruidDataSourceStatLogger {
+public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdapter {
 
     private static Log LOG = LogFactory.getLog(DruidDataSourceStatLoggerImpl.class);
+    
+    public DruidDataSourceStatLoggerImpl() {
+        this.configFromProperties(System.getProperties());
+    }
+    
+    @Override
+    public void configFromProperties(Properties properties) {
+        
+    }
 
     @Override
     public void log(DruidDataSourceStatValue statValue) {

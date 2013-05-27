@@ -15,7 +15,11 @@
  */
 package com.alibaba.druid.pool;
 
+import java.util.Properties;
+
 public interface DruidDataSourceStatLogger {
 
     void log(DruidDataSourceStatValue statValue);
+    
+    void configFromProperties(Properties properties);
 }

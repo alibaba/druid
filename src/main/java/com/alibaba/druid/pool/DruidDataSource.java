@@ -429,6 +429,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (exceptionSorter != null) {
                 exceptionSorter.configFromProperties(properties);
             }
+            
+            if (statLogger != null) {
+                statLogger.configFromProperties(properties);
+            }
         }
 
         this.connectProperties = properties;
