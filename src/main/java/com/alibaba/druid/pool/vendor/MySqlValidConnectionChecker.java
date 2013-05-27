@@ -25,12 +25,13 @@ import java.sql.Statement;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class MySqlValidConnectionChecker implements ValidConnectionChecker, Serializable {
+public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
     private static final long serialVersionUID    = 1L;
     private static final Log  LOG                 = LogFactory.getLog(MySqlValidConnectionChecker.class);
@@ -79,7 +80,7 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
                     if (cause instanceof SQLException) {
                         return false;
                     }
-                    
+
                     LOG.warn("Unexpected error in ping", e);
                     return false;
                 } catch (Exception e) {
