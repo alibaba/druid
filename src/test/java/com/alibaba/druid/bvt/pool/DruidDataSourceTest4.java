@@ -1,9 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.SQLException;
+import java.util.Properties;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ExceptionSorter;
@@ -96,6 +98,12 @@ public class DruidDataSourceTest4 extends TestCase {
         @Override
         public boolean isExceptionFatal(SQLException e) {
             return false;
+        }
+
+        @Override
+        public void configFromProperties(Properties properties) {
+            // TODO Auto-generated method stub
+            
         }
 
     }
