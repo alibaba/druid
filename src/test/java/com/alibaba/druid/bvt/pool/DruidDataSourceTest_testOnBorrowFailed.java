@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 
 /**
  * 这个场景测试defaultAutoCommit
@@ -28,7 +28,7 @@ public class DruidDataSourceTest_testOnBorrowFailed extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(true);
         dataSource.setValidationQuery("select 'x'");
-        dataSource.setValidConnectionChecker(new ValidConnectionChecker() {
+        dataSource.setValidConnectionChecker(new ValidConnectionCheckerAdapter() {
 
             @Override
             public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) {
