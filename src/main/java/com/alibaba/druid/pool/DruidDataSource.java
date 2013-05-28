@@ -430,6 +430,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 exceptionSorter.configFromProperties(properties);
             }
             
+            if (validConnectionChecker != null) {
+                validConnectionChecker.configFromProperties(properties);
+            }
+            
             if (statLogger != null) {
                 statLogger.configFromProperties(properties);
             }
