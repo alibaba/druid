@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLOver;
@@ -536,7 +537,7 @@ public class SQLExprParser extends SQLParser {
             }
 
             if (lexer.token() != Token.RPAREN) {
-                exprList(methodInvokeExpr.getParameters());
+                exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
             }
 
             accept(Token.RPAREN);
@@ -611,8 +612,12 @@ public class SQLExprParser extends SQLParser {
             exprCol.add(name());
         }
     }
-
+    
     public final void exprList(Collection<SQLExpr> exprCol) {
+        exprList(exprCol, null);
+    }
+
+    public final void exprList(Collection<SQLExpr> exprCol, SQLObject parent) {
         if (lexer.token() == Token.RPAREN || lexer.token() == Token.RBRACKET) {
             return;
         }
@@ -622,11 +627,13 @@ public class SQLExprParser extends SQLParser {
         }
 
         SQLExpr expr = expr();
+        expr.setParent(parent);
         exprCol.add(expr);
 
         while (lexer.token() == Token.COMMA) {
             lexer.nextToken();
             expr = expr();
+            expr.setParent(parent);
             exprCol.add(expr);
         }
     }
