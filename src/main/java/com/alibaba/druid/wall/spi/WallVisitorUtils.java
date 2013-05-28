@@ -204,7 +204,7 @@ public class WallVisitorUtils {
             if (Boolean.TRUE == getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck())) {
                 boolean isSimpleConstExpr = false;
                 SQLExpr first = getFirst(where);
-                
+
                 if (first == where) {
                     isSimpleConstExpr = true;
                 } else if (first instanceof SQLBinaryOpExpr) {
@@ -245,9 +245,9 @@ public class WallVisitorUtils {
                     }
                 }
             }
-            
+
             if (!isSimpleConstExpr) {
-                addViolation(visitor, ErrorCode.ALWAY_TRUE, "having alway true condition not allow", x);                
+                addViolation(visitor, ErrorCode.ALWAY_TRUE, "having alway true condition not allow", x);
             }
         }
     }
@@ -621,15 +621,16 @@ public class WallVisitorUtils {
 
         return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
     }
-    
+
     public static SQLExpr getFirst(SQLExpr x) {
         if (x instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binary = (SQLBinaryOpExpr) x;
-            if (binary.getOperator() == SQLBinaryOperator.BooleanAnd || binary.getOperator() == SQLBinaryOperator.BooleanOr) {
+            if (binary.getOperator() == SQLBinaryOperator.BooleanAnd
+                || binary.getOperator() == SQLBinaryOperator.BooleanOr) {
                 return getFirst(((SQLBinaryOpExpr) x).getLeft());
             }
         }
-        
+
         return x;
     }
 
@@ -668,6 +669,24 @@ public class WallVisitorUtils {
             if (parent instanceof SQLSelectQueryBlock) {
                 SQLSelectQueryBlock query = (SQLSelectQueryBlock) parent;
                 if (query.getWhere() == x) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            if (parent instanceof SQLDeleteStatement) {
+                SQLDeleteStatement delete = (SQLDeleteStatement) parent;
+                if (delete.getWhere() == x) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            if (parent instanceof SQLUpdateStatement) {
+                SQLUpdateStatement update = (SQLUpdateStatement) parent;
+                if (update.getWhere() == x) {
                     return true;
                 } else {
                     return false;
@@ -952,7 +971,9 @@ public class WallVisitorUtils {
                 }
             }
 
-            addViolation(visitor, ErrorCode.FUNCTION_DENY, "deny function : " + methodName, x);
+            if (isWhereOrHaving(x)) {
+                addViolation(visitor, ErrorCode.FUNCTION_DENY, "deny function : " + methodName, x);
+            }
         }
     }
 

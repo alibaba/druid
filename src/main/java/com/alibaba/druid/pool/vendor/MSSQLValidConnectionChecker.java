@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
@@ -28,7 +29,7 @@ import com.alibaba.druid.util.JdbcUtils;
 /**
  * A MSSQLValidConnectionChecker.
  */
-public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Serializable {
+public class MSSQLValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
     private static final long   serialVersionUID = 1L;
 

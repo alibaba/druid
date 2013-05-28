@@ -585,11 +585,12 @@ public abstract class WallProvider {
     }
 
     public static <T> T doPrivileged(PrivilegedAction<T> action) {
+        final Boolean original = privileged.get();
         privileged.set(Boolean.TRUE);
         try {
             return action.run();
         } finally {
-            privileged.set(null);
+            privileged.set(original);
         }
     }
 
