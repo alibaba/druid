@@ -196,7 +196,6 @@ public class WallVisitorUtils {
         }
 
         SQLExpr where = x.getWhere();
-
         if (where != null) {
             where.setParent(x);
             checkCondition(visitor, x.getWhere());
@@ -280,12 +279,34 @@ public class WallVisitorUtils {
             }
         }
 
-        if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), config.isDeleteWhereAlwayTrueCheck())) {
-            addViolation(visitor, ErrorCode.ALWAY_TRUE, "delete alway true condition not allow", x);
-            return;
+        SQLExpr where = x.getWhere();
+        if (where != null) {
+            checkCondition(visitor, where);
+
+            if (Boolean.TRUE == getConditionValue(visitor, where, config.isDeleteWhereAlwayTrueCheck())) {
+                boolean isSimpleConstExpr = false;
+                SQLExpr first = getFirst(where);
+
+                if (first == where) {
+                    isSimpleConstExpr = true;
+                } else if (first instanceof SQLBinaryOpExpr) {
+                    SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) first;
+
+                    if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
+                        || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
+                        if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
+                            && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
+                            isSimpleConstExpr = true;
+                        }
+                    }
+                }
+
+                if (!isSimpleConstExpr) {
+                    addViolation(visitor, ErrorCode.ALWAY_TRUE, "delete alway true condition not allow", x);
+                }
+            }
         }
 
-        checkCondition(visitor, x.getWhere());
         checkConditionForMultiTenant(visitor, x.getWhere(), x);
     }
 
@@ -469,7 +490,8 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (x.getWhere() == null) {
+        SQLExpr where = x.getWhere();
+        if (where == null) {
             WallContext context = WallContext.current();
             if (context != null) {
                 context.incrementUpdateNoneConditionWarnnings();
@@ -487,20 +509,35 @@ public class WallVisitorUtils {
                     return;
                 }
             }
-        }
+        } else {
+            where.setParent(x);
+            checkCondition(visitor, where);
 
-        if (config.isUpdateWhereAlayTrueCheck()) {
-            if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), true)) {
-                addViolation(visitor, ErrorCode.ALWAY_TRUE, "update alway true condition not allow", x);
-                return;
+            if (Boolean.TRUE == getConditionValue(visitor, where, config.isUpdateWhereAlayTrueCheck())) {
+                boolean isSimpleConstExpr = false;
+                SQLExpr first = getFirst(where);
+
+                if (first == where) {
+                    isSimpleConstExpr = true;
+                } else if (first instanceof SQLBinaryOpExpr) {
+                    SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) first;
+
+                    if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
+                        || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
+                        if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
+                            && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
+                            isSimpleConstExpr = true;
+                        }
+                    }
+                }
+
+                if (!isSimpleConstExpr) {
+                    addViolation(visitor, ErrorCode.ALWAY_TRUE, "update alway true condition not allow", x);
+                }
             }
         }
 
-        if (x.getWhere() != null) {
-            x.getWhere().setParent(x);
-        }
-        checkCondition(visitor, x.getWhere());
-        checkConditionForMultiTenant(visitor, x.getWhere(), x);
+        checkConditionForMultiTenant(visitor, where, x);
     }
 
     public static Object getValue(WallVisitor visitor, SQLBinaryOpExpr x) {
@@ -674,7 +711,7 @@ public class WallVisitorUtils {
                     return false;
                 }
             }
-            
+
             if (parent instanceof SQLDeleteStatement) {
                 SQLDeleteStatement delete = (SQLDeleteStatement) parent;
                 if (delete.getWhere() == x) {
@@ -683,7 +720,7 @@ public class WallVisitorUtils {
                     return false;
                 }
             }
-            
+
             if (parent instanceof SQLUpdateStatement) {
                 SQLUpdateStatement update = (SQLUpdateStatement) parent;
                 if (update.getWhere() == x) {
