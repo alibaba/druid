@@ -89,6 +89,14 @@ public enum SQLBinaryOperator {
         this.priority = priority;
     }
     
+    public String getName() {
+        return this.name;
+    }
+    
+    public int getPriority() {
+        return this.priority;
+    }
+    
     public boolean isRelational() {
         switch (this) {
             case Equality:
