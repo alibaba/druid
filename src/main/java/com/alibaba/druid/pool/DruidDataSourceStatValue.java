@@ -17,8 +17,10 @@ package com.alibaba.druid.pool;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.stat.JdbcSqlStatValue;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class DruidDataSourceStatValue {
 
@@ -78,6 +80,27 @@ public class DruidDataSourceStatValue {
     protected long                   sqlSkipCount;
 
     protected List<JdbcSqlStatValue> sqlList;
+    
+    @SuppressWarnings("unchecked")
+    public void fromJSON(String json) {
+//        protected String                 dbType;
+//        protected String                 driverClassName;
+//        protected String                 url;
+//        protected String                 userName;
+//        protected List<String>           filterClassNames;
+//        protected boolean                removeAbandoned;
+//        
+        Map<String, Object> map = (Map<String, Object>) JSONUtils.parse(json);
+        fromJSON(map);
+    }
+    
+    public void fromJSON(Map<String, Object> map) {
+        this.name = (String) map.get("name");
+        this.dbType = (String) map.get("dbType");
+        this.driverClassName = (String) map.get("driverClassName");
+        this.url = (String) map.get("url");
+        this.userName = (String) map.get("userName");
+    }
 
     public Date getPoolingPeakTime() {
         if (poolingPeakTime <= 0) {
@@ -482,5 +505,6 @@ public class DruidDataSourceStatValue {
     public void setPoolingPeakTime(long poolingPeakTime) {
         this.poolingPeakTime = poolingPeakTime;
     }
+    
 
 }
