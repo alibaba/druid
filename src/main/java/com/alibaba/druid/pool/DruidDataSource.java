@@ -191,13 +191,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = properties.getProperty("druid.timeBetweenLogStatsMillis");
+            String property = properties.getProperty(Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS);
             if (property != null && property.length() > 0) {
                 try {
                     long value = Long.parseLong(property);
                     this.setTimeBetweenLogStatsMillis(value);
                 } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'timeBetweenLogStatsMillis'", e);
+                    LOG.error("illegal property '" + Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS + "'", e);
                 }
             }
         }
@@ -419,21 +419,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (inited && LOG.isInfoEnabled()) {
                 LOG.info("connectProperties changed : " + this.connectProperties + " -> " + properties);
             }
-            
+
             configFromPropety(properties);
 
             for (Filter filter : this.filters) {
                 filter.configFromProperties(properties);
             }
-            
+
             if (exceptionSorter != null) {
                 exceptionSorter.configFromProperties(properties);
             }
-            
+
             if (validConnectionChecker != null) {
                 validConnectionChecker.configFromProperties(properties);
             }
-            
+
             if (statLogger != null) {
                 statLogger.configFromProperties(properties);
             }
