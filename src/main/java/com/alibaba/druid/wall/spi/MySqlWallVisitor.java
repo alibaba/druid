@@ -209,19 +209,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                     boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
                     if (!isTop) {
                         boolean allow = true;
-                        if (isDeny(varName)) {
+                        if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
                             allow = false;
                         }
 
-                        if (allow) {
-                            if (WallVisitorUtils.isWhereOrHaving(x)) {
-                                allow = false;
-                            }
-                        }
-
                         if (!allow) {
-                            violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
-                                                                                                 + x.getName(), toSQL(x)));
+                            violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
+                                                                         "variable not allow : " + x.getName(),
+                                                                         toSQL(x)));
                         }
                     }
                 }
@@ -260,12 +255,12 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
         return false;
     }
-    
+
     public boolean isDeny(String varName) {
         if (varName.startsWith("@@")) {
             varName = varName.substring(2);
         }
-        
+
         return config.getDenyVariants().contains(varName);
     }
 
@@ -279,14 +274,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
             if (!isTop) {
                 boolean allow = true;
-                if (isDeny(varName)) {
+                if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
                     allow = false;
-                }
-
-                if (allow) {
-                    if (WallVisitorUtils.isWhereOrHaving(x)) {
-                        allow = false;
-                    }
                 }
 
                 if (!allow) {
