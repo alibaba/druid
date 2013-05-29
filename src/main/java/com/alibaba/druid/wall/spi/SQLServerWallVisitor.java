@@ -206,10 +206,27 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         }
 
         if (config.isVariantCheck() && varName.startsWith("@@")) {
-            violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "global variable not allow", toSQL(x)));
+
+            boolean allow = true;
+            if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
+                allow = false;
+            }
+
+            if (!allow) {
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
+                                                                                     + x.getName(), toSQL(x)));
+            }
         }
 
         return false;
+    }
+
+    public boolean isDeny(String varName) {
+        if (varName.startsWith("@@")) {
+            varName = varName.substring(2);
+        }
+
+        return config.getDenyVariants().contains(varName);
     }
 
     @Override
