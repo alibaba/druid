@@ -59,6 +59,13 @@ public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdap
     public void setLoggerName(String loggerName) {
         logger = LogFactory.getLog(loggerName);
     }
+    
+    public void setLogger(Log logger) {
+        if (logger == null) {
+           throw new IllegalArgumentException("logger can not be null");
+        }
+        this.logger = logger;
+    }
 
     @Override
     public void log(DruidDataSourceStatValue statValue) {
@@ -70,7 +77,7 @@ public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdap
             map.put("name", statValue.getName());
             map.put("activeCount", statValue.getActiveCount());
 
-            if (statValue.activePeak > 0) {
+            if (statValue.getActivePeak() > 0) {
                 map.put("activePeak", statValue.getActivePeak());
                 map.put("activePeakTime", statValue.getActivePeakTime());
             }
