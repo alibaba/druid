@@ -17,13 +17,17 @@ package com.alibaba.druid.support.logging;
 
 public class NoLoggingImpl implements Log {
 
-    private int infoCount;
-    private int errorCount;
-    private int warnCount;
-    private Class<?> clazz;
+    private int    infoCount;
+    private int    errorCount;
+    private int    warnCount;
+    private String loggerName;
 
-    public NoLoggingImpl(Class<?> clazz){
-        this.clazz = clazz;
+    public NoLoggingImpl(String loggerName){
+        this.loggerName = loggerName;
+    }
+
+    public String getLoggerName() {
+        return this.loggerName;
     }
 
     public boolean isDebugEnabled() {
@@ -32,7 +36,7 @@ public class NoLoggingImpl implements Log {
 
     public void error(String s, Throwable e) {
         error(s);
-        
+
         if (e != null) {
             e.printStackTrace();
         }
@@ -41,7 +45,7 @@ public class NoLoggingImpl implements Log {
     public void error(String s) {
         errorCount++;
         if (s != null) {
-            System.err.println(clazz.getClass().getName() + " : " + s);
+            System.err.println(loggerName + " : " + s);
         }
     }
 

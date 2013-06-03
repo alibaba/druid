@@ -2255,6 +2255,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
 
+        if (this.statLogger != null
+            && (this.statLogger.getClass() == iface || DruidDataSourceStatLogger.class == iface)) {
+            return true;
+        }
+
         return super.isWrapperFor(iface);
     }
 
@@ -2264,6 +2269,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (filter.isWrapperFor(iface)) {
                 return (T) filter;
             }
+        }
+
+        if (this.statLogger != null
+            && (this.statLogger.getClass() == iface || DruidDataSourceStatLogger.class == iface)) {
+            return (T) statLogger;
         }
 
         return super.unwrap(iface);
