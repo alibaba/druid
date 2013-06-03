@@ -33,7 +33,7 @@ public class Concat implements Function {
 
             Object itemValue = item.getAttributes().get(EVAL_VALUE);
             if (itemValue == null) {
-                continue;
+                return null;
             }
             buf.append(itemValue.toString());
         }
