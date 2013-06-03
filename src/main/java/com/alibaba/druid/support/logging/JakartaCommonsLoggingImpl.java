@@ -25,6 +25,14 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     private int errorCount;
     private int warnCount;
     private int infoCount;
+    
+    /**
+     * @since 0.2.1
+     * @param log
+     */
+    public JakartaCommonsLoggingImpl(Log log) {
+        this.log = log;
+    }
 
     public JakartaCommonsLoggingImpl(String loggerName){
         log = LogFactory.getLog(loggerName);

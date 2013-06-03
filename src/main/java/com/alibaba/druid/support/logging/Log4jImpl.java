@@ -27,6 +27,14 @@ public class Log4jImpl implements Log {
     private int                 errorCount;
     private int                 warnCount;
     private int                 infoCount;
+    
+    /**
+     * @since 0.2.21
+     * @param log
+     */
+    public Log4jImpl(Logger log) {
+        this.log = log;
+    }
 
     public Log4jImpl(String loggerName){
         log = Logger.getLogger(loggerName);
