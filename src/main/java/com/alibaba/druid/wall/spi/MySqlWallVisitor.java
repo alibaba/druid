@@ -146,8 +146,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkUpdate(this, x);
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLUpdateStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -170,7 +176,13 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             return false;
         }
 
+        WallVisitorUtils.initWallTopStatementContext();
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLSelectStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
