@@ -65,6 +65,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     private boolean           statementCloseAfterLogEnable         = true;
 
+    private boolean           statementParameterClearLogEnable     = true;
     private boolean           statementParameterSetLogEnable       = true;
 
     private boolean           resultSetNextAfterLogEnable          = true;
@@ -305,6 +306,14 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     public void setStatementParameterSetLogEnabled(boolean statementParameterSetLogEnable) {
         this.statementParameterSetLogEnable = statementParameterSetLogEnable;
+    }
+    
+    public boolean isStatementParameterClearLogEnable() {
+        return isStatementLogEnabled() && statementParameterClearLogEnable;
+    }
+
+    public void setStatementParameterClearLogEnable(boolean statementParameterClearLogEnable) {
+        this.statementParameterClearLogEnable = statementParameterClearLogEnable;
     }
 
     protected abstract void connectionLog(String message);
@@ -719,7 +728,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     }
 
     protected void logParameter(PreparedStatementProxy statement) {
-        if (statementParameterSetLogEnable && isStatementLogEnabled()) {
+        if (isStatementParameterSetLogEnabled()) {
             {
                 StringBuffer buf = new StringBuffer();
                 buf.append("{conn-");
@@ -805,9 +814,10 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     public void preparedStatement_clearParameters(FilterChain chain, PreparedStatementProxy statement)
                                                                                                       throws SQLException {
 
-        statementLog("{conn-" + statement.getConnectionProxy().getId() + ", pstmt-" + statement.getId()
-                     + "} clearParameters. ");
-
+        if (isStatementParameterClearLogEnable()) {
+            statementLog("{conn-" + statement.getConnectionProxy().getId() + ", pstmt-" + statement.getId()
+                         + "} clearParameters. ");
+        }
         chain.preparedStatement_clearParameters(statement);
     }
 

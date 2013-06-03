@@ -33,7 +33,9 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdapter {
 
-    private static Log LOG = LogFactory.getLog(DruidDataSourceStatLoggerImpl.class);
+    private static Log LOG    = LogFactory.getLog(DruidDataSourceStatLoggerImpl.class);
+
+    private Log        logger = LOG;
 
     public DruidDataSourceStatLoggerImpl(){
         this.configFromProperties(System.getProperties());
@@ -44,12 +46,23 @@ public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdap
      */
     @Override
     public void configFromProperties(Properties properties) {
+        String property = properties.getProperty("druid.stat.loggerName");
+        if (property != null && property.length() > 0) {
+            setLoggerName(property);
+        }
+    }
+    
+    public Log getLogger() {
+        return logger;
+    }
 
+    public void setLoggerName(String loggerName) {
+        logger = LogFactory.getLog(loggerName);
     }
 
     @Override
     public void log(DruidDataSourceStatValue statValue) {
-        if (LOG.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             Map<String, Object> map = new LinkedHashMap<String, Object>();
 
             map.put("url", statValue.url);
@@ -205,7 +218,7 @@ public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdap
 
             String text = JSONUtils.toJSONString(map);
 
-            LOG.info(text);
+            logger.info(text);
         }
     }
 
