@@ -26,8 +26,8 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     private int warnCount;
     private int infoCount;
 
-    public JakartaCommonsLoggingImpl(Class<?> clazz){
-        log = LogFactory.getLog(clazz);
+    public JakartaCommonsLoggingImpl(String loggerName){
+        log = LogFactory.getLog(loggerName);
     }
 
     public boolean isDebugEnabled() {
@@ -89,7 +89,7 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
         log.info(msg);
         infoCount++;
     }
-    
+
     @Override
     public int getInfoCount() {
         return infoCount;

@@ -791,6 +791,10 @@ public class SQLEvalVisitorUtils {
         if (wallConditionContext != null) {
             wallConditionContext.setConstArithmetic(true);
         }
+        
+        if (leftValue == null || rightValue == null) {
+            return false;
+        }
 
         Object value = null;
         switch (x.getOperator()) {
