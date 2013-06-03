@@ -179,53 +179,64 @@ public class WallVisitorUtils {
     }
 
     public static void checkSelelct(WallVisitor visitor, SQLSelectQueryBlock x) {
-        for (SQLSelectItem item : x.getSelectList()) {
-            item.setParent(x);
-        }
 
-        if (x.getInto() != null) {
-            checkReadOnly(visitor, x.getInto());
-        }
+        final WallSelectQueryContext old = wallSelectQueryContextLocal.get();
+        try {
+            wallSelectQueryContextLocal.set(new WallSelectQueryContext());
 
-        if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
-            addViolation(visitor, ErrorCode.SELECT_INTO_NOT_ALLOW, "select into not allow", x);
-            return;
-        }
+            for (SQLSelectItem item : x.getSelectList()) {
+                item.setParent(x);
+            }
 
-        if (x.getFrom() != null) {
-            x.getFrom().setParent(x);
-        }
+            if (x.getInto() != null) {
+                checkReadOnly(visitor, x.getInto());
+            }
 
-        SQLExpr where = x.getWhere();
-        if (where != null) {
-            where.setParent(x);
-            checkCondition(visitor, x.getWhere());
+            if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
+                addViolation(visitor, ErrorCode.SELECT_INTO_NOT_ALLOW, "select into not allow", x);
+                return;
+            }
 
-            if (Boolean.TRUE == getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck())) {
-                boolean isSimpleConstExpr = false;
-                SQLExpr first = getFirst(where);
+            if (x.getFrom() != null) {
+                x.getFrom().setParent(x);
+            }
 
-                if (first == where) {
-                    isSimpleConstExpr = true;
-                } else if (first instanceof SQLBinaryOpExpr) {
-                    SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) first;
+            SQLExpr where = x.getWhere();
+            if (where != null) {
+                where.setParent(x);
+                checkCondition(visitor, x.getWhere());
 
-                    if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
-                        || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
-                        if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
-                            && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
-                            isSimpleConstExpr = true;
+                if (Boolean.TRUE == getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck())) {
+                    boolean isSimpleConstExpr = false;
+                    SQLExpr first = getFirst(where);
+
+                    if (first == where) {
+                        isSimpleConstExpr = true;
+                    } else if (first instanceof SQLBinaryOpExpr) {
+                        SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) first;
+
+                        if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
+                            || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
+                            if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
+                                && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
+                                isSimpleConstExpr = true;
+                            }
                         }
+                    }
+
+                    final WallSelectQueryContext current = wallSelectQueryContextLocal.get();
+                    if (!isSimpleConstExpr // 简单表达式
+                        && !(current != null && current.hasTrueLike()) // eg: like '%%'
+                    ) {
+                        addViolation(visitor, ErrorCode.ALWAY_TRUE, "select alway true condition not allow", x);
                     }
                 }
 
-                if (!isSimpleConstExpr) {
-                    addViolation(visitor, ErrorCode.ALWAY_TRUE, "select alway true condition not allow", x);
-                }
             }
-
+            checkConditionForMultiTenant(visitor, x.getWhere(), x);
+        } finally {
+            wallSelectQueryContextLocal.set(old);
         }
-        checkConditionForMultiTenant(visitor, x.getWhere(), x);
     }
 
     public static void checkHaving(WallVisitor visitor, SQLExpr x) {
@@ -744,6 +755,41 @@ public class WallVisitorUtils {
         }
     }
 
+    public static class WallSelectQueryContext {
+
+        private boolean trueLike = false;
+
+        public boolean hasTrueLike() {
+            return trueLike;
+        }
+
+        public void setTrueLike(boolean trueLike) {
+            this.trueLike = trueLike;
+        }
+    }
+
+    public static class WallTopStatementContext {
+
+        private boolean fromSysTable  = false;
+        private boolean fromSysSchema = false;
+
+        public boolean fromSysTable() {
+            return fromSysTable;
+        }
+
+        public void setFromSysTable(boolean fromSysTable) {
+            this.fromSysTable = fromSysTable;
+        }
+
+        public boolean fromSysSchema() {
+            return fromSysSchema;
+        }
+
+        public void setFromSysSchema(boolean fromSysSchema) {
+            this.fromSysSchema = fromSysSchema;
+        }
+    }
+
     public static class WallConditionContext {
 
         private boolean partAlwayrue;
@@ -782,12 +828,31 @@ public class WallVisitorUtils {
         public void setBitwise(boolean bitwise) {
             this.bitwise = bitwise;
         }
+
     }
 
-    private static ThreadLocal<WallConditionContext> wallConditionContextLocal = new ThreadLocal<WallConditionContext>();
+    private static ThreadLocal<WallConditionContext>    wallConditionContextLocal    = new ThreadLocal<WallConditionContext>();
+    private static ThreadLocal<WallSelectQueryContext>  wallSelectQueryContextLocal  = new ThreadLocal<WallSelectQueryContext>();
+    private static ThreadLocal<WallTopStatementContext> wallTopStatementContextLocal = new ThreadLocal<WallTopStatementContext>();
 
     public static WallConditionContext getWallConditionContext() {
         return wallConditionContextLocal.get();
+    }
+
+    public static WallTopStatementContext getWallTopStatementContext() {
+        return wallTopStatementContextLocal.get();
+    }
+
+    public static void clearWallTopStatementContext() {
+        wallTopStatementContextLocal.set(null);
+    }
+
+    public static void initWallTopStatementContext() {
+        wallTopStatementContextLocal.set(new WallTopStatementContext());
+    }
+
+    public static WallSelectQueryContext getWallSelectQueryContext() {
+        return wallSelectQueryContextLocal.get();
     }
 
     public static Object getConditionValue(WallVisitor visitor, SQLExpr x, boolean alwayTrueCheck) {
@@ -973,6 +1038,12 @@ public class WallVisitorUtils {
     }
 
     public static void checkFunction(WallVisitor visitor, SQLMethodInvokeExpr x) {
+
+        final WallTopStatementContext topStatementContext = wallTopStatementContextLocal.get();
+        if (topStatementContext != null && (topStatementContext.fromSysSchema || topStatementContext.fromSysTable)) {
+            return;
+        }
+
         checkSchema(visitor, x.getOwner());
 
         if (!visitor.getConfig().isFunctionCheck()) {
@@ -1072,13 +1143,19 @@ public class WallVisitorUtils {
     }
 
     private static boolean checkSchema(WallVisitor visitor, SQLExpr x) {
+        final WallTopStatementContext topStatementContext = wallTopStatementContextLocal.get();
+        if (topStatementContext != null && (topStatementContext.fromSysSchema || topStatementContext.fromSysTable)) {
+            return true;
+        }
+
         if (x instanceof SQLName) {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
             if (!visitor.getProvider().checkDenySchema(owner)) {
-                boolean topSelectStatement = isTopSelectStatement(x);
+                boolean topStatement = isTopSelectStatement(x) || isTopUpdateStatement(x);
+                boolean isWhereOrHaving = isWhereOrHaving(x);
 
-                if (!topSelectStatement) {
+                if (!topStatement && isWhereOrHaving) {
                     SQLObject parent = x.getParent();
                     while (parent != null && !(parent instanceof SQLStatement)) {
                         parent = parent.getParent();
@@ -1114,6 +1191,10 @@ public class WallVisitorUtils {
                     if (!sameToTopSelectSchema) {
                         addViolation(visitor, ErrorCode.SCHEMA_DENY, "deny schema : " + owner, x);
                     }
+                } else {
+                    if (topStatementContext != null) {
+                        topStatementContext.setFromSysSchema(Boolean.TRUE);
+                    }
                 }
                 return true;
             }
@@ -1133,32 +1214,56 @@ public class WallVisitorUtils {
     }
 
     private static boolean isTopSelectStatement(SQLObject x) {
+
         boolean topSelectStatement = false;
         SQLObject parent = x.getParent();
-        if (parent instanceof SQLPropertyExpr) {
-            parent = parent.getParent();
-        }
-        if (parent instanceof SQLExprTableSource) {
-            parent = parent.getParent();
-        }
-        if (parent instanceof SQLSelectQueryBlock) {
-            parent = parent.getParent();
-        }
-        if (parent instanceof SQLSelect) {
-            parent = parent.getParent();
-        }
-        if (parent instanceof SQLSelectStatement || parent instanceof MySqlShowStatement) {
-            parent = parent.getParent();
-            if (parent == null) {
-                topSelectStatement = true;
+        while (parent != null) {
+
+            if (parent instanceof SQLSelectStatement || parent instanceof MySqlShowStatement) {
+                parent = parent.getParent();
+                if (parent == null) {
+                    topSelectStatement = true;
+                }
+                break;
             }
+
+            if (parent instanceof SQLUnionQuery) {
+                SQLUnionQuery union = (SQLUnionQuery) parent;
+                if (union.getRight() == x) {
+                    break;
+                }
+            }
+
+            x = parent;
+            parent = x.getParent();
         }
+
         return topSelectStatement;
     }
 
-    public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
-        SQLExpr expr = x.getExpr();
+    private static boolean isTopUpdateStatement(SQLObject x) {
+        boolean topUpdateStatement = false;
+        while (x != null) {
+            if (x instanceof SQLUpdateStatement) {
+                x = x.getParent();
+                if (x == null) {
+                    topUpdateStatement = true;
+                }
+                break;
+            }
+            x = x.getParent();
+        }
 
+        return topUpdateStatement;
+    }
+
+    public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
+        final WallTopStatementContext topStatementContext = wallTopStatementContextLocal.get();
+        if (topStatementContext != null && (topStatementContext.fromSysSchema || topStatementContext.fromSysTable)) {
+            return true;
+        }
+
+        SQLExpr expr = x.getExpr();
         if (expr instanceof SQLPropertyExpr) {
             boolean checkResult = checkSchema(visitor, ((SQLPropertyExpr) expr).getOwner());
             if (!checkResult) {
@@ -1201,6 +1306,16 @@ public class WallVisitorUtils {
             }
 
             if (visitor.isDenyTable(tableName)) {
+                boolean topStatement = isTopSelectStatement(x) || isTopUpdateStatement(x);
+                boolean isWhereOrHaving = isWhereOrHaving(x);
+
+                if (topStatement || !isWhereOrHaving) {
+                    if (topStatementContext != null) {
+                        topStatementContext.setFromSysTable(Boolean.TRUE);
+                    }
+                    return false;
+                }
+
                 boolean isTopNoneFrom = isTopSelectStatement(x);
                 if (isTopNoneFrom) {
                     return false;
