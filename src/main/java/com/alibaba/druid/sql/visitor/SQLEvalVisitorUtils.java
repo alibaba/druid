@@ -85,6 +85,7 @@ import com.alibaba.druid.sql.visitor.functions.Unhex;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
+import com.alibaba.druid.wall.spi.WallVisitorUtils.WallSelectQueryContext;
 
 public class SQLEvalVisitorUtils {
 
@@ -739,6 +740,10 @@ public class SQLEvalVisitorUtils {
 
         if (x.getOperator() == SQLBinaryOperator.Like) {
             if (isAlwayTrueLikePattern(x.getRight())) {
+                final WallSelectQueryContext wallSelectQueryContext = WallVisitorUtils.getWallSelectQueryContext();
+                if (wallSelectQueryContext != null) {
+                    wallSelectQueryContext.setTrueLike(Boolean.TRUE);
+                }
                 x.putAttribute(EVAL_VALUE, Boolean.TRUE);
                 return false;
             }
