@@ -21,15 +21,15 @@ import org.apache.log4j.Logger;
 public class Log4jImpl implements Log {
 
     private static final String callerFQCN = Log4jImpl.class.getName();
-    
-    private Logger log;
 
-    private int    errorCount;
-    private int    warnCount;
-    private int    infoCount;
+    private Logger              log;
 
-    public Log4jImpl(Class<?> clazz){
-        log = Logger.getLogger(clazz);
+    private int                 errorCount;
+    private int                 warnCount;
+    private int                 infoCount;
+
+    public Log4jImpl(String loggerName){
+        log = Logger.getLogger(loggerName);
     }
 
     public boolean isDebugEnabled() {

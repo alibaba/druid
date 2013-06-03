@@ -57,6 +57,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -1079,7 +1080,7 @@ public class WallVisitorUtils {
                 }
             }
 
-            if (isWhereOrHaving(x)) {
+            if (!(x.getParent() instanceof ValuesClause)) {
                 addViolation(visitor, ErrorCode.FUNCTION_DENY, "deny function : " + methodName, x);
             }
         }

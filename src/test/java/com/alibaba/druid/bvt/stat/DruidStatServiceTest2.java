@@ -23,8 +23,11 @@ import static org.junit.Assert.assertThat;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
@@ -38,13 +41,12 @@ import com.alibaba.druid.util.JdbcUtils;
 /**
  * Multiple data source test case.
  */
-public class DruidStatServiceTest2 {
+public class DruidStatServiceTest2 extends TestCase {
 
     private DruidDataSource dataSource;
     private DruidDataSource dataSource2;
 
     // every test, two data source initialized.
-    @Before
     public void setUp() throws Exception {
         // DruidStatService is singleton, reset all for other testcase.
         DruidStatService.getInstance().service("/reset-all.json");
@@ -62,13 +64,11 @@ public class DruidStatServiceTest2 {
         dataSource2.init();
     }
 
-    @After
     public void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
         JdbcUtils.close(dataSource2);
     }
 
-    @Test
     public void test_statService_getSqlList() throws Exception {
         String sql = "select 1";
 
@@ -106,7 +106,6 @@ public class DruidStatServiceTest2 {
         }
     }
 
-    @Test
     public void test_statService_getSqlById() throws Exception {
         String sql = "select 1";
 
@@ -155,7 +154,6 @@ public class DruidStatServiceTest2 {
         assertThat(resultMap.get("Content"), is(nullValue()));
     }
 
-    @Test
     public void test_statService_getDataSourceList() throws Exception {
         String result = DruidStatService.getInstance().service("/datasource.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
@@ -166,6 +164,10 @@ public class DruidStatServiceTest2 {
         Map<String, Object> dataSourceStat = dataSourceList.get(0);
         assertThat((Integer) dataSourceStat.get("PoolingCount"), equalTo(0));
         assertThat((Integer) dataSourceStat.get("ActiveCount"), equalTo(0));
+    }
+    
+    public void test_getWallStatMap() throws Exception {
+        DruidStatService.getInstance().getWallStatMap(Collections.<String, String>emptyMap());
     }
 
 }
