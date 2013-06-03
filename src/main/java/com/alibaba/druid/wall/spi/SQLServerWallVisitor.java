@@ -98,12 +98,12 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     }
 
     public boolean visit(SQLIdentifierExpr x) {
-        String name = x.getName();
-        name = WallVisitorUtils.form(name);
-        if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
-            getViolations().add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + name,
-                                                              toSQL(x)));
-        }
+        // String name = x.getName();
+        // name = WallVisitorUtils.form(name);
+        // if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
+        // getViolations().add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + name,
+        // toSQL(x)));
+        // }
         return true;
     }
 
@@ -176,8 +176,14 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
                                                                    this.toSQL(x)));
             return false;
         }
+        WallVisitorUtils.initWallTopStatementContext();
 
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLSelectStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -194,9 +200,15 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkUpdate(this, x);
 
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLUpdateStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     public boolean visit(SQLVariantRefExpr x) {
