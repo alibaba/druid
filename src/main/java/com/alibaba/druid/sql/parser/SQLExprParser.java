@@ -578,7 +578,7 @@ public class SQLExprParser extends SQLParser {
                         methodInvokeExpr.getParameters().add(new SQLIdentifierExpr("+"));
                         lexer.nextToken();
                     } else {
-                        exprList(methodInvokeExpr.getParameters());
+                        exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
                     }
                     accept(Token.RPAREN);
                 }
@@ -612,7 +612,7 @@ public class SQLExprParser extends SQLParser {
             exprCol.add(name());
         }
     }
-    
+
     public final void exprList(Collection<SQLExpr> exprCol) {
         exprList(exprCol, null);
     }
@@ -1264,7 +1264,7 @@ public class SQLExprParser extends SQLParser {
             column.getConstaints().add(new SQLColumnPrimaryKey());
             return parseColumnRest(column);
         }
-        
+
         if (lexer.token == Token.CHECK) {
             lexer.nextToken();
             SQLExpr expr = this.expr();
