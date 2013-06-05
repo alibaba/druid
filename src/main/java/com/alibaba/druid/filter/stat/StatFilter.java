@@ -599,13 +599,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcConnectionStat.Entry getConnectionInfo(ConnectionProxy connection) {
-        JdbcConnectionStat.Entry counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
+        JdbcConnectionStat.Entry counter = (JdbcConnectionStat.Entry) connection.getAttribute(ATTR_NAME_CONNECTION_STAT);
 
         if (counter == null) {
             String dataSourceName = connection.getDirectDataSource().getName();
-            connection.getAttributes().put(ATTR_NAME_CONNECTION_STAT,
+            connection.putAttribute(ATTR_NAME_CONNECTION_STAT,
                                            new JdbcConnectionStat.Entry(dataSourceName, connection.getId()));
-            counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
+            counter = (JdbcConnectionStat.Entry) connection.getAttribute(ATTR_NAME_CONNECTION_STAT);
         }
 
         return counter;

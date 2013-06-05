@@ -88,7 +88,7 @@ public class FilterChainImpl implements FilterChain {
     public int getFilterSize() {
         return filterSize;
     }
-    
+
     public void reset() {
         pos = 0;
     }
@@ -165,7 +165,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         connection.getRawObject().close();
-        connection.getAttributes().clear();
+        connection.clearAttributes();
     }
 
     @Override
@@ -659,7 +659,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
         resultSet.getResultSetRaw().close();
-        resultSet.getAttributes().clear();
+        resultSet.clearAttributes();
     }
 
     @Override
@@ -4473,7 +4473,7 @@ public class FilterChainImpl implements FilterChain {
         return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(),
                                       statement.getLastExecuteSql());
     }
-    
+
     public ClobProxy wrap(ConnectionProxy conn, Clob clob) {
         if (clob == null) {
             return null;
@@ -4482,15 +4482,15 @@ public class FilterChainImpl implements FilterChain {
         if (clob instanceof NClob) {
             return wrap(conn, (NClob) clob);
         }
-        
+
         return new ClobProxyImpl(dataSource, conn, clob);
     }
-    
+
     public NClobProxy wrap(ConnectionProxy conn, NClob clob) {
         if (clob == null) {
             return null;
         }
-        
+
         return new NClobProxyImpl(dataSource, conn, clob);
     }
 

@@ -393,7 +393,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public int[] statement_executeBatch(FilterChain chain, StatementProxy statement) throws SQLException {
-        WallSqlStat sqlStat = (WallSqlStat) statement.getAttributes().get(ATTR_SQL_STAT);
+        WallSqlStat sqlStat = (WallSqlStat) statement.getAttribute(ATTR_SQL_STAT);
         try {
             int[] updateCounts = chain.statement_executeBatch(statement);
             for (int i = 0; i < updateCounts.length; ++i) {
@@ -488,7 +488,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         boolean firstResult = chain.preparedStatement_execute(statement);
 
         if (!firstResult) {
-            WallSqlStat sqlStat = (WallSqlStat) statement.getAttributes().get(ATTR_SQL_STAT);
+            WallSqlStat sqlStat = (WallSqlStat) statement.getAttribute(ATTR_SQL_STAT);
             int updateCount = statement.getUpdateCount();
             statExecuteUpdate(sqlStat, updateCount);
         }
@@ -520,7 +520,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             return;
         }
 
-        stmt.getAttributes().put(ATTR_SQL_STAT, sqlStat);
+        stmt.putAttribute(ATTR_SQL_STAT, sqlStat);
     }
 
     public void statExecuteUpdate(int updateCount) {
@@ -642,7 +642,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         chain.resultSet_close(resultSet);
         int fetchRowCount = resultSet.getFetchRowCount();
 
-        WallSqlStat sqlStat = (WallSqlStat) resultSet.getStatementProxy().getAttributes().get(ATTR_SQL_STAT);
+        WallSqlStat sqlStat = (WallSqlStat) resultSet.getStatementProxy().getAttribute(ATTR_SQL_STAT);
         if (sqlStat == null) {
             return;
         }
