@@ -35,9 +35,9 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
-import java.util.TreeMap;
 
 import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
 
@@ -46,9 +46,11 @@ import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
  */
 public class PreparedStatementProxyImpl extends StatementProxyImpl implements PreparedStatementProxy {
 
-    protected final PreparedStatement           statement;
-    protected final String                      sql;
-    protected final Map<Integer, JdbcParameter> parameters = new TreeMap<Integer, JdbcParameter>();
+    protected final PreparedStatement statement;
+    protected final String            sql;
+    // protected final Map<Integer, JdbcParameter> parameters = new TreeMap<Integer, JdbcParameter>();
+    private JdbcParameter[]           parameters     = new JdbcParameter[16];
+    private int                       parametersSize = 0;
 
     public PreparedStatementProxyImpl(ConnectionProxy connection, PreparedStatement statement, String sql, long id){
         super(connection, statement, id);
@@ -57,7 +59,30 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     }
 
     public Map<Integer, JdbcParameter> getParameters() {
-        return parameters;
+        return null;
+    }
+
+    void setParameter(int jdbcIndex, JdbcParameter parameter) {
+        int index = jdbcIndex - 1;
+        
+        if (jdbcIndex > parametersSize) {
+            parametersSize = jdbcIndex;
+        }
+        if (parametersSize >= parameters.length) {
+            parameters = Arrays.copyOf(parameters, parametersSize + 1);
+        }
+        parameters[index] = parameter;
+    }
+
+    public int getParametersSize() {
+        return parametersSize;
+    }
+
+    public JdbcParameter getParameter(int i) {
+        if (i > parametersSize) {
+            return null;
+        }
+        return this.parameters[i];
     }
 
     public String getSql() {
@@ -405,72 +430,72 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             setParameter(parameterIndex, new JdbcParameter(Types.VARCHAR, x));
             return;
         }
-        
+
         if (clazz == BigDecimal.class) {
             setParameter(parameterIndex, new JdbcParameter(Types.DECIMAL, x));
             return;
         }
-        
+
         if (clazz == Float.class) {
             setParameter(parameterIndex, new JdbcParameter(Types.FLOAT, x));
             return;
         }
-        
+
         if (clazz == Double.class) {
             setParameter(parameterIndex, new JdbcParameter(Types.DOUBLE, x));
             return;
         }
-        
+
         if (clazz == java.sql.Date.class || clazz == java.util.Date.class) {
             setParameter(parameterIndex, new JdbcParameter(Types.DATE, x));
             return;
         }
-        
+
         if (clazz == java.sql.Timestamp.class) {
             setParameter(parameterIndex, new JdbcParameter(Types.TIMESTAMP, x));
             return;
         }
-        
+
         if (clazz == java.sql.Time.class) {
             setParameter(parameterIndex, new JdbcParameter(Types.TIME, x));
             return;
         }
-        
+
         if (clazz == Boolean.class) {
             setParameter(parameterIndex, new JdbcParameter(Types.BOOLEAN, x));
             return;
         }
-        
+
         if (clazz == byte[].class) {
             setParameter(parameterIndex, new JdbcParameter(TYPE.BYTES, x));
             return;
         }
-        
+
         if (x instanceof InputStream) {
             setParameter(parameterIndex, new JdbcParameter(JdbcParameter.TYPE.BinaryInputStream, x));
             return;
         }
-        
+
         if (x instanceof Reader) {
             setParameter(parameterIndex, new JdbcParameter(JdbcParameter.TYPE.CharacterInputStream, x));
             return;
         }
-        
+
         if (x instanceof Clob) {
             setParameter(parameterIndex, new JdbcParameter(Types.CLOB, x));
             return;
         }
-        
+
         if (x instanceof NClob) {
             setParameter(parameterIndex, new JdbcParameter(Types.NCLOB, x));
             return;
         }
-        
+
         if (x instanceof Blob) {
             setParameter(parameterIndex, new JdbcParameter(Types.BLOB, x));
             return;
         }
-        
+
         setParameter(parameterIndex, new JdbcParameter(Types.OTHER, null));
     }
 
@@ -565,29 +590,25 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         createChain().preparedStatement_setUnicodeStream(this, parameterIndex, x, length);
     }
 
-    public void setParameter(int parameterIndex, JdbcParameter parameter) {
-        this.getParameters().put(parameterIndex, parameter);
-    }
-
     @Override
     public String getLastExecuteSql() {
         return this.sql;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == PreparedStatementProxy.class) {
             return (T) this;
         }
-        
+
         return super.unwrap(iface);
     }
-    
+
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         if (iface == PreparedStatementProxy.class) {
             return true;
         }
-        
+
         return super.isWrapperFor(iface);
     }
 }

@@ -52,5 +52,8 @@ public interface StatementProxy extends Statement, WrapperProxy {
     
     Map<Integer, JdbcParameter> getParameters();
     
+    int getParametersSize();
+    JdbcParameter getParameter(int i);
+    
     boolean isFirstResultSet();
 }

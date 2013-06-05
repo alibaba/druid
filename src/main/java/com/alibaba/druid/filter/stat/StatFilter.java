@@ -505,10 +505,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JSONWriter out = new JSONWriter();
 
         out.writeArrayStart();
-        int index = 0;
-        for (JdbcParameter parameter : statement.getParameters().values()) {
-            if (index != 0) {
+        for (int i = 0, parametersSize = statement.getParametersSize(); i < parametersSize; ++i) {
+            JdbcParameter parameter = statement.getParameter(i);
+            if (i != 0) {
                 out.writeComma();
+            }
+            if (parameter == null) {
+                continue;
             }
 
             Object value = parameter.getValue();
@@ -538,7 +541,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             } else {
                 out.writeString('<' + value.getClass().getName() + '>');
             }
-            index++;
         }
         out.writeArrayEnd();
 
