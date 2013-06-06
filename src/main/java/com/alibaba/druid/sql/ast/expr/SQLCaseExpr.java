@@ -63,6 +63,9 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setValueExpr(SQLExpr valueExpr) {
+        if (valueExpr != null) {
+            valueExpr.setParent(this);
+        }
         this.valueExpr = valueExpr;
     }
 
@@ -71,11 +74,21 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setElseExpr(SQLExpr elseExpr) {
+        if (elseExpr != null) {
+            elseExpr.setParent(this);
+        }
         this.elseExpr = elseExpr;
     }
 
     public List<Item> getItems() {
         return this.items;
+    }
+
+    public void addItem(Item item) {
+        if (item != null) {
+            item.setParent(this);
+            this.items.add(item);
+        }
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -99,8 +112,8 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
 
         public Item(SQLExpr conditionExpr, SQLExpr valueExpr){
 
-            this.conditionExpr = conditionExpr;
-            this.valueExpr = valueExpr;
+            setConditionExpr(conditionExpr);
+            setValueExpr(valueExpr);
         }
 
         public SQLExpr getConditionExpr() {
@@ -108,6 +121,9 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
         }
 
         public void setConditionExpr(SQLExpr conditionExpr) {
+            if (conditionExpr != null) {
+                conditionExpr.setParent(this);
+            }
             this.conditionExpr = conditionExpr;
         }
 
@@ -116,6 +132,9 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
         }
 
         public void setValueExpr(SQLExpr valueExpr) {
+            if (valueExpr != null) {
+                valueExpr.setParent(this);
+            }
             this.valueExpr = valueExpr;
         }
 

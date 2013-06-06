@@ -41,8 +41,8 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
 
     public SQLBinaryOpExpr(SQLExpr left, SQLExpr right, SQLBinaryOperator operator){
 
-        this.left = left;
-        this.right = right;
+        setLeft(left);
+        setRight(right);
         this.operator = operator;
     }
 
