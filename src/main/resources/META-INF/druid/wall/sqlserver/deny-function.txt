@@ -1,5 +1,12 @@
+db_name
+col_name
+object_id
+host_name
+is_srvrolemember
+is_member
+opendatasource
+openrowset
+openquery
+has_dbaccess
 sp_executesql
 user_name
-is_srvrolemember
-DB_NAME
-HOST_NAME

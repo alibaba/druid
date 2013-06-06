@@ -54,7 +54,7 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
     }
 
     public void test01() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateSqlServer("SELECT user_name() FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT user_name() FROM X;"));
     }
 
     public final void test_sp_addsrvrolemenber() throws Exception {
