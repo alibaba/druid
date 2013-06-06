@@ -19,8 +19,6 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallUtils;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
@@ -30,17 +28,19 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  */
 public class MySqlWallPermitVariantTest extends TestCase {
 
+    private String sql = "select * FROM X where id=1 or version=@@version_compile_os";
+
     public void test_allow() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider();
         provider.getConfig().setVariantCheck(false);
-        
-        Assert.assertTrue(provider.checkValid("select @@version_compile_os FROM X"));
+
+        Assert.assertTrue(provider.checkValid(sql));
     }
-    
+
     public void test_not_allow() throws Exception {
         MySqlWallProvider provider = new MySqlWallProvider();
         provider.getConfig().setVariantCheck(true);
-        
-        Assert.assertFalse(provider.checkValid("select @@version_compile_os FROM X"));
+
+        Assert.assertFalse(provider.checkValid(sql));
     }
 }
