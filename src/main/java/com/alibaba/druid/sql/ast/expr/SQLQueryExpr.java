@@ -31,8 +31,7 @@ public class SQLQueryExpr extends SQLExprImpl implements Serializable {
     }
 
     public SQLQueryExpr(SQLSelect select){
-
-        this.subQuery = select;
+        setSubQuery(select);
     }
 
     public SQLSelect getSubQuery() {
@@ -40,6 +39,9 @@ public class SQLQueryExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 
