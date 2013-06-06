@@ -241,7 +241,7 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.THEN);
                 SQLExpr valueExpr = expr();
                 SQLCaseExpr.Item caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
-                caseExpr.getItems().add(caseItem);
+                caseExpr.addItem(caseItem);
 
                 while (lexer.token() == Token.WHEN) {
                     lexer.nextToken();
