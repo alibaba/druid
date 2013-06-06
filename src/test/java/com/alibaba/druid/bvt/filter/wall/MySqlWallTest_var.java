@@ -45,8 +45,13 @@ public class MySqlWallTest_var extends TestCase {
         "SELECT * FROM T WHERE @@SESSION.sql_mode = 'ANSI'")); //
     }
 
+    public void test_true2() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql(//
+        "SELECT * FROM T WHERE @@sql_mode = 'ANSI'")); //
+    }
+
     public void test_false_1() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT * FROM T WHERE @@sql_mode = 'ANSI'")); //
+        "SELECT * FROM T WHERE @@basedir = 'ANSI'")); //
     }
 }

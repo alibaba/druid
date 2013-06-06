@@ -31,7 +31,7 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  */
 public class MySqlWallTest66 extends TestCase {
 
-    public void test_false() throws Exception {
+    public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 

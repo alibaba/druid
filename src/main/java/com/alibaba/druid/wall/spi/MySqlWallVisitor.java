@@ -163,9 +163,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLInsertStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkInsert(this, x);
-
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLInsertStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override

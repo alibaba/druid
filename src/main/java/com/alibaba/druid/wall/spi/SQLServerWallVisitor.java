@@ -124,6 +124,11 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
+
+        if (x.getParent() instanceof SQLExprTableSource) {
+            WallVisitorUtils.checkFunctionInTableSource(this, x);
+        }
+
         WallVisitorUtils.checkFunction(this, x);
 
         return true;
@@ -188,8 +193,14 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLInsertStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkInsert(this, x);
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLInsertStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override

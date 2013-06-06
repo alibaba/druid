@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -703,6 +704,17 @@ public class WallVisitorUtils {
         return false;
     }
 
+    private static boolean hasWhere(SQLSelectQuery selectQuery) {
+
+        if (selectQuery instanceof SQLSelectQueryBlock) {
+            return ((SQLSelectQueryBlock) selectQuery).getWhere() != null;
+        } else if (selectQuery instanceof SQLUnionQuery) {
+            SQLUnionQuery union = (SQLUnionQuery) selectQuery;
+            return hasWhere(union.getLeft()) || hasWhere(union.getRight());
+        }
+        return false;
+    }
+
     public static boolean isWhereOrHaving(SQLObject x) {
         if (x == null) {
             return false;
@@ -715,12 +727,17 @@ public class WallVisitorUtils {
                 return false;
             }
 
+            if (parent instanceof SQLUnionQuery) {
+                SQLUnionQuery union = (SQLUnionQuery) parent;
+                if (union.getRight() == x && hasWhere(union.getLeft())) {
+                    return true;
+                }
+            }
+
             if (parent instanceof SQLSelectQueryBlock) {
                 SQLSelectQueryBlock query = (SQLSelectQueryBlock) parent;
                 if (query.getWhere() == x) {
                     return true;
-                } else {
-                    return false;
                 }
             }
 
@@ -1037,6 +1054,25 @@ public class WallVisitorUtils {
         return false;
     }
 
+    public static void checkFunctionInTableSource(WallVisitor visitor, SQLMethodInvokeExpr x) {
+        final WallTopStatementContext topStatementContext = wallTopStatementContextLocal.get();
+        if (topStatementContext != null && (topStatementContext.fromSysSchema || topStatementContext.fromSysTable)) {
+            return;
+        }
+
+        checkSchema(visitor, x.getOwner());
+
+        String methodName = x.getMethodName();
+        if (!visitor.getProvider().checkDenyTable(methodName)) {
+            if (isTopUpdateStatement(x) || isFirstSelectTableSource(x)) {
+                if (topStatementContext != null) {
+                    topStatementContext.setFromSysSchema(Boolean.TRUE);
+                    clearViolation(visitor);
+                }
+            }
+        }
+    }
+
     public static void checkFunction(WallVisitor visitor, SQLMethodInvokeExpr x) {
 
         final WallTopStatementContext topStatementContext = wallTopStatementContextLocal.get();
@@ -1113,6 +1149,14 @@ public class WallVisitorUtils {
     }
 
     public static boolean isTopNoneFromSelect(WallVisitor visitor, SQLObject x) {
+        for (;;) {
+            if (x.getParent() instanceof SQLExpr) {
+                x = x.getParent();
+            } else {
+                break;
+            }
+        }
+
         if (!(x.getParent() instanceof SQLSelectItem)) {
             return false;
         }
@@ -1152,10 +1196,8 @@ public class WallVisitorUtils {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
             if (!visitor.getProvider().checkDenySchema(owner)) {
-                boolean topStatement = isTopSelectStatement(x) || isTopUpdateStatement(x);
-                boolean isWhereOrHaving = isWhereOrHaving(x);
 
-                if (!topStatement && isWhereOrHaving) {
+                if (!isTopUpdateStatement(x) && !isFirstSelectTableSource(x)) {
                     SQLObject parent = x.getParent();
                     while (parent != null && !(parent instanceof SQLStatement)) {
                         parent = parent.getParent();
@@ -1194,6 +1236,7 @@ public class WallVisitorUtils {
                 } else {
                     if (topStatementContext != null) {
                         topStatementContext.setFromSysSchema(Boolean.TRUE);
+                        clearViolation(visitor);
                     }
                 }
                 return true;
@@ -1213,55 +1256,127 @@ public class WallVisitorUtils {
         return true;
     }
 
-    private static boolean isTopSelectStatement(SQLObject x) {
+    private static boolean isFirstSelectTableSource(SQLObject x) {
 
-        boolean topSelectStatement = false;
+        for (;;) {
+            if (x instanceof SQLExpr) {
+                x = x.getParent();
+            } else {
+                break;
+            }
+        }
+
+        if (!(x instanceof SQLExprTableSource)) {
+            return false;
+        }
+
+        SQLSelectQueryBlock queryBlock = null;
         SQLObject parent = x.getParent();
         while (parent != null) {
 
-            if (parent instanceof SQLSelectStatement || parent instanceof MySqlShowStatement) {
-                parent = parent.getParent();
-                if (parent == null) {
-                    topSelectStatement = true;
+            if (parent instanceof SQLJoinTableSource) {
+                SQLJoinTableSource join = (SQLJoinTableSource) parent;
+                if (join.getRight() == x && hasTableSource(join.getLeft())) {
+                    return false;
                 }
-                break;
             }
 
-            if (parent instanceof SQLUnionQuery) {
-                SQLUnionQuery union = (SQLUnionQuery) parent;
-                if (union.getRight() == x) {
-                    break;
-                }
+            if (parent instanceof SQLSelectQueryBlock) {
+                queryBlock = (SQLSelectQueryBlock) parent;
+                break;
             }
 
             x = parent;
             parent = x.getParent();
         }
 
-        return topSelectStatement;
+        if (queryBlock == null) {
+            return false;
+        }
+
+        boolean isQueryExpr = false;
+        do {
+            x = parent;
+            parent = parent.getParent();
+            if (parent instanceof SQLUnionQuery) {
+                SQLUnionQuery union = (SQLUnionQuery) parent;
+                if (union.getRight() == x && hasTableSource(union.getLeft())) {
+                    return false;
+                }
+            } else if (parent instanceof SQLQueryExpr || parent instanceof SQLInSubQueryExpr) {
+                isQueryExpr = true;
+            } else if (isQueryExpr && parent instanceof SQLSelectQueryBlock) {
+                if (hasTableSource((SQLSelectQueryBlock) parent)) {
+                    return false;
+                }
+            }
+        } while (parent != null);
+
+        return true;
+    }
+
+    private static boolean hasTableSource(SQLSelectQuery x) {
+
+        if (x instanceof SQLUnionQuery) {
+            SQLUnionQuery union = (SQLUnionQuery) x;
+            return hasTableSource(union.getLeft()) || hasTableSource(union.getRight());
+        } else if (x instanceof SQLSelectQueryBlock) {
+            return hasTableSource(((SQLSelectQueryBlock) x).getFrom());
+        }
+
+        return false;
+    }
+
+    private static boolean hasTableSource(SQLTableSource x) {
+        if (x == null) {
+            return false;
+        }
+
+        if (x instanceof SQLExprTableSource) {
+            SQLExpr fromExpr = ((SQLExprTableSource) x).getExpr();
+            if (fromExpr instanceof SQLName) {
+                String name = fromExpr.toString();
+                name = form(name);
+                if (name.equalsIgnoreCase("DUAL")) {
+                    return false;
+                }
+            }
+            return true;
+        } else if (x instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) x;
+            return hasTableSource(join.getLeft()) || hasTableSource(join.getRight());
+        } else if (x instanceof SQLSubqueryTableSource) {
+            return hasTableSource(((SQLSubqueryTableSource) x).getSelect().getQuery());
+        }
+
+        return false;
     }
 
     private static boolean isTopUpdateStatement(SQLObject x) {
-        boolean topUpdateStatement = false;
-        while (x != null) {
+
+        for (;;) {
+            if (x instanceof SQLExpr) {
+                x = x.getParent();
+            } else {
+                break;
+            }
+        }
+
+        if (x instanceof SQLExprTableSource) {
+            x = x.getParent();
+
             if (x instanceof SQLUpdateStatement) {
                 x = x.getParent();
                 if (x == null) {
-                    topUpdateStatement = true;
+                    return true;
                 }
-                break;
             }
-            x = x.getParent();
         }
-
-        return topUpdateStatement;
+        return false;
     }
 
     public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
         final WallTopStatementContext topStatementContext = wallTopStatementContextLocal.get();
-        if (topStatementContext != null && (topStatementContext.fromSysSchema || topStatementContext.fromSysTable)) {
-            return true;
-        }
 
         SQLExpr expr = x.getExpr();
         if (expr instanceof SQLPropertyExpr) {
@@ -1305,18 +1420,21 @@ public class WallVisitorUtils {
                 }
             }
 
-            if (visitor.isDenyTable(tableName)) {
-                boolean topStatement = isTopSelectStatement(x) || isTopUpdateStatement(x);
-                boolean isWhereOrHaving = isWhereOrHaving(x);
+            if (topStatementContext != null && (topStatementContext.fromSysSchema || topStatementContext.fromSysTable)) {
+                return true;
+            }
 
-                if (topStatement || !isWhereOrHaving) {
+            if (visitor.isDenyTable(tableName)) {
+
+                if (isTopUpdateStatement(x) || isFirstSelectTableSource(x)) {
                     if (topStatementContext != null) {
                         topStatementContext.setFromSysTable(Boolean.TRUE);
+                        clearViolation(visitor);
                     }
                     return false;
                 }
 
-                boolean isTopNoneFrom = isTopSelectStatement(x);
+                boolean isTopNoneFrom = isTopNoneFromSelect(visitor, x);
                 if (isTopNoneFrom) {
                     return false;
                 }
@@ -1331,6 +1449,10 @@ public class WallVisitorUtils {
 
     private static void addViolation(WallVisitor visitor, int errorCode, String message, SQLObject x) {
         visitor.addViolation(new IllegalSQLObjectViolation(errorCode, message, visitor.toSQL(x)));
+    }
+
+    private static void clearViolation(WallVisitor visitor) {
+        visitor.getViolations().clear();
     }
 
     public static void checkUnion(WallVisitor visitor, SQLUnionQuery x) {
