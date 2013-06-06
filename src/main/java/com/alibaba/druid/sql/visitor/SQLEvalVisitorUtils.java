@@ -1223,7 +1223,7 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof String || b instanceof String) {
-            return ((String) a).compareTo((String) b) > 0;
+            return castToString(a).compareTo(castToString(b)) > 0;
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
