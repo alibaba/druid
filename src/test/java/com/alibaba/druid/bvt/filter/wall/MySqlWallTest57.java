@@ -39,22 +39,31 @@ public class MySqlWallTest57 extends TestCase {
 
         Assert.assertEquals(0, provider.getTableStats().size());
     }
-    
+
     public void test_true_1() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertTrue(provider.checkValid(//
-                "SELECT @@version FROM DUAL"));
-        
+        "SELECT @@version FROM DUAL"));
+
         Assert.assertEquals(1, provider.getTableStats().size());
     }
-    
+
+    public void test_true_2() throws Exception {
+        WallProvider provider = new MySqlWallProvider();
+
+        Assert.assertTrue(provider.checkValid(//
+        "SELECT @@version FROM X"));
+
+        Assert.assertEquals(1, provider.getTableStats().size());
+    }
+
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         Assert.assertFalse(provider.checkValid(//
-                "SELECT @@version FROM X"));
-        
+        "SELECT * FROM X where id=1 and 1!=1 union select @@version"));
+
         Assert.assertEquals(1, provider.getTableStats().size());
     }
 }

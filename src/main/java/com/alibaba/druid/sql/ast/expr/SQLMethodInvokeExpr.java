@@ -42,7 +42,7 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
     public SQLMethodInvokeExpr(String methodName, SQLExpr owner){
 
         this.methodName = methodName;
-        this.owner = owner;
+        setOwner(owner);
     }
 
     public String getMethodName() {
@@ -58,6 +58,9 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setOwner(SQLExpr owner) {
+        if (owner != null) {
+            owner.setParent(this);
+        }
         this.owner = owner;
     }
 
