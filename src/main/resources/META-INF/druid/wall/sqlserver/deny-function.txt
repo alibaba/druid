@@ -1,7 +1,8 @@
 db_name
 col_name
-object_id
+user_name
 host_name
+object_id
 is_srvrolemember
 is_member
 opendatasource
@@ -9,4 +10,3 @@ openrowset
 openquery
 has_dbaccess
 sp_executesql
-user_name
