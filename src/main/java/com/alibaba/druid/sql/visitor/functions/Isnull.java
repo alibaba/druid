@@ -40,6 +40,8 @@ public class Isnull implements Function {
         Object itemValue = condition.getAttributes().get(EVAL_VALUE);
         if (itemValue == EVAL_VALUE_NULL) {
             return Boolean.TRUE;
+        } else if (itemValue == null) {
+            return null;
         } else {
             return Boolean.FALSE;
         }
