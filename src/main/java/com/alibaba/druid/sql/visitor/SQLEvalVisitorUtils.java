@@ -797,6 +797,9 @@ public class SQLEvalVisitorUtils {
             wallConditionContext.setConstArithmetic(true);
         }
 
+        leftValue = processValue(leftValue);
+        rightValue = processValue(rightValue);
+
         if (leftValue == null || rightValue == null) {
             return false;
         }
@@ -888,6 +891,17 @@ public class SQLEvalVisitorUtils {
         }
 
         return false;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static Object processValue(Object value) {
+        if (value instanceof List) {
+            List list = (List) value;
+            if (list.size() == 1) {
+                return processValue(list.get(0));
+            }
+        }
+        return value;
     }
 
     private static boolean isAlwayTrueLikePattern(SQLExpr x) {
