@@ -48,7 +48,6 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     protected final PreparedStatement statement;
     protected final String            sql;
-    // protected final Map<Integer, JdbcParameter> parameters = new TreeMap<Integer, JdbcParameter>();
     private JdbcParameter[]           parameters     = new JdbcParameter[16];
     private int                       parametersSize = 0;
 
@@ -69,7 +68,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             parametersSize = jdbcIndex;
         }
         if (parametersSize >= parameters.length) {
-            parameters = Arrays.copyOf(parameters, parametersSize + 1);
+            parameters = Arrays.copyOf(parameters, parametersSize + 16);
         }
         parameters[index] = parameter;
     }
