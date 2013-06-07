@@ -64,7 +64,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     void setParameter(int jdbcIndex, JdbcParameter parameter) {
         int index = jdbcIndex - 1;
-        
+
         if (jdbcIndex > parametersSize) {
             parametersSize = jdbcIndex;
         }
@@ -159,235 +159,235 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setArray(int parameterIndex, Array x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.ARRAY, x));
+        setParameter(parameterIndex, createParameter(Types.ARRAY, x));
 
         createChain().preparedStatement_setArray(this, parameterIndex, x);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(JdbcParameter.TYPE.AsciiInputStream, x));
+        setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.AsciiInputStream, x));
 
         createChain().preparedStatement_setAsciiStream(this, parameterIndex, x);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(JdbcParameter.TYPE.AsciiInputStream, x, length));
+        setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.AsciiInputStream, x, length));
 
         createChain().preparedStatement_setAsciiStream(this, parameterIndex, x, length);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(JdbcParameter.TYPE.AsciiInputStream, x, length));
+        setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.AsciiInputStream, x, length));
 
         createChain().preparedStatement_setAsciiStream(this, parameterIndex, x, length);
     }
 
     @Override
     public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterDecimal(x));
+        setParameter(parameterIndex, createParameter(x));
         createChain().preparedStatement_setBigDecimal(this, parameterIndex, x);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(JdbcParameter.TYPE.BinaryInputStream, x));
+        setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.BinaryInputStream, x));
 
         createChain().preparedStatement_setBinaryStream(this, parameterIndex, x);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(JdbcParameter.TYPE.BinaryInputStream, x, length));
+        setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.BinaryInputStream, x, length));
 
         createChain().preparedStatement_setBinaryStream(this, parameterIndex, x, length);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(JdbcParameter.TYPE.BinaryInputStream, x, length));
+        setParameter(parameterIndex, createParameter(JdbcParameter.TYPE.BinaryInputStream, x, length));
 
         createChain().preparedStatement_setBinaryStream(this, parameterIndex, x, length);
     }
 
     @Override
     public void setBlob(int parameterIndex, Blob x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.BLOB, x));
+        setParameter(parameterIndex, createParameter(Types.BLOB, x));
 
         createChain().preparedStatement_setBlob(this, parameterIndex, x);
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.BLOB, x));
+        setParameter(parameterIndex, createParameter(Types.BLOB, x));
 
         createChain().preparedStatement_setBlob(this, parameterIndex, x);
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream x, long length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.BLOB, x, length));
+        setParameter(parameterIndex, createParameter(Types.BLOB, x, length));
         createChain().preparedStatement_setBlob(this, parameterIndex, x, length);
     }
 
     @Override
     public void setBoolean(int parameterIndex, boolean x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.BOOLEAN, x));
+        setParameter(parameterIndex, createParameter(Types.BOOLEAN, x));
         createChain().preparedStatement_setBoolean(this, parameterIndex, x);
     }
 
     @Override
     public void setByte(int parameterIndex, byte x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.TINYINT, x));
+        setParameter(parameterIndex, createParameter(Types.TINYINT, x));
 
         createChain().preparedStatement_setByte(this, parameterIndex, x);
     }
 
     @Override
     public void setBytes(int parameterIndex, byte[] x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(TYPE.BYTES, x));
+        setParameter(parameterIndex, createParameter(TYPE.BYTES, x));
 
         createChain().preparedStatement_setBytes(this, parameterIndex, x);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(TYPE.CharacterInputStream, x));
+        setParameter(parameterIndex, createParameter(TYPE.CharacterInputStream, x));
 
         createChain().preparedStatement_setCharacterStream(this, parameterIndex, x);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader x, int length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(TYPE.CharacterInputStream, x, length));
+        setParameter(parameterIndex, createParameter(TYPE.CharacterInputStream, x, length));
 
         createChain().preparedStatement_setCharacterStream(this, parameterIndex, x, length);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader x, long length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(TYPE.CharacterInputStream, x, length));
+        setParameter(parameterIndex, createParameter(TYPE.CharacterInputStream, x, length));
 
         createChain().preparedStatement_setCharacterStream(this, parameterIndex, x, length);
     }
 
     @Override
     public void setClob(int parameterIndex, Clob x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.CLOB, x));
+        setParameter(parameterIndex, createParameter(Types.CLOB, x));
 
         createChain().preparedStatement_setClob(this, parameterIndex, x);
     }
 
     @Override
     public void setClob(int parameterIndex, Reader x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.CLOB, x));
+        setParameter(parameterIndex, createParameter(Types.CLOB, x));
 
         createChain().preparedStatement_setClob(this, parameterIndex, x);
     }
 
     @Override
     public void setClob(int parameterIndex, Reader x, long length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.CLOB, x, length));
+        setParameter(parameterIndex, createParameter(Types.CLOB, x, length));
 
         createChain().preparedStatement_setClob(this, parameterIndex, x, length);
     }
 
     @Override
     public void setDate(int parameterIndex, Date x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterDate(x));
+        setParameter(parameterIndex, createParameter(x));
 
         createChain().preparedStatement_setDate(this, parameterIndex, x);
     }
 
     @Override
     public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.DATE, x, cal));
+        setParameter(parameterIndex, createParameter(Types.DATE, x, cal));
 
         createChain().preparedStatement_setDate(this, parameterIndex, x, cal);
     }
 
     @Override
     public void setDouble(int parameterIndex, double x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.DOUBLE, x));
+        setParameter(parameterIndex, createParameter(Types.DOUBLE, x));
 
         createChain().preparedStatement_setDouble(this, parameterIndex, x);
     }
 
     @Override
     public void setFloat(int parameterIndex, float x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.FLOAT, x));
+        setParameter(parameterIndex, createParameter(Types.FLOAT, x));
 
         createChain().preparedStatement_setFloat(this, parameterIndex, x);
     }
 
     @Override
     public void setInt(int parameterIndex, int x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterInt(x));
+        setParameter(parameterIndex, createParemeter(x));
 
         createChain().preparedStatement_setInt(this, parameterIndex, x);
     }
 
     @Override
     public void setLong(int parameterIndex, long x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterLong(x));
+        setParameter(parameterIndex, createParameter(x));
 
         createChain().preparedStatement_setLong(this, parameterIndex, x);
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(TYPE.NCharacterInputStream, x));
+        setParameter(parameterIndex, createParameter(TYPE.NCharacterInputStream, x));
 
         createChain().preparedStatement_setNCharacterStream(this, parameterIndex, x);
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader x, long length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(TYPE.NCharacterInputStream, x, length));
+        setParameter(parameterIndex, createParameter(TYPE.NCharacterInputStream, x, length));
 
         createChain().preparedStatement_setNCharacterStream(this, parameterIndex, x, length);
     }
 
     @Override
     public void setNClob(int parameterIndex, NClob x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.NCLOB, x));
+        setParameter(parameterIndex, createParameter(Types.NCLOB, x));
 
         createChain().preparedStatement_setNClob(this, parameterIndex, x);
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.NCLOB, x));
+        setParameter(parameterIndex, createParameter(Types.NCLOB, x));
 
         createChain().preparedStatement_setNClob(this, parameterIndex, x);
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader x, long length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.NCLOB, x, length));
+        setParameter(parameterIndex, createParameter(Types.NCLOB, x, length));
 
         createChain().preparedStatement_setNClob(this, parameterIndex, x, length);
     }
 
     @Override
     public void setNString(int parameterIndex, String x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.NVARCHAR, x));
+        setParameter(parameterIndex, createParameter(Types.NVARCHAR, x));
 
         createChain().preparedStatement_setNString(this, parameterIndex, x);
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterNull(sqlType));
+        setParameter(parameterIndex, createParameterNull(sqlType));
 
         createChain().preparedStatement_setNull(this, parameterIndex, sqlType);
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterNull(sqlType));
+        setParameter(parameterIndex, createParameterNull(sqlType));
 
         createChain().preparedStatement_setNull(this, parameterIndex, sqlType, typeName);
     }
@@ -401,38 +401,38 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     private void setObjectParameter(int parameterIndex, Object x) {
         if (x == null) {
-            setParameter(parameterIndex, new JdbcParameterNull(Types.OTHER));
+            setParameter(parameterIndex, createParameterNull(Types.OTHER));
             return;
         }
 
         Class<?> clazz = x.getClass();
         if (clazz == Byte.class) {
-            setParameter(parameterIndex, new JdbcParameterImpl(Types.TINYINT, x));
+            setParameter(parameterIndex, createParameter(Types.TINYINT, x));
             return;
         }
 
         if (clazz == Short.class) {
-            setParameter(parameterIndex, new JdbcParameterImpl(Types.SMALLINT, x));
+            setParameter(parameterIndex, createParameter(Types.SMALLINT, x));
             return;
         }
 
         if (clazz == Integer.class) {
-            setParameter(parameterIndex, new JdbcParameterInt((Integer)x));
+            setParameter(parameterIndex, createParemeter((Integer) x));
             return;
         }
 
         if (clazz == Long.class) {
-            setParameter(parameterIndex, new JdbcParameterLong((Long) x));
+            setParameter(parameterIndex, createParameter((Long) x));
             return;
         }
 
         if (clazz == String.class) {
-            setParameter(parameterIndex, new JdbcParameterString((String) x));
+            setParameter(parameterIndex, createParameter((String) x));
             return;
         }
 
         if (clazz == BigDecimal.class) {
-            setParameter(parameterIndex, new JdbcParameterDecimal((BigDecimal) x));
+            setParameter(parameterIndex, createParameter((BigDecimal) x));
             return;
         }
 
@@ -447,12 +447,12 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         }
 
         if (clazz == java.sql.Date.class || clazz == java.util.Date.class) {
-            setParameter(parameterIndex, new JdbcParameterDate((java.util.Date) x));
+            setParameter(parameterIndex, createParameter((java.util.Date) x));
             return;
         }
 
         if (clazz == java.sql.Timestamp.class) {
-            setParameter(parameterIndex, new JdbcParameterTimestamp((java.sql.Timestamp) x));
+            setParameter(parameterIndex, createParameter((java.sql.Timestamp) x));
             return;
         }
 
@@ -496,96 +496,96 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             return;
         }
 
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.OTHER, null));
+        setParameter(parameterIndex, createParameter(Types.OTHER, null));
     }
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(targetSqlType, x));
+        setParameter(parameterIndex, createParameter(targetSqlType, x));
 
         createChain().preparedStatement_setObject(this, parameterIndex, x, targetSqlType);
     }
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(targetSqlType, x, -1, null, scaleOrLength));
+        setParameter(parameterIndex, createParameter(x, targetSqlType, scaleOrLength));
 
         createChain().preparedStatement_setObject(this, parameterIndex, x, targetSqlType, scaleOrLength);
     }
 
     @Override
     public void setRef(int parameterIndex, Ref x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.REF, x));
+        setParameter(parameterIndex, createParameter(Types.REF, x));
 
         createChain().preparedStatement_setRef(this, parameterIndex, x);
     }
 
     @Override
     public void setRowId(int parameterIndex, RowId x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.ROWID, x));
+        setParameter(parameterIndex, createParameter(Types.ROWID, x));
 
         createChain().preparedStatement_setRowId(this, parameterIndex, x);
     }
 
     @Override
     public void setSQLXML(int parameterIndex, SQLXML x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.SQLXML, x));
+        setParameter(parameterIndex, createParameter(Types.SQLXML, x));
 
         createChain().preparedStatement_setSQLXML(this, parameterIndex, x);
     }
 
     @Override
     public void setShort(int parameterIndex, short x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.SMALLINT, x));
+        setParameter(parameterIndex, createParameter(Types.SMALLINT, x));
 
         createChain().preparedStatement_setShort(this, parameterIndex, x);
     }
 
     @Override
     public void setString(int parameterIndex, String x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterString(x));
+        setParameter(parameterIndex, createParameter(x));
 
         createChain().preparedStatement_setString(this, parameterIndex, x);
     }
 
     @Override
     public void setTime(int parameterIndex, Time x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.TIME, x));
+        setParameter(parameterIndex, createParameter(Types.TIME, x));
 
         createChain().preparedStatement_setTime(this, parameterIndex, x);
     }
 
     @Override
     public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.TIME, x, cal));
+        setParameter(parameterIndex, createParameter(Types.TIME, x, cal));
 
         createChain().preparedStatement_setTime(this, parameterIndex, x, cal);
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterTimestamp(x));
+        setParameter(parameterIndex, createParameter(x));
 
         createChain().preparedStatement_setTimestamp(this, parameterIndex, x);
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(Types.TIMESTAMP, x));
+        setParameter(parameterIndex, createParameter(Types.TIMESTAMP, x));
 
         createChain().preparedStatement_setTimestamp(this, parameterIndex, x, cal);
     }
 
     @Override
     public void setURL(int parameterIndex, URL x) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(TYPE.URL, x));
+        setParameter(parameterIndex, createParameter(TYPE.URL, x));
 
         createChain().preparedStatement_setURL(this, parameterIndex, x);
     }
 
     @Override
     public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameterImpl(TYPE.UnicodeStream, x, length));
+        setParameter(parameterIndex, createParameter(TYPE.UnicodeStream, x, length));
 
         createChain().preparedStatement_setUnicodeStream(this, parameterIndex, x, length);
     }
@@ -610,5 +610,49 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         }
 
         return super.isWrapperFor(iface);
+    }
+
+    private JdbcParameter createParemeter(int x) {
+        return new JdbcParameterInt(x);
+    }
+
+    private JdbcParameter createParameter(long x) {
+        return new JdbcParameterLong(x);
+    }
+
+    private JdbcParameter createParameterNull(int sqlType) {
+        return new JdbcParameterNull(sqlType);
+    }
+
+    private JdbcParameter createParameter(java.util.Date x) {
+        return new JdbcParameterDate(x);
+    }
+
+    private JdbcParameter createParameter(BigDecimal x) {
+        return new JdbcParameterDecimal(x);
+    }
+
+    private JdbcParameter createParameter(String x) {
+        return new JdbcParameterString(x);
+    }
+
+    private JdbcParameter createParameter(Timestamp x) {
+        return new JdbcParameterTimestamp(x);
+    }
+
+    private JdbcParameter createParameter(Object x, int targetSqlType, int scaleOrLength) {
+        return new JdbcParameterImpl(targetSqlType, x, -1, null, scaleOrLength);
+    }
+
+    private JdbcParameter createParameter(int sqlType, Object value, long length) {
+        return new JdbcParameterImpl(sqlType, value, length);
+    }
+
+    private JdbcParameter createParameter(int sqlType, Object value) {
+        return new JdbcParameterImpl(sqlType, value);
+    }
+
+    public JdbcParameter createParameter(int sqlType, Object value, Calendar calendar) {
+        return new JdbcParameterImpl(sqlType, value, calendar);
     }
 }
