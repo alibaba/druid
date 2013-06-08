@@ -1,12 +1,36 @@
 package com.alibaba.druid.proxy.jdbc;
 
+import java.sql.Types;
 import java.util.Calendar;
 
 public final class JdbcParameterNull implements JdbcParameter {
 
-    private final int sqlType;
+    private final int                     sqlType;
 
-    public JdbcParameterNull(int sqlType){
+    public final static JdbcParameterNull CHAR      = new JdbcParameterNull(Types.CHAR);
+    public final static JdbcParameterNull VARCHAR   = new JdbcParameterNull(Types.VARCHAR);
+    public final static JdbcParameterNull NVARCHAR  = new JdbcParameterNull(Types.NVARCHAR);
+
+    public final static JdbcParameterNull BINARY    = new JdbcParameterNull(Types.BINARY);
+    public final static JdbcParameterNull VARBINARY = new JdbcParameterNull(Types.VARBINARY);
+
+    public final static JdbcParameterNull TINYINT   = new JdbcParameterNull(Types.TINYINT);
+    public final static JdbcParameterNull SMALLINT  = new JdbcParameterNull(Types.SMALLINT);
+    public final static JdbcParameterNull INTEGER   = new JdbcParameterNull(Types.INTEGER);
+    public final static JdbcParameterNull BIGINT    = new JdbcParameterNull(Types.BIGINT);
+
+    public final static JdbcParameterNull DECIMAL   = new JdbcParameterNull(Types.DECIMAL);
+    public final static JdbcParameterNull NUMERIC   = new JdbcParameterNull(Types.NUMERIC);
+    public final static JdbcParameterNull FLOAT     = new JdbcParameterNull(Types.FLOAT);
+    public final static JdbcParameterNull DOUBLE    = new JdbcParameterNull(Types.DOUBLE);
+
+    public final static JdbcParameterNull NULL      = new JdbcParameterNull(Types.NULL);
+
+    public final static JdbcParameterNull DATE      = new JdbcParameterNull(Types.DATE);
+    public final static JdbcParameterNull TIME      = new JdbcParameterNull(Types.TIME);
+    public final static JdbcParameterNull TIMESTAMP = new JdbcParameterNull(Types.TIMESTAMP);
+
+    private JdbcParameterNull(int sqlType){
         this.sqlType = sqlType;
     }
 
@@ -30,4 +54,50 @@ public final class JdbcParameterNull implements JdbcParameter {
         return sqlType;
     }
 
+    public static JdbcParameterNull valueOf(int sqlType) {
+        switch (sqlType) {
+            case Types.TINYINT:
+                return INTEGER;
+            case Types.SMALLINT:
+                return SMALLINT;
+            case Types.INTEGER:
+                return INTEGER;
+            case Types.BIGINT:
+                return BIGINT;
+
+            case Types.DECIMAL:
+                return DECIMAL;
+            case Types.NUMERIC:
+                return NUMERIC;
+            case Types.FLOAT:
+                return FLOAT;
+            case Types.DOUBLE:
+                return DOUBLE;
+
+            case Types.CHAR:
+                return CHAR;
+            case Types.VARCHAR:
+                return VARCHAR;
+            case Types.NVARCHAR:
+                return NVARCHAR;
+
+            case Types.BINARY:
+                return BINARY;
+            case Types.VARBINARY:
+                return VARBINARY;
+
+            case Types.TIME:
+                return TIME;
+            case Types.DATE:
+                return DATE;
+            case Types.TIMESTAMP:
+                return TIMESTAMP;
+
+            case Types.NULL:
+                return NULL;
+
+            default:
+                return new JdbcParameterNull(sqlType);
+        }
+    }
 }

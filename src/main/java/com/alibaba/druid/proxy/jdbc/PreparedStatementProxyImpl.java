@@ -612,30 +612,47 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     }
 
     private JdbcParameter createParemeter(int x) {
-        return new JdbcParameterInt(x);
+        return JdbcParameterInt.valueOf(x);
     }
 
     private JdbcParameter createParameter(long x) {
-        return new JdbcParameterLong(x);
+        return JdbcParameterLong.valueOf(x);
     }
 
     private JdbcParameter createParameterNull(int sqlType) {
-        return new JdbcParameterNull(sqlType);
+        return JdbcParameterNull.valueOf(sqlType);
+
     }
 
     private JdbcParameter createParameter(java.util.Date x) {
+        if (x == null) {
+            return JdbcParameterNull.DATE;
+        }
+        
         return new JdbcParameterDate(x);
     }
 
     private JdbcParameter createParameter(BigDecimal x) {
-        return new JdbcParameterDecimal(x);
+        if (x == null) {
+            return JdbcParameterNull.DECIMAL;
+        }
+        
+        return JdbcParameterDecimal.valueOf(x);
     }
 
     private JdbcParameter createParameter(String x) {
+        if (x == null) {
+            return JdbcParameterNull.VARCHAR;
+        }
+        
         return new JdbcParameterString(x);
     }
 
     private JdbcParameter createParameter(Timestamp x) {
+        if (x == null) {
+            return JdbcParameterNull.TIMESTAMP;
+        }
+        
         return new JdbcParameterTimestamp(x);
     }
 
