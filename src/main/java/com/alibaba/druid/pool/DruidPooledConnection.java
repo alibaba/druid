@@ -145,7 +145,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             return;
         }
 
-        if (holder.isPoolPreparedStatements()) {
+        if (stmt.isPooled()) {
             try {
                 rawStatement.clearParameters();
             } catch (SQLException ex) {
@@ -159,7 +159,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         stmt.getPreparedStatementHolder().decrementInUseCount();
-        if (holder.isPoolPreparedStatements()) {
+        if (stmt.isPooled() && holder.isPoolPreparedStatements()) {
             holder.getStatementPool().put(stmt.getPreparedStatementHolder());
 
             stmt.clearResultSet();

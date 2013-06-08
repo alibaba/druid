@@ -24,23 +24,34 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.junit.Assert;
+
+import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
+import com.alibaba.druid.pool.DruidConnectionHolder;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 
 public class PoolablePreparedStatementTest extends TestCase {
 
-    protected MockPreparedStatement     raw;
+    protected MockPreparedStatement        raw;
     protected DruidPooledPreparedStatement stmt;
 
     protected void setUp() throws Exception {
+        DruidDataSource                dataSource = new DruidDataSource();
+        MockConnection mockConn = new MockConnection();
+        DruidConnectionHolder connHolder = new DruidConnectionHolder(dataSource, mockConn);
+        DruidPooledConnection conn = new DruidPooledConnection(connHolder);
+
         raw = new MockPreparedStatement(null, null);
-        stmt = new DruidPooledPreparedStatement(null,
-                                             new PreparedStatementHolder(new PreparedStatementKey("", null, null, 0, 0, 0), raw)) {
+        stmt = new DruidPooledPreparedStatement(conn, new PreparedStatementHolder(new PreparedStatementKey("", null,
+                                                                                                           null, 0, 0,
+                                                                                                           0), raw)) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
