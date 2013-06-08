@@ -3,7 +3,7 @@ package com.alibaba.druid.proxy.jdbc;
 import java.sql.Types;
 import java.util.Calendar;
 
-public class JdbcParameterLong implements JdbcParameter {
+public final class JdbcParameterLong implements JdbcParameter {
 
     private final long value;
 

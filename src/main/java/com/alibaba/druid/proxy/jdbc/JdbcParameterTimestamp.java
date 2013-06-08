@@ -1,14 +1,14 @@
 package com.alibaba.druid.proxy.jdbc;
 
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
-import java.util.Date;
 
-public class JdbcParameterTimestamp implements JdbcParameter {
+public final class JdbcParameterTimestamp implements JdbcParameter {
 
-    private final Date value;
+    private final Timestamp value;
 
-    public JdbcParameterTimestamp(Date value){
+    public JdbcParameterTimestamp(Timestamp value){
         this.value = value;
     }
 

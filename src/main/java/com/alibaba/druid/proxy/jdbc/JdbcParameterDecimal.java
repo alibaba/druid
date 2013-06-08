@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Types;
 import java.util.Calendar;
 
-public class JdbcParameterDecimal implements JdbcParameter {
+public final class JdbcParameterDecimal implements JdbcParameter {
 
     private final BigDecimal value;
 

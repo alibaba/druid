@@ -4,7 +4,7 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.Date;
 
-public class JdbcParameterDate implements JdbcParameter {
+public final class JdbcParameterDate implements JdbcParameter {
 
     private final Date value;
 

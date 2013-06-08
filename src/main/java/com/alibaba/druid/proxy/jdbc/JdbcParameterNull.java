@@ -2,7 +2,7 @@ package com.alibaba.druid.proxy.jdbc;
 
 import java.util.Calendar;
 
-public class JdbcParameterNull implements JdbcParameter {
+public final class JdbcParameterNull implements JdbcParameter {
 
     private final int sqlType;
 
