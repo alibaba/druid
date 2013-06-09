@@ -58,6 +58,10 @@ public class MySqlExceptionSorter implements ExceptionSorter {
             default:
                 break;
         }
+        
+        if (errorCode >= -10000 && errorCode <= -9000) {
+            return true;
+        }
 
         return false;
     }
