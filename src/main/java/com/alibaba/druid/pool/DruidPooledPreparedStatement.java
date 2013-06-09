@@ -231,7 +231,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
