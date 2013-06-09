@@ -27,7 +27,7 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
 
     protected String          alias;
 
-    protected List<SQLHint>   hints            = new ArrayList<SQLHint>(2);
+    protected List<SQLHint>   hints;
 
     public SQLTableSourceImpl(){
 
@@ -45,13 +45,23 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     public void setAlias(String alias) {
         this.alias = alias;
     }
+    
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+        
+        return hints.size();
+    }
 
     public List<SQLHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLHint>(2);
+        }
         return hints;
     }
 
     public void setHints(List<SQLHint> hints) {
         this.hints = hints;
     }
-
 }

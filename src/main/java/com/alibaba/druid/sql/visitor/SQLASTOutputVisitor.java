@@ -134,6 +134,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
     }
+    
+    public int getParametersSize() {
+        if (parameters == null) {
+            return 0;
+        }
+        
+        return this.parameters.size();
+    }
 
     public List<Object> getParameters() {
         if (parameters == null) {

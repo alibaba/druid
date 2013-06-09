@@ -66,7 +66,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
                                                                                                         //
                                                                                                         });
 
-    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
+    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>(16, 0.75f, 1);
 
     private final AtomicLong                                    clobOpenCount           = new AtomicLong();
 

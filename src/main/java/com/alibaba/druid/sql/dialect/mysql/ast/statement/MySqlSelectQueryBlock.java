@@ -45,18 +45,29 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private Limit                limit;
 
     private SQLName              procedureName;
-    private List<SQLExpr>        procedureArgumentList = new ArrayList<SQLExpr>();
+    private List<SQLExpr>        procedureArgumentList;
 
-    private boolean              forUpdate             = false;
-    private boolean              lockInShareMode       = false;
+    private boolean              forUpdate       = false;
+    private boolean              lockInShareMode = false;
 
-    private List<SQLCommentHint> hints                 = new ArrayList<SQLCommentHint>();
+    private List<SQLCommentHint> hints;
 
     public MySqlSelectQueryBlock(){
 
     }
+    
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+        
+        return hints.size();
+    }
 
     public List<SQLCommentHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLCommentHint>(2);
+        }
         return hints;
     }
 
@@ -89,6 +100,9 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     }
 
     public List<SQLExpr> getProcedureArgumentList() {
+        if (procedureArgumentList == null) {
+            procedureArgumentList = new ArrayList<SQLExpr>(2);
+        }
         return procedureArgumentList;
     }
 

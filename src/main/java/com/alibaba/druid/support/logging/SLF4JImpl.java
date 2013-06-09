@@ -35,10 +35,10 @@ public class SLF4JImpl implements Log {
     private int                 infoCount;
     private LocationAwareLogger log;
 
-    public SLF4JImpl(Class<?> clazz){
-        this.log = (LocationAwareLogger) LoggerFactory.getLogger(clazz);
+    public SLF4JImpl(LocationAwareLogger log){
+        this.log = log;
     }
-    
+
     public SLF4JImpl(String loggerName){
         this.log = (LocationAwareLogger) LoggerFactory.getLogger(loggerName);
     }

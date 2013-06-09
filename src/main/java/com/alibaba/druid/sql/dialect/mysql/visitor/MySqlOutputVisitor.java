@@ -180,7 +180,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print("SELECT ");
 
-        for (SQLCommentHint hint : x.getHints()) {
+        for (int i = 0, size = x.getHintsSize(); i < size; ++i) {
+            SQLCommentHint hint = x.getHints().get(i);
             hint.accept(this);
             print(' ');
         }
@@ -575,11 +576,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     public boolean visit(SQLVariantRefExpr x) {
         {
-            List<Object> parameters = this.getParameters();
+            int parametersSize = this.getParametersSize();
             int index = x.getIndex();
 
-            if (parameters != null && index >= 0 && index < parameters.size()) {
-                Object param = parameters.get(index);
+            if (index >= 0 && index < parametersSize) {
+                Object param = this.getParameters().get(index);
                 printParameter(param);
                 return false;
             }
@@ -2682,7 +2683,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(x.getAlias());
         }
 
-        for (int i = 0; i < x.getHints().size(); ++i) {
+        for (int i = 0; i < x.getHintsSize(); ++i) {
             print(' ');
             x.getHints().get(i).accept(this);
         }

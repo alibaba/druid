@@ -21,7 +21,6 @@ import java.sql.Savepoint;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
@@ -507,15 +506,16 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             return;
         }
 
-        Map<Integer, JdbcParameter> parameterMap = statement.getParameters();
-        if (parameterMap == null || parameterMap.size() == 0) {
+        int parametersSize = statement.getParametersSize();
+        if (parametersSize == 0) {
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
                          + sql);
             return;
         }
 
-        List<Object> parameters = new ArrayList<Object>(parameterMap.size());
-        for (JdbcParameter jdbcParam : parameterMap.values()) {
+        List<Object> parameters = new ArrayList<Object>(parametersSize);
+        for (int i = 0; i < parametersSize; ++i) {
+            JdbcParameter jdbcParam = statement.getParameter(i);
             parameters.add(jdbcParam.getValue());
         }
 
@@ -737,11 +737,16 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                 buf.append(stmtId(statement));
                 buf.append("}");
                 buf.append(" Parameters : [");
-                int parameterIndex = 0;
-                for (JdbcParameter parameter : statement.getParameters().values()) {
-                    if (parameterIndex != 0) {
+                
+                for (int i = 0, parametersSize = statement.getParametersSize(); i < parametersSize; ++i) {
+                    JdbcParameter parameter = statement.getParameter(i);
+                    if (i != 0) {
                         buf.append(", ");
                     }
+                    if (parameter == null) {
+                        continue;
+                    }
+                    
                     int sqlType = parameter.getSqlType();
                     Object value = parameter.getValue();
                     switch (sqlType) {
@@ -752,7 +757,6 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                             buf.append(String.valueOf(value));
                             break;
                     }
-                    parameterIndex++;
                 }
                 buf.append("]");
                 statementLog(buf.toString());
@@ -765,14 +769,16 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                 buf.append(stmtId(statement));
                 buf.append("}");
                 buf.append(" Types : [");
-                int parameterIndex = 0;
-                for (JdbcParameter parameter : statement.getParameters().values()) {
-                    if (parameterIndex != 0) {
+                for (int i = 0, parametersSize = statement.getParametersSize(); i < parametersSize; ++i) {
+                    JdbcParameter parameter = statement.getParameter(i);
+                    if (i != 0) {
                         buf.append(", ");
+                    }
+                    if (parameter == null) {
+                        continue;
                     }
                     int sqlType = parameter.getSqlType();
                     buf.append(JdbcUtils.getTypeName(sqlType));
-                    parameterIndex++;
                 }
                 buf.append("]");
                 statementLog(buf.toString());

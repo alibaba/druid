@@ -17,7 +17,6 @@ package com.alibaba.druid.bvt.proxy.filter;
 
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.Set;
 
 import javax.management.openmbean.TabularData;
 
@@ -26,7 +25,6 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;

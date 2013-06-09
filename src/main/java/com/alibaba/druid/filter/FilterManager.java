@@ -33,7 +33,7 @@ public class FilterManager {
 
     private final static Log                               LOG      = LogFactory.getLog(FilterManager.class);
 
-    private static final ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>();
+    private static final ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>(16, 0.75f, 1);
 
     static {
         try {

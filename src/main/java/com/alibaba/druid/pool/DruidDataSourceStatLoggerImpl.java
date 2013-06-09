@@ -56,20 +56,30 @@ public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdap
         return logger;
     }
 
+    @Override
     public void setLoggerName(String loggerName) {
         logger = LogFactory.getLog(loggerName);
     }
     
+    @Override
     public void setLogger(Log logger) {
         if (logger == null) {
            throw new IllegalArgumentException("logger can not be null");
         }
         this.logger = logger;
     }
+    
+    public boolean isLogEnable() {
+        return logger.isInfoEnabled();
+    }
+    
+    public void log(String value) {
+        logger.info(value);
+    }
 
     @Override
     public void log(DruidDataSourceStatValue statValue) {
-        if (logger.isInfoEnabled()) {
+        if (isLogEnable()) {
             Map<String, Object> map = new LinkedHashMap<String, Object>();
 
             map.put("url", statValue.url);
@@ -225,7 +235,7 @@ public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdap
 
             String text = JSONUtils.toJSONString(map);
 
-            logger.info(text);
+            log(text);
         }
     }
 
