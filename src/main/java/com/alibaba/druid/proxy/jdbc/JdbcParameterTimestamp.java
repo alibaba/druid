@@ -15,25 +15,36 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import java.sql.Wrapper;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.Calendar;
 
-/**
- * @author wenshao<szujobs@hotmail.com>
- */
-public interface WrapperProxy extends Wrapper {
+public final class JdbcParameterTimestamp implements JdbcParameter {
 
-    long getId();
+    private final Timestamp value;
 
-    Object getRawObject();
+    public JdbcParameterTimestamp(Timestamp value){
+        this.value = value;
+    }
 
-    int getAttributesSize();
+    @Override
+    public Object getValue() {
+        return value;
+    }
 
-    void clearAttributes();
+    @Override
+    public long getLength() {
+        return 0;
+    }
 
-    Map<String, Object> getAttributes();
+    @Override
+    public Calendar getCalendar() {
+        return null;
+    }
 
-    Object getAttribute(String key);
+    @Override
+    public int getSqlType() {
+        return Types.TIMESTAMP;
+    }
 
-    void putAttribute(String key, Object value);
 }

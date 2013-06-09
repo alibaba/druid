@@ -48,6 +48,10 @@ public abstract class SQLObjectImpl implements SQLObject, Serializable {
     protected abstract void accept0(SQLASTVisitor visitor);
 
     protected final void acceptChild(SQLASTVisitor visitor, List<? extends SQLObject> children) {
+        if (children == null) {
+            return;
+        }
+        
         for (SQLObject child : children) {
             acceptChild(visitor, child);
         }

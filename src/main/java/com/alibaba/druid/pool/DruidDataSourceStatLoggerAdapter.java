@@ -17,12 +17,14 @@ package com.alibaba.druid.pool;
 
 import java.util.Properties;
 
+import com.alibaba.druid.support.logging.Log;
+
 /**
  * 
  * @author wenshao<szujobs@hotmail.com>
  * @since 0.2.21
  */
-public abstract class DruidDataSourceStatLoggerAdapter implements DruidDataSourceStatLogger {
+public class DruidDataSourceStatLoggerAdapter implements DruidDataSourceStatLogger {
 
     @Override
     public void log(DruidDataSourceStatValue statValue) {
@@ -31,6 +33,16 @@ public abstract class DruidDataSourceStatLoggerAdapter implements DruidDataSourc
 
     @Override
     public void configFromProperties(Properties properties) {
+        
+    }
+
+    @Override
+    public void setLogger(Log logger) {
+        
+    }
+
+    @Override
+    public void setLoggerName(String loggerName) {
         
     }
 

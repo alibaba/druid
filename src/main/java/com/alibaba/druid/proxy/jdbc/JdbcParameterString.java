@@ -15,25 +15,35 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import java.sql.Wrapper;
-import java.util.Map;
+import java.sql.Types;
+import java.util.Calendar;
 
-/**
- * @author wenshao<szujobs@hotmail.com>
- */
-public interface WrapperProxy extends Wrapper {
+public final class JdbcParameterString implements JdbcParameter {
 
-    long getId();
+    private final String value;
 
-    Object getRawObject();
+    public JdbcParameterString(String value){
+        this.value = value;
+    }
 
-    int getAttributesSize();
+    @Override
+    public Object getValue() {
+        return value;
+    }
 
-    void clearAttributes();
+    @Override
+    public long getLength() {
+        return 0;
+    }
 
-    Map<String, Object> getAttributes();
+    @Override
+    public Calendar getCalendar() {
+        return null;
+    }
 
-    Object getAttribute(String key);
+    @Override
+    public int getSqlType() {
+        return Types.VARCHAR;
+    }
 
-    void putAttribute(String key, Object value);
 }

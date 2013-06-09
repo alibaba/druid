@@ -56,7 +56,7 @@ public class WebAppStat {
     private final AtomicLong                        jdbcCommitCount                = new AtomicLong();
     private final AtomicLong                        jdbcRollbackCount              = new AtomicLong();
 
-    private final ConcurrentMap<String, WebURIStat> uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>();
+    private final ConcurrentMap<String, WebURIStat> uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>(16, 0.75f, 1);
     private final LRUCache<String, WebSessionStat>  sessionStatMap;
 
     private final ReadWriteLock                     sessionStatLock                = new ReentrantReadWriteLock();

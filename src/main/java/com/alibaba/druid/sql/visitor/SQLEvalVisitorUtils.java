@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.visitor;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -580,7 +581,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLNullExpr x) {
-        x.getAttributes().put(EVAL_VALUE, null);
+        x.getAttributes().put(EVAL_VALUE, EVAL_VALUE_NULL);
         return false;
     }
 
@@ -839,6 +840,14 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Is:
+                if (rightValue == EVAL_VALUE_NULL) {
+                    if (leftValue != null) {
+                        value = (leftValue == EVAL_VALUE_NULL);
+                        x.putAttribute(EVAL_VALUE, value);
+                        break;
+                    }
+                }
+                break;
             case Equality:
                 value = eq(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
@@ -938,6 +947,9 @@ public class SQLEvalVisitorUtils {
             boolean containsValue = attributes.containsKey(EVAL_VALUE);
             if (!containsValue) {
                 Object value = visitor.getParameters().get(varIndex);
+                if (value == null) {
+                    value = EVAL_VALUE_NULL;
+                }
                 attributes.put(EVAL_VALUE, value);
             }
         }

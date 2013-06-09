@@ -210,7 +210,7 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
             ResultSet rs = (ResultSet) obj;
             
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
             
             obj = poolableResultSet;
         }

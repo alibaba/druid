@@ -16,7 +16,7 @@
 package com.alibaba.druid.bvt.proxy.filter;
 
 import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 import javax.management.openmbean.TabularData;
 
@@ -29,7 +29,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class MergeStatFilterTest_tddl_1 extends TestCase {
+public class MergeStatFilterTest_tddl_3 extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -48,6 +48,7 @@ public class MergeStatFilterTest_tddl_1 extends TestCase {
         dataSource.setUrl("jdbc:mock:xx");
         dataSource.setFilters("mergeStat");
         dataSource.setDbType("mysql");
+        dataSource.setConnectionProperties("druid.useGloalDataSourceStat");
     }
 
     protected void tearDown() throws Exception {
@@ -58,12 +59,15 @@ public class MergeStatFilterTest_tddl_1 extends TestCase {
 
     public void test_merge() throws Exception {
         for (int i = 1000; i < 2000; ++i) {
-            String tableName = "t" + i;
-            String sql = "select * from " + tableName + " where " + tableName + ".id = " + i;
+            String tableName = "t_" + i;
+            
             Connection conn = dataSource.getConnection();
 
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
+            String sql = "update " + tableName + " SET a = ? WHERE b = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, "aaa");
+            stmt.setInt(1, 2);
+            stmt.execute();
             stmt.close();
 
             conn.close();

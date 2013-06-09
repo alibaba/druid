@@ -18,8 +18,9 @@ package com.alibaba.druid.bvt.proxy.filter;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 

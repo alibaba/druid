@@ -65,6 +65,10 @@ public class SQLServerWallTest_0 extends TestCase {
             String sql = "select OrderId,Order_Time,oResult,oState,show_Exp_Num,Is_Exp_Print,sel_Exp_Id,Order_Th,Th_Audit_Time,Th_Delay_Days from Pro_Order_List where OrderId='2012110125252' AND HOST_NAME()=HOST_NAME() AND 'kbwg'='kbwg'";
             Assert.assertFalse(provider.checkValid(sql));
         }
+        {
+            String sql = "update dbo.dml_health_check set name='123' where id=OBJECT_ID(N'taobao_order')";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
     }
 
     public void test_true1() throws Exception {
@@ -129,10 +133,6 @@ public class SQLServerWallTest_0 extends TestCase {
         {
             String sql = "select col.name, st.name as DT_name, case when (st.name in ('nchar', 'nvarchar') and (col.max_length > 0)) then col.max_length / 2 else col.max_length end, col.precision, col.scale, bt.name as BT_name, col.is_nullable, col.is_identity,col.is_rowguidcol, OBJECTPROPERTY(col.default_object_id, N'IsDefaultCnst') as is_defcnst, CONVERT(bit, case when(cmc.column_id is null) then 0 else 1 end) as is_computed, case when(cmc.column_id is null) then null else cmc.definition end as formular, col.collation_name, col.system_type_id from nowshop.sys.all_columns col left outer join nowshop.sys.types st on st.user_type_id = col.user_type_id left outer join nowshop.sys.types bt on bt.user_type_id = col.system_type_id left outer join nowshop.sys.identity_columns idc on idc.object_id = col.object_id and idc.column_id = col.column_id left outer join nowshop.sys.computed_columns cmc on cmc.object_id = col.object_id and cmc.column_id = col.column_id where col.object_id = object_id(N'nowshop.dbo.hr_shop') order by col.column_id";
             Assert.assertTrue(provider.checkValid(sql));
-        }
-        {
-            String sql = "update dbo.dml_health_check set name='123' where id=OBJECT_ID(N'taobao_order')";
-            Assert.assertFalse(provider.checkValid(sql));
         }
         {
             String sql = "select * from tb_product_word where name='' or CONCAT(name,style)='' or CONCAT(shop,style)='' or CONCAT(ename,style)=''";
