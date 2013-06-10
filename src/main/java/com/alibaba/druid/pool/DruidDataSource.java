@@ -1032,6 +1032,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.discardConnection(holder.getConnection());
                 holder.setDiscard(true);
                 pooledConnection.disable(t);
+                
+                LOG.error("discard connection", sqlEx);
             }
 
             throw sqlEx;
