@@ -135,6 +135,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                                                                                                                    System.out);
 
     protected List<Filter>                             filters                                   = new CopyOnWriteArrayList<Filter>();
+    private boolean                                    clearFiltersEnable                        = true;
     protected volatile ExceptionSorter                 exceptionSorter                           = null;
 
     protected Driver                                   driver;
@@ -254,7 +255,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public DruidDataSourceStatLogger getStatLogger() {
         return statLogger;
     }
-    
+
     public void setStatLoggerClassName(String className) {
         Class<?> clazz;
         try {
@@ -1164,7 +1165,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
         this.addFilters(filters);
     }
-    
+
     public void addFilters(String filters) throws SQLException {
         if (filters == null || filters.length() == 0) {
             return;
@@ -1174,10 +1175,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         for (String item : filterArray) {
             FilterManager.loadFilter(this.filters, item);
-        }        
+        }
     }
-    
+
     public void clearFilters() {
+        if (!isClearFiltersEnable()) {
+            return;
+        }
         this.filters.clear();
     }
 
@@ -1293,6 +1297,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     @Override
     public Driver getRawDriver() {
         return driver;
+    }
+
+    public boolean isClearFiltersEnable() {
+        return clearFiltersEnable;
+    }
+
+    public void setClearFiltersEnable(boolean clearFiltersEnable) {
+        this.clearFiltersEnable = clearFiltersEnable;
     }
 
     private final AtomicLong connectionIdSeed  = new AtomicLong(10000);
