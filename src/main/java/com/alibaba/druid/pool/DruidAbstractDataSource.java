@@ -1168,6 +1168,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             FilterManager.loadFilter(this.filters, item);
         }
     }
+    
+    public void clearFilters() {
+        this.filters.clear();
+    }
 
     public void validateConnection(Connection conn) throws SQLException {
         String query = getValidationQuery();
