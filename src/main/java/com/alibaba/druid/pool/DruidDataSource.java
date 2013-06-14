@@ -128,6 +128,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private volatile boolean                 enable                  = true;
 
     private boolean                          resetStatEnable         = true;
+    private final AtomicLong                 resetCount              = new AtomicLong();
 
     private String                           initStackTrace;
 
@@ -214,6 +215,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
         }
+        {
+            String property = properties.getProperty("druid.clearFiltersEnable");
+            if ("true".equals(property)) {
+                this.setClearFiltersEnable(true);
+            } else if ("false".equals(property)) {
+                this.setClearFiltersEnable(false);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.resetStatEnable");
+            if ("true".equals(property)) {
+                this.setResetStatEnable(true);
+            } else if ("false".equals(property)) {
+                this.setResetStatEnable(false);
+            }
+        }
     }
 
     public boolean isUseGloalDataSourceStat() {
@@ -234,6 +251,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void setResetStatEnable(boolean resetStatEnable) {
         this.resetStatEnable = resetStatEnable;
+        if (dataSourceStat != null) {
+            dataSourceStat.setResetStatEnable(resetStatEnable);
+        }
     }
 
     public long getDiscardCount() {
@@ -258,7 +278,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public void resetStat() {
-        if (!resetStatEnable) {
+        if (!isResetStatEnable()) {
             return;
         }
 
@@ -298,6 +318,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         transactionHistogram.reset();
         cachedPreparedStatementDeleteCount.set(0);
         recycleErrorCount.set(0);
+        
+        resetCount.incrementAndGet();
+    }
+    
+    public long getResetCount() {
+        return this.resetCount.get();
     }
 
     public boolean isEnable() {
@@ -558,6 +584,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } else {
                 dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType, this.connectProperties);
             }
+            dataSourceStat.setResetStatEnable(this.resetStatEnable);
 
             connections = new DruidConnectionHolder[maxActive];
 
@@ -616,6 +643,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         String threadName = "Druid-ConnectionPool-Log-" + System.identityHashCode(this);
         logStatsThread = new LogStatsThread(threadName);
         logStatsThread.start();
+
+        this.resetStatEnable = false;
     }
 
     private void createAndStartDestroyThread() {
@@ -1032,6 +1061,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.discardConnection(holder.getConnection());
                 holder.setDiscard(true);
                 pooledConnection.disable(t);
+
+                LOG.error("discard connection", sqlEx);
             }
 
             throw sqlEx;
