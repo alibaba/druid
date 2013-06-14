@@ -66,11 +66,16 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
                                                                                                         //
                                                                                                         });
 
-    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>(16, 0.75f, 1);
+    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>(
+                                                                                                                                                16,
+                                                                                                                                                0.75f,
+                                                                                                                                                1);
 
     private final AtomicLong                                    clobOpenCount           = new AtomicLong();
 
     private final AtomicLong                                    blobOpenCount           = new AtomicLong();
+
+    private boolean                                             resetStatEnable         = true;
 
     private static JdbcDataSourceStat                           global;
 
@@ -91,6 +96,18 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     public static void setGlobal(JdbcDataSourceStat value) {
         global = value;
+    }
+    
+    public void configFromProperties(Properties properties) {
+        
+    }
+
+    public boolean isResetStatEnable() {
+        return resetStatEnable;
+    }
+
+    public void setResetStatEnable(boolean resetStatEnable) {
+        this.resetStatEnable = resetStatEnable;
     }
 
     public JdbcDataSourceStat(String name, String url){
@@ -187,6 +204,10 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     }
 
     public void reset() {
+        if (!isResetStatEnable()) {
+            return;
+        }
+        
         blobOpenCount.set(0);
         clobOpenCount.set(0);
 
