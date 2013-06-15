@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
@@ -157,12 +156,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     public boolean isInited() {
         return inited;
-    }
-
-    public void checkInit() {
-        if (inited) {
-            throw new DruidRuntimeException("wall filter is inited");
-        }
     }
 
     @Override
