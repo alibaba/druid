@@ -26,12 +26,10 @@ import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBitStringLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
-import com.alibaba.druid.sql.ast.expr.SQLDateLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
@@ -270,25 +268,11 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLQueryExpr x) {
     }
 
-    public boolean visit(SQLBitStringLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLBitStringLiteralExpr x) {
-    }
-
     public boolean visit(SQLHexStringLiteralExpr x) {
         return true;
     }
 
     public void endVisit(SQLHexStringLiteralExpr x) {
-    }
-
-    public boolean visit(SQLDateLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLDateLiteralExpr x) {
     }
 
     public boolean visit(SQLSelect x) {
