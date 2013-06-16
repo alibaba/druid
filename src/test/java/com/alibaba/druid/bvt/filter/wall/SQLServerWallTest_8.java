@@ -13,20 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.ast.statement;
+package com.alibaba.druid.bvt.filter.wall;
 
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import junit.framework.TestCase;
 
-public class SQLColumnUniqueIndex extends SQLConstaintImpl implements SQLColumnConstraint {
+import org.junit.Assert;
 
-    private static final long serialVersionUID = 1L;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
-    @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.getName());
-        }
-        visitor.endVisit(this);
+/**
+ * SQLServerWallTest
+ * 
+ * @author RaymondXiu
+ * @version 1.0, 2012-3-18
+ * @see
+ */
+public class SQLServerWallTest_8 extends TestCase {
+
+    public void test_true() throws Exception {
+        WallProvider provider = new SQLServerWallProvider();
+
+        provider.getConfig().setMustParameterized(true);
+
+        Assert.assertFalse(provider.checkValid("select * from t where fid = 1"));
+
     }
 
 }

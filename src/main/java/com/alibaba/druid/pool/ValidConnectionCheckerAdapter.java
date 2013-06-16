@@ -26,7 +26,7 @@ public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
 
     @Override
     public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) {
-        return false;
+        return true;
     }
 
     @Override

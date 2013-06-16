@@ -33,6 +33,7 @@ public class SLF4JImpl implements Log {
     private int                 errorCount;
     private int                 warnCount;
     private int                 infoCount;
+    private int                 debugCount;
     private LocationAwareLogger log;
 
     public SLF4JImpl(LocationAwareLogger log){
@@ -73,11 +74,13 @@ public class SLF4JImpl implements Log {
 
     @Override
     public void debug(String msg) {
+        debugCount++;
         log.log(null, callerFQCN, LocationAwareLogger.DEBUG_INT, msg, null, null);
     }
 
     @Override
     public void debug(String msg, Throwable e) {
+        debugCount++;
         log.log(null, callerFQCN, LocationAwareLogger.ERROR_INT, msg, null, e);
     }
 
@@ -113,11 +116,16 @@ public class SLF4JImpl implements Log {
         return infoCount;
     }
 
+    public int getDebugCount() {
+        return debugCount;
+    }
+
     @Override
     public void resetStat() {
         errorCount = 0;
         warnCount = 0;
         infoCount = 0;
+        debugCount = 0;
     }
 
 }

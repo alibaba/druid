@@ -108,6 +108,6 @@ FROM mi_alarm_rule_status d
 		AND b.hostname = c.hostname
 	LEFT JOIN app a ON a.number = b.app_num
 WHERE 1 = 0
-OR a.id = ?
+	OR a.id = ?
 ORDER BY lastChangeTimeOfAlarmRule DESC
 LIMIT ?, ?

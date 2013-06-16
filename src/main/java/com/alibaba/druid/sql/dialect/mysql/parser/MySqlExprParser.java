@@ -553,7 +553,7 @@ public class MySqlExprParser extends SQLExprParser {
             throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
         }
 
-        if (identifierEquals("COMMENT")) {
+        if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             column.setComment(lexer.stringVal());
             accept(Token.LITERAL_CHARS);

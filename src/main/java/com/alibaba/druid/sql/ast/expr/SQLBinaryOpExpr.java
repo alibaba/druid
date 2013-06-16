@@ -24,9 +24,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public SQLExpr            left;
-    public SQLExpr            right;
-    public SQLBinaryOperator  operator;
+    private SQLExpr            left;
+    private SQLExpr            right;
+    private SQLBinaryOperator  operator;
 
     public SQLBinaryOpExpr(){
 
