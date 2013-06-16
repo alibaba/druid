@@ -33,12 +33,10 @@ import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexStringLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -72,7 +70,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -268,13 +265,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLQueryExpr x) {
     }
 
-    public boolean visit(SQLHexStringLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLHexStringLiteralExpr x) {
-    }
-
     public boolean visit(SQLSelect x) {
         return true;
     }
@@ -294,13 +284,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public void endVisit(SQLExprTableSource x) {
-    }
-
-    public boolean visit(SQLIntervalLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLIntervalLiteralExpr x) {
     }
 
     public boolean visit(SQLOrderBy x) {
@@ -723,15 +706,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLColumnPrimaryKey x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLColumnUniqueIndex x) {
-    }
-
-    @Override
-    public boolean visit(SQLColumnUniqueIndex x) {
         return true;
     }
 

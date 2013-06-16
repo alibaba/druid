@@ -66,6 +66,9 @@ public class SQLSelectQueryBlock extends SQLSelectQuery {
     }
 
     public void setWhere(SQLExpr where) {
+        if (where != null) {
+            where.setParent(this);
+        }
         this.where = where;
     }
 

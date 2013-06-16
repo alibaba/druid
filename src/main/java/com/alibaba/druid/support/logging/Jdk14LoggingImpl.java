@@ -25,6 +25,7 @@ public class Jdk14LoggingImpl implements Log {
     private int    errorCount;
     private int    warnCount;
     private int    infoCount;
+    private int    debugCount;
 
     private String loggerName;
 
@@ -48,10 +49,12 @@ public class Jdk14LoggingImpl implements Log {
     }
 
     public void debug(String s) {
+        debugCount++;
         log.logp(Level.FINE, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), s);
     }
 
     public void debug(String s, Throwable e) {
+        debugCount++;
         log.logp(Level.FINE, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), s, e);
     }
 
@@ -80,6 +83,7 @@ public class Jdk14LoggingImpl implements Log {
         errorCount = 0;
         warnCount = 0;
         infoCount = 0;
+        debugCount = 0;
     }
 
     @Override
@@ -102,4 +106,9 @@ public class Jdk14LoggingImpl implements Log {
     public boolean isWarnEnabled() {
         return log.isLoggable(Level.WARNING);
     }
+
+    public int getDebugCount() {
+        return debugCount;
+    }
+
 }

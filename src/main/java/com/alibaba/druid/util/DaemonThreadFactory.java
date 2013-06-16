@@ -32,7 +32,8 @@ public class DaemonThreadFactory implements ThreadFactory {
     }
 
     public Thread newThread(Runnable r) {
-        Thread newThread = new Thread(r, nameStart + threadNo.getAndIncrement() + nameEnd);
+        String threadName = nameStart + threadNo.getAndIncrement() + nameEnd;
+        Thread newThread = new Thread(r, threadName);
         newThread.setDaemon(true);
         if (newThread.getPriority() != Thread.NORM_PRIORITY) {
             newThread.setPriority(Thread.NORM_PRIORITY);
