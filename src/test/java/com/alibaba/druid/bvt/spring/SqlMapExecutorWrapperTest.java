@@ -22,7 +22,6 @@ public class SqlMapExecutorWrapperTest extends TestCase {
         context.close();
     }
 
-    @SuppressWarnings("deprecation")
     public void test_wrap() throws Exception {
         SqlMapClientImpl client = (SqlMapClientImpl) context.getBean("master-sqlMapClient");
         Assert.assertNotNull(client);

@@ -35,29 +35,6 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
 
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("CASE ");
-        if (this.valueExpr != null) {
-            this.valueExpr.output(buf);
-            buf.append(" ");
-        }
-
-        int i = 0;
-        for (int size = this.items.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(" ");
-            }
-            ((Item) this.items.get(i)).output(buf);
-        }
-
-        if (this.elseExpr != null) {
-            buf.append(" ELSE ");
-            this.elseExpr.output(buf);
-        }
-
-        buf.append(" END");
-    }
-
     public SQLExpr getValueExpr() {
         return this.valueExpr;
     }
@@ -138,13 +115,6 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
             this.valueExpr = valueExpr;
         }
 
-        public void output(StringBuffer buf) {
-            buf.append("WHEN ");
-            this.conditionExpr.output(buf);
-            buf.append(" THEN ");
-            this.valueExpr.output(buf);
-        }
-
         protected void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, this.conditionExpr);
@@ -152,6 +122,31 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
             }
             visitor.endVisit(this);
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((conditionExpr == null) ? 0 : conditionExpr.hashCode());
+            result = prime * result + ((valueExpr == null) ? 0 : valueExpr.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
+            Item other = (Item) obj;
+            if (conditionExpr == null) {
+                if (other.conditionExpr != null) return false;
+            } else if (!conditionExpr.equals(other.conditionExpr)) return false;
+            if (valueExpr == null) {
+                if (other.valueExpr != null) return false;
+            } else if (!valueExpr.equals(other.valueExpr)) return false;
+            return true;
+        }
+
     }
 
     @Override

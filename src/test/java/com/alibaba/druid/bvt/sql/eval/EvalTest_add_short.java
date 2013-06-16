@@ -20,4 +20,8 @@ public class EvalTest_add_short extends TestCase {
     public void test_byte_2() throws Exception {
         Assert.assertEquals(null, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "? + ?", (short) 1, null));
     }
+    
+    public void test_byte_3() throws Exception {
+        Assert.assertEquals(3, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "? + ?", "2", (short) 1));
+    }
 }

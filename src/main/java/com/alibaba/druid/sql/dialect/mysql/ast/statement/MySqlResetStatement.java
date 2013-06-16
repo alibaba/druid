@@ -35,5 +35,6 @@ public class MySqlResetStatement extends MySqlStatementImpl {
 
 	public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
+        visitor.endVisit(this);
     }
 }

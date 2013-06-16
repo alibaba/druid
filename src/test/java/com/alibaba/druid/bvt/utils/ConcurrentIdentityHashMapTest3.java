@@ -29,11 +29,50 @@ public class ConcurrentIdentityHashMapTest3 extends TestCase {
             entry.getValue();
         }
         Assert.assertEquals(keys.length, map.size());
+
+        for (int i = 0; i < keys.length; ++i) {
+            map.replace(keys[i], "", "a");
+        }
+        for (int i = 0; i < keys.length; ++i) {
+            map.replace(keys[i], "", "b");
+        }
+        for (int i = 0; i < keys.length; ++i) {
+            map.replace(keys[i], "");
+        }
+        Assert.assertEquals(keys.length, map.size());
+
+        map.keys();
+        map.keys().hasMoreElements();
+        map.keys().nextElement();
+
         for (int i = 0; i < keys.length; ++i) {
             map.remove(keys[i]);
         }
         Assert.assertEquals(0, map.size());
+
         map.keys();
         map.entrySet();
+        map.size();
+        map.clear();
+        map.isEmpty();
+
+        map.entrySet().size();
+        map.entrySet().isEmpty();
+        map.entrySet().remove(null);
+        map.entrySet().clear();
+        map.entrySet().contains("");
+
+        map.values().size();
+        map.values().isEmpty();
+        map.values().remove(null);
+        map.values().clear();
+        map.values().contains("");
+
+        map.keySet().size();
+        map.keySet().isEmpty();
+        map.keySet().remove(null);
+        map.keySet().clear();
+        map.keySet().contains("");
+
     }
 }
