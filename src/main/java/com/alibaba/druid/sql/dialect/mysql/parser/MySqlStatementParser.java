@@ -2400,7 +2400,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("COALESCE")) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
-
                 } else if (identifierEquals("REORGANIZE")) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("EXCHANGE")) {

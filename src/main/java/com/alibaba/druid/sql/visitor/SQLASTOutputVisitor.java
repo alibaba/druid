@@ -58,7 +58,6 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
@@ -88,7 +87,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -552,10 +550,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLNumberExpr x) {
         print(x.getNumber().toString());
         return false;
-    }
-
-    public boolean visit(SQLObjectCreateExpr x) {
-        throw new UnsupportedOperationException();
     }
 
     public boolean visit(SQLPropertyExpr x) {
@@ -1349,12 +1343,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLColumnCheck x) {
         print("CHECK ");
         x.getExpr().accept(this);
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLColumnUniqueIndex x) {
-        print(" UNIQUE INDEX");
         return false;
     }
 

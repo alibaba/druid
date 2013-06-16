@@ -116,6 +116,8 @@ public class Keywords {
         map.put("USE", Token.USE);
         
         map.put("REPLACE", Token.REPLACE);
+        
+        map.put("COMMENT", Token.COMMENT);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }

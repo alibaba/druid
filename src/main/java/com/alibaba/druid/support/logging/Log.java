@@ -43,5 +43,8 @@ public interface Log {
 
     int getInfoCount();
 
+    int getDebugCount();
+
     void resetStat();
+
 }

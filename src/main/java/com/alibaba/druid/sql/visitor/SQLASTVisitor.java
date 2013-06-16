@@ -33,12 +33,10 @@ import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexStringLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -72,7 +70,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -207,10 +204,6 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLHexExpr x);
 
-    boolean visit(SQLHexStringLiteralExpr x);
-
-    void endVisit(SQLHexStringLiteralExpr x);
-
     boolean visit(SQLSelect x);
 
     void endVisit(SQLSelect select);
@@ -222,10 +215,6 @@ public interface SQLASTVisitor {
     boolean visit(SQLExprTableSource x);
 
     void endVisit(SQLExprTableSource x);
-
-    boolean visit(SQLIntervalLiteralExpr x);
-
-    void endVisit(SQLIntervalLiteralExpr x);
 
     boolean visit(SQLOrderBy x);
 
@@ -410,10 +399,6 @@ public interface SQLASTVisitor {
     void endVisit(SQLColumnPrimaryKey x);
 
     boolean visit(SQLColumnPrimaryKey x);
-
-    void endVisit(SQLColumnUniqueIndex x);
-
-    boolean visit(SQLColumnUniqueIndex x);
 
     void endVisit(SQLWithSubqueryClause x);
 
