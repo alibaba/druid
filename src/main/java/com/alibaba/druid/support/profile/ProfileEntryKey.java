@@ -37,6 +37,12 @@ public class ProfileEntryKey {
     public String getType() {
         return type;
     }
+    
+    public void fillValue(ProfileEntryStatValue value) {
+        value.setParentName(parentName);
+        value.setName(name);
+        value.setType(type);
+    }
 
     @Override
     public int hashCode() {

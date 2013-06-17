@@ -50,14 +50,6 @@ public class SQLCastExpr extends SQLExprImpl {
         this.dataType = dataType;
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("CAST(");
-        this.expr.output(buf);
-        buf.append(" AS ");
-        this.dataType.output(buf);
-        buf.append(")");
-    }
-
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.expr);

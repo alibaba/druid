@@ -248,19 +248,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
             return;
         }
 
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.selectList);
-            acceptChild(visitor, this.from);
-            acceptChild(visitor, this.where);
-            acceptChild(visitor, this.groupBy);
-            acceptChild(visitor, this.orderBy);
-            acceptChild(visitor, this.limit);
-            acceptChild(visitor, this.procedureName);
-            acceptChild(visitor, this.procedureArgumentList);
-            acceptChild(visitor, this.into);
-        }
-
-        visitor.endVisit(this);
+        super.accept0(visitor);
     }
 
     @Override

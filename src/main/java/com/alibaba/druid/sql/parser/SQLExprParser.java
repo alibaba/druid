@@ -335,12 +335,19 @@ public class SQLExprParser extends SQLParser {
                         lexer.nextToken();
                         break;
                     case IDENTIFIER: // 当负号后面为字段的情况
-                        sqlExpr = new SQLIdentifierExpr('-' + lexer.stringVal());
+                        sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         lexer.nextToken();
                         break;
                     case QUES:
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, new SQLVariantRefExpr("?"));
                         lexer.nextToken();
+                        break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
                     default:
                         throw new ParserException("TODO : " + lexer.token());
@@ -356,6 +363,12 @@ public class SQLExprParser extends SQLParser {
                     case LITERAL_FLOAT:
                         sqlExpr = new SQLNumberExpr(lexer.decimalValue());
                         lexer.nextToken();
+                        break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
                         break;
                     default:
                         throw new ParserException("TODO");

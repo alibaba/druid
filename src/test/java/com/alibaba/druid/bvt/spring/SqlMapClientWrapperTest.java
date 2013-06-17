@@ -21,7 +21,7 @@ public class SqlMapClientWrapperTest extends TestCase {
     private ClassPathXmlApplicationContext context = null;
 
     protected void setUp() throws Exception {
-        context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
+        context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/ibatis/spring-config-ibatis-1.xml");
         DataSource dataSource = (DataSource) context.getBean("dataSource");
         {
             Connection conn = dataSource.getConnection();

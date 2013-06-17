@@ -33,5 +33,13 @@ public class EqualTest_mysqlMatch extends TestCase {
 
         Assert.assertEquals(new MySqlMatchAgainstExpr(), new MySqlMatchAgainstExpr());
         Assert.assertEquals(new MySqlMatchAgainstExpr().hashCode(), new MySqlMatchAgainstExpr().hashCode());
+   
+        exprA.setColumns(null);
+        exprB.setColumns(null);
+        Assert.assertEquals(exprA, exprB);
+        Assert.assertNotEquals(exprA, exprC);
+        Assert.assertTrue(exprA.equals(exprA));
+        Assert.assertFalse(exprA.equals(new Object()));
+        Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
     }
 }

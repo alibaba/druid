@@ -46,15 +46,6 @@ public class OracleExtractExpr extends SQLExprImpl implements OracleExpr {
         this.from = from;
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("EXTRACT(");
-        buf.append(this.unit.name());
-        buf.append(" FROM ");
-        this.from.output(buf);
-        buf.append(")");
-    }
-
-    @Override
     protected void accept0(SQLASTVisitor visitor) {
         this.accept0((OracleASTVisitor) visitor);
     }

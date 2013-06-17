@@ -25,6 +25,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcTraceManager;
 import com.alibaba.druid.util.JMXUtils;
 
+@SuppressWarnings("deprecation")
 public class TestTraceFilter extends TestCase {
 
     public void test_loop() throws Exception {
@@ -45,5 +46,6 @@ public class TestTraceFilter extends TestCase {
 
             Thread.sleep(1000);
         }
+        dataSource.close();
     }
 }

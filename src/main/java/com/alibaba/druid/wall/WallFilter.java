@@ -168,6 +168,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             WallContext.clearContext();
         }
     }
+    
+    @Override
+    public void preparedStatement_addBatch(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
+        chain.preparedStatement_addBatch(statement);
+    }
 
     @Override
     public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql)
@@ -324,6 +329,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (!firstResult) {
                 int updateCount = statement.getUpdateCount();
                 statExecuteUpdate(updateCount);
+            } else {
+                setSqlStatAttribute(statement);
             }
             return firstResult;
         } finally {
@@ -343,6 +350,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (!firstResult) {
                 int updateCount = statement.getUpdateCount();
                 statExecuteUpdate(updateCount);
+            } else {
+                setSqlStatAttribute(statement);
             }
             return firstResult;
         } finally {
@@ -360,6 +369,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (!firstResult) {
                 int updateCount = statement.getUpdateCount();
                 statExecuteUpdate(updateCount);
+            } else {
+                setSqlStatAttribute(statement);
             }
             return firstResult;
         } finally {
@@ -377,6 +388,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (!firstResult) {
                 int updateCount = statement.getUpdateCount();
                 statExecuteUpdate(updateCount);
+            } else {
+                setSqlStatAttribute(statement);
             }
             return firstResult;
         } finally {
@@ -389,10 +402,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         WallSqlStat sqlStat = (WallSqlStat) statement.getAttribute(ATTR_SQL_STAT);
         try {
             int[] updateCounts = chain.statement_executeBatch(statement);
+            int updateCount = 0;
             for (int i = 0; i < updateCounts.length; ++i) {
-                int updateCount = updateCounts[i];
-                statExecuteUpdate(sqlStat, updateCount);
+                updateCount += updateCounts[i];
             }
+            statExecuteUpdate(sqlStat, updateCount);
             return updateCounts;
         } finally {
             WallContext.clearContext();
@@ -498,11 +512,12 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     @Override
     public int preparedStatement_executeUpdate(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
         int updateCount = chain.preparedStatement_executeUpdate(statement);
-        statExecuteUpdate(updateCount);
+        WallSqlStat sqlStat = (WallSqlStat) statement.getAttribute(ATTR_SQL_STAT);
+        statExecuteUpdate(sqlStat, updateCount);
         return updateCount;
     }
 
-    public void setSqlStatAttribute(PreparedStatementProxy stmt) {
+    public void setSqlStatAttribute(StatementProxy stmt) {
         WallContext context = WallContext.current();
         if (context == null) {
             return;
@@ -555,6 +570,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 tableStat.addDeleteDataCount(updateCount);
             } else if (sqlTableStat.getUpdateCount() > 0) {
                 tableStat.addUpdateDataCount(updateCount);
+            } else if (sqlTableStat.getInsertCount() > 0) {
+                tableStat.addInsertDataCount(updateCount);
             }
         }
     }
