@@ -1006,7 +1006,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static Short castToShort(Object val) {
-        if (val == null) {
+        if (val == null || val == EVAL_VALUE_NULL) {
             return null;
         }
 
@@ -1078,7 +1078,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static Float castToFloat(Object val) {
-        if (val == null) {
+        if (val == null || val == EVAL_VALUE_NULL) {
             return null;
         }
 
@@ -1090,7 +1090,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static Double castToDouble(Object val) {
-        if (val == null) {
+        if (val == null || val == EVAL_VALUE_NULL) {
             return null;
         }
 
@@ -1191,11 +1191,21 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Double || b instanceof Double) {
-            return castToDouble(a) / (castToDouble(b));
+            Double doubleA = castToDouble(a);
+            Double doubleB = castToDouble(b);
+            if (doubleA == null || doubleB == null) {
+                return null;
+            }
+            return doubleA / doubleB;
         }
 
         if (a instanceof Float || b instanceof Float) {
-            return castToFloat(a) / (castToFloat(b));
+            Float floatA = castToFloat(a);
+            Float floatB = castToFloat(b);
+            if (floatA == null || floatB == null) {
+                return null;
+            }
+            return floatA / floatB;
         }
 
         if (a instanceof BigInteger || b instanceof BigInteger) {
@@ -1559,7 +1569,14 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Short || b instanceof Short) {
-            return castToShort(a) * castToShort(b);
+            Short shortA = castToShort(a);
+            Short shortB = castToShort(b);
+            
+            if (shortA == null || shortB == null) {
+                return null;
+            }
+            
+            return shortA * shortB;
         }
 
         if (a instanceof Byte || b instanceof Byte) {

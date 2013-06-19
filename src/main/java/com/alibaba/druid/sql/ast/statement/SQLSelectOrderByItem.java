@@ -63,4 +63,31 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
 
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((collate == null) ? 0 : collate.hashCode());
+        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        SQLSelectOrderByItem other = (SQLSelectOrderByItem) obj;
+        if (collate == null) {
+            if (other.collate != null) return false;
+        } else if (!collate.equals(other.collate)) return false;
+        if (expr == null) {
+            if (other.expr != null) return false;
+        } else if (!expr.equals(other.expr)) return false;
+        if (type != other.type) return false;
+        return true;
+    }
+
 }

@@ -23,24 +23,25 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.sql.test.TestUtils;
 
 public class OracleSelectTest42 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "SELECT * FROM t_department  " + //
+        "SELECT ALL * FROM t_department  " + //
                 "WHERE name IN ('0000','4444') " + //
                 "ORDER BY name ASC"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -51,6 +52,14 @@ public class OracleSelectTest42 extends OracleTest {
         Assert.assertEquals(1, visitor.getTables().size());
 
         Assert.assertEquals(2, visitor.getColumns().size());
+
+        String text = TestUtils.outputOracle(stmt);
+
+        Assert.assertEquals("SELECT ALL *" + //
+                            "\nFROM t_department" + //
+                            "\nWHERE name IN ('0000', '4444')" + //
+                            "\nORDER BY name ASC;" + //
+                            "\n", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

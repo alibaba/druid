@@ -14,4 +14,24 @@ public class EvalMethodAcosTest extends TestCase {
         Assert.assertEquals(null, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "acos(1.001)"));
         Assert.assertEquals(Math.acos(0), SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "acos(0)"));
     }
+    
+    public void test_abs_error() throws Exception {
+        Exception error = null;
+        try {
+            SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "acos()", 12L);
+        } catch (Exception e) {
+            error = e;
+        }
+        Assert.assertNotNull(error);
+    }
+    
+    public void test_abs_error_1() throws Exception {
+        Exception error = null;
+        try {
+            SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "acos(a)");
+        } catch (Exception e) {
+            error = e;
+        }
+        Assert.assertNotNull(error);
+    }
 }

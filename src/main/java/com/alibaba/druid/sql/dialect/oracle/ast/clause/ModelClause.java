@@ -40,6 +40,7 @@ public class ModelClause extends OracleSQLObjectImpl {
             acceptChild(visitor, referenceModelClauses);
             acceptChild(visitor, mainModel);
         }
+        visitor.endVisit(this);
     }
 
     public MainModelClause getMainModel() {
@@ -104,6 +105,7 @@ public class ModelClause extends OracleSQLObjectImpl {
         @Override
         public void accept0(OracleASTVisitor visitor) {
             visitor.visit(this);
+            visitor.endVisit(this);
         }
     }
 
@@ -179,6 +181,7 @@ public class ModelClause extends OracleSQLObjectImpl {
                 acceptChild(visitor, dimensionByColumns);
                 acceptChild(visitor, measuresColumns);
             }
+            visitor.endVisit(this);
         }
 
     }
@@ -211,6 +214,7 @@ public class ModelClause extends OracleSQLObjectImpl {
             if (visitor.visit(this)) {
                 acceptChild(visitor, expr);
             }
+            visitor.endVisit(this);
         }
 
     }
@@ -281,6 +285,7 @@ public class ModelClause extends OracleSQLObjectImpl {
                 acceptChild(visitor, modelColumnClause);
                 acceptChild(visitor, modelRulesClause);
             }
+            visitor.endVisit(this);
         }
 
     }
@@ -324,6 +329,7 @@ public class ModelClause extends OracleSQLObjectImpl {
                 acceptChild(visitor, until);
                 acceptChild(visitor, cellAssignmentItems);
             }
+            visitor.endVisit(this);
         }
 
     }
@@ -391,6 +397,7 @@ public class ModelClause extends OracleSQLObjectImpl {
                 acceptChild(visitor, orderBy);
                 acceptChild(visitor, expr);
             }
+            visitor.endVisit(this);
         }
 
     }
@@ -419,6 +426,7 @@ public class ModelClause extends OracleSQLObjectImpl {
                 acceptChild(visitor, measureColumn);
                 acceptChild(visitor, conditions);
             }
+            visitor.endVisit(this);
         }
 
     }

@@ -17,8 +17,9 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -36,6 +37,28 @@ public class SHOW_STATUS_Syntax_Test extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("SHOW STATUS LIKE 'Key%';", text);
+    }
+    
+    public void test_where() throws Exception {
+        String sql = "SHOW STATUS WHERE X LIKE 'Key%'";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SHOW STATUS WHERE X LIKE 'Key%';", text);
+    }
+    
+    public void test_corba() throws Exception {
+        String sql = "SHOW COBAR_STATUS";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SHOW COBAR_STATUS;", text);
     }
 
     public void test_1() throws Exception {

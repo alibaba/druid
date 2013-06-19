@@ -318,10 +318,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         transactionHistogram.reset();
         cachedPreparedStatementDeleteCount.set(0);
         recycleErrorCount.set(0);
-        
+
         resetCount.incrementAndGet();
     }
-    
+
     public long getResetCount() {
         return this.resetCount.get();
     }
@@ -1445,19 +1445,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         lock.lock();
         try {
-            value.poolingCount = this.poolingCount;
-            value.poolingPeak = this.poolingPeak;
-            value.poolingPeakTime = this.poolingPeakTime;
+            value.setPoolingCount(this.poolingCount);
+            value.setPoolingPeak(this.poolingPeak);
+            value.setPoolingPeakTime(this.poolingPeakTime);
 
-            value.activeCount = this.activeCount;
-            value.activePeak = this.activePeak;
-            value.activePeakTime = this.activePeakTime;
+            value.setActiveCount(this.activeCount);
+            value.setActivePeak(this.activePeak);
+            value.setActivePeakTime(this.activePeakTime);
 
-            value.connectCount = this.connectCount;
-            value.closeCount = this.closeCount;
-            value.waitThreadCount = lock.getWaitQueueLength(notEmpty);
-            value.notEmptyWaitCount = this.notEmptyWaitCount;
-            value.notEmptyWaitNanos = this.notEmptyWaitNanos;
+            value.setConnectCount(this.connectCount);
+            value.setCloseCount(this.closeCount);
+            value.setWaitThreadCount(lock.getWaitQueueLength(notEmpty));
+            value.setNotEmptyWaitCount(this.notEmptyWaitCount);
+            value.setNotEmptyWaitNanos(this.notEmptyWaitNanos);
 
             // reset
             this.poolingPeak = 0;
@@ -1473,56 +1473,56 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
-        value.name = this.getName();
-        value.dbType = this.getDbType();
-        value.driverClassName = this.getDriverClassName();
+        value.setName(this.getName());
+        value.setDbType(this.getDbType());
+        value.setDriverClassName(this.getDriverClassName());
 
-        value.url = this.getUrl();
-        value.userName = this.getUsername();
-        value.filterClassNames = this.getFilterClassNames();
+        value.setUrl(this.getUrl());
+        value.setUserName(this.getUsername());
+        value.setFilterClassNames(this.getFilterClassNames());
 
-        value.initialSize = this.getInitialSize();
-        value.minIdle = this.getMinIdle();
-        value.maxActive = this.getMaxActive();
+        value.setInitialSize(this.getInitialSize());
+        value.setMinIdle(this.getMinIdle());
+        value.setMaxActive(this.getMaxActive());
 
-        value.queryTimeout = this.getQueryTimeout();
-        value.transactionQueryTimeout = this.getTransactionQueryTimeout();
-        value.loginTimeout = this.getLoginTimeout();
-        value.validConnectionCheckerClassName = this.getValidConnectionCheckerClassName();
-        value.exceptionSorterClassName = this.getExceptionSorterClassName();
+        value.setQueryTimeout(this.getQueryTimeout());
+        value.setTransactionQueryTimeout(this.getTransactionQueryTimeout());
+        value.setLoginTimeout(this.getLoginTimeout());
+        value.setValidConnectionCheckerClassName(this.getValidConnectionCheckerClassName());
+        value.setExceptionSorterClassName(this.getExceptionSorterClassName());
 
-        value.testOnBorrow = this.isTestOnBorrow();
-        value.testOnReturn = this.isTestOnReturn();
-        value.testWhileIdle = this.isTestWhileIdle();
+        value.setTestOnBorrow(this.isTestOnBorrow());
+        value.setTestOnReturn(this.isTestOnReturn());
+        value.setTestWhileIdle(this.isTestWhileIdle());
 
-        value.defaultAutoCommit = this.isDefaultAutoCommit();
-        value.defaultReadOnly = this.isDefaultAutoCommit();
-        value.defaultTransactionIsolation = this.getDefaultTransactionIsolation();
+        value.setDefaultAutoCommit(this.isDefaultAutoCommit());
+        value.setDefaultReadOnly(this.isDefaultAutoCommit());
+        value.setDefaultTransactionIsolation(this.getDefaultTransactionIsolation());
 
-        value.logicConnectErrorCount = connectErrorCount.getAndSet(0);
+        value.setLogicConnectErrorCount(connectErrorCount.getAndSet(0));
 
-        value.physicalConnectCount = createCount.getAndSet(0);
-        value.physicalCloseCount = destroyCount.getAndSet(0);
-        value.physicalConnectErrorCount = createErrorCount.getAndSet(0);
+        value.setPhysicalConnectCount(createCount.getAndSet(0));
+        value.setPhysicalCloseCount(destroyCount.getAndSet(0));
+        value.setPhysicalConnectErrorCount(createErrorCount.getAndSet(0));
 
-        value.executeCount = this.executeCount.getAndSet(0);
-        value.errorCount = errorCount.getAndSet(0);
-        value.commitCount = commitCount.getAndSet(0);
-        value.rollbackCount = rollbackCount.getAndSet(0);
+        value.setExecuteCount(this.executeCount.getAndSet(0));
+        value.setErrorCount(errorCount.getAndSet(0));
+        value.setCommitCount(commitCount.getAndSet(0));
+        value.setRollbackCount(rollbackCount.getAndSet(0));
 
-        value.pstmtCacheHitCount = cachedPreparedStatementHitCount.getAndSet(0);
-        value.pstmtCacheMissCount = cachedPreparedStatementMissCount.getAndSet(0);
+        value.setPstmtCacheHitCount(cachedPreparedStatementHitCount.getAndSet(0));
+        value.setPstmtCacheMissCount(cachedPreparedStatementMissCount.getAndSet(0));
 
-        value.startTransactionCount = startTransactionCount.getAndSet(0);
-        value.transactionHistogram = this.getTransactionHistogram().toArrayAndReset();
+        value.setStartTransactionCount(startTransactionCount.getAndSet(0));
+        value.setTransactionHistogram(this.getTransactionHistogram().toArrayAndReset());
 
-        value.connectionHoldTimeHistogram = this.getDataSourceStat().getConnectionHoldHistogram().toArrayAndReset();
+        value.setConnectionHoldTimeHistogram(this.getDataSourceStat().getConnectionHoldHistogram().toArrayAndReset());
         value.removeAbandoned = this.isRemoveAbandoned();
-        value.clobOpenCount = this.getDataSourceStat().getClobOpenCountAndReset();
-        value.blobOpenCount = this.getDataSourceStat().getBlobOpenCountAndReset();
+        value.setClobOpenCount(this.getDataSourceStat().getClobOpenCountAndReset());
+        value.setBlobOpenCount(this.getDataSourceStat().getBlobOpenCountAndReset());
 
-        value.sqlSkipCount = this.getDataSourceStat().getSkipSqlCountAndReset();
-        value.sqlList = this.getDataSourceStat().getSqlStatMapAndReset();
+        value.setSqlSkipCount(this.getDataSourceStat().getSkipSqlCountAndReset());
+        value.setSqlList(this.getDataSourceStat().getSqlStatMapAndReset());
 
         return value;
     }

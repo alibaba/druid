@@ -366,6 +366,12 @@ public class OracleExprParser extends SQLExprParser {
                         sqlExpr = new OracleBinaryDoubleExpr(Double.parseDouble(lexer.numberString()));
                         lexer.nextToken();
                         break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
+                        break;
                     default:
                         throw new ParserException("TODO");
                 }
@@ -410,6 +416,12 @@ public class OracleExprParser extends SQLExprParser {
                     case VARIANT:
                     case IDENTIFIER:
                         sqlExpr = expr();
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
+                        break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
                     default:

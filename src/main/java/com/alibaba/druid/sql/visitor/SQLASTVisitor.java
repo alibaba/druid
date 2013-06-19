@@ -93,10 +93,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
@@ -232,10 +230,6 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLCreateTableStatement x);
 
-    boolean visit(SQLTableElement x);
-
-    void endVisit(SQLTableElement x);
-
     boolean visit(SQLColumnDefinition x);
 
     void endVisit(SQLColumnDefinition x);
@@ -275,10 +269,6 @@ public interface SQLASTVisitor {
     boolean visit(SQLCreateViewStatement x);
 
     void endVisit(SQLCreateViewStatement x);
-
-    boolean visit(SQLUniqueConstraint x);
-
-    void endVisit(SQLUniqueConstraint x);
 
     boolean visit(NotNullConstraint x);
 
@@ -455,7 +445,7 @@ public interface SQLASTVisitor {
     boolean visit(SQLExprHint x);
 
     void endVisit(SQLExprHint x);
-    
+
     boolean visit(SQLAlterTableDropConstraint x);
 
     void endVisit(SQLAlterTableDropConstraint x);

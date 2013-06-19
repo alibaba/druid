@@ -39,5 +39,6 @@ public class MySqlDropUser extends MySqlStatementImpl {
         if (visitor.visit(this)) {
             acceptChild(visitor, users);
         }
+        visitor.endVisit(this);
     }
 }

@@ -44,18 +44,6 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
         this.not = not;
     }
 
-    public void output(StringBuffer buf) {
-        this.testExpr.output(buf);
-        if (this.not) {
-            buf.append(" NOT BETWEEN ");
-        } else {
-            buf.append(" BETWEEN ");
-        }
-        this.beginExpr.output(buf);
-        buf.append(" AND ");
-        this.endExpr.output(buf);
-    }
-
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.testExpr);
