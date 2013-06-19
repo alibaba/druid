@@ -19,8 +19,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;

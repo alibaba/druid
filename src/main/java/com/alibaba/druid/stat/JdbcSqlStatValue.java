@@ -15,6 +15,15 @@
  */
 package com.alibaba.druid.stat;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.management.JMException;
+
+import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.JMXUtils;
+
 public class JdbcSqlStatValue {
 
     protected String    sql;
@@ -81,14 +90,14 @@ public class JdbcSqlStatValue {
         };
     }
 
-    public long executeAndResultHoldTime_0_1;
-    public long executeAndResultHoldTime_1_10;
-    public int  executeAndResultHoldTime_10_100;
-    public int  executeAndResultHoldTime_100_1000;
-    public int  executeAndResultHoldTime_1000_10000;
-    public int  executeAndResultHoldTime_10000_100000;
-    public int  executeAndResultHoldTime_100000_1000000;
-    public int  executeAndResultHoldTime_1000000_more;
+    protected long executeAndResultHoldTime_0_1;
+    protected long executeAndResultHoldTime_1_10;
+    protected int  executeAndResultHoldTime_10_100;
+    protected int  executeAndResultHoldTime_100_1000;
+    protected int  executeAndResultHoldTime_1000_10000;
+    protected int  executeAndResultHoldTime_10000_100000;
+    protected int  executeAndResultHoldTime_100000_1000000;
+    protected int  executeAndResultHoldTime_1000000_more;
 
     public long[] getExecuteAndResultHoldHistogram() {
         return new long[] { executeAndResultHoldTime_0_1, //
@@ -102,12 +111,12 @@ public class JdbcSqlStatValue {
         };
     }
 
-    public long fetchRowCount_0_1;
-    public long fetchRowCount_1_10;
-    public long fetchRowCount_10_100;
-    public int  fetchRowCount_100_1000;
-    public int  fetchRowCount_1000_10000;
-    public int  fetchRowCount_10000_more;
+    protected long fetchRowCount_0_1;
+    protected long fetchRowCount_1_10;
+    protected long fetchRowCount_10_100;
+    protected int  fetchRowCount_100_1000;
+    protected int  fetchRowCount_1000_10000;
+    protected int  fetchRowCount_10000_more;
 
     public long[] getFetchRowHistogram() {
         return new long[] { fetchRowCount_0_1, //
@@ -119,12 +128,12 @@ public class JdbcSqlStatValue {
         };
     }
 
-    public long updateCount_0_1;
-    public long updateCount_1_10;
-    public long updateCount_10_100;
-    public int  updateCount_100_1000;
-    public int  updateCount_1000_10000;
-    public int  updateCount_10000_more;
+    protected long updateCount_0_1;
+    protected long updateCount_1_10;
+    protected long updateCount_10_100;
+    protected int  updateCount_100_1000;
+    protected int  updateCount_1000_10000;
+    protected int  updateCount_10000_more;
 
     public long[] getUpdateHistogram() {
         return new long[] { updateCount_0_1, //
@@ -172,8 +181,16 @@ public class JdbcSqlStatValue {
         this.dataSource = dataSource;
     }
 
-    public long getExecuteLastStartTime() {
+    public long getExecuteLastStartTimeMillis() {
         return executeLastStartTime;
+    }
+    
+    public Date getExecuteLastStartTime() {
+        if (executeLastStartTime <= 0) {
+            return null;
+        }
+
+        return new Date(executeLastStartTime);
     }
 
     public void setExecuteLastStartTime(long executeLastStartTime) {
@@ -244,7 +261,7 @@ public class JdbcSqlStatValue {
         this.resultSetHoldTimeNano = resultSetHoldTimeNano;
     }
 
-    public long getExecuteAndResultSetHoldTime() {
+    public long getExecuteAndResultSetHoldTimeNano() {
         return executeAndResultSetHoldTime;
     }
 
@@ -276,8 +293,22 @@ public class JdbcSqlStatValue {
         this.dbType = dbType;
     }
 
-    public long getExecuteNanoSpanMaxOccurTime() {
+    public long getExecuteNanoSpanMaxOccurTimeMillis() {
         return executeNanoSpanMaxOccurTime;
+    }
+    
+    public Date getExecuteNanoSpanMaxOccurTime() {
+        if (executeNanoSpanMaxOccurTime <= 0) {
+            return null;
+        }
+        return new Date(executeNanoSpanMaxOccurTime);
+    }
+
+    public Date getExecuteErrorLastTime() {
+        if (executeErrorLastTime <= 0) {
+            return null;
+        }
+        return new Date(executeErrorLastTime);
     }
 
     public void setExecuteNanoSpanMaxOccurTime(long executeNanoSpanMaxOccurTime) {
@@ -300,7 +331,7 @@ public class JdbcSqlStatValue {
         this.executeErrorLast = executeErrorLast;
     }
 
-    public long getExecuteErrorLastTime() {
+    public long getExecuteErrorLastTimeMillis() {
         return executeErrorLastTime;
     }
 
@@ -404,4 +435,131 @@ public class JdbcSqlStatValue {
         this.readerOpenCount = readerOpenCount;
     }
 
+    public long[] getHistogramValues() {
+        return new long[] {
+                //
+                histogram_0_1, //
+                histogram_1_10, //
+                histogram_10_100, //
+                histogram_100_1000, //
+                histogram_1000_10000, //
+                histogram_10000_100000, //
+                histogram_100000_1000000, //
+                histogram_1000000_more //
+        };
+    }
+    
+    public long[] getFetchRowCountHistogramValues() {
+        return new long[] {
+                //
+                fetchRowCount_0_1, //
+                fetchRowCount_1_10, //
+                fetchRowCount_10_100, //
+                fetchRowCount_100_1000, //
+                fetchRowCount_1000_10000, //
+                fetchRowCount_10000_more //
+        };
+    }
+
+    public long[] getUpdateCountHistogramValues() {
+        return new long[] {
+                //
+                updateCount_0_1, //
+                updateCount_1_10, //
+                updateCount_10_100, //
+                updateCount_100_1000, //
+                updateCount_1000_10000, //
+                updateCount_10000_more //
+        };
+    }
+    
+    public long[] getExecuteAndResultHoldTimeHistogramValues() {
+        return new long[] {
+                //
+                executeAndResultHoldTime_0_1, //
+                executeAndResultHoldTime_1_10, //
+                executeAndResultHoldTime_10_100, //
+                executeAndResultHoldTime_100_1000, //
+                executeAndResultHoldTime_1000_10000, //
+                executeAndResultHoldTime_10000_100000, //
+                executeAndResultHoldTime_100000_1000000, //
+                executeAndResultHoldTime_1000000_more //
+        };
+    }
+
+    public long getResultSetHoldTimeMilis() {
+        return getResultSetHoldTimeNano() / (1000 * 1000);
+    }
+
+    public long getExecuteAndResultSetHoldTimeMilis() {
+        return getExecuteAndResultSetHoldTimeNano() / (1000 * 1000);
+    }
+
+    public Map<String, Object> getData() throws JMException {
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        // 0 - 4
+        map.put("ID", id);
+        map.put("DataSource", dataSource);
+        map.put("SQL", sql);
+        map.put("ExecuteCount", getExecuteCount());
+        map.put("ErrorCount", getExecuteErrorCount());
+
+        // 5 - 9
+        map.put("TotalTime", getExecuteMillisTotal());
+        map.put("LastTime", getExecuteLastStartTime());
+        map.put("MaxTimespan", getExecuteMillisMax());
+        map.put("LastError", JMXUtils.getErrorCompositeData(this.getExecuteErrorLast()));
+        map.put("EffectedRowCount", getUpdateCount());
+
+        // 10 - 14
+        map.put("FetchRowCount", getFetchRowCount());
+        map.put("MaxTimespanOccurTime", getExecuteNanoSpanMaxOccurTime());
+        map.put("BatchSizeMax", (long) getExecuteBatchSizeMax());
+        map.put("BatchSizeTotal", getExecuteBatchSizeTotal());
+        map.put("ConcurrentMax", (long) getConcurrentMax());
+
+        // 15 -
+        map.put("RunningCount", (long) getRunningCount()); // 15
+        map.put("Name", getName()); // 16
+        map.put("File", getFile()); // 17
+
+        Throwable lastError = this.executeErrorLast;
+        if (lastError != null) {
+            map.put("LastErrorMessage", lastError.getMessage()); // 18
+            map.put("LastErrorClass", lastError.getClass().getName()); // 19
+
+            map.put("LastErrorStackTrace", IOUtils.getStackTrace(lastError)); // 20
+            map.put("LastErrorTime", new Date(executeErrorLastTime)); // 21
+        } else {
+            map.put("LastErrorMessage", null);
+            map.put("LastErrorClass", null);
+            map.put("LastErrorStackTrace", null);
+            map.put("LastErrorTime", null);
+        }
+
+        map.put("DbType", dbType); // 22
+        map.put("URL", null); // 23
+        map.put("InTransactionCount", getInTransactionCount()); // 24
+
+        map.put("Histogram", this.getHistogramValues()); // 25
+        map.put("LastSlowParameters", lastSlowParameters); // 26
+        map.put("ResultSetHoldTime", getResultSetHoldTimeMilis()); // 27
+        map.put("ExecuteAndResultSetHoldTime", this.getExecuteAndResultSetHoldTimeMilis()); // 28
+        map.put("FetchRowCountHistogram", this.getFetchRowCountHistogramValues()); // 29
+
+        map.put("EffectedRowCountHistogram", this.getUpdateCountHistogramValues()); // 30
+        map.put("ExecuteAndResultHoldTimeHistogram", this.getExecuteAndResultHoldTimeHistogramValues()); // 31
+        map.put("EffectedRowCountMax", getUpdateCountMax()); // 32
+        map.put("FetchRowCountMax", getFetchRowCountMax()); // 33
+        map.put("ClobOpenCount", getClobOpenCount()); // 34
+
+        map.put("BlobOpenCount", getBlobOpenCount()); // 35
+        map.put("ReadStringLength", getReadStringLength()); // 36
+        map.put("ReadBytesLength", getReadBytesLength()); // 37
+        map.put("InputStreamOpenCount", getInputStreamOpenCount()); // 38
+        map.put("ReaderOpenCount", getReaderOpenCount()); // 39
+
+        return map;
+    }
 }

@@ -32,13 +32,11 @@ public class SQLExistsExpr extends SQLExprImpl implements Serializable {
     }
 
     public SQLExistsExpr(SQLSelect subQuery){
-
-        this.subQuery = subQuery;
+        this.setSubQuery(subQuery);
     }
 
     public SQLExistsExpr(SQLSelect subQuery, boolean not){
-
-        this.subQuery = subQuery;
+        this.setSubQuery(subQuery);
         this.not = not;
     }
 
@@ -55,16 +53,10 @@ public class SQLExistsExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setSubQuery(SQLSelect subQuery) {
-        this.subQuery = subQuery;
-    }
-
-    public void output(StringBuffer buf) {
-        if (this.not) {
-            buf.append("NOT ");
+        if (subQuery != null) {
+            subQuery.setParent(this);
         }
-        buf.append("EXISTS (");
-        this.subQuery.output(buf);
-        buf.append(")");
+        this.subQuery = subQuery;
     }
 
     protected void accept0(SQLASTVisitor visitor) {

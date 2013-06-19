@@ -94,10 +94,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
@@ -314,13 +312,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLCreateTableStatement x) {
     }
 
-    public boolean visit(SQLTableElement x) {
-        return true;
-    }
-
-    public void endVisit(SQLTableElement x) {
-    }
-
     public boolean visit(SQLColumnDefinition x) {
         return true;
     }
@@ -375,13 +366,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public void endVisit(SQLCreateViewStatement x) {
-    }
-
-    public boolean visit(SQLUniqueConstraint x) {
-        return true;
-    }
-
-    public void endVisit(SQLUniqueConstraint x) {
     }
 
     public boolean visit(NotNullConstraint x) {
@@ -662,7 +646,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCreateDatabaseStatement x) {
-        
+
     }
 
     @Override
@@ -677,7 +661,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDropIndex x) {
-        
+
     }
 
     @Override
@@ -687,7 +671,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableAddPrimaryKey x) {
-        
+
     }
 
     @Override
@@ -701,7 +685,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLColumnPrimaryKey x) {
-        
+
     }
 
     @Override
@@ -717,11 +701,11 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public boolean visit(SQLWithSubqueryClause x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLWithSubqueryClause.Entry x) {
     }
-    
+
     @Override
     public boolean visit(SQLWithSubqueryClause.Entry x) {
         return true;
@@ -734,12 +718,12 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCharactorDataType x) {
-        
+
     }
 
     @Override
     public void endVisit(SQLAlterTableAlterColumn x) {
-        
+
     }
 
     @Override
@@ -754,7 +738,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCheck x) {
-        
+
     }
 
     @Override
@@ -764,17 +748,17 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDropForeinKey x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropPrimaryKey x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLAlterTableDropPrimaryKey x) {
-        
+
     }
 
     @Override
@@ -784,7 +768,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDisableKeys x) {
-        
+
     }
 
     @Override
@@ -794,17 +778,17 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableEnableKeys x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLAlterTableStatement x) {
-        
+
     }
 
     @Override
@@ -814,7 +798,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableAddForeignKey x) {
-        
+
     }
 
     @Override
@@ -824,26 +808,27 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDisableConstraint x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableEnableConstraint x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLAlterTableEnableConstraint x) {
-        
+
     }
+
     @Override
     public boolean visit(SQLColumnCheck x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLColumnCheck x) {
-        
+
     }
 
     @Override
@@ -853,9 +838,9 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLExprHint x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropConstraint x) {
         return true;
@@ -863,6 +848,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDropConstraint x) {
-        
+
     }
 }

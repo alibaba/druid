@@ -179,7 +179,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public void postVisit(SQLObject x) {
-        if (!printPostSemi) {
+        if (!isPrintPostSemi()) {
             return;
         }
 
