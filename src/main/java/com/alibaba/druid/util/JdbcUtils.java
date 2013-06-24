@@ -691,7 +691,7 @@ public final class JdbcUtils implements JdbcConstants {
      * @param  pattern if pattern is null,it will be set {%Y-%m-%d %H:%i:%s} as mysql default value and set {yyyy-mm-dd hh24:mi:ss} as oracle default value
      * @param  dbType  {@link JdbcConstants} if dbType is null ,it will be set the mysql as a default value
      */
-    public static String formatColumnToDateType(String columnName,String tableAlias,String pattern,String dbType){    	
+    public static String formatStrToDateColumn(String columnName,String tableAlias,String pattern,String dbType){    	
      	StringBuilder sql = new StringBuilder();    	
      	if(!StringUtils.isEmpty(columnName)){    		
          	if(StringUtils.isEmpty(dbType))    dbType = JdbcConstants.MYSQL;   

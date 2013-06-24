@@ -82,10 +82,10 @@ public class JdbcUtilsTest extends TestCase {
     }
     
     public void test_formatColumnToDateType(){
-    	String colunExp = JdbcUtils.formatColumnToDateType("gmt_create","oo","",JdbcConstants.ORACLE);
+    	String colunExp = JdbcUtils.formatStrToDateColumn("gmt_create","oo","",JdbcConstants.ORACLE);
 		Assert.assertEquals("TO_DATE(oo.gmt_create,'yyyy-mm-dd hh24:mi:ss')", colunExp);
 		
-		String colunExp2 = JdbcUtils.formatColumnToDateType("gmt_create","oo","",JdbcConstants.MYSQL);
+		String colunExp2 = JdbcUtils.formatStrToDateColumn("gmt_create","oo","",JdbcConstants.MYSQL);
 		Assert.assertEquals("STR_TO_DATE(oo.gmt_create,'%Y-%m-%d %H:%i:%s')", colunExp2);	
     }
 }
