@@ -23,7 +23,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class JdbcUtilsTest extends TestCase {
@@ -79,13 +78,5 @@ public class JdbcUtilsTest extends TestCase {
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, "select * from user");
             Assert.assertEquals(0, list.size());
         }
-    }
-    
-    public void test_formatColumnToDateType(){
-    	String colunExp = JdbcUtils.formatStrToDateColumn("gmt_create","oo","",JdbcConstants.ORACLE);
-		Assert.assertEquals("TO_DATE(oo.gmt_create,'yyyy-mm-dd hh24:mi:ss')", colunExp);
-		
-		String colunExp2 = JdbcUtils.formatStrToDateColumn("gmt_create","oo","",JdbcConstants.MYSQL);
-		Assert.assertEquals("STR_TO_DATE(oo.gmt_create,'%Y-%m-%d %H:%i:%s')", colunExp2);	
-    }
+    }   
 }

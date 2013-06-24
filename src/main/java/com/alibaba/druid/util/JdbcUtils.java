@@ -682,37 +682,4 @@ public final class JdbcUtils implements JdbcConstants {
 
         return sql.toString();
     }
-    
-    
-    /**
-     * @author owenludong.lud
-     * @param  columnName
-     * @param  tableAlias 
-     * @param  pattern if pattern is null,it will be set {%Y-%m-%d %H:%i:%s} as mysql default value and set {yyyy-mm-dd hh24:mi:ss} as oracle default value
-     * @param  dbType  {@link JdbcConstants} if dbType is null ,it will be set the mysql as a default value
-     */
-    public static String formatStrToDateColumn(String columnName,String tableAlias,String pattern,String dbType){    	
-     	StringBuilder sql = new StringBuilder();    	
-     	if(!StringUtils.isEmpty(columnName)){    		
-         	if(StringUtils.isEmpty(dbType))    dbType = JdbcConstants.MYSQL;   
-         	String formatMethod = "";
-         	if(MYSQL.equalsIgnoreCase(dbType)){
-         		formatMethod = "STR_TO_DATE";
-         		if(StringUtils.isEmpty(pattern)) pattern = "%Y-%m-%d %H:%i:%s";
-         	}else if(ORACLE.equalsIgnoreCase(dbType)){
-         		formatMethod = "TO_DATE";
-         		if(StringUtils.isEmpty(pattern)) pattern = "yyyy-mm-dd hh24:mi:ss";
-         	}else{
-         		//expand date's handle method for other database 
-         	}
-         	sql.append(formatMethod).append("(");        	
-     		if(!StringUtils.isEmpty(tableAlias))
-     			sql.append(tableAlias).append("."); 
-     		sql.append(columnName).append(",");
-     		sql.append("'");
-     		sql.append(pattern);
-     		sql.append("')");
-     	}    	
-     	return sql.toString();
-     }
 }
