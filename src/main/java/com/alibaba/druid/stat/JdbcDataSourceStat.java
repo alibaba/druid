@@ -39,7 +39,6 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.Histogram;
-import com.alibaba.druid.util.LRUCache;
 
 public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
@@ -53,10 +52,12 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final JdbcResultSetStat                             resultSetStat           = new JdbcResultSetStat();
     private final JdbcStatementStat                             statementStat           = new JdbcStatementStat();
 
-    private int                                                 maxSize                 = 1000 * 1;
+    private int                                                 maxSqlSize              = 1000 * 1;
 
     private ReentrantReadWriteLock                              lock                    = new ReentrantReadWriteLock();
     private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap;
+
+    private final AtomicLong                                    skipSqlCount            = new AtomicLong();
 
     private final Histogram                                     connectionHoldHistogram = new Histogram(new long[] { //
                                                                                                         //
@@ -65,11 +66,16 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
                                                                                                         //
                                                                                                         });
 
-    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
+    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>(
+                                                                                                                                                16,
+                                                                                                                                                0.75f,
+                                                                                                                                                1);
 
     private final AtomicLong                                    clobOpenCount           = new AtomicLong();
 
     private final AtomicLong                                    blobOpenCount           = new AtomicLong();
+
+    private boolean                                             resetStatEnable         = true;
 
     private static JdbcDataSourceStat                           global;
 
@@ -91,6 +97,18 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public static void setGlobal(JdbcDataSourceStat value) {
         global = value;
     }
+    
+    public void configFromProperties(Properties properties) {
+        
+    }
+
+    public boolean isResetStatEnable() {
+        return resetStatEnable;
+    }
+
+    public void setResetStatEnable(boolean resetStatEnable) {
+        this.resetStatEnable = resetStatEnable;
+    }
 
     public JdbcDataSourceStat(String name, String url){
         this(name, url, null);
@@ -100,6 +118,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         this(name, url, dbType, null);
     }
 
+    @SuppressWarnings("serial")
     public JdbcDataSourceStat(String name, String url, String dbType, Properties connectProperties){
         this.name = name;
         this.url = url;
@@ -114,14 +133,58 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
             if (arg != null) {
                 try {
-                    maxSize = Integer.parseInt(arg.toString());
+                    maxSqlSize = Integer.parseInt(arg.toString());
                 } catch (NumberFormatException ex) {
                     LOG.error("maxSize parse error", ex);
                 }
             }
         }
 
-        sqlStatMap = new LRUCache<String, JdbcSqlStat>(maxSize, 16, 0.75f, false);
+        sqlStatMap = new LinkedHashMap<String, JdbcSqlStat>(16, 0.75f, false) {
+
+            protected boolean removeEldestEntry(Map.Entry<String, JdbcSqlStat> eldest) {
+                boolean remove = (size() > maxSqlSize);
+
+                if (remove) {
+                    JdbcSqlStat sqlStat = eldest.getValue();
+                    if (sqlStat.getRunningCount() > 0 || sqlStat.getExecuteCount() > 0) {
+                        skipSqlCount.incrementAndGet();
+                    }
+                }
+
+                return remove;
+            }
+        };
+    }
+
+    public int getMaxSqlSize() {
+        return this.maxSqlSize;
+    }
+
+    public void setMaxSqlSize(int value) {
+        if (value == this.maxSqlSize) {
+            return;
+        }
+
+        lock.writeLock().lock();
+        try {
+            if (value < this.maxSqlSize) {
+                int removeCount = this.maxSqlSize - value;
+                Iterator<Map.Entry<String, JdbcSqlStat>> iter = sqlStatMap.entrySet().iterator();
+                while (iter.hasNext()) {
+                    iter.next();
+                    if (removeCount > 0) {
+                        iter.remove();
+                        removeCount--;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            this.maxSqlSize = value;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public String getDbType() {
@@ -132,7 +195,19 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         this.dbType = dbType;
     }
 
+    public long getSkipSqlCount() {
+        return skipSqlCount.get();
+    }
+
+    public long getSkipSqlCountAndReset() {
+        return skipSqlCount.getAndSet(0);
+    }
+
     public void reset() {
+        if (!isResetStatEnable()) {
+            return;
+        }
+        
         blobOpenCount.set(0);
         clobOpenCount.set(0);
 
@@ -140,6 +215,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         statementStat.reset();
         resultSetStat.reset();
         connectionHoldHistogram.reset();
+        skipSqlCount.set(0);
 
         lock.writeLock().lock();
         try {
@@ -267,7 +343,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         }
         return map;
     }
-    
+
     public List<JdbcSqlStatValue> getSqlStatMapAndReset() {
         List<JdbcSqlStat> stats = new ArrayList<JdbcSqlStat>(sqlStatMap.size());
         lock.writeLock().lock();
@@ -286,11 +362,14 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         } finally {
             lock.writeLock().unlock();
         }
-        
+
         List<JdbcSqlStatValue> values = new ArrayList<JdbcSqlStatValue>(stats.size());
         for (int i = 0; i < stats.size(); ++i) {
             JdbcSqlStat stat = stats.get(i);
             JdbcSqlStatValue value = stat.getValueAndReset();
+            if (value.getExecuteCount() == 0 && value.getRunningCount() == 0) {
+                continue;
+            }
             values.add(value);
         }
         return values;
@@ -375,7 +454,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public long getClobOpenCount() {
         return clobOpenCount.get();
     }
-    
+
     public long getClobOpenCountAndReset() {
         return clobOpenCount.getAndSet(0);
     }
@@ -387,7 +466,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public long getBlobOpenCount() {
         return blobOpenCount.get();
     }
-    
+
     public long getBlobOpenCountAndReset() {
         return blobOpenCount.getAndSet(0);
     }

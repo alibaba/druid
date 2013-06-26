@@ -50,19 +50,4 @@ public class PGOrderBy extends SQLOrderBy {
         visitor.endVisit(this);
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("ORDER ");
-        if (this.sibings) {
-            buf.append("SIBLINGS ");
-        }
-        buf.append("BY ");
-
-        int i = 0;
-        for (int size = this.items.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(", ");
-            }
-            ((PGOrderByItem) this.items.get(i)).output(buf);
-        }
-    }
 }

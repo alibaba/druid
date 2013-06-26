@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * An interface to allow for exception evaluation.
@@ -29,4 +30,6 @@ public interface ExceptionSorter {
      * @return true or false if the exception is fatal.
      */
     boolean isExceptionFatal(SQLException e);
+    
+    void configFromProperties(Properties properties);
 }

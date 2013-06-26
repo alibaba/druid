@@ -53,7 +53,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     private final static DruidDriver                                instance                 = new DruidDriver();
 
-    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>();
+    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>(16, 0.75f, 1);
     private final static AtomicInteger                              dataSourceIdSeed         = new AtomicInteger(0);
     private final static AtomicInteger                              sqlStatIdSeed            = new AtomicInteger(0);
 

@@ -24,7 +24,18 @@ public class TimeBetweenLogStatsMillisTest extends TestCase {
     }
 
     public void test_0() throws Exception {
+        Assert.assertEquals(true, dataSource.isResetStatEnable());
         dataSource.init();
         Assert.assertEquals(1000, dataSource.getTimeBetweenLogStatsMillis());
+        Assert.assertEquals(false, dataSource.isResetStatEnable());
+        dataSource.resetStat();
+        Assert.assertEquals(0, dataSource.getResetCount());
+        dataSource.setConnectionProperties("druid.resetStatEnable=true");
+        Assert.assertEquals(true, dataSource.isResetStatEnable());
+        
+        dataSource.setConnectionProperties("druid.resetStatEnable=false");
+        Assert.assertEquals(false, dataSource.isResetStatEnable());
+        
+        dataSource.setConnectionProperties("druid.resetStatEnable=xxx");
     }
 }

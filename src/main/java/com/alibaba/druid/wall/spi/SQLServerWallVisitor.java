@@ -98,12 +98,12 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     }
 
     public boolean visit(SQLIdentifierExpr x) {
-        String name = x.getName();
-        name = WallVisitorUtils.form(name);
-        if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
-            getViolations().add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + name,
-                                                              toSQL(x)));
-        }
+        // String name = x.getName();
+        // name = WallVisitorUtils.form(name);
+        // if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
+        // getViolations().add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + name,
+        // toSQL(x)));
+        // }
         return true;
     }
 
@@ -124,6 +124,11 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
+
+        if (x.getParent() instanceof SQLExprTableSource) {
+            WallVisitorUtils.checkFunctionInTableSource(this, x);
+        }
+
         WallVisitorUtils.checkFunction(this, x);
 
         return true;
@@ -176,14 +181,26 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
                                                                    this.toSQL(x)));
             return false;
         }
+        WallVisitorUtils.initWallTopStatementContext();
 
         return true;
     }
 
     @Override
+    public void endVisit(SQLSelectStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
+    }
+
+    @Override
     public boolean visit(SQLInsertStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkInsert(this, x);
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLInsertStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -194,9 +211,15 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkUpdate(this, x);
 
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLUpdateStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     public boolean visit(SQLVariantRefExpr x) {
@@ -206,10 +229,27 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         }
 
         if (config.isVariantCheck() && varName.startsWith("@@")) {
-            violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "global variable not allow", toSQL(x)));
+
+            boolean allow = true;
+            if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
+                allow = false;
+            }
+
+            if (!allow) {
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
+                                                                                     + x.getName(), toSQL(x)));
+            }
         }
 
         return false;
+    }
+
+    public boolean isDeny(String varName) {
+        if (varName.startsWith("@@")) {
+            varName = varName.substring(2);
+        }
+
+        return config.getDenyVariants().contains(varName);
     }
 
     @Override

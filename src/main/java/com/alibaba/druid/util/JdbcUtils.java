@@ -478,35 +478,39 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static Driver createDriver(ClassLoader classLoader, String driverClassName) throws SQLException {
+        Class<?> clazz = null;
         if (classLoader != null) {
             try {
-                return (Driver) classLoader.loadClass(driverClassName).newInstance();
-            } catch (IllegalAccessException e) {
-                throw new SQLException(e.getMessage(), e);
-            } catch (InstantiationException e) {
-                throw new SQLException(e.getMessage(), e);
+                clazz = classLoader.loadClass(driverClassName);
+            } catch (ClassNotFoundException e) {
+                // skip
+            }
+        }
+        
+        if (clazz == null) {
+            try {
+                ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
+                if (contextLoader != null) {
+                    clazz = contextLoader.loadClass(driverClassName);
+                }
+            } catch (ClassNotFoundException e) {
+                // skip
+            }
+        }
+
+        if (clazz == null) {
+            try {
+                clazz = Class.forName(driverClassName);
             } catch (ClassNotFoundException e) {
                 throw new SQLException(e.getMessage(), e);
             }
         }
 
         try {
-            return (Driver) Class.forName(driverClassName).newInstance();
+            return (Driver) clazz.newInstance();
         } catch (IllegalAccessException e) {
             throw new SQLException(e.getMessage(), e);
         } catch (InstantiationException e) {
-            throw new SQLException(e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
-            // skip
-        }
-
-        try {
-            return (Driver) Thread.currentThread().getContextClassLoader().loadClass(driverClassName).newInstance();
-        } catch (IllegalAccessException e) {
-            throw new SQLException(e.getMessage(), e);
-        } catch (InstantiationException e) {
-            throw new SQLException(e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
             throw new SQLException(e.getMessage(), e);
         }
     }

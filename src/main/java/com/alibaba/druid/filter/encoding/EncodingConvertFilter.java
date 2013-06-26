@@ -57,8 +57,8 @@ public class EncodingConvertFilter extends FilterAdapter {
         if (param.getServerEncoding() == null || "".equalsIgnoreCase(param.getServerEncoding())) {
             param.setServerEncoding(serverEncoding);
         }
-        conn.getAttributes().put(ATTR_CHARSET_PARAMETER, param);
-        conn.getAttributes().put(ATTR_CHARSET_CONVERTER,
+        conn.putAttribute(ATTR_CHARSET_PARAMETER, param);
+        conn.putAttribute(ATTR_CHARSET_CONVERTER,
                                  new CharsetConvert(param.getClientEncoding(), param.getServerEncoding()));
 
         return conn;
@@ -219,7 +219,7 @@ public class EncodingConvertFilter extends FilterAdapter {
 
     public String encode(ConnectionProxy connection, String s) throws SQLException {
         try {
-            CharsetConvert charsetConvert = (CharsetConvert) connection.getAttributes().get(ATTR_CHARSET_CONVERTER);
+            CharsetConvert charsetConvert = (CharsetConvert) connection.getAttribute(ATTR_CHARSET_CONVERTER);
 
             return charsetConvert.encode(s);
         } catch (UnsupportedEncodingException e) {
@@ -229,7 +229,7 @@ public class EncodingConvertFilter extends FilterAdapter {
 
     public String decode(ConnectionProxy connection, String s) throws SQLException {
         try {
-            CharsetConvert charsetConvert = (CharsetConvert) connection.getAttributes().get(ATTR_CHARSET_CONVERTER);
+            CharsetConvert charsetConvert = (CharsetConvert) connection.getAttribute(ATTR_CHARSET_CONVERTER);
             return charsetConvert.decode(s);
         } catch (UnsupportedEncodingException e) {
             throw new SQLException(e.getMessage(), e);

@@ -156,11 +156,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             this.dbType = dataSource.getDbType();
         }
 
-        initFromProperties(dataSource.getConnectProperties());
-        initFromProperties(System.getProperties());
+        configFromProperties(dataSource.getConnectProperties());
+        configFromProperties(System.getProperties());
     }
 
-    private void initFromProperties(Properties properties) {
+    public void configFromProperties(Properties properties) {
         if (properties == null) {
             return;
         }
@@ -505,10 +505,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JSONWriter out = new JSONWriter();
 
         out.writeArrayStart();
-        int index = 0;
-        for (JdbcParameter parameter : statement.getParameters().values()) {
-            if (index != 0) {
+        for (int i = 0, parametersSize = statement.getParametersSize(); i < parametersSize; ++i) {
+            JdbcParameter parameter = statement.getParameter(i);
+            if (i != 0) {
                 out.writeComma();
+            }
+            if (parameter == null) {
+                continue;
             }
 
             Object value = parameter.getValue();
@@ -538,7 +541,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             } else {
                 out.writeString('<' + value.getClass().getName() + '>');
             }
-            index++;
         }
         out.writeArrayEnd();
 
@@ -597,13 +599,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcConnectionStat.Entry getConnectionInfo(ConnectionProxy connection) {
-        JdbcConnectionStat.Entry counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
+        JdbcConnectionStat.Entry counter = (JdbcConnectionStat.Entry) connection.getAttribute(ATTR_NAME_CONNECTION_STAT);
 
         if (counter == null) {
             String dataSourceName = connection.getDirectDataSource().getName();
-            connection.getAttributes().put(ATTR_NAME_CONNECTION_STAT,
+            connection.putAttribute(ATTR_NAME_CONNECTION_STAT,
                                            new JdbcConnectionStat.Entry(dataSourceName, connection.getId()));
-            counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
+            counter = (JdbcConnectionStat.Entry) connection.getAttribute(ATTR_NAME_CONNECTION_STAT);
         }
 
         return counter;

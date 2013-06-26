@@ -17,7 +17,7 @@ public class LogFilterTest3 extends TestCase {
         System.setProperty("druid.log.stmt.executableSql", "true");
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:derby:classpath:petstore-db");
-        dataSource.setFilters("log4j");
+        dataSource.setFilters("log4j,slf4j");
     }
     
     public void test_select() throws Exception {

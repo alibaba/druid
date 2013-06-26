@@ -54,6 +54,9 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
         public ValuesClause(List<SQLExpr> values){
             this.values = values;
+            for (int i = 0; i < values.size(); ++i) {
+                values.get(i).setParent(this);
+            }
         }
 
         public List<SQLExpr> getValues() {

@@ -42,16 +42,24 @@ public class SQLOrderBy extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("ORDER ");
-        buf.append("BY ");
-
-        int i = 0;
-        for (int size = this.items.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(", ");
-            }
-            this.items.get(i).output(buf);
-        }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((items == null) ? 0 : items.hashCode());
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        SQLOrderBy other = (SQLOrderBy) obj;
+        if (items == null) {
+            if (other.items != null) return false;
+        } else if (!items.equals(other.items)) return false;
+        return true;
+    }
+
 }

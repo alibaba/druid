@@ -29,6 +29,7 @@ import com.alibaba.druid.mock.MockNClob;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.NClobProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -51,7 +52,7 @@ public class FilterChainTest_NClob_2 extends TestCase {
             }
         };
 
-        statement = new CallableStatementProxyImpl(null, mockStmt, "", 1);
+        statement = new CallableStatementProxyImpl(new ConnectionProxyImpl(null, null, null, 0), mockStmt, "", 1);
 
     }
 

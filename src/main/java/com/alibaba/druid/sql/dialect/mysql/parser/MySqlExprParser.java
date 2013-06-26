@@ -430,7 +430,7 @@ public class MySqlExprParser extends SQLExprParser {
                 SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(ident);
 
                 if (lexer.token() != Token.RPAREN) {
-                    exprList(methodInvokeExpr.getParameters());
+                    exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
                 }
 
                 if (identifierEquals("USING")) {
@@ -454,11 +454,11 @@ public class MySqlExprParser extends SQLExprParser {
                 accept(Token.IN);
                 SQLExpr str = this.expr();
                 accept(Token.RPAREN);
-                
+
                 SQLMethodInvokeExpr locate = new SQLMethodInvokeExpr("LOCATE");
                 locate.getParameters().add(subStr);
                 locate.getParameters().add(str);
-                
+
                 expr = locate;
                 return primaryRest(expr);
             }
@@ -536,7 +536,7 @@ public class MySqlExprParser extends SQLExprParser {
             SQLExpr expr = this.expr();
             ((MySqlSQLColumnDefinition) column).setOnUpdate(expr);
         }
-        
+
         if (identifierEquals("AUTO_INCREMENT")) {
             lexer.nextToken();
             if (column instanceof MySqlSQLColumnDefinition) {
@@ -552,13 +552,13 @@ public class MySqlExprParser extends SQLExprParser {
         if (identifierEquals("PARTITION")) {
             throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
         }
-        
-        if (identifierEquals("COMMENT")) {
+
+        if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             column.setComment(lexer.stringVal());
             accept(Token.LITERAL_CHARS);
         }
-        
+
         if (identifierEquals("STORAGE")) {
             lexer.nextToken();
             SQLExpr expr = expr();
@@ -566,15 +566,15 @@ public class MySqlExprParser extends SQLExprParser {
                 ((MySqlSQLColumnDefinition) column).setStorage(expr);
             }
         }
-        
+
         super.parseColumnRest(column);
 
         return column;
     }
-    
+
     protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
         super.parseDataTypeRest(dataType);
-        
+
         if (identifierEquals("UNSIGNED")) {
             lexer.nextToken();
             dataType.getAttributes().put("unsigned", true);
@@ -718,9 +718,9 @@ public class MySqlExprParser extends SQLExprParser {
 
     public MySqlUnique parseUnique() {
         accept(Token.UNIQUE);
-        
+
         if (lexer.token() == Token.KEY) {
-        	lexer.nextToken();
+            lexer.nextToken();
         }
 
         MySqlUnique unique = new MySqlUnique();
@@ -730,12 +730,12 @@ public class MySqlExprParser extends SQLExprParser {
             unique.setIndexType(lexer.stringVal());
             lexer.nextToken();
         }
-        
+
         if (lexer.token() != Token.LPAREN) {
-        	SQLName name = name();
-        	unique.setName(name);
+            SQLName name = name();
+            unique.setName(name);
         }
-        
+
         accept(Token.LPAREN);
         for (;;) {
             unique.getColumns().add(this.expr());
@@ -749,21 +749,21 @@ public class MySqlExprParser extends SQLExprParser {
 
         return unique;
     }
-    
+
     public MySqlForeignKey parseForeignKey() {
         accept(Token.FOREIGN);
         accept(Token.KEY);
-        
+
         MySqlForeignKey fk = new MySqlForeignKey();
-        
+
         accept(Token.LPAREN);
         this.names(fk.getReferencingColumns());
         accept(Token.RPAREN);
-        
+
         accept(Token.REFERENCES);
-        
+
         fk.setReferencedTableName(this.name());
-        
+
         accept(Token.LPAREN);
         this.names(fk.getReferencedColumns());
         accept(Token.RPAREN);

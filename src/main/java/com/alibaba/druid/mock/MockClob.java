@@ -16,6 +16,7 @@
 package com.alibaba.druid.mock;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -26,6 +27,7 @@ import java.sql.SQLException;
 public class MockClob implements Clob {
 
     private byte[] bytes;
+    private ByteArrayOutputStream out = new ByteArrayOutputStream();
 
     public MockClob(){
         this(new byte[0]);
@@ -42,7 +44,7 @@ public class MockClob implements Clob {
 
     @Override
     public String getSubString(long pos, int length) throws SQLException {
-        return new String(bytes, (int) pos, length);
+        return new String(bytes, (int) (pos - 1), length);
     }
 
     @Override
@@ -81,7 +83,7 @@ public class MockClob implements Clob {
 
     @Override
     public OutputStream setAsciiStream(long pos) throws SQLException {
-        return null;
+        return out;
     }
 
     @Override

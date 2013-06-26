@@ -75,25 +75,33 @@ public class ProfileStat {
     }
 
     public List<Map<String, Object>> getStatData() {
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        List<ProfileEntryStatValue> statValueList = getStatValue(false);
+        
+        int size = statValueList.size();
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(size);
+        for (int i = 0; i < size; ++i) {
+            list.add(statValueList.get(i).getData());
+        }
+
+        return list;
+    }
+
+    public List<ProfileEntryStatValue> getStatValue(boolean reset) {
+        List<ProfileEntryStatValue> list = new ArrayList<ProfileEntryStatValue>();
 
         lock.readLock().lock();
         try {
             for (Map.Entry<ProfileEntryKey, ProfileEntryStat> entry : entries.entrySet()) {
-                Map<String, Object> entryData = new LinkedHashMap<String, Object>();
+                ProfileEntryStatValue entryStatValue = entry.getValue().getValue(reset);
+                entry.getKey().fillValue(entryStatValue);
 
-                entryData.put("Name", entry.getKey().getName());
-                entryData.put("Parent", entry.getKey().getParentName());
-                entryData.put("Type", entry.getKey().getType());
-                entryData.put("ExecuteCount", entry.getValue().getExecuteCount());
-                entryData.put("ExecuteTimeMillis", entry.getValue().getExecuteTimeNanos() / 1000 / 1000);
-
-                list.add(entryData);
+                list.add(entryStatValue);
             }
         } finally {
             lock.readLock().unlock();
         }
-        
+
         Collections.reverse(list);
 
         return list;

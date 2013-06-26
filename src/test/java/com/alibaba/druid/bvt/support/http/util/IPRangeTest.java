@@ -31,7 +31,8 @@ public class IPRangeTest extends TestCase {
         assertTrue(rang.isIPAddressInRange(new IPAddress("128.242.127.2")));
 
         assertFalse(rang.isIPAddressInRange(new IPAddress("128.242.126.2")));
-
+        
+        rang.toString();
     }
 
     public void test_ipRange_1() throws Exception {

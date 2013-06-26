@@ -146,8 +146,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkUpdate(this, x);
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLUpdateStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -157,9 +163,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLInsertStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkInsert(this, x);
-
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLInsertStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -170,7 +181,13 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             return false;
         }
 
+        WallVisitorUtils.initWallTopStatementContext();
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLSelectStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -209,19 +226,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                     boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
                     if (!isTop) {
                         boolean allow = true;
-                        if (isDeny(varName)) {
+                        if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
                             allow = false;
                         }
 
-                        if (allow) {
-                            if (WallVisitorUtils.isWhereOrHaving(x)) {
-                                allow = false;
-                            }
-                        }
-
                         if (!allow) {
-                            violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
-                                                                                                 + x.getName(), toSQL(x)));
+                            violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
+                                                                         "variable not allow : " + x.getName(),
+                                                                         toSQL(x)));
                         }
                     }
                 }
@@ -260,12 +272,12 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
         return false;
     }
-    
+
     public boolean isDeny(String varName) {
         if (varName.startsWith("@@")) {
             varName = varName.substring(2);
         }
-        
+
         return config.getDenyVariants().contains(varName);
     }
 
@@ -279,14 +291,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
             if (!isTop) {
                 boolean allow = true;
-                if (isDeny(varName)) {
+                if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
                     allow = false;
-                }
-
-                if (allow) {
-                    if (WallVisitorUtils.isWhereOrHaving(x)) {
-                        allow = false;
-                    }
                 }
 
                 if (!allow) {

@@ -22,8 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
@@ -264,7 +265,7 @@ public class ConnectionTest4 extends TestCase {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
                                                            ResultSet.CONCUR_READ_ONLY,
                                                            ResultSet.HOLD_CURSORS_OVER_COMMIT);
-            Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
+            Assert.assertSame(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 

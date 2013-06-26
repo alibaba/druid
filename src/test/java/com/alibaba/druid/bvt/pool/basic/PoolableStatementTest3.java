@@ -35,7 +35,7 @@ public class PoolableStatementTest3 extends TestCase {
         DruidPooledStatement stmt = new DruidPooledStatement(null, null) {
 
             public void close() throws SQLException {
-                resultSetTrace.add(rs);
+                addResultSetTrace(rs);
                 clearResultSet();
             }
         };

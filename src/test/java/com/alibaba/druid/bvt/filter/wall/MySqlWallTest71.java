@@ -33,11 +33,22 @@ public class MySqlWallTest71 extends TestCase {
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         provider.getConfig().setCommentAllow(true);
 
         Assert.assertFalse(provider.checkValid(//
         "update order_return set return_goods_money =0.00 ,return_other_money = 8--149.00, return_total_fee = ifnull(return_shipping,0)+ifnull(return_other_discount,0)+0.00--149.00-0.00,return_goods_amount=1,return_real_money=0.00 where id=1319"));
+
+        Assert.assertEquals(1, provider.getTableStats().size());
+    }
+
+    public void test_false1() throws Exception {
+        WallProvider provider = new MySqlWallProvider();
+
+        provider.getConfig().setCommentAllow(true);
+
+        Assert.assertFalse(provider.checkValid(//
+        "select * from order_return where return_goods_money =0.00 ,return_other_money = 8--149.00, return_total_fee = ifnull(return_shipping,0)+ifnull(return_other_discount,0)+0.00--149.00-0.00,return_goods_amount=1,return_real_money=0.00"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

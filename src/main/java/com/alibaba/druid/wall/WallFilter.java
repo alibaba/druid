@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
@@ -159,12 +158,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         return inited;
     }
 
-    public void checkInit() {
-        if (inited) {
-            throw new DruidRuntimeException("wall filter is inited");
-        }
-    }
-
     @Override
     public void statement_addBatch(FilterChain chain, StatementProxy statement, String sql) throws SQLException {
         createWallContext(statement);
@@ -174,6 +167,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         } finally {
             WallContext.clearContext();
         }
+    }
+    
+    @Override
+    public void preparedStatement_addBatch(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
+        chain.preparedStatement_addBatch(statement);
     }
 
     @Override
@@ -331,6 +329,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (!firstResult) {
                 int updateCount = statement.getUpdateCount();
                 statExecuteUpdate(updateCount);
+            } else {
+                setSqlStatAttribute(statement);
             }
             return firstResult;
         } finally {
@@ -350,6 +350,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (!firstResult) {
                 int updateCount = statement.getUpdateCount();
                 statExecuteUpdate(updateCount);
+            } else {
+                setSqlStatAttribute(statement);
             }
             return firstResult;
         } finally {
@@ -367,6 +369,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (!firstResult) {
                 int updateCount = statement.getUpdateCount();
                 statExecuteUpdate(updateCount);
+            } else {
+                setSqlStatAttribute(statement);
             }
             return firstResult;
         } finally {
@@ -384,6 +388,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (!firstResult) {
                 int updateCount = statement.getUpdateCount();
                 statExecuteUpdate(updateCount);
+            } else {
+                setSqlStatAttribute(statement);
             }
             return firstResult;
         } finally {
@@ -393,13 +399,14 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public int[] statement_executeBatch(FilterChain chain, StatementProxy statement) throws SQLException {
-        WallSqlStat sqlStat = (WallSqlStat) statement.getAttributes().get(ATTR_SQL_STAT);
+        WallSqlStat sqlStat = (WallSqlStat) statement.getAttribute(ATTR_SQL_STAT);
         try {
             int[] updateCounts = chain.statement_executeBatch(statement);
+            int updateCount = 0;
             for (int i = 0; i < updateCounts.length; ++i) {
-                int updateCount = updateCounts[i];
-                statExecuteUpdate(sqlStat, updateCount);
+                updateCount += updateCounts[i];
             }
+            statExecuteUpdate(sqlStat, updateCount);
             return updateCounts;
         } finally {
             WallContext.clearContext();
@@ -488,7 +495,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         boolean firstResult = chain.preparedStatement_execute(statement);
 
         if (!firstResult) {
-            WallSqlStat sqlStat = (WallSqlStat) statement.getAttributes().get(ATTR_SQL_STAT);
+            WallSqlStat sqlStat = (WallSqlStat) statement.getAttribute(ATTR_SQL_STAT);
             int updateCount = statement.getUpdateCount();
             statExecuteUpdate(sqlStat, updateCount);
         }
@@ -505,11 +512,12 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     @Override
     public int preparedStatement_executeUpdate(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
         int updateCount = chain.preparedStatement_executeUpdate(statement);
-        statExecuteUpdate(updateCount);
+        WallSqlStat sqlStat = (WallSqlStat) statement.getAttribute(ATTR_SQL_STAT);
+        statExecuteUpdate(sqlStat, updateCount);
         return updateCount;
     }
 
-    public void setSqlStatAttribute(PreparedStatementProxy stmt) {
+    public void setSqlStatAttribute(StatementProxy stmt) {
         WallContext context = WallContext.current();
         if (context == null) {
             return;
@@ -520,7 +528,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             return;
         }
 
-        stmt.getAttributes().put(ATTR_SQL_STAT, sqlStat);
+        stmt.putAttribute(ATTR_SQL_STAT, sqlStat);
     }
 
     public void statExecuteUpdate(int updateCount) {
@@ -562,6 +570,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 tableStat.addDeleteDataCount(updateCount);
             } else if (sqlTableStat.getUpdateCount() > 0) {
                 tableStat.addUpdateDataCount(updateCount);
+            } else if (sqlTableStat.getInsertCount() > 0) {
+                tableStat.addInsertDataCount(updateCount);
             }
         }
     }
@@ -587,6 +597,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
         }
 
+            //TODO
         return sql;
     }
 
@@ -641,7 +652,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         chain.resultSet_close(resultSet);
         int fetchRowCount = resultSet.getFetchRowCount();
 
-        WallSqlStat sqlStat = (WallSqlStat) resultSet.getStatementProxy().getAttributes().get(ATTR_SQL_STAT);
+        WallSqlStat sqlStat = (WallSqlStat) resultSet.getStatementProxy().getAttribute(ATTR_SQL_STAT);
         if (sqlStat == null) {
             return;
         }

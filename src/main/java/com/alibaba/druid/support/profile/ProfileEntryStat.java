@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.support.profile;
 
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 public class ProfileEntryStat {
@@ -28,6 +30,15 @@ public class ProfileEntryStat {
     static {
         executeCountUpdater = AtomicLongFieldUpdater.newUpdater(ProfileEntryStat.class, "executeCount");
         executeTimeNanosUpdater = AtomicLongFieldUpdater.newUpdater(ProfileEntryStat.class, "executeTimeNanos");
+    }
+
+    public ProfileEntryStatValue getValue(boolean reset) {
+        ProfileEntryStatValue val = new ProfileEntryStatValue();
+
+        val.setExecuteCount(get(this, executeCountUpdater, reset));
+        val.setExecuteTimeNanos(get(this, executeCountUpdater, reset));
+
+        return val;
     }
 
     public long getExecuteCount() {

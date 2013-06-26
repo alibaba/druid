@@ -83,6 +83,13 @@ public class StringUtils {
         }
         return a.equals(b);
     }
+    
+    public static boolean equalsIgnoreCase(String a, String b) {
+        if (a == null) {
+            return b == null;
+        }
+        return a.equalsIgnoreCase(b);
+    }
 
     public static boolean isEmpty(String value) {
         if (value == null || value.length() == 0) {

@@ -17,17 +17,26 @@ package com.alibaba.druid.pool.vendor;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import com.alibaba.druid.pool.ExceptionSorter;
 
 public class SybaseExceptionSorter implements ExceptionSorter, Serializable {
 
     private static final long serialVersionUID = 2742592563671255116L;
+    
+    public SybaseExceptionSorter() {
+        this.configFromProperties(System.getProperties());
+    }
 
     public boolean isExceptionFatal(SQLException e) {
         boolean result = false;
 
-        String errorText = (e.getMessage()).toUpperCase();
+        String errorText = e.getMessage();
+        if (errorText == null) {
+            return false;
+        }
+        errorText = errorText.toUpperCase();
 
         if ((errorText.indexOf("JZ0C0") > -1) || // ERR_CONNECTION_DEAD
             (errorText.indexOf("JZ0C1") > -1) // ERR_IOE_KILLED_CONNECTION
@@ -36,5 +45,9 @@ public class SybaseExceptionSorter implements ExceptionSorter, Serializable {
         }
 
         return result;
+    }
+    
+    public void configFromProperties(Properties properties) {
+        
     }
 }

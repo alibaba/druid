@@ -27,11 +27,11 @@ import com.alibaba.druid.filter.FilterChain;
  */
 public abstract class WrapperProxyImpl implements WrapperProxy {
 
-    private final Wrapper             raw;
+    private final Wrapper       raw;
 
-    private final long                id;
+    private final long          id;
 
-    private final Map<String, Object> attributes = new HashMap<String, Object>(4); // 不需要线程安全
+    private Map<String, Object> attributes; // 不需要线程安全
 
     public WrapperProxyImpl(Wrapper wrapper, long id){
         this.raw = wrapper;
@@ -67,16 +67,50 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
         if (iface == null) {
             return null;
         }
-        
+
         if (iface == this.getClass()) {
             return (T) this;
         }
 
         return createChain().unwrap(raw, iface);
     }
-
-    public Map<String, Object> getAttributes() {
-        return this.attributes;
+    
+    public int getAttributesSize() {
+        if (attributes == null) {
+            return 0;
+        }
+        
+        return attributes.size();
+    }
+    
+    public void clearAttributes() {
+        if (this.attributes == null) {
+            return;
+        }
+        
+        this.attributes.clear();
     }
 
+    public Map<String, Object> getAttributes() {
+        if (attributes == null) {
+            attributes = new HashMap<String, Object>(4);
+        }
+        return this.attributes;
+    }
+    
+    public void putAttribute(String key, Object value) {
+        if (attributes == null) {
+            attributes = new HashMap<String, Object>(4);
+        }
+        this.attributes.put(key, value);
+    }
+
+    public Object getAttribute(String key){
+        if (attributes == null) {
+            return null;
+        }
+        
+        return this.attributes.get(key);
+    }
+    
 }

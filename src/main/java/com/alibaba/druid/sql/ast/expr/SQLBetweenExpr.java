@@ -34,30 +34,14 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
     }
 
     public SQLBetweenExpr(SQLExpr testExpr, SQLExpr beginExpr, SQLExpr endExpr){
-
-        this.testExpr = testExpr;
-        this.beginExpr = beginExpr;
-        this.endExpr = endExpr;
+        setTestExpr(testExpr);
+        setBeginExpr(beginExpr);
+        setEndExpr(endExpr);
     }
 
     public SQLBetweenExpr(SQLExpr testExpr, boolean not, SQLExpr beginExpr, SQLExpr endExpr){
-
-        this.testExpr = testExpr;
+        this(testExpr, beginExpr, endExpr);
         this.not = not;
-        this.beginExpr = beginExpr;
-        this.endExpr = endExpr;
-    }
-
-    public void output(StringBuffer buf) {
-        this.testExpr.output(buf);
-        if (this.not) {
-            buf.append(" NOT BETWEEN ");
-        } else {
-            buf.append(" BETWEEN ");
-        }
-        this.beginExpr.output(buf);
-        buf.append(" AND ");
-        this.endExpr.output(buf);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -74,6 +58,9 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setTestExpr(SQLExpr testExpr) {
+        if (testExpr != null) {
+            testExpr.setParent(this);
+        }
         this.testExpr = testExpr;
     }
 
@@ -90,6 +77,9 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setBeginExpr(SQLExpr beginExpr) {
+        if (beginExpr != null) {
+            beginExpr.setParent(this);
+        }
         this.beginExpr = beginExpr;
     }
 
@@ -98,6 +88,9 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setEndExpr(SQLExpr endExpr) {
+        if (endExpr != null) {
+            endExpr.setParent(this);
+        }
         this.endExpr = endExpr;
     }
 

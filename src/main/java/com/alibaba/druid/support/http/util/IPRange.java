@@ -66,52 +66,6 @@ public class IPRange {
 
     // -------------------------------------------------------------------------
     /**
-     * Constructor.
-     * 
-     * @param ipAddress Reference to the IP address number
-     * @param subnetMask Reference to the subnet mask
-     * @exception InvalidIPRangeException Throws this exception when the combination of the IP address and the subnet
-     * mask does not define a valid IP range.
-     * @exception InvalidIPAddressException Throws this exception if the specified IP address or subnet mask do ne
-     * define a valid IP number.
-     */
-    public IPRange(IPAddress ipAddress, IPAddress subnetMask){
-        if ((ipAddress == null) || (subnetMask == null)) {
-            throw new IllegalArgumentException();
-        }
-
-        this.ipAddress = ipAddress;
-        this.ipSubnetMask = subnetMask;
-
-        extendedNetworkPrefix = computeNetworkPrefixFromMask(subnetMask);
-        if (extendedNetworkPrefix == -1) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    /**
-     * Constructor.
-     * 
-     * @param ipAddress The reference on the IP address.
-     * @param extendedNetworkPrefix The extended network prefix (0-32).
-     */
-    public IPRange(IPAddress ipAddress, int extendedNetworkPrefix){
-        if (ipAddress == null) {
-            throw new IllegalArgumentException();
-        }
-
-        if ((extendedNetworkPrefix < 0) || (extendedNetworkPrefix > 32)) {
-            throw new IllegalArgumentException();
-        }
-
-        this.ipAddress = ipAddress;
-        this.extendedNetworkPrefix = extendedNetworkPrefix;
-        this.ipSubnetMask = computeMaskFromNetworkPrefix(extendedNetworkPrefix);
-    }
-
-    // -------------------------------------------------------------------------
-    /**
      * Return the encapsulated IP address.
      * 
      * @return The IP address.
@@ -153,37 +107,6 @@ public class IPRange {
         result.append(extendedNetworkPrefix);
 
         return result.toString();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + extendedNetworkPrefix;
-        result = prime * result + ((ipAddress == null) ? 0 : ipAddress.hashCode());
-        result = prime * result + ((ipSubnetMask == null) ? 0 : ipSubnetMask.hashCode());
-        return result;
-    }
-
-    // -------------------------------------------------------------------------
-    /**
-     * Compare the specified IP range to the encapsulated one.
-     * 
-     * @param another The IP range to be compared.
-     * @return Return <code>true</code> if the encapsulated IP range is the same as the specified one, otherwise return
-     * <code>false</code>.
-     */
-    public boolean equals(Object another) {
-        if (another instanceof IPRange) {
-            IPRange range = (IPRange) another;
-
-            return (ipAddress.equals(range.getIPAddress()) && (extendedNetworkPrefix == range.extendedNetworkPrefix));
-        }
-        return false;
     }
 
     // -------------------------------------------------------------------------
@@ -265,7 +188,7 @@ public class IPRange {
             int octet = Integer.parseInt(binary[c], 2);
             decimalip.append(octet);
             if (c < 3) {
-                
+
                 decimalip.append('.');
             }
         }
@@ -311,7 +234,7 @@ public class IPRange {
         if (ipSubnetMask == null) {
             return this.ipAddress.equals(address);
         }
-        
+
         int result1 = address.getIPAddress() & ipSubnetMask.getIPAddress();
         int result2 = ipAddress.getIPAddress() & ipSubnetMask.getIPAddress();
 

@@ -46,6 +46,7 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import com.alibaba.druid.Constants;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
@@ -127,6 +128,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private volatile boolean                 enable                  = true;
 
     private boolean                          resetStatEnable         = true;
+    private final AtomicLong                 resetCount              = new AtomicLong();
 
     private String                           initStackTrace;
 
@@ -144,8 +146,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public DruidDataSource(boolean fairLock){
         super(fairLock);
 
+        configFromPropety(System.getProperties());
+    }
+
+    public void configFromPropety(Properties properties) {
         {
-            String property = System.getProperty("druid.testWhileIdle");
+            String property = properties.getProperty("druid.testWhileIdle");
             if ("true".equals(property)) {
                 this.setTestWhileIdle(true);
             } else if ("false".equals(property)) {
@@ -153,7 +159,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = System.getProperty("druid.testOnBorrow");
+            String property = properties.getProperty("druid.testOnBorrow");
             if ("true".equals(property)) {
                 this.setTestOnBorrow(true);
             } else if ("false".equals(property)) {
@@ -161,13 +167,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = System.getProperty("druid.validationQuery");
+            String property = properties.getProperty("druid.validationQuery");
             if (property != null && property.length() > 0) {
                 this.setValidationQuery(property);
             }
         }
         {
-            String property = System.getProperty("druid.useGloalDataSourceStat");
+            String property = properties.getProperty("druid.useGloalDataSourceStat");
             if ("true".equals(property)) {
                 this.setUseGloalDataSourceStat(true);
             } else if ("false".equals(property)) {
@@ -175,7 +181,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = System.getProperty("druid.filters");
+            String property = properties.getProperty("druid.filters");
 
             if (property != null && property.length() > 0) {
                 try {
@@ -186,14 +192,43 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = System.getProperty("druid.timeBetweenLogStatsMillis");
+            String property = properties.getProperty(Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS);
             if (property != null && property.length() > 0) {
                 try {
                     long value = Long.parseLong(property);
                     this.setTimeBetweenLogStatsMillis(value);
                 } catch (NumberFormatException e) {
-                    LOG.error("illegal property 'timeBetweenLogStatsMillis'", e);
+                    LOG.error("illegal property '" + Constants.DRUID_TIME_BETWEEN_LOG_STATS_MILLIS + "'", e);
                 }
+            }
+        }
+        {
+            String property = properties.getProperty(Constants.DRUID_STAT_SQL_MAX_SIZE);
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    if (dataSourceStat != null) {
+                        dataSourceStat.setMaxSqlSize(value);
+                    }
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property '" + Constants.DRUID_STAT_SQL_MAX_SIZE + "'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty("druid.clearFiltersEnable");
+            if ("true".equals(property)) {
+                this.setClearFiltersEnable(true);
+            } else if ("false".equals(property)) {
+                this.setClearFiltersEnable(false);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.resetStatEnable");
+            if ("true".equals(property)) {
+                this.setResetStatEnable(true);
+            } else if ("false".equals(property)) {
+                this.setResetStatEnable(false);
             }
         }
     }
@@ -216,6 +251,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void setResetStatEnable(boolean resetStatEnable) {
         this.resetStatEnable = resetStatEnable;
+        if (dataSourceStat != null) {
+            dataSourceStat.setResetStatEnable(resetStatEnable);
+        }
     }
 
     public long getDiscardCount() {
@@ -240,7 +278,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public void resetStat() {
-        if (!resetStatEnable) {
+        if (!isResetStatEnable()) {
             return;
         }
 
@@ -280,6 +318,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         transactionHistogram.reset();
         cachedPreparedStatementDeleteCount.set(0);
         recycleErrorCount.set(0);
+
+        resetCount.incrementAndGet();
+    }
+
+    public long getResetCount() {
+        return this.resetCount.get();
     }
 
     public boolean isEnable() {
@@ -371,14 +415,53 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public void setConnectProperties(Properties properties) {
         if (properties == null) {
             properties = new Properties();
         }
 
-        if (inited) {
-            if (!this.connectProperties.equals(properties)) {
+        boolean equals;
+        if (properties.size() == this.connectProperties.size()) {
+            equals = true;
+            for (Map.Entry entry : properties.entrySet()) {
+                Object value = this.connectProperties.get(entry.getKey());
+                Object entryValue = entry.getValue();
+                if (value == null && entryValue != null) {
+                    equals = false;
+                    break;
+                }
+
+                if (!value.equals(entry.getValue())) {
+                    equals = false;
+                    break;
+                }
+            }
+        } else {
+            equals = false;
+        }
+
+        if (!equals) {
+            if (inited && LOG.isInfoEnabled()) {
                 LOG.info("connectProperties changed : " + this.connectProperties + " -> " + properties);
+            }
+
+            configFromPropety(properties);
+
+            for (Filter filter : this.filters) {
+                filter.configFromProperties(properties);
+            }
+
+            if (exceptionSorter != null) {
+                exceptionSorter.configFromProperties(properties);
+            }
+
+            if (validConnectionChecker != null) {
+                validConnectionChecker.configFromProperties(properties);
+            }
+
+            if (statLogger != null) {
+                statLogger.configFromProperties(properties);
             }
         }
 
@@ -499,8 +582,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     dataSourceStat.setDbType(this.getDbType());
                 }
             } else {
-                dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
+                dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType, this.connectProperties);
             }
+            dataSourceStat.setResetStatEnable(this.resetStatEnable);
 
             connections = new DruidConnectionHolder[maxActive];
 
@@ -559,6 +643,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         String threadName = "Druid-ConnectionPool-Log-" + System.identityHashCode(this);
         logStatsThread = new LogStatsThread(threadName);
         logStatsThread.start();
+
+        this.resetStatEnable = false;
     }
 
     private void createAndStartDestroyThread() {
@@ -975,6 +1061,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.discardConnection(holder.getConnection());
                 holder.setDiscard(true);
                 pooledConnection.disable(t);
+
+                LOG.error("discard connection", sqlEx);
             }
 
             throw sqlEx;
@@ -1357,19 +1445,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         lock.lock();
         try {
-            value.poolingCount = this.poolingCount;
-            value.poolingPeak = this.poolingPeak;
-            value.poolingPeakTime = this.poolingPeakTime;
+            value.setPoolingCount(this.poolingCount);
+            value.setPoolingPeak(this.poolingPeak);
+            value.setPoolingPeakTime(this.poolingPeakTime);
 
-            value.activeCount = this.activeCount;
-            value.activePeak = this.activePeak;
-            value.activePeakTime = this.activePeakTime;
+            value.setActiveCount(this.activeCount);
+            value.setActivePeak(this.activePeak);
+            value.setActivePeakTime(this.activePeakTime);
 
-            value.connectCount = this.connectCount;
-            value.closeCount = this.closeCount;
-            value.waitThreadCount = lock.getWaitQueueLength(notEmpty);
-            value.notEmptyWaitCount = this.notEmptyWaitCount;
-            value.notEmptyWaitNanos = this.notEmptyWaitNanos;
+            value.setConnectCount(this.connectCount);
+            value.setCloseCount(this.closeCount);
+            value.setWaitThreadCount(lock.getWaitQueueLength(notEmpty));
+            value.setNotEmptyWaitCount(this.notEmptyWaitCount);
+            value.setNotEmptyWaitNanos(this.notEmptyWaitNanos);
 
             // reset
             this.poolingPeak = 0;
@@ -1385,55 +1473,56 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
-        value.name = this.getName();
-        value.dbType = this.getDbType();
-        value.driverClassName = this.getDriverClassName();
+        value.setName(this.getName());
+        value.setDbType(this.getDbType());
+        value.setDriverClassName(this.getDriverClassName());
 
-        value.url = this.getUrl();
-        value.userName = this.getUsername();
-        value.filterClassNames = this.getFilterClassNames();
+        value.setUrl(this.getUrl());
+        value.setUserName(this.getUsername());
+        value.setFilterClassNames(this.getFilterClassNames());
 
-        value.initialSize = this.getInitialSize();
-        value.minIdle = this.getMinIdle();
-        value.maxActive = this.getMaxActive();
+        value.setInitialSize(this.getInitialSize());
+        value.setMinIdle(this.getMinIdle());
+        value.setMaxActive(this.getMaxActive());
 
-        value.queryTimeout = this.getQueryTimeout();
-        value.transactionQueryTimeout = this.getTransactionQueryTimeout();
-        value.loginTimeout = this.getLoginTimeout();
-        value.validConnectionCheckerClassName = this.getValidConnectionCheckerClassName();
-        value.exceptionSorterClassName = this.getExceptionSorterClassName();
+        value.setQueryTimeout(this.getQueryTimeout());
+        value.setTransactionQueryTimeout(this.getTransactionQueryTimeout());
+        value.setLoginTimeout(this.getLoginTimeout());
+        value.setValidConnectionCheckerClassName(this.getValidConnectionCheckerClassName());
+        value.setExceptionSorterClassName(this.getExceptionSorterClassName());
 
-        value.testOnBorrow = this.isTestOnBorrow();
-        value.testOnReturn = this.isTestOnReturn();
-        value.testWhileIdle = this.isTestWhileIdle();
+        value.setTestOnBorrow(this.isTestOnBorrow());
+        value.setTestOnReturn(this.isTestOnReturn());
+        value.setTestWhileIdle(this.isTestWhileIdle());
 
-        value.defaultAutoCommit = this.isDefaultAutoCommit();
-        value.defaultReadOnly = this.isDefaultAutoCommit();
-        value.defaultTransactionIsolation = this.getDefaultTransactionIsolation();
+        value.setDefaultAutoCommit(this.isDefaultAutoCommit());
+        value.setDefaultReadOnly(this.isDefaultAutoCommit());
+        value.setDefaultTransactionIsolation(this.getDefaultTransactionIsolation());
 
-        value.logicConnectErrorCount = connectErrorCount.getAndSet(0);
+        value.setLogicConnectErrorCount(connectErrorCount.getAndSet(0));
 
-        value.physicalConnectCount = createCount.getAndSet(0);
-        value.physicalCloseCount = destroyCount.getAndSet(0);
-        value.physicalConnectErrorCount = createErrorCount.getAndSet(0);
+        value.setPhysicalConnectCount(createCount.getAndSet(0));
+        value.setPhysicalCloseCount(destroyCount.getAndSet(0));
+        value.setPhysicalConnectErrorCount(createErrorCount.getAndSet(0));
 
-        value.executeCount = this.executeCount.getAndSet(0);
-        value.errorCount = errorCount.getAndSet(0);
-        value.commitCount = commitCount.getAndSet(0);
-        value.rollbackCount = rollbackCount.getAndSet(0);
+        value.setExecuteCount(this.executeCount.getAndSet(0));
+        value.setErrorCount(errorCount.getAndSet(0));
+        value.setCommitCount(commitCount.getAndSet(0));
+        value.setRollbackCount(rollbackCount.getAndSet(0));
 
-        value.pstmtCacheHitCount = cachedPreparedStatementHitCount.getAndSet(0);
-        value.pstmtCacheMissCount = cachedPreparedStatementMissCount.getAndSet(0);
+        value.setPstmtCacheHitCount(cachedPreparedStatementHitCount.getAndSet(0));
+        value.setPstmtCacheMissCount(cachedPreparedStatementMissCount.getAndSet(0));
 
-        value.startTransactionCount = startTransactionCount.getAndSet(0);
-        value.transactionHistogram = this.getTransactionHistogram().toArrayAndReset();
+        value.setStartTransactionCount(startTransactionCount.getAndSet(0));
+        value.setTransactionHistogram(this.getTransactionHistogram().toArrayAndReset());
 
-        value.connectionHoldTimeHistogram = this.getDataSourceStat().getConnectionHoldHistogram().toArrayAndReset();
+        value.setConnectionHoldTimeHistogram(this.getDataSourceStat().getConnectionHoldHistogram().toArrayAndReset());
         value.removeAbandoned = this.isRemoveAbandoned();
-        value.clobOpenCount = this.getDataSourceStat().getClobOpenCountAndReset();
-        value.blobOpenCount = this.getDataSourceStat().getBlobOpenCountAndReset();
+        value.setClobOpenCount(this.getDataSourceStat().getClobOpenCountAndReset());
+        value.setBlobOpenCount(this.getDataSourceStat().getBlobOpenCountAndReset());
 
-        value.sqlList = this.getDataSourceStat().getSqlStatMapAndReset();
+        value.setSqlSkipCount(this.getDataSourceStat().getSkipSqlCountAndReset());
+        value.setSqlList(this.getDataSourceStat().getSqlStatMapAndReset());
 
         return value;
     }
@@ -2187,5 +2276,37 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public Lock getLock() {
         return lock;
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) {
+        for (Filter filter : this.filters) {
+            if (filter.isWrapperFor(iface)) {
+                return true;
+            }
+        }
+
+        if (this.statLogger != null
+            && (this.statLogger.getClass() == iface || DruidDataSourceStatLogger.class == iface)) {
+            return true;
+        }
+
+        return super.isWrapperFor(iface);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) {
+        for (Filter filter : this.filters) {
+            if (filter.isWrapperFor(iface)) {
+                return (T) filter;
+            }
+        }
+
+        if (this.statLogger != null
+            && (this.statLogger.getClass() == iface || DruidDataSourceStatLogger.class == iface)) {
+            return (T) statLogger;
+        }
+
+        return super.unwrap(iface);
     }
 }

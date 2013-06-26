@@ -52,6 +52,7 @@ public class OracleCursorExpr extends SQLExprImpl implements OracleExpr {
         if (visitor.visit(this)) {
             acceptChild(visitor, query);
         }
+        visitor.endVisit(this);
     }
 
     @Override

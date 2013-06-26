@@ -35,6 +35,7 @@ public class WallTableStat {
     private volatile long                              replaceCount;
     private volatile long                              deleteDataCount;
     private volatile long                              updateDataCount;
+    private volatile long                              insertDataCount;
     private volatile long                              fetchRowCount;
 
     final static AtomicLongFieldUpdater<WallTableStat> selectCountUpdater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
@@ -60,6 +61,8 @@ public class WallTableStat {
 
     final static AtomicLongFieldUpdater<WallTableStat> deleteDataCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
                                                                                                                   "deleteDataCount");
+    final static AtomicLongFieldUpdater<WallTableStat> insertDataCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "insertDataCount");
     final static AtomicLongFieldUpdater<WallTableStat> updateDataCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
                                                                                                                   "updateDataCount");
 
@@ -117,9 +120,17 @@ public class WallTableStat {
     public void addDeleteDataCount(long delta) {
         deleteDataCountUpdater.addAndGet(this, delta);
     }
-    
+
     public long getUpdateDataCount() {
         return this.updateDataCount;
+    }
+    
+    public long getInsertDataCount() {
+        return this.insertDataCount;
+    }
+
+    public void addInsertDataCount(long delta) {
+        insertDataCountUpdater.addAndGet(this, delta);
     }
     
     public void addUpdateDataCount(long delta) {

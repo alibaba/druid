@@ -38,8 +38,10 @@ public class Isnull implements Function {
         SQLExpr condition = parameters.get(0);
         condition.accept(visitor);
         Object itemValue = condition.getAttributes().get(EVAL_VALUE);
-        if (itemValue == null || itemValue == EVAL_VALUE_NULL) {
+        if (itemValue == EVAL_VALUE_NULL) {
             return Boolean.TRUE;
+        } else if (itemValue == null) {
+            return null;
         } else {
             return Boolean.FALSE;
         }

@@ -59,8 +59,8 @@ public abstract class WallProvider {
 
     private static final ThreadLocal<Boolean>             privileged              = new ThreadLocal<Boolean>();
 
-    private final ConcurrentMap<String, WallFunctionStat> functionStats           = new ConcurrentHashMap<String, WallFunctionStat>();
-    private final ConcurrentMap<String, WallTableStat>    tableStats              = new ConcurrentHashMap<String, WallTableStat>();
+    private final ConcurrentMap<String, WallFunctionStat> functionStats           = new ConcurrentHashMap<String, WallFunctionStat>(16, 0.75f, 1);
+    private final ConcurrentMap<String, WallTableStat>    tableStats              = new ConcurrentHashMap<String, WallTableStat>(16, 0.75f, 1);
 
     public final WallDenyStat                             commentDeniedStat       = new WallDenyStat();
 
@@ -585,11 +585,12 @@ public abstract class WallProvider {
     }
 
     public static <T> T doPrivileged(PrivilegedAction<T> action) {
+        final Boolean original = privileged.get();
         privileged.set(Boolean.TRUE);
         try {
             return action.run();
         } finally {
-            privileged.set(null);
+            privileged.set(original);
         }
     }
 

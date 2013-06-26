@@ -25,12 +25,13 @@ public class Jdk14LoggingImpl implements Log {
     private int    errorCount;
     private int    warnCount;
     private int    infoCount;
-    
-    private String clazzName;
+    private int    debugCount;
 
-    public Jdk14LoggingImpl(Class<?> clazz){
-        clazzName = clazz.getName();
-        log = Logger.getLogger(clazzName);
+    private String loggerName;
+
+    public Jdk14LoggingImpl(String loggerName){
+        this.loggerName = loggerName;
+        log = Logger.getLogger(loggerName);
     }
 
     public boolean isDebugEnabled() {
@@ -38,31 +39,33 @@ public class Jdk14LoggingImpl implements Log {
     }
 
     public void error(String s, Throwable e) {
-        log.logp(Level.SEVERE,clazzName, Thread.currentThread().getStackTrace()[1].getMethodName(), s, e);
+        log.logp(Level.SEVERE, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), s, e);
         errorCount++;
     }
 
     public void error(String s) {
-        log.logp(Level.SEVERE,clazzName, Thread.currentThread().getStackTrace()[1].getMethodName(), s);
+        log.logp(Level.SEVERE, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), s);
         errorCount++;
     }
 
     public void debug(String s) {
-        log.logp(Level.FINE, clazzName, Thread.currentThread().getStackTrace()[1].getMethodName(), s);
+        debugCount++;
+        log.logp(Level.FINE, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), s);
     }
 
     public void debug(String s, Throwable e) {
-        log.logp(Level.FINE, clazzName, Thread.currentThread().getStackTrace()[1].getMethodName(), s, e);
+        debugCount++;
+        log.logp(Level.FINE, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), s, e);
     }
 
     public void warn(String s) {
-        log.logp(Level.WARNING, clazzName, Thread.currentThread().getStackTrace()[1].getMethodName(), s);
+        log.logp(Level.WARNING, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), s);
         warnCount++;
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        log.logp(Level.WARNING, clazzName, Thread.currentThread().getStackTrace()[1].getMethodName(), s, e);
+        log.logp(Level.WARNING, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), s, e);
         warnCount++;
     }
 
@@ -80,6 +83,7 @@ public class Jdk14LoggingImpl implements Log {
         errorCount = 0;
         warnCount = 0;
         infoCount = 0;
+        debugCount = 0;
     }
 
     @Override
@@ -89,7 +93,7 @@ public class Jdk14LoggingImpl implements Log {
 
     @Override
     public void info(String msg) {
-        log.logp(Level.INFO, clazzName, Thread.currentThread().getStackTrace()[1].getMethodName(), msg);
+        log.logp(Level.INFO, loggerName, Thread.currentThread().getStackTrace()[1].getMethodName(), msg);
         infoCount++;
     }
 
@@ -102,4 +106,9 @@ public class Jdk14LoggingImpl implements Log {
     public boolean isWarnEnabled() {
         return log.isLoggable(Level.WARNING);
     }
+
+    public int getDebugCount() {
+        return debugCount;
+    }
+
 }

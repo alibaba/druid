@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.proxy.filter;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.filter.stat.StatFilter;
 
 public class StatFilterTest3 extends TestCase {
+    @SuppressWarnings("deprecation")
     public void test_dbType() throws Exception {
         StatFilter filter = new StatFilter();
         

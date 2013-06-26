@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
-import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -129,12 +128,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListMultiColumnItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListSingleColumnItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetValueClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
@@ -194,11 +188,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleIntervalExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(SQLObjectCreateExpr x) {
 
     }
 
@@ -263,32 +252,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public void endVisit(OracleTableExpr x) {
-
-    }
-
-    @Override
     public void endVisit(OracleTimestampExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleUpdateSetListClause x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleUpdateSetListMultiColumnItem x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleUpdateSetListSingleColumnItem x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleUpdateSetValueClause x) {
 
     }
 
@@ -353,12 +317,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleIntervalExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLObjectCreateExpr x) {
 
         return true;
     }
@@ -436,37 +394,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleTableExpr x) {
-
-        return true;
-    }
-
-    @Override
     public boolean visit(OracleTimestampExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleUpdateSetListClause x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleUpdateSetListMultiColumnItem x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleUpdateSetListSingleColumnItem x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleUpdateSetValueClause x) {
 
         return true;
     }
@@ -1384,7 +1312,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
-        
+
     }
 
     @Override
@@ -1394,7 +1322,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleDropDatabaseLinkStatement x) {
-        
+
     }
 
     @Override
@@ -1404,7 +1332,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleDataTypeTimestamp x) {
-        
+
     }
 
     @Override
@@ -1414,7 +1342,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleDataTypeIntervalYear x) {
-        
+
     }
 
     @Override
@@ -1424,7 +1352,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleDataTypeIntervalDay x) {
-        
+
     }
 
     @Override
@@ -1434,7 +1362,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleDropSequenceStatement x) {
-        
+
     }
 
 }

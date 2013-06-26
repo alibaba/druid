@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
@@ -28,12 +29,15 @@ import com.alibaba.druid.util.JdbcUtils;
 /**
  * A MSSQLValidConnectionChecker.
  */
-public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Serializable {
+public class MSSQLValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
-    private static final long   serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private static final String QUERY            = "SELECT 1";
-    private static final Log    LOG              = LogFactory.getLog(MSSQLValidConnectionChecker.class);
+    private static final Log  LOG              = LogFactory.getLog(MSSQLValidConnectionChecker.class);
+
+    public MSSQLValidConnectionChecker(){
+
+    }
 
     public boolean isValidConnection(final Connection c, String valiateQuery, int validationQueryTimeout) {
         try {
@@ -50,7 +54,7 @@ public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Seri
         try {
             stmt = c.createStatement();
             stmt.setQueryTimeout(validationQueryTimeout);
-            stmt.execute(QUERY);
+            stmt.execute(valiateQuery);
             return true;
         } catch (SQLException e) {
             if (LOG.isWarnEnabled()) {

@@ -22,10 +22,10 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
-
 public class Right implements Function {
+
     public final static Right instance = new Right();
-    
+
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getParameters().size() != 2) {
             return SQLEvalVisitor.EVAL_ERROR;
@@ -45,7 +45,11 @@ public class Right implements Function {
         String strValue = param0Value.toString();
         int intValue = SQLEvalVisitorUtils.castToInteger(param1Value);
 
-        String result = strValue.substring(strValue.length() - intValue, strValue.length());
+        int start = strValue.length() - intValue;
+        if (start < 0) {
+            start = 0;
+        }
+        String result = strValue.substring(start, strValue.length());
         return result;
     }
 }

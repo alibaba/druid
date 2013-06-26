@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLOver;
@@ -224,6 +225,7 @@ public class SQLExprParser extends SQLParser {
             case SCHEMA:
             case COLUMN:
             case IF:
+            case END:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -239,7 +241,7 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.THEN);
                 SQLExpr valueExpr = expr();
                 SQLCaseExpr.Item caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
-                caseExpr.getItems().add(caseItem);
+                caseExpr.addItem(caseItem);
 
                 while (lexer.token() == Token.WHEN) {
                     lexer.nextToken();
@@ -333,12 +335,19 @@ public class SQLExprParser extends SQLParser {
                         lexer.nextToken();
                         break;
                     case IDENTIFIER: // 当负号后面为字段的情况
-                        sqlExpr = new SQLIdentifierExpr('-' + lexer.stringVal());
+                        sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         lexer.nextToken();
                         break;
                     case QUES:
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, new SQLVariantRefExpr("?"));
                         lexer.nextToken();
+                        break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
                     default:
                         throw new ParserException("TODO : " + lexer.token());
@@ -354,6 +363,12 @@ public class SQLExprParser extends SQLParser {
                     case LITERAL_FLOAT:
                         sqlExpr = new SQLNumberExpr(lexer.decimalValue());
                         lexer.nextToken();
+                        break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
                         break;
                     default:
                         throw new ParserException("TODO");
@@ -535,7 +550,7 @@ public class SQLExprParser extends SQLParser {
             }
 
             if (lexer.token() != Token.RPAREN) {
-                exprList(methodInvokeExpr.getParameters());
+                exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
             }
 
             accept(Token.RPAREN);
@@ -576,7 +591,7 @@ public class SQLExprParser extends SQLParser {
                         methodInvokeExpr.getParameters().add(new SQLIdentifierExpr("+"));
                         lexer.nextToken();
                     } else {
-                        exprList(methodInvokeExpr.getParameters());
+                        exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
                     }
                     accept(Token.RPAREN);
                 }
@@ -612,6 +627,10 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final void exprList(Collection<SQLExpr> exprCol) {
+        exprList(exprCol, null);
+    }
+
+    public final void exprList(Collection<SQLExpr> exprCol, SQLObject parent) {
         if (lexer.token() == Token.RPAREN || lexer.token() == Token.RBRACKET) {
             return;
         }
@@ -621,11 +640,13 @@ public class SQLExprParser extends SQLParser {
         }
 
         SQLExpr expr = expr();
+        expr.setParent(parent);
         exprCol.add(expr);
 
         while (lexer.token() == Token.COMMA) {
             lexer.nextToken();
             expr = expr();
+            expr.setParent(parent);
             exprCol.add(expr);
         }
     }
@@ -1256,7 +1277,7 @@ public class SQLExprParser extends SQLParser {
             column.getConstaints().add(new SQLColumnPrimaryKey());
             return parseColumnRest(column);
         }
-        
+
         if (lexer.token == Token.CHECK) {
             lexer.nextToken();
             SQLExpr expr = this.expr();

@@ -32,19 +32,26 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
-    private final static Log        LOG            = LogFactory.getLog(DruidPooledStatement.class);
+    private final static Log        LOG          = LogFactory.getLog(DruidPooledStatement.class);
 
     private final Statement         stmt;
     protected DruidPooledConnection conn;
-    protected final List<ResultSet> resultSetTrace = new ArrayList<ResultSet>();
-    protected boolean               closed         = false;
-    protected int                   fetchRowPeak   = -1;
+    protected List<ResultSet>       resultSetTrace;
+    protected boolean               closed       = false;
+    protected int                   fetchRowPeak = -1;
 
     public DruidPooledStatement(DruidPooledConnection conn, Statement stmt){
         super(stmt);
 
         this.conn = conn;
         this.stmt = stmt;
+    }
+
+    protected void addResultSetTrace(ResultSet resultSet) {
+        if (resultSetTrace == null) {
+            resultSetTrace = new ArrayList<ResultSet>(1);
+        }
+        resultSetTrace.add(resultSet);
     }
 
     protected void recordFetchRowCount(int fetchRowCount) {
@@ -85,6 +92,10 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     protected void clearResultSet() {
+        if (resultSetTrace == null) {
+            return;
+        }
+
         for (ResultSet rs : resultSetTrace) {
             try {
                 if (!rs.isClosed()) {
@@ -136,7 +147,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
@@ -424,7 +435,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
@@ -589,7 +600,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
 
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {

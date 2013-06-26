@@ -58,7 +58,6 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
@@ -72,6 +71,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
@@ -87,7 +87,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -132,6 +131,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
+    }
+    
+    public int getParametersSize() {
+        if (parameters == null) {
+            return 0;
+        }
+        
+        return this.parameters.size();
     }
 
     public List<Object> getParameters() {
@@ -543,10 +550,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLNumberExpr x) {
         print(x.getNumber().toString());
         return false;
-    }
-
-    public boolean visit(SQLObjectCreateExpr x) {
-        throw new UnsupportedOperationException();
     }
 
     public boolean visit(SQLPropertyExpr x) {
@@ -1344,12 +1347,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     @Override
-    public boolean visit(SQLColumnUniqueIndex x) {
-        print(" UNIQUE INDEX");
-        return false;
-    }
-
-    @Override
     public boolean visit(SQLWithSubqueryClause x) {
         print("WITH");
         if (x.getRecursive() == Boolean.TRUE) {
@@ -1445,6 +1442,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     
     public boolean visit(SQLAlterTableEnableConstraint x) {
         print("ENABLE CONSTRAINT ");
+        x.getConstraintName().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropConstraint x) {
+        print("DROP CONSTRAINT ");
         x.getConstraintName().accept(this);
         return false;
     }

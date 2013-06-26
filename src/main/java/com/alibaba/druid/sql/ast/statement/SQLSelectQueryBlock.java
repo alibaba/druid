@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectQueryBlock extends SQLSelectQuery {
@@ -66,6 +65,9 @@ public class SQLSelectQueryBlock extends SQLSelectQuery {
     }
 
     public void setWhere(SQLExpr where) {
+        if (where != null) {
+            where.setParent(this);
+        }
         this.where = where;
     }
 
@@ -100,40 +102,42 @@ public class SQLSelectQueryBlock extends SQLSelectQuery {
         visitor.endVisit(this);
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("SELECT ");
-
-        if (SQLSetQuantifier.ALL == this.distionOption) {
-            buf.append("ALL ");
-        } else if (SQLSetQuantifier.DISTINCT == this.distionOption) {
-            buf.append("DISTINCT ");
-        } else if (SQLSetQuantifier.UNIQUE == this.distionOption) {
-            buf.append("UNIQUE ");
-        }
-
-        int i = 0;
-        for (int size = this.selectList.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(", ");
-            }
-            ((SQLSelectItem) this.selectList.get(i)).output(buf);
-        }
-
-        buf.append(" FROM ");
-        if (this.from == null) {
-            buf.append("DUAL");
-        } else {
-            this.from.output(buf);
-        }
-
-        if (this.where != null) {
-            buf.append(" WHERE ");
-            this.where.output(buf);
-        }
-
-        if (this.groupBy != null) {
-            buf.append(" ");
-            this.groupBy.output(buf);
-        }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + distionOption;
+        result = prime * result + ((from == null) ? 0 : from.hashCode());
+        result = prime * result + ((groupBy == null) ? 0 : groupBy.hashCode());
+        result = prime * result + ((into == null) ? 0 : into.hashCode());
+        result = prime * result + ((selectList == null) ? 0 : selectList.hashCode());
+        result = prime * result + ((where == null) ? 0 : where.hashCode());
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        SQLSelectQueryBlock other = (SQLSelectQueryBlock) obj;
+        if (distionOption != other.distionOption) return false;
+        if (from == null) {
+            if (other.from != null) return false;
+        } else if (!from.equals(other.from)) return false;
+        if (groupBy == null) {
+            if (other.groupBy != null) return false;
+        } else if (!groupBy.equals(other.groupBy)) return false;
+        if (into == null) {
+            if (other.into != null) return false;
+        } else if (!into.equals(other.into)) return false;
+        if (selectList == null) {
+            if (other.selectList != null) return false;
+        } else if (!selectList.equals(other.selectList)) return false;
+        if (where == null) {
+            if (other.where != null) return false;
+        } else if (!where.equals(other.where)) return false;
+        return true;
+    }
+
 }

@@ -27,13 +27,20 @@ import com.alibaba.druid.wall.WallUtils;
  *
  */
 public class WallSelectWhereTest1 extends TestCase {
-    private String sql = "SELECT F1, F2 WHERE 1 = 1 OR FID = ?";
 
-    public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+    public void testMySql_true() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql("SELECT F1, F2 WHERE 1 = 1 OR FID = ?"));
     }
     
-    public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+    public void testORACLE_true() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateOracle("SELECT F1, F2 WHERE 1 = 1 OR FID = ?"));
+    }
+    
+    public void testMySql_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql("SELECT F1, F2 WHERE FID = ? OR 1 = 1"));
+    }
+    
+    public void testORACLE_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT F1, F2 WHERE FID = ? OR 1 = 1"));
     }
 }
