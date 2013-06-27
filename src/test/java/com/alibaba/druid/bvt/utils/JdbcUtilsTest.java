@@ -78,5 +78,5 @@ public class JdbcUtilsTest extends TestCase {
             List<Map<String, Object>> list = JdbcUtils.executeQuery(dataSource, "select * from user");
             Assert.assertEquals(0, list.size());
         }
-    }
+    }   
 }
