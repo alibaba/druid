@@ -139,6 +139,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private boolean                          useGloalDataSourceStat  = false;
 
+    private boolean                          mbeanRegistered         = false;
+
     public DruidDataSource(){
         this(false);
     }
@@ -614,8 +616,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.await();
 
             initedTime = new Date();
-            ObjectName objectName = DruidDataSourceStatManager.addDataSource(this, this.name);
-            this.setObjectName(objectName);
+            registerMbean();
 
             if (connectError != null && poolingCount == 0) {
                 throw connectError;
@@ -1222,7 +1223,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
             poolingCount = 0;
-            DruidDataSourceStatManager.removeDataSource(this);
+            unregisterMbean();
 
             enable = false;
             notEmpty.signalAll();
@@ -1241,6 +1242,25 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (LOG.isInfoEnabled()) {
             LOG.info("{dataSource-" + this.getID() + "} closed");
         }
+    }
+
+    public void registerMbean() {
+        if (!mbeanRegistered) {
+            ObjectName objectName = DruidDataSourceStatManager.addDataSource(this, this.name);
+            this.setObjectName(objectName);
+            this.mbeanRegistered = true;
+        }
+    }
+
+    public void unregisterMbean() {
+        if (mbeanRegistered) {
+            DruidDataSourceStatManager.removeDataSource(this);
+            mbeanRegistered = false;
+        }
+    }
+
+    public boolean isMbeanRegistered() {
+        return mbeanRegistered;
     }
 
     void putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
