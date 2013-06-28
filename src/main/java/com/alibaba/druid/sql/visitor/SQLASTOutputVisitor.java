@@ -511,6 +511,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
 
         printAndAccept(x.getArguments(), ", ");
+        
+        visitAggreateRest(x);
+        
         print(")");
 
         if (x.getOver() != null) {
@@ -518,6 +521,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             x.getOver().accept(this);
         }
         return false;
+    }
+    
+    protected void visitAggreateRest(SQLAggregateExpr aggregateExpr) {
+        
     }
 
     public boolean visit(SQLAllColumnExpr x) {

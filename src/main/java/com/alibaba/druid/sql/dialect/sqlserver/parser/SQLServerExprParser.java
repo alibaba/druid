@@ -26,28 +26,30 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class SQLServerExprParser extends SQLExprParser {
 
+    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "ROW_NUMBER", "STDDEV", "SUM" };
+
     public SQLServerExprParser(Lexer lexer){
         super(lexer);
+        this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
 
-    public SQLServerExprParser(String sql) {
-        super(new SQLServerLexer(sql));
+    public SQLServerExprParser(String sql){
+        this(new SQLServerLexer(sql));
         this.lexer.nextToken();
     }
-    
+
     public SQLExpr primary() {
-        
-        
+
         if (lexer.token() == Token.LBRACKET) {
             lexer.nextToken();
             SQLExpr name = this.name();
             accept(Token.RBRACKET);
             return primaryRest(name);
         }
-        
+
         return super.primary();
     }
-    
+
     public SQLServerSelectParser createSelectParser() {
         return new SQLServerSelectParser(this);
     }
@@ -56,31 +58,31 @@ public class SQLServerExprParser extends SQLExprParser {
         if (lexer.token() == Token.DOTDOT) {
             expr = nameRest((SQLName) expr);
         }
-        
+
         return super.primaryRest(expr);
     }
-    
+
     protected SQLExpr dotRest(SQLExpr expr) {
         boolean backet = false;
-        
+
         if (lexer.token() == Token.LBRACKET) {
             lexer.nextToken();
             backet = true;
         }
-        
+
         expr = super.dotRest(expr);
 
         if (backet) {
             accept(Token.RBRACKET);
         }
-        
+
         return expr;
     }
-    
+
     public SQLName nameRest(SQLName expr) {
         if (lexer.token() == Token.DOTDOT) {
             lexer.nextToken();
-            
+
             boolean backet = false;
             if (lexer.token() == Token.LBRACKET) {
                 lexer.nextToken();
@@ -88,7 +90,7 @@ public class SQLServerExprParser extends SQLExprParser {
             }
             String text = lexer.stringVal();
             lexer.nextToken();
-            
+
             if (backet) {
                 accept(Token.RBRACKET);
             }
@@ -99,44 +101,32 @@ public class SQLServerExprParser extends SQLExprParser {
 
         return super.nameRest(expr);
     }
-    
-    public boolean isAggreateFunction(String word) {
-        String[] aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "ROW_NUMBER", "STDDEV", "SUM" };
 
-        for (int i = 0; i < aggregateFunctions.length; ++i) {
-            if (aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    
     public SQLServerTop parseTop() {
         if (lexer.token() == Token.TOP) {
             SQLServerTop top = new SQLServerTop();
             lexer.nextToken();
-            
+
             boolean paren = false;
             if (lexer.token() == Token.LPAREN) {
                 paren = true;
                 lexer.nextToken();
             }
-            
+
             top.setExpr(primary());
-            
+
             if (paren) {
                 accept(Token.RPAREN);
             }
-            
+
             if (lexer.token() == Token.PERCENT) {
                 lexer.nextToken();
                 top.setPercent(true);
             }
-            
+
             return top;
         }
-        
+
         return null;
     }
 }

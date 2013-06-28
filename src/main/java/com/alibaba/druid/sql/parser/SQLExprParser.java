@@ -71,6 +71,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 
 public class SQLExprParser extends SQLParser {
 
+    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM" };
+
+    protected String[]           aggregateFunctions  = AGGREGATE_FUNCTIONS;
+
     public SQLExprParser(String sql){
         super(sql);
     }
@@ -703,8 +707,6 @@ public class SQLExprParser extends SQLParser {
     }
 
     public boolean isAggreateFunction(String word) {
-        String[] aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM" };
-
         for (int i = 0; i < aggregateFunctions.length; ++i) {
             if (aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
                 return true;
@@ -728,7 +730,9 @@ public class SQLExprParser extends SQLParser {
             aggregateExpr = new SQLAggregateExpr(methodName);
         }
 
-        exprList(aggregateExpr.getArguments());
+        exprList(aggregateExpr.getArguments(), aggregateExpr);
+
+        parseAggregateExprRest(aggregateExpr);
 
         accept(Token.RPAREN);
 
@@ -752,15 +756,15 @@ public class SQLExprParser extends SQLParser {
 
             over.setOrderBy(parseOrderBy());
 
-            // if (over.getOrderBy() != null) {
-            // //TODO window
-            // }
-
             accept(Token.RPAREN);
             aggregateExpr.setOver(over);
 
         }
 
+        return aggregateExpr;
+    }
+
+    protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {
         return aggregateExpr;
     }
 

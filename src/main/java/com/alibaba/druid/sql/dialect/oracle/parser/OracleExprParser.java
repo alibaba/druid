@@ -72,22 +72,6 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleExprParser extends SQLExprParser {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public boolean                allowStringAdditive = false;
 
     /**
@@ -137,10 +121,11 @@ public class OracleExprParser extends SQLExprParser {
 
     public OracleExprParser(Lexer lexer){
         super(lexer);
+        this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
 
     public OracleExprParser(String text){
-        super(new OracleLexer(text));
+        this(new OracleLexer(text));
         this.lexer.nextToken();
     }
     
@@ -265,16 +250,6 @@ public class OracleExprParser extends SQLExprParser {
 
         SQLDataType dataType = new SQLDataTypeImpl(typeName);        
         return parseDataTypeRest(dataType);
-    }
-
-    public boolean isAggreateFunction(String word) {
-        for (int i = 0; i < AGGREGATE_FUNCTIONS.length; ++i) {
-            if (AGGREGATE_FUNCTIONS[i].compareToIgnoreCase(word) == 0) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public SQLExpr primary() {
