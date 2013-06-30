@@ -71,20 +71,32 @@ public class MySqlExceptionSorter implements ExceptionSorter {
             case 1037: // ER_OUTOFMEMORY
             case 1038: // ER_OUT_OF_SORTMEMORY
                 return true;
+            default:
+                break;
+        }
+        
+        if (errorCode >= -10000 && errorCode <= -9000) {
+            return true;
         }
 
-        if (StringUtils.isNotBlank(e.getMessage())) {
-            final String errorText = e.getMessage().toUpperCase();
+        String message = e.getMessage();
+        if (message != null && message.length() > 0) {
+            final String errorText = message.toUpperCase();
 
-            if (errorCode == 0
-                && (errorText.indexOf("COMMUNICATIONS LINK FAILURE") > -1 || errorText
-                    .indexOf("COULD NOT CREATE CONNECTION") > -1)
-                || errorText.indexOf("NO DATASOURCE") > -1
+            if ((errorCode == 0 && (errorText.indexOf("COMMUNICATIONS LINK FAILURE") > -1) //
+            || errorText.indexOf("COULD NOT CREATE CONNECTION") > -1) //
+                || errorText.indexOf("NO DATASOURCE") > -1 //
                 || errorText.indexOf("NO ALIVE DATASOURCE") > -1) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public void configFromProperties(Properties properties) {
+        // TODO Auto-generated method stub
+
     }
 
 }
