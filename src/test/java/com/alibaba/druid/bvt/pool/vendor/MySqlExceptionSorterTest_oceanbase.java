@@ -12,7 +12,8 @@ import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 public class MySqlExceptionSorterTest_oceanbase extends TestCase {
     public void test_true() throws Exception {
         MySqlExceptionSorter sorter = new MySqlExceptionSorter();
-        Assert.assertTrue(sorter.isExceptionFatal(new SQLException("", "", -9000)));
+        SQLException exception = new SQLException("", "", -9000);
+        Assert.assertTrue(sorter.isExceptionFatal(exception));
     }
     
     public void test_true_1() throws Exception {

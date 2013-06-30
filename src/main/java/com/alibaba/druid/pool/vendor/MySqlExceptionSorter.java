@@ -24,28 +24,8 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
     @Override
     public boolean isExceptionFatal(SQLException e) {
-        int loopCount = 20;
-
-        Throwable cause = e;
-        while (cause != null) {
-            if (cause instanceof SQLException) {
-                SQLException sqlException = (SQLException) cause;
-
-                if (isExceptionFatal0(sqlException)) {
-                    return true;
-                }
-            }
-            cause = cause.getCause();
-            if (--loopCount < 0) {
-                break;
-            }
-        }
-        return false;
-    }
-
-    private boolean isExceptionFatal0(SQLException e) {
         String sqlState = e.getSQLState();
-        final int errorCode = Math.abs(e.getErrorCode());
+        final int errorCode = e.getErrorCode();
 
         if (sqlState != null && sqlState.startsWith("08")) {
             return true;
@@ -95,7 +75,6 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
     @Override
     public void configFromProperties(Properties properties) {
-        // TODO Auto-generated method stub
 
     }
 
