@@ -21,6 +21,7 @@ import java.sql.Savepoint;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
@@ -82,22 +83,40 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected DataSourceProxy dataSource;
 
     public LogFilter(){
+        configFromProperties(System.getProperties());
+    }
+
+    public void configFromProperties(Properties properties) {
         {
-            String prop = System.getProperty("druid.log.stmt");
-            if (prop == "false") {
+            String prop = properties.getProperty("druid.log.conn");
+            if ("false".equals(prop)) {
+                connectionLogEnabled = false;
+            } else if ("true".equals(prop)) {
+                connectionLogEnabled = true;
+            }
+        }
+        {
+            String prop = properties.getProperty("druid.log.stmt");
+            if ("false".equals(prop)) {
                 statementLogEnabled = false;
+            } else if ("true".equals(prop)) {
+                statementLogEnabled = true;
             }
         }
         {
-            String prop = System.getProperty("druid.log.rs");
-            if (prop == "false") {
+            String prop = properties.getProperty("druid.log.rs");
+            if ("false".equals(prop)) {
                 resultSetLogEnabled = false;
+            } else if ("true".equals(prop)) {
+                resultSetLogEnabled = true;
             }
         }
         {
-            String prop = System.getProperty("druid.log.stmt.executableSql");
-            if (prop == "true") {
+            String prop = properties.getProperty("druid.log.stmt.executableSql");
+            if ("true".equals(prop)) {
                 statementExecutableSqlLogEnable = true;
+            } else if ("false".equals(prop)) {
+                statementExecutableSqlLogEnable = false;
             }
         }
     }
@@ -306,7 +325,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     public void setStatementParameterSetLogEnabled(boolean statementParameterSetLogEnable) {
         this.statementParameterSetLogEnable = statementParameterSetLogEnable;
     }
-    
+
     public boolean isStatementParameterClearLogEnable() {
         return isStatementLogEnabled() && statementParameterClearLogEnable;
     }
@@ -737,7 +756,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                 buf.append(stmtId(statement));
                 buf.append("}");
                 buf.append(" Parameters : [");
-                
+
                 for (int i = 0, parametersSize = statement.getParametersSize(); i < parametersSize; ++i) {
                     JdbcParameter parameter = statement.getParameter(i);
                     if (i != 0) {
@@ -746,7 +765,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                     if (parameter == null) {
                         continue;
                     }
-                    
+
                     int sqlType = parameter.getSqlType();
                     Object value = parameter.getValue();
                     switch (sqlType) {

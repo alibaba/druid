@@ -22,7 +22,9 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
@@ -594,8 +596,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 && (!varName.equals("?")) //
                 && (!varName.startsWith("#")) //
                 && (!varName.startsWith("$")) //
-                && (!varName.startsWith(":"))
-                ) {
+                && (!varName.startsWith(":"))) {
                 print("@@");
             }
         }
@@ -3059,6 +3060,23 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(InValues x) {
 
+    }
+
+    protected void visitAggreateRest(SQLAggregateExpr aggregateExpr) {
+        {
+            SQLOrderBy value = (SQLOrderBy) aggregateExpr.getAttribute("ORDER BY");
+            if (value != null) {
+                print(" ");
+                ((SQLObject) value).accept(this);
+            }
+        }
+        {
+            Object value = aggregateExpr.getAttribute("SEPARATOR");
+            if (value != null) {
+                print(" SEPARATOR ");
+                ((SQLObject) value).accept(this);
+            }
+        }
     }
 
 } //
