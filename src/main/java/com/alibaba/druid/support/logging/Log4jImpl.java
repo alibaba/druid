@@ -27,12 +27,13 @@ public class Log4jImpl implements Log {
     private int                 errorCount;
     private int                 warnCount;
     private int                 infoCount;
-    
+    private int                 debugCount;
+
     /**
      * @since 0.2.21
      * @param log
      */
-    public Log4jImpl(Logger log) {
+    public Log4jImpl(Logger log){
         this.log = log;
     }
 
@@ -55,10 +56,12 @@ public class Log4jImpl implements Log {
     }
 
     public void debug(String s) {
+        debugCount++;
         log.log(callerFQCN, Level.DEBUG, s, null);
     }
 
     public void debug(String s, Throwable e) {
+        debugCount++;
         log.log(callerFQCN, Level.DEBUG, s, e);
     }
 
@@ -84,6 +87,11 @@ public class Log4jImpl implements Log {
         errorCount = 0;
         warnCount = 0;
         infoCount = 0;
+        debugCount = 0;
+    }
+
+    public int getDebugCount() {
+        return debugCount;
     }
 
     public boolean isInfoEnabled() {

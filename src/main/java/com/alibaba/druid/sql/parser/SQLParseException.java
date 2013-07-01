@@ -20,20 +20,7 @@ import com.alibaba.druid.DruidRuntimeException;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
+@SuppressWarnings("serial")
 @Deprecated
 public class SQLParseException extends DruidRuntimeException {
-
-    private static final long serialVersionUID = 1L;
-
-    public SQLParseException(){
-        super();
-    }
-
-    public SQLParseException(String message){
-        super(message);
-    }
-
-    public SQLParseException(String message, Throwable cause){
-        super(message, cause);
-    }
 }

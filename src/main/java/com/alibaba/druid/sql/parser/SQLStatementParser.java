@@ -228,6 +228,11 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken();
                 continue;
             }
+            
+            if (lexer.token() == Token.COMMENT) {
+                statementList.add(this.parseComment());
+                continue;
+            }
 
             throw new ParserException("syntax error, " + lexer.token() + " " + lexer.stringVal() + ", pos "
                                       + lexer.pos());

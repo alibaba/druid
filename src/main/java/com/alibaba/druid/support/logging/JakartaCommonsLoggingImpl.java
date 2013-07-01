@@ -25,12 +25,13 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     private int errorCount;
     private int warnCount;
     private int infoCount;
-    
+    private int debugCount;
+
     /**
      * @since 0.2.1
      * @param log
      */
-    public JakartaCommonsLoggingImpl(Log log) {
+    public JakartaCommonsLoggingImpl(Log log){
         this.log = log;
     }
 
@@ -53,10 +54,12 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     }
 
     public void debug(String s) {
+        debugCount++;
         log.debug(s);
     }
 
     public void debug(String s, Throwable e) {
+        debugCount++;
         log.debug(s, e);
     }
 
@@ -85,6 +88,7 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
         errorCount = 0;
         warnCount = 0;
         infoCount = 0;
+        debugCount++;
     }
 
     @Override
@@ -107,4 +111,9 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     public boolean isWarnEnabled() {
         return log.isWarnEnabled();
     }
+
+    public int getDebugCount() {
+        return debugCount;
+    }
+
 }

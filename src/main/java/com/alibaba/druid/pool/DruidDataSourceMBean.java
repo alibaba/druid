@@ -24,6 +24,7 @@ import javax.management.ObjectName;
  * @author wenshao<szujobs@hotmail.com>
  */
 public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
+    long getResetCount();
 
     boolean isEnable();
 

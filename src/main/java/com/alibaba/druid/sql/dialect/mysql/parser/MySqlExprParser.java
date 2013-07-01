@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -55,8 +57,11 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlExprParser extends SQLExprParser {
 
+    public static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "GROUP_CONCAT", "MAX", "MIN", "STDDEV", "SUM" };
+
     public MySqlExprParser(Lexer lexer){
         super(lexer);
+        this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
 
     public MySqlExprParser(String sql){
@@ -553,7 +558,7 @@ public class MySqlExprParser extends SQLExprParser {
             throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
         }
 
-        if (identifierEquals("COMMENT")) {
+        if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             column.setComment(lexer.stringVal());
             accept(Token.LITERAL_CHARS);
@@ -768,5 +773,20 @@ public class MySqlExprParser extends SQLExprParser {
         this.names(fk.getReferencedColumns());
         accept(Token.RPAREN);
         return fk;
+    }
+
+    protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {
+        if (lexer.token() == Token.ORDER) {
+            SQLOrderBy orderBy = this.parseOrderBy();
+            aggregateExpr.putAttribute("ORDER BY", orderBy);
+        }
+        if (identifierEquals("SEPARATOR")) {
+            lexer.nextToken();
+
+            SQLExpr seperator = this.primary();
+
+            aggregateExpr.putAttribute("SEPARATOR", seperator);
+        }
+        return aggregateExpr;
     }
 }

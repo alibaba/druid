@@ -72,22 +72,6 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleExprParser extends SQLExprParser {
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public boolean                allowStringAdditive = false;
 
     /**
@@ -137,10 +121,11 @@ public class OracleExprParser extends SQLExprParser {
 
     public OracleExprParser(Lexer lexer){
         super(lexer);
+        this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
 
     public OracleExprParser(String text){
-        super(new OracleLexer(text));
+        this(new OracleLexer(text));
         this.lexer.nextToken();
     }
     
@@ -267,16 +252,6 @@ public class OracleExprParser extends SQLExprParser {
         return parseDataTypeRest(dataType);
     }
 
-    public boolean isAggreateFunction(String word) {
-        for (int i = 0; i < AGGREGATE_FUNCTIONS.length; ++i) {
-            if (AGGREGATE_FUNCTIONS[i].compareToIgnoreCase(word) == 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public SQLExpr primary() {
         final Token tok = lexer.token();
 
@@ -366,6 +341,12 @@ public class OracleExprParser extends SQLExprParser {
                         sqlExpr = new OracleBinaryDoubleExpr(Double.parseDouble(lexer.numberString()));
                         lexer.nextToken();
                         break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
+                        break;
                     default:
                         throw new ParserException("TODO");
                 }
@@ -410,6 +391,12 @@ public class OracleExprParser extends SQLExprParser {
                     case VARIANT:
                     case IDENTIFIER:
                         sqlExpr = expr();
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
+                        break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
                     default:

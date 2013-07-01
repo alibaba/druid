@@ -420,7 +420,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
             if (transcationInfo == null) {
                 long transactionId = this.dataSource.createTransactionId();
                 transcationInfo = new TransactionInfo(transactionId);
-                this.getAttributes().put(StatFilter.ATTR_TRANSACTION, transcationInfo); // compatible for druid 0.1.18
+                this.putAttribute(StatFilter.ATTR_TRANSACTION, transcationInfo); // compatible for druid 0.1.18
             }
         } else {
             transcationInfo = null;

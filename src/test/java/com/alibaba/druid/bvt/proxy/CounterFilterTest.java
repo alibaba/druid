@@ -101,6 +101,10 @@ public class CounterFilterTest extends TestCase {
 
         conn.close();
         conn.close();
+        
+        dataSource.getCompositeData();
+        dataSource.getProperties();
+        dataSource.getDataSourceMBeanDomain();
     }
 
 }

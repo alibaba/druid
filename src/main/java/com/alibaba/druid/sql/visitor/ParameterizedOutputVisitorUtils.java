@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.visitor;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -39,6 +40,10 @@ public class ParameterizedOutputVisitorUtils {
     public static String parameterize(String sql, String dbType) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> statementList = parser.parseStatementList();
+        if (statementList.size() == 0) {
+            return sql;
+        }
+        
         SQLStatement stmt = statementList.get(0);
 
         StringBuilder out = new StringBuilder();
@@ -89,6 +94,7 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static SQLBinaryOpExpr merge(SQLBinaryOpExpr x) {
+        SQLObject parent = x.getParent();
         if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
             if (x.getOperator() == SQLBinaryOperator.Equality || x.getOperator() == SQLBinaryOperator.NotEqual) {
                 x.getLeft().getAttributes().put(ATTR_PARAMS_SKIP, true);
@@ -99,10 +105,12 @@ public class ParameterizedOutputVisitorUtils {
 
         if (x.getRight() instanceof SQLLiteralExpr) {
             x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), new SQLVariantRefExpr("?"));
+            x.setParent(parent);
         }
 
         if (x.getLeft() instanceof SQLLiteralExpr) {
             x = new SQLBinaryOpExpr(new SQLVariantRefExpr("?"), x.getOperator(), x.getRight());
+            x.setParent(parent);
         }
 
         for (;;) {
@@ -115,6 +123,7 @@ public class ParameterizedOutputVisitorUtils {
                     }
                 }
                 x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge((SQLBinaryOpExpr) x.getRight()));
+                x.setParent(parent);
             }
 
             break;
@@ -122,6 +131,7 @@ public class ParameterizedOutputVisitorUtils {
 
         if (x.getLeft() instanceof SQLBinaryOpExpr) {
             x = new SQLBinaryOpExpr(merge((SQLBinaryOpExpr) x.getLeft()), x.getOperator(), x.getRight());
+            x.setParent(parent);
         }
 
         // ID = ? OR ID = ? => ID = ?

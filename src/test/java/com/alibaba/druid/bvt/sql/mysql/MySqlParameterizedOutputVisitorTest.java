@@ -31,13 +31,13 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
     public void test_0() throws Exception {
         validate("SELECT * FROM T WHERE ID IN (?, ?, ?)", "SELECT *\nFROM T\nWHERE ID IN (?)");
         validate("SELECT * FROM T WHERE ID = 5", "SELECT *\nFROM T\nWHERE ID = ?");
-        validate("SELECT * FROM T WHERE 1 = 0 AND ID = 5", "SELECT *\nFROM T\nWHERE 1 = 0\nAND ID = ?");
+        validate("SELECT * FROM T WHERE 1 = 0 AND ID = 5", "SELECT *\nFROM T\nWHERE 1 = 0\n\tAND ID = ?");
         validate("SELECT * FROM T WHERE ID = ? OR ID = ?", "SELECT *\nFROM T\nWHERE ID = ?");
         validate("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT *\nFROM T\nWHERE A.ID = ?");
         validate("SELECT * FROM T WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ?",
-                 "SELECT *\nFROM T\nWHERE 1 = 0\nOR a.id = ?");
+                 "SELECT *\nFROM T\nWHERE 1 = 0\n\tOR a.id = ?");
         validateOracle("SELECT * FROM T WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ?",
-                       "SELECT *\nFROM T\nWHERE 1 = 0\nOR a.id = ?");
+                       "SELECT *\nFROM T\nWHERE 1 = 0\n\tOR a.id = ?");
         validateOracle("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT *\nFROM T\nWHERE A.ID = ?");
         validate("INSERT INTO T (F1, F2) VALUES(?, ?), (?, ?), (?, ?)", "INSERT INTO T (F1, F2) VALUES (?, ?)");
         validate("update net_device d, sys_user u set d.resp_user_id=u.id where d.resp_user_login_name=u.username and d.id in (42354)", //

@@ -22,7 +22,9 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
@@ -180,7 +182,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print("SELECT ");
 
-        for (SQLCommentHint hint : x.getHints()) {
+        for (int i = 0, size = x.getHintsSize(); i < size; ++i) {
+            SQLCommentHint hint = x.getHints().get(i);
             hint.accept(this);
             print(' ');
         }
@@ -575,11 +578,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     public boolean visit(SQLVariantRefExpr x) {
         {
-            List<Object> parameters = this.getParameters();
+            int parametersSize = this.getParametersSize();
             int index = x.getIndex();
 
-            if (parameters != null && index >= 0 && index < parameters.size()) {
-                Object param = parameters.get(index);
+            if (index >= 0 && index < parametersSize) {
+                Object param = this.getParameters().get(index);
                 printParameter(param);
                 return false;
             }
@@ -593,8 +596,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 && (!varName.equals("?")) //
                 && (!varName.startsWith("#")) //
                 && (!varName.startsWith("$")) //
-                && (!varName.startsWith(":"))
-                ) {
+                && (!varName.startsWith(":"))) {
                 print("@@");
             }
         }
@@ -2682,7 +2684,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(x.getAlias());
         }
 
-        for (int i = 0; i < x.getHints().size(); ++i) {
+        for (int i = 0; i < x.getHintsSize(); ++i) {
             print(' ');
             x.getHints().get(i).accept(this);
         }
@@ -3058,6 +3060,23 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(InValues x) {
 
+    }
+
+    protected void visitAggreateRest(SQLAggregateExpr aggregateExpr) {
+        {
+            SQLOrderBy value = (SQLOrderBy) aggregateExpr.getAttribute("ORDER BY");
+            if (value != null) {
+                print(" ");
+                ((SQLObject) value).accept(this);
+            }
+        }
+        {
+            Object value = aggregateExpr.getAttribute("SEPARATOR");
+            if (value != null) {
+                print(" SEPARATOR ");
+                ((SQLObject) value).accept(this);
+            }
+        }
     }
 
 } //

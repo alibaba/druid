@@ -195,6 +195,11 @@ public class JSONWriter {
     }
 
     public void writeString(String text) {
+        if (text == null) {
+            writeNull();
+            return;
+        }
+        
         write('"');
         for (int i = 0; i < text.length(); ++i) {
             char c = text.charAt(i);

@@ -46,13 +46,6 @@ public class MySqlExtractExpr extends SQLExprImpl implements MySqlExpr {
         this.unit = unit;
     }
 
-    @Override
-    public void output(StringBuffer buf) {
-        value.output(buf);
-        buf.append(' ');
-        buf.append(unit.name());
-    }
-
     protected void accept0(SQLASTVisitor visitor) {
         MySqlASTVisitor mysqlVisitor = (MySqlASTVisitor) visitor;
         mysqlVisitor.visit(this);

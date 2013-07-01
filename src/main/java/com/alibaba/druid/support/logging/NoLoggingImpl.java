@@ -20,6 +20,7 @@ public class NoLoggingImpl implements Log {
     private int    infoCount;
     private int    errorCount;
     private int    warnCount;
+    private int    debugCount;
     private String loggerName;
 
     public NoLoggingImpl(String loggerName){
@@ -50,9 +51,11 @@ public class NoLoggingImpl implements Log {
     }
 
     public void debug(String s) {
+        debugCount++;
     }
 
     public void debug(String s, Throwable e) {
+        debugCount++;
     }
 
     public void warn(String s) {
@@ -78,6 +81,7 @@ public class NoLoggingImpl implements Log {
         errorCount = 0;
         warnCount = 0;
         infoCount = 0;
+        debugCount = 0;
     }
 
     @Override
@@ -98,4 +102,9 @@ public class NoLoggingImpl implements Log {
     public int getInfoCount() {
         return infoCount;
     }
+
+    public int getDebugCount() {
+        return debugCount;
+    }
+
 }

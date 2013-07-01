@@ -71,6 +71,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 
 public class SQLExprParser extends SQLParser {
 
+    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM" };
+
+    protected String[]           aggregateFunctions  = AGGREGATE_FUNCTIONS;
+
     public SQLExprParser(String sql){
         super(sql);
     }
@@ -226,6 +230,7 @@ public class SQLExprParser extends SQLParser {
             case COLUMN:
             case IF:
             case END:
+            case COMMENT:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -335,12 +340,19 @@ public class SQLExprParser extends SQLParser {
                         lexer.nextToken();
                         break;
                     case IDENTIFIER: // 当负号后面为字段的情况
-                        sqlExpr = new SQLIdentifierExpr('-' + lexer.stringVal());
+                        sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         lexer.nextToken();
                         break;
                     case QUES:
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, new SQLVariantRefExpr("?"));
                         lexer.nextToken();
+                        break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
                     default:
                         throw new ParserException("TODO : " + lexer.token());
@@ -356,6 +368,12 @@ public class SQLExprParser extends SQLParser {
                     case LITERAL_FLOAT:
                         sqlExpr = new SQLNumberExpr(lexer.decimalValue());
                         lexer.nextToken();
+                        break;
+                    case LPAREN:
+                        lexer.nextToken();
+                        sqlExpr = expr();
+                        accept(Token.RPAREN);
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
                         break;
                     default:
                         throw new ParserException("TODO");
@@ -689,8 +707,6 @@ public class SQLExprParser extends SQLParser {
     }
 
     public boolean isAggreateFunction(String word) {
-        String[] aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM" };
-
         for (int i = 0; i < aggregateFunctions.length; ++i) {
             if (aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
                 return true;
@@ -714,7 +730,9 @@ public class SQLExprParser extends SQLParser {
             aggregateExpr = new SQLAggregateExpr(methodName);
         }
 
-        exprList(aggregateExpr.getArguments());
+        exprList(aggregateExpr.getArguments(), aggregateExpr);
+
+        parseAggregateExprRest(aggregateExpr);
 
         accept(Token.RPAREN);
 
@@ -738,15 +756,15 @@ public class SQLExprParser extends SQLParser {
 
             over.setOrderBy(parseOrderBy());
 
-            // if (over.getOrderBy() != null) {
-            // //TODO window
-            // }
-
             accept(Token.RPAREN);
             aggregateExpr.setOver(over);
 
         }
 
+        return aggregateExpr;
+    }
+
+    protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {
         return aggregateExpr;
     }
 

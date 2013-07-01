@@ -566,4 +566,14 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         
         return super.isWrapperFor(iface);
     }
+
+    @Override
+    public int getParametersSize() {
+        return 0;
+    }
+
+    @Override
+    public JdbcParameter getParameter(int i) {
+        return null;
+    }
 }
