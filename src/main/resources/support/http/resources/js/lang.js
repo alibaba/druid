@@ -6,16 +6,16 @@ druid.lang = function() {
 		'Index' : ['Index','首页'],
 		'DataSource' : ['DataSource', '数据源'],
 		'SQL' : ['SQL','SQL监控'],
-		'Wall' : ['Wall' , '安全监控'],
-		'WebApp' : ['WebApp' , 'web应用'],
+		'Wall' : ['Wall' , 'SQL防火墙'],
+		'WebApp' : ['WebApp' , 'Web应用'],
 		'WebURI' : ['WebURI' , 'URI监控'],
-		'Web Session' : ['Web Session' , 'session监控'],
+		'Web Session' : ['Web Session' , 'Session监控'],
 		'Spring' : ['Spring' , 'spring监控'],
-		'JSON API' : ['JSON API' , 'json数据'],
+		'JSON API' : ['JSON API' , 'JSON API'],
 		'ResetAll' : ['Reset All' , '重置'],
 		
-		'StatIndex' : ['Stat Index', '配置信息'],
-		'ViewJSONAPI' : ['View JSON API','查看json数据'],
+		'StatIndex' : ['Stat Index', '统计索引'],
+		'ViewJSONAPI' : ['View JSON API','查看JSON API'],
 		'Version' : ['Version' , '版本'],
 		'Drivers' : ['Drivers' , '驱动'],
 		'ResetEnable' : ['ResetEnable' , '是否允许重置'],
@@ -50,12 +50,12 @@ druid.lang = function() {
 		'WaitThreadCount' : ['WaitThreadCount', '等待线程个数'],
 		'StartTransactionCount' : ['StartTransactionCount', '事务开始个数'],//
 		'TransactionHistogram' : ['TransactionHistogram', '事务时间分布'],//
-		'PoolingCount' : ['PoolingCount', '连接池个数'],//
-		'PoolingPeak' : ['PoolingPeak', '连接池峰值'],//
-		'PoolingPeakTime' : ['PoolingPeakTime', '连接池峰值时间'],////
-		'ActiveCount' : ['ActiveCount', '活跃个数'],
-		'ActivePeak' : ['ActivePeak', '活跃个数峰值'],//
-		'ActivePeakTime' : ['ActivePeakTime', '活跃个数峰值时间'],
+		'PoolingCount' : ['PoolingCount', '池中连接数'],//
+		'PoolingPeak' : ['PoolingPeak', '池中连接数峰值'],//
+		'PoolingPeakTime' : ['PoolingPeakTime', '池中连接数峰值时间'],////
+		'ActiveCount' : ['ActiveCount', '活跃连接数'],
+		'ActivePeak' : ['ActivePeak', '活跃连接数峰值'],//
+		'ActivePeakTime' : ['ActivePeakTime', '活跃连接数峰值时间'],
 		'LogicConnectCount' : ['LogicConnectCount', '逻辑连接打开次数'],
 		'LogicCloseCount' : ['LogicCloseCount', '逻辑连接关闭次数'],
 		'LogicConnectErrorCount' : ['LogicConnectErrorCount', '逻辑连接错误次数'],
@@ -78,11 +78,11 @@ druid.lang = function() {
 		'DbTypeDesc' : ['database type', '数据库类型'],
 		'DriverClassNameDesc' : ['The fully qualifed name of the JDBC driver class', 'jdbc驱动的类名'],
 		'FilterClassNamesDesc' : ['All the fully qualifed name of the filter classes', 'filter的类名'],
-		'TestOnBorrowDesc' : ['	Test or not when borrow a connection', '获得连接后是否检测其可用性'],
-		'TestWhileIdleDesc' : ['Test or not when a connection is idle for a while', '连接空闲时是否检测其可用性'],
-		'TestOnReturnDesc' : ['Test or not when return a connection', '连接放回连接池后是否检测其可用性'],
-		'InitialSizeDesc' : ['The size of datasource connections to create when initial a datasource', '连接池建立时创建的初始化连接的数目'],
-		'MinIdleDesc' : ['The minimum number of connections a pool should hold. ', '连接池中最小的活跃连接数目'],
+		'TestOnBorrowDesc' : ['	Test or not when borrow a connection', '是否在获得连接后检测其可用性'],
+		'TestWhileIdleDesc' : ['Test or not when a connection is idle for a while', '是否在连接空闲一段时间后检测其可用性'],
+		'TestOnReturnDesc' : ['Test or not when return a connection', '是否在连接放回连接池后检测其可用性'],
+		'InitialSizeDesc' : ['The size of datasource connections to create when initial a datasource', '连接池建立时创建的初始化连接数'],
+		'MinIdleDesc' : ['The minimum number of connections a pool should hold. ', '连接池中最小的活跃连接数'],
 		'MaxActiveDesc' : ['The maximum number of connections for a pool', '连接池中最大的活跃连接数'],
 		'QueryTimeoutDesc' : ['', '查询超时时间'],
 		'TransactionQueryTimeoutDesc' : ['', '事务查询超时时间'],
@@ -149,7 +149,7 @@ druid.lang = function() {
 		'MaxTimespan' : ['MaxTimespan', '最大时长'],
 		'MaxTimespanOccurTime' : ['MaxTimespanOccurTime', '最大时长出现时间'],
 		'LastSlowParameters' : ['LastSlowParameters', '最后慢查询参数'],
-		'LastErrorView' : ['LastErrorView', '最后错误'],
+		'LastErrorView' : ['LastErrorView', '最后错误视图'],
 		'LastErrorMessage' : ['LastErrorMessage', '最后错误信息'],
 		'LastErrorClass' : ['LastErrorClass', '最后错误类'],
 		'LastErrorTime' : ['LastErrorTime', '最后错误时间'],
@@ -165,9 +165,9 @@ druid.lang = function() {
 		'ReadBytesLength' : ['ReadBytesLength', '读取字节长度'],//
 		
 		'ExecHisto':['ExecHisto','执行时间分布'],
-		'ExecRsHisto':['ExecRsHisto','执行和rs对象时间分布'],
-		'FetchRowHisto':['FetchRowHisto','查询影响的行数'],
-		'UpdateHisto':['UpdateHisto','更新影响的行数'],
+		'ExecRsHisto':['ExecRsHisto','执行加保持rs对象的时间分布'],
+		'FetchRowHisto':['FetchRowHisto','查询取回行数分布'],
+		'UpdateHisto':['UpdateHisto','更新影响行数分布'],
 		
 		'count1ms':['count of 0-1 ms','0-1ms内的次数'],
 		'count10ms':['count of 1-10 ms','1-10ms内的次数'],
@@ -237,7 +237,7 @@ druid.lang = function() {
 //		'JdbcCommitCount':['JdbcCommitCount', ''],
 //		'JdbcRollbackCount':['JdbcRollbackCount', ''],
 //		'JdbcFetchRowCount':['JdbcFetchRowCount', ''],
-		'JdbcFetchRowPeak':['JdbcFetchRowPeak', 'jdbc查询峰值'],
+		'JdbcFetchRowPeak':['JdbcFetchRowPeak', 'jdbc查询取回行数峰值'],
 //		'JdbcUpdateCount':['JdbcUpdateCount', ''],
 		'JdbcUpdatePeak':['JdbcUpdatePeak', 'jdbc更新峰值']
 //		'JdbcPoolConnectionOpenCount':['JdbcPoolConnectionOpenCount', ''],
