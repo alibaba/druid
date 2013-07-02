@@ -206,7 +206,7 @@ druid.lang = function() {
 		'InsertCount':['InsertCount', 'insert次数'],
 		'UpdateCount':['UpdateCount', 'update次数'],
 		'DeleteCount':['DeleteCount', 'delete次数'],
-		'TruncateCount':['TruncateCount', '截断次数'],
+		'TruncateCount':['TruncateCount', 'truncate次数'],
 		'CreateCount':['CreateCount', 'create次数'],
 		'AlterCount':['AlterCount', 'alter次数'],
 		'DropCount':['DropCount', 'drop次数'],
