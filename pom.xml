@@ -253,12 +253,12 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 				<file>
-					<exists>${java.home}/../lib/jconsole.jar</exists>
+					<exists>${env.JAVA_HOME}/../lib/jconsole.jar</exists>
 				</file>
 			</activation>
 			<properties>
-				<toolsjar>${java.home}/../lib/tools.jar</toolsjar>
-				<jconsolejar>${java.home}/../lib/jconsole.jar</jconsolejar>
+				<toolsjar>${env.JAVA_HOME}/lib/tools.jar</toolsjar>
+				<jconsolejar>${env.JAVA_HOME}/lib/jconsole.jar</jconsolejar>
 			</properties>
 
 			<dependencies>

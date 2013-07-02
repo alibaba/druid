@@ -6,9 +6,11 @@
 		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
+		
 		<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
@@ -20,6 +22,7 @@
 							<thead>
 								<tr>
 									<th>N</th>
+									<!-- 
 									<th><a id="th-SESSIONID" >SESSIONID </a></th>
 									<th width="50"><a id="th-Principal" >Principal</a></th>
 									<th width="100"><a id="th-CreateTime" >CreateTime</a></th>
@@ -35,6 +38,24 @@
 									<th width="80"><a id="th-JdbcRollbackCount" >JdbcRollback</a></th>
 									<th width="80"><a id="th-JdbcFetchRowCount" >JdbcFetchRow</a></th>
 									<th width="80"><a id="th-JdbcUpdateCount" >JdbcUpdate</a></th>
+									 -->
+									<th><a id="th-SESSIONID" class="lang" langKey="SESSIONID">SESSIONID</a></th>
+									<th><a id="th-UserAgent" class="lang" langKey="UserAgent">UserAgent</a></th>
+									<th><a id="th-Principal" class="lang" langKey="Principal">Principal</a></th>
+									<th><a id="th-CreateTime" class="lang" langKey="CreateTime">CreateTime</a></th>
+									<th><a id="th-LastAccessTime" class="lang"  langKey="LastAccessTime">LastAccessTime</a></th>
+									<th><a id="th-RemoteAddress" class="lang" langKey="RemoteAddress">RemoteAddress</a></th>
+									<th><a id="th-RequestCount" class="lang" langKey="RequestCount">RequestCount</a></th>
+									<th><a id="th-RequestTimeMillisTotal" class="lang" langKey="RequestTimeMillisTotal">RequestTimeMillisTotal</a></th>
+									<th><a id="th-RequestInterval" class="lang" langKey="RequestInterval">RequestInterval</a></th>
+									<th><a id="th-RunningCount" class="lang" langKey="RunningCount">RunningCount</a></th>
+									<th><a id="th-ConcurrentMax" class="lang" langKey="ConcurrentMax">ConcurrentMax</a></th>
+									<th><a id="th-JdbcExecuteCount" class="lang" langKey="JdbcExecuteCount">JdbcExecuteCount</a></th>
+									<th><a id="th-JdbcExecuteTimeMillis" class="lang" langKey="JdbcExecuteTimeMillis">JdbcExecuteTimeMillis</a></th>
+									<th><a id="th-JdbcCommitCount" class="lang" langKey="JdbcCommitCount">JdbcCommitCount</a></th>
+									<th><a id="th-JdbcRollbackCount" class="lang" langKey="JdbcRollbackCount">JdbcRollbackCount</a></th>
+									<th><a id="th-JdbcFetchRowCount" class="lang" langKey="JdbcFetchRowCount">JdbcFetchRowCount</a></th>
+									<th><a id="th-JdbcUpdateCount" class="lang" langKey="JdbcUpdateCount">JdbcUpdateCount</a></th>									
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -52,7 +73,7 @@
     				})
     				druid.common.buildHead(6);
     				druid.common.ajaxuri = 'websession.json?';
-    				druid.common.handleAjaxResult = druid.websession.handleAjaxResult;
+    				druid.common.handleCallback = druid.websession.handleAjaxResult;
     				druid.common.ajaxRequestForBasicInfo();
     				setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
     			},
