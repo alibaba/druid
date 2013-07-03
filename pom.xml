@@ -253,7 +253,7 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 				<file>
-					<exists>${env.JAVA_HOME}/../lib/jconsole.jar</exists>
+					<exists>${env.JAVA_HOME}/lib/jconsole.jar</exists>
 				</file>
 			</activation>
 			<properties>
