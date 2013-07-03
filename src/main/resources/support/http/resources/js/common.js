@@ -16,27 +16,6 @@ druid.common = function () {
 		},
 		
 		buildHead : function(index) {
-//			var html = '<div class="navbar navbar-fixed-top">'+
-//						'	<div class="navbar-inner">'+
-//						'		<div class="container">'+
-//						'			<a href="https://github.com/alibaba/druid/wiki" target="_blank" class="brand">Druid Monitor</a>'+
-//						'			<div class="nav-collapse">'+
-//				      	'				<ul class="nav">'+
-//				      	'					<li><a href="index.html">Index</a></li>'+
-//				      	'					<li><a href="datasource.html">DataSource</a></li>'+
-//				      	'					<li><a href="sql.html">SQL</a></li>'+
-//				      	'					<li><a href="wall.html">Wall</a></li>'+
-//				      	'					<li><a href="webapp.html">WebApp</a></li>'+
-//				      	'					<li><a href="weburi.html">WebURI</a></li>'+
-//				      	'					<li><a href="websession.html">Web Session</a></li>'+
-//				      	'					<li><a href="spring.html">Spring</a></li>'+
-//				      	'					<li><a href="api.html">JSON API</a></li>'+
-//				      	'				</ul>'+
-//				      	'				<a class="btn btn-primary" href="javascript:druid.common.ajaxRequestForReset();">Reset All</a>'+
-//				      	'			</div>'+
-//				      	'		</div>'+
-//				      	'	</div>'+
-//						'</div>'; 
 			$.get('header.html',function(html) {
 				$(document.body).prepend(html);
 				druid.lang.trigger();

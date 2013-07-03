@@ -122,7 +122,6 @@ druid.lang = function() {
 		/**spring-detail*/
 		'Class' : ['Class', 'Class'],
 		'Method' : ['Method', 'Method'],
-//		'ExecuteCount' : ['ExecuteCount', ''],
 		'ExecuteErrorCount' : ['ExecuteErrorCount', '执行出错数'],
 		'ExecuteTimeMillis' : ['ExecuteTimeMillis', '执行时间'],
 		'RunningCount' : ['RunningCount', '执行中'],
@@ -155,41 +154,39 @@ druid.lang = function() {
 		'LastErrorTime' : ['LastErrorTime', '最后错误时间'],
 		'LastErrorStackTrace' : ['LastErrorStackTrace', '最后错误堆栈'],
 		'OtherView' : ['OtherView', '其他信息'],
-		'BatchSizeMax' : ['BatchSizeMax', '批处理最大长度'],////
-		'BatchSizeTotal' : ['BatchSizeTotal', '批处理总共长度'],//
-		// 'BlobOpenCount' : ['BlobOpenCount', ''],
-		// 'ClobOpenCount' : ['ClobOpenCount', ''],
+		'BatchSizeMax' : ['BatchSizeMax', '批处理最大值'],////
+		'BatchSizeTotal' : ['BatchSizeTotal', '批处理总数'],//
 		'ReaderOpenCount' : ['ReaderOpenCount', 'reader打开次数'],//
 		'InputStreamOpenCount' : ['InputStreamOpenCount', 'inputstream打开次数'],
 		'ReadStringLength' : ['ReadStringLength', '读取字符串长度'],//
 		'ReadBytesLength' : ['ReadBytesLength', '读取字节长度'],//
 		
 		'ExecHisto':['ExecHisto','执行时间分布'],
-		'ExecRsHisto':['ExecRsHisto','执行加保持rs对象的时间分布'],
-		'FetchRowHisto':['FetchRowHisto','查询取回行数分布'],
-		'UpdateHisto':['UpdateHisto','更新影响行数分布'],
+		'ExecRsHisto':['ExecRsHisto','执行加保持rs对象时间分布'],
+		'FetchRowHisto':['FetchRowHisto','读取行数分布'],
+		'UpdateHisto':['UpdateHisto','更新行数分布'],
 		
-		'count1ms':['count of 0-1 ms','0-1ms内的次数'],
-		'count10ms':['count of 1-10 ms','1-10ms内的次数'],
-		'count100ms':['count of 10-100 ms','10-100ms内的次数'],
-		'count1s':['count of 100ms-1s','100-1000ms内的次数'],
-		'count10s':['count of 1-10 s','1-10s内的次数'],
-		'count100s':['count of 10-100 s','10-100s内的次数'],
-		'count1000s':['count of 100-1000 s','100-1000s内的次数'],
-		'countBg1000s':['count of >1000 s','大于1000s内的次数'],
+		'count1ms':['count of 0-1 ms','0-1毫秒次数'],
+		'count10ms':['count of 1-10 ms','1-10毫秒次数'],
+		'count100ms':['count of 10-100 ms','10-100毫秒次数'],
+		'count1s':['count of 100ms-1s','100-1000毫秒次数'],
+		'count10s':['count of 1-10 s','1-10秒次数'],
+		'count100s':['count of 10-100 s','10-100秒次数'],
+		'count1000s':['count of 100-1000 s','100-1000秒次数'],
+		'countBg1000s':['count of >1000 s','大于1000秒次数'],
 		
-		'fetch0':['count of 0 FetchRow','查询行数为0'],
-		'fetch9':['count of 1-9 FetchRow','查询行数1-9之间'],
-		'fetch99':['count of 10-99 FetchRow','查询行数10-99之间'],
-		'fetch999':['count of 100-999 FetchRow','查询行数100-999之间'],
-		'fetch9999':['count of 1000-9999 FetchRow','查询行数1000-9999之间'],
-		'fetch99999':['count of >9999 FetchRow','查询行数大于9999'],
+		'fetch0':['count of 0 FetchRow','读取行数为0'],
+		'fetch9':['count of 1-9 FetchRow','读取行数1-9'],
+		'fetch99':['count of 10-99 FetchRow','读取行数10-99'],
+		'fetch999':['count of 100-999 FetchRow','读取行数100-999'],
+		'fetch9999':['count of 1000-9999 FetchRow','读取行数1000-9999'],
+		'fetch99999':['count of >9999 FetchRow','读取行数大于9999'],
 		
 		'update0':['count of 0 UpdateCount','更新行数为0'],
-		'update9':['count of 1-9 UpdateCount','更新行数1-9之间'],
-		'update99':['count of 10-99 UpdateCount','更新行数10-99之间'],
-		'update999':['count of 100-999 UpdateCount','更新行数100-999之间'],
-		'update9999':['count of 1000-9999 UpdateCount','更新行数1000-9999之间'],
+		'update9':['count of 1-9 UpdateCount','更新行数1-9'],
+		'update99':['count of 10-99 UpdateCount','更新行数10-99'],
+		'update999':['count of 100-999 UpdateCount','更新行数100-999'],
+		'update9999':['count of 1000-9999 UpdateCount','更新行数1000-9999'],
 		'update99999':['count of >9999 UpdateCount','更新行数大于9999'],
 		/**wall*/
 		'CheckCount':['CheckCount', '检查次数'],
@@ -225,25 +222,10 @@ druid.lang = function() {
 		'RequestTimeMillisTotal':['RequestTimeMillisTotal', '总共请求时间'],
 		'RequestInterval':['RequestInterval', '请求间隔'],
 		/**weburi-detail*/
-//		'RequestCount':['RequestCount', ''],
 		'RequestTimeMillis':['RequestTimeMillis', '请求时间'],
-//		'LastAccessTime':['LastAccessTime', ''],
-//		'RunningCount':['RunningCount', ''],
-//		'ConcurrentMax':['ConcurrentMax', ''],
-//		'JdbcExecuteCount':['JdbcExecuteCount', ''],
-//		'JdbcExecuteErrorCount':['JdbcExecuteErrorCount', ''],
 		'JdbcExecutePeak':['JdbcExecutePeak', 'jdbc执行峰值'],
-//		'JdbcExecuteTimeMillis':['JdbcExecuteTimeMillis', ''],
-//		'JdbcCommitCount':['JdbcCommitCount', ''],
-//		'JdbcRollbackCount':['JdbcRollbackCount', ''],
-//		'JdbcFetchRowCount':['JdbcFetchRowCount', ''],
 		'JdbcFetchRowPeak':['JdbcFetchRowPeak', 'jdbc查询取回行数峰值'],
-//		'JdbcUpdateCount':['JdbcUpdateCount', ''],
 		'JdbcUpdatePeak':['JdbcUpdatePeak', 'jdbc更新峰值']
-//		'JdbcPoolConnectionOpenCount':['JdbcPoolConnectionOpenCount', ''],
-//		'JdbcPoolConnectionCloseCount':['JdbcPoolConnectionCloseCount', ''],
-//		'JdbcResultSetOpenCount':['JdbcResultSetOpenCount', ''],
-//		'JdbcResultSetCloseCount':['JdbcResultSetCloseCount', ''],
 		
 	};
 	
@@ -304,10 +286,7 @@ druid.lang = function() {
 		}
 	}
 	
-	
-	
 	return {
-		
 		langNow : LANG_CN,
 		EVENT_LOAD_FINISHED : 'loadFinished',
 		init : function(langNow) {
