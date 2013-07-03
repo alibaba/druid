@@ -165,6 +165,9 @@ druid.lang = function() {
 		'ExecRsHisto':['ExecRsHisto','执行+RS时分布'],
 		'FetchRowHisto':['FetchRowHisto','读取行数分布'],
 		'UpdateHisto':['UpdateHisto','更新行数分布'],
+		'InTransactionCount' : ['InTransactionCount','事务中次数'],
+		'MaxTimespanDesc' : ['Execute Time Millis Max','最长的执行时间'],
+		'InTransactionCountDesc' : ['Execute In Transaction Count','在事务中运行的次数'],
 		
 		'count1ms':['count of 0-1 ms','0-1毫秒次数'],
 		'count10ms':['count of 1-10 ms','1-10毫秒次数'],
