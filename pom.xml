@@ -4,7 +4,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.22</version>
+	<version>0.2.23-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -16,8 +16,8 @@
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 
-		<gpg.skip>false</gpg.skip>
-	        <javadoc.skip>false</javadoc.skip>
+		<gpg.skip>true</gpg.skip>
+	        <javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
