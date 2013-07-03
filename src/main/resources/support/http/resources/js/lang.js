@@ -129,10 +129,10 @@ druid.lang = function() {
 		'JdbcExecuteCount' : ['JdbcExecuteCount', 'Jdbc执行数'],
 		'JdbcExecuteErrorCount' : ['JdbcExecuteErrorCount', 'Jdbc出错数'],
 		'JdbcExecuteTimeMillis' : ['JdbcExecuteTimeMillis', 'Jdbc时间'],
-		'JdbcCommitCount' : ['JdbcCommitCount', 'Jdbc提交数'],
-		'JdbcRollbackCount' : ['JdbcRollbackCount', 'Jdbc回滚数'],
-		'JdbcFetchRowCount' : ['JdbcFetchRowCount', 'Jdbc返回行数'],
-		'JdbcUpdateCount' : ['JdbcUpdateCount', 'Jdbc更新行数'],
+		'JdbcCommitCount' : ['JdbcCommitCount', '事务提交数'],
+		'JdbcRollbackCount' : ['JdbcRollbackCount', '事务回滚数'],
+		'JdbcFetchRowCount' : ['JdbcFetchRowCount', '读取行数'],
+		'JdbcUpdateCount' : ['JdbcUpdateCount', '更新行数'],
 		'JdbcPoolConnectionOpenCount' : ['JdbcPoolConnectionOpenCount', '连接池获取连接次数'],
 		'JdbcPoolConnectionCloseCount' : ['JdbcPoolConnectionCloseCount', '连接池关闭连接次数'],
 		'JdbcResultSetOpenCount' : ['JdbcResultSetOpenCount', 'ResultSet打开次数'],
@@ -162,7 +162,7 @@ druid.lang = function() {
 		'ReadBytesLength' : ['ReadBytesLength', '读取字节长度'],//
 		
 		'ExecHisto':['ExecHisto','执行时间分布'],
-		'ExecRsHisto':['ExecRsHisto','执行+结果集时间分布'],
+		'ExecRsHisto':['ExecRsHisto','执行+RS时分布'],
 		'FetchRowHisto':['FetchRowHisto','读取行数分布'],
 		'UpdateHisto':['UpdateHisto','更新行数分布'],
 		
