@@ -4,6 +4,7 @@ druid.common = function () {
 	var statViewOrderBy = '';
 	var statViewOrderBy_old = '';
 	var statViewOrderType = 'asc';
+  var isOrderRequest = false;
 
 	// only one page for now
 	var sqlViewPage = 1;
@@ -92,6 +93,7 @@ druid.common = function () {
 				}
 				divObj.innerHTML = html;
 			}
+      isOrderRequest = true;
 			
 			this.ajaxRequestForBasicInfo();
 			return false;
@@ -120,7 +122,9 @@ druid.common = function () {
 		handleCallback:null,
 		handleAjaxResult : function(data) {
 			druid.common.handleCallback(data);
-			druid.lang.trigger();
+      if (!isOrderRequest) {
+        druid.lang.trigger();
+      }
 		},//ajax 处理函数
 		ajaxRequestForBasicInfo : function() {
 			$.ajax({
