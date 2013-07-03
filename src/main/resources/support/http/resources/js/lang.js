@@ -47,8 +47,8 @@ druid.lang = function() {
 		'DefaultTransactionIsolation' : ['DefaultTransactionIsolation', '默认事务隔离'],//
 		'NotEmptyWaitCount' : ['NotEmptyWaitCount', '等待次数'],//
 		'NotEmptyWaitMillis' : ['NotEmptyWaitMillis', '等待最大时长'],//
-		'WaitThreadCount' : ['WaitThreadCount', '等待线程个数'],
-		'StartTransactionCount' : ['StartTransactionCount', '事务开始个数'],//
+		'WaitThreadCount' : ['WaitThreadCount', '等待线程数量'],
+		'StartTransactionCount' : ['StartTransactionCount', '事务启动数'],//
 		'TransactionHistogram' : ['TransactionHistogram', '事务时间分布'],//
 		'PoolingCount' : ['PoolingCount', '池中连接数'],//
 		'PoolingPeak' : ['PoolingPeak', '池中连接数峰值'],//
@@ -60,12 +60,12 @@ druid.lang = function() {
 		'LogicCloseCount' : ['LogicCloseCount', '逻辑连接关闭次数'],
 		'LogicConnectErrorCount' : ['LogicConnectErrorCount', '逻辑连接错误次数'],
 		'PhysicalConnectCount' : ['PhysicalConnectCount', '物理连接打开次数'],
-		'PhysicalCloseCount' : ['PhysicalCloseCount', '物理关闭个数'],
+		'PhysicalCloseCount' : ['PhysicalCloseCount', '物理关闭数量'],
 		'PhysicalConnectErrorCount' : ['PhysicalConnectErrorCount', '物理连接错误次数'],
-		'ExecuteCount' : ['ExecuteCount', '执行个数'],
-		'ErrorCount' : ['ErrorCount', '出错个数'],
-		'CommitCount' : ['CommitCount', '提交个数'],
-		'RollbackCount' : ['RollbackCount', '回滚个数'],
+		'ExecuteCount' : ['ExecuteCount', '执行数'],
+		'ErrorCount' : ['ErrorCount', '错误数'],
+		'CommitCount' : ['CommitCount', '提交数'],
+		'RollbackCount' : ['RollbackCount', '回滚数'],
 		'PSCacheAccessCount' : ['PSCacheAccessCount', 'PSCache访问次数'],
 		'PSCacheHitCount' : ['PSCacheHitCount', 'PSCache命中次数'],
 		'PSCacheMissCount' : ['PSCacheMissCount', 'PSCache丢失次数'],//
@@ -117,8 +117,8 @@ druid.lang = function() {
 		'PSCacheHitCountDesc' : ['PerpareStatement hit count', 'PSCache命中次数'],
 		'PSCacheMissCountDesc' : ['PerpareStatement miss count', 'PSCache丢失次数'],//
 		'ConnectionHoldTimeHistogramDesc' : ['The histogram values of connection hold time, [0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]', '连接持有时间分布，分布区间为[0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]'],
-		'ClobOpenCountDesc' : ['', ''],
-		'BlobOpenCountDesc' : ['', ''],
+		'ClobOpenCountDesc' : ['', 'Clob打开数'],
+		'BlobOpenCountDesc' : ['', 'Blob打开数'],
 		/**spring-detail*/
 		'Class' : ['Class', 'Class'],
 		'Method' : ['Method', 'Method'],
@@ -126,11 +126,11 @@ druid.lang = function() {
 		'ExecuteTimeMillis' : ['ExecuteTimeMillis', '执行时间'],
 		'RunningCount' : ['RunningCount', '执行中'],
 		'ConcurrentMax' : ['ConcurrentMax', '最大并发'],
-		'JdbcExecuteCount' : ['JdbcExecuteCount', 'Jdbc执行次数'],
-		'JdbcExecuteErrorCount' : ['JdbcExecuteErrorCount', 'Jdbc执行出错次数'],
-		'JdbcExecuteTimeMillis' : ['JdbcExecuteTimeMillis', 'Jdbc执行时间'],
-		'JdbcCommitCount' : ['JdbcCommitCount', 'Jdbc提交次数'],
-		'JdbcRollbackCount' : ['JdbcRollbackCount', 'Jdbc回滚次数'],
+		'JdbcExecuteCount' : ['JdbcExecuteCount', 'Jdbc执行数'],
+		'JdbcExecuteErrorCount' : ['JdbcExecuteErrorCount', 'Jdbc出错数'],
+		'JdbcExecuteTimeMillis' : ['JdbcExecuteTimeMillis', 'Jdbc时间'],
+		'JdbcCommitCount' : ['JdbcCommitCount', 'Jdbc提交数'],
+		'JdbcRollbackCount' : ['JdbcRollbackCount', 'Jdbc回滚数'],
 		'JdbcFetchRowCount' : ['JdbcFetchRowCount', 'Jdbc返回行数'],
 		'JdbcUpdateCount' : ['JdbcUpdateCount', 'Jdbc更新行数'],
 		'JdbcPoolConnectionOpenCount' : ['JdbcPoolConnectionOpenCount', '连接池获取连接次数'],
@@ -145,8 +145,8 @@ druid.lang = function() {
 		'Relationships' : ['Relationships', '关联'],
 		'OrderByColumns' : ['OrderByColumns', '排序字段'],
 		'LastSlowView' : ['LastSlowView', '最后慢查询'],
-		'MaxTimespan' : ['MaxTimespan', '最大时长'],
-		'MaxTimespanOccurTime' : ['MaxTimespanOccurTime', '最大时长出现时间'],
+		'MaxTimespan' : ['MaxTimespan', '最慢'],
+		'MaxTimespanOccurTime' : ['MaxTimespanOccurTime', '最慢发生时间'],
 		'LastSlowParameters' : ['LastSlowParameters', '最后慢查询参数'],
 		'LastErrorView' : ['LastErrorView', '最后错误视图'],
 		'LastErrorMessage' : ['LastErrorMessage', '最后错误信息'],
@@ -162,7 +162,7 @@ druid.lang = function() {
 		'ReadBytesLength' : ['ReadBytesLength', '读取字节长度'],//
 		
 		'ExecHisto':['ExecHisto','执行时间分布'],
-		'ExecRsHisto':['ExecRsHisto','执行加保持rs对象时间分布'],
+		'ExecRsHisto':['ExecRsHisto','执行+结果集时间分布'],
 		'FetchRowHisto':['FetchRowHisto','读取行数分布'],
 		'UpdateHisto':['UpdateHisto','更新行数分布'],
 		
