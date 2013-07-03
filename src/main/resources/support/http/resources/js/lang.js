@@ -291,7 +291,7 @@ druid.lang = function() {
 			var text = lang[key][druid.lang.langNow];
 			$obj.text(lang[key][druid.lang.langNow]);
 		} else {
-			log('没有找到key为[' + key + ']的说明');
+			log('key [' + key + '] not found');
 		}
 	}
 	function setTitle($obj) {
@@ -300,7 +300,7 @@ druid.lang = function() {
 			var title = lang[key][druid.lang.langNow];
 			$obj.attr('title', title);
 		} else {
-			log('没有找到key为[' + key + ']的说明');
+			log('key [' + key + '] not found');
 		}
 	}
 	
