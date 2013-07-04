@@ -34,3 +34,24 @@ a {
 .striped {
 	background-color: #fff;
 }
+
+#dataTable1 th > a {
+    color: #555555;
+}
+#dataTable1 th {
+    background-color: #E5E5E5;
+    border-bottom-color: #FFC40D;
+    color: #555555;
+    cursor: pointer;
+}
+
+
+#dataTable2 th > a {
+    color: #555555;
+}
+#dataTable2 th {
+    background-color: #E5E5E5;
+    border-bottom-color: #FFC40D;
+    color: #555555;
+    cursor: pointer;
+}
