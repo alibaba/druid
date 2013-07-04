@@ -86,6 +86,7 @@ public class MockStatement extends StatementBase implements MockStatementBase, S
         }
 
         if (mockConnection != null) {
+            mockConnection.setLastSql(sql);
             mockConnection.handleSleep();
         }
 
