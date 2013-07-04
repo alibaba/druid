@@ -1317,10 +1317,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 empty.signal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {
+                    String errorMessage = "loopWaitCount " + i + ", wait millis " + (nanos - estimate) / (1000 * 1000)
+                                          + ", active " + activeCount;
+
                     if (this.createError == null) {
-                        throw new GetConnectionTimeoutException(createError);
+                        throw new GetConnectionTimeoutException(errorMessage, createError);
                     } else {
-                        throw new GetConnectionTimeoutException();
+                        throw new GetConnectionTimeoutException(errorMessage);
                     }
                 }
 
@@ -1354,11 +1357,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
+                    String errorMessage = "loopWaitCount " + i + ", wait millis " + (nanos - estimate) / (1000 * 1000)
+                                          + ", active " + activeCount;
                     if (createError != null) {
-                        throw new GetConnectionTimeoutException(createError);
+                        throw new GetConnectionTimeoutException(errorMessage, createError);
                     } else {
-                        throw new GetConnectionTimeoutException("loopWaitCount " + i + ", wait millis "
-                                                                + (nanos - estimate) / (1000 * 1000));
+                        throw new GetConnectionTimeoutException(errorMessage);
                     }
                 }
             }
