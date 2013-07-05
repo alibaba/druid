@@ -31,7 +31,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -598,20 +597,24 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return result;
     }
 
-    public void setConnectionInitSqls(Collection<Object> connectionInitSqls) {
+    public void setConnectionInitSqls(Collection<? extends Object> connectionInitSqls) {
         if ((connectionInitSqls != null) && (connectionInitSqls.size() > 0)) {
             ArrayList<String> newVal = null;
-            for (Iterator<Object> iterator = connectionInitSqls.iterator(); iterator.hasNext();) {
-                Object o = iterator.next();
-                if (o != null) {
-                    String s = o.toString();
-                    if (s.trim().length() > 0) {
-                        if (newVal == null) {
-                            newVal = new ArrayList<String>();
-                        }
-                        newVal.add(s);
-                    }
+            for (Object o : connectionInitSqls) {
+                if (o == null) {
+                    continue;
                 }
+
+                String s = o.toString();
+                s = s.trim();
+                if (s.length() == 0) {
+                    continue;
+                }
+
+                if (newVal == null) {
+                    newVal = new ArrayList<String>();
+                }
+                newVal.add(s);
             }
             this.connectionInitSqls = newVal;
         } else {
@@ -1455,6 +1458,25 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         if (getDefaultCatalog() != null && getDefaultCatalog().length() != 0) {
             conn.setCatalog(getDefaultCatalog());
+        }
+
+        Collection<String> initSqls = getConnectionInitSqls();
+        if (initSqls.size() == 0) {
+            return;
+        }
+
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            for (String sql : initSqls) {
+                if (sql == null) {
+                    continue;
+                }
+                
+                stmt.execute(sql);
+            }
+        } finally {
+            JdbcUtils.close(stmt);
         }
     }
 

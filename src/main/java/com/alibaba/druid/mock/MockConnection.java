@@ -55,6 +55,8 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     private SQLException    error;
 
+    private String          lastSql;
+
     public MockConnection(){
         this(null, null, null);
     }
@@ -67,6 +69,14 @@ public class MockConnection extends ConnectionBase implements Connection {
         if (driver != null) {
             this.id = driver.generateConnectionId();
         }
+    }
+
+    public String getLastSql() {
+        return lastSql;
+    }
+
+    public void setLastSql(String lastSql) {
+        this.lastSql = lastSql;
     }
 
     public SQLException getError() {
@@ -268,7 +278,7 @@ public class MockConnection extends ConnectionBase implements Connection {
         if (error != null) {
             throw error;
         }
-        
+
         if (closed) {
             throw new MockConnectionClosedException();
         }
@@ -469,7 +479,7 @@ public class MockConnection extends ConnectionBase implements Connection {
     public int getNetworkTimeout() throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
-    
+
     @Override
     public void setReadOnly(boolean readOnly) throws SQLException {
         checkState();
