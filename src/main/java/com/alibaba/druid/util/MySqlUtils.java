@@ -20,11 +20,23 @@ import java.sql.SQLException;
 
 import javax.sql.XAConnection;
 
+import com.mysql.jdbc.Util;
 import com.mysql.jdbc.jdbc2.optional.MysqlXAConnection;
+import com.mysql.jdbc.jdbc2.optional.SuspendableXAConnection;
 
 public class MySqlUtils {
 
     public static XAConnection createXAConnection(Connection physicalConn) throws SQLException {
-        return new MysqlXAConnection((com.mysql.jdbc.ConnectionImpl) physicalConn, false);
+    	com.mysql.jdbc.ConnectionImpl mysqlConn = (com.mysql.jdbc.ConnectionImpl)physicalConn;
+    	if(mysqlConn.getPinGlobalTxToPhysicalConnection()) {
+
+    		if (!Util.isJdbc4()) {
+    			return new SuspendableXAConnection(mysqlConn);
+    		}
+
+    		return new com.mysql.jdbc.jdbc2.optional.JDBC4SuspendableXAConnection(mysqlConn);
+    	
+    	}
+        return new MysqlXAConnection(mysqlConn, false);
     }
 }
