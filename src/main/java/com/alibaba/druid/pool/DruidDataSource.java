@@ -497,6 +497,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initStackTrace = IOUtils.toString(Thread.currentThread().getStackTrace());
 
             this.id = DruidDriver.createDataSourceId();
+            if (this.id > 1) {
+                long delta = (this.id - 1) * 100000;
+                this.connectionIdSeed.addAndGet(delta);
+                this.statementIdSeed.addAndGet(delta);
+                this.resultSetIdSeed.addAndGet(delta);
+                this.transactionIdSeed.addAndGet(delta);
+            }
 
             if (this.dbType == null || this.dbType.length() == 0) {
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
@@ -1835,11 +1842,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         try {
             final int checkCount = poolingCount - minIdle;
+            final long currentTimeMillis = System.currentTimeMillis();
             for (int i = 0; i < checkCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
 
                 if (checkTime) {
-                    long idleMillis = System.currentTimeMillis() - connection.getLastActiveTimeMillis();
+                    long idleMillis = currentTimeMillis - connection.getLastActiveTimeMillis();
                     if (idleMillis >= minEvictableIdleTimeMillis) {
                         evictList.add(connection);
                     } else {
@@ -1864,6 +1872,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             Connection connection = item.getConnection();
             JdbcUtils.close(connection);
             destroyCount.incrementAndGet();
+            
+            if (LOG.isDebugEnabled()) {
+                long idleMillis = System.currentTimeMillis() - item.getLastActiveTimeMillis();
+                LOG.debug("connection destroyed. idleMillis : " + idleMillis);
+            }
         }
     }
 

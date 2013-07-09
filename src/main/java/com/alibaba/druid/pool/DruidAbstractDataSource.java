@@ -1310,10 +1310,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.clearFiltersEnable = clearFiltersEnable;
     }
 
-    private final AtomicLong connectionIdSeed  = new AtomicLong(10000);
-    private final AtomicLong statementIdSeed   = new AtomicLong(20000);
-    private final AtomicLong resultSetIdSeed   = new AtomicLong(50000);
-    private final AtomicLong transactionIdSeed = new AtomicLong(50000);
+    protected final AtomicLong connectionIdSeed  = new AtomicLong(10000);
+    protected final AtomicLong statementIdSeed   = new AtomicLong(20000);
+    protected final AtomicLong resultSetIdSeed   = new AtomicLong(50000);
+    protected final AtomicLong transactionIdSeed = new AtomicLong(60000);
 
     public long createConnectionId() {
         return connectionIdSeed.incrementAndGet();
