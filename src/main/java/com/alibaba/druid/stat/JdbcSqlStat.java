@@ -385,6 +385,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         val.setDbType(dbType);
         val.setSql(sql);
+        val.setId(id);
         val.setExecuteLastStartTime(executeLastStartTime);
         executeLastStartTime = 0;
 
