@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 
 public class SQLCreateTableParser extends SQLDDLParser {
 
@@ -73,6 +74,9 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 } else if (lexer.token() == Token.PRIMARY) {
                     SQLPrimaryKey primaryKey = exprParser.parsePrimaryKey();
                     createTable.getTableElementList().add(primaryKey);
+                } else if (lexer.token == Token.UNIQUE) {
+                    SQLUnique unique = exprParser.parseUnique();
+                    createTable.getTableElementList().add(unique);
                 } else {
                     throw new ParserException("TODO " + lexer.token());
                 }
