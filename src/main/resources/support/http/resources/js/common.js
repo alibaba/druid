@@ -21,7 +21,7 @@ druid.common = function () {
 				$(document.body).prepend(html);
 				druid.lang.trigger();
 				$(".navbar .nav li").eq(index).addClass("active");
-			});
+			},"html");
 						
 		},
 		
