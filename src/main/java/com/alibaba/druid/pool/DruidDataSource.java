@@ -54,6 +54,7 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.vendor.DB2ExceptionSorter;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
@@ -853,9 +854,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private void initExceptionSorter() {
         String realDriverClassName = driver.getClass().getName();
-        if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
+        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER)) {
             this.exceptionSorter = new MySqlExceptionSorter();
-        } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
+        } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)) {
             this.exceptionSorter = new OracleExceptionSorter();
         } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
             this.exceptionSorter = new InformixExceptionSorter();
@@ -865,6 +866,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
             this.exceptionSorter = new MockExceptionSorter();
+        } else if (realDriverClassName.equals(JdbcConstants.DB2_DRIVER)) {
+            this.exceptionSorter = new DB2ExceptionSorter();
         }
     }
 
