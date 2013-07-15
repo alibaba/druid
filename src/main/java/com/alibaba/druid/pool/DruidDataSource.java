@@ -1872,11 +1872,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             Connection connection = item.getConnection();
             JdbcUtils.close(connection);
             destroyCount.incrementAndGet();
-            
-            if (LOG.isDebugEnabled()) {
-                long idleMillis = System.currentTimeMillis() - item.getLastActiveTimeMillis();
-                LOG.debug("connection destroyed. idleMillis : " + idleMillis);
-            }
         }
     }
 
