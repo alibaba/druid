@@ -375,7 +375,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         inputStreamOpenCountUpdater.set(this, 0);
         readerOpenCountUpdater.set(this, 0);
     }
-    
+
     public JdbcSqlStatValue getValueAndReset() {
         return getValue(true);
     }
@@ -387,7 +387,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         val.setSql(sql);
         val.setId(id);
         val.setExecuteLastStartTime(executeLastStartTime);
-        executeLastStartTime = 0;
+        if (reset) {
+            executeLastStartTime = 0;
+        }
 
         val.setExecuteBatchSizeTotal(get(this, executeBatchSizeTotalUpdater, reset));
         val.setExecuteBatchSizeMax(get(this, executeBatchSizeMaxUpdater, reset));
@@ -396,7 +398,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         val.setExecuteSpanNanoTotal(get(this, executeSpanNanoTotalUpdater, reset));
         val.setExecuteSpanNanoMax(get(this, executeSpanNanoMaxUpdater, reset));
         val.setExecuteNanoSpanMaxOccurTime(executeNanoSpanMaxOccurTime);
-        executeNanoSpanMaxOccurTime = 0;
+        if (reset) {
+            executeNanoSpanMaxOccurTime = 0;
+        }
 
         val.setRunningCount(this.runningCount);
 
@@ -405,10 +409,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         val.setExecuteErrorCount(get(this, executeErrorCountUpdater, reset));
 
         val.setExecuteErrorLast(executeErrorLast);
-        executeErrorLast = null;
+        if (reset) {
+            executeErrorLast = null;
+        }
 
         val.setExecuteErrorLastTime(executeErrorLastTime);
-        executeErrorLastTime = 0;
+        if (reset) {
+            executeErrorLastTime = 0;
+        }
 
         val.setUpdateCount(get(this, updateCountUpdater, reset));
         val.setUpdateCountMax(get(this, updateCountMaxUpdater, reset));
@@ -425,7 +433,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         val.histogram_1000000_more = get(this, histogram_1000000_more_Updater, reset);
 
         val.setLastSlowParameters(lastSlowParameters);
-        lastSlowParameters = null;
+        if (reset) {
+            lastSlowParameters = null;
+        }
 
         val.setInTransactionCount(get(this, inTransactionCountUpdater, reset));
         val.setResultSetHoldTimeNano(get(this, resultSetHoldTimeNanoUpdater, reset));
