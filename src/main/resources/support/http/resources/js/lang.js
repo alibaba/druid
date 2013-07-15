@@ -203,6 +203,7 @@ druid.lang = function() {
 		'TableName':['TableName', '表名'],
 		
 		'SelectCount':['SelectCount', 'Select数'],
+		'SelectIntoCount':['SelectIntoCount', 'SelectInto数'],
 		'InsertCount':['InsertCount', 'Insert数'],
 		'UpdateCount':['UpdateCount', 'Update数'],
 		'DeleteCount':['DeleteCount', 'Delete数'],
