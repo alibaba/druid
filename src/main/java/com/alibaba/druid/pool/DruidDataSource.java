@@ -866,7 +866,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
             this.exceptionSorter = new MockExceptionSorter();
-        } else if (realDriverClassName.equals(JdbcConstants.DB2_DRIVER)) {
+        } else if (realDriverClassName.contains("DB2")) {
             this.exceptionSorter = new DB2ExceptionSorter();
         }
     }
