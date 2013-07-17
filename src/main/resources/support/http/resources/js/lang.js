@@ -72,7 +72,10 @@ druid.lang = function() {
 		'ConnectionHoldTimeHistogram' : ['ConnectionHoldTimeHistogram', '连接持有时间分布'],
 		'ClobOpenCount' : ['ClobOpenCount', 'Clob打开次数'],
 		'BlobOpenCount' : ['BlobOpenCount', 'Blob打开次数'],
-		
+		'ActiveConnectionStackTrace' : ['ActiveConnection StackTrace', '活跃连接堆栈查看'],
+		'PollingConnectionInfo' : ['PollingConnection Info', '连接池中连接信息'],
+		'SQLList' : ['SQL List', 'sql列表'],
+				
 		'UserNameDesc' : ['Specify the username used when creating a new connection.', '指定建立连接是使用的用户名'],
 		'URLDesc' : ['The JDBC driver connection URL', 'jdbc连接字符串'],
 		'DbTypeDesc' : ['database type', '数据库类型'],
