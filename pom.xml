@@ -4,7 +4,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.16-SNAPSHOT</version>
+	<version>0.2.23-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -17,6 +17,8 @@
 		<junit.version>4.11</junit.version>
 
 		<gpg.skip>true</gpg.skip>
+	        <javadoc.skip>true</javadoc.skip>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
 	</properties>
@@ -86,8 +88,8 @@
 				<version>3.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
 
@@ -131,7 +133,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<skip>true</skip>
+					<skip>${javadoc.skip}</skip>
 					<show>public</show>
 					<charset>UTF-8</charset>
 					<encoding>UTF-8</encoding>
@@ -251,12 +253,12 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 				<file>
-					<exists>${java.home}/../lib/jconsole.jar</exists>
+					<exists>${env.JAVA_HOME}/lib/jconsole.jar</exists>
 				</file>
 			</activation>
 			<properties>
-				<toolsjar>${java.home}/../lib/tools.jar</toolsjar>
-				<jconsolejar>${java.home}/../lib/jconsole.jar</jconsolejar>
+				<toolsjar>${env.JAVA_HOME}/lib/tools.jar</toolsjar>
+				<jconsolejar>${env.JAVA_HOME}/lib/jconsole.jar</jconsolejar>
 			</properties>
 
 			<dependencies>
@@ -394,7 +396,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.22</version>
+			<version>5.1.24</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -424,13 +426,6 @@
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>sqljdbc4</artifactId>
 			<version>4.0.2206.100</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.nutz</groupId>
-			<artifactId>nutz</artifactId>
-			<version>1.b.40</version>
 			<scope>test</scope>
 		</dependency>
 

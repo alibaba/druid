@@ -32,29 +32,37 @@ public class WallCheckResult {
 
     private final boolean                          syntaxError;
 
+    private final WallSqlStat                      sqlStat;
+
     public WallCheckResult(){
         this(null);
     }
 
-    public WallCheckResult(WallSqlStat sqlStat){
+    public WallCheckResult(WallSqlStat sqlStat, List<SQLStatement> stmtList){
         if (sqlStat != null) {
             tableStats = sqlStat.getTableStats();
             violations = sqlStat.getViolations();
             functionStats = sqlStat.getFunctionStats();
-            statementList = Collections.emptyList();
+            statementList = stmtList;
             syntaxError = sqlStat.isSyntaxError();
         } else {
             tableStats = Collections.emptyMap();
             violations = Collections.emptyList();
             functionStats = Collections.emptyMap();
-            statementList = Collections.emptyList();
+            statementList = stmtList;
             syntaxError = false;
         }
+        this.sqlStat = sqlStat;
     }
 
-    public WallCheckResult(List<Violation> violations, Map<String, WallSqlTableStat> tableStats,
+    public WallCheckResult(WallSqlStat sqlStat){
+        this(sqlStat, Collections.<SQLStatement> emptyList());
+    }
+
+    public WallCheckResult(WallSqlStat sqlStat, List<Violation> violations, Map<String, WallSqlTableStat> tableStats,
                            Map<String, WallSqlFunctionStat> functionStats, List<SQLStatement> statementList,
                            boolean syntaxError){
+        this.sqlStat = sqlStat;
         this.tableStats = tableStats;
         this.violations = violations;
         this.functionStats = functionStats;
@@ -70,7 +78,6 @@ public class WallCheckResult {
         return statementList;
     }
 
-    
     public Map<String, WallSqlTableStat> getTableStats() {
         return tableStats;
     }
@@ -81,5 +88,10 @@ public class WallCheckResult {
 
     public boolean isSyntaxError() {
         return syntaxError;
+    }
+
+    
+    public WallSqlStat getSqlStat() {
+        return sqlStat;
     }
 }

@@ -24,6 +24,7 @@ import javax.management.ObjectName;
  * @author wenshao<szujobs@hotmail.com>
  */
 public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
+    long getResetCount();
 
     boolean isEnable();
 
@@ -72,4 +73,12 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     void clearStatementCache() throws SQLException;
     
     long getDiscardCount();
+    
+    void setStatLoggerClassName(String className);
+    
+    long getTimeBetweenLogStatsMillis();
+    
+    void setTimeBetweenLogStatsMillis(long timeBetweenLogStatsMillis);
+    
+    void setConnectionProperties(String connectionProperties);
 }

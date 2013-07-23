@@ -20,13 +20,12 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 @SuppressWarnings("serial")
-public class MySqlTableIndex extends SQLObjectImpl implements SQLTableElement {
+public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement {
 
     private SQLName       name;
     private String        indexType;
@@ -56,21 +55,7 @@ public class MySqlTableIndex extends SQLObjectImpl implements SQLTableElement {
         return columns;
     }
 
-    @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof MySqlASTVisitor) {
-            accept0((MySqlASTVisitor) visitor);
-            return;
-        }
-
-        if (visitor.visit(this)) {
-            acceptChild(visitor, name);
-            acceptChild(visitor, columns);
-        }
-        visitor.endVisit(this);
-    }
-
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, columns);

@@ -16,7 +16,21 @@
 package com.alibaba.druid.filter.stat;
 
 public class MergeStatFilter extends StatFilter {
-	public MergeStatFilter() {
-		super.setMergeSql(true);
-	}
+
+    public MergeStatFilter(){
+        super.setMergeSql(true);
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) {
+        return iface == MergeStatFilter.class || iface == StatFilter.class;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) {
+        if (iface == MergeStatFilter.class || iface == StatFilter.class) {
+            return (T) this;
+        }
+        return null;
+    }
 }

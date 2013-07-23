@@ -5,8 +5,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -47,7 +48,7 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
                     startLatch.countDown();
                     try {
                         Connection conn = dataSource.getConnection();
-                        Thread.sleep(1);
+                        Thread.sleep(2);
                         conn.close();
                     } catch (Exception e) {
                         // e.printStackTrace();

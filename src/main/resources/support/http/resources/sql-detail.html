@@ -6,9 +6,11 @@
 		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
+		
     	<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
@@ -22,104 +24,94 @@
 					  	</textarea>
 					  	<br/>
 				      	<br/>
-				      	<h3> Parse View:</h3>
-				      	<table class="table table-bordered" style="background-color: #fff">
-				        	<tr>
-				          		<td class='td_lable' width='130'> Tables</td>
-				          		<td id="parsedtable"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> Fields</td>
-				          		<td id="parsedfields"></td>
-				        	</tr>
-				        	<tr> 
-				        		<td class='td_lable'> Coditions</td>
-				          		<td id="parsedconditions"> </td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> Relationships</td>
-				          		<td id="parsedrelationships"></td>
-				       		</tr>
-				        	<tr>
-				          		<td class='td_lable'> OrderByColumns</td>
-				          		<td id="parsedorderbycolumns"></td>
-				        	</tr>
-				      	</table>
-				      	<br />
-				      
-				      	<h3> LastSlow View:</h3>
-				      	<table class="table table-bordered" style="background-color: #fff">
-				       		<tr>
-				          		<td class='td_lable' width='130'>MaxTimespan</td>
-				          		<td id="MaxTimespan"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable' width='130'>MaxTimespanOccurTime</td>
-				          		<td id="MaxTimespanOccurTime"></td>
-				        	</tr>
-				         	<tr>
-				          		<td class='td_lable' width='130'>LastSlowParameters</td>
-				          		<td id="LastSlowParameters"></td>
-				        	</tr>
-				      	</table>
-				      	<br/>
-				      
-				      	<h3> Last Error View:</h3>
-				      	<table class="table table-bordered" style="background-color: #fff">
-				       		<tr>
-				          		<td class='td_lable' width='130'>LastErrorMessage</td>
-				          		<td id="LastErrorMessage"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>LastErrorClass</td>
-				          		<td id="LastErrorClass"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>LastErrorTime</td>
-				          		<td id="LastErrorTime"></td>
-				        	</tr>
-				         	<tr>
-				          		<td class='td_lable'>LastErrorStackTrace</td>
-				          		<td id="LastErrorStackTrace"></td>
-				        	</tr>
-				      	</table>
-				      	<br/>
-				      
-				      	<h3>Other View:</h3>
-				      	<table class="table table-bordered" style="background-color: #fff">
-				       		<tr>
-				          		<td class='td_lable' width='130'>BatchSizeMax</td>
-				          		<td id="BatchSizeMax"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>BatchSizeTotal</td>
-				          		<td id="BatchSizeTotal"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>BlobOpenCount</td>
-				          		<td id="BlobOpenCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>ClobOpenCount</td>
-				          		<td id="ClobOpenCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>ReaderOpenCount</td>
-				          		<td id="ReaderOpenCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>InputStreamOpenCount</td>
-				          		<td id="InputStreamOpenCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>ReadStringLength</td>
-				          		<td id="ReadStringLength"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'>ReadBytesLength</td>
-				          		<td id="ReadBytesLength"></td>
-				        	</tr>
-				      	</table>
+				      	<h3>ParseView:</h3>
+						<table class="table table-bordered" style="background-color: #fff">		<tr>
+								<td class='td_lable' width='130'  class="lang" langKey=" Tables"> Tables</td>
+								<td id="parsedtable"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="Fields">Fields</td>
+								<td id="parsedfields"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="Coditions">Coditions</td>
+								<td id="parsedConditions"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="Relationships">Relationships</td>
+								<td id="parsedRelationships"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="OrderByColumns">OrderByColumns</td>
+								<td id="parsedOrderbycolumns"></td>
+							</tr>
+						</table>
+						<h3>LastSlowView:</h3>
+						<table class="table table-bordered" style="background-color: #fff">		<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="MaxTimespan">MaxTimespan</td>
+								<td id="MaxTimespan"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="MaxTimespanOccurTime">MaxTimespanOccurTime</td>
+								<td id="MaxTimespanOccurTime"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="LastSlowParameters">LastSlowParameters</td>
+								<td id="LastSlowParameters"></td>
+							</tr>
+						</table>
+						<h3>LastErrorView:</h3>
+						<table class="table table-bordered" style="background-color: #fff">		<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="LastErrorMessage">LastErrorMessage</td>
+								<td id="LastErrorMessage"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="LastErrorClass">LastErrorClass</td>
+								<td id="LastErrorClass"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="LastErrorTime">LastErrorTime</td>
+								<td id="LastErrorTime"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="LastErrorStackTrace">LastErrorStackTrace</td>
+								<td id="LastErrorStackTrace"></td>
+							</tr>
+						</table>
+						<h3>OtherView:</h3>
+						<table class="table table-bordered" style="background-color: #fff">		<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="BatchSizeMax">BatchSizeMax</td>
+								<td id="BatchSizeMax"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="BatchSizeTotal">BatchSizeTotal</td>
+								<td id="BatchSizeTotal"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="BlobOpenCount">BlobOpenCount</td>
+								<td id="BlobOpenCount"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="ClobOpenCount">ClobOpenCount</td>
+								<td id="ClobOpenCount"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="ReaderOpenCount">ReaderOpenCount</td>
+								<td id="ReaderOpenCount"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="InputStreamOpenCount">InputStreamOpenCount</td>
+								<td id="InputStreamOpenCount"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="ReadStringLength">ReadStringLength</td>
+								<td id="ReadStringLength"></td>
+							</tr>
+							<tr>
+								<td class='td_lable' width='130'  class="lang" langKey="ReadBytesLength">ReadBytesLength</td>
+								<td id="ReadBytesLength"></td>
+							</tr>
+						</table>
 				      	<div class="container">
 				      		<a class="btn btn-primary" href="javascript:window.close();">Close</a>
 				      	</div>
@@ -150,9 +142,9 @@
     						$("#formattedSql").text(sqlInfo.formattedSql)
     						$("#parsedtable").text(sqlInfo.parsedTable)
     						$("#parsedfields").text(sqlInfo.parsedFields)
-    						$("#parsedconditions").text(sqlInfo.parsedConditions)
-    						$("#parsedrelationships").text(sqlInfo.parsedRelationships)
-    						$("#parsedorderbycolumns").text(sqlInfo.parsedOrderbycolumns)
+    						$("#parsedConditions").text(sqlInfo.parsedConditions)
+    						$("#parsedRelationships").text(sqlInfo.parsedRelationships)
+    						$("#parsedOrderbycolumns").text(sqlInfo.parsedOrderbycolumns)
     						
     						$("#MaxTimespanOccurTime").text(sqlInfo.MaxTimespanOccurTime)
     						$("#LastSlowParameters").text(sqlInfo.LastSlowParameters)
@@ -171,6 +163,8 @@
     						$("#ReaderOpenCount").text(sqlInfo.ReaderOpenCount)
     						$("#ReadStringLength").text(sqlInfo.ReadStringLength)
     						$("#ReadBytesLength").text(sqlInfo.ReadBytesLength)
+    						
+    						druid.lang.trigger();
     					},
     					dataType: "json"
     				});

@@ -33,7 +33,7 @@ public class FilterManager {
 
     private final static Log                               LOG      = LogFactory.getLog(FilterManager.class);
 
-    private static final ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>();
+    private static final ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>(16, 0.75f, 1);
 
     static {
         try {
@@ -64,6 +64,10 @@ public class FilterManager {
     }
 
     private static void loadFilterConfig(Properties filterProperties, ClassLoader classLoader) throws IOException {
+        if (classLoader == null) {
+            return;
+        }
+        
         for (Enumeration<URL> e = classLoader.getResources("META-INF/druid-filter.properties"); e.hasMoreElements();) {
             URL url = e.nextElement();
 

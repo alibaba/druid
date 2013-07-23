@@ -729,6 +729,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
         if (identifierEquals("ONLY")) {
             lexer.nextToken();
+            tableReference.setOnly(true);
             accept(Token.LPAREN);
             parseTableSourceQueryTableExpr(tableReference);
             accept(Token.RPAREN);

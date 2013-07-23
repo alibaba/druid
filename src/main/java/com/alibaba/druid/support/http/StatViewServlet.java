@@ -287,9 +287,15 @@ public class StatViewServlet extends HttpServlet {
         boolean ipV6 = remoteAddress != null && remoteAddress.indexOf(':') != -1;
 
         if (ipV6) {
+            if ("0:0:0:0:0:0:0:1".equals(remoteAddress)) {
+                return true;
+            }
+            
             if (denyList.size() == 0 && allowList.size() == 0) {
                 return true;
             }
+            
+            return false;
         }
 
         IPAddress ipAddress = new IPAddress(remoteAddress);

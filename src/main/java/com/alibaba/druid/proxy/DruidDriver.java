@@ -49,11 +49,11 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDriver implements Driver, DruidDriverMBean {
 
-    private final static Log                                        LOG                      = LogFactory.getLog(DruidDriver.class);
+    private static Log                                              LOG; // lazy init
 
     private final static DruidDriver                                instance                 = new DruidDriver();
 
-    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>();
+    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>(16, 0.75f, 1);
     private final static AtomicInteger                              dataSourceIdSeed         = new AtomicInteger(0);
     private final static AtomicInteger                              sqlStatIdSeed            = new AtomicInteger(0);
 
@@ -90,18 +90,25 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                     mbeanServer.registerMBean(instance, objectName);
                 }
             } catch (Exception ex) {
+                if (LOG == null) {
+                    LOG = LogFactory.getLog(DruidDriver.class);
+                }
                 LOG.error("register druid-driver mbean error", ex);
             }
 
             return true;
         } catch (Exception e) {
+            if (LOG == null) {
+                LOG = LogFactory.getLog(DruidDriver.class);
+            }
+            
             LOG.error("registerDriver error", e);
         }
 
         return false;
     }
 
-    public DruidDriver() {
+    public DruidDriver(){
 
     }
 

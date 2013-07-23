@@ -19,6 +19,7 @@ import java.lang.management.ManagementFactory;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -189,11 +190,11 @@ public final class DruidStatManagerFacade {
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Map mergWallStat(Map mapA, Map mapB) {
-        if (mapA.size() == 0) {
+        if (mapA == null || mapA.size() == 0) {
             return mapB;
         }
         
-        if (mapB.size() == 0) {
+        if (mapB == null || mapB.size() == 0) {
             return mapA;
         }
         
@@ -208,6 +209,31 @@ public final class DruidStatManagerFacade {
                 newMap.put(key, valueB);
             } else if (valueB == null) {
                 newMap.put(key, valueA);
+            } else if ("blackList".equals(key)) {
+                Map<String, Map<String, Object>> newSet = new HashMap<String, Map<String, Object>>();
+                
+                Collection<Map<String, Object>> collectionA = (Collection<Map<String, Object>>) valueA;
+                for (Map<String, Object> blackItem : collectionA) {
+                    if (newSet.size() >= 1000) {
+                        break;
+                    }
+                    
+                    String sql = (String) blackItem.get("sql");
+                    Map<String, Object> oldItem = newSet.get(sql);
+                    newSet.put(sql, mergWallStat(oldItem, blackItem));
+                }
+                
+                Collection<Map<String, Object>> collectionB = (Collection<Map<String, Object>>) valueB;
+                for (Map<String, Object> blackItem : collectionB) {
+                    if (newSet.size() >= 1000) {
+                        break;
+                    }
+                    
+                    String sql = (String) blackItem.get("sql");
+                    Map<String, Object> oldItem = newSet.get(sql);
+                    newSet.put(sql, mergWallStat(oldItem, blackItem));
+                }
+                newMap.put(key, newSet.values());
             } else {
                 if (valueA instanceof Map && valueB instanceof Map) {
                     Object newValue = mergWallStat((Map)valueA, (Map)valueB);
@@ -220,7 +246,7 @@ public final class DruidStatManagerFacade {
                 } else if (valueA instanceof List && valueB instanceof List) {
                     List<Map<String, Object>> mergedList = mergeNamedList((List) valueA, (List) valueB);
                     newMap.put(key, mergedList);
-                } else if (valueA instanceof String && valueB instanceof String && valueA.equals(valueB) && "name".equals(key)) {
+                } else if (valueA instanceof String && valueB instanceof String && valueA.equals(valueB)) {
                     newMap.put(key, valueA);
                 } else {
                     Object sum = SQLEvalVisitorUtils.add(valueA, valueB);
@@ -232,6 +258,7 @@ public final class DruidStatManagerFacade {
         return newMap;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static List<Map<String, Object>> mergeNamedList(List listA, List listB) {
         Map<String, Map<String, Object>> mapped = new HashMap<String, Map<String, Object>>();
         for (Object item : (List) listA) {

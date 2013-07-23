@@ -579,20 +579,6 @@ public class ConcurrentIdentityHashMap<K, V> extends AbstractMap<K, V> implement
     }
 
     /**
-     * Creates a new, empty map with the specified initial capacity and load factor and with the default reference types
-     * (weak keys, strong values), and concurrencyLevel (16).
-     * 
-     * @param initialCapacity The implementation performs internal sizing to accommodate this many elements.
-     * @param loadFactor the load factor threshold, used to control resizing. Resizing may be performed when the average
-     * number of elements per bin exceeds this threshold.
-     * @throws IllegalArgumentException if the initial capacity of elements is negative or the load factor is
-     * nonpositive
-     */
-    public ConcurrentIdentityHashMap(int initialCapacity, float loadFactor){
-        this(initialCapacity, loadFactor, DEFAULT_CONCURRENCY_LEVEL);
-    }
-
-    /**
      * Creates a new, empty map with the specified initial capacity, and with default reference types (weak keys, strong
      * values), load factor (0.75) and concurrencyLevel (16).
      * 
@@ -610,19 +596,6 @@ public class ConcurrentIdentityHashMap<K, V> extends AbstractMap<K, V> implement
      */
     public ConcurrentIdentityHashMap(){
         this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL);
-    }
-
-    /**
-     * Creates a new map with the same mappings as the given map. The map is created with a capacity of 1.5 times the
-     * number of mappings in the given map or 16 (whichever is greater), and a default load factor (0.75) and
-     * concurrencyLevel (16).
-     * 
-     * @param m the map
-     */
-    public ConcurrentIdentityHashMap(Map<? extends K, ? extends V> m){
-        this(Math.max((int) (m.size() / DEFAULT_LOAD_FACTOR) + 1, DEFAULT_INITIAL_CAPACITY), DEFAULT_LOAD_FACTOR,
-             DEFAULT_CONCURRENCY_LEVEL);
-        putAll(m);
     }
 
     /**
@@ -844,19 +817,6 @@ public class ConcurrentIdentityHashMap<K, V> extends AbstractMap<K, V> implement
         }
         int hash = hashOf(key);
         return segmentFor(hash).put(key, hash, value, true);
-    }
-
-    /**
-     * Copies all of the mappings from the specified map to this one. These mappings replace any mappings that this map
-     * had for any of the keys currently in the specified map.
-     * 
-     * @param m mappings to be stored in this map
-     */
-    @Override
-    public final void putAll(Map<? extends K, ? extends V> m) {
-        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
-            put(e.getKey(), e.getValue());
-        }
     }
 
     /**

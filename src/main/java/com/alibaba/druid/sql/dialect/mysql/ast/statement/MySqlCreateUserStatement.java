@@ -41,6 +41,7 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl {
         if (visitor.visit(this)) {
             acceptChild(visitor, users);
         }
+        visitor.endVisit(this);
     }
 
     public static class UserSpecification extends MySqlObjectImpl {
@@ -82,6 +83,7 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl {
                 acceptChild(visitor, password);
                 acceptChild(visitor, authPlugin);
             }
+            visitor.endVisit(this);
         }
 
     }

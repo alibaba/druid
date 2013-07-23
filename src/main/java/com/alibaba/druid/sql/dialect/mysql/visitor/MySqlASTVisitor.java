@@ -58,7 +58,11 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
@@ -540,4 +544,32 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlAlterTableImportTablespace x);
 
     void endVisit(MySqlAlterTableImportTablespace x);
-} // 
+
+    boolean visit(MySqlCreateTableStatement.TableSpaceOption x);
+
+    void endVisit(MySqlCreateTableStatement.TableSpaceOption x);
+    
+    boolean visit(MySqlPartitionByHash x);
+
+    void endVisit(MySqlPartitionByHash x);
+    
+    boolean visit(MySqlPartitionByRange x);
+
+    void endVisit(MySqlPartitionByRange x);
+    
+    boolean visit(MySqlPartitionByList x);
+
+    void endVisit(MySqlPartitionByList x);
+    
+    boolean visit(MySqlPartitioningDef x);
+
+    void endVisit(MySqlPartitioningDef x);
+    
+    boolean visit(MySqlPartitioningDef.LessThanValues x);
+
+    void endVisit(MySqlPartitioningDef.LessThanValues x);
+    
+    boolean visit(MySqlPartitioningDef.InValues x);
+
+    void endVisit(MySqlPartitioningDef.InValues x);
+} //  

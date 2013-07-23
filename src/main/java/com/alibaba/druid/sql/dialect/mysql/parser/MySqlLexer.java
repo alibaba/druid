@@ -47,6 +47,7 @@ public class MySqlLexer extends Lexer {
         map.put("LIMIT", Token.LIMIT);
         map.put("TRUE", Token.TRUE);
         map.put("BINARY", Token.BINARY);
+        map.put("SHOW", Token.SHOW);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }
@@ -59,6 +60,56 @@ public class MySqlLexer extends Lexer {
     public MySqlLexer(String input){
         super(input);
         super.keywods = DEFAULT_MYSQL_KEYWORDS;
+    }
+    
+    public void scanSharp() {
+        if (ch != '#') {
+            throw new ParserException("illegal stat");
+        }
+        
+        if (charAt(pos + 1) == '{') {
+            scanVariable();
+            return;
+        }
+        
+        Token lastToken = this.token;
+        
+        scanChar();
+        mark = pos;
+        bufPos = 0;
+        for (;;) {
+            if (ch == '\r') {
+                if (charAt(pos + 1) == '\n') {
+                    bufPos += 2;
+                    scanChar();
+                    break;
+                }
+                bufPos++;
+                break;
+            } else if (ch == EOI) {
+                break;
+            }
+
+            if (ch == '\n') {
+                scanChar();
+                bufPos++;
+                break;
+            }
+
+            scanChar();
+            bufPos++;
+        }
+        
+        stringVal = subString(mark, bufPos);
+        token = Token.LINE_COMMENT;
+        
+        if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+            return;
+        }
+
+        if (!isAllowComment()) {
+            throw new NotAllowCommentException();
+        }
     }
 
     public void scanVariable() {
@@ -213,6 +264,7 @@ public class MySqlLexer extends Lexer {
                 final char ch = text.charAt(i);
                 if (ch == '\\') {
                     hasSpecial = true;
+                    continue;
                 }
                 if (ch == '\'') {
                     endIndex = i;
@@ -362,7 +414,7 @@ public class MySqlLexer extends Lexer {
                     return;
                 }
                 if (ch == '*' && charAt(pos + 1) == '/') {
-                    bufPos += 2;
+                    bufPos += 3;
                     scanChar();
                     scanChar();
                     break;
@@ -373,7 +425,7 @@ public class MySqlLexer extends Lexer {
             }
 
             if (isHint) {
-                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
+                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 2);
                 token = Token.HINT;
             } else {
                 stringVal = subString(mark, bufPos);
@@ -392,11 +444,6 @@ public class MySqlLexer extends Lexer {
 
             return;
         }
-
-        if (!isAllowComment()) {
-            throw new NotAllowCommentException();
-        }
-
         if (ch == '/' || ch == '-') {
             scanChar();
             bufPos++;
@@ -424,8 +471,17 @@ public class MySqlLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark + 1, bufPos);
+            stringVal = subString(mark, bufPos + 1);
             token = Token.LINE_COMMENT;
+            
+            if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+                return;
+            }
+
+            if (!isAllowComment()) {
+                throw new NotAllowCommentException();
+            }
+            
             return;
         }
     }

@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class SpringStat {
 
-    private ConcurrentMap<SpringMethodInfo, SpringMethodStat> methodStats = new ConcurrentHashMap<SpringMethodInfo, SpringMethodStat>();
+    private ConcurrentMap<SpringMethodInfo, SpringMethodStat> methodStats = new ConcurrentHashMap<SpringMethodInfo, SpringMethodStat>(16, 0.75f, 1);
 
     public SpringStat(){
 

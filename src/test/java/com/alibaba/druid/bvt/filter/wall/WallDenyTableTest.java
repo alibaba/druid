@@ -27,7 +27,7 @@ import com.alibaba.druid.wall.spi.OracleWallProvider;
 public class WallDenyTableTest extends TestCase {
 
     public void testORACLE() throws Exception {
-        String sql = "SELECT F1, F2 FROM SYS.ABC";
+        String sql = "SELECT *FROM T UNION SELECT F1, F2 FROM SYS.ABC";
 
         OracleWallProvider provider = new OracleWallProvider();
         Assert.assertFalse(provider.checkValid(sql));

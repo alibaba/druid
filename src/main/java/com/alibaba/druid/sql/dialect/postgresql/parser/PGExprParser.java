@@ -25,25 +25,16 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class PGExprParser extends SQLExprParser {
 
+    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
+
     public PGExprParser(String sql){
-        super(new PGLexer(sql));
+        this(new PGLexer(sql));
         this.lexer.nextToken();
     }
 
     public PGExprParser(Lexer lexer){
         super(lexer);
-    }
-    
-    public boolean isAggreateFunction(String word) {
-        String[] aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
-
-        for (int i = 0; i < aggregateFunctions.length; ++i) {
-            if (aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
-                return true;
-            }
-        }
-
-        return false;
+        this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
 
     @Override
@@ -71,16 +62,16 @@ public class PGExprParser extends SQLExprParser {
 
         return null;
     }
-    
+
     public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.COLONCOLON) {
             lexer.nextToken();
             SQLExpr typeExpr = this.expr();
             SQLBinaryOpExpr castExpr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PostgresStyleTypeCast, typeExpr);
-            
+
             return primaryRest(castExpr);
         }
-        
+
         return super.primaryRest(expr);
     }
 }

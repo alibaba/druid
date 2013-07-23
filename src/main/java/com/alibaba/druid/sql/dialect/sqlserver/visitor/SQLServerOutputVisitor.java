@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
@@ -123,7 +124,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     public boolean visit(SQLServerInsertStatement x) {
         print("INSERT INTO ");
 
-        x.getTableName().accept(this);
+        x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             incrementIndent();
@@ -209,5 +210,22 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public void endVisit(SQLServerUpdateStatement x) {
         
+    }
+    
+    public boolean visit(SQLExprTableSource x) {
+        x.getExpr().accept(this);
+        
+        if (x.getHints() != null && x.getHints().size() > 0) {
+            print(" WITH (");
+            printAndAccept(x.getHints(), ", ");
+            print(")");
+        }
+
+        if (x.getAlias() != null) {
+            print(' ');
+            print(x.getAlias());
+        }
+
+        return false;
     }
 }

@@ -28,16 +28,23 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class CounterFilterTest extends TestCase {
 
     String sql = "SELECT 1";
 
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public void test_countFilter() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setUrl("");
@@ -94,6 +101,10 @@ public class CounterFilterTest extends TestCase {
 
         conn.close();
         conn.close();
+        
+        dataSource.getCompositeData();
+        dataSource.getProperties();
+        dataSource.getDataSourceMBeanDomain();
     }
 
 }

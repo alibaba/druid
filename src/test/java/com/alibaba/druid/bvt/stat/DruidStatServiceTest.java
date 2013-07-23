@@ -60,7 +60,7 @@ public class DruidStatServiceTest extends TestCase {
         dataSource = new DruidDataSource();
 
         dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setFilters("stat");
+        dataSource.setFilters("mergeStat");
         dataSource.setTestOnBorrow(false);
 
         dataSource.init();
@@ -204,8 +204,9 @@ public class DruidStatServiceTest extends TestCase {
         String result = DruidStatService.getInstance().service("/activeConnectionStackTrace.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
         List<String> contentList = (List<String>) resultMap.get("Content");
+        Object first = contentList.get(0);
 
-        assertThat(contentList.get(0), is(not(nullValue())));
+        assertThat(first, is(not(nullValue())));
         // close connection at last.
         stmt.close();
         conn.close();

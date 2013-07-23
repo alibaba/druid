@@ -31,7 +31,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -82,9 +81,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public final static int                            DEFAULT_MIN_IDLE                          = 0;
     public final static int                            DEFAULT_MAX_WAIT                          = -1;
     public final static String                         DEFAULT_VALIDATION_QUERY                  = null;                                                //
-    public final static boolean                        DEFAULT_TEST_ON_BORROW                    = true;
+    public final static boolean                        DEFAULT_TEST_ON_BORROW                    = false;
     public final static boolean                        DEFAULT_TEST_ON_RETURN                    = false;
-    public final static boolean                        DEFAULT_WHILE_IDLE                        = false;
+    public final static boolean                        DEFAULT_WHILE_IDLE                        = true;
     public static final long                           DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
     public static final long                           DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
     public static final int                            DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
@@ -135,6 +134,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                                                                                                                    System.out);
 
     protected List<Filter>                             filters                                   = new CopyOnWriteArrayList<Filter>();
+    private boolean                                    clearFiltersEnable                        = true;
     protected volatile ExceptionSorter                 exceptionSorter                           = null;
 
     protected Driver                                   driver;
@@ -210,7 +210,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private ObjectName                                 objectName;
 
-    private final AtomicLong                           executeCount                              = new AtomicLong();
+    protected final AtomicLong                         executeCount                              = new AtomicLong();
 
     protected volatile Throwable                       createError;
     protected volatile Throwable                       lastError;
@@ -231,11 +231,51 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private Boolean                                    useUnfairLock                             = null;
 
+    private boolean                                    useLocalSessionState                      = true;
+
+    protected long                                     timeBetweenLogStatsMillis;
+    protected DruidDataSourceStatLogger                statLogger                                = new DruidDataSourceStatLoggerImpl();
+
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
 
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
+    }
+
+    public boolean isUseLocalSessionState() {
+        return useLocalSessionState;
+    }
+
+    public void setUseLocalSessionState(boolean useLocalSessionState) {
+        this.useLocalSessionState = useLocalSessionState;
+    }
+
+    public DruidDataSourceStatLogger getStatLogger() {
+        return statLogger;
+    }
+
+    public void setStatLoggerClassName(String className) {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(className);
+            DruidDataSourceStatLogger statLogger = (DruidDataSourceStatLogger) clazz.newInstance();
+            this.setStatLogger(statLogger);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(className, e);
+        }
+    }
+
+    public void setStatLogger(DruidDataSourceStatLogger statLogger) {
+        this.statLogger = statLogger;
+    }
+
+    public long getTimeBetweenLogStatsMillis() {
+        return timeBetweenLogStatsMillis;
+    }
+
+    public void setTimeBetweenLogStatsMillis(long timeBetweenLogStatsMillis) {
+        this.timeBetweenLogStatsMillis = timeBetweenLogStatsMillis;
     }
 
     public boolean isOracle() {
@@ -557,20 +597,24 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return result;
     }
 
-    public void setConnectionInitSqls(Collection<Object> connectionInitSqls) {
+    public void setConnectionInitSqls(Collection<? extends Object> connectionInitSqls) {
         if ((connectionInitSqls != null) && (connectionInitSqls.size() > 0)) {
             ArrayList<String> newVal = null;
-            for (Iterator<Object> iterator = connectionInitSqls.iterator(); iterator.hasNext();) {
-                Object o = iterator.next();
-                if (o != null) {
-                    String s = o.toString();
-                    if (s.trim().length() > 0) {
-                        if (newVal == null) {
-                            newVal = new ArrayList<String>();
-                        }
-                        newVal.add(s);
-                    }
+            for (Object o : connectionInitSqls) {
+                if (o == null) {
+                    continue;
                 }
+
+                String s = o.toString();
+                s = s.trim();
+                if (s.length() == 0) {
+                    continue;
+                }
+
+                if (newVal == null) {
+                    newVal = new ArrayList<String>();
+                }
+                newVal.add(s);
             }
             this.connectionInitSqls = newVal;
         } else {
@@ -631,6 +675,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setMinEvictableIdleTimeMillis(long minEvictableIdleTimeMillis) {
+        if (minEvictableIdleTimeMillis < 1000 * 30) {
+            LOG.error("minEvictableIdleTimeMillis should be greater than 30000");
+        }
         this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
     }
 
@@ -1118,6 +1165,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setFilters(String filters) throws SQLException {
+        if (filters != null && filters.startsWith("!")) {
+            filters = filters.substring(1);
+            this.clearFilters();
+        }
+        this.addFilters(filters);
+    }
+
+    public void addFilters(String filters) throws SQLException {
         if (filters == null || filters.length() == 0) {
             return;
         }
@@ -1127,6 +1182,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         for (String item : filterArray) {
             FilterManager.loadFilter(this.filters, item);
         }
+    }
+
+    public void clearFilters() {
+        if (!isClearFiltersEnable()) {
+            return;
+        }
+        this.filters.clear();
     }
 
     public void validateConnection(Connection conn) throws SQLException {
@@ -1164,9 +1226,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected boolean testConnectionInternal(Connection conn) {
         String sqlFile = JdbcSqlStat.getContextSqlFile();
         String sqlName = JdbcSqlStat.getContextSqlName();
-        
-        JdbcSqlStat.setContextSqlFile(null);
-        JdbcSqlStat.setContextSqlName(null);
+
+        if (sqlFile != null) {
+            JdbcSqlStat.setContextSqlFile(null);
+        }
+        if (sqlName != null) {
+            JdbcSqlStat.setContextSqlName(null);
+        }
         try {
             if (validConnectionChecker != null) {
                 return validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
@@ -1201,8 +1267,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             // skip
             return false;
         } finally {
-            JdbcSqlStat.setContextSqlFile(sqlFile);
-            JdbcSqlStat.setContextSqlName(sqlName);
+            if (sqlFile != null) {
+                JdbcSqlStat.setContextSqlFile(sqlFile);
+            }
+            if (sqlName != null) {
+                JdbcSqlStat.setContextSqlName(sqlName);
+            }
         }
     }
 
@@ -1235,10 +1305,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return driver;
     }
 
-    private final AtomicLong connectionIdSeed  = new AtomicLong(10000);
-    private final AtomicLong statementIdSeed   = new AtomicLong(20000);
-    private final AtomicLong resultSetIdSeed   = new AtomicLong(50000);
-    private final AtomicLong transactionIdSeed = new AtomicLong(50000);
+    public boolean isClearFiltersEnable() {
+        return clearFiltersEnable;
+    }
+
+    public void setClearFiltersEnable(boolean clearFiltersEnable) {
+        this.clearFiltersEnable = clearFiltersEnable;
+    }
+
+    protected final AtomicLong connectionIdSeed  = new AtomicLong(10000);
+    protected final AtomicLong statementIdSeed   = new AtomicLong(20000);
+    protected final AtomicLong resultSetIdSeed   = new AtomicLong(50000);
+    protected final AtomicLong transactionIdSeed = new AtomicLong(60000);
 
     public long createConnectionId() {
         return connectionIdSeed.incrementAndGet();
@@ -1383,6 +1461,25 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         if (getDefaultCatalog() != null && getDefaultCatalog().length() != 0) {
             conn.setCatalog(getDefaultCatalog());
+        }
+
+        Collection<String> initSqls = getConnectionInitSqls();
+        if (initSqls.size() == 0) {
+            return;
+        }
+
+        Statement stmt = null;
+        try {
+            stmt = conn.createStatement();
+            for (String sql : initSqls) {
+                if (sql == null) {
+                    continue;
+                }
+                
+                stmt.execute(sql);
+            }
+        } finally {
+            JdbcUtils.close(stmt);
         }
     }
 

@@ -32,19 +32,26 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
-    private final static Log        LOG            = LogFactory.getLog(DruidPooledStatement.class);
+    private final static Log        LOG          = LogFactory.getLog(DruidPooledStatement.class);
 
     private final Statement         stmt;
     protected DruidPooledConnection conn;
-    protected final List<ResultSet> resultSetTrace = new ArrayList<ResultSet>();
-    protected boolean               closed         = false;
-    protected int                   fetchRowPeak   = -1;
+    protected List<ResultSet>       resultSetTrace;
+    protected boolean               closed       = false;
+    protected int                   fetchRowPeak = -1;
 
     public DruidPooledStatement(DruidPooledConnection conn, Statement stmt){
         super(stmt);
 
         this.conn = conn;
         this.stmt = stmt;
+    }
+
+    protected void addResultSetTrace(ResultSet resultSet) {
+        if (resultSetTrace == null) {
+            resultSetTrace = new ArrayList<ResultSet>(1);
+        }
+        resultSetTrace.add(resultSet);
     }
 
     protected void recordFetchRowCount(int fetchRowCount) {
@@ -71,11 +78,24 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     protected void checkOpen() throws SQLException {
         if (closed) {
-            throw new SQLException("statement is closed");
+            Throwable disableError = null;
+            if (this.conn != null) {
+                disableError = this.conn.getDisableError();
+            }
+
+            if (disableError != null) {
+                throw new SQLException("statement is closed", disableError);
+            } else {
+                throw new SQLException("statement is closed");
+            }
         }
     }
 
     protected void clearResultSet() {
+        if (resultSetTrace == null) {
+            return;
+        }
+
         for (ResultSet rs : resultSetTrace) {
             try {
                 if (!rs.isClosed()) {
@@ -90,20 +110,20 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     public void incrementExecuteCount() {
         DruidPooledConnection conn = this.getPoolableConnection();
-        
+
         if (conn == null) {
             return;
         }
-        
+
         DruidConnectionHolder holder = conn.getConnectionHolder();
         if (holder == null) {
             return;
         }
-        
+
         if (holder.getDataSource() == null) {
             return;
         }
-        
+
         holder.getDataSource().incrementExecuteCount();
     }
 
@@ -121,13 +141,13 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery(sql);
-            
+
             if (rs == null) {
                 return rs;
             }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
@@ -266,14 +286,14 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             throw checkException(t);
         }
     }
-    
+
     @Override
     public void close() throws SQLException {
         if (!this.closed) {
             clearResultSet();
             stmt.close();
             this.closed = true;
-            
+
             if (conn.getConnectionHolder() != null) {
                 conn.getConnectionHolder().removeTrace(this);
             }
@@ -415,7 +435,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
@@ -526,7 +546,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void clearBatch() throws SQLException {
-        checkOpen();
+        if (closed) {
+            return;
+        }
 
         try {
             stmt.clearBatch();
@@ -578,7 +600,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
 
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {

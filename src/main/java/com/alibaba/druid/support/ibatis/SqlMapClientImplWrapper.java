@@ -39,7 +39,7 @@ public class SqlMapClientImplWrapper extends SqlMapClientImpl {
 
 	private static Method getLocalSqlMapSessionMethod = null;
 
-	private ConcurrentMap<String, IbatisStatementInfo> statementInfoMap = new ConcurrentHashMap<String, IbatisStatementInfo>();
+	private ConcurrentMap<String, IbatisStatementInfo> statementInfoMap = new ConcurrentHashMap<String, IbatisStatementInfo>(16, 0.75f, 1);
 
 	public SqlMapClientImplWrapper(SqlMapClientImpl raw) {
 		super(raw.getDelegate());

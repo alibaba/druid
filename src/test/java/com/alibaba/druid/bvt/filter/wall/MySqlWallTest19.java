@@ -31,7 +31,17 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest19 extends TestCase {
 
     public void test_true() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+        Assert.assertTrue(WallUtils.isValidateMySql(//
         "select @@basedir")); //
+    }
+
+    public void test_true2() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql(//
+        "select @@basedir FROM X")); //
+    }
+
+    public void test_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql(//
+        "select * FROM X where id=1 and dir=@@basedir")); //
     }
 }

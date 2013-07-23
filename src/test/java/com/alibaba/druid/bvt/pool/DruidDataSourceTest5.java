@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 
 public class DruidDataSourceTest5 extends TestCase {
 
@@ -25,7 +25,7 @@ public class DruidDataSourceTest5 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setInitialSize(1);
 
-        dataSource.setValidConnectionChecker(new ValidConnectionChecker() {
+        dataSource.setValidConnectionChecker(new ValidConnectionCheckerAdapter() {
 
             @Override
             public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) {

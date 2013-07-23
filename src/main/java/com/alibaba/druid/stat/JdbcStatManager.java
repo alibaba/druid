@@ -36,17 +36,17 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 
 public final class JdbcStatManager implements JdbcStatManagerMBean {
 
-    private final AtomicLong                                sqlIdSeed      = new AtomicLong(1000);
+    private final AtomicLong                  sqlIdSeed      = new AtomicLong(1000);
 
-    private final static JdbcStatManager                    instance       = new JdbcStatManager();
+    private final static JdbcStatManager      instance       = new JdbcStatManager();
 
-    private final JdbcConnectionStat                        connectionStat = new JdbcConnectionStat();
-    private final JdbcResultSetStat                         resultSetStat  = new JdbcResultSetStat();
-    private final JdbcStatementStat                         statementStat  = new JdbcStatementStat();
+    private final JdbcConnectionStat          connectionStat = new JdbcConnectionStat();
+    private final JdbcResultSetStat           resultSetStat  = new JdbcResultSetStat();
+    private final JdbcStatementStat           statementStat  = new JdbcStatementStat();
 
-    private final AtomicLong                                resetCount     = new AtomicLong();
+    private final AtomicLong                  resetCount     = new AtomicLong();
 
-    public final ThreadLocal<JdbcStatContext>               contextLocal   = new ThreadLocal<JdbcStatContext>();
+    public final ThreadLocal<JdbcStatContext> contextLocal   = new ThreadLocal<JdbcStatContext>();
 
     private JdbcStatManager(){
 
@@ -296,26 +296,52 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
         TabularType tabularType = new TabularType("SqlListStatistic", "SqlListStatistic", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
 
-        for (DataSourceProxyImpl dataSource : DruidDriver.getProxyDataSources().values()) {
-            Map<String, JdbcSqlStat> statMap = dataSource.getDataSourceStat().getSqlStatMap();
+        JdbcDataSourceStat globalStat = JdbcDataSourceStat.getGlobal();
+        if (globalStat != null) {
+            Map<String, JdbcSqlStat> statMap = globalStat.getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
                 if (entry.getValue().getExecuteCount() == 0 && entry.getValue().getRunningCount() == 0) {
                     continue;
                 }
-                
+
+                Map<String, Object> map = entry.getValue().getData();
+                map.put("URL", globalStat.getUrl());
+                data.put(new CompositeDataSupport(JdbcSqlStat.getCompositeType(), map));
+            }
+        }
+
+        for (DataSourceProxyImpl dataSource : DruidDriver.getProxyDataSources().values()) {
+            JdbcDataSourceStat druidDataSourceStat = dataSource.getDataSourceStat();
+
+            if (druidDataSourceStat == globalStat) {
+                continue;
+            }
+
+            Map<String, JdbcSqlStat> statMap = druidDataSourceStat.getSqlStatMap();
+            for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
+                if (entry.getValue().getExecuteCount() == 0 && entry.getValue().getRunningCount() == 0) {
+                    continue;
+                }
+
                 Map<String, Object> map = entry.getValue().getData();
                 map.put("URL", dataSource.getUrl());
                 data.put(new CompositeDataSupport(JdbcSqlStat.getCompositeType(), map));
             }
         }
-        
+
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
-            Map<String, JdbcSqlStat> statMap = dataSource.getDataSourceStat().getSqlStatMap();
+            JdbcDataSourceStat druidDataSourceStat = dataSource.getDataSourceStat();
+
+            if (druidDataSourceStat == globalStat) {
+                continue;
+            }
+
+            Map<String, JdbcSqlStat> statMap = druidDataSourceStat.getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
                 if (entry.getValue().getExecuteCount() == 0 && entry.getValue().getRunningCount() == 0) {
                     continue;
                 }
-                
+
                 Map<String, Object> map = entry.getValue().getData();
                 map.put("URL", dataSource.getUrl());
                 data.put(new CompositeDataSupport(JdbcSqlStat.getCompositeType(), map));

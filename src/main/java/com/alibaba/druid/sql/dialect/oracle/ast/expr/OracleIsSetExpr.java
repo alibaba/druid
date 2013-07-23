@@ -51,6 +51,7 @@ public class OracleIsSetExpr extends SQLExprImpl implements OracleExpr {
         if (visitor.visit(this)) {
             acceptChild(visitor, nestedTable);
         }
+        visitor.endVisit(this);
     }
 
     @Override

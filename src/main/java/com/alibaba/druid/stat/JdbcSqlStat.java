@@ -15,8 +15,9 @@
  */
 package com.alibaba.druid.stat;
 
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
@@ -30,12 +31,8 @@ import javax.management.openmbean.SimpleType;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.StatementExecuteType;
-import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JMXUtils;
 
-/**
- * @author wenshao<szujobs@hotmail.com>
- */
 public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final String                                sql;
@@ -323,7 +320,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         executeSpanNanoTotalUpdater.set(this, 0);
         executeSpanNanoMaxUpdater.set(this, 0);
         executeNanoSpanMaxOccurTime = 0;
-        runningCountUpdater.set(this, 0);
         concurrentMaxUpdater.set(this, 0);
 
         executeErrorCountUpdater.set(this, 0);
@@ -378,6 +374,104 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         readBytesLengthUpdater.set(this, 0);
         inputStreamOpenCountUpdater.set(this, 0);
         readerOpenCountUpdater.set(this, 0);
+    }
+
+    public JdbcSqlStatValue getValueAndReset() {
+        return getValue(true);
+    }
+
+    public JdbcSqlStatValue getValue(boolean reset) {
+        JdbcSqlStatValue val = new JdbcSqlStatValue();
+
+        val.setDbType(dbType);
+        val.setSql(sql);
+        val.setId(id);
+        val.setExecuteLastStartTime(executeLastStartTime);
+        if (reset) {
+            executeLastStartTime = 0;
+        }
+
+        val.setExecuteBatchSizeTotal(get(this, executeBatchSizeTotalUpdater, reset));
+        val.setExecuteBatchSizeMax(get(this, executeBatchSizeMaxUpdater, reset));
+
+        val.setExecuteSuccessCount(get(this, executeSuccessCountUpdater, reset));
+        val.setExecuteSpanNanoTotal(get(this, executeSpanNanoTotalUpdater, reset));
+        val.setExecuteSpanNanoMax(get(this, executeSpanNanoMaxUpdater, reset));
+        val.setExecuteNanoSpanMaxOccurTime(executeNanoSpanMaxOccurTime);
+        if (reset) {
+            executeNanoSpanMaxOccurTime = 0;
+        }
+
+        val.setRunningCount(this.runningCount);
+
+        val.setConcurrentMax(get(this, concurrentMaxUpdater, reset));
+
+        val.setExecuteErrorCount(get(this, executeErrorCountUpdater, reset));
+
+        val.setExecuteErrorLast(executeErrorLast);
+        if (reset) {
+            executeErrorLast = null;
+        }
+
+        val.setExecuteErrorLastTime(executeErrorLastTime);
+        if (reset) {
+            executeErrorLastTime = 0;
+        }
+
+        val.setUpdateCount(get(this, updateCountUpdater, reset));
+        val.setUpdateCountMax(get(this, updateCountMaxUpdater, reset));
+        val.setFetchRowCount(get(this, fetchRowCountUpdater, reset));
+        val.setFetchRowCountMax(get(this, fetchRowCountMaxUpdater, reset));
+
+        val.histogram_0_1 = get(this, histogram_0_1_Updater, reset);
+        val.histogram_1_10 = get(this, histogram_1_10_Updater, reset);
+        val.histogram_10_100 = get(this, histogram_10_100_Updater, reset);
+        val.histogram_100_1000 = get(this, histogram_100_1000_Updater, reset);
+        val.histogram_1000_10000 = get(this, histogram_1000_10000_Updater, reset);
+        val.histogram_10000_100000 = get(this, histogram_10000_100000_Updater, reset);
+        val.histogram_100000_1000000 = get(this, histogram_100000_1000000_Updater, reset);
+        val.histogram_1000000_more = get(this, histogram_1000000_more_Updater, reset);
+
+        val.setLastSlowParameters(lastSlowParameters);
+        if (reset) {
+            lastSlowParameters = null;
+        }
+
+        val.setInTransactionCount(get(this, inTransactionCountUpdater, reset));
+        val.setResultSetHoldTimeNano(get(this, resultSetHoldTimeNanoUpdater, reset));
+        val.setExecuteAndResultSetHoldTime(get(this, executeAndResultSetHoldTimeUpdater, reset));
+
+        val.fetchRowCount_0_1 = get(this, fetchRowCount_0_1_Updater, reset);
+        val.fetchRowCount_1_10 = get(this, fetchRowCount_1_10_Updater, reset);
+        val.fetchRowCount_10_100 = get(this, fetchRowCount_10_100_Updater, reset);
+        val.fetchRowCount_100_1000 = get(this, fetchRowCount_100_1000_Updater, reset);
+        val.fetchRowCount_1000_10000 = get(this, fetchRowCount_1000_10000_Updater, reset);
+        val.fetchRowCount_10000_more = get(this, fetchRowCount_10000_more_Updater, reset);
+
+        val.updateCount_0_1 = get(this, updateCount_0_1_Updater, reset);
+        val.updateCount_1_10 = get(this, updateCount_1_10_Updater, reset);
+        val.updateCount_10_100 = get(this, updateCount_10_100_Updater, reset);
+        val.updateCount_100_1000 = get(this, updateCount_100_1000_Updater, reset);
+        val.updateCount_1000_10000 = get(this, updateCount_1000_10000_Updater, reset);
+        val.updateCount_10000_more = get(this, updateCount_10000_more_Updater, reset);
+
+        val.executeAndResultHoldTime_0_1 = get(this, executeAndResultHoldTime_0_1_Updater, reset);
+        val.executeAndResultHoldTime_1_10 = get(this, executeAndResultHoldTime_1_10_Updater, reset);
+        val.executeAndResultHoldTime_10_100 = get(this, executeAndResultHoldTime_10_100_Updater, reset);
+        val.executeAndResultHoldTime_100_1000 = get(this, executeAndResultHoldTime_100_1000_Updater, reset);
+        val.executeAndResultHoldTime_1000_10000 = get(this, executeAndResultHoldTime_1000_10000_Updater, reset);
+        val.executeAndResultHoldTime_10000_100000 = get(this, executeAndResultHoldTime_10000_100000_Updater, reset);
+        val.executeAndResultHoldTime_100000_1000000 = get(this, executeAndResultHoldTime_100000_1000000_Updater, reset);
+        val.executeAndResultHoldTime_1000000_more = get(this, executeAndResultHoldTime_1000000_more_Updater, reset);
+
+        val.setBlobOpenCount(get(this, blobOpenCountUpdater, reset));
+        val.setClobOpenCount(get(this, clobOpenCountUpdater, reset));
+        val.setReadStringLength(get(this, readStringLengthUpdater, reset));
+        val.setReadBytesLength(get(this, readBytesLengthUpdater, reset));
+        val.setInputStreamOpenCount(get(this, inputStreamOpenCountUpdater, reset));
+        val.setReaderOpenCount(get(this, readerOpenCountUpdater, reset));
+
+        return val;
     }
 
     public long getConcurrentMax() {
@@ -841,71 +935,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     }
 
     public Map<String, Object> getData() throws JMException {
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        // 0 - 4
-        map.put("ID", id);
-        map.put("DataSource", dataSource);
-        map.put("SQL", sql);
-        map.put("ExecuteCount", getExecuteCount());
-        map.put("ErrorCount", getErrorCount());
-
-        // 5 - 9
-        map.put("TotalTime", getExecuteMillisTotal());
-        map.put("LastTime", getExecuteLastStartTime());
-        map.put("MaxTimespan", getExecuteMillisMax());
-        map.put("LastError", JMXUtils.getErrorCompositeData(this.getExecuteErrorLast()));
-        map.put("EffectedRowCount", getUpdateCount());
-
-        // 10 - 14
-        map.put("FetchRowCount", getFetchRowCount());
-        map.put("MaxTimespanOccurTime", getExecuteNanoSpanMaxOccurTime());
-        map.put("BatchSizeMax", getExecuteBatchSizeMax());
-        map.put("BatchSizeTotal", getExecuteBatchSizeTotal());
-        map.put("ConcurrentMax", getConcurrentMax());
-
-        // 15 -
-        map.put("RunningCount", getRunningCount()); // 15
-        map.put("Name", getName()); // 16
-        map.put("File", getFile()); // 17
-
-        Throwable lastError = this.executeErrorLast;
-        if (lastError != null) {
-            map.put("LastErrorMessage", lastError.getMessage()); // 18
-            map.put("LastErrorClass", lastError.getClass().getName()); // 19
-
-            map.put("LastErrorStackTrace", IOUtils.getStackTrace(lastError)); // 20
-            map.put("LastErrorTime", new Date(executeErrorLastTime)); // 21
-        } else {
-            map.put("LastErrorMessage", null);
-            map.put("LastErrorClass", null);
-            map.put("LastErrorStackTrace", null);
-            map.put("LastErrorTime", null);
-        }
-
-        map.put("DbType", dbType); // 22
-        map.put("URL", null); // 23
-        map.put("InTransactionCount", getInTransactionCount()); // 24
-
-        map.put("Histogram", this.getHistogramValues()); // 25
-        map.put("LastSlowParameters", lastSlowParameters); // 26
-        map.put("ResultSetHoldTime", getResultSetHoldTimeMilis()); // 27
-        map.put("ExecuteAndResultSetHoldTime", this.getExecuteAndResultSetHoldTimeMilis()); // 28
-        map.put("FetchRowCountHistogram", this.getFetchRowCountHistogramValues()); // 29
-
-        map.put("EffectedRowCountHistogram", this.getUpdateCountHistogramValues()); // 30
-        map.put("ExecuteAndResultHoldTimeHistogram", this.getExecuteAndResultHoldTimeHistogramValues()); // 31
-        map.put("EffectedRowCountMax", getUpdateCountMax()); // 32
-        map.put("FetchRowCountMax", getFetchRowCountMax()); // 33
-        map.put("ClobOpenCount", getClobOpenCount()); // 34
-
-        map.put("BlobOpenCount", getBlobOpenCount()); // 35
-        map.put("ReadStringLength", getReadStringLength()); // 36
-        map.put("ReadBytesLength", getReadBytesLength()); // 37
-        map.put("InputStreamOpenCount", getInputStreamOpenCount()); // 38
-        map.put("ReaderOpenCount", getReaderOpenCount()); // 39
-
-        return map;
+        return getValue(false).getData();
     }
 
     public long[] getHistogramValues() {

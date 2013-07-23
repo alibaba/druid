@@ -285,12 +285,15 @@ public class DruidDataSourceFactory implements ObjectFactory {
 
         value = (String) properties.get(PROP_POOLPREPAREDSTATEMENTS);
         if (value != null) {
-            dataSource.setPoolPreparedStatements(Boolean.valueOf(value).booleanValue());
-        }
-
-        value = (String) properties.get(PROP_MAXOPENPREPAREDSTATEMENTS);
-        if (value != null) {
-            dataSource.setMaxOpenPreparedStatements(Integer.parseInt(value));
+            boolean poolPreparedStatements = Boolean.valueOf(value).booleanValue();
+            dataSource.setPoolPreparedStatements(poolPreparedStatements);
+            
+            if (poolPreparedStatements) {
+                value = (String) properties.get(PROP_MAXOPENPREPAREDSTATEMENTS);
+                if (value != null) {
+                    dataSource.setMaxOpenPreparedStatements(Integer.parseInt(value));
+                }
+            }
         }
 
         value = (String) properties.get(PROP_FILTERS);

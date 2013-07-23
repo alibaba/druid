@@ -24,9 +24,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public SQLExpr            left;
-    public SQLExpr            right;
-    public SQLBinaryOperator  operator;
+    private SQLExpr           left;
+    private SQLExpr           right;
+    private SQLBinaryOperator operator;
 
     public SQLBinaryOpExpr(){
 
@@ -34,15 +34,15 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
 
     public SQLBinaryOpExpr(SQLExpr left, SQLBinaryOperator operator, SQLExpr right){
 
-        this.left = left;
-        this.right = right;
+        setLeft(left);
+        setRight(right);
         this.operator = operator;
     }
 
     public SQLBinaryOpExpr(SQLExpr left, SQLExpr right, SQLBinaryOperator operator){
 
-        this.left = left;
-        this.right = right;
+        setLeft(left);
+        setRight(right);
         this.operator = operator;
     }
 
@@ -51,6 +51,9 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setLeft(SQLExpr left) {
+        if (left != null) {
+            left.setParent(this);
+        }
         this.left = left;
     }
 
@@ -59,6 +62,9 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setRight(SQLExpr right) {
+        if (right != null) {
+            right.setParent(this);
+        }
         this.right = right;
     }
 
@@ -68,14 +74,6 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
 
     public void setOperator(SQLBinaryOperator operator) {
         this.operator = operator;
-    }
-
-    public void output(StringBuffer buf) {
-        this.left.output(buf);
-        buf.append(" ");
-        buf.append(this.operator.name);
-        buf.append(" ");
-        this.right.output(buf);
     }
 
     protected void accept0(SQLASTVisitor visitor) {

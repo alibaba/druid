@@ -45,18 +45,29 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private Limit                limit;
 
     private SQLName              procedureName;
-    private List<SQLExpr>        procedureArgumentList = new ArrayList<SQLExpr>();
+    private List<SQLExpr>        procedureArgumentList;
 
-    private boolean              forUpdate             = false;
-    private boolean              lockInShareMode       = false;
+    private boolean              forUpdate       = false;
+    private boolean              lockInShareMode = false;
 
-    private List<SQLCommentHint> hints                 = new ArrayList<SQLCommentHint>();
+    private List<SQLCommentHint> hints;
 
     public MySqlSelectQueryBlock(){
 
     }
 
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+
+        return hints.size();
+    }
+
     public List<SQLCommentHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLCommentHint>(2);
+        }
         return hints;
     }
 
@@ -89,6 +100,9 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     }
 
     public List<SQLExpr> getProcedureArgumentList() {
+        if (procedureArgumentList == null) {
+            procedureArgumentList = new ArrayList<SQLExpr>(2);
+        }
         return procedureArgumentList;
     }
 
@@ -165,7 +179,66 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     }
 
     public void setLimit(Limit limit) {
+        if (limit != null) {
+            limit.setParent(this);
+        }
         this.limit = limit;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (bigResult ? 1231 : 1237);
+        result = prime * result + (bufferResult ? 1231 : 1237);
+        result = prime * result + ((cache == null) ? 0 : cache.hashCode());
+        result = prime * result + (calcFoundRows ? 1231 : 1237);
+        result = prime * result + (forUpdate ? 1231 : 1237);
+        result = prime * result + (hignPriority ? 1231 : 1237);
+        result = prime * result + ((hints == null) ? 0 : hints.hashCode());
+        result = prime * result + ((limit == null) ? 0 : limit.hashCode());
+        result = prime * result + (lockInShareMode ? 1231 : 1237);
+        result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
+        result = prime * result + ((procedureArgumentList == null) ? 0 : procedureArgumentList.hashCode());
+        result = prime * result + ((procedureName == null) ? 0 : procedureName.hashCode());
+        result = prime * result + (smallResult ? 1231 : 1237);
+        result = prime * result + (straightJoin ? 1231 : 1237);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        MySqlSelectQueryBlock other = (MySqlSelectQueryBlock) obj;
+        if (bigResult != other.bigResult) return false;
+        if (bufferResult != other.bufferResult) return false;
+        if (cache == null) {
+            if (other.cache != null) return false;
+        } else if (!cache.equals(other.cache)) return false;
+        if (calcFoundRows != other.calcFoundRows) return false;
+        if (forUpdate != other.forUpdate) return false;
+        if (hignPriority != other.hignPriority) return false;
+        if (hints == null) {
+            if (other.hints != null) return false;
+        } else if (!hints.equals(other.hints)) return false;
+        if (limit == null) {
+            if (other.limit != null) return false;
+        } else if (!limit.equals(other.limit)) return false;
+        if (lockInShareMode != other.lockInShareMode) return false;
+        if (orderBy == null) {
+            if (other.orderBy != null) return false;
+        } else if (!orderBy.equals(other.orderBy)) return false;
+        if (procedureArgumentList == null) {
+            if (other.procedureArgumentList != null) return false;
+        } else if (!procedureArgumentList.equals(other.procedureArgumentList)) return false;
+        if (procedureName == null) {
+            if (other.procedureName != null) return false;
+        } else if (!procedureName.equals(other.procedureName)) return false;
+        if (smallResult != other.smallResult) return false;
+        if (straightJoin != other.straightJoin) return false;
+        return true;
     }
 
     @Override
@@ -175,19 +248,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
             return;
         }
 
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.selectList);
-            acceptChild(visitor, this.from);
-            acceptChild(visitor, this.where);
-            acceptChild(visitor, this.groupBy);
-            acceptChild(visitor, this.orderBy);
-            acceptChild(visitor, this.limit);
-            acceptChild(visitor, this.procedureName);
-            acceptChild(visitor, this.procedureArgumentList);
-            acceptChild(visitor, this.into);
-        }
-
-        visitor.endVisit(this);
+        super.accept0(visitor);
     }
 
     @Override
@@ -241,6 +302,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
                     acceptChild(visitor, offset);
                     acceptChild(visitor, rowCount);
                 }
+                mysqlVisitor.endVisit(this);
             }
         }
 

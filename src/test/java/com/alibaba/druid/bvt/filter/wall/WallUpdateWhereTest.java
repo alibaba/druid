@@ -23,17 +23,22 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，检测可疑的Having条件
+ * 
  * @author wenshao
- *
  */
 public class WallUpdateWhereTest extends TestCase {
-    private String sql = "UPDATE T SET F1 = 0 WHERE 1 = 1";
+
+    private String sql  = "UPDATE T SET F1 = 0 WHERE 1 = 1";
+    private String sql2 = "UPDATE T SET F1 = 0 WHERE id=0 and 1 = 1";
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        Assert.assertTrue(WallUtils.isValidateMySql(sql));
+        Assert.assertFalse(WallUtils.isValidateMySql(sql2));
     }
-    
+
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        Assert.assertFalse(WallUtils.isValidateOracle(sql2));
     }
+
 }

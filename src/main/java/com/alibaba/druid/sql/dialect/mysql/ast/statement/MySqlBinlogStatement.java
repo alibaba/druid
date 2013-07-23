@@ -35,5 +35,6 @@ public class MySqlBinlogStatement extends MySqlStatementImpl {
 		if (visitor.visit(this)) {
 			acceptChild(visitor, expr);
 		}
+		visitor.endVisit(this);
 	}
 }

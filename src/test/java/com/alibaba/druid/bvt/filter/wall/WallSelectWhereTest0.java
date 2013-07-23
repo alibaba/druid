@@ -30,10 +30,10 @@ public class WallSelectWhereTest0 extends TestCase {
     private String sql = "SELECT F1, F2 WHERE 1 = 1 OR F1 = ?";
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        Assert.assertTrue(WallUtils.isValidateMySql(sql));
     }
     
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        Assert.assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

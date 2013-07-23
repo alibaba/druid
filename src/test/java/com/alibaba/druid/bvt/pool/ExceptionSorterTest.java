@@ -10,6 +10,7 @@ import org.junit.Assert;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class ExceptionSorterTest extends TestCase {
 
@@ -27,7 +28,7 @@ public class ExceptionSorterTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        dataSource.close();
+        JdbcUtils.close(dataSource);
     }
 
     public void test_exceptionSorter() throws Exception {
@@ -40,11 +41,16 @@ public class ExceptionSorterTest extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("select 1");
 
         stmt.execute();
-        
+
         mockConn.close();
 
-        stmt.close();
-
+        Exception stmtClosedError = null;
+        try {
+            stmt.close();
+        } catch (Exception ex) {
+            stmtClosedError = ex;
+        }
+        Assert.assertNotNull(stmtClosedError);
         conn.close();
     }
 }

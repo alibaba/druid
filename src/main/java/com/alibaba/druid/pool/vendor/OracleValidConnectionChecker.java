@@ -21,15 +21,17 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class OracleValidConnectionChecker implements ValidConnectionChecker, Serializable {
+public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
     private static final long     serialVersionUID = -2227528634302168877L;
 
@@ -43,13 +45,28 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
         try {
             clazz = JdbcUtils.loadDriverClass("oracle.jdbc.driver.OracleConnection");
             if (clazz != null) {
-            	ping = clazz.getMethod("pingDatabase", new Class[] { Integer.TYPE });
+                ping = clazz.getMethod("pingDatabase", new Class[] { Integer.TYPE });
             } else {
-            	ping = null;
+                ping = null;
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to resolve pingDatabase method:", e);
         }
+        
+        configFromProperties(System.getProperties());
+    }
+    
+    @Override
+    public void configFromProperties(Properties properties) {
+        String property = properties.getProperty("druid.oracle.pingTimeout");
+        if (property != null && property.length() > 0) {
+            int value = Integer.parseInt(property);
+            setTimeout(value);
+        }
+    }
+    
+    public void setTimeout(int timeout) {
+        params[0] = timeout;
     }
 
     public boolean isValidConnection(Connection conn, String valiateQuery, int validationQueryTimeout) {
@@ -60,10 +77,6 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
         } catch (SQLException ex) {
             // skip
             return false;
-        }
-
-        if (valiateQuery == null) {
-            return true;
         }
 
         try {

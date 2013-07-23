@@ -83,6 +83,13 @@ public class StringUtils {
         }
         return a.equals(b);
     }
+    
+    public static boolean equalsIgnoreCase(String a, String b) {
+        if (a == null) {
+            return b == null;
+        }
+        return a.equalsIgnoreCase(b);
+    }
 
     public static boolean isEmpty(String value) {
         if (value == null || value.length() == 0) {
@@ -93,6 +100,9 @@ public class StringUtils {
     }
     
     public static int lowerHashCode(String text) {
+        if (text == null) {
+            return 0;
+        }
 //        return text.toLowerCase().hashCode();
         int h = 0;
         for (int i = 0; i < text.length(); ++i) {

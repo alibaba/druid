@@ -58,7 +58,6 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
@@ -66,22 +65,28 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
+import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -89,6 +94,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
@@ -125,6 +131,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
+    }
+    
+    public int getParametersSize() {
+        if (parameters == null) {
+            return 0;
+        }
+        
+        return this.parameters.size();
     }
 
     public List<Object> getParameters() {
@@ -451,8 +465,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
-    public boolean visit(SQLIdentifierExpr astNode) {
-        print(astNode.getName());
+    public boolean visit(SQLIdentifierExpr x) {
+        print(x.getName());
         return false;
     }
 
@@ -497,6 +511,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
 
         printAndAccept(x.getArguments(), ", ");
+        
+        visitAggreateRest(x);
+        
         print(")");
 
         if (x.getOver() != null) {
@@ -504,6 +521,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             x.getOver().accept(this);
         }
         return false;
+    }
+    
+    protected void visitAggreateRest(SQLAggregateExpr aggregateExpr) {
+        
     }
 
     public boolean visit(SQLAllColumnExpr x) {
@@ -536,10 +557,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLNumberExpr x) {
         print(x.getNumber().toString());
         return false;
-    }
-
-    public boolean visit(SQLObjectCreateExpr x) {
-        throw new UnsupportedOperationException();
     }
 
     public boolean visit(SQLPropertyExpr x) {
@@ -835,7 +852,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLInsertStatement x) {
         print("INSERT INTO ");
 
-        x.getTableName().accept(this);
+        x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             incrementIndent();
@@ -1328,10 +1345,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         print(" PRIMARY KEY");
         return false;
     }
-
+    
     @Override
-    public boolean visit(SQLColumnUniqueIndex x) {
-        print(" UNIQUE INDEX");
+    public boolean visit(SQLColumnCheck x) {
+        print("CHECK ");
+        x.getExpr().accept(this);
         return false;
     }
 
@@ -1413,6 +1431,55 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLAlterTableDisableKeys x) {
         print("DISABLE KEYS");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAddForeignKey x) {
+        print("ADD ");
+        x.getForeignKey().accept(this);
+        return false;
+    }
+    
+    public boolean visit(SQLAlterTableDisableConstraint x) {
+        print("DISABLE CONSTRAINT ");
+        x.getConstraintName().accept(this);
+        return false;
+    }
+    
+    public boolean visit(SQLAlterTableEnableConstraint x) {
+        print("ENABLE CONSTRAINT ");
+        x.getConstraintName().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropConstraint x) {
+        print("DROP CONSTRAINT ");
+        x.getConstraintName().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableStatement x) {
+        print("ALTER TABLE ");
+        x.getName().accept(this);
+        incrementIndent();
+        for (int i = 0; i < x.getItems().size(); ++i) {
+            SQLAlterTableItem item = x.getItems().get(i);
+            if (i != 0) {
+                print(',');
+            }
+            println();
+            item.accept(this);
+        }
+        decrementIndent();
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLExprHint x) {
+        x.getExpr().accept(this);
         return false;
     }
 }

@@ -1,0 +1,4 @@
+basedir
+version_compile_os
+version
+datadir

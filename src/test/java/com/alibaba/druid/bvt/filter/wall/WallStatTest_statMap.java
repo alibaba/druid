@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.filter.wall;
 
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -26,26 +28,44 @@ public class WallStatTest_statMap extends TestCase {
         WallProvider providerA = new MySqlWallProvider();
 
         {
-            String sql = "select * from t where len(fname) = 1";
-            Assert.assertTrue(providerA.checkValid(sql));
+            String sql = "select * from t where len(fname) = 1 OR 1 = 1";
+            Assert.assertFalse(providerA.checkValid(sql));
+            providerA.addViolationEffectRowCount(10);
         }
 
         WallProvider providerB = new MySqlWallProvider();
         {
-            String sql = "select * from t where len(fname) = 2";
-            Assert.assertTrue(providerB.checkValid(sql));
+            String sql = "select * from t where len(fname) = 2 OR 1 = 1";
+            Assert.assertFalse(providerB.checkValid(sql));
+            providerB.addViolationEffectRowCount(11);
+        }
+        
+        WallProvider providerC = new MySqlWallProvider();
+        {
+            String sql = "select * from t where len(fname) = 2 OR 1 = 1";
+            Assert.assertFalse(providerC.checkValid(sql));
+            providerC.addViolationEffectRowCount(12);
         }
 
         Map<String, Object> statMapA = providerA.getStatsMap();
         Map<String, Object> statMapB = providerB.getStatsMap();
+        Map<String, Object> statMapC = providerC.getStatsMap();
 
         System.out.println(JSONUtils.toJSONString(statMapA));
         System.out.println(JSONUtils.toJSONString(statMapB));
+        System.out.println(JSONUtils.toJSONString(statMapC));
 
         Map<String, Object> statMapMerged = DruidStatManagerFacade.mergWallStat(statMapA, statMapB);
         System.out.println(JSONUtils.toJSONString(statMapMerged));
         
         Assert.assertEquals(2L, statMapMerged.get("checkCount"));
+        Assert.assertEquals(21L, statMapMerged.get("violationEffectRowCount"));
+        Assert.assertEquals(2, ((Collection<Map<String, Object>>) statMapMerged.get("blackList")).size());
+        
+        statMapMerged = DruidStatManagerFacade.mergWallStat(statMapMerged, statMapC);
+        System.out.println(JSONUtils.toJSONString(statMapMerged));
+        Assert.assertEquals(2, ((Collection<Map<String, Object>>) statMapMerged.get("blackList")).size());
+        Assert.assertEquals(33L, statMapMerged.get("violationEffectRowCount"));
     }
 
 }

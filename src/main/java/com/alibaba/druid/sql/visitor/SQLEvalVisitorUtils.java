@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.visitor;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -62,10 +63,14 @@ import com.alibaba.druid.sql.visitor.functions.Char;
 import com.alibaba.druid.sql.visitor.functions.Concat;
 import com.alibaba.druid.sql.visitor.functions.Elt;
 import com.alibaba.druid.sql.visitor.functions.Function;
+import com.alibaba.druid.sql.visitor.functions.Greatest;
 import com.alibaba.druid.sql.visitor.functions.Hex;
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.druid.sql.visitor.functions.Insert;
 import com.alibaba.druid.sql.visitor.functions.Instr;
+import com.alibaba.druid.sql.visitor.functions.Isnull;
 import com.alibaba.druid.sql.visitor.functions.Lcase;
+import com.alibaba.druid.sql.visitor.functions.Least;
 import com.alibaba.druid.sql.visitor.functions.Left;
 import com.alibaba.druid.sql.visitor.functions.Length;
 import com.alibaba.druid.sql.visitor.functions.Locate;
@@ -81,6 +86,7 @@ import com.alibaba.druid.sql.visitor.functions.Unhex;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
+import com.alibaba.druid.wall.spi.WallVisitorUtils.WallSelectQueryContext;
 
 public class SQLEvalVisitorUtils {
 
@@ -101,7 +107,13 @@ public class SQLEvalVisitorUtils {
     }
 
     public static Object eval(String dbType, SQLObject sqlObject, Object... parameters) {
-        return eval(dbType, sqlObject, Arrays.asList(parameters));
+        Object value = eval(dbType, sqlObject, Arrays.asList(parameters));
+
+        if (value == EVAL_VALUE_NULL) {
+            value = null;
+        }
+
+        return value;
     }
 
     public static Object getValue(SQLObject sqlObject) {
@@ -133,6 +145,10 @@ public class SQLEvalVisitorUtils {
 
     public static SQLEvalVisitor createEvalVisitor(String dbType) {
         if (JdbcUtils.MYSQL.equals(dbType)) {
+            return new MySqlEvalVisitorImpl();
+        }
+
+        if (JdbcUtils.MARIADB.equals(dbType)) {
             return new MySqlEvalVisitorImpl();
         }
 
@@ -185,6 +201,10 @@ public class SQLEvalVisitorUtils {
         functions.put("lower", Lcase.instance);
         functions.put("hex", Hex.instance);
         functions.put("unhex", Unhex.instance);
+        functions.put("greatest", Greatest.instance);
+        functions.put("least", Least.instance);
+        functions.put("isnull", Isnull.instance);
+        functions.put("if", If.instance);
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
@@ -194,7 +214,7 @@ public class SQLEvalVisitorUtils {
 
         if (function != null) {
             Object result = function.eval(visitor, x);
-            
+
             if (result != SQLEvalVisitor.EVAL_ERROR) {
                 x.getAttributes().put(EVAL_VALUE, result);
             }
@@ -369,7 +389,7 @@ public class SQLEvalVisitorUtils {
             }
 
             double doubleValue = castToDouble(paramValue);
-            int result = (int) Math.cos(doubleValue);
+            double result = Math.cos(doubleValue);
 
             if (Double.isNaN(result)) {
                 x.putAttribute(EVAL_VALUE, null);
@@ -390,7 +410,7 @@ public class SQLEvalVisitorUtils {
             }
 
             double doubleValue = castToDouble(paramValue);
-            int result = (int) Math.sin(doubleValue);
+            double result = Math.sin(doubleValue);
 
             if (Double.isNaN(result)) {
                 x.putAttribute(EVAL_VALUE, null);
@@ -411,7 +431,7 @@ public class SQLEvalVisitorUtils {
             }
 
             double doubleValue = castToDouble(paramValue);
-            int result = (int) Math.log(doubleValue);
+            double result = Math.log(doubleValue);
 
             if (Double.isNaN(result)) {
                 x.putAttribute(EVAL_VALUE, null);
@@ -432,7 +452,7 @@ public class SQLEvalVisitorUtils {
             }
 
             double doubleValue = castToDouble(paramValue);
-            int result = (int) Math.log10(doubleValue);
+            double result = Math.log10(doubleValue);
 
             if (Double.isNaN(result)) {
                 x.putAttribute(EVAL_VALUE, null);
@@ -453,7 +473,7 @@ public class SQLEvalVisitorUtils {
             }
 
             double doubleValue = castToDouble(paramValue);
-            int result = (int) Math.tan(doubleValue);
+            double result = Math.tan(doubleValue);
 
             if (Double.isNaN(result)) {
                 x.putAttribute(EVAL_VALUE, null);
@@ -474,14 +494,14 @@ public class SQLEvalVisitorUtils {
             }
 
             double doubleValue = castToDouble(paramValue);
-            int result = (int) Math.sqrt(doubleValue);
+            double result = Math.sqrt(doubleValue);
 
             if (Double.isNaN(result)) {
                 x.putAttribute(EVAL_VALUE, null);
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("power".equals(methodName)) {
+        } else if ("power".equals(methodName) || "pow".equals(methodName)) {
             if (x.getParameters().size() != 2) {
                 return false;
             }
@@ -518,6 +538,8 @@ public class SQLEvalVisitorUtils {
                 char ch = (char) intValue;
                 x.putAttribute(EVAL_VALUE, Character.toString(ch));
             }
+        } else if ("CURRENT_USER".equals(methodName)) {
+            x.putAttribute(EVAL_VALUE, "CURRENT_USER");
         }
         return false;
     }
@@ -565,7 +587,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLNullExpr x) {
-        x.getAttributes().put(EVAL_VALUE, null);
+        x.getAttributes().put(EVAL_VALUE, EVAL_VALUE_NULL);
         return false;
     }
 
@@ -639,7 +661,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLQueryExpr x) {
-        if (WallVisitorUtils.isSimpleCountTableSource(((SQLQueryExpr) x).getSubQuery())) {
+        if (WallVisitorUtils.isSimpleCountTableSource(null, ((SQLQueryExpr) x).getSubQuery())) {
             x.putAttribute(EVAL_VALUE, 1);
             return false;
         }
@@ -725,6 +747,10 @@ public class SQLEvalVisitorUtils {
 
         if (x.getOperator() == SQLBinaryOperator.Like) {
             if (isAlwayTrueLikePattern(x.getRight())) {
+                final WallSelectQueryContext wallSelectQueryContext = WallVisitorUtils.getWallSelectQueryContext();
+                if (wallSelectQueryContext != null) {
+                    wallSelectQueryContext.setTrueLike(Boolean.TRUE);
+                }
                 x.putAttribute(EVAL_VALUE, Boolean.TRUE);
                 return false;
             }
@@ -778,6 +804,13 @@ public class SQLEvalVisitorUtils {
             wallConditionContext.setConstArithmetic(true);
         }
 
+        leftValue = processValue(leftValue);
+        rightValue = processValue(rightValue);
+
+        if (leftValue == null || rightValue == null) {
+            return false;
+        }
+
         Object value = null;
         switch (x.getOperator()) {
             case Add:
@@ -813,6 +846,14 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Is:
+                if (rightValue == EVAL_VALUE_NULL) {
+                    if (leftValue != null) {
+                        value = (leftValue == EVAL_VALUE_NULL);
+                        x.putAttribute(EVAL_VALUE, value);
+                        break;
+                    }
+                }
+                break;
             case Equality:
                 value = eq(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
@@ -867,6 +908,17 @@ public class SQLEvalVisitorUtils {
         return false;
     }
 
+    @SuppressWarnings("rawtypes")
+    private static Object processValue(Object value) {
+        if (value instanceof List) {
+            List list = (List) value;
+            if (list.size() == 1) {
+                return processValue(list.get(0));
+            }
+        }
+        return value;
+    }
+
     private static boolean isAlwayTrueLikePattern(SQLExpr x) {
         if (x instanceof SQLCharExpr) {
             String text = ((SQLCharExpr) x).getText();
@@ -901,6 +953,9 @@ public class SQLEvalVisitorUtils {
             boolean containsValue = attributes.containsKey(EVAL_VALUE);
             if (!containsValue) {
                 Object value = visitor.getParameters().get(varIndex);
+                if (value == null) {
+                    value = EVAL_VALUE_NULL;
+                }
                 attributes.put(EVAL_VALUE, value);
             }
         }
@@ -921,7 +976,7 @@ public class SQLEvalVisitorUtils {
             return ((Number) val).intValue() == 1;
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(val.getClass() + " not supported.");
     }
 
     public static String castToString(Object val) {
@@ -943,11 +998,15 @@ public class SQLEvalVisitorUtils {
             return (Byte) val;
         }
 
+        if (val instanceof String) {
+            return Byte.parseByte((String) val);
+        }
+
         return ((Number) val).byteValue();
     }
 
     public static Short castToShort(Object val) {
-        if (val == null) {
+        if (val == null || val == EVAL_VALUE_NULL) {
             return null;
         }
 
@@ -955,9 +1014,14 @@ public class SQLEvalVisitorUtils {
             return (Short) val;
         }
 
+        if (val instanceof String) {
+            return Short.parseShort((String) val);
+        }
+
         return ((Number) val).shortValue();
     }
 
+    @SuppressWarnings("rawtypes")
     public static Integer castToInteger(Object val) {
         if (val == null) {
             return null;
@@ -967,9 +1031,29 @@ public class SQLEvalVisitorUtils {
             return (Integer) val;
         }
 
+        if (val instanceof String) {
+            return Integer.parseInt((String) val);
+        }
+
+        if (val instanceof List) {
+            List list = (List) val;
+            if (list.size() == 1) {
+                return castToInteger(list.get(0));
+            }
+        }
+
+        if (val instanceof Boolean) {
+            if (((Boolean) val).booleanValue()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
         return ((Number) val).intValue();
     }
 
+    @SuppressWarnings("rawtypes")
     public static Long castToLong(Object val) {
         if (val == null) {
             return null;
@@ -979,11 +1063,22 @@ public class SQLEvalVisitorUtils {
             return (Long) val;
         }
 
+        if (val instanceof String) {
+            return Long.parseLong((String) val);
+        }
+
+        if (val instanceof List) {
+            List list = (List) val;
+            if (list.size() == 1) {
+                return castToLong(list.get(0));
+            }
+        }
+
         return ((Number) val).longValue();
     }
 
     public static Float castToFloat(Object val) {
-        if (val == null) {
+        if (val == null || val == EVAL_VALUE_NULL) {
             return null;
         }
 
@@ -995,7 +1090,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static Double castToDouble(Object val) {
-        if (val == null) {
+        if (val == null || val == EVAL_VALUE_NULL) {
             return null;
         }
 
@@ -1086,42 +1181,6 @@ public class SQLEvalVisitorUtils {
         return BigDecimal.valueOf(((Number) val).longValue());
     }
 
-    public static Object sum(Object a, Object b) {
-        if (a == null) {
-            return b;
-        }
-
-        if (b == null) {
-            return a;
-        }
-
-        if (a instanceof BigDecimal || b instanceof BigDecimal) {
-            return castToDecimal(a).add(castToDecimal(b));
-        }
-
-        if (a instanceof BigInteger || b instanceof BigInteger) {
-            return castToBigInteger(a).add(castToBigInteger(b));
-        }
-
-        if (a instanceof Long || b instanceof Long) {
-            return castToLong(a) + castToLong(b);
-        }
-
-        if (a instanceof Integer || b instanceof Integer) {
-            return castToInteger(a) + castToInteger(b);
-        }
-
-        if (a instanceof Short || b instanceof Short) {
-            return castToShort(a) + castToShort(b);
-        }
-
-        if (a instanceof Byte || b instanceof Byte) {
-            return castToByte(a) + castToByte(b);
-        }
-
-        throw new IllegalArgumentException();
-    }
-
     public static Object div(Object a, Object b) {
         if (a == null || b == null) {
             return null;
@@ -1129,6 +1188,24 @@ public class SQLEvalVisitorUtils {
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
             return castToDecimal(a).divide(castToDecimal(b));
+        }
+
+        if (a instanceof Double || b instanceof Double) {
+            Double doubleA = castToDouble(a);
+            Double doubleB = castToDouble(b);
+            if (doubleA == null || doubleB == null) {
+                return null;
+            }
+            return doubleA / doubleB;
+        }
+
+        if (a instanceof Float || b instanceof Float) {
+            Float floatA = castToFloat(a);
+            Float floatB = castToFloat(b);
+            if (floatA == null || floatB == null) {
+                return null;
+            }
+            return floatA / floatB;
         }
 
         if (a instanceof BigInteger || b instanceof BigInteger) {
@@ -1151,7 +1228,7 @@ public class SQLEvalVisitorUtils {
             return castToByte(a) / castToByte(b);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static boolean gt(Object a, Object b) {
@@ -1161,6 +1238,10 @@ public class SQLEvalVisitorUtils {
 
         if (b == null) {
             return true;
+        }
+
+        if (a instanceof String || b instanceof String) {
+            return castToString(a).compareTo(castToString(b)) > 0;
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1206,7 +1287,7 @@ public class SQLEvalVisitorUtils {
             return d1.compareTo(d2) > 0;
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static boolean gteq(Object a, Object b) {
@@ -1224,6 +1305,10 @@ public class SQLEvalVisitorUtils {
 
         if (b == null) {
             return false;
+        }
+
+        if (a instanceof String || b instanceof String) {
+            return (castToString(a)).compareTo(castToString(b)) < 0;
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1269,7 +1354,7 @@ public class SQLEvalVisitorUtils {
             return d1.compareTo(d2) < 0;
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static boolean lteq(Object a, Object b) {
@@ -1293,6 +1378,10 @@ public class SQLEvalVisitorUtils {
             return true;
         }
 
+        if (a instanceof String || b instanceof String) {
+            return castToString(a).equals(castToString(b));
+        }
+
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
             return castToDecimal(a).compareTo(castToDecimal(b)) == 0;
         }
@@ -1302,19 +1391,23 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Long || b instanceof Long) {
-            return castToLong(a) == castToLong(b);
+            return castToLong(a).equals(castToLong(b));
         }
 
         if (a instanceof Integer || b instanceof Integer) {
-            return castToInteger(a) == castToInteger(b);
+            return castToInteger(a).equals(castToInteger(b));
         }
 
         if (a instanceof Short || b instanceof Short) {
-            return castToShort(a) == castToShort(b);
+            return castToShort(a).equals(castToShort(b));
+        }
+
+        if (a instanceof Boolean || b instanceof Boolean) {
+            return castToBoolean(a).equals(castToBoolean(b));
         }
 
         if (a instanceof Byte || b instanceof Byte) {
-            return castToByte(a) == castToByte(b);
+            return castToByte(a).equals(castToByte(b));
         }
 
         if (a instanceof Date || b instanceof Date) {
@@ -1332,11 +1425,7 @@ public class SQLEvalVisitorUtils {
             return d1.equals(d2);
         }
 
-        if (a instanceof String || b instanceof String) {
-            return castToString(a).equals(castToString(b));
-        }
-
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static Object add(Object a, Object b) {
@@ -1346,6 +1435,10 @@ public class SQLEvalVisitorUtils {
 
         if (b == null) {
             return a;
+        }
+
+        if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return EVAL_VALUE_NULL;
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1376,6 +1469,13 @@ public class SQLEvalVisitorUtils {
             return castToShort(a) + castToShort(b);
         }
 
+        if (a instanceof Boolean || b instanceof Boolean) {
+            int aI = 0, bI = 0;
+            if (castToBoolean(a)) aI = 1;
+            if (castToBoolean(b)) bI = 1;
+            return aI + bI;
+        }
+
         if (a instanceof Byte || b instanceof Byte) {
             return castToByte(a) + castToByte(b);
         }
@@ -1384,7 +1484,7 @@ public class SQLEvalVisitorUtils {
             return castToString(a) + castToString(b);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static Object sub(Object a, Object b) {
@@ -1394,6 +1494,10 @@ public class SQLEvalVisitorUtils {
 
         if (b == null) {
             return a;
+        }
+
+        if (a instanceof Date || b instanceof Date) {
+            return SQLEvalVisitor.EVAL_ERROR;
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1424,11 +1528,23 @@ public class SQLEvalVisitorUtils {
             return castToShort(a) - castToShort(b);
         }
 
+        if (a instanceof Boolean || b instanceof Boolean) {
+            int aI = 0, bI = 0;
+            if (castToBoolean(a)) aI = 1;
+            if (castToBoolean(b)) bI = 1;
+            return aI - bI;
+        }
+
         if (a instanceof Byte || b instanceof Byte) {
             return castToByte(a) - castToByte(b);
         }
 
-        throw new IllegalArgumentException();
+        if (a instanceof String && b instanceof String) {
+            return castToLong(a) - castToLong(b);
+        }
+
+        // return SQLEvalVisitor.EVAL_ERROR;
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static Object multi(Object a, Object b) {
@@ -1453,14 +1569,21 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Short || b instanceof Short) {
-            return castToShort(a) * castToShort(b);
+            Short shortA = castToShort(a);
+            Short shortB = castToShort(b);
+            
+            if (shortA == null || shortB == null) {
+                return null;
+            }
+            
+            return shortA * shortB;
         }
 
         if (a instanceof Byte || b instanceof Byte) {
             return castToByte(a) * castToByte(b);
         }
 
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
 
     public static boolean like(String input, String pattern) {

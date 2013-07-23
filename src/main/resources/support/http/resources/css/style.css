@@ -4,6 +4,9 @@ body{
 	padding-top: 60px;
 	padding-bottom: 40px;
 }
+a {
+	cursor:pointer;
+}
 #dataTable th > a {
     color: #555555;
 }
@@ -30,4 +33,25 @@ body{
 
 .striped {
 	background-color: #fff;
+}
+
+#dataTable1 th > a {
+    color: #555555;
+}
+#dataTable1 th {
+    background-color: #E5E5E5;
+    border-bottom-color: #FFC40D;
+    color: #555555;
+    cursor: pointer;
+}
+
+
+#dataTable2 th > a {
+    color: #555555;
+}
+#dataTable2 th {
+    background-color: #E5E5E5;
+    border-bottom-color: #FFC40D;
+    color: #555555;
+    cursor: pointer;
 }

@@ -63,6 +63,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     private int                           currentQueryTimeout;
     private int                           currentFetchDirection;
     private int                           currentFetchSize;
+    
+    private boolean pooled = false;
 
     public DruidPooledPreparedStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
         super(conn, holder.getStatement());
@@ -70,35 +72,39 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         this.holder = holder;
         this.sql = holder.getKey().sql;
 
+        pooled = conn.getConnectionHolder().isPoolPreparedStatements();
         // Remember the defaults
-        try {
-            defaultMaxFieldSize = stmt.getMaxFieldSize();
-        } catch (SQLException e) {
-            LOG.error("getMaxFieldSize error", e);
-        }
 
-        try {
-            defaultMaxRows = stmt.getMaxRows();
-        } catch (SQLException e) {
-            LOG.error("getMaxRows error", e);
-        }
+        if (pooled) {
+            try {
+                defaultMaxFieldSize = stmt.getMaxFieldSize();
+            } catch (SQLException e) {
+                LOG.error("getMaxFieldSize error", e);
+            }
 
-        try {
-            defaultQueryTimeout = stmt.getQueryTimeout();
-        } catch (SQLException e) {
-            LOG.error("getMaxRows error", e);
-        }
+            try {
+                defaultMaxRows = stmt.getMaxRows();
+            } catch (SQLException e) {
+                LOG.error("getMaxRows error", e);
+            }
 
-        try {
-            defaultFetchDirection = stmt.getFetchDirection();
-        } catch (SQLException e) {
-            LOG.error("getFetchDirection error", e);
-        }
+            try {
+                defaultQueryTimeout = stmt.getQueryTimeout();
+            } catch (SQLException e) {
+                LOG.error("getMaxRows error", e);
+            }
 
-        try {
-            defaultFetchSize = stmt.getFetchSize();
-        } catch (SQLException e) {
-            LOG.error("getFetchSize error", e);
+            try {
+                defaultFetchDirection = stmt.getFetchDirection();
+            } catch (SQLException e) {
+                LOG.error("getFetchDirection error", e);
+            }
+
+            try {
+                defaultFetchSize = stmt.getFetchSize();
+            } catch (SQLException e) {
+                LOG.error("getFetchSize error", e);
+            }
         }
 
         currentMaxFieldSize = defaultMaxFieldSize;
@@ -163,29 +169,40 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             return;
         }
 
+        boolean connectionClosed = this.conn.isClosed();
         // Reset the defaults
-        if (defaultMaxFieldSize != currentMaxFieldSize) {
-            stmt.setMaxFieldSize(defaultMaxFieldSize);
-            currentMaxFieldSize = defaultMaxFieldSize;
-        }
-        if (defaultMaxRows != currentMaxRows) {
-            stmt.setMaxRows(defaultMaxRows);
-            currentMaxRows = defaultMaxRows;
-        }
-        if (defaultQueryTimeout != currentQueryTimeout) {
-            stmt.setQueryTimeout(defaultQueryTimeout);
-            currentQueryTimeout = defaultQueryTimeout;
-        }
-        if (defaultFetchDirection != currentFetchDirection) {
-            stmt.setFetchDirection(defaultFetchDirection);
-            currentFetchDirection = defaultFetchDirection;
-        }
-        if (defaultFetchSize != currentFetchSize) {
-            stmt.setFetchSize(defaultFetchSize);
-            currentFetchSize = defaultFetchSize;
+        if (pooled && !connectionClosed) {
+            try {
+                if (defaultMaxFieldSize != currentMaxFieldSize) {
+                    stmt.setMaxFieldSize(defaultMaxFieldSize);
+                    currentMaxFieldSize = defaultMaxFieldSize;
+                }
+                if (defaultMaxRows != currentMaxRows) {
+                    stmt.setMaxRows(defaultMaxRows);
+                    currentMaxRows = defaultMaxRows;
+                }
+                if (defaultQueryTimeout != currentQueryTimeout) {
+                    stmt.setQueryTimeout(defaultQueryTimeout);
+                    currentQueryTimeout = defaultQueryTimeout;
+                }
+                if (defaultFetchDirection != currentFetchDirection) {
+                    stmt.setFetchDirection(defaultFetchDirection);
+                    currentFetchDirection = defaultFetchDirection;
+                }
+                if (defaultFetchSize != currentFetchSize) {
+                    stmt.setFetchSize(defaultFetchSize);
+                    currentFetchSize = defaultFetchSize;
+                }
+            } catch (Exception e) {
+                this.conn.handleException(e);
+            }
         }
 
         conn.closePoolableStatement(this);
+    }
+    
+    public boolean isPooled() {
+        return pooled;
     }
 
     void closeInternal() throws SQLException {
@@ -214,7 +231,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
-            resultSetTrace.add(poolableResultSet);
+            addResultSetTrace(poolableResultSet);
 
             return poolableResultSet;
         } catch (Throwable t) {
@@ -1034,16 +1051,16 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         }
 
     }
-    
+
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         if (iface == PreparedStatementHolder.class) {
             return true;
         }
-        
+
         return super.isWrapperFor(iface);
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == PreparedStatementHolder.class) {

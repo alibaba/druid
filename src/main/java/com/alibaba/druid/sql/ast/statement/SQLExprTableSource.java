@@ -29,7 +29,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public SQLExprTableSource(SQLExpr expr){
-        this.expr = expr;
+        this.setExpr(expr);
     }
 
     public SQLExpr getExpr() {
@@ -37,6 +37,9 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 
@@ -51,4 +54,25 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     public void output(StringBuffer buf) {
         this.expr.output(buf);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        SQLExprTableSource other = (SQLExprTableSource) obj;
+        if (expr == null) {
+            if (other.expr != null) return false;
+        } else if (!expr.equals(other.expr)) return false;
+        return true;
+    }
+
 }

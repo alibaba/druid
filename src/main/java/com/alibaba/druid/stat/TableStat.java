@@ -33,6 +33,15 @@ public class TableStat {
     int createCount      = 0;
     int alterCount       = 0;
     int createIndexCount = 0;
+    int dropIndexCount   = 0;
+
+    public int getDropIndexCount() {
+        return dropIndexCount;
+    }
+
+    public void incrementDropIndexCount() {
+        this.dropIndexCount++;
+    }
 
     public int getCreateIndexCount() {
         return createIndexCount;
@@ -154,6 +163,9 @@ public class TableStat {
         }
         if (createIndexCount > 0) {
             buf.append("CreateIndex");
+        }
+        if (dropIndexCount > 0) {
+            buf.append("DropIndex");
         }
 
         return buf.toString();
@@ -366,6 +378,11 @@ public class TableStat {
 
         private String              table;
         private String              name;
+        private boolean             where;
+        private boolean             select;
+        private boolean             groupBy;
+        private boolean             having;
+        private boolean             join;
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -384,6 +401,46 @@ public class TableStat {
 
         public void setTable(String table) {
             this.table = table;
+        }
+
+        public boolean isWhere() {
+            return where;
+        }
+
+        public void setWhere(boolean where) {
+            this.where = where;
+        }
+
+        public boolean isSelect() {
+            return select;
+        }
+
+        public void setSelec(boolean select) {
+            this.select = select;
+        }
+
+        public boolean isGroupBy() {
+            return groupBy;
+        }
+
+        public void setGroupBy(boolean groupBy) {
+            this.groupBy = groupBy;
+        }
+
+        public boolean isHaving() {
+            return having;
+        }
+
+        public boolean isJoin() {
+            return join;
+        }
+
+        public void setJoin(boolean join) {
+            this.join = join;
+        }
+
+        public void setHaving(boolean having) {
+            this.having = having;
         }
 
         public String getName() {
@@ -452,7 +509,7 @@ public class TableStat {
         Merge(16), //
         Truncate(32), //
         Alter(64), //
-        Drop(128);
+        Drop(128), DropIndex(256); //
 
         public final int mark;
 

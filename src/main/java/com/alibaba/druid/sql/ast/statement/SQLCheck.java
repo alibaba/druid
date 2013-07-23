@@ -23,12 +23,23 @@ public class SQLCheck extends SQLConstaintImpl implements SQLTableElement {
     private static final long serialVersionUID = 1L;
 
     private SQLExpr           expr;
+    
+    public SQLCheck() {
+        
+    }
+    
+    public SQLCheck(SQLExpr expr) {
+        this.setExpr(expr);
+    }
 
     public SQLExpr getExpr() {
         return expr;
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 

@@ -26,21 +26,17 @@ import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBitStringLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
-import com.alibaba.druid.sql.ast.expr.SQLDateLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexStringLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntervalLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -54,22 +50,26 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
+import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -78,6 +78,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
@@ -93,10 +94,9 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
@@ -264,27 +264,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLQueryExpr x) {
     }
 
-    public boolean visit(SQLBitStringLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLBitStringLiteralExpr x) {
-    }
-
-    public boolean visit(SQLHexStringLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLHexStringLiteralExpr x) {
-    }
-
-    public boolean visit(SQLDateLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLDateLiteralExpr x) {
-    }
-
     public boolean visit(SQLSelect x) {
         return true;
     }
@@ -304,13 +283,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public void endVisit(SQLExprTableSource x) {
-    }
-
-    public boolean visit(SQLIntervalLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLIntervalLiteralExpr x) {
     }
 
     public boolean visit(SQLOrderBy x) {
@@ -339,13 +311,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public void endVisit(SQLCreateTableStatement x) {
-    }
-
-    public boolean visit(SQLTableElement x) {
-        return true;
-    }
-
-    public void endVisit(SQLTableElement x) {
     }
 
     public boolean visit(SQLColumnDefinition x) {
@@ -402,13 +367,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public void endVisit(SQLCreateViewStatement x) {
-    }
-
-    public boolean visit(SQLUniqueConstraint x) {
-        return true;
-    }
-
-    public void endVisit(SQLUniqueConstraint x) {
     }
 
     public boolean visit(NotNullConstraint x) {
@@ -689,7 +647,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCreateDatabaseStatement x) {
-        
+
     }
 
     @Override
@@ -704,7 +662,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDropIndex x) {
-        
+
     }
 
     @Override
@@ -714,7 +672,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableAddPrimaryKey x) {
-        
+
     }
 
     @Override
@@ -728,20 +686,11 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLColumnPrimaryKey x) {
-        
+
     }
 
     @Override
     public boolean visit(SQLColumnPrimaryKey x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLColumnUniqueIndex x) {
-    }
-
-    @Override
-    public boolean visit(SQLColumnUniqueIndex x) {
         return true;
     }
 
@@ -753,11 +702,11 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public boolean visit(SQLWithSubqueryClause x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLWithSubqueryClause.Entry x) {
     }
-    
+
     @Override
     public boolean visit(SQLWithSubqueryClause.Entry x) {
         return true;
@@ -770,12 +719,12 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCharactorDataType x) {
-        
+
     }
 
     @Override
     public void endVisit(SQLAlterTableAlterColumn x) {
-        
+
     }
 
     @Override
@@ -790,7 +739,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCheck x) {
-        
+
     }
 
     @Override
@@ -800,17 +749,17 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDropForeinKey x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropPrimaryKey x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLAlterTableDropPrimaryKey x) {
-        
+
     }
 
     @Override
@@ -820,7 +769,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDisableKeys x) {
-        
+
     }
 
     @Override
@@ -830,16 +779,86 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableEnableKeys x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLAlterTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableAddForeignKey x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableAddForeignKey x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDisableConstraint x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableDisableConstraint x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableEnableConstraint x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableEnableConstraint x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLColumnCheck x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLColumnCheck x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLExprHint x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLExprHint x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropConstraint x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableDropConstraint x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLUnique x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLUnique x) {
         
     }
 }

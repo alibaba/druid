@@ -23,7 +23,7 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * SQLServerWallPermitFunctionTest
- *
+ * 
  * @author RaymondXiu
  * @version 1.0, 2012-3-18
  * @see
@@ -33,69 +33,72 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
     /**
      * @param name
      */
-    public SQLServerWallPermitFunctionTest(String name) {
+    public SQLServerWallPermitFunctionTest(String name){
         super(name);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see junit.framework.TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-    
+
     public void test01() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT user_name();"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT user_name() FROM X;"));
     }
-    
+
     public final void test_sp_addsrvrolemenber() throws Exception {
-    	Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC master.dbo.sp_addsrvrolemember ‘user’, ‘sysadmin"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC master.dbo.sp_addsrvrolemember ‘user’, ‘sysadmin"));
     }
-    
+
     public final void test_sp_helpdb() throws Exception {
         Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_helpdb master"));
         Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_helpdb pubs"));
     }
-    
+
     public final void test_sp_droplogin() throws Exception {
-    	Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_droplogin ‘user’;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_droplogin ‘user’;"));
     }
+
     public final void test_sp_addlogin() throws Exception {
-    	Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_addlogin ‘user’, ‘pass’; "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_addlogin ‘user’, ‘pass’; "));
     }
-    
+
     public final void test_db_name() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT DB_NAME()"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT DB_NAME(0); "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT DB_NAME() FROM X"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT DB_NAME(0) FROM X; "));
     }
-    
+
     public final void test_host_name() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT HOST_NAME()"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT HOST_NAME() FROM X"));
     }
-    
+
     /**
      * 测试权限结构
+     * 
      * @throws Exception
      */
     public void test_is_srvrolemember() throws Exception {
-    	Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’);"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘dbcreator’);"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘bulkadmin’);"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘diskadmin’);"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘processadmin’);"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘serveradmin’);"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘setupadmin’);"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘securityadmin’);"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’); "));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’, ‘sa’); "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘dbcreator’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘bulkadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘diskadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘processadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘serveradmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘setupadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘securityadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’) FROM X; "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’, ‘sa’) FROM X; "));
     }
-
 
 }

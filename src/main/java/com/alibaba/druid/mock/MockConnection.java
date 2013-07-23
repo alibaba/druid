@@ -53,6 +53,10 @@ public class MockConnection extends ConnectionBase implements Connection {
     private final long      createdTimeMillis    = System.currentTimeMillis();
     private long            lastActiveTimeMillis = System.currentTimeMillis();
 
+    private SQLException    error;
+
+    private String          lastSql;
+
     public MockConnection(){
         this(null, null, null);
     }
@@ -65,6 +69,22 @@ public class MockConnection extends ConnectionBase implements Connection {
         if (driver != null) {
             this.id = driver.generateConnectionId();
         }
+    }
+
+    public String getLastSql() {
+        return lastSql;
+    }
+
+    public void setLastSql(String lastSql) {
+        this.lastSql = lastSql;
+    }
+
+    public SQLException getError() {
+        return error;
+    }
+
+    public void setError(SQLException error) {
+        this.error = error;
     }
 
     public List<Savepoint> getSavepoints() {
@@ -112,9 +132,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public Statement createStatement() throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         return createMockStatement();
     }
@@ -128,53 +146,40 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         return createMockPreparedStatement(sql);
     }
 
     @Override
     public CallableStatement prepareCall(String sql) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         return createMockCallableStatement(sql);
     }
 
     @Override
     public String nativeSQL(String sql) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         return sql;
     }
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         super.setAutoCommit(autoCommit);
     }
 
     @Override
     public void commit() throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
-
+        checkState();
     }
 
     @Override
     public void rollback() throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         this.savepoints.clear();
     }
@@ -201,9 +206,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         MockStatement stmt = createMockStatement();
 
@@ -216,9 +219,7 @@ public class MockConnection extends ConnectionBase implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
                                                                                                       throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         MockPreparedStatement stmt = createMockPreparedStatement(sql);
 
@@ -230,9 +231,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         MockCallableStatement stmt = createMockCallableStatement(sql);
 
@@ -254,9 +253,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public Savepoint setSavepoint() throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         MockSavepoint savepoint = new MockSavepoint();
         savepoint.setSavepointId(this.savepointIdSeed++);
@@ -267,9 +264,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public Savepoint setSavepoint(String name) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         MockSavepoint savepoint = new MockSavepoint();
         savepoint.setSavepointId(this.savepointIdSeed++);
@@ -279,12 +274,19 @@ public class MockConnection extends ConnectionBase implements Connection {
         return savepoint;
     }
 
-    @Override
-    public void rollback(Savepoint savepoint) throws SQLException {
+    public void checkState() throws SQLException {
+        if (error != null) {
+            throw error;
+        }
+
         if (closed) {
             throw new MockConnectionClosedException();
         }
+    }
 
+    @Override
+    public void rollback(Savepoint savepoint) throws SQLException {
+        checkState();
 
         int index = this.savepoints.indexOf(savepoint);
         if (index == -1) {
@@ -297,9 +299,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         if (savepoint == null) {
             throw new SQLException("argument is null");
@@ -315,9 +315,7 @@ public class MockConnection extends ConnectionBase implements Connection {
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
                                                                                                            throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         MockStatement stmt = createMockStatement();
 
@@ -331,9 +329,7 @@ public class MockConnection extends ConnectionBase implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
                                               int resultSetHoldability) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         MockPreparedStatement stmt = createMockPreparedStatement(sql);
 
@@ -354,9 +350,7 @@ public class MockConnection extends ConnectionBase implements Connection {
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
                                          int resultSetHoldability) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         MockCallableStatement stmt = createMockCallableStatement(sql);
 
@@ -376,27 +370,21 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         return createMockPreparedStatement(sql);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         return createMockPreparedStatement(sql);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        if (closed) {
-            throw new MockConnectionClosedException();
-        }
+        checkState();
 
         return createMockPreparedStatement(sql);
     }
@@ -490,6 +478,12 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     public int getNetworkTimeout() throws SQLException {
         throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) throws SQLException {
+        checkState();
+        super.setReadOnly(readOnly);
     }
 
     public void handleSleep() {

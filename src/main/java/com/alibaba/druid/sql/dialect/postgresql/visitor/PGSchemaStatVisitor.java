@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
@@ -258,16 +257,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     public boolean visit(PGSelectQueryBlock x) {
         return this.visit((SQLSelectQueryBlock) x);
     }
-
-	@Override
-	public void endVisit(PGAnalytic x) {
-		
-	}
-
-	@Override
-	public boolean visit(PGAnalytic x) {
-		return false;
-	}
 
     @Override
     public void endVisit(PGParameter x) {

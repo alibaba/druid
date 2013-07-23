@@ -145,10 +145,11 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             return;
         }
 
-        if (holder.isPoolPreparedStatements()) {
+        if (stmt.isPooled()) {
             try {
                 rawStatement.clearParameters();
             } catch (SQLException ex) {
+                this.handleException(ex);
                 if (rawStatement.getConnection().isClosed()) {
                     return;
                 }
@@ -158,7 +159,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         stmt.getPreparedStatementHolder().decrementInUseCount();
-        if (holder.isPoolPreparedStatements()) {
+        if (stmt.isPooled() && holder.isPoolPreparedStatements()) {
             holder.getStatementPool().put(stmt.getPreparedStatementHolder());
 
             stmt.clearResultSet();
@@ -187,6 +188,10 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     }
 
     public void disable(Throwable error) {
+        if (this.holder != null) {
+            this.holder.clearStatementCache();
+        }
+
         this.traceEnable = false;
         this.holder = null;
         this.transactionInfo = null;
@@ -196,22 +201,6 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     public boolean isDisable() {
         return disable;
-    }
-
-    public void discard() {
-        if (this.disable) {
-            return;
-        }
-
-        DruidConnectionHolder holder = this.holder;
-        if (holder == null) {
-            if (dupCloseLogEnable) {
-                LOG.error("dup close");
-            }
-            return;
-        }
-
-        holder.getDataSource().discardConnection(holder.getConnection());
     }
 
     @Override
@@ -292,7 +281,8 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         if (!this.abandoned) {
-            holder.getDataSource().recycle(this);
+            DruidAbstractDataSource dataSource = holder.getDataSource();
+            dataSource.recycle(this);
         }
 
         this.holder = null;
@@ -672,6 +662,14 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         checkState();
 
+        boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
+
+        if (useLocalSessionState) {
+            if (autoCommit == holder.isUnderlyingAutoCommit()) {
+                return;
+            }
+        }
+
         try {
             conn.setAutoCommit(autoCommit);
             holder.setUnderlyingAutoCommit(autoCommit);
@@ -748,7 +746,12 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public Savepoint setSavepoint(String name) throws SQLException {
         checkState();
 
-        return conn.setSavepoint(name);
+        try {
+            return conn.setSavepoint(name);
+        } catch (SQLException ex) {
+            handleException(ex);
+            return null; // never arrive
+        }
     }
 
     @Override
@@ -796,7 +799,12 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public Clob createClob() throws SQLException {
         checkState();
 
-        return conn.createClob();
+        try {
+            return conn.createClob();
+        } catch (SQLException ex) {
+            handleException(ex);
+            return null; // never arrive
+        }
     }
 
     @Override
@@ -823,7 +831,19 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void setReadOnly(boolean readOnly) throws SQLException {
         checkState();
 
-        conn.setReadOnly(readOnly);
+        boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
+        if (useLocalSessionState) {
+            if (readOnly == holder.isUnderlyingReadOnly()) {
+                return;
+            }
+        }
+
+        try {
+            conn.setReadOnly(readOnly);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
+
         holder.setUnderlyingReadOnly(readOnly);
     }
 
@@ -838,7 +858,11 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void setCatalog(String catalog) throws SQLException {
         checkState();
 
-        conn.setCatalog(catalog);
+        try {
+            conn.setCatalog(catalog);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
     }
 
     @Override
@@ -852,7 +876,18 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void setTransactionIsolation(int level) throws SQLException {
         checkState();
 
-        conn.setTransactionIsolation(level);
+        boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
+        if (useLocalSessionState) {
+            if (level == holder.getUnderlyingTransactionIsolation()) {
+                return;
+            }
+        }
+
+        try {
+            conn.setTransactionIsolation(level);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
         holder.setUnderlyingTransactionIsolation(level);
     }
 
@@ -860,7 +895,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public int getTransactionIsolation() throws SQLException {
         checkState();
 
-        return conn.getTransactionIsolation();
+        return holder.getUnderlyingTransactionIsolation();
     }
 
     @Override
@@ -873,8 +908,11 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     @Override
     public void clearWarnings() throws SQLException {
         checkState();
-
-        conn.clearWarnings();
+        try {
+            conn.clearWarnings();
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
     }
 
     @Override
@@ -895,6 +933,13 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void setHoldability(int holdability) throws SQLException {
         checkState();
 
+        boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
+        if (useLocalSessionState) {
+            if (holdability == holder.getUnderlyingHoldability()) {
+                return;
+            }
+        }
+
         conn.setHoldability(holdability);
         holder.setUnderlyingHoldability(holdability);
     }
@@ -910,7 +955,12 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public Savepoint setSavepoint() throws SQLException {
         checkState();
 
-        return conn.setSavepoint();
+        try {
+            return conn.setSavepoint();
+        } catch (SQLException ex) {
+            handleException(ex);
+            return null;
+        }
     }
 
     @Override
@@ -1023,17 +1073,33 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         holder.getStatementEventListeners().remove(listener);
     }
 
+    public Throwable getDisableError() {
+        return disableError;
+    }
+
     public void checkState() throws SQLException {
         if (holder == null) {
-            throw new SQLException("connection holder is null");
+            if (disableError != null) {
+                throw new SQLException("connection holder is null", disableError);
+            } else {
+                throw new SQLException("connection holder is null");
+            }
         }
 
         if (closed) {
-            throw new SQLException("connection closed");
+            if (disableError != null) {
+                throw new SQLException("connection closed", disableError);
+            } else {
+                throw new SQLException("connection closed");
+            }
         }
 
         if (disable) {
-            throw new SQLException("connection disabled", disableError);
+            if (disableError != null) {
+                throw new SQLException("connection disabled", disableError);
+            } else {
+                throw new SQLException("connection disabled");
+            }
         }
     }
 

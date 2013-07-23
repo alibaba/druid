@@ -20,63 +20,13 @@ import java.util.Calendar;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public class JdbcParameter {
+public interface JdbcParameter {
 
     public static final int BinaryInputStream     = 10001;
     public static final int AsciiInputStream      = 10002;
     public static final int CharacterInputStream  = 10003;
     public static final int NCharacterInputStream = 10004;
     public static final int URL                   = 10005;
-
-    private final int       sqlType;
-    private final Object    value;
-    private final long      length;
-    private final Calendar  calendar;
-    private final int       scaleOrLength;
-
-    public JdbcParameter(int sqlType, Object value, long length, Calendar calendar, int scaleOrLength){
-        this.sqlType = sqlType;
-        this.value = value;
-        this.length = length;
-        this.calendar = calendar;
-        this.scaleOrLength = scaleOrLength;
-    }
-
-    public JdbcParameter(int sqlType, Object value, long length, Calendar calendar){
-        this(sqlType, value, -1, null, -1);
-    }
-
-    public JdbcParameter(int sqlType, Object value){
-        this(sqlType, value, -1, null);
-    }
-
-    public JdbcParameter(int sqlType, Object value, long length){
-        this(sqlType, value, length, null);
-    }
-
-    public JdbcParameter(int sqlType, Object value, Calendar calendar){
-        this(sqlType, value, -1, calendar);
-    }
-
-    public int getScaleOrLength() {
-        return scaleOrLength;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public long getLength() {
-        return length;
-    }
-
-    public Calendar getCalendar() {
-        return calendar;
-    }
-
-    public int getSqlType() {
-        return sqlType;
-    }
 
     public static interface TYPE {
 
@@ -89,4 +39,12 @@ public class JdbcParameter {
         public static final int BYTES                 = 10007;
 
     }
+
+    Object getValue();
+
+    long getLength();
+
+    Calendar getCalendar();
+
+    int getSqlType();
 }

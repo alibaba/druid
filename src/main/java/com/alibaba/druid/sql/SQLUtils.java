@@ -39,17 +39,18 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.StringUtils;
+
 
 public class SQLUtils {
 
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
     public static String toSQLString(SQLObject sqlObject, String dbType) {
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return toMySqlString(sqlObject);
-        }
-
-        if (JdbcUtils.H2.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || //
+            JdbcUtils.MARIADB.equals(dbType) || //
+            JdbcUtils.H2.equals(dbType)) {
             return toMySqlString(sqlObject);
         }
 
@@ -139,7 +140,7 @@ public class SQLUtils {
     public static SQLExpr toSQLExpr(String sql) {
         return toSQLExpr(sql, null);
     }
-    
+
     public static String format(String sql, String dbType) {
         return format(sql, dbType, null);
     }
@@ -158,7 +159,7 @@ public class SQLUtils {
     public static String toSQLString(List<SQLStatement> statementList, String dbType) {
         return toSQLString(statementList, dbType, null);
     }
-    
+
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
@@ -183,7 +184,9 @@ public class SQLUtils {
             }
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || //
+            JdbcUtils.MARIADB.equals(dbType) || //
+            JdbcUtils.H2.equals(dbType)) {
             return new MySqlOutputVisitor(out);
         }
 
@@ -194,13 +197,9 @@ public class SQLUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
-        
+
         if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
-        }
-
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlOutputVisitor(out);
         }
 
         return new SQLASTOutputVisitor(out);
@@ -215,7 +214,9 @@ public class SQLUtils {
             }
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || //
+            JdbcUtils.MARIADB.equals(dbType) || //
+            JdbcUtils.H2.equals(dbType)) {
             return new MySqlSchemaStatVisitor();
         }
 
@@ -226,13 +227,9 @@ public class SQLUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerSchemaStatVisitor();
         }
-        
+
         if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerSchemaStatVisitor();
-        }
-
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlSchemaStatVisitor();
         }
 
         return new SchemaStatVisitor();
@@ -246,4 +243,37 @@ public class SQLUtils {
         }
         return stmtList;
     }
+	
+	 /**
+     * @author owenludong.lud
+     * @param  columnName
+     * @param  tableAlias 
+     * @param  pattern if pattern is null,it will be set {%Y-%m-%d %H:%i:%s} as mysql default value and set {yyyy-mm-dd hh24:mi:ss} as oracle default value
+     * @param  dbType  {@link JdbcConstants} if dbType is null ,it will be set the mysql as a default value
+     */
+    public static String buildToDate(String columnName,String tableAlias,String pattern,String dbType){    	
+     	StringBuilder sql = new StringBuilder();    	
+     	if(StringUtils.isEmpty(columnName))
+     		return "";  			
+     	if(StringUtils.isEmpty(dbType))    dbType = JdbcConstants.MYSQL;   
+     	String formatMethod = "";
+     	if(JdbcConstants.MYSQL.equalsIgnoreCase(dbType)){
+     		formatMethod = "STR_TO_DATE";
+     		if(StringUtils.isEmpty(pattern)) pattern = "%Y-%m-%d %H:%i:%s";
+     	}else if(JdbcConstants.ORACLE.equalsIgnoreCase(dbType)){
+     		formatMethod = "TO_DATE";
+     		if(StringUtils.isEmpty(pattern)) pattern = "yyyy-mm-dd hh24:mi:ss";
+     	}else{     		
+     		return "";
+     		//expand date's handle method for other database 
+     	}
+     	sql.append(formatMethod).append("(");        	
+ 		if(!StringUtils.isEmpty(tableAlias))
+ 			sql.append(tableAlias).append("."); 
+ 		sql.append(columnName).append(",");
+ 		sql.append("'");
+ 		sql.append(pattern);
+ 		sql.append("')");     	   	
+     	return sql.toString();
+     }
 }

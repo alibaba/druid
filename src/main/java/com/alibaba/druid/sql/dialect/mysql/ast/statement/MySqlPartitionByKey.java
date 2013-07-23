@@ -20,11 +20,9 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartitioningClause;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByKey extends MySqlObjectImpl implements SQLPartitioningClause {
+public class MySqlPartitionByKey extends MySqlPartitioningClause {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,11 +30,14 @@ public class MySqlPartitionByKey extends MySqlObjectImpl implements SQLPartition
 
     private SQLExpr           partitionCount;
 
+    private boolean           linear;
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, columns);
             acceptChild(visitor, partitionCount);
+            acceptChild(visitor, getPartitions());
         }
         visitor.endVisit(this);
     }
@@ -55,6 +56,14 @@ public class MySqlPartitionByKey extends MySqlObjectImpl implements SQLPartition
 
     public void setColumns(List<SQLName> columns) {
         this.columns = columns;
+    }
+
+    public boolean isLinear() {
+        return linear;
+    }
+
+    public void setLinear(boolean linear) {
+        this.linear = linear;
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
-import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -117,12 +116,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListMultiColumnItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListSingleColumnItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetValueClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -148,8 +142,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleIntervalExpr x);
 
-    void endVisit(SQLObjectCreateExpr x);
-
     void endVisit(OracleOrderBy x);
 
     void endVisit(OracleOuterExpr x);
@@ -174,17 +166,7 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleSelectUnPivot x);
 
-    void endVisit(OracleTableExpr x);
-
     void endVisit(OracleTimestampExpr x);
-
-    void endVisit(OracleUpdateSetListClause x);
-
-    void endVisit(OracleUpdateSetListMultiColumnItem x);
-
-    void endVisit(OracleUpdateSetListSingleColumnItem x);
-
-    void endVisit(OracleUpdateSetValueClause x);
 
     void endVisit(OracleUpdateStatement x);
 
@@ -207,8 +189,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleExtractExpr x);
 
     boolean visit(OracleIntervalExpr x);
-
-    boolean visit(SQLObjectCreateExpr x);
 
     boolean visit(OracleOrderBy x);
 
@@ -234,17 +214,7 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     boolean visit(OracleSelectUnPivot x);
 
-    boolean visit(OracleTableExpr x);
-
     boolean visit(OracleTimestampExpr x);
-
-    boolean visit(OracleUpdateSetListClause x);
-
-    boolean visit(OracleUpdateSetListMultiColumnItem x);
-
-    boolean visit(OracleUpdateSetListSingleColumnItem x);
-
-    boolean visit(OracleUpdateSetValueClause x);
 
     boolean visit(OracleUpdateStatement x);
 

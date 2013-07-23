@@ -27,5 +27,13 @@ public interface WrapperProxy extends Wrapper {
 
     Object getRawObject();
 
+    int getAttributesSize();
+
+    void clearAttributes();
+
     Map<String, Object> getAttributes();
+
+    Object getAttribute(String key);
+
+    void putAttribute(String key, Object value);
 }

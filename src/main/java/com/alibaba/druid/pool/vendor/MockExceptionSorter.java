@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool.vendor;
 
 import java.sql.SQLException;
+import java.util.Properties;
 
 import com.alibaba.druid.mock.MockConnectionClosedException;
 import com.alibaba.druid.pool.ExceptionSorter;
@@ -36,4 +37,7 @@ public class MockExceptionSorter implements ExceptionSorter {
         return false;
     }
 
+    public void configFromProperties(Properties properties) {
+        
+    }
 }

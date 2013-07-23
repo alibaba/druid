@@ -26,18 +26,25 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockResultSetMetaData;
 import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class JdbcUtilsTest extends TestCase {
-
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public void test_print() throws Exception {
         final AtomicInteger nextCount = new AtomicInteger(2);
 

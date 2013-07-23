@@ -120,11 +120,11 @@ public final class DruidStatService implements DruidStatServiceMBean {
         if (url.startsWith("/sql.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getSqlStatDataList(parameters));
         }
-        
+
         if (url.startsWith("/wall.json")) {
-        	return returnJSONResult(RESULT_CODE_SUCCESS, getWallStatMap(parameters));
+            return returnJSONResult(RESULT_CODE_SUCCESS, getWallStatMap(parameters));
         }
-        
+
         if (url.startsWith("/wall-") && url.indexOf(".json") > 0) {
             Integer dataSourceId = StringUtils.subStringToInteger(url, "wall-", ".json");
             Object result = statManagerFacade.getWallStatMap(dataSourceId);
@@ -266,7 +266,8 @@ public final class DruidStatService implements DruidStatServiceMBean {
         List<Map<String, Object>> sortedArray = comparatorOrderBy(array, parameters);
         return sortedArray;
     }
-    
+
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getWallStatMap(Map<String, String> parameters) {
         Integer dataSourceId = null;
 
@@ -274,14 +275,21 @@ public final class DruidStatService implements DruidStatServiceMBean {
         if (dataSourceIdParam != null && dataSourceIdParam.length() > 0) {
             dataSourceId = Integer.parseInt(dataSourceIdParam);
         }
-        
+
         Map<String, Object> result = statManagerFacade.getWallStatMap(dataSourceId);
-        List<Map<String, Object>> sortedArray = comparatorOrderBy((List<Map<String, Object>>)result.get("tables"), parameters);
-        result.put("tables", sortedArray);
-        
-        sortedArray = comparatorOrderBy((List<Map<String, Object>>)result.get("functions"), parameters);
-        result.put("functions", sortedArray);
-        
+
+        if (result != null) {
+            List<Map<String, Object>> tables = (List<Map<String, Object>>) result.get("tables");
+            if (tables != null) {
+                List<Map<String, Object>> sortedArray = comparatorOrderBy(tables, parameters);
+                result.put("tables", sortedArray);
+                sortedArray = comparatorOrderBy((List<Map<String, Object>>) result.get("functions"), parameters);
+                result.put("functions", sortedArray);
+            }
+        } else {
+            result = Collections.emptyMap();
+        }
+
         return result;
     }
 

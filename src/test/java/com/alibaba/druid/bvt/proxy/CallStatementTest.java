@@ -23,8 +23,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
+
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class CallStatementTest extends TestCase {
 
@@ -90,6 +94,8 @@ public class CallStatementTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dropTable();
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
     }
 
     public void test_precall() throws Exception {

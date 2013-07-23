@@ -47,5 +47,6 @@ public class MySqlKillStatement extends MySqlStatementImpl {
 		if (visitor.visit(this)) {
 			acceptChild(visitor, threadId);
 		}
+		visitor.endVisit(this);
 	}
 }

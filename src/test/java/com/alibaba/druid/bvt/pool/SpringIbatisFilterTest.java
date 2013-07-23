@@ -60,14 +60,14 @@ public class SpringIbatisFilterTest extends TestCase {
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE sequence_seed (value INTEGER, name VARCHAR(50))");
+            stmt.execute("CREATE TABLE sequence_seed (value INTEGER, name VARCHAR(50) PRIMARY KEY)");
             stmt.close();
             conn.close();
         }
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE t_User (id BIGINT, name VARCHAR(50))");
+            stmt.execute("CREATE TABLE t_User (id BIGINT PRIMARY KEY, name VARCHAR(50))");
             stmt.close();
             conn.close();
         }

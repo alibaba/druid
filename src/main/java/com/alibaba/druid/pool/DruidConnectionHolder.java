@@ -30,14 +30,14 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public final class DruidConnectionHolder {
-    private final static Log                 LOG                     = LogFactory.getLog(DruidConnectionHolder.class);
-    
+
+    private final static Log                    LOG                      = LogFactory.getLog(DruidConnectionHolder.class);
+
     private final DruidAbstractDataSource       dataSource;
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
@@ -48,7 +48,7 @@ public final class DruidConnectionHolder {
 
     private PreparedStatementPool               statementPool;
 
-    private final List<Statement>               statementTrace           = new ArrayList<Statement>();
+    private final List<Statement>               statementTrace           = new ArrayList<Statement>(2);
 
     private final boolean                       defaultReadOnly;
     private final int                           defaultHoldability;
@@ -60,6 +60,7 @@ public final class DruidConnectionHolder {
     private int                                 underlyingHoldability;
     private int                                 underlyingTransactionIsolation;
     private boolean                             underlyingAutoCommit;
+    private boolean                             discard                  = false;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
 
@@ -167,6 +168,17 @@ public final class DruidConnectionHolder {
         return statementPool;
     }
 
+    public PreparedStatementPool getStatementPoolDirect() {
+        return statementPool;
+    }
+
+    public void clearStatementCache() {
+        if (this.statementPool == null) {
+            return;
+        }
+        this.statementPool.clear();
+    }
+
     public DruidAbstractDataSource getDataSource() {
         return dataSource;
     }
@@ -195,18 +207,22 @@ public final class DruidConnectionHolder {
         // reset default settings
         if (underlyingReadOnly != defaultReadOnly) {
             conn.setReadOnly(defaultReadOnly);
+            underlyingReadOnly = defaultReadOnly;
         }
 
         if (underlyingHoldability != defaultHoldability) {
             conn.setHoldability(defaultHoldability);
+            underlyingHoldability = defaultHoldability;
         }
 
         if (underlyingTransactionIsolation != defaultTransactionIsolation) {
             conn.setTransactionIsolation(defaultTransactionIsolation);
+            underlyingTransactionIsolation = defaultTransactionIsolation;
         }
 
         if (underlyingAutoCommit != defaultAutoCommit) {
             conn.setAutoCommit(defaultAutoCommit);
+            underlyingAutoCommit = defaultAutoCommit;
         }
 
         connectionEventListeners.clear();
@@ -214,11 +230,19 @@ public final class DruidConnectionHolder {
 
         for (Object item : statementTrace.toArray()) {
             Statement stmt = (Statement) item;
-            JdbcUtils.close(stmt);
+            stmt.close();
         }
         statementTrace.clear();
 
         conn.clearWarnings();
+    }
+
+    public boolean isDiscard() {
+        return discard;
+    }
+
+    public void setDiscard(boolean discard) {
+        this.discard = discard;
     }
 
     public String toString() {

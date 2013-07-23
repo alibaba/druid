@@ -24,16 +24,17 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallPermitFunctionTest extends TestCase {
 
     public void test_permitTable() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT User,Password FROM mysql.user"));
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT User,Password FROM `mysql`.`user`"));
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT User,Password FROM \"mysql\".\"user\""));
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT User,Password FROM MYSQL.USER"));
+        Assert.assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM mysql.user"));
+        Assert.assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM `mysql`.`user`"));
+        Assert.assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM \"mysql\".\"user\""));
+        Assert.assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION SELECT User,Password FROM MYSQL.USER"));
     }
-    
+
     public void test_permitTable_subquery() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM mysql.user) a"));
-        Assert.assertFalse(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM `mysql`.`user`) a"));
-        Assert.assertFalse(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM \"mysql\".\"user\") a"));
-        Assert.assertFalse(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM MYSQL.USER) a"));
+        Assert.assertTrue(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM mysql.user) a"));
+        Assert.assertTrue(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM `mysql`.`user`) a"));
+        Assert.assertTrue(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM \"mysql\".\"user\") a"));
+        Assert.assertTrue(WallUtils.isValidateMySql("select * from(SELECT User,Password FROM MYSQL.USER) a"));
     }
+
 }

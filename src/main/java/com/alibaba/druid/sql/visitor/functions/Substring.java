@@ -51,7 +51,7 @@ public class Substring implements Function {
         if (paramSize == 2) {
 
             if (index < 0) {
-                int lastIndex = str.length() + index ;
+                int lastIndex = str.length() + index;
                 return str.substring(lastIndex);
             }
 
@@ -66,15 +66,18 @@ public class Substring implements Function {
         }
 
         int len = ((Number) param2Value).intValue();
-        
+
         String result;
         if (index < 0) {
-            int lastIndex = str.length() + index ;
+            int lastIndex = str.length() + index;
             result = str.substring(lastIndex);
         } else {
             result = str.substring(index - 1);
         }
-        
+
+        if (len > result.length()) {
+            return result;
+        }
         return result.substring(0, len);
     }
 }

@@ -1594,4 +1594,20 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         return openReaderCount;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == ResultSetProxy.class || iface == ResultSetProxyImpl.class) {
+            return (T) this;
+        }
+        
+        return super.unwrap(iface);
+    }
+    
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        if (iface == ResultSetProxy.class || iface == ResultSetProxyImpl.class) {
+            return true;
+        }
+        
+        return super.isWrapperFor(iface);
+    }
 }

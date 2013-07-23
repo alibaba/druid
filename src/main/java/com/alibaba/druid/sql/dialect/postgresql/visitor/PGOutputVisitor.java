@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
@@ -329,7 +327,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         print("INSERT INTO ");
 
-        x.getTableName().accept(this);
+        x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             incrementIndent();
@@ -437,30 +435,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public void endVisit(PGSelectQueryBlock x) {
 
-    }
-
-    @Override
-    public void endVisit(PGAnalytic x) {
-
-    }
-
-    @Override
-    public boolean visit(PGAnalytic x) {
-        print(" OVER (");
-        if (x.getPartitionBy().size() > 0) {
-            int mark = 0;
-            for (SQLExpr e : x.getPartitionBy()) {
-                if (mark++ != 0) {
-                    print(", ");
-                }
-                e.accept(this);
-            }
-        }
-        if (x.getOrderBy() != null) {
-            x.getOrderBy().accept(this);
-        }
-        print(")");
-        return false;
     }
 
     @Override

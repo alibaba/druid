@@ -33,18 +33,26 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.Properties;
 
+import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterEventAdapter;
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class CallableStatementProxyImplTest extends TestCase {
-
+    protected void tearDown() throws Exception {
+        DruidDriver.getProxyDataSources().clear();
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getSqlList().size());
+    }
+    
     public void test_call() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         DataSourceProxy dataSource = new DataSourceProxyImpl(null, config);
@@ -56,7 +64,7 @@ public class CallableStatementProxyImplTest extends TestCase {
         config.getFilters().add(filter);
 
         String sql = "CALL P_0(?, ?)";
-        CallableStatementProxyImpl rawCallStatement = new FakeCallableStatement(null, null, sql, 1001);
+        CallableStatementProxyImpl rawCallStatement = new FakeCallableStatement(new ConnectionProxyImpl(null, null, null, 0), null, sql, 1001);
 
         ConnectionProxy connection = new ConnectionProxyImpl(dataSource, null, new Properties(), 1001);
         CallableStatementProxyImpl cstmt = new CallableStatementProxyImpl(connection, rawCallStatement, sql, 2001);

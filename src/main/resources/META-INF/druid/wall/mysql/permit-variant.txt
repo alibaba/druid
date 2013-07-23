@@ -19,3 +19,4 @@ sql_big_tables
 sql_mode
 tx_isolation
 warning_count
+identity

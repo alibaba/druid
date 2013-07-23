@@ -41,8 +41,8 @@ public class MockStatement extends StatementBase implements MockStatementBase, S
             throw new SQLException();
         }
 
-        if (this.mockConnection != null && this.mockConnection.isClosed()) {
-            throw new MockConnectionClosedException();
+        if (this.mockConnection != null) {
+            mockConnection.checkState();
         }
     }
 
@@ -86,6 +86,7 @@ public class MockStatement extends StatementBase implements MockStatementBase, S
         }
 
         if (mockConnection != null) {
+            mockConnection.setLastSql(sql);
             mockConnection.handleSleep();
         }
 
