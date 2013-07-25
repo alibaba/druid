@@ -18,6 +18,8 @@ package com.alibaba.druid.sql;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
@@ -86,6 +88,10 @@ public class PagerUtils {
             return limitOracle(select, dbType, offset, count);
         }
 
+        if (JdbcConstants.DB2.equals(dbType)) {
+            return limitDB2(select, dbType, offset, count);
+        }
+
         if (query instanceof SQLSelectQueryBlock) {
             return limitQueryBlock(select, dbType, offset, count);
         }
@@ -102,6 +108,53 @@ public class PagerUtils {
         }
 
         throw new UnsupportedOperationException();
+    }
+
+    private static String limitDB2(SQLSelect select, String dbType, int offset, int count) {
+        SQLSelectQuery query = select.getQuery();
+
+        if (query instanceof SQLSelectQueryBlock) {
+            DB2SelectQueryBlock queryBlock = (DB2SelectQueryBlock) query;
+            if (offset <= 0) {
+                queryBlock.setFirst(new SQLNumberExpr(count));
+                return SQLUtils.toSQLString(select, dbType);
+            }
+
+            SQLAggregateExpr aggregateExpr = new SQLAggregateExpr("ROW_NUMBER");
+            SQLOrderBy orderBy = select.getOrderBy();
+            if (orderBy != null) {
+                aggregateExpr.setOver(new SQLOver(orderBy));
+                select.setOrderBy(null);
+            }
+
+            queryBlock.getSelectList().add(new SQLSelectItem(aggregateExpr, "ROWNUM"));
+
+            DB2SelectQueryBlock countQueryBlock = new DB2SelectQueryBlock();
+            countQueryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+
+            countQueryBlock.setFrom(new SQLSubqueryTableSource(select, "XX"));
+
+            SQLBinaryOpExpr gt = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
+                                                     SQLBinaryOperator.GreaterThan, //
+                                                     new SQLNumberExpr(offset));
+            SQLBinaryOpExpr lteq = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
+                                                       SQLBinaryOperator.LessThanOrEqual, //
+                                                       new SQLNumberExpr(count + offset));
+            SQLBinaryOpExpr pageCondition = new SQLBinaryOpExpr(gt, SQLBinaryOperator.BooleanAnd, lteq);
+
+            countQueryBlock.setWhere(pageCondition);
+
+            // DB2SelectQueryBlock offsetQueryBlock = new DB2SelectQueryBlock();
+            // offsetQueryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
+            // offsetQueryBlock.setFrom(new SQLSubqueryTableSource(new SQLSelect(countQueryBlock), "XXX"));
+            // offsetQueryBlock.setWhere(new SQLBinaryOpExpr(new SQLIdentifierExpr("RN"), //
+            // SQLBinaryOperator.GreaterThan, //
+            // new SQLNumberExpr(offset)));
+
+            return SQLUtils.toSQLString(countQueryBlock, dbType);
+        }
+
+        return SQLUtils.toSQLString(select, dbType);
     }
 
     private static String limitOracle(SQLSelect select, String dbType, int offset, int count) {
@@ -227,7 +280,7 @@ public class PagerUtils {
         if (JdbcConstants.SQL_SERVER.equals(dbType)) {
             return new SQLServerSelectQueryBlock();
         }
-        
+
         if (JdbcConstants.DB2.equals(dbType)) {
             return new DB2SelectQueryBlock();
         }

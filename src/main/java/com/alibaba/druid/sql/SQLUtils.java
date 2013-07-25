@@ -63,6 +63,10 @@ public class SQLUtils {
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return toPGString(sqlObject);
         }
+        
+        if (JdbcUtils.DB2.equals(dbType)) {
+            return toDB2String(sqlObject);
+        }
 
         return toSQLServerString(sqlObject);
     }
@@ -106,6 +110,14 @@ public class SQLUtils {
     public static String toPGString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         sqlObject.accept(new PGOutputVisitor(out));
+
+        String sql = out.toString();
+        return sql;
+    }
+    
+    public static String toDB2String(SQLObject sqlObject) {
+        StringBuilder out = new StringBuilder();
+        sqlObject.accept(new DB2OutputVisitor(out));
 
         String sql = out.toString();
         return sql;

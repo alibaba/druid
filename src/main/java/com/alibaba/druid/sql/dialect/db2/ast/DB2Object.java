@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.db2.visitor;
+package com.alibaba.druid.sql.dialect.db2.ast;
 
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 
-public interface DB2ASTVisitor extends SQLASTVisitor {
 
-    boolean visit(DB2SelectQueryBlock x);
-
-    void endVisit(DB2SelectQueryBlock x);
+public interface DB2Object extends SQLObject {
+    void accept0(DB2ASTVisitor visitor);
 }

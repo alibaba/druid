@@ -15,10 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -49,7 +50,7 @@ public class DB2SelectParser extends SQLSelectParser {
         }
 
         accept(Token.SELECT);
-        
+
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
         }
@@ -74,6 +75,17 @@ public class DB2SelectParser extends SQLSelectParser {
         parseWhere(queryBlock);
 
         parseGroupBy(queryBlock);
+        
+        if (lexer.token() == Token.FETCH) {
+            lexer.nextToken();
+            accept(Token.FIRST);
+            SQLExpr first = this.exprParser.primary();
+            queryBlock.setFirst(first);
+            if (identifierEquals("ROW") || identifierEquals("ROWS")) {
+                lexer.nextToken();
+            }
+            accept(Token.ONLY);
+        }
 
         return queryRest(queryBlock);
     }

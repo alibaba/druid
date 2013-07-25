@@ -15,11 +15,46 @@
  */
 package com.alibaba.druid.sql.dialect.db2.ast.stmt;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.DB2Object;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class DB2SelectQueryBlock extends SQLSelectQueryBlock {
+public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Object {
+
+    private SQLExpr           first;
 
     private static final long serialVersionUID = 1L;
 
- 
+    public SQLExpr getFirst() {
+        return first;
+    }
+
+    public void setFirst(SQLExpr first) {
+        this.first = first;
+    }
+    
+    
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof DB2ASTVisitor) {
+            accept0((DB2ASTVisitor) visitor);
+            return;
+        }
+
+        super.accept0(visitor);
+    }
+
+    @Override
+    public void accept0(DB2ASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.selectList);
+            acceptChild(visitor, this.from);
+            acceptChild(visitor, this.where);
+            acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.first);
+        }
+        visitor.endVisit(this);
+    }
 }

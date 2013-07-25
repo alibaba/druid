@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.db2.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -23,6 +25,16 @@ public class DB2SchemaStatVisitor extends SchemaStatVisitor implements DB2ASTVis
     @Override
     public String getDbType() {
         return JdbcUtils.DB2;
+    }
+
+    @Override
+    public boolean visit(DB2SelectQueryBlock x) {
+        return this.visit((SQLSelectQueryBlock) x);
+    }
+
+    @Override
+    public void endVisit(DB2SelectQueryBlock x) {
+        
     }
 
 }
