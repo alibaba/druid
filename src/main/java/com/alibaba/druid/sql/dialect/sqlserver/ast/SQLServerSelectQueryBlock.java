@@ -33,6 +33,9 @@ public class SQLServerSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public void setTop(SQLServerTop top) {
+        if (top != null) {
+            top.setParent(this);
+        }
         this.top = top;
     }
 

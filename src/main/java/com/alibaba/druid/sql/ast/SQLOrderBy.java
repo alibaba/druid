@@ -29,6 +29,12 @@ public class SQLOrderBy extends SQLObjectImpl {
     public SQLOrderBy(){
 
     }
+    
+    public SQLOrderBy(SQLExpr expr) {
+        SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr);
+        item.setParent(this);
+        this.items.add(item);
+    }
 
     public List<SQLSelectOrderByItem> getItems() {
         return this.items;
