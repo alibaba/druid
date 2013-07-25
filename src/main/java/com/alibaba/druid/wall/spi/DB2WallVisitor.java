@@ -1,18 +1,3 @@
-/*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.alibaba.druid.wall.spi;
 
 import java.util.ArrayList;
@@ -40,8 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
@@ -49,13 +33,13 @@ import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
+public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor {
 
     private final WallConfig      config;
     private final WallProvider    provider;
     private final List<Violation> violations = new ArrayList<Violation>();
 
-    public PGWallVisitor(WallProvider provider){
+    public DB2WallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
     }
@@ -125,13 +109,6 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
     @Override
     public boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelct(this, x);
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(PGSelectQueryBlock x) {
         WallVisitorUtils.checkSelelct(this, x);
 
         return true;

@@ -529,9 +529,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.1.33</version>
+			<groupId>com.yammer.metrics</groupId>
+			<artifactId>metrics-core</artifactId>
+			<version>2.2.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

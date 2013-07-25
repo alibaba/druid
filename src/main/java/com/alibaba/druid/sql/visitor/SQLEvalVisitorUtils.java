@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2EvalVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
@@ -166,6 +167,10 @@ public class SQLEvalVisitorUtils {
 
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerEvalVisitor();
+        }
+        
+        if (JdbcUtils.DB2.equals(dbType)) {
+            return new DB2EvalVisitor();
         }
 
         return new SQLEvalVisitorImpl();

@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -225,6 +226,10 @@ public class PagerUtils {
 
         if (JdbcConstants.SQL_SERVER.equals(dbType)) {
             return new SQLServerSelectQueryBlock();
+        }
+        
+        if (JdbcConstants.DB2.equals(dbType)) {
+            return new DB2SelectQueryBlock();
         }
 
         return new SQLSelectQueryBlock();
