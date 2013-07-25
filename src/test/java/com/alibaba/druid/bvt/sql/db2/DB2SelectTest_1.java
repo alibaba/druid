@@ -59,7 +59,8 @@ public class DB2SelectTest_1 extends DB2Test {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
         Assert.assertEquals("SELECT *" //
-                            + "\nFROM DSN81010.EMP", //
+                            + "\nFROM DSN81010.EMP"
+                            + "\nFETCH FIRST 5 ROWS ONLY", //
                             output);
     }
 }
