@@ -44,7 +44,7 @@ public class ParameterizedOutputVisitorUtils {
         if (statementList.size() == 0) {
             return sql;
         }
-        
+
         SQLStatement stmt = statementList.get(0);
 
         StringBuilder out = new StringBuilder();
@@ -62,7 +62,7 @@ public class ParameterizedOutputVisitorUtils {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlParameterizedOutputVisitor(out);
         }
-        
+
         if (JdbcUtils.MARIADB.equals(dbType)) {
             return new MySqlParameterizedOutputVisitor(out);
         }
@@ -74,11 +74,11 @@ public class ParameterizedOutputVisitorUtils {
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return new PGParameterizedOutputVisitor(out);
         }
-        
+
         if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerParameterizedOutputVisitor(out);
         }
-        
+
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2ParameterizedOutputVisitor(out);
         }
@@ -99,16 +99,19 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static SQLBinaryOpExpr merge(SQLBinaryOpExpr x) {
+        SQLExpr left = x.getLeft();
+        SQLExpr right = x.getRight();
         SQLObject parent = x.getParent();
-        if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
+        
+        if (left instanceof SQLLiteralExpr && right instanceof SQLLiteralExpr) {
             if (x.getOperator() == SQLBinaryOperator.Equality || x.getOperator() == SQLBinaryOperator.NotEqual) {
-                x.getLeft().getAttributes().put(ATTR_PARAMS_SKIP, true);
-                x.getRight().getAttributes().put(ATTR_PARAMS_SKIP, true);
+                left.putAttribute(ATTR_PARAMS_SKIP, true);
+                right.putAttribute(ATTR_PARAMS_SKIP, true);
             }
             return x;
         }
 
-        if (x.getRight() instanceof SQLLiteralExpr) {
+        if (right instanceof SQLLiteralExpr) {
             x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), new SQLVariantRefExpr("?"));
             x.setParent(parent);
         }
@@ -141,17 +144,17 @@ public class ParameterizedOutputVisitorUtils {
 
         // ID = ? OR ID = ? => ID = ?
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            if ((x.getLeft() instanceof SQLBinaryOpExpr) && (x.getRight() instanceof SQLBinaryOpExpr)) {
-                SQLBinaryOpExpr left = (SQLBinaryOpExpr) x.getLeft();
-                SQLBinaryOpExpr right = (SQLBinaryOpExpr) x.getRight();
+            if ((left instanceof SQLBinaryOpExpr) && (right instanceof SQLBinaryOpExpr)) {
+                SQLBinaryOpExpr leftBinary = (SQLBinaryOpExpr) x.getLeft();
+                SQLBinaryOpExpr rightBinary = (SQLBinaryOpExpr) x.getRight();
 
-                if (mergeEqual(left, right)) {
-                    return left;
+                if (mergeEqual(leftBinary, rightBinary)) {
+                    return leftBinary;
                 }
 
-                if (isLiteralExpr(left.getLeft()) && left.getOperator() == SQLBinaryOperator.BooleanOr) {
-                    if (mergeEqual(left.getRight(), right)) {
-                        return left;
+                if (isLiteralExpr(leftBinary.getLeft()) && leftBinary.getOperator() == SQLBinaryOperator.BooleanOr) {
+                    if (mergeEqual(leftBinary.getRight(), right)) {
+                        return leftBinary;
                     }
                 }
             }

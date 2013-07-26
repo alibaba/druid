@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
@@ -126,6 +127,13 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
     public boolean visit(SQLSelectQueryBlock x) {
         WallVisitorUtils.checkSelelct(this, x);
 
+        return true;
+    }
+    
+    @Override
+    public boolean visit(DB2SelectQueryBlock x) {
+        WallVisitorUtils.checkSelelct(this, x);
+        
         return true;
     }
 
@@ -222,4 +230,5 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
     public boolean visit(SQLCallStatement x) {
         return false;
     }
+
 }
