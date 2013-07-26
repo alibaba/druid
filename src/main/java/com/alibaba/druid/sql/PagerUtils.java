@@ -200,7 +200,7 @@ public class PagerUtils {
 
         if (query instanceof SQLSelectQueryBlock) {
             OracleSelectQueryBlock queryBlock = (OracleSelectQueryBlock) query;
-            if (select.getOrderBy() == null && offset <= 0) {
+            if (queryBlock.getGroupBy() == null && select.getOrderBy() == null && offset <= 0) {
                 SQLExpr condition = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                         SQLBinaryOperator.LessThanOrEqual, //
                                                         new SQLNumberExpr(count));
