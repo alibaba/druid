@@ -58,6 +58,27 @@ public class WebURIStatValue {
 
     private List<ProfileEntryStatValue> profileEntryStatValueList;
 
+    protected long                      histogram_0_1;
+    protected long                      histogram_1_10;
+    protected long                       histogram_10_100;
+    protected long                       histogram_100_1000;
+    protected int                       histogram_1000_10000;
+    protected int                       histogram_10000_100000;
+    protected int                       histogram_100000_1000000;
+    protected int                       histogram_1000000_more;
+
+    public long[] getHistogram() {
+        return new long[] { histogram_0_1, //
+                histogram_1_10, //
+                histogram_10_100, //
+                histogram_100_1000, //
+                histogram_1000_10000, //
+                histogram_10000_100000, //
+                histogram_100000_1000000, //
+                histogram_1000000_more, //
+        };
+    }
+
     public List<ProfileEntryStatValue> getProfileEntryStatValueList() {
         return profileEntryStatValueList;
     }
@@ -280,6 +301,7 @@ public class WebURIStatValue {
 
         data.put("JdbcResultSetOpenCount", this.getJdbcResultSetOpenCount());
         data.put("JdbcResultSetCloseCount", this.getJdbcResultSetCloseCount());
+        data.put("Histogram", this.getHistogram());
 
         if (this.profileEntryStatValueList != null) {
             int size = profileEntryStatValueList.size();
