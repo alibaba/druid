@@ -31,12 +31,19 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
     public SQLSelectOrderByItem(){
 
     }
+    
+    public SQLSelectOrderByItem(SQLExpr expr){
+        this.setExpr(expr);
+    }
 
     public SQLExpr getExpr() {
         return this.expr;
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 

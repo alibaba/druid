@@ -40,8 +40,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
@@ -49,13 +49,13 @@ import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
+public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor {
 
     private final WallConfig      config;
     private final WallProvider    provider;
     private final List<Violation> violations = new ArrayList<Violation>();
 
-    public PGWallVisitor(WallProvider provider){
+    public DB2WallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
     }
@@ -129,11 +129,11 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
         return true;
     }
-
+    
     @Override
-    public boolean visit(PGSelectQueryBlock x) {
+    public boolean visit(DB2SelectQueryBlock x) {
         WallVisitorUtils.checkSelelct(this, x);
-
+        
         return true;
     }
 
@@ -230,4 +230,5 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
     public boolean visit(SQLCallStatement x) {
         return false;
     }
+
 }

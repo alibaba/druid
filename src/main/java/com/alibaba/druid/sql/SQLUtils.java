@@ -21,6 +21,8 @@ import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
@@ -38,8 +40,8 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
 
@@ -60,6 +62,10 @@ public class SQLUtils {
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return toPGString(sqlObject);
+        }
+        
+        if (JdbcUtils.DB2.equals(dbType)) {
+            return toDB2String(sqlObject);
         }
 
         return toSQLServerString(sqlObject);
@@ -104,6 +110,14 @@ public class SQLUtils {
     public static String toPGString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         sqlObject.accept(new PGOutputVisitor(out));
+
+        String sql = out.toString();
+        return sql;
+    }
+    
+    public static String toDB2String(SQLObject sqlObject) {
+        StringBuilder out = new StringBuilder();
+        sqlObject.accept(new DB2OutputVisitor(out));
 
         String sql = out.toString();
         return sql;
@@ -201,6 +215,10 @@ public class SQLUtils {
         if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
+        
+        if (JdbcUtils.DB2.equals(dbType)) {
+            return new DB2OutputVisitor(out);
+        }
 
         return new SQLASTOutputVisitor(out);
     }
@@ -230,6 +248,10 @@ public class SQLUtils {
 
         if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerSchemaStatVisitor();
+        }
+        
+        if (JdbcUtils.DB2.equals(dbType)) {
+            return new DB2SchemaStatVisitor();
         }
 
         return new SchemaStatVisitor();

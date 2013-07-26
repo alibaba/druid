@@ -34,6 +34,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.wall.spi.DB2WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
@@ -97,6 +98,12 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             provider = new PGWallProvider(config);
+        } else if (JdbcUtils.DB2.equals(dbType)) {
+            if (config == null) {
+                config = new WallConfig(DB2WallProvider.DEFAULT_CONFIG_DIR);
+            }
+            
+            provider = new DB2WallProvider(config);
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }

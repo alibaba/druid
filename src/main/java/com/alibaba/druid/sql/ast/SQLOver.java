@@ -26,6 +26,14 @@ public class SQLOver extends SQLObjectImpl {
 
     protected final List<SQLExpr> partitionBy      = new ArrayList<SQLExpr>();
     protected SQLOrderBy          orderBy;
+    
+    public SQLOver() {
+        
+    }
+    
+    public SQLOver(SQLOrderBy orderBy) {
+        this.setOrderBy(orderBy);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -41,6 +49,9 @@ public class SQLOver extends SQLObjectImpl {
     }
 
     public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
         this.orderBy = orderBy;
     }
 
