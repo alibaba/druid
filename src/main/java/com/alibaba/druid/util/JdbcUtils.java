@@ -353,7 +353,9 @@ public final class JdbcUtils implements JdbcConstants {
             return MYSQL_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return MARIADB_DRIVER;
-        } else if (rawUrl.startsWith("jdbc:oracle:")) {
+        } else if (rawUrl.startsWith("jdbc:oracle:") //
+                || rawUrl.startsWith("JDBC:oracle:")
+                ) {
             return ORACLE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return ALI_ORACLE_DRIVER;
