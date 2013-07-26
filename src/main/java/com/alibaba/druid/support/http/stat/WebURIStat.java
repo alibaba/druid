@@ -102,6 +102,32 @@ public class WebURIStat {
 
     private final static ThreadLocal<WebURIStat>       currentLocal                        = new ThreadLocal<WebURIStat>();
 
+    private volatile long                              histogram_0_1;
+    private volatile long                              histogram_1_10;
+    private volatile long                              histogram_10_100;
+    private volatile long                              histogram_100_1000;
+    private volatile int                               histogram_1000_10000;
+    private volatile int                               histogram_10000_100000;
+    private volatile int                               histogram_100000_1000000;
+    private volatile int                               histogram_1000000_more;
+
+    final static AtomicLongFieldUpdater<WebURIStat>    histogram_0_1_Updater               = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                               "histogram_0_1");
+    final static AtomicLongFieldUpdater<WebURIStat>    histogram_1_10_Updater              = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                               "histogram_1_10");
+    final static AtomicLongFieldUpdater<WebURIStat>    histogram_10_100_Updater            = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                               "histogram_10_100");
+    final static AtomicLongFieldUpdater<WebURIStat>    histogram_100_1000_Updater          = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                               "histogram_100_1000");
+    final static AtomicIntegerFieldUpdater<WebURIStat> histogram_1000_10000_Updater        = AtomicIntegerFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                  "histogram_1000_10000");
+    final static AtomicIntegerFieldUpdater<WebURIStat> histogram_10000_100000_Updater      = AtomicIntegerFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                  "histogram_10000_100000");
+    final static AtomicIntegerFieldUpdater<WebURIStat> histogram_100000_1000000_Updater    = AtomicIntegerFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                  "histogram_100000_1000000");
+    final static AtomicIntegerFieldUpdater<WebURIStat> histogram_1000000_more_Updater      = AtomicIntegerFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                  "histogram_1000000_more");
+
     public WebURIStat(String uri){
         super();
         this.uri = uri;
@@ -144,6 +170,8 @@ public class WebURIStat {
     public void afterInvoke(Throwable error, long nanos) {
         runningCountUpdater.decrementAndGet(this);
         requestTimeNanoUpdater.addAndGet(this, nanos);
+
+        histogramRecord(nanos);
 
         if (error != null) {
             errorCountUpdater.incrementAndGet(this);
@@ -210,6 +238,28 @@ public class WebURIStat {
         }
 
         currentLocal.set(null);
+    }
+
+    private void histogramRecord(long nanos) {
+        final long millis = nanos / 1000 / 1000;
+
+        if (millis < 1) {
+            histogram_0_1_Updater.incrementAndGet(this);
+        } else if (millis < 10) {
+            histogram_1_10_Updater.incrementAndGet(this);
+        } else if (millis < 100) {
+            histogram_10_100_Updater.incrementAndGet(this);
+        } else if (millis < 1000) {
+            histogram_100_1000_Updater.incrementAndGet(this);
+        } else if (millis < 10000) {
+            histogram_1000_10000_Updater.incrementAndGet(this);
+        } else if (millis < 100000) {
+            histogram_10000_100000_Updater.incrementAndGet(this);
+        } else if (millis < 1000000) {
+            histogram_100000_1000000_Updater.incrementAndGet(this);
+        } else {
+            histogram_1000000_more_Updater.incrementAndGet(this);
+        }
     }
 
     public int getRunningCount() {
@@ -364,6 +414,20 @@ public class WebURIStat {
         return profiletat;
     }
 
+    public long[] getHistogramValues() {
+        return new long[] {
+                //
+                histogram_0_1, //
+                histogram_1_10, //
+                histogram_10_100, //
+                histogram_100_1000, //
+                histogram_1000_10000, //
+                histogram_10000_100000, //
+                histogram_100000_1000000, //
+                histogram_1000000_more //
+        };
+    }
+
     public WebURIStatValue getValue(boolean reset) {
         WebURIStatValue val = new WebURIStatValue();
 
@@ -399,11 +463,20 @@ public class WebURIStat {
         val.setLastAccessTimeMillis(get(this, lastAccessTimeMillisUpdater, reset));
 
         val.setProfileEntryStatValueList(this.getProfiletat().getStatValue(reset));
+        
+        val.histogram_0_1 = get(this, histogram_0_1_Updater, reset);
+        val.histogram_1_10 = get(this, histogram_1_10_Updater, reset);
+        val.histogram_10_100 = get(this, histogram_10_100_Updater, reset);
+        val.histogram_100_1000 = get(this, histogram_100_1000_Updater, reset);
+        val.histogram_1000_10000 = get(this, histogram_1000_10000_Updater, reset);
+        val.histogram_10000_100000 = get(this, histogram_10000_100000_Updater, reset);
+        val.histogram_100000_1000000 = get(this, histogram_100000_1000000_Updater, reset);
+        val.histogram_1000000_more = get(this, histogram_1000000_more_Updater, reset);
 
         return val;
     }
 
     public Map<String, Object> getStatData() {
-       return getValue(false).getStatData();
+        return getValue(false).getStatData();
     }
 }
