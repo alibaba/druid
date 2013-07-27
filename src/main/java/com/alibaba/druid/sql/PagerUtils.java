@@ -192,10 +192,8 @@ public class PagerUtils {
 
             SQLAggregateExpr aggregateExpr = new SQLAggregateExpr("ROW_NUMBER");
             SQLOrderBy orderBy = select.getOrderBy();
-            if (orderBy != null) {
-                aggregateExpr.setOver(new SQLOver(orderBy));
-                select.setOrderBy(null);
-            }
+            aggregateExpr.setOver(new SQLOver(orderBy));
+            select.setOrderBy(null);
 
             queryBlock.getSelectList().add(new SQLSelectItem(aggregateExpr, "ROWNUM"));
 
@@ -208,20 +206,23 @@ public class PagerUtils {
 
             return SQLUtils.toSQLString(countQueryBlock, dbType);
         }
+        
 
         SQLServerSelectQueryBlock countQueryBlock = new SQLServerSelectQueryBlock();
         countQueryBlock.getSelectList().add(new SQLSelectItem(new SQLPropertyExpr(new SQLIdentifierExpr("XX"), "*")));
+
+        countQueryBlock.setFrom(new SQLSubqueryTableSource(select, "XX"));
+        
+        if (offset <= 0) {
+            countQueryBlock.setTop(new SQLServerTop(new SQLNumberExpr(count)));
+            return SQLUtils.toSQLString(countQueryBlock, dbType);
+        }
+        
         SQLAggregateExpr aggregateExpr = new SQLAggregateExpr("ROW_NUMBER");
         SQLOrderBy orderBy = select.getOrderBy();
         aggregateExpr.setOver(new SQLOver(orderBy));
         select.setOrderBy(null);
         countQueryBlock.getSelectList().add(new SQLSelectItem(aggregateExpr, "ROWNUM"));
-
-        countQueryBlock.setFrom(new SQLSubqueryTableSource(select, "XX"));
-
-        if (offset <= 0) {
-            return SQLUtils.toSQLString(countQueryBlock, dbType);
-        }
 
         SQLServerSelectQueryBlock offsetQueryBlock = new SQLServerSelectQueryBlock();
         offsetQueryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
