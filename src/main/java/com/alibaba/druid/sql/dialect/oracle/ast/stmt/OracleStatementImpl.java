@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -28,4 +29,8 @@ public abstract class OracleStatementImpl extends SQLStatementImpl implements Or
     }
 
     public abstract void accept0(OracleASTVisitor visitor);
+    
+    public String toString() {
+        return SQLUtils.toOracleString(this);
+    }
 }
