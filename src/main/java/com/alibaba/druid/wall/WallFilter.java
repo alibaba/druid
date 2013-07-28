@@ -59,7 +59,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     public final static String ATTR_SQL_STAT  = "wall.sqlStat";
 
     @Override
-    public void init(DataSourceProxy dataSource) {
+    public synchronized void init(DataSourceProxy dataSource) {
         if (this.dbType == null || this.dbType.trim().length() == 0) {
             if (dataSource != null && dataSource.getDbType() != null) {
                 this.dbType = dataSource.getDbType();
