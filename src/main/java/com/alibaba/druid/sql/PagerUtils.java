@@ -284,9 +284,7 @@ public class PagerUtils {
         SQLSelectItem countItem = createCountItem(dbType);
         countSelectQuery.getSelectList().add(countItem);
 
-        SQLSubqueryTableSource fromSubquery = new SQLSubqueryTableSource(select);
-        fromSubquery.setAlias("ALIAS_COUNT_TABLE");
-        countSelectQuery.setFrom(fromSubquery);
+        countSelectQuery.setFrom(new SQLSubqueryTableSource(select));
 
         SQLSelect countSelect = new SQLSelect(countSelectQuery);
         SQLSelectStatement countStmt = new SQLSelectStatement(countSelect);

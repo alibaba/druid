@@ -37,7 +37,7 @@ public class PagerUtilsTest_Count_MySql_0 extends TestCase {
                             "\nFROM (SELECT type, COUNT(*)" + //
                             "\n\tFROM t" + //
                             "\n\tGROUP BY type" + //
-                            "\n\t) ALIAS_COUNT_TABLE", result);
+                            "\n\t)", result);
     }
 
     public void test_mysql_union_0() throws Exception {
@@ -49,6 +49,6 @@ public class PagerUtilsTest_Count_MySql_0 extends TestCase {
                             "\n\tUNION" + //
                             "\n\tSELECT id, name" + //
                             "\n\tFROM t2" + //
-                            "\n\t) ALIAS_COUNT_TABLE", result);
+                            "\n\t)", result);
     }
 }
