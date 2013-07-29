@@ -21,7 +21,7 @@ public class PagerUtilsTest_Limit_db2_0 extends TestCase {
         String sql = "select * from t";
         String result = PagerUtils.limit(sql, JdbcConstants.DB2, 10, 10);
         Assert.assertEquals("SELECT *"//
-                            + "\nFROM (SELECT *, ROW_NUMBER() AS ROWNUM"//
+                            + "\nFROM (SELECT *, ROW_NUMBER() OVER () AS ROWNUM"//
                             + "\n\tFROM t"//
                             + "\n\t) XX"//
                             + "\nWHERE ROWNUM > 10"//
@@ -32,7 +32,7 @@ public class PagerUtilsTest_Limit_db2_0 extends TestCase {
         String sql = "select * from t where age > 100";
         String result = PagerUtils.limit(sql, JdbcConstants.DB2, 20, 10);
         Assert.assertEquals("SELECT *"//
-                            + "\nFROM (SELECT *, ROW_NUMBER() AS ROWNUM"//
+                            + "\nFROM (SELECT *, ROW_NUMBER() OVER () AS ROWNUM"//
                             + "\n\tFROM t"//
                             + "\n\tWHERE age > 100"//
                             + "\n\t) XX"//
