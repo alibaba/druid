@@ -92,7 +92,8 @@ public class CharTypes {
      * @return false if {@link LayoutCharacters#EOI}
      */
     public static boolean isWhitespace(char c) {
-        return c <= whitespaceFlags.length && whitespaceFlags[c];
+        return (c <= whitespaceFlags.length && whitespaceFlags[c]) //
+                || c == '　'; // Chinese space
     }
 
 }
