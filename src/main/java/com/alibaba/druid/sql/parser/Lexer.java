@@ -205,7 +205,7 @@ public class Lexer {
             scanChar();
         }
 
-        if (ch == ',') {
+        if (ch == ',' || ch == '，') {
             scanChar();
             token = COMMA;
             return;
@@ -315,6 +315,7 @@ public class Lexer {
                     scanNumber();
                     return;
                 case ',':
+                case '，':
                     scanChar();
                     token = COMMA;
                     return;
