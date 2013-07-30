@@ -566,20 +566,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleSelectQueryBlock x) {
-        print("SELECT ");
+        print("SELECT ");       
 
+        if (x.getHints().size() > 0) {           
+            printAndAccept(x.getHints(), ", ");           
+        }
+        
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
             print("ALL ");
         } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
             print("DISTINCT ");
         } else if (SQLSetQuantifier.UNIQUE == x.getDistionOption()) {
             print("UNIQUE ");
-        }
-
-        if (x.getHints().size() > 0) {
-            print("/*+");
-            printAndAccept(x.getHints(), ", ");
-            print("*/ ");
         }
 
         printSelectList(x.getSelectList());
