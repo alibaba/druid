@@ -52,13 +52,17 @@ public class ParameterizedOutputVisitorUtils {
         SQLStatement stmt = statementList.get(0);
 
         StringBuilder out = new StringBuilder();
-        SQLASTOutputVisitor visitor = createParameterizedOutputVisitor(out, dbType);
+        ParameterizedVisitor visitor = createParameterizedOutputVisitor(out, dbType);
         stmt.accept(visitor);
-
+        
+        if (visitor.getReplaceCount() == 0) {
+            return sql;
+        }
+        
         return out.toString();
     }
 
-    public static SQLASTOutputVisitor createParameterizedOutputVisitor(Appendable out, String dbType) {
+    public static ParameterizedVisitor createParameterizedOutputVisitor(Appendable out, String dbType) {
         if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleParameterizedOutputVisitor(out);
         }
@@ -91,12 +95,23 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLInListExpr x) {
+        List<SQLExpr> targetList = x.getTargetList();
+
+        boolean changed = true;
+        if (targetList.size() == 1 && targetList.get(0) instanceof SQLVariantRefExpr) {
+            changed = false;
+        }
+
         x.getExpr().accept(v);
 
         if (x.isNot()) {
             v.print(" NOT IN (?)");
         } else {
             v.print(" IN (?)");
+        }
+
+        if (changed) {
+            v.incrementReplaceCunt();
         }
 
         return false;
@@ -140,26 +155,21 @@ public class ParameterizedOutputVisitorUtils {
             return x;
         }
 
-        if (right instanceof SQLLiteralExpr) {
-            x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), new SQLVariantRefExpr("?"));
-            x.setParent(parent);
-        }
-
-        if (x.getLeft() instanceof SQLLiteralExpr) {
-            x = new SQLBinaryOpExpr(new SQLVariantRefExpr("?"), x.getOperator(), x.getRight());
-            x.setParent(parent);
-        }
-
         for (;;) {
             if (x.getRight() instanceof SQLBinaryOpExpr) {
                 if (x.getLeft() instanceof SQLBinaryOpExpr) {
                     SQLBinaryOpExpr leftBinaryExpr = (SQLBinaryOpExpr) x.getLeft();
                     if (leftBinaryExpr.getRight().equals(x.getRight())) {
                         x = leftBinaryExpr;
+                        v.incrementReplaceCunt();
                         continue;
                     }
                 }
-                x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge(v, (SQLBinaryOpExpr) x.getRight()));
+                SQLExpr mergedRight = merge(v, (SQLBinaryOpExpr) x.getRight());
+                if (mergedRight != x.getRight()) {
+                    x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), mergedRight);
+                    v.incrementReplaceCunt();
+                }
                 x.setParent(parent);
             }
 
@@ -167,7 +177,11 @@ public class ParameterizedOutputVisitorUtils {
         }
 
         if (x.getLeft() instanceof SQLBinaryOpExpr) {
-            x = new SQLBinaryOpExpr(merge(v, (SQLBinaryOpExpr) x.getLeft()), x.getOperator(), x.getRight());
+            SQLExpr mergedLeft = merge(v, (SQLBinaryOpExpr) x.getLeft());
+            if (mergedLeft != x.getLeft()) {
+                x = new SQLBinaryOpExpr(mergedLeft, x.getOperator(), x.getRight());
+                v.incrementReplaceCunt();
+            }
             x.setParent(parent);
         }
 
@@ -178,12 +192,14 @@ public class ParameterizedOutputVisitorUtils {
                 SQLBinaryOpExpr rightBinary = (SQLBinaryOpExpr) x.getRight();
 
                 if (mergeEqual(leftBinary, rightBinary)) {
+                    v.incrementReplaceCunt();
                     return leftBinary;
                 }
 
                 if (isLiteralExpr(leftBinary.getLeft()) //
                     && leftBinary.getOperator() == SQLBinaryOperator.BooleanOr) {
                     if (mergeEqual(leftBinary.getRight(), right)) {
+                        v.incrementReplaceCunt();
                         return leftBinary;
                     }
                 }
