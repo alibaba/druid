@@ -20,20 +20,20 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 
 public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements ParameterizedVisitor {
+
     private int replaceCount;
-    
-    public ParameterizedOutputVisitor() {
-        this (new StringBuilder());
+
+    public ParameterizedOutputVisitor(){
+        this(new StringBuilder());
     }
 
     public ParameterizedOutputVisitor(Appendable appender){
         super(appender);
     }
-    
+
     public int getReplaceCount() {
         return this.replaceCount;
     }
@@ -47,15 +47,9 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements P
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        x = ParameterizedOutputVisitorUtils.merge(x);
+        x = ParameterizedOutputVisitorUtils.merge(this, x);
 
         return super.visit(x);
-    }
-
-    public boolean visit(SQLNullExpr x) {
-        print('?');
-        incrementReplaceCunt();
-        return false;
     }
 
     public boolean visit(SQLIntegerExpr x) {
@@ -63,9 +57,7 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements P
             return super.visit(x);
         }
 
-        print('?');
-        incrementReplaceCunt();
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLNumberExpr x) {
@@ -73,9 +65,7 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements P
             return super.visit(x);
         }
 
-        print('?');
-        incrementReplaceCunt();
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLCharExpr x) {
@@ -83,9 +73,7 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements P
             return super.visit(x);
         }
 
-        print('?');
-        incrementReplaceCunt();
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLNCharExpr x) {
@@ -93,8 +81,6 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements P
             return super.visit(x);
         }
 
-        print('?');
-        incrementReplaceCunt();
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 }

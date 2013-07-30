@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
@@ -50,15 +49,9 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        x = ParameterizedOutputVisitorUtils.merge(x);
+        x = ParameterizedOutputVisitorUtils.merge(this, x);
 
         return super.visit(x);
-    }
-
-    public boolean visit(SQLNullExpr x) {
-        print('?');
-        incrementReplaceCunt();
-        return false;
     }
 
     public boolean visit(SQLIntegerExpr x) {
@@ -66,9 +59,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
             return super.visit(x);
         }
 
-        print('?');
-        incrementReplaceCunt();
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLNumberExpr x) {
@@ -76,9 +67,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
             return super.visit(x);
         }
 
-        print('?');
-        incrementReplaceCunt();
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLCharExpr x) {
@@ -86,9 +75,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
             return super.visit(x);
         }
 
-        print('?');
-        incrementReplaceCunt();
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLNCharExpr x) {
@@ -96,9 +83,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
             return super.visit(x);
         }
 
-        print('?');
-        incrementReplaceCunt();
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
 }

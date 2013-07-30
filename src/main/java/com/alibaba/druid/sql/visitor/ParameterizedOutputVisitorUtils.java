@@ -22,8 +22,12 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
@@ -86,7 +90,7 @@ public class ParameterizedOutputVisitorUtils {
         return new ParameterizedOutputVisitor(out);
     }
 
-    public static boolean visit(SQLASTOutputVisitor v, SQLInListExpr x) {
+    public static boolean visit(ParameterizedVisitor v, SQLInListExpr x) {
         x.getExpr().accept(v);
 
         if (x.isNot()) {
@@ -98,13 +102,38 @@ public class ParameterizedOutputVisitorUtils {
         return false;
     }
 
-    public static SQLBinaryOpExpr merge(SQLBinaryOpExpr x) {
+    public static boolean visit(ParameterizedVisitor v, SQLIntegerExpr x) {
+        v.print('?');
+        v.incrementReplaceCunt();
+        return false;
+    }
+
+    public static boolean visit(ParameterizedVisitor v, SQLNumberExpr x) {
+        v.print('?');
+        v.incrementReplaceCunt();
+        return false;
+    }
+
+    public static boolean visit(ParameterizedVisitor v, SQLCharExpr x) {
+        v.print('?');
+        v.incrementReplaceCunt();
+        return false;
+    }
+
+    public static boolean visit(ParameterizedVisitor v, SQLNCharExpr x) {
+        v.print('?');
+        v.incrementReplaceCunt();
+        return false;
+    }
+
+    public static SQLBinaryOpExpr merge(ParameterizedVisitor v, SQLBinaryOpExpr x) {
         SQLExpr left = x.getLeft();
         SQLExpr right = x.getRight();
         SQLObject parent = x.getParent();
-        
+
         if (left instanceof SQLLiteralExpr && right instanceof SQLLiteralExpr) {
-            if (x.getOperator() == SQLBinaryOperator.Equality || x.getOperator() == SQLBinaryOperator.NotEqual) {
+            if (x.getOperator() == SQLBinaryOperator.Equality //
+                || x.getOperator() == SQLBinaryOperator.NotEqual) {
                 left.putAttribute(ATTR_PARAMS_SKIP, true);
                 right.putAttribute(ATTR_PARAMS_SKIP, true);
             }
@@ -130,7 +159,7 @@ public class ParameterizedOutputVisitorUtils {
                         continue;
                     }
                 }
-                x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge((SQLBinaryOpExpr) x.getRight()));
+                x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge(v, (SQLBinaryOpExpr) x.getRight()));
                 x.setParent(parent);
             }
 
@@ -138,7 +167,7 @@ public class ParameterizedOutputVisitorUtils {
         }
 
         if (x.getLeft() instanceof SQLBinaryOpExpr) {
-            x = new SQLBinaryOpExpr(merge((SQLBinaryOpExpr) x.getLeft()), x.getOperator(), x.getRight());
+            x = new SQLBinaryOpExpr(merge(v, (SQLBinaryOpExpr) x.getLeft()), x.getOperator(), x.getRight());
             x.setParent(parent);
         }
 
@@ -152,7 +181,8 @@ public class ParameterizedOutputVisitorUtils {
                     return leftBinary;
                 }
 
-                if (isLiteralExpr(leftBinary.getLeft()) && leftBinary.getOperator() == SQLBinaryOperator.BooleanOr) {
+                if (isLiteralExpr(leftBinary.getLeft()) //
+                    && leftBinary.getOperator() == SQLBinaryOperator.BooleanOr) {
                     if (mergeEqual(leftBinary.getRight(), right)) {
                         return leftBinary;
                     }
