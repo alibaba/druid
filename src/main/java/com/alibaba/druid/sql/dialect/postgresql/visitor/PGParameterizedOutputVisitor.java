@@ -23,14 +23,26 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
-public class PGParameterizedOutputVisitor extends PGOutputVisitor {
-    public PGParameterizedOutputVisitor() {
-        this (new StringBuilder());
+public class PGParameterizedOutputVisitor extends PGOutputVisitor implements ParameterizedVisitor {
+
+    private int replaceCount;
+
+    public PGParameterizedOutputVisitor(){
+        this(new StringBuilder());
     }
-    
+
     public PGParameterizedOutputVisitor(Appendable appender){
         super(appender);
+    }
+
+    public int getReplaceCount() {
+        return this.replaceCount;
+    }
+
+    public void incrementReplaceCunt() {
+        replaceCount++;
     }
 
     public boolean visit(SQLInListExpr x) {
@@ -45,6 +57,7 @@ public class PGParameterizedOutputVisitor extends PGOutputVisitor {
 
     public boolean visit(SQLNullExpr x) {
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -54,6 +67,7 @@ public class PGParameterizedOutputVisitor extends PGOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -63,6 +77,7 @@ public class PGParameterizedOutputVisitor extends PGOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -72,6 +87,7 @@ public class PGParameterizedOutputVisitor extends PGOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -81,6 +97,7 @@ public class PGParameterizedOutputVisitor extends PGOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 

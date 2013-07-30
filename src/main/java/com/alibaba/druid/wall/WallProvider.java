@@ -227,7 +227,12 @@ public abstract class WallProvider {
 
             WallSqlStat wallStat = whiteList.get(sql);
             if (wallStat == null) {
-                String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+                String mergedSql;
+                try {
+                    mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+                } catch (Exception ex) {
+                    mergedSql = sql;
+                }
                 wallStat = sqlList.get(mergedSql);
                 if (wallStat == null) {
                     wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
@@ -259,7 +264,12 @@ public abstract class WallProvider {
 
             WallSqlStat wallStat = blackList.get(sql);
             if (wallStat == null) {
-                String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+                String mergedSql;
+                try {
+                    mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+                } catch (Exception ex) {
+                    mergedSql = sql;
+                }
                 wallStat = sqlList.get(mergedSql);
                 if (wallStat == null) {
                     wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
@@ -289,7 +299,7 @@ public abstract class WallProvider {
 
         return Collections.<String> unmodifiableSet(hashSet);
     }
-    
+
     public Set<String> getSqlList() {
         Set<String> hashSet = new HashSet<String>();
         lock.readLock().lock();
@@ -352,11 +362,11 @@ public abstract class WallProvider {
             if (whiteList != null) {
                 whiteList = null;
             }
-            
+
             if (blackList != null) {
                 blackList = null;
             }
-            
+
             if (sqlList != null) {
                 sqlList = null;
             }

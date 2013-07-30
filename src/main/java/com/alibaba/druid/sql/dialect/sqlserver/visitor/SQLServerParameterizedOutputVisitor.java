@@ -23,11 +23,22 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
-public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor {
+public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor implements ParameterizedVisitor {
+
+    private int replaceCount;
 
     public SQLServerParameterizedOutputVisitor(Appendable appender){
         super(appender);
+    }
+
+    public int getReplaceCount() {
+        return this.replaceCount;
+    }
+
+    public void incrementReplaceCunt() {
+        replaceCount++;
     }
 
     public boolean visit(SQLInListExpr x) {
@@ -42,6 +53,7 @@ public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor 
 
     public boolean visit(SQLNullExpr x) {
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -51,6 +63,7 @@ public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor 
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -60,6 +73,7 @@ public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor 
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -69,6 +83,7 @@ public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor 
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -78,6 +93,7 @@ public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor 
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 }

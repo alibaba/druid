@@ -901,20 +901,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getValuesList().size() != 0) {
             println();
-            print("VALUES ");
-            if (x.getValuesList().size() > 1) {
-                incrementIndent();
-            }
-            for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
-                if (i != 0) {
-                    print(",");
-                    println();
-                }
-                x.getValuesList().get(i).accept(this);
-            }
-            if (x.getValuesList().size() > 1) {
-                decrementIndent();
-            }
+            printValuesList(x);
         }
 
         if (x.getQuery() != null) {
@@ -937,6 +924,23 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         return false;
+    }
+
+    protected void printValuesList(MySqlInsertStatement x) {
+        print("VALUES ");
+        if (x.getValuesList().size() > 1) {
+            incrementIndent();
+        }
+        for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
+            if (i != 0) {
+                print(",");
+                println();
+            }
+            x.getValuesList().get(i).accept(this);
+        }
+        if (x.getValuesList().size() > 1) {
+            decrementIndent();
+        }
     }
 
     @Override

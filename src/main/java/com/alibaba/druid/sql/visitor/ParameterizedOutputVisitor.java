@@ -23,13 +23,23 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 
-public class ParameterizedOutputVisitor extends SQLASTOutputVisitor {
+public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements ParameterizedVisitor {
+    private int replaceCount;
+    
     public ParameterizedOutputVisitor() {
         this (new StringBuilder());
     }
 
     public ParameterizedOutputVisitor(Appendable appender){
         super(appender);
+    }
+    
+    public int getReplaceCount() {
+        return this.replaceCount;
+    }
+
+    public void incrementReplaceCunt() {
+        replaceCount++;
     }
 
     public boolean visit(SQLInListExpr x) {
@@ -44,6 +54,7 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor {
 
     public boolean visit(SQLNullExpr x) {
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -53,6 +64,7 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -62,6 +74,7 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -71,6 +84,7 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -80,6 +94,7 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 }

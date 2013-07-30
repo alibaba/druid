@@ -23,19 +23,30 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
-public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
+public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implements ParameterizedVisitor {
 
-    public OracleParameterizedOutputVisitor() {
-        this (new StringBuilder());
+    private int replaceCount;
+
+    public OracleParameterizedOutputVisitor(){
+        this(new StringBuilder());
     }
 
     public OracleParameterizedOutputVisitor(Appendable appender){
         super(appender);
     }
-    
+
     public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi){
-        super (appender, printPostSemi);
+        super(appender, printPostSemi);
+    }
+
+    public int getReplaceCount() {
+        return this.replaceCount;
+    }
+
+    public void incrementReplaceCunt() {
+        replaceCount++;
     }
 
     public boolean visit(SQLInListExpr x) {
@@ -50,6 +61,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
 
     public boolean visit(SQLNullExpr x) {
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -59,6 +71,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -68,6 +81,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -77,6 +91,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -86,6 +101,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 

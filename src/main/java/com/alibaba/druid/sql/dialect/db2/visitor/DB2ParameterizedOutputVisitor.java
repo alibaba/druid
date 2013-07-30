@@ -23,8 +23,11 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
-public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor {
+public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements ParameterizedVisitor {
+
+    private int replaceCount;
 
     public DB2ParameterizedOutputVisitor(){
         this(new StringBuilder());
@@ -32,6 +35,14 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor {
 
     public DB2ParameterizedOutputVisitor(Appendable appender){
         super(appender);
+    }
+
+    public int getReplaceCount() {
+        return this.replaceCount;
+    }
+
+    public void incrementReplaceCunt() {
+        replaceCount++;
     }
 
     public boolean visit(SQLInListExpr x) {
@@ -46,6 +57,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor {
 
     public boolean visit(SQLNullExpr x) {
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -55,6 +67,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -64,6 +77,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -73,6 +87,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -82,6 +97,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
