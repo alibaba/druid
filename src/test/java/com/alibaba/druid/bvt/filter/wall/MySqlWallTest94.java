@@ -29,15 +29,15 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest93 extends TestCase {
+public class MySqlWallTest94 extends TestCase {
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         
         Assert.assertTrue(provider.checkValid(//
-        "desc tablename"));
+        "select * from test having 1=1"));
 
-        Assert.assertEquals(0, provider.getTableStats().size());
+        Assert.assertEquals(1, provider.getTableStats().size());
     }
 
 }
