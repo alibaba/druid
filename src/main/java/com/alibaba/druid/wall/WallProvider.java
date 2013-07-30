@@ -35,6 +35,7 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.LRUCache;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.violation.ErrorCode;
@@ -45,13 +46,15 @@ public abstract class WallProvider {
 
     private LRUCache<String, WallSqlStat>                 whiteList;
 
-    private int                                           MAX_SQL_LENGTH          = 2048;                                             // 1k
+    private int                                           MAX_SQL_LENGTH          = 2048;                                              // 1k
 
-    private int                                           whiteSqlMaxSize         = 500;                                              // 1k
+    private int                                           whiteSqlMaxSize         = 500;                                               // 1k
 
     private LRUCache<String, WallSqlStat>                 blackList;
 
-    private int                                           blackSqlMaxSize         = 100;                                              // 1k
+    private int                                           blackSqlMaxSize         = 100;                                               // 1k
+
+    private LRUCache<String, WallSqlStat>                 sqlList;
 
     protected final WallConfig                            config;
 
@@ -59,8 +62,14 @@ public abstract class WallProvider {
 
     private static final ThreadLocal<Boolean>             privileged              = new ThreadLocal<Boolean>();
 
-    private final ConcurrentMap<String, WallFunctionStat> functionStats           = new ConcurrentHashMap<String, WallFunctionStat>(16, 0.75f, 1);
-    private final ConcurrentMap<String, WallTableStat>    tableStats              = new ConcurrentHashMap<String, WallTableStat>(16, 0.75f, 1);
+    private final ConcurrentMap<String, WallFunctionStat> functionStats           = new ConcurrentHashMap<String, WallFunctionStat>(
+                                                                                                                                    16,
+                                                                                                                                    0.75f,
+                                                                                                                                    1);
+    private final ConcurrentMap<String, WallTableStat>    tableStats              = new ConcurrentHashMap<String, WallTableStat>(
+                                                                                                                                 16,
+                                                                                                                                 0.75f,
+                                                                                                                                 1);
 
     public final WallDenyStat                             commentDeniedStat       = new WallDenyStat();
 
@@ -102,6 +111,16 @@ public abstract class WallProvider {
         return this.functionStats;
     }
 
+    public WallSqlStat getSqlStat(String sql) {
+        WallSqlStat sqlStat = this.getWhiteSql(sql);
+
+        if (sqlStat == null) {
+            sqlStat = this.getBlackSql(sql);
+        }
+
+        return sqlStat;
+    }
+
     public WallTableStat getTableStat(String tableName) {
         String lowerCaseName = tableName.toLowerCase();
         if (lowerCaseName.startsWith("`") && lowerCaseName.endsWith("`")) {
@@ -109,6 +128,54 @@ public abstract class WallProvider {
         }
 
         return getTableStatWithLowerName(lowerCaseName);
+    }
+
+    public void addUpdateCount(WallSqlStat sqlStat, long updateCount) {
+        Map<String, WallSqlTableStat> sqlTableStats = sqlStat.getTableStats();
+        if (sqlTableStats == null) {
+            return;
+        }
+
+        for (Map.Entry<String, WallSqlTableStat> entry : sqlTableStats.entrySet()) {
+            String tableName = entry.getKey();
+            WallTableStat tableStat = this.getTableStat(tableName);
+            if (tableStat == null) {
+                continue;
+            }
+
+            WallSqlTableStat sqlTableStat = entry.getValue();
+
+            if (sqlTableStat.getDeleteCount() > 0) {
+                tableStat.addDeleteDataCount(updateCount);
+            } else if (sqlTableStat.getUpdateCount() > 0) {
+                tableStat.addUpdateDataCount(updateCount);
+            } else if (sqlTableStat.getInsertCount() > 0) {
+                tableStat.addInsertDataCount(updateCount);
+            }
+        }
+    }
+
+    public void addFetchRowCount(WallSqlStat sqlStat, long fetchRowCount) {
+        sqlStat.addAndGetEffectRowCount(fetchRowCount);
+
+        Map<String, WallSqlTableStat> sqlTableStats = sqlStat.getTableStats();
+        if (sqlTableStats == null) {
+            return;
+        }
+
+        for (Map.Entry<String, WallSqlTableStat> entry : sqlTableStats.entrySet()) {
+            String tableName = entry.getKey();
+            WallTableStat tableStat = this.getTableStat(tableName);
+            if (tableStat == null) {
+                continue;
+            }
+
+            WallSqlTableStat sqlTableStat = entry.getValue();
+
+            if (sqlTableStat.getSelectCount() > 0) {
+                tableStat.addFetchRowCount(fetchRowCount);
+            }
+        }
     }
 
     public WallTableStat getTableStatWithLowerName(String lowerCaseName) {
@@ -154,9 +221,19 @@ public abstract class WallProvider {
                 whiteList = new LRUCache<String, WallSqlStat>(whiteSqlMaxSize);
             }
 
+            if (sqlList == null) {
+                sqlList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize + whiteSqlMaxSize);
+            }
+
             WallSqlStat wallStat = whiteList.get(sql);
             if (wallStat == null) {
-                wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
+                String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+                wallStat = sqlList.get(mergedSql);
+                if (wallStat == null) {
+                    wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
+                    sqlList.put(mergedSql, wallStat);
+                }
+
                 wallStat.incrementAndGetExecuteCount();
                 whiteList.put(sql, wallStat);
             }
@@ -176,9 +253,19 @@ public abstract class WallProvider {
                 blackList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize);
             }
 
+            if (sqlList == null) {
+                sqlList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize + whiteSqlMaxSize);
+            }
+
             WallSqlStat wallStat = blackList.get(sql);
             if (wallStat == null) {
-                wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
+                String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+                wallStat = sqlList.get(mergedSql);
+                if (wallStat == null) {
+                    wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
+                    sqlList.put(mergedSql, wallStat);
+                }
+
                 wallStat.incrementAndGetExecuteCount();
                 blackList.put(sql, wallStat);
             }
@@ -195,6 +282,20 @@ public abstract class WallProvider {
         try {
             if (whiteList != null) {
                 hashSet.addAll(whiteList.keySet());
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        return Collections.<String> unmodifiableSet(hashSet);
+    }
+    
+    public Set<String> getSqlList() {
+        Set<String> hashSet = new HashSet<String>();
+        lock.readLock().lock();
+        try {
+            if (sqlList != null) {
+                hashSet.addAll(sqlList.keySet());
             }
         } finally {
             lock.readLock().unlock();
@@ -246,7 +347,22 @@ public abstract class WallProvider {
     }
 
     public void clearCache() {
-        clearWhiteList();
+        lock.writeLock().lock();
+        try {
+            if (whiteList != null) {
+                whiteList = null;
+            }
+            
+            if (blackList != null) {
+                blackList = null;
+            }
+            
+            if (sqlList != null) {
+                sqlList = null;
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     public void clearWhiteList() {
@@ -627,11 +743,11 @@ public abstract class WallProvider {
     public long getHardCheckCount() {
         return hardCheckCount.get();
     }
-    
+
     public long getViolationEffectRowCount() {
         return violationEffectRowCount.get();
     }
-    
+
     public void addViolationEffectRowCount(long rowCount) {
         violationEffectRowCount.addAndGet(rowCount);
     }
