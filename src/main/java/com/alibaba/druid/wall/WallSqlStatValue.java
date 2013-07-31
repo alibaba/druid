@@ -23,7 +23,8 @@ public class WallSqlStatValue {
     private String  sql;
     private String  sqlSample;
     private long    executeCount;
-    private long    effectRowCount;
+    private long    fetchRowCount;
+    private long    updateCount;
     private boolean syntaxError;
     private String  violationMessage;
 
@@ -55,12 +56,20 @@ public class WallSqlStatValue {
         this.executeCount = executeCount;
     }
 
-    public long getEffectRowCount() {
-        return effectRowCount;
+    public long getFetchRowCount() {
+        return fetchRowCount;
     }
 
-    public void setEffectRowCount(long effectRowCount) {
-        this.effectRowCount = effectRowCount;
+    public void setFetchRowCount(long fetchRowCount) {
+        this.fetchRowCount = fetchRowCount;
+    }
+
+    public long getUpdateCount() {
+        return updateCount;
+    }
+
+    public void setUpdateCount(long updateCount) {
+        this.updateCount = updateCount;
     }
 
     public boolean isSyntaxError() {
@@ -86,8 +95,18 @@ public class WallSqlStatValue {
             sqlStatMap.put("sample", sqlSample);
         }
         sqlStatMap.put("executeCount", getExecuteCount());
-        sqlStatMap.put("effectRowCount", getEffectRowCount());
-        sqlStatMap.put("violationMessage", getViolationMessage());
+
+        if (fetchRowCount > 0) {
+            sqlStatMap.put("fetchRowCount", fetchRowCount);
+        }
+
+        if (updateCount > 0) {
+            sqlStatMap.put("updateCount", updateCount);
+        }
+
+        if (violationMessage != null) {
+            sqlStatMap.put("violationMessage", violationMessage);
+        }
 
         return sqlStatMap;
     }

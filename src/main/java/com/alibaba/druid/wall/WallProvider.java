@@ -143,6 +143,8 @@ public abstract class WallProvider {
     }
 
     public void addUpdateCount(WallSqlStat sqlStat, long updateCount) {
+        sqlStat.addUpdateCount(updateCount);
+        
         Map<String, WallSqlTableStat> sqlTableStats = sqlStat.getTableStats();
         if (sqlTableStats == null) {
             return;
@@ -168,7 +170,7 @@ public abstract class WallProvider {
     }
 
     public void addFetchRowCount(WallSqlStat sqlStat, long fetchRowCount) {
-        sqlStat.addAndGetEffectRowCount(fetchRowCount);
+        sqlStat.addAndFetchRowCount(fetchRowCount);
 
         Map<String, WallSqlTableStat> sqlTableStats = sqlStat.getTableStats();
         if (sqlTableStats == null) {

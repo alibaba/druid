@@ -25,13 +25,15 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 public class WallSqlStat {
 
     private volatile long                            executeCount;
-    private volatile long                            effectRowCount;
+    private volatile long                            fetchRowCount;
+    private volatile long                            updateCount;
 
-    final static AtomicLongFieldUpdater<WallSqlStat> executeCountUpdater   = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
-                                                                                                               "executeCount");
-    final static AtomicLongFieldUpdater<WallSqlStat> effectRowCountUpdater = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
-                                                                                                               "effectRowCount");
-
+    final static AtomicLongFieldUpdater<WallSqlStat> executeCountUpdater  = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
+                                                                                                              "executeCount");
+    final static AtomicLongFieldUpdater<WallSqlStat> fetchRowCountUpdater = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
+                                                                                                              "fetchRowCount");
+    final static AtomicLongFieldUpdater<WallSqlStat> updateCountUpdater   = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
+                                                                                                              "updateCount");
     private final Map<String, WallSqlTableStat>      tableStats;
 
     private final List<Violation>                    violations;
@@ -71,16 +73,24 @@ public class WallSqlStat {
         return executeCount;
     }
 
-    public long incrementAndGetEffectRowCount() {
-        return effectRowCountUpdater.incrementAndGet(this);
+    public long incrementAndGetFetchRowCount() {
+        return fetchRowCountUpdater.incrementAndGet(this);
     }
 
-    public long addAndGetEffectRowCount(long delta) {
-        return effectRowCountUpdater.addAndGet(this, delta);
+    public long addAndFetchRowCount(long delta) {
+        return fetchRowCountUpdater.addAndGet(this, delta);
     }
 
     public long getEffectRowCount() {
-        return effectRowCount;
+        return fetchRowCount;
+    }
+
+    public long getUpdateCount() {
+        return updateCount;
+    }
+
+    public void addUpdateCount(long delta) {
+        updateCountUpdater.addAndGet(this, delta);
     }
 
     public Map<String, WallSqlTableStat> getTableStats() {
@@ -103,7 +113,8 @@ public class WallSqlStat {
         final WallSqlStatValue statValue = new WallSqlStatValue();
 
         statValue.setExecuteCount(get(this, executeCountUpdater, reset));
-        statValue.setEffectRowCount(get(this, effectRowCountUpdater, reset));
+        statValue.setFetchRowCount(get(this, fetchRowCountUpdater, reset));
+        statValue.setUpdateCount(get(this, updateCountUpdater, reset));
         statValue.setSyntaxError(this.syntaxError);
         statValue.setSqlSample(sample);
         if (violations.size() > 0) {

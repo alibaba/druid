@@ -164,7 +164,7 @@ public class WallTableStatValue {
     public void setFetchRowCount(long fetchRowCount) {
         this.fetchRowCount = fetchRowCount;
     }
-    
+
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         toMap(map);
@@ -172,6 +172,8 @@ public class WallTableStatValue {
     }
 
     public Map<String, Object> toMap(Map<String, Object> map) {
+        map.put("name", name);
+
         if (selectCount > 0) {
             map.put("selectCount", selectCount);
         }
