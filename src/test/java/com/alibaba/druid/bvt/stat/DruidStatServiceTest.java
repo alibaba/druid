@@ -60,7 +60,7 @@ public class DruidStatServiceTest extends TestCase {
         dataSource = new DruidDataSource();
 
         dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setFilters("stat");
+        dataSource.setFilters("mergeStat");
         dataSource.setTestOnBorrow(false);
 
         dataSource.init();

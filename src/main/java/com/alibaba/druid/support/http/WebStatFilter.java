@@ -65,6 +65,7 @@ public class WebStatFilter implements Filter {
     public static final String           PARAM_NAME_EXCLUSIONS             = "exclusions";
     public static final String           PARAM_NAME_PRINCIPAL_SESSION_NAME = "principalSessionName";
     public static final String           PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "principalCookieName";
+    public static final String           PARAM_NAME_REAL_IP_HEADER         = "realIpHeader";
 
     public final static int              DEFAULT_MAX_STAT_SESSION_COUNT    = 1000 * 100;
 
@@ -86,6 +87,7 @@ public class WebStatFilter implements Filter {
 
     private String                       principalSessionName;
     private String                       principalCookieName;
+    private String                       realIpHeader;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
@@ -232,12 +234,23 @@ public class WebStatFilter implements Filter {
 
             sessionStat.setUserAgent(userAgent);
 
-            String ip = DruidWebUtils.getRemoteAddr(request);
+            String ip = getRemoteAddress(request);
 
             sessionStat.addRemoteAddress(ip);
         }
 
         return sessionStat;
+    }
+
+    protected String getRemoteAddress(HttpServletRequest request) {
+        String ip = null;
+        if (this.realIpHeader != null && this.realIpHeader.length() != 0) {
+            ip = request.getHeader(realIpHeader);
+        }
+        if (ip == null || ip.length() == 0) {
+            ip = DruidWebUtils.getRemoteAddr(request);
+        }
+        return ip;
     }
 
     public String getSessionId(HttpServletRequest httpRequest) {
@@ -375,6 +388,17 @@ public class WebStatFilter implements Filter {
                     this.sessionStatMaxCount = Integer.parseInt(param);
                 } catch (NumberFormatException e) {
                     LOG.error("WebStatFilter Parameter '" + PARAM_NAME_SESSION_STAT_ENABLE + "' config error", e);
+                }
+            }
+        }
+
+        // realIpHeader
+        {
+            String param = config.getInitParameter(PARAM_NAME_REAL_IP_HEADER);
+            if (param != null) {
+                param = param.trim();
+                if (param.length() != 0) {
+                    this.realIpHeader = param;
                 }
             }
         }

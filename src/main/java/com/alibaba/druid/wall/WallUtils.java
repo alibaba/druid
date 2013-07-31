@@ -15,12 +15,23 @@
  */
 package com.alibaba.druid.wall;
 
+import com.alibaba.druid.wall.spi.DB2WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallUtils {
+    public static boolean isValidateDB2(String sql) {
+        DB2WallProvider provider = new DB2WallProvider();
+        return provider.checkValid(sql);
+    }
+
+    public static boolean isValidateDB2(String sql, WallConfig config) {
+        DB2WallProvider provider = new DB2WallProvider(config);
+        return provider.checkValid(sql);
+    }
+    
     public static boolean isValidatePostgres(String sql) {
         PGWallProvider provider = new PGWallProvider();
         return provider.checkValid(sql);

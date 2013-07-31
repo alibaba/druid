@@ -100,6 +100,9 @@ public class StringUtils {
     }
     
     public static int lowerHashCode(String text) {
+        if (text == null) {
+            return 0;
+        }
 //        return text.toLowerCase().hashCode();
         int h = 0;
         for (int i = 0; i < text.length(); ++i) {

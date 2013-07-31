@@ -41,7 +41,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -58,13 +57,25 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     private final WallConfig      config;
     private final WallProvider    provider;
-    private final List<Violation> violations = new ArrayList<Violation>();
+    private final List<Violation> violations  = new ArrayList<Violation>();
+    private boolean               sqlModified = false;
 
     public SQLServerWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
     }
+    
+    @Override
+    public boolean isSqlModified() {
+        return sqlModified;
+    }
 
+    @Override
+    public void setSqlModified(boolean sqlModified) {
+        this.sqlModified = sqlModified;
+    }
+
+    @Override
     public WallProvider getProvider() {
         return provider;
     }
@@ -74,6 +85,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         return this.config;
     }
 
+    @Override
     public void addViolation(Violation violation) {
         this.violations.add(violation);
     }
@@ -304,10 +316,6 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     @Override
     public boolean visit(SQLSetStatement x) {
         return false;
-    }
-
-    public boolean visit(MySqlReplaceStatement x) {
-        return true;
     }
 
     @Override

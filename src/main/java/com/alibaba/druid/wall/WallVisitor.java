@@ -23,14 +23,18 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public interface WallVisitor extends SQLASTVisitor {
 
     WallConfig getConfig();
-    
+
     WallProvider getProvider();
 
     List<Violation> getViolations();
-    
+
     void addViolation(Violation violation);
-    
+
     boolean isDenyTable(String name);
 
     String toSQL(SQLObject obj);
+
+    boolean isSqlModified();
+
+    void setSqlModified(boolean sqlModified);
 }

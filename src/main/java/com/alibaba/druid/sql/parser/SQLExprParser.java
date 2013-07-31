@@ -68,6 +68,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 
 public class SQLExprParser extends SQLParser {
 
@@ -291,7 +292,7 @@ public class SQLExprParser extends SQLParser {
 
                     return primaryRest(sqlExpr);
                 } else {
-                    SQLExpr restExpr = expr();
+                    SQLExpr restExpr = equality();
                     sqlExpr = new SQLNotExpr(restExpr);
                 }
                 break;
@@ -1295,6 +1296,17 @@ public class SQLExprParser extends SQLParser {
 
     public SQLPrimaryKey parsePrimaryKey() {
         throw new ParserException("TODO");
+    }
+
+    public SQLUnique parseUnique() {
+        accept(Token.UNIQUE);
+
+        SQLUnique unique = new SQLUnique();
+        accept(Token.LPAREN);
+        exprList(unique.getColumns());
+        accept(Token.RPAREN);
+
+        return unique;
     }
 
     public SQLAssignItem parseAssignItem() {

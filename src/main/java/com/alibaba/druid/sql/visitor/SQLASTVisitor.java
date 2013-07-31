@@ -95,6 +95,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
@@ -449,4 +450,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableDropConstraint x);
 
     void endVisit(SQLAlterTableDropConstraint x);
+    
+    boolean visit(SQLUnique x);
+
+    void endVisit(SQLUnique x);
 }

@@ -53,7 +53,10 @@ public class CharTypes {
     }
 
     public static boolean isFirstIdentifierChar(char c) {
-        return c > firstIdentifierFlags.length || firstIdentifierFlags[c];
+       if (c <= firstIdentifierFlags.length) {
+           return firstIdentifierFlags[c];
+       }
+        return c != '　' && c != '，';
     }
 
     private final static boolean[] identifierFlags = new boolean[256];
@@ -74,7 +77,10 @@ public class CharTypes {
     }
 
     public static boolean isIdentifierChar(char c) {
-        return c > identifierFlags.length || identifierFlags[c];
+        if (c <= identifierFlags.length) {
+            return identifierFlags[c];
+        }
+        return c != '　' && c != '，';
     }
 
     private final static boolean[] whitespaceFlags = new boolean[256];
@@ -92,7 +98,8 @@ public class CharTypes {
      * @return false if {@link LayoutCharacters#EOI}
      */
     public static boolean isWhitespace(char c) {
-        return c <= whitespaceFlags.length && whitespaceFlags[c];
+        return (c <= whitespaceFlags.length && whitespaceFlags[c]) //
+               || c == '　'; // Chinese space
     }
 
 }

@@ -54,6 +54,7 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.vendor.DB2ExceptionSorter;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
@@ -497,6 +498,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initStackTrace = IOUtils.toString(Thread.currentThread().getStackTrace());
 
             this.id = DruidDriver.createDataSourceId();
+            if (this.id > 1) {
+                long delta = (this.id - 1) * 100000;
+                this.connectionIdSeed.addAndGet(delta);
+                this.statementIdSeed.addAndGet(delta);
+                this.resultSetIdSeed.addAndGet(delta);
+                this.transactionIdSeed.addAndGet(delta);
+            }
 
             if (this.dbType == null || this.dbType.length() == 0) {
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
@@ -846,9 +854,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private void initExceptionSorter() {
         String realDriverClassName = driver.getClass().getName();
-        if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
+        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER)) {
             this.exceptionSorter = new MySqlExceptionSorter();
-        } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
+        } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)) {
             this.exceptionSorter = new OracleExceptionSorter();
         } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
             this.exceptionSorter = new InformixExceptionSorter();
@@ -858,6 +866,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
             this.exceptionSorter = new MockExceptionSorter();
+        } else if (realDriverClassName.contains("DB2")) {
+            this.exceptionSorter = new DB2ExceptionSorter();
         }
     }
 
@@ -1317,10 +1327,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 empty.signal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {
+                    String errorMessage = "loopWaitCount " + i + ", wait millis " + (nanos - estimate) / (1000 * 1000)
+                                          + ", active " + activeCount;
+
                     if (this.createError == null) {
-                        throw new GetConnectionTimeoutException(createError);
+                        throw new GetConnectionTimeoutException(errorMessage, createError);
                     } else {
-                        throw new GetConnectionTimeoutException();
+                        throw new GetConnectionTimeoutException(errorMessage);
                     }
                 }
 
@@ -1354,11 +1367,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
+                    String errorMessage = "loopWaitCount " + i + ", wait millis " + (nanos - estimate) / (1000 * 1000)
+                                          + ", active " + activeCount;
                     if (createError != null) {
-                        throw new GetConnectionTimeoutException(createError);
+                        throw new GetConnectionTimeoutException(errorMessage, createError);
                     } else {
-                        throw new GetConnectionTimeoutException("loopWaitCount " + i + ", wait millis "
-                                                                + (nanos - estimate) / (1000 * 1000));
+                        throw new GetConnectionTimeoutException(errorMessage);
                     }
                 }
             }
@@ -1831,11 +1845,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         try {
             final int checkCount = poolingCount - minIdle;
+            final long currentTimeMillis = System.currentTimeMillis();
             for (int i = 0; i < checkCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
 
                 if (checkTime) {
-                    long idleMillis = System.currentTimeMillis() - connection.getLastActiveTimeMillis();
+                    long idleMillis = currentTimeMillis - connection.getLastActiveTimeMillis();
                     if (idleMillis >= minEvictableIdleTimeMillis) {
                         evictList.add(connection);
                     } else {

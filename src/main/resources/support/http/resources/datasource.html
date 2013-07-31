@@ -5,11 +5,14 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+		<script src="js/doT.js" type="text/javascript" charset="utf8"></script>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
     	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
+		
     	<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
@@ -21,109 +24,318 @@
         		</div>
       		</div> 
     	</div>
+    	<script id="datasource-tmpl" type="text/template">
+			{{~ it.Content :datasourceNow:i  }}
+			<ul class="nav nav-tabs" id="datasourceTab">
+					<li class="active">
+						<a href="datasource.html#dstab{{=datasourceNow.Identity}}">DataSource-{{=datasourceNow.Identity}}</a>
+					</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="dstab{{=datasourceNow.Identity}}">
+					<h4>
+						Basic Info For DataSource-{{=datasourceNow.Identity}}<a href="datasource-{{=datasourceNow.Identity}}.json" target="_blank"  >View JSON API</a>
+					</h4>
+					<table class="table table-bordered" style="background-color: #fff">
+						<tbody>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="UserName">UserName</span></td>
+								<td>{{=datasourceNow.UserName}}</td>
+								<td  class="lang"  langKey="UserNameDesc">Specify the username used when creating a new connection.</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="URL">URL</span></td>
+								<td>{{=datasourceNow.URL}}</td>
+								<td  class="lang"  langKey="URLDesc">The JDBC driver connection URL</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="DbType">DbType</span></td>
+								<td>{{=datasourceNow.DbType}}</td>
+								<td  class="lang"  langKey="DbTypeDesc">database type</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="DriverClassName">DriverClassName</span></td>
+								<td>{{=datasourceNow.DriverClassName}}</td>
+								<td  class="lang"  langKey="DriverClassNameDesc">The fully qualifed name of the JDBC driver class</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="FilterClassNames">FilterClassNames</span></td>
+								<td>{{=datasourceNow.FilterClassNames}}</td>
+								<td  class="lang"  langKey="FilterClassNamesDesc">All the fully qualifed name of the filter classes</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="TestOnBorrow">TestOnBorrow</span></td>
+								<td>{{=datasourceNow.TestOnBorrow}}</td>
+								<td  class="lang"  langKey="TestOnBorrowDesc">	Test or not when borrow a connection</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="TestWhileIdle">TestWhileIdle</span></td>
+								<td>{{=datasourceNow.TestWhileIdle}}</td>
+								<td  class="lang"  langKey="TestWhileIdleDesc">Test or not when a connection is idle for a while</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="TestOnReturn">TestOnReturn</span></td>
+								<td>{{=datasourceNow.TestOnReturn}}</td>
+								<td  class="lang"  langKey="TestOnReturnDesc">Test or not when return a connection</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="InitialSize">InitialSize</span></td>
+								<td>{{=datasourceNow.InitialSize}}</td>
+								<td  class="lang"  langKey="InitialSizeDesc">The size of datasource connections to create when initial a datasource</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="MinIdle">MinIdle</span></td>
+								<td>{{=datasourceNow.MinIdle}}</td>
+								<td  class="lang"  langKey="MinIdleDesc">The minimum number of connections a pool should hold. </td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="MaxActive">MaxActive</span></td>
+								<td>{{=datasourceNow.MaxActive}}</td>
+								<td  class="lang"  langKey="MaxActiveDesc">The maximum number of connections for a pool</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="QueryTimeout">QueryTimeout</span></td>
+								<td>{{=datasourceNow.QueryTimeout}}</td>
+								<td  class="lang"  langKey="QueryTimeoutDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="TransactionQueryTimeout">TransactionQueryTimeout</span></td>
+								<td>{{=datasourceNow.TransactionQueryTimeout}}</td>
+								<td  class="lang"  langKey="TransactionQueryTimeoutDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="LoginTimeout">LoginTimeout</span></td>
+								<td>{{=datasourceNow.LoginTimeout}}</td>
+								<td  class="lang"  langKey="LoginTimeoutDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="ValidConnectionCheckerClassName">ValidConnectionCheckerClassName</span></td>
+								<td>{{=datasourceNow.ValidConnectionCheckerClassName}}</td>
+								<td  class="lang"  langKey="ValidConnectionCheckerClassNameDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="ExceptionSorterClassName">ExceptionSorterClassName</span></td>
+								<td>{{=datasourceNow.ExceptionSorterClassName}}</td>
+								<td  class="lang"  langKey="ExceptionSorterClassNameDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="DefaultAutoCommit">DefaultAutoCommit</span></td>
+								<td>{{=datasourceNow.DefaultAutoCommit}}</td>
+								<td  class="lang"  langKey="DefaultAutoCommitDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="DefaultReadOnly">DefaultReadOnly</span></td>
+								<td>{{=datasourceNow.DefaultReadOnly}}</td>
+								<td  class="lang"  langKey="DefaultReadOnlyDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="DefaultTransactionIsolation">DefaultTransactionIsolation</span></td>
+								<td>{{=datasourceNow.DefaultTransactionIsolation}}</td>
+								<td  class="lang"  langKey="DefaultTransactionIsolationDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="NotEmptyWaitCount">NotEmptyWaitCount</span></td>
+								<td>{{=datasourceNow.NotEmptyWaitCount}}</td>
+								<td  class="lang"  langKey="NotEmptyWaitCountDesc">Total times for wait to get a connection</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="NotEmptyWaitMillis">NotEmptyWaitMillis</span></td>
+								<td>{{=datasourceNow.NotEmptyWaitMillis}}</td>
+								<td  class="lang"  langKey="NotEmptyWaitMillisDesc">Total millins for wait to get a connection</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="WaitThreadCount">WaitThreadCount</span></td>
+								<td>{{=datasourceNow.WaitThreadCount}}</td>
+								<td  class="lang"  langKey="WaitThreadCountDesc">The current waiting thread count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="StartTransactionCount">StartTransactionCount</span></td>
+								<td>{{=datasourceNow.StartTransactionCount}}</td>
+								<td  class="lang"  langKey="StartTransactionCountDesc">The count of start transaction</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="TransactionHistogram">TransactionHistogram</span></td>
+								<td>{{=datasourceNow.TransactionHistogram}}</td>
+								<td  class="lang"  langKey="TransactionHistogramDesc">The histogram values of transaction time, [0-10 ms, 10-100 ms, 100-1 s, 1-10 s, 10-100 s, >100 s]</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PoolingCount">PoolingCount</span></td>
+								<td>{{=datasourceNow.PoolingCount}}</td>
+								<td  class="lang"  langKey="PoolingCountDesc">The current usefull connection count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PoolingPeak">PoolingPeak</span></td>
+								<td>{{=datasourceNow.PoolingPeak}}</td>
+								<td  class="lang"  langKey="PoolingPeakDesc">The usefull connection peak count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PoolingPeakTime">PoolingPeakTime</span></td>
+								<td>{{=datasourceNow.PoolingPeakTime}}</td>
+								<td  class="lang"  langKey="PoolingPeakTimeDesc">The usefull connection peak time</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="ActiveCount">ActiveCount</span></td>
+								<td>{{=datasourceNow.ActiveCount}}</td>
+								<td  class="lang"  langKey="ActiveCountDesc">The current active connection count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="ActivePeak">ActivePeak</span></td>
+								<td>{{=datasourceNow.ActivePeak}}</td>
+								<td  class="lang"  langKey="ActivePeakDesc">The current active connection peak count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="ActivePeakTime">ActivePeakTime</span></td>
+								<td>{{=datasourceNow.ActivePeakTime}}</td>
+								<td  class="lang"  langKey="ActivePeakTimeDesc">The active connection peak time</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="LogicConnectCount">LogicConnectCount</span></td>
+								<td>{{=datasourceNow.LogicConnectCount}}</td>
+								<td  class="lang"  langKey="LogicConnectCountDesc">Total connect times from datasource</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="LogicCloseCount">LogicCloseCount</span></td>
+								<td>{{=datasourceNow.LogicCloseCount}}</td>
+								<td  class="lang"  langKey="LogicCloseCountDesc">Total close connect times from datasource</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="LogicConnectErrorCount">LogicConnectErrorCount</span></td>
+								<td>{{=datasourceNow.LogicConnectErrorCount}}</td>
+								<td  class="lang"  langKey="LogicConnectErrorCountDesc">Total connect error times</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PhysicalConnectCount">PhysicalConnectCount</span></td>
+								<td>{{=datasourceNow.PhysicalConnectCount}}</td>
+								<td  class="lang"  langKey="PhysicalConnectCountDesc">Create physical connnection count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PhysicalCloseCount">PhysicalCloseCount</span></td>
+								<td>{{=datasourceNow.PhysicalCloseCount}}</td>
+								<td  class="lang"  langKey="PhysicalCloseCountDesc">Close physical connnection count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PhysicalConnectErrorCount">PhysicalConnectErrorCount</span></td>
+								<td>{{=datasourceNow.PhysicalConnectErrorCount}}</td>
+								<td  class="lang"  langKey="PhysicalConnectErrorCountDesc">Total physical connect error times</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="ExecuteCount">ExecuteCount</span></td>
+								<td>{{=datasourceNow.ExecuteCount}}</td>
+								<td  class="lang"  langKey="ExecuteCountDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="ErrorCount">ErrorCount</span></td>
+								<td>{{=datasourceNow.ErrorCount}}</td>
+								<td  class="lang"  langKey="ErrorCountDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="CommitCount">CommitCount</span></td>
+								<td>{{=datasourceNow.CommitCount}}</td>
+								<td  class="lang"  langKey="CommitCountDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="RollbackCount">RollbackCount</span></td>
+								<td>{{=datasourceNow.RollbackCount}}</td>
+								<td  class="lang"  langKey="RollbackCountDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PSCacheAccessCount">PSCacheAccessCount</span></td>
+								<td>{{=datasourceNow.PSCacheAccessCount}}</td>
+								<td  class="lang"  langKey="PSCacheAccessCountDesc">PerpareStatement access count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PSCacheHitCount">PSCacheHitCount</span></td>
+								<td>{{=datasourceNow.PSCacheHitCount}}</td>
+								<td  class="lang"  langKey="PSCacheHitCountDesc">PerpareStatement hit count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PSCacheMissCount">PSCacheMissCount</span></td>
+								<td>{{=datasourceNow.PSCacheMissCount}}</td>
+								<td  class="lang"  langKey="PSCacheMissCountDesc">PerpareStatement miss count</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="ConnectionHoldTimeHistogram">ConnectionHoldTimeHistogram</span></td>
+								<td>{{=datasourceNow.ConnectionHoldTimeHistogram}}</td>
+								<td  class="lang"  langKey="ConnectionHoldTimeHistogramDesc">The histogram values of connection hold time, [0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]</td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="ClobOpenCount">ClobOpenCount</span></td>
+								<td>{{=datasourceNow.ClobOpenCount}}</td>
+								<td  class="lang"  langKey="ClobOpenCountDesc"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="BlobOpenCount">BlobOpenCount</span></td>
+								<td>{{=datasourceNow.BlobOpenCount}}</td>
+								<td  class="lang"  langKey="BlobOpenCountDesc"></td>
+							</tr>
+							<tr>
+									<td valign="top" class="td_lable"><span class="lang" langKey="ActiveConnectionStackTrace">ActiveConnection StackTrace</span></td>
+									<td>
+										<a href="activeConnectionStackTrace.html?datasourceId=25211438">View</a>
+									</td>
+									<td>
+										StackTrace for active Connection. 
+										<a href="activeConnectionStackTrace-{{=datasourceNow.Identity}}.json" 	target="_blank">[View JSON API]</a>
+									</td>
+								</tr>
+								<tr>
+									<td valign="top" class="td_lable"><span class="lang" langKey="PollingConnectionInfo">PollingConnection Info</span></td>
+									<td>
+										<a href="connectionInfo.html?datasourceId={{=datasourceNow.Identity}}">View</a>
+									</td>
+									<td>
+										Info for polling connection. 
+										<a href="connectionInfo-{{=datasourceNow.Identity}}.json"	target="_blank">[View JSON API]</a>
+									</td>
+								</tr>
+								<tr>
+									<td valign="top" class="td_lable"><span class="lang" langKey="SQLList">SQL List</span></td>
+									<td>
+										<a href="sql.html?dataSourceId={{=datasourceNow.Identity}}">View</a>
+									</td>
+									<td>
+										Info for SQL.
+										<a href="sql.json?dataSourceId={{=datasourceNow.Identity}}" 	target="_blank">[View JSON API]</a>
+									</td>
+								</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			{{~ }}	
+		</script>
     	<script type="text/javascript">
 			$.namespace("druid.datasource");
 			druid.datasource = function () {  
-				var keys = ["UserName", "URL", "DbType", "DriverClassName", "FilterClassNames", "TestOnBorrow", "TestWhileIdle", "TestOnReturn",
-							"InitialSize", "MinIdle", "MaxActive", "QueryTimeout", "TransactionQueryTimeout", "LoginTimeout", "ValidConnectionCheckerClassName",
-							"ExceptionSorterClassName", "DefaultAutoCommit", "DefaultReadOnly", "DefaultTransactionIsolation", "NotEmptyWaitCount",
-							"NotEmptyWaitMillis", "WaitThreadCount", "StartTransactionCount", "TransactionHistogram", "PoolingCount", "PoolingPeak",
-							"PoolingPeakTime", "ActiveCount", "ActivePeak", "ActivePeakTime", "LogicConnectCount", "LogicCloseCount", "LogicConnectErrorCount",
-							"PhysicalConnectCount", "PhysicalCloseCount", "PhysicalConnectErrorCount", "ExecuteCount", "ErrorCount", "CommitCount",
-							"RollbackCount", "PSCacheAccessCount", "PSCacheHitCount", "PSCacheMissCount", "ConnectionHoldTimeHistogram",
-							"ClobOpenCount", "BlobOpenCount"
-							]
-				var descs = ["Specify the username used when creating a new connection.", 
-				             "The JDBC driver connection URL", "database type", "The fully qualifed name of the JDBC driver class", 
-				             "All the fully qualifed name of the filter classes", "	Test or not when borrow a connection", "Test or not when a connection is idle for a while", 
-				             "Test or not when return a connection","The size of datasource connections to create when initial a datasource", 
-				             "The minimum number of connections a pool should hold. ", "The maximum number of connections for a pool", "", "", "", "",
-								"", "", "", "", "Total times for wait to get a connection","Total millins for wait to get a connection", "The current waiting thread count", 
-								"The count of start transaction", "The histogram values of transaction time, [0-10 ms, 10-100 ms, 100-1 s, 1-10 s, 10-100 s, >100 s]", 
-								"The current usefull connection count", "The usefull connection peak count",
-								"The usefull connection peak time", "The current active connection count", "The current active connection peak count", "The active connection peak time", 
-								"Total connect times from datasource", "Total close connect times from datasource", "Total connect error times",
-								"Create physical connnection count", "Close physical connnection count", "Total physical connect error times", "", "", "",
-								"", "PerpareStatement access count", "PerpareStatement hit count", "PerpareStatement miss count", "The histogram values of connection hold time, [0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]",
-								"", ""
-								]
+				
 				return  {
 					init : function() {
 						druid.common.buildHead(1);
 						this.ajaxRequestForBasicInfo();
+						druid.lang.init();
 					},
 					ajaxRequestForBasicInfo : function() {
 						$.ajax({
 							type: 'POST',
 							url: "datasource.json",
 							success: function(data) {
-								var datasourceList = data.Content;
+
+								var tmpl = $('#datasource-tmpl').html();
+								var doTtmpl = doT.template(tmpl);
+								var contentHtml = doTtmpl(data);
 								
-								var tab = '<ul class="nav nav-tabs" id="datasourceTab">';
-								var content = '<div class="tab-content">';
-								for ( var i = 0; i < datasourceList.length; i++) {
-									var datasource = datasourceList[i];
-									content += druid.datasource.generateDataSourceTable(datasource, i);
-									tab += druid.datasource.generateDataSourceTab(datasource.Identity, i);
-								}
-								tab += '</ul>';
-								content += '</div>';
-								
-								$(".span12 h3").after(tab + content);
+								$(".span12 h3").after(contentHtml);
 								
 								$('#datasourceTab a').click(function (e) {
 						            e.preventDefault();
 						            $(this).tab('show');
-						    	})
+						    	});
+						    	druid.lang.trigger();
 							},
 							dataType: "json"
 						});
-					},
-					
-					generateDataSourceTab : function(datasourceId, index) {
-						if(index == 0)
-							return '<li class="active"><a href="#dstab' + datasourceId + '">DataSource-'+datasourceId+'</a></li>';
-						else
-							return '<li><a href="#dstab' + datasourceId + '">DataSource-'+datasourceId+'</a></li>';
-					},
-					
-					generateDataSourceTable : function(datasource, index) {
-						var datasourceId = datasource.Identity;
-						
-						if(index == 0)
-							var html = '<div class="tab-pane active" id="dstab' + datasourceId + '">';
-						else
-							var html = '<div class="tab-pane" id="dstab' + datasourceId + '">';
-						
-						html += '<h4>Basic Info For DataSource-' + datasourceId + '<a href="datasource-' + datasourceId + '.json" target="_blank">View JSON API</a></h4>';
-						html += '<table class="table table-bordered" style="background-color: #fff">';
-						
-						for(var i=0, len=keys.length; i<len; i++) {
-							var value = datasource[keys[i]];
-							if(value == null)
-								value = "";
-							
-							if(i<19)
-								html += '<tr><td valign="top" class="td_lable">* ' + keys[i] + '</td><td>' + value + '</td><td>' + descs[i] + '</td></tr>'
-							else
-								html += '<tr><td valign="top" class="td_lable">' + keys[i] + '</td><td>' + value + '</td><td>' + descs[i] + '</td></tr>'
-						}
-						
-						if (datasource.RemoveAbandoned == true)
-							html += '<tr><td valign="top" class="td_lable">ActiveConnection StackTrace</td><td><a href="activeConnectionStackTrace.html?datasourceId=' + datasource.Identity + '">View</a></td><td>StackTrace for active Connection. <a href="activeConnectionStackTrace-'
-								+ datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>'
-						else
-							html += '<tr><td valign="top" class="td_lable">ActiveConnection StackTrace</td><td>require set removeAbandoned=true</td><td>StackTrace for active Connection. <a href="activeConnectionStackTrace-'
-							+ datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>'
-						
-						html += '<tr><td valign="top" class="td_lable">PollingConnection Info</td><td><a href="connectionInfo.html?datasourceId=' + datasourceId+ 
-								'">View</a></td><td>Info for polling connection. <a href="connectionInfo-' + datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>'
-						html += '<tr><td valign="top" class="td_lable">SQL List</td><td><a href="sql.html?dataSourceId=' + datasourceId+ 
-								'">View</a></td><td>Info for SQL. <a href="sql.json?dataSourceId=' + datasourceId + '" target="_blank">[View JSON API]</a></td></tr>'
-						
-						html += '</table></div>';
-						return html;
 					}
+
 				}
 			}();
 	

@@ -6,9 +6,11 @@
 		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+    	<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>		
 	</head>
 	<body>
+		
 		<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
@@ -20,18 +22,19 @@
 							<thead>
 								<tr>
 									<th>N</th>
-									<th><a id="th-URI" >URI</a></th>
-									<th width="50"><a id="th-RequestCount" >RequestCount</a></th>
-									<th width="50"><a id="th-RequestTimeMillis" >RequestTime</a></th>
-									<th width="50"><a id="th-RunningCount" >Running</a></th>
-									<th width="50" title="Concurrent Max"><a id="th-ConcurrentMax" >Concurrent</a></th>
-									<th width="50" title="Jdbc Execute Count"><a id="th-JdbcExecuteCount" >JdbcCount</a></th>
-									<th width="50" title="Jdbc Execute Error Count"><a id="th-JdbcExecuteErrorCount" >JdbcError</a></th>
-									<th width="50" title="Jdbc Execute Time"><a id="th-JdbcExecuteTimeMillis" >JdbcTime</a></th>
-									<th width="50"><a id="th-JdbcCommitCount" >JdbcCommit</a></th>
-									<th width="50"><a id="th-JdbcRollbackCount" >JdbcRollback</a></th>
-									<th width="50"><a id="th-JdbcFetchRowCount" >JdbcFetchRow</a></th>
-									<th width="50"><a id="th-JdbcUpdateCount" >JdbcUpdate</a></th>
+									
+									<th><a id="th-URI" class="lang" langKey="URI">URI</a></th>
+									<th><a id="th-RequestCount" class="lang" langKey="RequestCount">RequestCount</a></th>
+									<th><a id="th-RequestTimeMillis" class="lang" langKey="RequestTimeMillis">RequestTimeMillis</a></th>
+									<th><a id="th-RunningCount" class="lang" langKey="RunningCount">RunningCount</a></th>
+									<th><a id="th-ConcurrentMax" class="lang" langKey="ConcurrentMax">ConcurrentMax</a></th>
+									<th><a id="th-JdbcExecuteCount" class="lang" langKey="JdbcExecuteCount">JdbcExecuteCount</a></th>
+									<th><a id="th-JdbcExecuteErrorCount" class="lang" langKey="JdbcExecuteErrorCount">JdbcExecuteErrorCount</a></th>
+									<th><a id="th-JdbcExecuteTimeMillis" class="lang" langKey="JdbcExecuteTimeMillis">JdbcExecuteTimeMillis</a></th>
+									<th><a id="th-JdbcCommitCount" class="lang" langKey="JdbcCommitCount">JdbcCommitCount</a></th>
+									<th><a id="th-JdbcRollbackCount" class="lang" langKey="JdbcRollbackCount">JdbcRollbackCount</a></th>
+									<th><a id="th-JdbcFetchRowCount" class="lang" langKey="JdbcFetchRowCount">JdbcFetchRowCount</a></th>
+									<th><a id="th-JdbcUpdateCount" class="lang" langKey="JdbcUpdateCount">JdbcUpdateCount</a></th> 
 								</tr>
 							</thead> 
 							<tbody></tbody>
@@ -49,7 +52,7 @@
     				})
     				druid.common.buildHead(5);
     				druid.common.ajaxuri = 'weburi.json?';
-    				druid.common.handleAjaxResult = druid.weburi.handleAjaxResult;
+    				druid.common.handleCallback = druid.weburi.handleAjaxResult;
     				druid.common.setOrderBy("URI");
     				druid.common.ajaxRequestForBasicInfo();
     				setInterval("druid.common.ajaxRequestForBasicInfo();",5000);

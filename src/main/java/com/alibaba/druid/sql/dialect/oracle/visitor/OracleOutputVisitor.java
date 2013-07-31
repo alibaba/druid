@@ -36,6 +36,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -565,20 +566,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleSelectQueryBlock x) {
-        print("SELECT ");
+        print("SELECT ");       
 
+        if (x.getHints().size() > 0) {           
+            printAndAccept(x.getHints(), ", ");      
+            print(' ');
+        }
+        
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
             print("ALL ");
         } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
             print("DISTINCT ");
         } else if (SQLSetQuantifier.UNIQUE == x.getDistionOption()) {
             print("UNIQUE ");
-        }
-
-        if (x.getHints().size() > 0) {
-            print("/*+");
-            printAndAccept(x.getHints(), ", ");
-            print("*/ ");
         }
 
         printSelectList(x.getSelectList());
@@ -2331,6 +2331,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OraclePrimaryKey x) {
 
+    }
+    
+    @Override
+    public boolean visit(SQLUnique x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(" ");
+        }
+        print("UNIQUE (");
+        printAndAccept(x.getColumns(), ", ");
+        print(")");
+        return false;
     }
 
     @Override

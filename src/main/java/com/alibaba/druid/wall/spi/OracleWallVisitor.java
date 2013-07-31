@@ -40,7 +40,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -62,25 +61,40 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
     private final WallConfig      config;
     private final WallProvider    provider;
-    private final List<Violation> violations = new ArrayList<Violation>();
+    private final List<Violation> violations  = new ArrayList<Violation>();
+    private boolean               sqlModified = false;
 
     public OracleWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
     }
+    
+    @Override
+    public boolean isSqlModified() {
+        return sqlModified;
+    }
 
+    @Override
+    public void setSqlModified(boolean sqlModified) {
+        this.sqlModified = sqlModified;
+    }
+
+    @Override
     public WallProvider getProvider() {
         return provider;
     }
 
+    @Override
     public WallConfig getConfig() {
         return config;
     }
 
+    @Override
     public void addViolation(Violation violation) {
         this.violations.add(violation);
     }
 
+    @Override
     public List<Violation> getViolations() {
         return violations;
     }
@@ -89,7 +103,8 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         String name = x.getName();
         name = WallVisitorUtils.form(name);
         if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
-            getViolations().add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + name, toSQL(x)));
+            getViolations().add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + name,
+                                                              toSQL(x)));
         }
         return true;
     }
@@ -181,7 +196,8 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     @Override
     public boolean visit(SQLSelectStatement x) {
         if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow", this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
+                                                                   this.toSQL(x)));
             return false;
         }
 
@@ -210,7 +226,8 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     @Override
     public boolean visit(OracleMultiInsertStatement x) {
         if (!config.isInsertAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.INSERT_NOT_ALLOW, "insert not allow", this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.INSERT_NOT_ALLOW, "insert not allow",
+                                                                   this.toSQL(x)));
             return false;
         }
 
@@ -257,34 +274,30 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         WallVisitorUtils.check(this, x);
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableStatement x) {
         WallVisitorUtils.check(this, x);
         return true;
     }
-    
+
     @Override
     public boolean visit(OracleAlterTableStatement x) {
         WallVisitorUtils.check(this, x);
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLDropTableStatement x) {
         WallVisitorUtils.check(this, x);
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLSetStatement x) {
         return false;
     }
-    
-    public boolean visit(MySqlReplaceStatement x) {
-        return true;
-    }
-    
+
     @Override
     public boolean visit(SQLCallStatement x) {
         return false;

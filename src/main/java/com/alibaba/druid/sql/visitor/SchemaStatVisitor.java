@@ -51,6 +51,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -1154,6 +1155,25 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     
     @Override
     public boolean visit(SQLAlterTableDropConstraint x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDropIndexStatement x) {
+        setMode(x, Mode.DropIndex);
+        SQLName name = (SQLName) x.getTableName().getExpr();
+
+        String ident = name.toString();
+        setCurrentTable(ident);
+        
+        TableStat stat = getTableStat(ident);
+        stat.incrementDropIndexCount();
+
+        Map<String, String> aliasMap = getAliasMap();
+        if (aliasMap != null) {
+            aliasMap.put(ident, ident);
+        }
+        
         return false;
     }
 }

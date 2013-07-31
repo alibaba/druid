@@ -28,12 +28,23 @@ public class SQLServerTop extends SQLServerObjectImpl {
     private SQLExpr           expr;
     private boolean           percent;
     private boolean           withTies;
+    
+    public SQLServerTop() {
+        
+    }
+    
+    public SQLServerTop(SQLExpr expr) {
+        this.setExpr(expr);
+    }
 
     public SQLExpr getExpr() {
         return expr;
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 

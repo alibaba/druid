@@ -34,6 +34,8 @@ public class WallCheckResult {
 
     private final WallSqlStat                      sqlStat;
 
+    private String                                 sql;
+
     public WallCheckResult(){
         this(null);
     }
@@ -70,6 +72,14 @@ public class WallCheckResult {
         this.syntaxError = syntaxError;
     }
 
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
     public List<Violation> getViolations() {
         return violations;
     }
@@ -90,7 +100,6 @@ public class WallCheckResult {
         return syntaxError;
     }
 
-    
     public WallSqlStat getSqlStat() {
         return sqlStat;
     }

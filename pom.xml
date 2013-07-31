@@ -4,7 +4,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.22-SNAPSHOT</version>
+	<version>0.2.24-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -253,12 +253,12 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 				<file>
-					<exists>${java.home}/../lib/jconsole.jar</exists>
+					<exists>${env.JAVA_HOME}/lib/jconsole.jar</exists>
 				</file>
 			</activation>
 			<properties>
-				<toolsjar>${java.home}/../lib/tools.jar</toolsjar>
-				<jconsolejar>${java.home}/../lib/jconsole.jar</jconsolejar>
+				<toolsjar>${env.JAVA_HOME}/lib/tools.jar</toolsjar>
+				<jconsolejar>${env.JAVA_HOME}/lib/jconsole.jar</jconsolejar>
 			</properties>
 
 			<dependencies>
@@ -430,13 +430,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.nutz</groupId>
-			<artifactId>nutz</artifactId>
-			<version>1.b.40</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
@@ -532,6 +525,12 @@
 			<groupId>com.taobao.tbdatasource</groupId>
 			<artifactId>tbdatasource</artifactId>
 			<version>2.0.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.29</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

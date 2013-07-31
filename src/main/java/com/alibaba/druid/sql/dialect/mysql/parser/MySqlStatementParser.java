@@ -168,7 +168,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     private static final String IGNORE         = "IGNORE";
     private static final String RESET          = "RESET";
     private static final String DESCRIBE       = "DESCRIBE";
-    private static final String DESC           = "DESC";
     private static final String WRITE          = "WRITE";
     private static final String READ           = "READ";
     private static final String LOCAL          = "LOCAL";
@@ -585,7 +584,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (identifierEquals(DESC) || identifierEquals(DESCRIBE)) {
+        if (lexer.token() == Token.DESC || identifierEquals(DESCRIBE)) {
             SQLStatement stmt = parseDescribe();
             statementList.add(stmt);
             return true;
@@ -2492,7 +2491,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.KEY);
             SQLAlterTableDropPrimaryKey item = new SQLAlterTableDropPrimaryKey();
             stmt.getItems().add(item);
-        } else  if (lexer.token() == Token.CONSTRAINT) {
+        } else if (lexer.token() == Token.CONSTRAINT) {
             lexer.nextToken();
             SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
             item.setConstraintName(this.exprParser.name());

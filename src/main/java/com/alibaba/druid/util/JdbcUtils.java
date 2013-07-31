@@ -53,20 +53,23 @@ public final class JdbcUtils implements JdbcConstants {
 
     static {
         try {
-            for (Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources("META-INF/druid-driver.properties"); e.hasMoreElements();) {
-                URL url = e.nextElement();
+            ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+            if (ctxClassLoader != null) {
+                for (Enumeration<URL> e = ctxClassLoader.getResources("META-INF/druid-driver.properties"); e.hasMoreElements();) {
+                    URL url = e.nextElement();
 
-                Properties property = new Properties();
+                    Properties property = new Properties();
 
-                InputStream is = null;
-                try {
-                    is = url.openStream();
-                    property.load(is);
-                } finally {
-                    JdbcUtils.close(is);
+                    InputStream is = null;
+                    try {
+                        is = url.openStream();
+                        property.load(is);
+                    } finally {
+                        JdbcUtils.close(is);
+                    }
+
+                    driverUrlMapping.putAll(property);
                 }
-
-                driverUrlMapping.putAll(property);
             }
         } catch (Exception e) {
             LOG.error("load druid-driver.properties error", e);
@@ -350,7 +353,9 @@ public final class JdbcUtils implements JdbcConstants {
             return MYSQL_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return MARIADB_DRIVER;
-        } else if (rawUrl.startsWith("jdbc:oracle:")) {
+        } else if (rawUrl.startsWith("jdbc:oracle:") //
+                || rawUrl.startsWith("JDBC:oracle:")
+                ) {
             return ORACLE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return ALI_ORACLE_DRIVER;
@@ -486,7 +491,7 @@ public final class JdbcUtils implements JdbcConstants {
                 // skip
             }
         }
-        
+
         if (clazz == null) {
             try {
                 ClassLoader contextLoader = Thread.currentThread().getContextClassLoader();
@@ -637,10 +642,13 @@ public final class JdbcUtils implements JdbcConstants {
             return null;
         }
 
-        try {
-            clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-
+        ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+        if (ctxClassLoader != null) {
+            try {
+                clazz = ctxClassLoader.loadClass(className);
+            } catch (ClassNotFoundException e) {
+                // skip
+            }
         }
 
         if (clazz != null) {

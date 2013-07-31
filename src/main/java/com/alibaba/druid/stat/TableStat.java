@@ -33,6 +33,15 @@ public class TableStat {
     int createCount      = 0;
     int alterCount       = 0;
     int createIndexCount = 0;
+    int dropIndexCount   = 0;
+
+    public int getDropIndexCount() {
+        return dropIndexCount;
+    }
+
+    public void incrementDropIndexCount() {
+        this.dropIndexCount++;
+    }
 
     public int getCreateIndexCount() {
         return createIndexCount;
@@ -154,6 +163,9 @@ public class TableStat {
         }
         if (createIndexCount > 0) {
             buf.append("CreateIndex");
+        }
+        if (dropIndexCount > 0) {
+            buf.append("DropIndex");
         }
 
         return buf.toString();
@@ -497,7 +509,7 @@ public class TableStat {
         Merge(16), //
         Truncate(32), //
         Alter(64), //
-        Drop(128);
+        Drop(128), DropIndex(256); //
 
         public final int mark;
 

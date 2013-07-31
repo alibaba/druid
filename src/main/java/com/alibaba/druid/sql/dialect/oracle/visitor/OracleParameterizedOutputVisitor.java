@@ -20,22 +20,32 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
-public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
+public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implements ParameterizedVisitor {
 
-    public OracleParameterizedOutputVisitor() {
-        this (new StringBuilder());
+    private int replaceCount;
+
+    public OracleParameterizedOutputVisitor(){
+        this(new StringBuilder());
     }
 
     public OracleParameterizedOutputVisitor(Appendable appender){
         super(appender);
     }
-    
+
     public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi){
-        super (appender, printPostSemi);
+        super(appender, printPostSemi);
+    }
+
+    public int getReplaceCount() {
+        return this.replaceCount;
+    }
+
+    public void incrementReplaceCunt() {
+        replaceCount++;
     }
 
     public boolean visit(SQLInListExpr x) {
@@ -43,14 +53,9 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        x = ParameterizedOutputVisitorUtils.merge(x);
+        x = ParameterizedOutputVisitorUtils.merge(this, x);
 
         return super.visit(x);
-    }
-
-    public boolean visit(SQLNullExpr x) {
-        print('?');
-        return false;
     }
 
     public boolean visit(SQLIntegerExpr x) {
@@ -58,8 +63,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
             return super.visit(x);
         }
 
-        print('?');
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLNumberExpr x) {
@@ -68,6 +72,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         }
 
         print('?');
+        incrementReplaceCunt();
         return false;
     }
 
@@ -76,8 +81,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
             return super.visit(x);
         }
 
-        print('?');
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLNCharExpr x) {
@@ -85,8 +89,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
             return super.visit(x);
         }
 
-        print('?');
-        return false;
+        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
 }

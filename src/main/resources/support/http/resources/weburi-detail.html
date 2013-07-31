@@ -6,9 +6,11 @@
 		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
+		
     	<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
@@ -18,85 +20,105 @@
           				</h3>
 						<table id="dataTable" class="table table-bordered" style="background-color: #fff">
 							<tr>
-				          		<td class='td_lable' width='130'> URI</td>
-				          		<td id="URI"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> RequestCount</td>
-				          		<td id="RequestCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> RequestTimeMillis</td>
-				          		<td id="RequestTimeMillis"></td>
-				       	 	</tr>
-				        	<tr>
-				          		<td class='td_lable'> LastAccessTime</td>
-				          		<td id="LastAccessTime"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> RunningCount</td>
-				          		<td id="RunningCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> ConcurrentMax</td>
-				          		<td id="ConcurrentMax"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcExecuteCount</td>
-				          		<td id="JdbcExecuteCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcExecuteErrorCount</td>
-				          		<td id="JdbcExecuteErrorCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcExecutePeak</td>
-				          		<td id="JdbcExecutePeak"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcExecuteTimeMillis</td>
-				          		<td id="JdbcExecuteTimeMillis"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcCommitCount</td>
-				          		<td id="JdbcCommitCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcRollbackCount</td>
-				          		<td id="JdbcRollbackCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcFetchRowCount</td>
-				          		<td id="JdbcFetchRowCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcFetchRowPeak</td>
-				          		<td id="JdbcFetchRowPeak"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcUpdateCount</td>
-				          		<td id="JdbcUpdateCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcUpdatePeak</td>
-				          		<td id="JdbcUpdatePeak"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcPoolConnectionOpenCount</td>
-				          		<td id="JdbcPoolConnectionOpenCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcPoolConnectionCloseCount</td>
-				          		<td id="JdbcPoolConnectionCloseCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcResultSetOpenCount</td>
-				          		<td id="JdbcResultSetOpenCount"></td>
-				        	</tr>
-				        	<tr>
-				          		<td class='td_lable'> JdbcResultSetCloseCount</td>
-				          		<td id="JdbcResultSetCloseCount"></td>
-				        	</tr>
+								<td  class="td_lable lang" langKey="URI"> URI </td>
+								<td id="URI"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RequestCount"> RequestCount </td>
+								<td id="RequestCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RequestTimeMillis"> RequestTimeMillis </td>
+								<td id="RequestTimeMillis"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="LastAccessTime"> LastAccessTime </td>
+								<td id="LastAccessTime"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="RunningCount"> RunningCount </td>
+								<td id="RunningCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="ConcurrentMax"> ConcurrentMax </td>
+								<td id="ConcurrentMax"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecuteCount"> JdbcExecuteCount </td>
+								<td id="JdbcExecuteCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecuteErrorCount"> JdbcExecuteErrorCount </td>
+								<td id="JdbcExecuteErrorCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecutePeak"> JdbcExecutePeak </td>
+								<td id="JdbcExecutePeak"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcExecuteTimeMillis"> JdbcExecuteTimeMillis </td>
+								<td id="JdbcExecuteTimeMillis"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcCommitCount"> JdbcCommitCount </td>
+								<td id="JdbcCommitCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcRollbackCount"> JdbcRollbackCount </td>
+								<td id="JdbcRollbackCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcFetchRowCount"> JdbcFetchRowCount </td>
+								<td id="JdbcFetchRowCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcFetchRowPeak"> JdbcFetchRowPeak </td>
+								<td id="JdbcFetchRowPeak"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcUpdateCount"> JdbcUpdateCount </td>
+								<td id="JdbcUpdateCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcUpdatePeak"> JdbcUpdatePeak </td>
+								<td id="JdbcUpdatePeak"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcPoolConnectionOpenCount"> JdbcPoolConnectionOpenCount </td>
+								<td id="JdbcPoolConnectionOpenCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcPoolConnectionCloseCount"> JdbcPoolConnectionCloseCount </td>
+								<td id="JdbcPoolConnectionCloseCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcResultSetOpenCount"> JdbcResultSetOpenCount </td>
+								<td id="JdbcResultSetOpenCount"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td  class="td_lable lang" langKey="JdbcResultSetCloseCount"> JdbcResultSetCloseCount </td>
+								<td id="JdbcResultSetCloseCount"></td>
+								<td></td>
+							</tr>
 				      	</table>
 				      	
           				<h3>Profiles</h3>
@@ -125,7 +147,7 @@
     		var uri = druid.common.getUrlVar("uri");
     		return  {
     			init : function() {
-    				druid.common.buildHead(4);
+    				druid.common.buildHead(5);
     				this.ajaxRequestForBasicInfo();
     				$("#viewJsonApi").attr("href", 'weburi-' + encodeURI(uri) + '.json');
     			},
@@ -187,6 +209,7 @@
     	    					html += "</tr>";
     	    				}
     	    				$("#profileDataTable tbody").html(html);
+    	    				druid.lang.trigger();
     					},
     					dataType: "json"
     				});
