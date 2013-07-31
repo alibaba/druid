@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
@@ -532,7 +533,9 @@ public abstract class WallProvider {
         WallContext context = WallContext.current();
 
         if (config.isDoPrivilegedAllow() && ispPivileged()) {
-            return new WallCheckResult();
+            WallCheckResult checkResult = new WallCheckResult();
+            checkResult.setSql(sql);
+            return checkResult;
         }
 
         // first step, check whiteList
@@ -540,6 +543,7 @@ public abstract class WallProvider {
         if (!mulltiTenant) {
             WallCheckResult checkResult = checkWhiteAndBlackList(sql);
             if (checkResult != null) {
+                checkResult.setSql(sql);
                 return checkResult;
             }
         }
@@ -630,12 +634,23 @@ public abstract class WallProvider {
             recordStats(tableStats, functionStats);
         }
 
+        WallCheckResult result;
         if (sqlStat != null) {
             context.setSqlStat(sqlStat);
-            return new WallCheckResult(sqlStat, statementList);
+            result = new WallCheckResult(sqlStat, statementList);
+        } else {
+            result = new WallCheckResult(sqlStat, violations, tableStats, functionStats, statementList, syntaxError);
         }
 
-        return new WallCheckResult(sqlStat, violations, tableStats, functionStats, statementList, syntaxError);
+        String resultSql;
+        if (visitor.isSqlModified()) {
+            resultSql = SQLUtils.toSQLString(statementList, dbType);
+        } else {
+            resultSql = sql;
+        }
+        result.setSql(resultSql);
+
+        return result;
     }
 
     private WallCheckResult checkWhiteAndBlackList(String sql) {

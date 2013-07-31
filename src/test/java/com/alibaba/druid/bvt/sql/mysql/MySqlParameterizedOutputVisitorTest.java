@@ -51,13 +51,15 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         MySqlParameterizedOutputVisitor visitor = new MySqlParameterizedOutputVisitor(out);
-        statemen.accept(visitor);
+        stmt.accept(visitor);
+        
+        Assert.assertTrue(visitor.getReplaceCount() > 0);
 
         Assert.assertEquals(expect, out.toString());
     }
@@ -66,13 +68,15 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         OracleParameterizedOutputVisitor visitor = new OracleParameterizedOutputVisitor(out, false);
-        statemen.accept(visitor);
+        stmt.accept(visitor);
+        
+        Assert.assertTrue(visitor.getReplaceCount() > 0);
 
         Assert.assertEquals(expect, out.toString());
     }

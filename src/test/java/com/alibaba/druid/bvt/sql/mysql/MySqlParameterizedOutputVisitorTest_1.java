@@ -36,4 +36,56 @@ public class MySqlParameterizedOutputVisitorTest_1 extends TestCase {
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
     }
 
+    public void test_1() throws Exception {
+        String sql = "SELECT * FROM T WHERE ID = ?";
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.ORACLE), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DB2), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+    }
+    
+    public void test_2() throws Exception {
+        String sql = "SELECT * FROM T WHERE ID = ? AND Name = ?";
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.ORACLE), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DB2), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+    }
+    
+    public void test_3() throws Exception {
+        String sql = "SELECT * FROM T WHERE ID IS NULL";
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.ORACLE), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DB2), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+    }
+    
+    public void test_4() throws Exception {
+        String sql = "INSERT INTO T (FID, FNAME) VALUES(?, ?)";
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.ORACLE), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DB2), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.POSTGRESQL), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.H2), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.DERBY), sql);
+        Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.HSQL), sql);
+    }
+    
+    public void test_mysql() throws Exception {
+        String sql = "INSERT INTO T (FID, FNAME) VALUES(?, ?), (?, ?)";
+        Assert.assertNotSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
+    }
 }

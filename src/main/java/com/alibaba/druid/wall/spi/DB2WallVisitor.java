@@ -53,21 +53,35 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
 
     private final WallConfig      config;
     private final WallProvider    provider;
-    private final List<Violation> violations = new ArrayList<Violation>();
+    private final List<Violation> violations  = new ArrayList<Violation>();
+    private boolean               sqlModified = false;
 
     public DB2WallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
     }
 
+    @Override
+    public boolean isSqlModified() {
+        return sqlModified;
+    }
+
+    @Override
+    public void setSqlModified(boolean sqlModified) {
+        this.sqlModified = sqlModified;
+    }
+
+    @Override
     public WallProvider getProvider() {
         return provider;
     }
 
+    @Override
     public WallConfig getConfig() {
         return config;
     }
 
+    @Override
     public void addViolation(Violation violation) {
         this.violations.add(violation);
     }
@@ -129,11 +143,11 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
 
         return true;
     }
-    
+
     @Override
     public boolean visit(DB2SelectQueryBlock x) {
         WallVisitorUtils.checkSelelct(this, x);
-        
+
         return true;
     }
 

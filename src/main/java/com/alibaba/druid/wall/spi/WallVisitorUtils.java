@@ -406,11 +406,17 @@ public class WallVisitorUtils {
         }
 
         if (parent instanceof SQLDeleteStatement) {
-            ((SQLDeleteStatement) parent).setWhere(condition);
+            SQLDeleteStatement deleteStmt = (SQLDeleteStatement) parent;
+            deleteStmt.setWhere(condition);
+            visitor.setSqlModified(true);
         } else if (parent instanceof SQLUpdateStatement) {
-            ((SQLUpdateStatement) parent).setWhere(condition);
+            SQLUpdateStatement updateStmt = (SQLUpdateStatement) parent;
+            updateStmt.setWhere(condition);
+            visitor.setSqlModified(true);
         } else if (parent instanceof SQLSelectQueryBlock) {
-            ((SQLSelectQueryBlock) parent).setWhere(condition);
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent;
+            queryBlock.setWhere(condition);
+            visitor.setSqlModified(true);
         }
     }
 
@@ -421,10 +427,6 @@ public class WallVisitorUtils {
         }
 
         SQLExpr condition = join.getCondition();
-
-        if (checkLeft) {
-
-        }
 
         SQLTableSource right = join.getRight();
         if (right instanceof SQLExprTableSource) {
@@ -450,6 +452,7 @@ public class WallVisitorUtils {
 
         if (condition != join.getCondition()) {
             join.setCondition(condition);
+            visitor.setSqlModified(true);
         }
     }
 

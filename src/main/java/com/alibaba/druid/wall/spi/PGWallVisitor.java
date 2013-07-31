@@ -53,25 +53,40 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
     private final WallConfig      config;
     private final WallProvider    provider;
-    private final List<Violation> violations = new ArrayList<Violation>();
+    private final List<Violation> violations  = new ArrayList<Violation>();
+    private boolean               sqlModified = false;
 
     public PGWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
     }
+    
+    @Override
+    public boolean isSqlModified() {
+        return sqlModified;
+    }
 
+    @Override
+    public void setSqlModified(boolean sqlModified) {
+        this.sqlModified = sqlModified;
+    }
+
+    @Override
     public WallProvider getProvider() {
         return provider;
     }
 
+    @Override
     public WallConfig getConfig() {
         return config;
     }
 
+    @Override
     public void addViolation(Violation violation) {
         this.violations.add(violation);
     }
 
+    @Override
     public List<Violation> getViolations() {
         return violations;
     }

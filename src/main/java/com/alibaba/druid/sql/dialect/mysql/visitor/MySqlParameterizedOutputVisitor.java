@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -24,6 +26,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
@@ -134,9 +137,13 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
     }
 
     protected void printValuesList(MySqlInsertStatement x) {
+        List<ValuesClause> valuesList = x.getValuesList();
         print("VALUES ");
         incrementIndent();
-        x.getValuesList().get(0).accept(this);
+        valuesList.get(0).accept(this);
         decrementIndent();
+        if (valuesList.size() > 1) {
+            this.incrementReplaceCunt();
+        }
     }
 }

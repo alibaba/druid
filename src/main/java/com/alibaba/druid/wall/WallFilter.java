@@ -582,8 +582,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
         }
 
-        // TODO
-        return sql;
+        String resultSql = checkResult.getSql();
+        return resultSql;
     }
 
     @Override

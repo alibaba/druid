@@ -57,13 +57,25 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     private final WallConfig      config;
     private final WallProvider    provider;
-    private final List<Violation> violations = new ArrayList<Violation>();
+    private final List<Violation> violations  = new ArrayList<Violation>();
+    private boolean               sqlModified = false;
 
     public SQLServerWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
     }
+    
+    @Override
+    public boolean isSqlModified() {
+        return sqlModified;
+    }
 
+    @Override
+    public void setSqlModified(boolean sqlModified) {
+        this.sqlModified = sqlModified;
+    }
+
+    @Override
     public WallProvider getProvider() {
         return provider;
     }
@@ -73,6 +85,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         return this.config;
     }
 
+    @Override
     public void addViolation(Violation violation) {
         this.violations.add(violation);
     }
