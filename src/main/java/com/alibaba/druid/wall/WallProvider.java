@@ -46,16 +46,16 @@ import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 public abstract class WallProvider {
 
     private LRUCache<String, WallSqlStat>                 whiteList;
+    private LRUCache<String, WallSqlStat>                 whiteMergedList;
 
     private int                                           MAX_SQL_LENGTH          = 2048;                                              // 1k
 
     private int                                           whiteSqlMaxSize         = 500;                                               // 1k
 
     private LRUCache<String, WallSqlStat>                 blackList;
+    private LRUCache<String, WallSqlStat>                 blackMergedList;
 
     private int                                           blackSqlMaxSize         = 100;                                               // 1k
-
-    private LRUCache<String, WallSqlStat>                 sqlList;
 
     protected final WallConfig                            config;
 
@@ -222,8 +222,8 @@ public abstract class WallProvider {
                 whiteList = new LRUCache<String, WallSqlStat>(whiteSqlMaxSize);
             }
 
-            if (sqlList == null) {
-                sqlList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize + whiteSqlMaxSize);
+            if (whiteMergedList == null) {
+                whiteMergedList = new LRUCache<String, WallSqlStat>(whiteSqlMaxSize);
             }
 
             WallSqlStat wallStat = whiteList.get(sql);
@@ -234,10 +234,10 @@ public abstract class WallProvider {
                 } catch (Exception ex) {
                     mergedSql = sql;
                 }
-                wallStat = sqlList.get(mergedSql);
+                wallStat = whiteMergedList.get(mergedSql);
                 if (wallStat == null) {
                     wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
-                    sqlList.put(mergedSql, wallStat);
+                    whiteMergedList.put(mergedSql, wallStat);
                 }
 
                 wallStat.incrementAndGetExecuteCount();
@@ -259,8 +259,8 @@ public abstract class WallProvider {
                 blackList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize);
             }
 
-            if (sqlList == null) {
-                sqlList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize + whiteSqlMaxSize);
+            if (blackMergedList == null) {
+                blackMergedList = new LRUCache<String, WallSqlStat>(blackSqlMaxSize);
             }
 
             WallSqlStat wallStat = blackList.get(sql);
@@ -271,10 +271,10 @@ public abstract class WallProvider {
                 } catch (Exception ex) {
                     mergedSql = sql;
                 }
-                wallStat = sqlList.get(mergedSql);
+                wallStat = blackMergedList.get(mergedSql);
                 if (wallStat == null) {
                     wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
-                    sqlList.put(mergedSql, wallStat);
+                    blackMergedList.put(mergedSql, wallStat);
                 }
 
                 wallStat.incrementAndGetExecuteCount();
@@ -305,8 +305,11 @@ public abstract class WallProvider {
         Set<String> hashSet = new HashSet<String>();
         lock.readLock().lock();
         try {
-            if (sqlList != null) {
-                hashSet.addAll(sqlList.keySet());
+            if (whiteMergedList != null) {
+                hashSet.addAll(whiteMergedList.keySet());
+            }
+            if (blackMergedList != null) {
+                hashSet.addAll(blackMergedList.keySet());
             }
         } finally {
             lock.readLock().unlock();
@@ -363,13 +366,15 @@ public abstract class WallProvider {
             if (whiteList != null) {
                 whiteList = null;
             }
+            if (whiteMergedList != null) {
+                whiteMergedList = null;
+            }
 
             if (blackList != null) {
                 blackList = null;
             }
-
-            if (sqlList != null) {
-                sqlList = null;
+            if (blackMergedList != null) {
+                blackMergedList = null;
             }
         } finally {
             lock.writeLock().unlock();
