@@ -11,7 +11,7 @@
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
-		
+
     	<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
@@ -91,12 +91,34 @@
 							</thead>
 							<tbody></tbody>
 						</table>
+              <table id="dataTable3" style="background-color: #fff" class="table table-bordered responsive-utilities">
+                <thead>
+                <tr>
+                  <th class="td_lable">sql</th>
+                  <th class="td_lable">sample</th>
+                  <th class="td_lable">executeCount</th>
+                  <th class="td_lable">fetchRowCount</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <table id="dataTable4" style="background-color: #fff" class="table table-bordered responsive-utilities">
+                <thead>
+                <tr>
+                  <th class="td_lable">sql</th>
+                  <th class="td_lable">sample</th>
+                  <th class="td_lable">executeCount</th>
+                  <th class="td_lable">fetchRowCount</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
           			</div>
         		</div>
-      		</div> 
+      		</div>
     	<script type="text/javascript">
 			$.namespace("druid.datasource");
-			druid.wall = function () {  
+			druid.wall = function () {
 				return  {
 					init : function() {
 						$("#dataTable1 th a").click(function(obj) {
@@ -106,13 +128,13 @@
 	    					druid.common.setOrderBy(obj.target.id.substring(3))
 	    				})
 						druid.common.buildHead(3);
-						
+
 						druid.common.ajaxuri = 'wall.json?';
 	    				druid.common.handleCallback = druid.wall.handleAjaxResult;
 	    				druid.common.ajaxRequestForBasicInfo();
 	    				setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
 					},
-					
+
 					handleAjaxResult : function(data) {
 						$("#CheckCount").text(data.Content.checkCount)
 						$("#HardCheckCount").text(data.Content.hardCheckCount)
@@ -122,7 +144,7 @@
 						$("#WhiteListHitCount").text(data.Content.whiteListHitCount)
 						$("#WhiteListSize").text(data.Content.whiteListSize)
 						$("#SyntaxErrrorCount").text(data.Content.syntaxErrrorCount)
-						
+
 						var html = "";
 						var tables = data.Content.tables;
 						if(tables) {
@@ -147,7 +169,7 @@
 		    				}
 		    				$("#dataTable1 tbody").html(html);
 						}
-	    				
+
 	    				html = "";
 						var functions = data.Content.functions;
 						if (functions) {
@@ -160,10 +182,48 @@
 		    				}
 		    				$("#dataTable2 tbody").html(html);
 						}
+
+            html = "";
+            var whiteList = data.Content.whiteList;
+            if (whiteList) {
+              for (var i = 0; i < whiteList.length; ++i) {
+                var white = whiteList[i];
+                html += "<tr>";
+                html += "<td>" + white.sql + "</td>";
+                if (typeof white.sample == "undefined") {
+                html += "<td>\"\"</td>";
+                } else {
+                html += "<td>" + white.sample + "</td>";
+                }
+                html += "<td>" + white.executeCount + "</td>";
+                html += "<td>" + white.fetchRowCount + "</td>";
+                html += "</tr>";
+              }
+              $("#dataTable3 tbody").html(html);
+            }
+
+            html = "";
+            var blackList = data.Content.blackList;
+            if (blackList) {
+            for (var i = 0; i < blackList.length; ++i) {
+            var black = blackList[i];
+            html += "<tr>";
+            html += "<td>" + black.sql + "</td>";
+            if (typeof black.sample == "undefined") {
+            html += "<td>\"\"</td>";
+            } else {
+            html += "<td>" + black.sample + "</td>";
+            }
+            html += "<td>" + black.executeCount + "</td>";
+            html += "<td>" + black.fetchRowCount + "</td>";
+            html += "</tr>";
+            }
+            $("#dataTable4 tbody").html(html);
+            }
 					}
 				}
 			}();
-	
+
 			$(document).ready(function() {
 				druid.wall.init();
 			});
