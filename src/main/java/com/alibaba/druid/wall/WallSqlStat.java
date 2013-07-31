@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.wall;
 
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class WallSqlStat {
                                                                                                                "executeCount");
     final static AtomicLongFieldUpdater<WallSqlStat> effectRowCountUpdater = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
                                                                                                                "effectRowCount");
-    
+
     private final Map<String, WallSqlTableStat>      tableStats;
 
     private final List<Violation>                    violations;
@@ -37,6 +39,8 @@ public class WallSqlStat {
     private final Map<String, WallSqlFunctionStat>   functionStats;
 
     private final boolean                            syntaxError;
+
+    private String                                   sample;
 
     public WallSqlStat(Map<String, WallSqlTableStat> tableStats, Map<String, WallSqlFunctionStat> functionStats,
                        boolean syntaxError){
@@ -51,6 +55,14 @@ public class WallSqlStat {
         this.syntaxError = syntaxError;
     }
 
+    public String getSample() {
+        return sample;
+    }
+
+    public void setSample(String sample) {
+        this.sample = sample;
+    }
+
     public long incrementAndGetExecuteCount() {
         return executeCountUpdater.incrementAndGet(this);
     }
@@ -58,15 +70,15 @@ public class WallSqlStat {
     public long getExecuteCount() {
         return executeCount;
     }
-    
+
     public long incrementAndGetEffectRowCount() {
         return effectRowCountUpdater.incrementAndGet(this);
     }
-    
+
     public long addAndGetEffectRowCount(long delta) {
         return effectRowCountUpdater.addAndGet(this, delta);
     }
-    
+
     public long getEffectRowCount() {
         return effectRowCount;
     }
@@ -85,5 +97,20 @@ public class WallSqlStat {
 
     public boolean isSyntaxError() {
         return syntaxError;
+    }
+
+    public WallSqlStatValue getStatValue(boolean reset) {
+        final WallSqlStatValue statValue = new WallSqlStatValue();
+
+        statValue.setExecuteCount(get(this, executeCountUpdater, reset));
+        statValue.setEffectRowCount(get(this, effectRowCountUpdater, reset));
+        statValue.setSyntaxError(this.syntaxError);
+        statValue.setSqlSample(sample);
+        if (violations.size() > 0) {
+            String violationMessage = violations.get(0).getMessage();
+            statValue.setViolationMessage(violationMessage);
+        }
+
+        return statValue;
     }
 }

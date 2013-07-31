@@ -15,17 +15,19 @@
  */
 package com.alibaba.druid.wall;
 
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -44,6 +46,11 @@ import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public abstract class WallProvider {
+
+    private final Map<String, Object>                     attributes              = new ConcurrentHashMap<String, Object>(
+                                                                                                                          1,
+                                                                                                                          0.75f,
+                                                                                                                          1);
 
     private LRUCache<String, WallSqlStat>                 whiteList;
     private LRUCache<String, WallSqlStat>                 whiteMergedList;
@@ -90,6 +97,10 @@ public abstract class WallProvider {
     public WallProvider(WallConfig config, String dbType){
         this.config = config;
         this.dbType = dbType;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     public void reset() {
@@ -238,6 +249,7 @@ public abstract class WallProvider {
                 if (wallStat == null) {
                     wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
                     whiteMergedList.put(mergedSql, wallStat);
+                    wallStat.setSample(sql);
                 }
 
                 wallStat.incrementAndGetExecuteCount();
@@ -275,6 +287,7 @@ public abstract class WallProvider {
                 if (wallStat == null) {
                     wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
                     blackMergedList.put(mergedSql, wallStat);
+                    wallStat.setSample(sql);
                 }
 
                 wallStat.incrementAndGetExecuteCount();
@@ -330,34 +343,6 @@ public abstract class WallProvider {
         }
 
         return Collections.<String> unmodifiableSet(hashSet);
-    }
-
-    public List<Map<String, Object>> getBlackListStat() {
-        List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
-        lock.readLock().lock();
-        try {
-            if (blackList != null) {
-                for (Map.Entry<String, WallSqlStat> entry : this.blackList.entrySet()) {
-                    WallSqlStat sqlStat = entry.getValue();
-
-                    Map<String, Object> sqlStatMap = new LinkedHashMap<String, Object>();
-                    sqlStatMap.put("sql", entry.getKey());
-                    sqlStatMap.put("executeCount", sqlStat.getExecuteCount());
-                    sqlStatMap.put("effectRowCount", sqlStat.getEffectRowCount());
-
-                    List<Violation> violations = sqlStat.getViolations();
-                    if (violations.size() > 0) {
-                        sqlStatMap.put("violationMessage", violations.get(0).getMessage());
-                    }
-
-                    map.add(sqlStatMap);
-                }
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
-
-        return map;
     }
 
     public void clearCache() {
@@ -818,39 +803,67 @@ public abstract class WallProvider {
         }
     }
 
+    public WallProviderStatValue getStatValue(boolean reset) {
+        WallProviderStatValue statValue = new WallProviderStatValue();
+
+        statValue.setCheckCount(get(checkCount, reset));
+        statValue.setHardCheckCount(get(hardCheckCount, reset));
+        statValue.setViolationCount(get(violationCount, reset));
+        statValue.setViolationEffectRowCount(get(violationEffectRowCount, reset));
+        statValue.setBlackListHitCount(get(blackListHitCount, reset));
+        statValue.setWhiteListHitCount(get(whiteListHitCount, reset));
+        statValue.setSyntaxErrorCount(get(syntaxErrrorCount, reset));
+
+        for (Map.Entry<String, WallTableStat> entry : this.tableStats.entrySet()) {
+            String tableName = entry.getKey();
+            WallTableStat tableStat = entry.getValue();
+
+            WallTableStatValue tableStatValue = tableStat.getStatValue(reset);
+            tableStatValue.setName(tableName);
+
+            statValue.getTables().add(tableStatValue);
+        }
+
+        for (Map.Entry<String, WallFunctionStat> entry : this.functionStats.entrySet()) {
+            String functionName = entry.getKey();
+            WallFunctionStat functionStat = entry.getValue();
+
+            WallFunctionStatValue functionStatValue = functionStat.getStatValue(reset);
+            functionStatValue.setName(functionName);
+
+            statValue.getFunctions().add(functionStatValue);
+        }
+
+        final Lock lock = reset ? this.lock.writeLock() : this.lock.readLock();
+        lock.lock();
+        try {
+            if (this.whiteMergedList != null) {
+                for (Map.Entry<String, WallSqlStat> entry : whiteMergedList.entrySet()) {
+                    String sql = entry.getKey();
+                    WallSqlStat sqlStat = entry.getValue();
+                    WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
+                    sqlStatValue.setSql(sql);
+                    statValue.getWhiteList().add(sqlStatValue);
+                }
+            }
+
+            if (this.blackMergedList != null) {
+                for (Map.Entry<String, WallSqlStat> entry : blackMergedList.entrySet()) {
+                    String sql = entry.getKey();
+                    WallSqlStat sqlStat = entry.getValue();
+                    WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
+                    sqlStatValue.setSql(sql);
+                    statValue.getBlackList().add(sqlStatValue);
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        return statValue;
+    }
+
     public Map<String, Object> getStatsMap() {
-        Map<String, Object> info = new LinkedHashMap<String, Object>();
-
-        info.put("checkCount", this.getCheckCount());
-        info.put("hardCheckCount", this.getHardCheckCount());
-        info.put("violationCount", this.getViolationCount());
-        info.put("violationEffectRowCount", this.getViolationEffectRowCount());
-        info.put("blackListHitCount", this.getBlackListHitCount());
-        info.put("blackListSize", this.getBlackList().size());
-        info.put("whiteListHitCount", this.getWhiteListHitCount());
-        info.put("whiteListSize", this.getWhiteList().size());
-        info.put("syntaxErrrorCount", this.getSyntaxErrorCount());
-
-        {
-            List<Map<String, Object>> tables = new ArrayList<Map<String, Object>>();
-            for (Map.Entry<String, WallTableStat> entry : this.tableStats.entrySet()) {
-                Map<String, Object> statMap = entry.getValue().toMap();
-                statMap.put("name", entry.getKey());
-                tables.add(statMap);
-            }
-            info.put("tables", tables);
-        }
-        {
-            List<Map<String, Object>> functions = new ArrayList<Map<String, Object>>();
-            for (Map.Entry<String, WallFunctionStat> entry : this.functionStats.entrySet()) {
-                Map<String, Object> statMap = entry.getValue().toMap();
-                statMap.put("name", entry.getKey());
-                functions.add(statMap);
-            }
-            info.put("functions", functions);
-        }
-        // info.put("whiteList", this.getWhiteList());
-        info.put("blackList", this.getBlackListStat());
-        return info;
+        return getStatValue(false).toMap();
     }
 }

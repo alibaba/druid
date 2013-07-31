@@ -1,11 +1,3 @@
-package com.alibaba.druid.wall;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLongFieldUpdater;
-
-import com.alibaba.druid.support.json.JSONUtils;
-
 /*
  * Copyright 1999-2011 Alibaba Group Holding Ltd.
  *
@@ -21,6 +13,16 @@ import com.alibaba.druid.support.json.JSONUtils;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.alibaba.druid.wall;
+
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+
+import com.alibaba.druid.support.json.JSONUtils;
+
 public class WallTableStat {
 
     private volatile long                              selectCount;
@@ -124,7 +126,7 @@ public class WallTableStat {
     public long getUpdateDataCount() {
         return this.updateDataCount;
     }
-    
+
     public long getInsertDataCount() {
         return this.insertDataCount;
     }
@@ -132,7 +134,7 @@ public class WallTableStat {
     public void addInsertDataCount(long delta) {
         insertDataCountUpdater.addAndGet(this, delta);
     }
-    
+
     public void addUpdateDataCount(long delta) {
         updateDataCountUpdater.addAndGet(this, delta);
     }
@@ -220,43 +222,26 @@ public class WallTableStat {
         return toMap(map);
     }
 
+    public WallTableStatValue getStatValue(boolean reset) {
+        WallTableStatValue statValue = new WallTableStatValue();
+
+        statValue.setSelectCount(get(this, selectCountUpdater, reset));
+        statValue.setDeleteCount(get(this, deleteCountUpdater, reset));
+        statValue.setInsertCount(get(this, insertCountUpdater, reset));
+        statValue.setUpdateCount(get(this, updateCountUpdater, reset));
+        statValue.setAlterCount(get(this, alterCountUpdater, reset));
+        statValue.setDropCount(get(this, dropCountUpdater, reset));
+        statValue.setCreateCount(get(this, createCountUpdater, reset));
+        statValue.setTruncateCount(get(this, truncateCountUpdater, reset));
+        statValue.setReplaceCount(get(this, replaceCountUpdater, reset));
+        statValue.setDeleteDataCount(get(this, deleteDataCountUpdater, reset));
+        statValue.setFetchRowCount(get(this, fetchRowCountUpdater, reset));
+        statValue.setUpdateDataCount(get(this, updateDataCountUpdater, reset));
+
+        return statValue;
+    }
+
     public Map<String, Object> toMap(Map<String, Object> map) {
-        if (selectCount > 0) {
-            map.put("selectCount", selectCount);
-        }
-        if (deleteCount > 0) {
-            map.put("deleteCount", deleteCount);
-        }
-        if (insertCount > 0) {
-            map.put("insertCount", insertCount);
-        }
-        if (updateCount > 0) {
-            map.put("updateCount", updateCount);
-        }
-        if (alterCount > 0) {
-            map.put("alterCount", alterCount);
-        }
-        if (dropCount > 0) {
-            map.put("dropCount", dropCount);
-        }
-        if (createCount > 0) {
-            map.put("createCount", createCount);
-        }
-        if (truncateCount > 0) {
-            map.put("truncateCount", truncateCount);
-        }
-        if (replaceCount > 0) {
-            map.put("replaceCount", replaceCount);
-        }
-        if (deleteDataCount > 0) {
-            map.put("deleteDataCount", deleteDataCount);
-        }
-        if (fetchRowCount > 0) {
-            map.put("fetchRowCount", fetchRowCount);
-        }
-        if (updateDataCount > 0) {
-            map.put("updateDataCount", updateDataCount);
-        }
-        return map;
+        return getStatValue(false).toMap(map);
     }
 }

@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.wall;
 
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
@@ -47,4 +49,9 @@ public class WallFunctionStat {
         return map;
     }
 
+    public WallFunctionStatValue getStatValue(boolean reset) {
+        WallFunctionStatValue statValue = new WallFunctionStatValue();
+        statValue.setInvokeCount(get(this, invokeCountUpdater, reset));
+        return statValue;
+    }
 }
