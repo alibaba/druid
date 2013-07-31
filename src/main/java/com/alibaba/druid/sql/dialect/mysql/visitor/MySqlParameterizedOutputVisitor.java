@@ -16,7 +16,9 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import java.util.List;
+import java.util.Properties;
 
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -33,7 +35,9 @@ import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
 public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implements ParameterizedVisitor {
 
-    private int replaceCount;
+    private boolean shardingSupport = true;
+
+    private int     replaceCount;
 
     public MySqlParameterizedOutputVisitor(){
         this(new StringBuilder());
@@ -41,6 +45,27 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
 
     public MySqlParameterizedOutputVisitor(Appendable appender){
         super(appender);
+
+        configFromPropety(System.getProperties());
+    }
+
+    public void configFromPropety(Properties properties) {
+        {
+            String property = properties.getProperty("druid.parameterized.shardingSupport");
+            if ("true".equals(property)) {
+                this.setShardingSupport(true);
+            } else if ("false".equals(property)) {
+                this.setShardingSupport(false);
+            }
+        }
+    }
+
+    public boolean isShardingSupport() {
+        return shardingSupport;
+    }
+
+    public void setShardingSupport(boolean shardingSupport) {
+        this.shardingSupport = shardingSupport;
     }
 
     public int getReplaceCount() {
@@ -57,7 +82,13 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
 
     public boolean visit(SQLIdentifierExpr x) {
         final String name = x.getName();
-        if (x.getParent() instanceof SQLExprTableSource || x.getParent() instanceof SQLPropertyExpr) {
+        boolean computeSharding = isShardingSupport();
+        if (computeSharding) {
+            SQLObject parent = x.getParent();
+            computeSharding = parent instanceof SQLExprTableSource || parent instanceof SQLPropertyExpr;
+        }
+        
+        if (computeSharding) {
             int pos = name.lastIndexOf('_');
             if (pos != -1 && pos != name.length()) {
                 boolean isNumber = true;

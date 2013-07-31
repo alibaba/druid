@@ -190,13 +190,24 @@
                 var white = whiteList[i];
                 html += "<tr>";
                 html += "<td>" + white.sql + "</td>";
+                
                 if (typeof white.sample == "undefined") {
-                  html += "<td>\"\"</td>";
+                	html += "<td></td>";
                 } else {
-                  html += "<td>" + white.sample + "</td>";
+                	html += "<td>" + white.sample + "</td>";
                 }
-                html += "<td>" + white.executeCount + "</td>";
-                html += "<td>" + white.fetchRowCount + "</td>";
+                
+                if (typeof white.executeCount == "undefined") {
+                	html += "<td></td>";
+                } else {
+                	html += "<td>" + white.executeCount + "</td>";
+                }
+                
+                if (typeof white.fetchRowCount == "undefined") {
+                	html += "<td></td>";
+                } else {
+                	html += "<td>" + white.fetchRowCount + "</td>";
+              	}
                 html += "</tr>";
               }
               $("#dataTable3 tbody").html(html);
@@ -209,13 +220,24 @@
                 var black = blackList[i];
                 html += "<tr>";
                 html += "<td>" + black.sql + "</td>";
+                
                 if (typeof black.sample == "undefined") {
-                  html += "<td>\"\"</td>";
+                	html += "<td></td>";
                 } else {
-                  html += "<td>" + black.sample + "</td>";
+                	html += "<td>" + black.sample + "</td>";
                 }
-                html += "<td>" + black.executeCount + "</td>";
-                html += "<td>" + black.fetchRowCount + "</td>";
+                
+                if (typeof black.executeCount == "undefined") {
+                	html += "<td></td>";
+                } else {
+                	html += "<td>" + black.executeCount + "</td>";
+                }
+                
+                if (typeof black.fetchRowCount == "undefined") {
+                	html += "<td></td>";
+                } else {
+                	html += "<td>" + black.fetchRowCount + "</td>";
+              	}
                 html += "</tr>";
               }
               $("#dataTable4 tbody").html(html);
