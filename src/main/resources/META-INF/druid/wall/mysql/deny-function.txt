@@ -6,7 +6,6 @@ user
 system_user
 session_user
 benchmark
-connection_id
 current_user
 sleep
 extractvalue

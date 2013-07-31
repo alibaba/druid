@@ -2,7 +2,6 @@ db_name
 col_name
 user_name
 host_name
-object_id
 is_srvrolemember
 is_member
 opendatasource
