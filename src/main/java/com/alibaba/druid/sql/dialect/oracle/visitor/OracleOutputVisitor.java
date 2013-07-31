@@ -569,7 +569,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("SELECT ");       
 
         if (x.getHints().size() > 0) {           
-            printAndAccept(x.getHints(), ", ");           
+            printAndAccept(x.getHints(), ", ");      
+            print(' ');
         }
         
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
