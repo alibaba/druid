@@ -173,7 +173,7 @@
 				},
 
 				handleAjaxResult : function(data) {
-					$("#CheckCount").text(format(data.Content.checkCount))
+					$("#CheckCount").text(replace(data.Content.checkCount))
 					$("#HardCheckCount").text(replace(data.Content.hardCheckCount))
 					$("#ViolationCount").text(replace(data.Content.violationCount))
 					$("#BlackListHitCount")
