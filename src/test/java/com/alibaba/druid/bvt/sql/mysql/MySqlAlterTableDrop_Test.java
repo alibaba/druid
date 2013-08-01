@@ -24,16 +24,16 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
-public class MySqlAlterTableAddIndex_0 extends TestCase {
+public class MySqlAlterTableDrop_Test extends TestCase {
 
     public void test_alter_first() throws Exception {
-        String sql = "ALTER TABLE `test`.`tb1`  ADD INDEX `ix` (`f2` ASC) ;";
+        String sql = "ALTER TABLE `rules` DROP `enabled`";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD INDEX `ix` (`f2` ASC)", output);
+        Assert.assertEquals("ALTER TABLE `rules`" //
+                            + "\n\tDROP COLUMN `enabled`", output);
     }
 
 }

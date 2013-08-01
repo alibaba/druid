@@ -15,8 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;

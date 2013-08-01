@@ -2501,6 +2501,10 @@ public class MySqlStatementParser extends SQLStatementParser {
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
             item.setColumnName(this.exprParser.name());
             stmt.getItems().add(item);
+        } else if (lexer.token() == Token.IDENTIFIER) {
+            SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
+            item.setColumnName(this.exprParser.name());
+            stmt.getItems().add(item);
         } else {
             super.parseAlterDrop(stmt);
         }
