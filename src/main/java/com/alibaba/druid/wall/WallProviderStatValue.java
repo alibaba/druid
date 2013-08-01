@@ -22,12 +22,14 @@ import java.util.Map;
 
 public class WallProviderStatValue {
 
+    private String                            name;
+
     private long                              checkCount;
     private long                              hardCheckCount;
     private long                              violationCount;
     private long                              whiteListHitCount;
     private long                              blackListHitCount;
-    private long                              syntaxErrroCount;
+    private long                              syntaxErrorCount;
     private long                              violationEffectRowCount;
 
     private final List<WallTableStatValue>    tables    = new ArrayList<WallTableStatValue>();
@@ -35,6 +37,18 @@ public class WallProviderStatValue {
 
     private final List<WallSqlStatValue>      whiteList = new ArrayList<WallSqlStatValue>();
     private final List<WallSqlStatValue>      blackList = new ArrayList<WallSqlStatValue>();
+
+    public WallProviderStatValue(){
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public long getCheckCount() {
         return checkCount;
@@ -77,11 +91,11 @@ public class WallProviderStatValue {
     }
 
     public long getSyntaxErrorCount() {
-        return syntaxErrroCount;
+        return syntaxErrorCount;
     }
 
     public void setSyntaxErrorCount(long syntaxErrroCount) {
-        this.syntaxErrroCount = syntaxErrroCount;
+        this.syntaxErrorCount = syntaxErrroCount;
     }
 
     public long getViolationEffectRowCount() {

@@ -47,6 +47,8 @@ import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public abstract class WallProvider {
 
+    private String                                        name;
+
     private final Map<String, Object>                     attributes              = new ConcurrentHashMap<String, Object>(
                                                                                                                           1,
                                                                                                                           0.75f,
@@ -99,6 +101,14 @@ public abstract class WallProvider {
         this.dbType = dbType;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Map<String, Object> getAttributes() {
         return attributes;
     }
@@ -144,7 +154,7 @@ public abstract class WallProvider {
 
     public void addUpdateCount(WallSqlStat sqlStat, long updateCount) {
         sqlStat.addUpdateCount(updateCount);
-        
+
         Map<String, WallSqlTableStat> sqlTableStats = sqlStat.getTableStats();
         if (sqlTableStats == null) {
             return;
@@ -808,6 +818,7 @@ public abstract class WallProvider {
     public WallProviderStatValue getStatValue(boolean reset) {
         WallProviderStatValue statValue = new WallProviderStatValue();
 
+        statValue.setName(name);
         statValue.setCheckCount(get(checkCount, reset));
         statValue.setHardCheckCount(get(hardCheckCount, reset));
         statValue.setViolationCount(get(violationCount, reset));

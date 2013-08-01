@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.wall.spi;
+package com.alibaba.druid.wall;
 
-public interface WallStatLogger {
+import java.util.Properties;
 
+public interface WallProviderStatLogger {
+
+    void log(WallProviderStatValue statValue);
+
+    void configFromProperties(Properties properties);
 }
