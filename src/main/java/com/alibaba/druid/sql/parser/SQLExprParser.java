@@ -1176,7 +1176,9 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
-                charType.getArguments().add(this.expr());
+                SQLExpr arg = this.expr();
+                arg.setParent(charType);
+                charType.getArguments().add(arg);
                 accept(Token.RPAREN);
             }
 
@@ -1195,7 +1197,7 @@ public class SQLExprParser extends SQLParser {
     protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
-            exprList(dataType.getArguments());
+            exprList(dataType.getArguments(), dataType);
             accept(Token.RPAREN);
         }
 

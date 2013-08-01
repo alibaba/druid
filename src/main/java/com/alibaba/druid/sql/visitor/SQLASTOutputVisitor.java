@@ -120,7 +120,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 
-public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
+public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements SQLPrintableVisitor {
 
     protected final Appendable appender;
     private String             indent       = "\t";
@@ -485,8 +485,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLIntegerExpr x) {
-        print(x.getNumber().toString());
-        return false;
+       return SQLASTOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
@@ -555,8 +554,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLNumberExpr x) {
-        print(x.getNumber().toString());
-        return false;
+        return SQLASTOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLPropertyExpr x) {

@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -118,12 +119,24 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLIntegerExpr x) {
+        SQLObject parent = x.getParent();
+        
+        if (parent instanceof SQLDataType) {
+            return SQLASTOutputVisitorUtils.visit(v, x);
+        }
+        
         v.print('?');
         v.incrementReplaceCunt();
         return false;
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLNumberExpr x) {
+        SQLObject parent = x.getParent();
+        
+        if (parent instanceof SQLDataType) {
+            return SQLASTOutputVisitorUtils.visit(v, x);
+        }
+        
         v.print('?');
         v.incrementReplaceCunt();
         return false;
