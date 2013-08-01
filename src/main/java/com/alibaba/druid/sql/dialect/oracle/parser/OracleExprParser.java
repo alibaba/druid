@@ -72,6 +72,7 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleExprParser extends SQLExprParser {
 
 
+
     public boolean                allowStringAdditive = false;
 
     /**
@@ -415,6 +416,10 @@ public class OracleExprParser extends SQLExprParser {
                     
                     sqlExpr = cursorExpr;
                     return  primaryRest(sqlExpr);
+           case MODEL:
+               sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+               lexer.nextToken();
+               return  primaryRest(sqlExpr);
             default:
                 return super.primary();
         }
