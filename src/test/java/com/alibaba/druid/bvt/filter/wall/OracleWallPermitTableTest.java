@@ -40,9 +40,9 @@ public class OracleWallPermitTableTest extends TestCase {
     }
 
     public void test_permitTable_join() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from t1, TAB"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from t1, tab"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from t1, SYS.TAB"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from t1, SYS.\"TAB\""));
+        Assert.assertTrue(WallUtils.isValidateOracle("select * from t1, TAB"));
+        Assert.assertTrue(WallUtils.isValidateOracle("select * from t1, tab"));
+        Assert.assertTrue(WallUtils.isValidateOracle("select * from t1, SYS.TAB"));
+        Assert.assertTrue(WallUtils.isValidateOracle("select * from t1, SYS.\"TAB\""));
     }
 }

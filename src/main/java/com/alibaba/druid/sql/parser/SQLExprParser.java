@@ -871,15 +871,20 @@ public class SQLExprParser extends SQLParser {
     public final SQLExpr inRest(SQLExpr expr) {
         if (lexer.token() == Token.IN) {
             lexer.nextToken();
-            accept(Token.LPAREN);
 
             SQLInListExpr inListExpr = new SQLInListExpr(expr);
-            exprList(inListExpr.getTargetList());
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                exprList(inListExpr.getTargetList());
+                accept(Token.RPAREN);
+                expr = inListExpr;
+            } else {
+                SQLExpr itemExpr = primary();
+                inListExpr.getTargetList().add(itemExpr);
+            }
+            
             expr = inListExpr;
-
-            accept(Token.RPAREN);
-            expr = inListExpr;
-
+            
             if (inListExpr.getTargetList().size() == 1) {
                 SQLExpr targetExpr = inListExpr.getTargetList().get(0);
                 if (targetExpr instanceof SQLQueryExpr) {

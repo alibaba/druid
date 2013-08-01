@@ -54,7 +54,7 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
     }
 
     public void test01() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT user_name() FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT user_name() FROM X;"));
     }
 
     public final void test_sp_addsrvrolemenber() throws Exception {
@@ -75,12 +75,12 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
     }
 
     public final void test_db_name() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT DB_NAME() FROM X"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT DB_NAME(0) FROM X; "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT DB_NAME() FROM X"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT DB_NAME(0) FROM X; "));
     }
 
     public final void test_host_name() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT HOST_NAME() FROM X"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT HOST_NAME() FROM X"));
     }
 
     /**
@@ -89,16 +89,16 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
      * @throws Exception
      */
     public void test_is_srvrolemember() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’) FROM X;"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘dbcreator’) FROM X;"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘bulkadmin’) FROM X;"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘diskadmin’) FROM X;"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘processadmin’) FROM X;"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘serveradmin’) FROM X;"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘setupadmin’) FROM X;"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘securityadmin’) FROM X;"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’) FROM X; "));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’, ‘sa’) FROM X; "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘sysadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘dbcreator’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘bulkadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘diskadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘processadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘serveradmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘setupadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘securityadmin’) FROM X;"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘sysadmin’) FROM X; "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from t where fid = 1 UNION SELECT is_srvrolemember(‘sysadmin’, ‘sa’) FROM X; "));
     }
 
 }
