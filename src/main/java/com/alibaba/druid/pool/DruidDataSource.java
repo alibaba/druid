@@ -548,8 +548,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.driverClass = driverClass.trim();
             }
 
-            validationQueryCheck();
-
             if (this.jdbcUrl != null) {
                 this.jdbcUrl = this.jdbcUrl.trim();
                 initFromWrapDriverUrl();
@@ -581,6 +579,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initExceptionSorter();
             initValidConnectionChecker();
+            validationQueryCheck();
 
             if (isUseGloalDataSourceStat()) {
                 dataSourceStat = JdbcDataSourceStat.getGlobal();
