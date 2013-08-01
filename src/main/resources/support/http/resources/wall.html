@@ -98,6 +98,7 @@
                   <th class="td_lable">sample</th>
                   <th class="td_lable">executeCount</th>
                   <th class="td_lable">fetchRowCount</th>
+                  <th class="td_lable">updateCount</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -109,6 +110,7 @@
                   <th class="td_lable">sample</th>
                   <th class="td_lable">executeCount</th>
                   <th class="td_lable">fetchRowCount</th>
+                  <th class="td_lable">updateCount</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -208,6 +210,12 @@
                 } else {
                 	html += "<td>" + white.fetchRowCount + "</td>";
               	}
+                
+                if (typeof white.updateCount == "undefined") {
+                	html += "<td></td>";
+                } else {
+                	html += "<td>" + white.updateCount + "</td>";
+              	}
                 html += "</tr>";
               }
               $("#dataTable3 tbody").html(html);
@@ -238,8 +246,12 @@
                 } else {
                 	html += "<td>" + black.fetchRowCount + "</td>";
               	}
-                html += "</tr>";
-              }
+                
+                if (typeof black.updateCount == "undefined") {
+                	html += "<td></td>";
+                } else {
+                	html += "<td>" + black.updateCount + "</td>";
+              	}              }
               $("#dataTable4 tbody").html(html);
             }
            }

@@ -90,7 +90,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
         
         if (computeSharding) {
             int pos = name.lastIndexOf('_');
-            if (pos != -1 && pos != name.length()) {
+            if (pos != -1 && pos != name.length() - 1) {
                 boolean isNumber = true;
                 for (int i = pos + 1; i < name.length(); ++i) {
                     char ch = name.charAt(i);
