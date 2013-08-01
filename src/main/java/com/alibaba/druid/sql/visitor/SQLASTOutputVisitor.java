@@ -120,7 +120,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 
-public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements SQLPrintableVisitor {
+public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements PrintableVisitor {
 
     protected final Appendable appender;
     private String             indent       = "\t";

@@ -15,10 +15,9 @@
  */
 package com.alibaba.druid.sql.visitor;
 
-public interface ParameterizedVisitor extends PrintableVisitor {
+public interface PrintableVisitor extends SQLASTVisitor {
 
-    int getReplaceCount();
+    void print(char value);
 
-    void incrementReplaceCunt();
-
+    void print(String text);
 }
