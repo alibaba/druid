@@ -169,3 +169,16 @@ druid.common = function () {
 $(document).ready(function() {
 	druid.common.init();
 });
+
+function replace (data) {
+	if((!data)||data === undefined){
+		return '';
+	}else{
+		return format(data);
+	}
+}
+
+function format(s) {
+	var str=s+='';
+	return str.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+}

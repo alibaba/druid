@@ -108,20 +108,20 @@
 	    					html += "<tr>";
 	    					html += "<td>" + (i + 1) + "</td>";
 	    					html += "<td>" + '<a target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
-	    					html += "<td>" + stat.ExecuteCount + "</td>";
-	    					html += "<td>" + stat.TotalTime + "</td>";
+	    					html += "<td>" + replace(stat.ExecuteCount) + "</td>";
+	    					html += "<td>" + replace(stat.TotalTime) + "</td>";
 	    					
 	    					var lastSlowHtml = stat.MaxTimespan;
 	    					if (stat.LastSlowParameters!=null && stat.LastSlowParameters.length>0) {
 	    						lastSlowHtml ='<a target="_blank" style="color:red" href="sql-detail.html?sqlId=' + stat.ID + '">'+stat.MaxTimespan+'</a>';
 	    					}
-	    					html += "<td>" + lastSlowHtml + "</td>";
-	    					html += "<td>" + stat.InTransactionCount + "</td>";
-	    					html += "<td>" + stat.ErrorCount + "</td>";
-	    					html += "<td>" + stat.EffectedRowCount + "</td>";
-	    					html += "<td>" + stat.FetchRowCount + "</td>";
-	    					html += "<td>" + stat.RunningCount + "</td>";
-	    					html += "<td>" + stat.ConcurrentMax + "</td>";
+	    					html += "<td>" + replace(lastSlowHtml) + "</td>";
+	    					html += "<td>" + replace(stat.InTransactionCount) + "</td>";
+	    					html += "<td>" + replace(stat.ErrorCount) + "</td>";
+	    					html += "<td>" + replace(stat.EffectedRowCount) + "</td>";
+	    					html += "<td>" + replace(stat.FetchRowCount) + "</td>";
+	    					html += "<td>" + replace(stat.RunningCount) + "</td>";
+	    					html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
 	    					html += "<td>" + '[' + stat.Histogram + ']' + "</td>";
 	    					html += "<td>" + '[' + stat.ExecuteAndResultHoldTimeHistogram + ']' + "</td>";
 	    					html += "<td>" + '[' + stat.FetchRowCountHistogram + ']' + "</td>";
