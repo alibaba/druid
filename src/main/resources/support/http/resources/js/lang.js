@@ -218,6 +218,11 @@ druid.lang = function() {
 		'DeleteDataCount':['DeleteDataCount', '删除数据行数'],
 		'UpdateDataCount':['UpdateDataCount', '更新数据行数'],
 		'FetchRowCount':['FetchRowCount', '读取行数'],
+		'WallStat':['Wall Stat', '防御统计'],
+		'TableStat':['Table Stat', '表访问统计'],
+		'FunctionStat':['Function Stat', '函数调用统计'],
+    'SQLStatWhiteList':['SQL Stat - White List', 'SQL防御统计 - 白名单'],
+    'SQLStatBlackList':['SQL Stat - Black List', 'SQL防御统计 - 黑名单'],
 		/**session-detail*/
 		'SESSIONID':['SESSIONID', 'SESSIONID'],
 		'UserAgent':['UserAgent', 'UserAgent'],
