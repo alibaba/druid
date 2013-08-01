@@ -283,7 +283,11 @@ public final class DruidStatService implements DruidStatServiceMBean {
             if (tables != null) {
                 List<Map<String, Object>> sortedArray = comparatorOrderBy(tables, parameters);
                 result.put("tables", sortedArray);
-                sortedArray = comparatorOrderBy((List<Map<String, Object>>) result.get("functions"), parameters);
+            }
+            
+            List<Map<String, Object>> functions = (List<Map<String, Object>>) result.get("functions");
+            if (functions != null) {
+                List<Map<String, Object>> sortedArray = comparatorOrderBy(functions, parameters);
                 result.put("functions", sortedArray);
             }
         } else {
