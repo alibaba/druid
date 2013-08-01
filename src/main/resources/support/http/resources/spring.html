@@ -73,16 +73,16 @@
 	    					html += "<td>" + (i + 1) + "</td>";
 	    					html += "<td>" + stat.Class + "</td>";
 	    					html += "<td>" + '<a target="_blank" href="spring-detail.html?class=' + stat.Class + '&method=' + stat.Method + '">' + stat.Method + '</a>' + "</td>";
-	    					html += "<td>" + stat.ExecuteCount + "</td>";
-	    					html += "<td>" + stat.ExecuteTimeMillis + "</td>";
-	    					html += "<td>" + stat.RunningCount + "</td>";
-	    					html += "<td>" + stat.ConcurrentMax + "</td>";
-	    					html += "<td>" + stat.JdbcExecuteCount + "</td>";
-	    					html += "<td>" + stat.JdbcExecuteTimeMillis + "</td>";
-	    					html += "<td>" + stat.JdbcCommitCount + "</td>";
-	    					html += "<td>" + stat.JdbcRollbackCount + "</td>";
-	    					html += "<td>" + stat.JdbcFetchRowCount + "</td>";
-	    					html += "<td>" + stat.JdbcUpdateCount + "</td>";
+	    					html += "<td>" + replace(stat.ExecuteCount) + "</td>";
+	    					html += "<td>" + replace(stat.ExecuteTimeMillis) + "</td>";
+	    					html += "<td>" + replace(stat.RunningCount) + "</td>";
+	    					html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcExecuteCount) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcExecuteTimeMillis) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcCommitCount) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcRollbackCount) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcFetchRowCount) + "</td>";
+	    					html += "<td>" + replace(stat.JdbcUpdateCount) + "</td>";
 	    					html += "</tr>";
 	    				}
 	    				$("#dataTable tbody").html(html);

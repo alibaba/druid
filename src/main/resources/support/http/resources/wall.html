@@ -173,17 +173,17 @@
 				},
 
 				handleAjaxResult : function(data) {
-					$("#CheckCount").text(data.Content.checkCount)
-					$("#HardCheckCount").text(data.Content.hardCheckCount)
-					$("#ViolationCount").text(data.Content.violationCount)
+					$("#CheckCount").text(replace(data.Content.checkCount))
+					$("#HardCheckCount").text(replace(data.Content.hardCheckCount))
+					$("#ViolationCount").text(replace(data.Content.violationCount))
 					$("#BlackListHitCount")
-							.text(data.Content.blackListHitCount)
-					$("#BlackListSize").text(data.Content.blackListSize)
+							.text(replace(data.Content.blackListHitCount))
+					$("#BlackListSize").text(replace(data.Content.blackListSize))
 					$("#WhiteListHitCount")
-							.text(data.Content.whiteListHitCount)
-					$("#WhiteListSize").text(data.Content.whiteListSize)
+							.text(replace(data.Content.whiteListHitCount))
+					$("#WhiteListSize").text(replace(data.Content.whiteListSize))
 					$("#SyntaxErrrorCount")
-							.text(data.Content.syntaxErrrorCount)
+							.text(replace(data.Content.syntaxErrrorCount))
 
 					var html = "";
 					var tables = data.Content.tables;
@@ -193,43 +193,33 @@
 							html += "<tr>";
 							html += "<td>" + table.name + "</td>";
 							html += "<td>"
-									+ (table.selectCount ? table.selectCount : '') + "</td>";
+									+ replace(table.selectCount) + "</td>";
 							html += "<td>"
-									+ (table.selectIntoCount ? table.selectIntoCount
-											: '') + "</td>";
+									+ replace(table.selectIntoCount) + "</td>";
 							html += "<td>"
-									+ (table.insertCount ? table.insertCount
-											: '') + "</td>";
+									+ replace(table.insertCount) + "</td>";
 							html += "<td>"
-									+ (table.updateCount ? table.updateCount
-											: '') + "</td>";
+									+ replace(table.updateCount) + "</td>";
 							html += "<td>"
-									+ (table.deleteCount ? table.deleteCount
-											: '') + "</td>";
+									+ replace(table.deleteCount) + "</td>";
 							html += "<td>"
-									+ (table.truncateCount ? table.truncateCount
-											: '') + "</td>";
+									+ replace(table.truncateCount) + "</td>";
 							html += "<td>"
-									+ (table.createCount ? table.createCount
-											: '') + "</td>";
+									+ replace(table.createCount) + "</td>";
 							html += "<td>"
-									+ (table.alterCount ? table.alterCount : '')
+									+ replace(table.alterCount)
 									+ "</td>";
 							html += "<td>"
-									+ (table.dropCount ? table.dropCount : '')
+									+ replace(table.dropCount)
 									+ "</td>";
 							html += "<td>"
-									+ (table.replaceCount ? table.replaceCount
-											: '') + "</td>";
+									+ replace(table.replaceCount) + "</td>";
 							html += "<td>"
-									+ (table.deleteDataCount ? table.deleteDataCount
-											: '') + "</td>";
+									+ replace(table.deleteDataCount) + "</td>";
 							html += "<td>"
-									+ (table.updateDataCount ? table.updateDataCount
-											: '') + "</td>";
+									+ replace(table.updateDataCount) + "</td>";
 							html += "<td>"
-									+ (table.fetchRowCount ? table.fetchRowCount
-											: '') + "</td>";
+									+ replace(table.fetchRowCount)+ "</td>";
 							html += "</tr>";
 						}
 						$("#dataTable1 tbody").html(html);
