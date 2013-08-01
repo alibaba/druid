@@ -96,9 +96,9 @@
                 <tr>
                   <th class="td_lable">sql</th>
                   <th class="td_lable">sample</th>
-                  <th class="td_lable">executeCount</th>
-                  <th class="td_lable">fetchRowCount</th>
-                  <th class="td_lable">updateCount</th>
+                  <th class="td_lable" style="width:50px;">executeCount</th>
+                  <th class="td_lable" style="width:50px;">fetchRowCount</th>
+                  <th class="td_lable" style="width:50px;">updateCount</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -108,9 +108,9 @@
                 <tr>
                   <th class="td_lable">sql</th>
                   <th class="td_lable">sample</th>
-                  <th class="td_lable">executeCount</th>
-                  <th class="td_lable">fetchRowCount</th>
-                  <th class="td_lable">updateCount</th>
+                  <th class="td_lable" style="width:50px;">executeCount</th>
+                  <th class="td_lable" style="width:50px;">fetchRowCount</th>
+                  <th class="td_lable" style="width:50px;">updateCount</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -193,25 +193,25 @@
                 html += "<tr>";
                 html += "<td>" + white.sql + "</td>";
                 
-                if (typeof white.sample == "undefined") {
+                if (white.sample === undefined) {
                 	html += "<td></td>";
                 } else {
-                	html += "<td>" + white.sample + "</td>";
+                	html += '<td style="word-break:break-all">' + white.sample + "</td>";
                 }
                 
-                if (typeof white.executeCount == "undefined") {
+                if (white.executeCount === undefined) {
                 	html += "<td></td>";
                 } else {
                 	html += "<td>" + white.executeCount + "</td>";
                 }
                 
-                if (typeof white.fetchRowCount == "undefined") {
+                if (white.fetchRowCount === undefined) {
                 	html += "<td></td>";
                 } else {
                 	html += "<td>" + white.fetchRowCount + "</td>";
               	}
                 
-                if (typeof white.updateCount == "undefined") {
+                if (white.updateCount === undefined) {
                 	html += "<td></td>";
                 } else {
                 	html += "<td>" + white.updateCount + "</td>";
@@ -229,25 +229,25 @@
                 html += "<tr>";
                 html += "<td>" + black.sql + "</td>";
                 
-                if (typeof black.sample == "undefined") {
+                if (black.sample === undefined) {
                 	html += "<td></td>";
                 } else {
-                	html += "<td>" + black.sample + "</td>";
+                	html += '<td style="word-break:break-all">' + black.sample + "</td>";
                 }
                 
-                if (typeof black.executeCount == "undefined") {
+                if (black.executeCount === undefined) {
                 	html += "<td></td>";
                 } else {
                 	html += "<td>" + black.executeCount + "</td>";
                 }
                 
-                if (typeof black.fetchRowCount == "undefined") {
+                if (black.fetchRowCount === undefined) {
                 	html += "<td></td>";
                 } else {
                 	html += "<td>" + black.fetchRowCount + "</td>";
               	}
                 
-                if (typeof black.updateCount == "undefined") {
+                if (black.updateCount === undefined) {
                 	html += "<td></td>";
                 } else {
                 	html += "<td>" + black.updateCount + "</td>";
