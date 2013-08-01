@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLObjectImpl implements SQLObject, Serializable {
@@ -71,7 +70,9 @@ public abstract class SQLObjectImpl implements SQLObject, Serializable {
     }
 
     public String toString() {
-        return SQLUtils.toSQLString(this);
+        StringBuffer buf = new StringBuffer();
+        output(buf);
+        return buf.toString();
     }
 
     public SQLObject getParent() {
