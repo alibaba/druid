@@ -126,11 +126,11 @@
 					class="table table-bordered responsive-utilities">
 					<thead>
 						<tr>
-							<th class="td_lable">sql</th>
-							<th class="td_lable">sample</th>
-							<th class="td_lable" style="width: 50px;">executeCount</th>
-							<th class="td_lable" style="width: 50px;">fetchRowCount</th>
-							<th class="td_lable" style="width: 50px;">updateCount</th>
+							<th class="td_lable">SQL</th>
+							<th class="td_lable">Sample</th>
+							<th class="td_lable" style="width: 50px;">ExecuteCount</th>
+							<th class="td_lable" style="width: 50px;">FetchRowCount</th>
+							<th class="td_lable" style="width: 50px;">UpdateCount</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -141,11 +141,11 @@
 					class="table table-bordered responsive-utilities">
 					<thead>
 						<tr>
-							<th class="td_lable">sql</th>
-							<th class="td_lable">sample</th>
-							<th class="td_lable" style="width: 50px;">executeCount</th>
-							<th class="td_lable" style="width: 50px;">fetchRowCount</th>
-							<th class="td_lable" style="width: 50px;">updateCount</th>
+							<th class="td_lable">SQL</th>
+							<th class="td_lable">Sample</th>
+							<th class="td_lable" style="width: 50px;">ExecuteCount</th>
+							<th class="td_lable" style="width: 50px;">FetchRowCount</th>
+							<th class="td_lable" style="width: 50px;">UpdateCount</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -193,44 +193,43 @@
 							html += "<tr>";
 							html += "<td>" + table.name + "</td>";
 							html += "<td>"
-									+ (table.selectCount ? table.selectCount
-											: 0) + "</td>";
+									+ (table.selectCount ? table.selectCount : '') + "</td>";
 							html += "<td>"
 									+ (table.selectIntoCount ? table.selectIntoCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
 									+ (table.insertCount ? table.insertCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
 									+ (table.updateCount ? table.updateCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
 									+ (table.deleteCount ? table.deleteCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
 									+ (table.truncateCount ? table.truncateCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
 									+ (table.createCount ? table.createCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
-									+ (table.alterCount ? table.alterCount : 0)
+									+ (table.alterCount ? table.alterCount : '')
 									+ "</td>";
 							html += "<td>"
-									+ (table.dropCount ? table.dropCount : 0)
+									+ (table.dropCount ? table.dropCount : '')
 									+ "</td>";
 							html += "<td>"
 									+ (table.replaceCount ? table.replaceCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
 									+ (table.deleteDataCount ? table.deleteDataCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
 									+ (table.updateDataCount ? table.updateDataCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "<td>"
 									+ (table.fetchRowCount ? table.fetchRowCount
-											: 0) + "</td>";
+											: '') + "</td>";
 							html += "</tr>";
 						}
 						$("#dataTable1 tbody").html(html);
