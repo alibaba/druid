@@ -205,6 +205,11 @@ druid.lang = function() {
 		'SyntaxErrrorCount':['SyntaxErrrorCount', '语法错误次数'],
 		'TableName':['TableName', '表名'],
 		
+		'Sample':['Sample','样本'],
+		'ExecuteCount':['ExecuteCount','执行数'],
+		'FetchRowCount':['FetchRowCount','读取行数'],
+		'SQLUpdateCount':['UpdateCount','更新行数'],
+		
 		'SelectCount':['SelectCount', 'Select数'],
 		'SelectIntoCount':['SelectIntoCount', 'SelectInto数'],
 		'InsertCount':['InsertCount', 'Insert数'],
