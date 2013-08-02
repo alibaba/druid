@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;

@@ -832,8 +832,13 @@ public abstract class WallProvider {
             WallTableStat tableStat = entry.getValue();
 
             WallTableStatValue tableStatValue = tableStat.getStatValue(reset);
+            
+            if (tableStatValue.getTotalExecuteCount() == 0) {
+                continue;
+            }
+            
             tableStatValue.setName(tableName);
-
+            
             statValue.getTables().add(tableStatValue);
         }
 
@@ -842,6 +847,10 @@ public abstract class WallProvider {
             WallFunctionStat functionStat = entry.getValue();
 
             WallFunctionStatValue functionStatValue = functionStat.getStatValue(reset);
+            
+            if (functionStatValue.getInvokeCount() == 0) {
+                continue;
+            }
             functionStatValue.setName(functionName);
 
             statValue.getFunctions().add(functionStatValue);
@@ -855,6 +864,11 @@ public abstract class WallProvider {
                     String sql = entry.getKey();
                     WallSqlStat sqlStat = entry.getValue();
                     WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
+                    
+                    if (sqlStatValue.getExecuteCount() == 0) {
+                        continue;
+                    }
+                    
                     sqlStatValue.setSql(sql);
                     statValue.getWhiteList().add(sqlStatValue);
                 }
@@ -865,6 +879,11 @@ public abstract class WallProvider {
                     String sql = entry.getKey();
                     WallSqlStat sqlStat = entry.getValue();
                     WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
+                    
+                    if (sqlStatValue.getExecuteCount() == 0) {
+                        continue;
+                    }
+                    
                     sqlStatValue.setSql(sql);
                     statValue.getBlackList().add(sqlStatValue);
                 }

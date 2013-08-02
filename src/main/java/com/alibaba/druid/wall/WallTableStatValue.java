@@ -45,6 +45,19 @@ public class WallTableStatValue {
         this.name = name;
     }
 
+    public long getTotalExecuteCount() {
+        return selectCount //
+               + selectIntoCount //
+               + insertCount //
+               + updateCount //
+               + deleteCount //
+               + truncateCount //
+               + createCount //
+               + dropCount //
+               + replaceCount //
+        ;
+    }
+
     public String getName() {
         return name;
     }
