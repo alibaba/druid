@@ -18,8 +18,9 @@ package com.alibaba.druid.bvt.pool.basic;
 import java.util.Arrays;
 import java.util.Properties;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ExceptionSorter;

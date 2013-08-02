@@ -134,6 +134,7 @@ public class OracleUtils {
         oracleConn.setStatementCacheSize(size);
     }
 
+    @SuppressWarnings("deprecation")
     public static int pingDatabase(Connection conn) throws SQLException {
         OracleConnection oracleConn = unwrap(conn);
         return oracleConn.pingDatabase(1000);

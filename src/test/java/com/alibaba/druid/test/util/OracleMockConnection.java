@@ -26,11 +26,17 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.Properties;
 import java.util.TimeZone;
 
 import oracle.jdbc.OracleOCIFailover;
 import oracle.jdbc.OracleSavepoint;
+import oracle.jdbc.aq.AQDequeueOptions;
+import oracle.jdbc.aq.AQEnqueueOptions;
+import oracle.jdbc.aq.AQMessage;
+import oracle.jdbc.aq.AQNotificationRegistration;
+import oracle.jdbc.dcn.DatabaseChangeRegistration;
 import oracle.jdbc.internal.OracleConnection;
 import oracle.jdbc.pool.OracleConnectionCacheCallback;
 import oracle.sql.ARRAY;
@@ -733,9 +739,75 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
         return this.getDriver().createMockPreparedStatement(this, sql);
     }
 
-    @Override
     public void shutdown(int arg0) throws SQLException {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void commit(EnumSet<CommitOption> arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public AQMessage dequeue(String arg0, AQDequeueOptions arg1, byte[] arg2) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public AQMessage dequeue(String arg0, AQDequeueOptions arg1, String arg2) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void enqueue(String arg0, AQEnqueueOptions arg1, AQMessage arg2) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public DatabaseChangeRegistration getDatabaseChangeRegistration(int arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public AQNotificationRegistration[] registerAQNotification(String[] arg0, Properties[] arg1, Properties arg2)
+                                                                                                                 throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public DatabaseChangeRegistration registerDatabaseChangeNotification(Properties arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void shutdown(DatabaseShutdownMode arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void startup(DatabaseStartupMode arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void unregisterAQNotification(AQNotificationRegistration arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void unregisterDatabaseChangeNotification(DatabaseChangeRegistration arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        
     }
 }
