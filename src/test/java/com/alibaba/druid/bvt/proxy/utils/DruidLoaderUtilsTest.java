@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.bvt.proxy.DruidDriverTest.PublicJdbcFilterAdapter;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterManager;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.IOUtils;
 
 /**
  * druidLoader util 测试
@@ -94,12 +94,12 @@ public class DruidLoaderUtilsTest extends TestCase {
     }
 
     public void twest_loadClass() throws Exception {
-        Assert.assertEquals(null, JdbcUtils.loadDriverClass(null));
-        Assert.assertEquals(null, JdbcUtils.loadDriverClass("xxx"));
+        Assert.assertEquals(null, IOUtils.loadClass(null));
+        Assert.assertEquals(null, IOUtils.loadClass("xxx"));
         Assert.assertEquals(PublicJdbcFilterAdapter.class,
-                            JdbcUtils.loadDriverClass(PublicJdbcFilterAdapter.class.getName()));
-        Assert.assertNull(JdbcUtils.loadDriverClass(null));
-        Assert.assertNull(JdbcUtils.loadDriverClass(""));
+                            IOUtils.loadClass(PublicJdbcFilterAdapter.class.getName()));
+        Assert.assertNull(IOUtils.loadClass(null));
+        Assert.assertNull(IOUtils.loadClass(""));
     }
 
 }

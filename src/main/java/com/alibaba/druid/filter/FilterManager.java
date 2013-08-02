@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterManager {
@@ -98,7 +99,7 @@ public class FilterManager {
                     continue;
                 }
 
-                Class<?> filterClass = JdbcUtils.loadDriverClass(filterClassName);
+                Class<?> filterClass = IOUtils.loadClass(filterClassName);
 
                 if (filterClass == null) {
                     LOG.error("load filter error, filter not found : " + filterClassName);
@@ -125,7 +126,7 @@ public class FilterManager {
             return;
         }
 
-        Class<?> filterClass = JdbcUtils.loadDriverClass(filterName);
+        Class<?> filterClass = IOUtils.loadClass(filterName);
         if (filterClass == null) {
             LOG.error("load filter error, filter not found : " + filterName);
             return;

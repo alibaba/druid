@@ -84,7 +84,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public final static boolean                        DEFAULT_TEST_ON_BORROW                    = false;
     public final static boolean                        DEFAULT_TEST_ON_RETURN                    = false;
     public final static boolean                        DEFAULT_WHILE_IDLE                        = true;
-    public static final long                           DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
+    public static final long                           DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 1000L;
     public static final long                           DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
     public static final int                            DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
 
@@ -563,7 +563,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
-        Class<?> clazz = JdbcUtils.loadDriverClass(validConnectionCheckerClass);
+        Class<?> clazz = IOUtils.loadClass(validConnectionCheckerClass);
         ValidConnectionChecker validConnectionChecker = null;
         if (clazz != null) {
             validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
@@ -798,7 +798,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setPasswordCallbackClassName(String passwordCallbackClassName) throws Exception {
-        Class<?> clazz = JdbcUtils.loadDriverClass(passwordCallbackClassName);
+        Class<?> clazz = IOUtils.loadClass(passwordCallbackClassName);
         if (clazz != null) {
             this.passwordCallback = (PasswordCallback) clazz.newInstance();
         } else {
@@ -1130,7 +1130,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             return;
         }
 
-        Class<?> clazz = JdbcUtils.loadDriverClass(exceptionSorter);
+        Class<?> clazz = IOUtils.loadClass(exceptionSorter);
         if (clazz == null) {
             LOG.error("load exceptionSorter error : " + exceptionSorter);
         } else {
@@ -1475,7 +1475,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 if (sql == null) {
                     continue;
                 }
-                
+
                 stmt.execute(sql);
             }
         } finally {

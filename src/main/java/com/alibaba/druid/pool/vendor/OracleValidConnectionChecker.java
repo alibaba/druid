@@ -29,6 +29,7 @@ import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
@@ -43,7 +44,7 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
 
     public OracleValidConnectionChecker(){
         try {
-            clazz = JdbcUtils.loadDriverClass("oracle.jdbc.driver.OracleConnection");
+            clazz = IOUtils.loadClass("oracle.jdbc.driver.OracleConnection");
             if (clazz != null) {
                 ping = clazz.getMethod("pingDatabase", new Class[] { Integer.TYPE });
             } else {

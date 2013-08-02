@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.pool;
 
+import static com.alibaba.druid.util.IOUtils.getBoolean;
+
 import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -154,19 +156,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void configFromPropety(Properties properties) {
         {
-            String property = properties.getProperty("druid.testWhileIdle");
-            if ("true".equals(property)) {
-                this.setTestWhileIdle(true);
-            } else if ("false".equals(property)) {
-                this.setTestWhileIdle(false);
+            Boolean value = getBoolean(properties, "druid.testWhileIdle");
+            if (value != null) {
+                this.setTestWhileIdle(value);
             }
         }
         {
-            String property = properties.getProperty("druid.testOnBorrow");
-            if ("true".equals(property)) {
-                this.setTestOnBorrow(true);
-            } else if ("false".equals(property)) {
-                this.setTestOnBorrow(false);
+            Boolean value = getBoolean(properties, "druid.testOnBorrow");
+            if (value != null) {
+                this.setTestOnBorrow(value);
             }
         }
         {
@@ -176,11 +174,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = properties.getProperty("druid.useGloalDataSourceStat");
-            if ("true".equals(property)) {
-                this.setUseGloalDataSourceStat(true);
-            } else if ("false".equals(property)) {
-                this.setUseGloalDataSourceStat(false);
+            Boolean value = getBoolean(properties, "druid.useGloalDataSourceStat");
+            if (value != null) {
+                this.setUseGloalDataSourceStat(value);
             }
         }
         {
@@ -219,19 +215,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = properties.getProperty("druid.clearFiltersEnable");
-            if ("true".equals(property)) {
-                this.setClearFiltersEnable(true);
-            } else if ("false".equals(property)) {
-                this.setClearFiltersEnable(false);
+            Boolean value = getBoolean(properties, "druid.clearFiltersEnable");
+            if (value != null) {
+                this.setClearFiltersEnable(value);
             }
         }
         {
-            String property = properties.getProperty("druid.resetStatEnable");
-            if ("true".equals(property)) {
-                this.setResetStatEnable(true);
-            } else if ("false".equals(property)) {
-                this.setResetStatEnable(false);
+            Boolean value = getBoolean(properties, "druid.resetStatEnable");
+            if (value != null) {
+                this.setResetStatEnable(value);
             }
         }
     }

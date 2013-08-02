@@ -25,6 +25,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.Properties;
 
 public class IOUtils {
 
@@ -39,7 +40,7 @@ public class IOUtils {
         }
         return read(reader);
     }
-    
+
     public static String readFromResource(String resource) throws IOException {
         InputStream in = null;
         try {
@@ -47,7 +48,7 @@ public class IOUtils {
             if (in == null) {
                 in = IOUtils.class.getResourceAsStream(resource);
             }
-            
+
             if (in == null) {
                 return null;
             }
@@ -58,7 +59,7 @@ public class IOUtils {
             JdbcUtils.close(in);
         }
     }
-    
+
     public static byte[] readByteArrayFromResource(String resource) throws IOException {
         InputStream in = null;
         try {
@@ -66,25 +67,24 @@ public class IOUtils {
             if (in == null) {
                 return null;
             }
-            
+
             return readByteArray(in);
         } finally {
             JdbcUtils.close(in);
         }
     }
-    
+
     public static byte[] readByteArray(InputStream input) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         copy(input, output);
         return output.toByteArray();
     }
-    
-    public static long copy(InputStream input, OutputStream output)
-            throws IOException {
+
+    public static long copy(InputStream input, OutputStream output) throws IOException {
         final int EOF = -1;
-        
+
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        
+
         long count = 0;
         int n = 0;
         while (EOF != (n = input.read(buffer))) {
@@ -157,4 +157,68 @@ public class IOUtils {
         return buf.toString();
     }
 
+    public static Boolean getBoolean(Properties properties, String key) {
+        String property = properties.getProperty(key);
+        if ("true".equals(property)) {
+            return Boolean.TRUE;
+        } else if ("false".equals(property)) {
+            return Boolean.FALSE;
+        }
+        return null;
+    }
+
+    public static Integer getInteger(Properties properties, String key) {
+        String property = properties.getProperty(key);
+
+        if (property == null) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(property);
+        } catch (NumberFormatException ex) {
+            // skip
+        }
+        return null;
+    }
+
+    public static Long getLong(Properties properties, String key) {
+        String property = properties.getProperty(key);
+
+        if (property == null) {
+            return null;
+        }
+        try {
+            return Long.parseLong(property);
+        } catch (NumberFormatException ex) {
+            // skip
+        }
+        return null;
+    }
+
+    public static Class<?> loadClass(String className) {
+        Class<?> clazz = null;
+
+        if (className == null) {
+            return null;
+        }
+
+        ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
+        if (ctxClassLoader != null) {
+            try {
+                clazz = ctxClassLoader.loadClass(className);
+            } catch (ClassNotFoundException e) {
+                // skip
+            }
+        }
+
+        if (clazz != null) {
+            return clazz;
+        }
+
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
 }

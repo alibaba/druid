@@ -15,11 +15,14 @@
  */
 package com.alibaba.druid.wall;
 
+import static com.alibaba.druid.util.IOUtils.getBoolean;
+
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Wrapper;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -42,9 +45,9 @@ import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
-    private final static Log   LOG            = LogFactory.getLog(WallFilter.class);
+    private final static Log   LOG                       = LogFactory.getLog(WallFilter.class);
 
-    private boolean            inited         = false;
+    private boolean            inited                    = false;
 
     private WallProvider       provider;
 
@@ -52,10 +55,38 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     private WallConfig         config;
 
-    private volatile boolean   logViolation   = false;
-    private volatile boolean   throwException = true;
+    private volatile boolean   logViolation              = false;
+    private volatile boolean   throwException            = true;
 
-    public final static String ATTR_SQL_STAT  = "wall.sqlStat";
+    private boolean            autoRegisterToGlobalTimer = false;
+
+    public final static String ATTR_SQL_STAT             = "wall.sqlStat";
+
+    public WallFilter(){
+        configFromProperties(System.getProperties());
+    }
+
+    @Override
+    public void configFromProperties(Properties properties) {
+        {
+            Boolean value = getBoolean(properties, "druid.wall.logViolation");
+            if (value != null) {
+                this.logViolation = value;
+            }
+        }
+        {
+            Boolean value = getBoolean(properties, "druid.wall.throwException");
+            if (value != null) {
+                this.throwException = value;
+            }
+        }
+        {
+            Boolean value = getBoolean(properties, "druid.wall.autoRegisterToGlobalTimer");
+            if (value != null) {
+                this.autoRegisterToGlobalTimer = value;
+            }
+        }
+    }
 
     @Override
     public synchronized void init(DataSourceProxy dataSource) {
@@ -105,6 +136,15 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             provider = new DB2WallProvider(config);
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
+        }
+
+        if (autoRegisterToGlobalTimer) {
+            WallProviderStatTimer timer = WallProviderStatTimer.getInstance();
+            if (timer == null) {
+                timer = new WallProviderStatTimer();
+                timer.start();
+            }
+            timer.register(provider);
         }
 
         this.inited = true;

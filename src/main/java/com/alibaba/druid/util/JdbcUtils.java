@@ -635,33 +635,6 @@ public final class JdbcUtils implements JdbcConstants {
         }
     }
 
-    public static Class<?> loadDriverClass(String className) {
-        Class<?> clazz = null;
-
-        if (className == null) {
-            return null;
-        }
-
-        ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
-        if (ctxClassLoader != null) {
-            try {
-                clazz = ctxClassLoader.loadClass(className);
-            } catch (ClassNotFoundException e) {
-                // skip
-            }
-        }
-
-        if (clazz != null) {
-            return clazz;
-        }
-
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
     public static void insertToTable(DataSource dataSource, String tableName, Map<String, Object> data)
                                                                                                        throws SQLException {
         Connection conn = null;
