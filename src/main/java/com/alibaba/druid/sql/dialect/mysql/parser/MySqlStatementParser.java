@@ -336,7 +336,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (replace) {
                 lexer.reset(markBp, markChar, Token.CREATE);
             }
-            return parseCreateIndex();
+            return parseCreateIndex(false);
         }
 
         if (identifierEquals(USER)) {
@@ -357,7 +357,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         throw new ParserException("TODO " + lexer.token());
     }
 
-    public SQLStatement parseCreateIndex() {
+    public SQLStatement parseCreateIndex(boolean acceptCreate) {
+        if (acceptCreate) {
+            accept(Token.CREATE);
+        }
+
         MySqlCreateIndexStatement stmt = new MySqlCreateIndexStatement();
 
         if (lexer.token() == Token.UNIQUE) {
@@ -385,6 +389,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         for (;;) {
             SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+            item.setParent(stmt);
             stmt.getItems().add(item);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
@@ -2183,7 +2188,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 } else if (identifierEquals("ADD")) {
                     lexer.nextToken();
 
-                    if (identifierEquals("COLUMN")) {
+                    if (lexer.token() == Token.COLUMN) {
                         lexer.nextToken();
                         MySqlAlterTableAddColumn item = new MySqlAlterTableAddColumn();
                         SQLColumnDefinition columnDef = this.exprParser.parseColumn();
@@ -2252,7 +2257,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                         stmt.getItems().add(item);
                     } else if (lexer.token() == Token.PRIMARY) {
-                        SQLPrimaryKey primaryKey = ((MySqlExprParser) this.exprParser).parsePrimaryKey();
+                        SQLPrimaryKey primaryKey = this.exprParser.parsePrimaryKey();
                         SQLAlterTableAddPrimaryKey item = new SQLAlterTableAddPrimaryKey();
                         item.setPrimaryKey(primaryKey);
                         stmt.getItems().add(item);
@@ -2295,7 +2300,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     }
                 } else if (lexer.token() == Token.ALTER) {
                     lexer.nextToken();
-                    if (identifierEquals("COLUMN")) {
+                    if (lexer.token() == Token.COLUMN) {
                         lexer.nextToken();
                     }
 
@@ -2306,7 +2311,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     stmt.getItems().add(alterColumn);
                 } else if (identifierEquals("CHANGE")) {
                     lexer.nextToken();
-                    if (identifierEquals("COLUMN")) {
+                    if (lexer.token() == Token.COLUMN) {
                         lexer.nextToken();
                     }
                     MySqlAlterTableChangeColumn item = new MySqlAlterTableChangeColumn();
@@ -2326,7 +2331,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     stmt.getItems().add(item);
                 } else if (identifierEquals("MODIFY")) {
                     lexer.nextToken();
-                    if (identifierEquals("COLUMN")) {
+                    if (lexer.token() == Token.COLUMN) {
                         lexer.nextToken();
                     }
                     MySqlAlterTableModifyColumn item = new MySqlAlterTableModifyColumn();
@@ -2496,14 +2501,35 @@ public class MySqlStatementParser extends SQLStatementParser {
             SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
             item.setConstraintName(this.exprParser.name());
             stmt.getItems().add(item);
-        } else if (identifierEquals("COLUMN")) {
+        } else if (lexer.token() == Token.COLUMN) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-            item.setColumnName(this.exprParser.name());
+
+            SQLName name = exprParser.name();
+            name.setParent(item);
+            item.getColumns().add(name);
+
+            while (lexer.token() == Token.COMMA) {
+                lexer.mark();
+                lexer.nextToken();
+                if (identifierEquals("CHANGE")) {
+                    lexer.reset();
+                    break;
+                }
+                
+                if (lexer.token() == Token.IDENTIFIER) {
+                    name = exprParser.name();
+                    name.setParent(item);
+                } else {
+                    lexer.reset();
+                    break;
+                }
+            }
+
             stmt.getItems().add(item);
         } else if (lexer.token() == Token.IDENTIFIER) {
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
-            item.setColumnName(this.exprParser.name());
+            this.exprParser.names(item.getColumns());
             stmt.getItems().add(item);
         } else {
             super.parseAlterDrop(stmt);

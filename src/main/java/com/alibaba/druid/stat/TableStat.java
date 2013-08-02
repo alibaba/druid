@@ -509,7 +509,10 @@ public class TableStat {
         Merge(16), //
         Truncate(32), //
         Alter(64), //
-        Drop(128), DropIndex(256); //
+        Drop(128), //
+        DropIndex(256), //
+        CreateIndex(512)//
+        ; //
 
         public final int mark;
 

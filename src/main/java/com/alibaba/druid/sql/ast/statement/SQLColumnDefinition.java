@@ -27,13 +27,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 @SuppressWarnings("serial")
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement {
 
-    private SQLName                         name;
-    private SQLDataType                     dataType;
-    private SQLExpr                         defaultExpr;
-    private final List<SQLColumnConstraint> constaints = new ArrayList<SQLColumnConstraint>(0);
-    private String                          comment;
+    protected SQLName                         name;
+    protected SQLDataType                     dataType;
+    protected SQLExpr                         defaultExpr;
+    protected final List<SQLColumnConstraint> constaints = new ArrayList<SQLColumnConstraint>(0);
+    protected String                          comment;
 
-    private Boolean                         enable;
+    protected Boolean                         enable;
 
     public SQLColumnDefinition(){
 

@@ -849,20 +849,11 @@ public class OracleStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
 
-                    SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
-
-                    for (;;) {
-                        SQLColumnDefinition columnDef = this.exprParser.parseColumn();
-                        item.getColumns().add(columnDef);
-                        if (lexer.token() == Token.COMMA) {
-                            lexer.nextToken();
-                            continue;
-                        }
-                        break;
-                    }
-                    accept(Token.RPAREN);
+                    SQLAlterTableAddColumn item = parseAlterTableAddColumn();
 
                     stmt.getItems().add(item);
+
+                    accept(Token.RPAREN);
                 } else if (lexer.token() == Token.CONSTRAINT) {
                     stmt.getItems().add(parseConstaint());
                 } else {

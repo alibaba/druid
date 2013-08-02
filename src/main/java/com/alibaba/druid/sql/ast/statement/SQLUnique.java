@@ -26,6 +26,10 @@ public class SQLUnique extends SQLConstaintImpl implements SQLUniqueConstraint, 
 
     private final List<SQLExpr> columns = new ArrayList<SQLExpr>();
 
+    public SQLUnique(){
+
+    }
+
     public List<SQLExpr> getColumns() {
         return columns;
     }

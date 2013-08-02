@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -1356,17 +1357,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleCreateIndexStatement x) {
-        this.setCurrentTable(x);
-        if (x.getTable() != null) {
-            String tableName = x.getTable().toString();
-
-            TableStat stat = this.getTableStat(tableName);
-            stat.incrementCreateIndexCount();
-            this.setCurrentTable(tableName);
-
-            accept(x.getItems());
-        }
-        return false;
+        return visit((SQLCreateIndexStatement) x);
     }
 
     @Override

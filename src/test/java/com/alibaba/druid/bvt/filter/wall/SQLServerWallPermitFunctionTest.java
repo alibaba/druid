@@ -58,20 +58,20 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
     }
 
     public final void test_sp_addsrvrolemenber() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC master.dbo.sp_addsrvrolemember ‘user’, ‘sysadmin"));
+        Assert.assertTrue(WallUtils.isValidateSqlServer("EXEC master.dbo.sp_addsrvrolemember ‘user’, ‘sysadmin"));
     }
 
     public final void test_sp_helpdb() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_helpdb master"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_helpdb pubs"));
+        Assert.assertTrue(WallUtils.isValidateSqlServer("EXEC sp_helpdb master"));
+        Assert.assertTrue(WallUtils.isValidateSqlServer("EXEC sp_helpdb pubs"));
     }
 
     public final void test_sp_droplogin() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_droplogin ‘user’;"));
+        Assert.assertTrue(WallUtils.isValidateSqlServer("EXEC sp_droplogin ‘user’;"));
     }
 
     public final void test_sp_addlogin() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_addlogin ‘user’, ‘pass’; "));
+        Assert.assertTrue(WallUtils.isValidateSqlServer("EXEC sp_addlogin ‘user’, ‘pass’; "));
     }
 
     public final void test_db_name() throws Exception {

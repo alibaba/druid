@@ -23,16 +23,22 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -42,10 +48,12 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -228,7 +236,7 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken();
                 continue;
             }
-            
+
             if (lexer.token() == Token.COMMENT) {
                 statementList.add(this.parseComment());
                 continue;
@@ -305,7 +313,17 @@ public class SQLStatementParser extends SQLParser {
                 } else if (identifierEquals("ADD")) {
                     lexer.nextToken();
 
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    if (lexer.token() == Token.PRIMARY) {
+                        SQLPrimaryKey primaryKey = this.exprParser.parsePrimaryKey();
+                        SQLAlterTableAddPrimaryKey item = new SQLAlterTableAddPrimaryKey();
+                        item.setPrimaryKey(primaryKey);
+                        stmt.getItems().add(item);
+                    } else if (lexer.token() == Token.IDENTIFIER) {
+                        SQLAlterTableAddColumn item = parseAlterTableAddColumn();
+                        stmt.getItems().add(item);
+                    } else {
+                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    }
                 } else if (identifierEquals("DISABLE")) {
                     lexer.nextToken();
 
@@ -331,6 +349,17 @@ public class SQLStatementParser extends SQLParser {
                         SQLAlterTableEnableKeys item = new SQLAlterTableEnableKeys();
                         stmt.getItems().add(item);
                     }
+                } else if (lexer.token() == Token.ALTER) {
+                    lexer.nextToken();
+                    if (lexer.token() == Token.COLUMN) {
+                        lexer.nextToken();
+                        SQLColumnDefinition column = this.exprParser.parseColumn();
+                        SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
+                        alterColumn.setColumn(column);
+                        stmt.getItems().add(alterColumn);
+                    } else {
+                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    }
                 } else {
                     break;
                 }
@@ -348,6 +377,11 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
             item.setConstraintName(this.exprParser.name());
+            stmt.getItems().add(item);
+        } else if (lexer.token() == Token.COLUMN) {
+            lexer.nextToken();
+            SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
+            this.exprParser.names(item.getColumns());
             stmt.getItems().add(item);
         } else {
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
@@ -489,8 +523,11 @@ public class SQLStatementParser extends SQLParser {
         accept(Token.INDEX);
         SQLDropIndexStatement stmt = new SQLDropIndexStatement();
         stmt.setIndexName(this.exprParser.name());
-        accept(Token.ON);
-        stmt.setTableName(this.exprParser.name());
+
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            stmt.setTableName(this.exprParser.name());
+        }
         return stmt;
     }
 
@@ -612,7 +649,39 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreateIndex(boolean acceptCreate) {
-        throw new ParserException("TODO " + lexer.token());
+        if (acceptCreate) {
+            accept(Token.CREATE);
+        }
+
+        SQLCreateIndexStatement stmt = new SQLCreateIndexStatement();
+        if (lexer.token() == Token.UNIQUE) {
+            stmt.setType("UNIQUE");
+            lexer.nextToken();
+        }
+
+        accept(Token.INDEX);
+
+        stmt.setName(this.exprParser.name());
+
+        accept(Token.ON);
+
+        stmt.setTable(this.exprParser.name());
+
+        accept(Token.LPAREN);
+
+        for (;;) {
+            SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+            item.setParent(stmt);
+            stmt.getItems().add(item);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        accept(Token.RPAREN);
+
+        return stmt;
     }
 
     public SQLCreateTableParser getSQLCreateTableParser() {
@@ -762,5 +831,20 @@ public class SQLStatementParser extends SQLParser {
         stmt.setComment(this.exprParser.expr());
 
         return stmt;
+    }
+
+    protected SQLAlterTableAddColumn parseAlterTableAddColumn() {
+        SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
+
+        for (;;) {
+            SQLColumnDefinition columnDef = this.exprParser.parseColumn();
+            item.getColumns().add(columnDef);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        return item;
     }
 }

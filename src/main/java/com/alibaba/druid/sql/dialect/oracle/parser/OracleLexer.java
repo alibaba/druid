@@ -37,7 +37,6 @@ public class OracleLexer extends Lexer {
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("BEGIN", Token.BEGIN);
-        map.put("COLUMN", Token.COLUMN);
         map.put("COMMENT", Token.COMMENT);
         map.put("COMMIT", Token.COMMIT);
         map.put("CONNECT", Token.CONNECT);

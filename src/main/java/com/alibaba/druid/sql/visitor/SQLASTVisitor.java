@@ -72,6 +72,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -82,6 +83,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
@@ -450,8 +452,17 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableDropConstraint x);
 
     void endVisit(SQLAlterTableDropConstraint x);
-    
+
     boolean visit(SQLUnique x);
 
     void endVisit(SQLUnique x);
+
+    boolean visit(SQLPrimaryKeyImpl x);
+
+    void endVisit(SQLPrimaryKeyImpl x);
+
+    boolean visit(SQLCreateIndexStatement x);
+
+    void endVisit(SQLCreateIndexStatement x);
+
 }

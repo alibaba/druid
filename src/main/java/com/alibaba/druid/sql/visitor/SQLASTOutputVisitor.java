@@ -89,6 +89,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
@@ -97,6 +98,8 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
@@ -132,12 +135,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
     }
-    
+
     public int getParametersSize() {
         if (parameters == null) {
             return 0;
         }
-        
+
         return this.parameters.size();
     }
 
@@ -443,10 +446,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             printAndAccept(x.getArguments(), ", ");
             print(")");
         }
-        
+
         return false;
     }
-    
+
     public boolean visit(SQLCharactorDataType x) {
         visit((SQLDataType) x);
         return false;
@@ -485,7 +488,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLIntegerExpr x) {
-       return SQLASTOutputVisitorUtils.visit(this, x);
+        return SQLASTOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
@@ -510,9 +513,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         printAndAccept(x.getArguments(), ", ");
-        
+
         visitAggreateRest(x);
-        
+
         print(")");
 
         if (x.getOver() != null) {
@@ -521,9 +524,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
         return false;
     }
-    
+
     protected void visitAggreateRest(SQLAggregateExpr aggregateExpr) {
-        
+
     }
 
     public boolean visit(SQLAllColumnExpr x) {
@@ -736,7 +739,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(param.toString());
             return;
         }
-        
+
         if (param instanceof String) {
             SQLCharExpr charExpr = new SQLCharExpr((String) param);
             visit(charExpr);
@@ -762,7 +765,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print("'<Blob>");
             return;
         }
-        
+
         if (param instanceof NClob) {
             print("'<NClob>");
             return;
@@ -772,7 +775,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print("'<Clob>");
             return;
         }
-        
+
         print("'" + param.getClass().getName() + "'");
     }
 
@@ -1089,13 +1092,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getCondition().accept(this);
             decrementIndent();
         }
-        
+
         if (x.getUsing().size() > 0) {
             print(" USING (");
             printAndAccept(x.getUsing(), ", ");
             print(")");
         }
-        
+
         if (x.getAlias() != null) {
             print(" AS ");
             print(x.getAlias());
@@ -1254,7 +1257,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     @Override
     public boolean visit(SQLAlterTableDropColumnItem x) {
         print("DROP COLUMN ");
-        x.getColumnName().accept(this);
+        this.printAndAccept(x.getColumns(), ", ");
         return false;
     }
 
@@ -1267,8 +1270,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLDropIndexStatement x) {
         print("DROP INDEX ");
         x.getIndexName().accept(this);
-        print(" ON ");
-        x.getTableName().accept(this);
+
+        SQLExprTableSource table = x.getTableName();
+        if (table != null) {
+            print(" ON ");
+            table.accept(this);
+        }
         return false;
     }
 
@@ -1343,7 +1350,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(" PRIMARY KEY");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLColumnCheck x) {
         print("CHECK ");
@@ -1386,14 +1393,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableAlterColumn x) {
         print("ALTER COLUMN ");
         x.getColumn().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLCheck x) {
         if (x.getName() != null) {
@@ -1406,58 +1413,58 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(')');
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropForeinKey x) {
         print("DROP FOREIGN KEY ");
         x.getIndexName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropPrimaryKey x) {
         print("DROP PRIMARY KEY");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableEnableKeys x) {
         print("ENABLE KEYS");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDisableKeys x) {
         print("DISABLE KEYS");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableAddForeignKey x) {
         print("ADD ");
         x.getForeignKey().accept(this);
         return false;
     }
-    
+
     public boolean visit(SQLAlterTableDisableConstraint x) {
         print("DISABLE CONSTRAINT ");
         x.getConstraintName().accept(this);
         return false;
     }
-    
+
     public boolean visit(SQLAlterTableEnableConstraint x) {
         print("ENABLE CONSTRAINT ");
         x.getConstraintName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropConstraint x) {
         print("DROP CONSTRAINT ");
         x.getConstraintName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableStatement x) {
         print("ALTER TABLE ");
@@ -1474,10 +1481,56 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         decrementIndent();
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLExprHint x) {
         x.getExpr().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateIndexStatement x) {
+        print("CREATE ");
+        if (x.getType() != null) {
+            print(x.getType());
+            print(" ");
+        }
+
+        print("INDEX ");
+
+        x.getName().accept(this);
+        print(" ON ");
+        x.getTable().accept(this);
+        print(" (");
+        printAndAccept(x.getItems(), ", ");
+        print(")");
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLUnique x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(" ");
+        }
+        print("UNIQUE (");
+        printAndAccept(x.getColumns(), ", ");
+        print(")");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLPrimaryKeyImpl x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(" ");
+        }
+        print("PRIMARY KEY (");
+        printAndAccept(x.getColumns(), ", ");
+        print(")");
         return false;
     }
 }

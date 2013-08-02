@@ -17,17 +17,20 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcUtils;
-
 
 public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQLServerASTVisitor {
 
@@ -35,7 +38,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     public String getDbType() {
         return JdbcUtils.SQL_SERVER;
     }
-    
+
     @Override
     public boolean visit(SQLServerSelectQueryBlock x) {
         return visit((SQLSelectQueryBlock) x);
@@ -53,7 +56,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerTop x) {
-        
+
     }
 
     @Override
@@ -63,7 +66,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerObjectReferenceExpr x) {
-        
+
     }
 
     @Override
@@ -74,7 +77,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerInsertStatement x) {
-        this.endVisit((SQLInsertStatement) x);        
+        this.endVisit((SQLInsertStatement) x);
     }
 
     @Override
@@ -99,8 +102,37 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerUpdateStatement x) {
-        
+
     }
 
+    @Override
+    public boolean visit(Identity x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(Identity x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLServerColumnDefinition x) {
+        return visit((SQLColumnDefinition) x);
+    }
+
+    @Override
+    public void endVisit(SQLServerColumnDefinition x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLServerExecStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerExecStatement x) {
+
+    }
 
 }

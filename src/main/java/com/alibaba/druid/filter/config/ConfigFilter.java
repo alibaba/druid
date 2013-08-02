@@ -233,22 +233,14 @@ public class ConfigFilter extends FilterAdapter {
         InputStream inStream = null;
         try {
             boolean xml = false;
-            if (filePath.startsWith("http://") || filePath.startsWith("https://")  || filePath.startsWith("file://")) {
+            if(filePath.startsWith("file://")) {
+                filePath = filePath.substring("file://".length());
+                inStream = getFileAsStream(filePath);
+                xml = filePath.endsWith(".xml");
+            } else if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
                 URL url = new URL(filePath);
-                try {
-                    inStream = url.openStream();
-                    xml = url.getPath().endsWith(".xml");
-                } catch (UnknownHostException e) {
-                    // 处理本地的文件，格式：file://C:\Users\UserName\AppData\Local\Temp\MyTest6192238555052741793919301884303
-                    if(url.getHost().length() == 1 && filePath.startsWith("file://")) {
-                        filePath = filePath.substring("file://".length());
-                        inStream = getFileAsStream(filePath);
-                        xml = filePath.endsWith(".xml");
-                    } else {
-                        throw new UnknownHostException(e.getMessage());
-                    }
-                }
-
+                inStream = url.openStream();
+                xml = url.getPath().endsWith(".xml");
             } else if (filePath.startsWith("classpath:")) {
                 String resourcePath = filePath.substring("classpath:".length());
                 inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);

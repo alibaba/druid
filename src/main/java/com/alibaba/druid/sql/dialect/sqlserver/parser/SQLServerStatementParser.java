@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -25,6 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -50,6 +52,24 @@ public class SQLServerStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.WITH) {
             SQLStatement stmt = parseSelect();
             statementList.add(stmt);
+            return true;
+        }
+
+        if (identifierEquals("EXEC") || identifierEquals("EXECUTE")) {
+            lexer.nextToken();
+
+            SQLServerExecStatement execStmt = new SQLServerExecStatement();
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                this.exprParser.exprList(execStmt.getParameters(), execStmt);
+                accept(Token.RPAREN);
+            } else {
+                SQLName moduleName = this.exprParser.name();
+                execStmt.setModuleName(moduleName);
+                
+                this.exprParser.exprList(execStmt.getParameters(), execStmt);
+            }
+            statementList.add(execStmt);
             return true;
         }
 
@@ -125,7 +145,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         SQLServerUpdateStatement udpateStatement = createUpdateStatement();
 
         accept(Token.UPDATE);
-        
+
         SQLServerTop top = this.getExprParser().parseTop();
         if (top != null) {
             udpateStatement.setTop(top);
@@ -149,7 +169,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         return udpateStatement;
     }
-    
+
     public SQLServerExprParser getExprParser() {
         return (SQLServerExprParser) exprParser;
     }

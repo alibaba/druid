@@ -208,11 +208,7 @@ public class SQLUtils {
             return new PGOutputVisitor(out);
         }
 
-        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
-            return new SQLServerOutputVisitor(out);
-        }
-
-        if (JdbcUtils.JTDS.equals(dbType)) {
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
         
@@ -242,14 +238,10 @@ public class SQLUtils {
             return new PGSchemaStatVisitor();
         }
 
-        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerSchemaStatVisitor();
         }
 
-        if (JdbcUtils.JTDS.equals(dbType)) {
-            return new SQLServerSchemaStatVisitor();
-        }
-        
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2SchemaStatVisitor();
         }

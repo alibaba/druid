@@ -66,6 +66,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
@@ -882,9 +883,9 @@ public class SQLExprParser extends SQLParser {
                 SQLExpr itemExpr = primary();
                 inListExpr.getTargetList().add(itemExpr);
             }
-            
+
             expr = inListExpr;
-            
+
             if (inListExpr.getTargetList().size() == 1) {
                 SQLExpr targetExpr = inListExpr.getTargetList().get(0);
                 if (targetExpr instanceof SQLQueryExpr) {
@@ -1250,11 +1251,16 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLColumnDefinition parseColumn() {
-        SQLColumnDefinition column = new SQLColumnDefinition();
+        SQLColumnDefinition column = createColumnDefinition();
         column.setName(name());
         column.setDataType(parseDataType());
 
         return parseColumnRest(column);
+    }
+
+    protected SQLColumnDefinition createColumnDefinition() {
+        SQLColumnDefinition column = new SQLColumnDefinition();
+        return column;
     }
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
@@ -1302,7 +1308,15 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLPrimaryKey parsePrimaryKey() {
-        throw new ParserException("TODO");
+        accept(Token.PRIMARY);
+        accept(Token.KEY);
+
+        SQLPrimaryKeyImpl pk = new SQLPrimaryKeyImpl();
+        accept(Token.LPAREN);
+        exprList(pk.getColumns());
+        accept(Token.RPAREN);
+
+        return pk;
     }
 
     public SQLUnique parseUnique() {

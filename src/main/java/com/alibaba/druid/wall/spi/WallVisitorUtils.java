@@ -87,6 +87,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.support.logging.Log;
@@ -1687,7 +1688,7 @@ public class WallVisitorUtils {
             allow = config.isMergeAllow();
             denyMessage = "merge not allow";
             errorCode = ErrorCode.MERGE_NOT_ALLOW;
-        } else if (x instanceof SQLCallStatement) {
+        } else if (x instanceof SQLCallStatement || x instanceof SQLServerExecStatement) {
             allow = config.isCallAllow();
             denyMessage = "call not allow";
             errorCode = ErrorCode.CALL_NOT_ALLOW;

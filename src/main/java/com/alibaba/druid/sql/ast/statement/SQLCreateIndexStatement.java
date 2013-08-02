@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
 
@@ -36,10 +37,14 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
 
     private String                     type;
 
+    public SQLCreateIndexStatement(){
+
+    }
+
     public SQLTableSource getTable() {
         return table;
     }
-    
+
     public void setTable(SQLName table) {
         this.setTable(new SQLExprTableSource(table));
     }
@@ -72,4 +77,13 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
         this.type = type;
     }
 
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, getName());
+            acceptChild(visitor, getTable());
+            acceptChild(visitor, getItems());
+        }
+        visitor.endVisit(this);
+    }
 }
