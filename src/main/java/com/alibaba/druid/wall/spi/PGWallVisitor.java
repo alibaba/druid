@@ -60,7 +60,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
         this.config = provider.getConfig();
         this.provider = provider;
     }
-    
+
     @Override
     public boolean isSqlModified() {
         return sqlModified;
@@ -189,11 +189,14 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
             return false;
         }
 
+        WallVisitorUtils.initWallTopStatementContext();
+
         return true;
     }
 
     @Override
     public boolean visit(SQLInsertStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkInsert(this, x);
 
         return true;
@@ -207,6 +210,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkUpdate(this, x);
 
         return true;

@@ -78,6 +78,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
@@ -1531,6 +1532,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print("PRIMARY KEY (");
         printAndAccept(x.getColumns(), ", ");
         print(")");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableRenameColumn x) {
+        print("RENAME COLUMN ");
+        x.getColumn().accept(this);
+        print(" TO ");
+        x.getTo().accept(this);
         return false;
     }
 }

@@ -22,8 +22,8 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:sonar");
-        dataSource.setUsername("system");
+        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:sonardb");
+        dataSource.setUsername("sonar");
         dataSource.setPassword("sonar");
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(14);

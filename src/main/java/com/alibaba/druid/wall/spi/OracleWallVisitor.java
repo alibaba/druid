@@ -200,6 +200,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
                                                                    this.toSQL(x)));
             return false;
         }
+        WallVisitorUtils.initWallTopStatementContext();
 
         return true;
     }
@@ -211,6 +212,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLInsertStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkInsert(this, x);
 
         return true;
@@ -230,6 +232,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
                                                                    this.toSQL(x)));
             return false;
         }
+        WallVisitorUtils.initWallTopStatementContext();
 
         return true;
     }
@@ -252,6 +255,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.initWallTopStatementContext();
         WallVisitorUtils.checkUpdate(this, x);
 
         return true;
