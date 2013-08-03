@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           lowBound;
-    private SQLExpr           upBound;
+    private SQLExpr lowBound;
+    private SQLExpr upBound;
 
     public OracleRangeExpr(){
 

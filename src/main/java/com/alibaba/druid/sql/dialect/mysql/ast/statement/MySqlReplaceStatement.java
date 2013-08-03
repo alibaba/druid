@@ -27,32 +27,30 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlReplaceStatement extends MySqlStatementImpl {
 
-    private static final long   serialVersionUID = 1L;
+    private boolean             lowPriority = false;
+    private boolean             delayed     = false;
 
-    private boolean             lowPriority      = false;
-    private boolean             delayed          = false;
-
-    private SQLExprTableSource      tableSource;
-    private final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
-    private List<ValuesClause>  valuesList       = new ArrayList<ValuesClause>();
+    private SQLExprTableSource  tableSource;
+    private final List<SQLExpr> columns     = new ArrayList<SQLExpr>();
+    private List<ValuesClause>  valuesList  = new ArrayList<ValuesClause>();
     private SQLQueryExpr        query;
 
     public SQLName getTableName() {
         if (tableSource == null) {
             return null;
         }
-        
+
         return (SQLName) tableSource.getExpr();
     }
 
     public void setTableName(SQLName tableName) {
         this.setTableSource(new SQLExprTableSource(tableName));
     }
-    
+
     public SQLExprTableSource getTableSource() {
         return tableSource;
     }
-    
+
     public void setTableSource(SQLExprTableSource tableSource) {
         if (tableSource != null) {
             tableSource.setParent(this);

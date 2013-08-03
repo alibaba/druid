@@ -22,19 +22,18 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlOutFileExpr extends MySqlObjectImpl implements SQLExpr {
 
-    private static final long serialVersionUID          = 1L;
-    private SQLExpr           file;
-    private String            charset;
+    private SQLExpr        file;
+    private String         charset;
 
-    private SQLLiteralExpr    columnsTerminatedBy;
-    private boolean           columnsEnclosedOptionally = false;
-    private SQLLiteralExpr    columnsEnclosedBy;
-    private SQLLiteralExpr    columnsEscaped;
+    private SQLLiteralExpr columnsTerminatedBy;
+    private boolean        columnsEnclosedOptionally = false;
+    private SQLLiteralExpr columnsEnclosedBy;
+    private SQLLiteralExpr columnsEscaped;
 
-    private SQLLiteralExpr    linesStartingBy;
-    private SQLLiteralExpr    linesTerminatedBy;
+    private SQLLiteralExpr linesStartingBy;
+    private SQLLiteralExpr linesTerminatedBy;
 
-    private SQLExpr           ignoreLinesNumber;
+    private SQLExpr        ignoreLinesNumber;
 
     public MySqlOutFileExpr(){
     }

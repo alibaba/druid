@@ -26,15 +26,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleUpdateStatement extends SQLUpdateStatement implements OracleStatement {
 
-    private static final long   serialVersionUID = 1L;
-
-    private final List<SQLHint> hints            = new ArrayList<SQLHint>(1);
-    private boolean             only             = false;
+    private final List<SQLHint> hints         = new ArrayList<SQLHint>(1);
+    private boolean             only          = false;
     private String              alias;
     private SQLExpr             where;
 
-    private List<SQLExpr>       returning        = new ArrayList<SQLExpr>();
-    private List<SQLExpr>       returningInto    = new ArrayList<SQLExpr>();
+    private List<SQLExpr>       returning     = new ArrayList<SQLExpr>();
+    private List<SQLExpr>       returningInto = new ArrayList<SQLExpr>();
 
     public OracleUpdateStatement(){
 

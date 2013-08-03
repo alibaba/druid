@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleDataTypeIntervalYear extends SQLDataTypeImpl implements OracleSQLObject {
 
-    private static final long serialVersionUID = 1L;
-
     public OracleDataTypeIntervalYear(){
         this.setName("INTERVAL YEAR");
     }

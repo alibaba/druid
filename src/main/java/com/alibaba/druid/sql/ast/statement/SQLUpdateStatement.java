@@ -25,9 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUpdateStatement extends SQLStatementImpl {
 
-    private static final long            serialVersionUID = 1L;
-
-    protected final List<SQLUpdateSetItem> items            = new ArrayList<SQLUpdateSetItem>();
+    protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
     protected SQLExpr                      where;
 
     protected SQLTableSource               tableSource;
@@ -39,7 +37,7 @@ public class SQLUpdateStatement extends SQLStatementImpl {
     public SQLTableSource getTableSource() {
         return tableSource;
     }
-    
+
     public void setTableSource(SQLExpr expr) {
         this.setTableSource(new SQLExprTableSource(expr));
     }

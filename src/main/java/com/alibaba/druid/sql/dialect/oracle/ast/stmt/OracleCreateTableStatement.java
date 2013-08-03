@@ -20,13 +20,12 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement {
-
-    private static final long       serialVersionUID  = 1L;
 
     private SQLName                 tablespace;
 
@@ -40,6 +39,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private Boolean                 parallel;
 
     private OracleStorageClause     storage;
+    private OracleLobStorageClause  lobStorage;
 
     private boolean                 organizationIndex = false;
 
@@ -58,6 +58,14 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private SQLPartitioningClause   partitioning;
 
     private DeferredSegmentCreation deferredSegmentCreation;
+
+    public OracleLobStorageClause getLobStorage() {
+        return lobStorage;
+    }
+
+    public void setLobStorage(OracleLobStorageClause lobStorage) {
+        this.lobStorage = lobStorage;
+    }
 
     public DeferredSegmentCreation getDeferredSegmentCreation() {
         return deferredSegmentCreation;

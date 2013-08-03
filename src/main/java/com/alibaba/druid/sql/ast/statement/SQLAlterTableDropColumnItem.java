@@ -24,8 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-    private List<SQLName>     columns          = new ArrayList<SQLName>();
+    private List<SQLName> columns = new ArrayList<SQLName>();
 
     public SQLAlterTableDropColumnItem(){
 

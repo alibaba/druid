@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement {
 
     protected SQLName                         name;

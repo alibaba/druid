@@ -22,11 +22,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleExplainStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLCharExpr            statementId;
-    private SQLExpr           into;
-    private SQLStatement      forStatement;
+    private SQLCharExpr  statementId;
+    private SQLExpr      into;
+    private SQLStatement forStatement;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

@@ -178,6 +178,7 @@ public class MySqlExprParser extends SQLExprParser {
                     SQLUnaryExpr binaryExpr = new SQLUnaryExpr(SQLUnaryOperator.BINARY, expr());
                     return primaryRest(binaryExpr);
                 }
+            case CACHE:
             case GROUP:
                 lexer.nextToken();
                 return primaryRest(new SQLIdentifierExpr(lexer.stringVal()));

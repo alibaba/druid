@@ -24,16 +24,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    /**
-     * 
-     */
-    private static final long          serialVersionUID = 1L;
-
     private SQLName                    name;
 
     private SQLTableSource             table;
 
-    private List<SQLSelectOrderByItem> items            = new ArrayList<SQLSelectOrderByItem>();
+    private List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
 
     private String                     type;
 

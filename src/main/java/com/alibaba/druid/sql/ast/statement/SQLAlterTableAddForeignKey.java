@@ -20,14 +20,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddForeignKey extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long       serialVersionUID = 1L;
     private SQLForeignKeyConstraint foreignKey;
-    
-    public SQLAlterTableAddForeignKey() {
-        
+
+    public SQLAlterTableAddForeignKey(){
+
     }
-    
-    public SQLAlterTableAddForeignKey(SQLForeignKeyConstraint foreignKey) {
+
+    public SQLAlterTableAddForeignKey(SQLForeignKeyConstraint foreignKey){
         this.foreignKey = foreignKey;
     }
 

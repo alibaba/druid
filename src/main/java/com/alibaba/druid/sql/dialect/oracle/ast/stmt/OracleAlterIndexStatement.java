@@ -23,21 +23,19 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterIndexStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private SQLName name;
 
-    private SQLName           name;
+    private SQLName renameTo;
 
-    private SQLName           renameTo;
+    private boolean compile;
 
-    private boolean           compile;
+    private Boolean enable;
 
-    private Boolean           enable;
+    private Boolean monitoringUsage;
 
-    private Boolean           monitoringUsage;
+    private Rebuild rebuild;
 
-    private Rebuild           rebuild;
-
-    private SQLExpr           parallel;
+    private SQLExpr parallel;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -108,8 +106,7 @@ public class OracleAlterIndexStatement extends OracleStatementImpl {
 
     public static class Rebuild extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private SQLObject         option;
+        private SQLObject option;
 
         public SQLObject getOption() {
             return option;

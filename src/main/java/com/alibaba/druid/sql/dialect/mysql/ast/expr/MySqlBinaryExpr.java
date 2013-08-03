@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlBinaryExpr extends MySqlExprImpl implements MySqlExpr, SQLLiteralExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private String            value;
+    private String value;
 
     public MySqlBinaryExpr(){
 

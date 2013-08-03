@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelect extends SQLObjectImpl {
 
-    private static final long       serialVersionUID = 1L;
-
     protected SQLWithSubqueryClause withSubQuery;
     protected SQLSelectQuery        query;
     protected SQLOrderBy            orderBy;

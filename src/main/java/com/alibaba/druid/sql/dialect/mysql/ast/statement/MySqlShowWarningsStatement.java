@@ -20,10 +20,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowWarningsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean           count            = false;
-    private Limit             limit;
+    private boolean count = false;
+    private Limit   limit;
 
     public boolean isCount() {
         return count;

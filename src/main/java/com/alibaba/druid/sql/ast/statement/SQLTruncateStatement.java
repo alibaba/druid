@@ -24,8 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLTruncateStatement extends SQLStatementImpl {
 
-    private static final long          serialVersionUID = 1L;
-    protected List<SQLExprTableSource> tableSources     = new ArrayList<SQLExprTableSource>(2);
+    protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>(2);
 
     public List<SQLExprTableSource> getTableSources() {
         return tableSources;
@@ -34,7 +33,7 @@ public class SQLTruncateStatement extends SQLStatementImpl {
     public void setTableSources(List<SQLExprTableSource> tableSources) {
         this.tableSources = tableSources;
     }
-    
+
     public void addTableSource(SQLName name) {
         SQLExprTableSource tableSource = new SQLExprTableSource(name);
         tableSource.setParent(this);

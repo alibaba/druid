@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
 public class SQLPrimaryKeyImpl extends SQLUnique implements SQLPrimaryKey {
 
     @Override

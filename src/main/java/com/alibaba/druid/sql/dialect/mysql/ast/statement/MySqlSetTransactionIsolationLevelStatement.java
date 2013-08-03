@@ -19,11 +19,9 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlSetTransactionIsolationLevelStatement extends MySqlStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private Boolean global;
 
-    private Boolean           global;
-
-    private String            level;
+    private String  level;
 
     public String getLevel() {
         return level;

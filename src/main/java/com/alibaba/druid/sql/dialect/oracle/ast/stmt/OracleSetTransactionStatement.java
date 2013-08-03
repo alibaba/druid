@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSetTransactionStatement extends OracleSQLObjectImpl implements OracleStatement {
 
-    private static final long serialVersionUID = 1L;
+    private boolean readOnly = false;
 
-    private boolean           readOnly         = false;
-
-    private SQLExpr           name;
+    private SQLExpr name;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

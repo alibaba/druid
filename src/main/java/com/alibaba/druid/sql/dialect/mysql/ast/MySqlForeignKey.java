@@ -23,8 +23,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlForeignKey extends SQLForeignKeyImpl implements SQLForeignKeyConstraint, SQLTableElement {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {

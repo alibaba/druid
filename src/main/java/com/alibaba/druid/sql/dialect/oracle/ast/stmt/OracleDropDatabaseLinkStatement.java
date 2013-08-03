@@ -20,11 +20,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleDropDatabaseLinkStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private boolean _public;
 
-    private boolean           _public;
-
-    private SQLName           name;
+    private SQLName name;
 
     public boolean isPublic() {
         return _public;

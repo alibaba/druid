@@ -1655,6 +1655,31 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 stmt.setTablespace(this.exprParser.name());
                 continue;
+            } else if (lexer.token() == Token.PCTFREE) {
+                lexer.nextToken();
+                stmt.setPtcfree(this.exprParser.expr());
+                continue;
+            } else if (lexer.token() == Token.INITRANS) {
+                lexer.nextToken();
+                stmt.setInitrans(this.exprParser.expr());
+                continue;
+            } else if (lexer.token() == Token.MAXTRANS) {
+                lexer.nextToken();
+                stmt.setMaxtrans(this.exprParser.expr());
+                continue;
+            } else if (lexer.token() == Token.COMPUTE) {
+                lexer.nextToken();
+                acceptIdentifier("STATISTICS");
+                stmt.setComputeStatistics(true);
+               continue;
+            } else if (lexer.token() == Token.ENABLE) {
+                lexer.nextToken();
+                stmt.setEnable(true);
+                continue;
+            } else if (lexer.token() == Token.DISABLE) {
+                lexer.nextToken();
+                stmt.setEnable(false);
+                continue;
             } else if (identifierEquals("ONLINE")) {
                 lexer.nextToken();
                 stmt.setOnline(true);
@@ -1701,11 +1726,11 @@ public class OracleStatementParser extends SQLStatementParser {
                 accept(Token.BY);
                 stmt.setIncrementBy(this.exprParser.expr());
                 continue;
-            } else if (identifierEquals("CACHE")) {
+            } else if (lexer.token() == Token.CACHE) {
                 lexer.nextToken();
                 stmt.setCache(Boolean.TRUE);
                 continue;
-            } else if (identifierEquals("NOCACHE")) {
+            } else if (lexer.token() == Token.NOCACHE) {
                 lexer.nextToken();
                 stmt.setCache(Boolean.FALSE);
                 continue;

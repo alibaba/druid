@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private Float             value;
+    private Float value;
 
     public OracleBinaryFloatExpr(){
 
@@ -93,8 +91,8 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements Orac
             this.setValue(null);
             return;
         }
-        
-        this.setValue(number.floatValue());        
+
+        this.setValue(number.floatValue());
     }
 
 }

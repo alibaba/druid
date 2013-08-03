@@ -24,15 +24,13 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleFileSpecification extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
+    private List<SQLExpr> fileNames     = new ArrayList<SQLExpr>();
 
-    private List<SQLExpr>     fileNames        = new ArrayList<SQLExpr>();
+    private SQLExpr       size;
 
-    private SQLExpr           size;
+    private boolean       autoExtendOff = false;
 
-    private boolean           autoExtendOff    = false;
-
-    private SQLExpr           autoExtendOn;
+    private SQLExpr       autoExtendOn;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

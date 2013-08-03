@@ -25,16 +25,14 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlLoadXmlStatement extends MySqlStatementImpl {
 
-    private static final long   serialVersionUID = 1L;
-
-    private boolean             lowPriority      = false;
-    private boolean             concurrent       = false;
-    private boolean             local            = false;
+    private boolean             lowPriority = false;
+    private boolean             concurrent  = false;
+    private boolean             local       = false;
 
     private SQLLiteralExpr      fileName;
 
-    private boolean             replicate        = false;
-    private boolean             ignore           = false;
+    private boolean             replicate   = false;
+    private boolean             ignore      = false;
 
     private SQLName             tableName;
 
@@ -44,7 +42,7 @@ public class MySqlLoadXmlStatement extends MySqlStatementImpl {
 
     private SQLExpr             ignoreLinesNumber;
 
-    private final List<SQLExpr> setList          = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> setList     = new ArrayList<SQLExpr>();
 
     public SQLExpr getRowsIdentifiedBy() {
         return rowsIdentifiedBy;

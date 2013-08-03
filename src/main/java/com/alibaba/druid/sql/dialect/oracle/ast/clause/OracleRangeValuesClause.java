@@ -25,10 +25,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleRangeValuesClause extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           name;
-    private List<SQLExpr>     values           = new ArrayList<SQLExpr>();
+    private SQLName       name;
+    private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

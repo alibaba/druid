@@ -22,8 +22,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCommentStatement extends SQLObjectImpl implements SQLStatement {
 
-    private static final long serialVersionUID = 1L;
-
     public static enum Type {
         TABLE, COLUMN
     }

@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-@SuppressWarnings("serial")
 public class MySqlPartitioningDef extends MySqlObjectImpl {
 
     private SQLName name;

@@ -25,13 +25,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
 
-    private static final long serialVersionUID = 1L;
+    private List<SQLExpr>  columns = new ArrayList<SQLExpr>();
 
-    private List<SQLExpr>     columns          = new ArrayList<SQLExpr>();
+    private SQLExpr        against;
 
-    private SQLExpr           against;
-
-    private SearchModifier    searchModifier;
+    private SearchModifier searchModifier;
 
     public List<SQLExpr> getColumns() {
         return columns;

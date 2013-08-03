@@ -27,9 +27,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLObject {
 
-    private static final long       serialVersionUID = 1L;
-
-    private final List<PGParameter> parameters       = new ArrayList<PGParameter>();
+    private final List<PGParameter> parameters = new ArrayList<PGParameter>();
 
     public PGFunctionTableSource(){
 

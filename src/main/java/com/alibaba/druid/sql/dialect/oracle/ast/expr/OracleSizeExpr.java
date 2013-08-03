@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSizeExpr extends OracleSQLObjectImpl implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           value;
-    private Unit              unit;
+    private SQLExpr value;
+    private Unit    unit;
 
     public OracleSizeExpr(){
 

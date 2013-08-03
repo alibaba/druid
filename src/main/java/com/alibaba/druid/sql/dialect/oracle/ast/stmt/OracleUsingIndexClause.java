@@ -18,22 +18,24 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-@SuppressWarnings("serial")
 public class OracleUsingIndexClause extends OracleSQLObjectImpl {
 
-    private SQLName index;
-    private SQLName tablespace;
+    private SQLName             index;
+    private SQLName             tablespace;
 
-    private SQLExpr ptcfree;
-    private SQLExpr pctused;
-    private SQLExpr initrans;
-    private SQLExpr maxtrans;
+    private SQLExpr             ptcfree;
+    private SQLExpr             pctused;
+    private SQLExpr             initrans;
+    private SQLExpr             maxtrans;
 
-    private Boolean enable            = null;
+    private Boolean             enable            = null;
 
-    private boolean computeStatistics = false;
+    private boolean             computeStatistics = false;
+
+    private OracleStorageClause storage;
 
     public OracleUsingIndexClause(){
 
@@ -44,8 +46,17 @@ public class OracleUsingIndexClause extends OracleSQLObjectImpl {
         if (visitor.visit(this)) {
             acceptChild(visitor, index);
             acceptChild(visitor, tablespace);
+            acceptChild(visitor, storage);
         }
         visitor.endVisit(this);
+    }
+
+    public OracleStorageClause getStorage() {
+        return storage;
+    }
+
+    public void setStorage(OracleStorageClause storage) {
+        this.storage = storage;
     }
 
     public Boolean getEnable() {

@@ -24,12 +24,10 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSelectUnPivot extends OracleSelectPivotBase {
 
-    private static final long                  serialVersionUID = 1L;
-
     private NullsIncludeType                   nullsIncludeType;
-    private final List<SQLExpr>                items            = new ArrayList<SQLExpr>();
+    private final List<SQLExpr>                items   = new ArrayList<SQLExpr>();
 
-    private final List<OracleSelectPivot.Item> pivotIn          = new ArrayList<Item>();
+    private final List<OracleSelectPivot.Item> pivotIn = new ArrayList<Item>();
 
     public OracleSelectUnPivot(){
 

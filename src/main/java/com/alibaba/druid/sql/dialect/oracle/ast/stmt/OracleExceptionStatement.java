@@ -25,8 +25,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleExceptionStatement extends OracleStatementImpl implements OracleStatement {
 
-    private static final long serialVersionUID = 1L;
-    private List<Item>        items            = new ArrayList<Item>();
+    private List<Item> items = new ArrayList<Item>();
 
     public List<Item> getItems() {
         return items;
@@ -38,9 +37,8 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
 
     public static class Item extends OracleSQLObjectImpl {
 
-        private static final long  serialVersionUID = 1L;
         private SQLExpr            when;
-        private List<SQLStatement> statements       = new ArrayList<SQLStatement>();
+        private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
         public SQLExpr getWhen() {
             return when;

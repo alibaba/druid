@@ -58,6 +58,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitio
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
@@ -2085,11 +2086,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(")");
 
         if (x.isIndexOnlyTopLevel()) {
-            print(" INDEX ONLY TOPLEVEL");
+            println();
+            print("INDEX ONLY TOPLEVEL");
+        }
+        
+        if (x.getPtcfree() != null) {
+            println();
+            print("PCTFREE ");
+            x.getPtcfree().accept(this);
+        }
+        
+        if (x.getInitrans() != null) {
+            println();
+            print("INITRANS ");
+            x.getInitrans().accept(this);
+        }
+        
+        if (x.getMaxtrans() != null) {
+            println();
+            print("MAXTRANS ");
+            x.getMaxtrans().accept(this);
+        }
+        
+        if (x.isComputeStatistics()) {
+            println();
+            print("COMPUTE STATISTICS");
         }
 
         if (x.getTablespace() != null) {
-            print(" TABLESPACE ");
+            println();
+            print("TABLESPACE ");
             x.getTablespace().accept(this);
         }
 
@@ -2321,7 +2347,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         printAndAccept(x.getColumns(), ", ");
         print(")");
         if (x.getUsing() != null) {
-            print(" ");
+            println();
             x.getUsing().accept(this);
         }
         return false;
@@ -2336,75 +2362,95 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleCreateTableStatement x) {
         this.visit((SQLCreateTableStatement) x);
 
-        incrementIndent();
-
         if (x.isOrganizationIndex()) {
-            print(" ORGANIZATION INDEX");
+            println();
+            print("ORGANIZATION INDEX");
         }
         
         if (x.getPtcfree() != null) {
-            print(" PCTFREE ");
+            println();
+            print("PCTFREE ");
             x.getPtcfree().accept(this);
         }
         
         if (x.getInitrans() != null) {
-            print(" INITRANS ");
+            println();
+            print("INITRANS ");
             x.getInitrans().accept(this);
         }
         
         if (x.getMaxtrans() != null) {
-            print(" MAXTRANS ");
+            println();
+            print("MAXTRANS ");
             x.getMaxtrans().accept(this);
         }
         
         if (x.isInMemoryMetadata()) {
-            print(" IN_MEMORY_METADATA");
+            println();
+            print("IN_MEMORY_METADATA");
         }
 
         if (x.isCursorSpecificSegment()) {
-            print(" CURSOR_SPECIFIC_SEGMENT");
+            println();
+            print("CURSOR_SPECIFIC_SEGMENT");
         }
 
         if (x.getParallel() == Boolean.TRUE) {
-            print(" PARALLEL");
+            println();
+            print("PARALLEL");
         } else if (x.getParallel() == Boolean.FALSE) {
-            print(" NOPARALLEL");
+            println();
+            print("NOPARALLEL");
         }
 
         if (x.getCache() == Boolean.TRUE) {
-            print(" CACHE");
+            println();
+            print("CACHE");
         } else if (x.getCache() == Boolean.FALSE) {
-            print(" NOCACHE");
+            println();
+            print("NOCACHE");
         }
 
         if (x.getCompress() == Boolean.TRUE) {
-            print(" COMPRESS");
+            println();
+            print("COMPRESS");
         } else if (x.getCompress() == Boolean.FALSE) {
-            print(" NOCOMPRESS");
+            println();
+            print("NOCOMPRESS");
         }
 
         if (x.getLogging() == Boolean.TRUE) {
-            print(" LOGGING");
+            println();
+            print("LOGGING");
         } else if (x.getLogging() == Boolean.FALSE) {
-            print(" NOLOGGING");
+            println();
+            print("NOLOGGING");
         }
         
         if (x.getTablespace() != null) {
-            print(" TABLESPACE ");
+            println();
+            print("TABLESPACE ");
             x.getTablespace().accept(this);
         }
 
         if (x.getStorage() != null) {
-            print(" ");
+            println();
             x.getStorage().accept(this);
+        }
+        
+        if (x.getLobStorage() != null) {
+            println();
+            x.getLobStorage().accept(this);
         }
 
         if (x.isOnCommit()) {
-            print(" ON COMMIT");
+            println();
+            print("ON COMMIT");
         }
 
         if (x.isPreserveRows()) {
-            print(" PRESERVE ROWS");
+            println();
+            print("PRESERVE ROWS");
         }
 
         if (x.getPartitioning() != null) {
@@ -2418,7 +2464,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             x.getSelect().accept(this);
         }
-        decrementIndent();
         return false;
     }
 
@@ -3160,5 +3205,99 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleUsingIndexClause x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleLobStorageClause x) {
+        print("LOB (");
+        printAndAccept(x.getItems(), ",");
+        print(") STORE AS ");
+        
+        if (x.isSecureFile()) {
+            print("SECUREFILE ");
+        }
+        
+        if (x.isBasicFile()) {
+            print("BASICFILE ");
+        }
+        
+        boolean first = true;
+        print('(');
+        if (x.getTableSpace() != null) {
+            if (!first) {
+                print(' ');
+            }
+            print("TABLESPACE ");
+            x.getTableSpace().accept(this);
+            first = false;
+        }
+        
+        if (x.getEnable() != null) {
+            if (!first) {
+                print(' ');
+            }
+            if (x.getEnable().booleanValue()) {
+                print("ENABLE STORAGE IN ROW");
+            } else {
+                print("DISABLE STORAGE IN ROW");
+            }
+        }
+        
+        if (x.getChunk() != null) {
+            if (!first) {
+                print(' ');
+            }
+            print("CHUNK ");
+            x.getChunk().accept(this);
+        }
+        
+        if (x.getCache() != null) {
+            if (!first) {
+                print(' ');
+            }
+            if (x.getCache().booleanValue()) {
+                print("CACHE");
+            } else {
+                print("NOCACHE");
+            }
+            
+            if (x.getLogging() != null) {
+                if (x.getLogging().booleanValue()) {
+                    print(" LOGGING");
+                } else {
+                    print(" NOLOGGING");
+                }
+            }
+        }
+        
+        if (x.getCompress() != null) {
+            if (!first) {
+                print(' ');
+            }
+            if (x.getCompress().booleanValue()) {
+                print("COMPRESS");
+            } else {
+                print("NOCOMPRESS");
+            }
+        }
+        
+        if (x.getKeepDuplicate() != null) {
+            if (!first) {
+                print(' ');
+            }
+            if (x.getKeepDuplicate().booleanValue()) {
+                print("KEEP_DUPLICATES");
+            } else {
+                print("DEDUPLICATE");
+            }
+        }
+        
+        print(')');
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleLobStorageClause x) {
+        
     }
 }

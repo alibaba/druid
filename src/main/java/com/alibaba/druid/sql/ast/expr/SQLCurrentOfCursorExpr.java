@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCurrentOfCursorExpr extends SQLExprImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           cursorName;
+    private SQLName cursorName;
 
     public SQLCurrentOfCursorExpr(){
 

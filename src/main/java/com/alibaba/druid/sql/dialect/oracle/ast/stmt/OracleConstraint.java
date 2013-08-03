@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 
 public abstract class OracleConstraint extends OracleSQLObjectImpl {
 
-    private static final long       serialVersionUID = 1L;
-
     protected OracleConstraintState state;
     protected SQLName               name;
 

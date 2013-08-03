@@ -19,11 +19,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleCommitStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean           write;
-    private Boolean           wait;
-    private Boolean           immediate;
+    private boolean write;
+    private Boolean wait;
+    private Boolean immediate;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

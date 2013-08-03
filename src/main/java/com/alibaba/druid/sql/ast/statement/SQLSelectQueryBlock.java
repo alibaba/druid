@@ -23,10 +23,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectQueryBlock extends SQLSelectQuery {
 
-    private static final long           serialVersionUID = 1L;
-
     protected int                       distionOption;
-    protected final List<SQLSelectItem> selectList       = new ArrayList<SQLSelectItem>();
+    protected final List<SQLSelectItem> selectList = new ArrayList<SQLSelectItem>();
 
     protected SQLTableSource            from;
     protected SQLExprTableSource        into;

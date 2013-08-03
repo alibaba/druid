@@ -24,10 +24,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleReturningClause extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private List<SQLExpr>     items            = new ArrayList<SQLExpr>();
-    private List<SQLExpr>     values           = new ArrayList<SQLExpr>();
+    private List<SQLExpr> items  = new ArrayList<SQLExpr>();
+    private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
     public List<SQLExpr> getItems() {
         return items;

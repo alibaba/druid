@@ -22,8 +22,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectOrderByItem extends SQLObjectImpl {
 
-    private static final long          serialVersionUID = 1L;
-
     protected SQLExpr                  expr;
     protected String                   collate;
     protected SQLOrderingSpecification type;
@@ -31,7 +29,7 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
     public SQLSelectOrderByItem(){
 
     }
-    
+
     public SQLSelectOrderByItem(SQLExpr expr){
         this.setExpr(expr);
     }

@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterSessionStatement extends OracleStatementImpl {
 
-    private static final long   serialVersionUID = 1L;
-
-    private List<SQLAssignItem> items            = new ArrayList<SQLAssignItem>();
+    private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

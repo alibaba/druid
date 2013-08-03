@@ -22,10 +22,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
-    private static final long     serialVersionUID = -2783296007802532452L;
-
     protected String              name;
-    protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
 
     public SQLDataTypeImpl(){
 

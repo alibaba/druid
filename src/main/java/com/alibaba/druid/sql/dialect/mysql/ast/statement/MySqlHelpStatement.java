@@ -20,9 +20,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlHelpStatement extends MySqlStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           content;
+    private SQLExpr content;
 
     public SQLExpr getContent() {
         return content;

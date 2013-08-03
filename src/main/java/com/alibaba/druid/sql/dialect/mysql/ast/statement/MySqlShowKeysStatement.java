@@ -22,10 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowKeysStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           table;
-    private SQLName           database;
+    private SQLName table;
+    private SQLName database;
 
     public SQLName getTable() {
         return table;

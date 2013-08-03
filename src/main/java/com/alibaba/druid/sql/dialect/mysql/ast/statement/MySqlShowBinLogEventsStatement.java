@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowBinLogEventsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           in;
-    private SQLExpr           from;
-    private Limit             limit;
+    private SQLExpr in;
+    private SQLExpr from;
+    private Limit   limit;
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

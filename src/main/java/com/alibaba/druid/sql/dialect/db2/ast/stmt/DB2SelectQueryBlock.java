@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Object {
 
-    private SQLExpr           first;
-
-    private static final long serialVersionUID = 1L;
+    private SQLExpr first;
 
     public SQLExpr getFirst() {
         return first;
@@ -34,8 +32,7 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
     public void setFirst(SQLExpr first) {
         this.first = first;
     }
-    
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof DB2ASTVisitor) {

@@ -58,8 +58,15 @@ public class OracleCreateTableTest18 extends OracleTest {
                                     + "\n\t\"LOGIN\" VARCHAR2(100 BYTE)," //
                                     + "\n\t\"CREATED_AT\" TIMESTAMP(6)," //
                                     + "\n\t\"UPDATED_AT\" TIMESTAMP(6)," //
-                                    + "\n\tPRIMARY KEY (\"ID\") USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS TABLESPACE \"USERS\" ENABLE" //
-                                    + "\n) PCTFREE 10 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING TABLESPACE \"USERS\"", //
+                                    + "\n\tPRIMARY KEY (\"ID\")"
+                                    + "\n\tUSING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS TABLESPACE \"USERS\" ENABLE" //
+                                    + "\n)"
+                                    + "\nPCTFREE 10"
+                                    + "\nINITRANS 1"
+                                    + "\nMAXTRANS 255"
+                                    + "\nNOCOMPRESS"
+                                    + "\nLOGGING"
+                                    + "\nTABLESPACE \"USERS\"", //
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

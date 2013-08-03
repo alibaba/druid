@@ -20,9 +20,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTableAddConstaint extends OracleAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLConstaint      constraint;
+    private SQLConstaint constraint;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

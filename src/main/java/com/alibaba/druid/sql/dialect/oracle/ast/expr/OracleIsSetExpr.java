@@ -22,9 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleIsSetExpr extends SQLExprImpl implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           nestedTable;
+    private SQLExpr nestedTable;
 
     public OracleIsSetExpr(){
     }

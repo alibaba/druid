@@ -48,6 +48,7 @@ public class MySqlLexer extends Lexer {
         map.put("TRUE", Token.TRUE);
         map.put("BINARY", Token.BINARY);
         map.put("SHOW", Token.SHOW);
+        map.put("CACHE", Token.CACHE);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }

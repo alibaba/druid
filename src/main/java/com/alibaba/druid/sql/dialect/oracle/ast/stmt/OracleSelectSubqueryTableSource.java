@@ -23,8 +23,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource implements OracleSelectTableSource {
 
-    private static final long       serialVersionUID = 1L;
-
     protected OracleSelectPivotBase pivot;
 
     protected FlashbackQueryClause  flashback;

@@ -18,13 +18,11 @@ package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
-public class PGTruncateStatement extends SQLTruncateStatement implements PGSQLStatement{
+public class PGTruncateStatement extends SQLTruncateStatement implements PGSQLStatement {
 
-    private static final long  serialVersionUID = 1L;
-
-    private boolean            only;
-    private Boolean            restartIdentity;
-    private Boolean            cascade;
+    private boolean only;
+    private Boolean restartIdentity;
+    private Boolean cascade;
 
     public boolean isOnly() {
         return only;

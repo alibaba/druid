@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.Vers
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
@@ -606,4 +607,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleUsingIndexClause x);
     
     void endVisit(OracleUsingIndexClause x);
+    
+    boolean visit(OracleLobStorageClause x);
+    
+    void endVisit(OracleLobStorageClause x);
 }

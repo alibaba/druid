@@ -19,9 +19,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLIntegerExpr extends SQLNumericLiteralExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private Number            number;
+    private Number number;
 
     public SQLIntegerExpr(Number number){
 

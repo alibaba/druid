@@ -25,9 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerInsertStatement extends SQLInsertStatement implements SQLServerObject {
 
-    private static final long  serialVersionUID = 2652393792927901563L;
-
-    private List<ValuesClause> valuesList       = new ArrayList<ValuesClause>();
+    private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
 
     public ValuesClause getValues() {
         if (valuesList.size() == 0) {
@@ -47,7 +45,7 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
     public List<ValuesClause> getValuesList() {
         return valuesList;
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         this.accept0((SQLServerASTVisitor) visitor);

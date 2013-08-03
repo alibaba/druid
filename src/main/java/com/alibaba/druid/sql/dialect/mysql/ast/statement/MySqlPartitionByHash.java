@@ -20,13 +20,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlPartitionByHash extends MySqlPartitioningClause {
 
-    private static final long serialVersionUID = 1L;
+    private SQLExpr expr;
 
-    private SQLExpr           expr;
+    private SQLExpr partitionCount;
 
-    private SQLExpr           partitionCount;
-
-    private boolean           linear;
+    private boolean linear;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {

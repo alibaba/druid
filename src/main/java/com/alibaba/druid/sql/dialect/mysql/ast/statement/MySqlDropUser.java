@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlDropUser extends MySqlStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private List<SQLExpr>     users            = new ArrayList<SQLExpr>(2);
+    private List<SQLExpr> users = new ArrayList<SQLExpr>(2);
 
     public List<SQLExpr> getUsers() {
         return users;

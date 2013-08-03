@@ -22,12 +22,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlRollbackStatement extends SQLRollbackStatement implements MySqlStatement {
 
-    private static final long serialVersionUID = 1L;
+    private Boolean chain;
+    private Boolean release;
 
-    private Boolean           chain;
-    private Boolean           release;
-
-    private SQLExpr           force;
+    private SQLExpr force;
 
     public MySqlRollbackStatement(){
 

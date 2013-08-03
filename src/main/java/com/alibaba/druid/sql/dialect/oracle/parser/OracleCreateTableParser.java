@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -62,19 +63,19 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 stmt.setParallel(false);
                 continue;
-            } else if (identifierEquals("LOGGING")) {
+            } else if (lexer.token() == Token.LOGGING) {
                 lexer.nextToken();
                 stmt.setLogging(Boolean.TRUE);
                 continue;
-            } else if (identifierEquals("CACHE")) {
+            } else if (lexer.token() == Token.CACHE) {
                 lexer.nextToken();
                 stmt.setCache(Boolean.TRUE);
                 continue;
-            } else if (identifierEquals("NOCACHE")) {
+            } else if (lexer.token() == Token.NOCACHE) {
                 lexer.nextToken();
                 stmt.setCache(Boolean.FALSE);
                 continue;
-            } else if (identifierEquals("NOCOMPRESS")) {
+            } else if (lexer.token() == Token.NOCOMPRESS) {
                 lexer.nextToken();
                 stmt.setCompress(Boolean.FALSE);
                 continue;
@@ -89,37 +90,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 stmt.setPreserveRows(true);
                 continue;
             } else if (identifierEquals("STORAGE")) {
-                lexer.nextToken();
-                accept(Token.LPAREN);
-
-                OracleStorageClause storage = new OracleStorageClause();
-                for (;;) {
-                    if (identifierEquals("INITIAL")) {
-                        lexer.nextToken();
-                        storage.setInitial(this.exprParser.expr());
-                        continue;
-                    } else if (identifierEquals("FREELISTS")) {
-                        lexer.nextToken();
-                        storage.setFreeLists(this.exprParser.expr());
-                        continue;
-                    } else if (identifierEquals("FREELIST")) {
-                        lexer.nextToken();
-                        acceptIdentifier("GROUPS");
-                        storage.setFreeListGroups(this.exprParser.expr());
-                        continue;
-                    } else if (identifierEquals("BUFFER_POOL")) {
-                        lexer.nextToken();
-                        storage.setBufferPool(this.exprParser.expr());
-                        continue;
-                    } else if (identifierEquals("OBJNO")) {
-                        lexer.nextToken();
-                        storage.setObjno(this.exprParser.expr());
-                        continue;
-                    }
-
-                    break;
-                }
-                accept(Token.RPAREN);
+                OracleStorageClause storage = ((OracleExprParser) this.exprParser).parseStorage();
                 stmt.setStorage(storage);
                 continue;
             } else if (identifierEquals("organization")) {
@@ -135,6 +106,14 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 stmt.setPctused(this.exprParser.expr());
                 continue;
+            } else if (lexer.token() == Token.STORAGE) {
+                OracleStorageClause storage = ((OracleExprParser) this.exprParser).parseStorage();
+                stmt.setStorage(storage);
+                continue;
+            } else if (lexer.token() == Token.LOB) {
+                OracleLobStorageClause lobStorage = ((OracleExprParser) this.exprParser).parseLobStorage();
+                stmt.setLobStorage(lobStorage);
+                continue;
             } else if (lexer.token() == Token.INITRANS) {
                 lexer.nextToken();
                 stmt.setInitrans(this.exprParser.expr());
@@ -147,6 +126,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 accept(Token.CREATION);
                 if (lexer.token() == Token.IMMEDIATE) {
+                    lexer.nextToken();
                     stmt.setDeferredSegmentCreation(DeferredSegmentCreation.IMMEDIATE);
                 } else {
                     accept(Token.DEFERRED);
@@ -164,76 +144,76 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                     for (;;) {
                         SQLName column = this.exprParser.name();
                         clause.getColumns().add(column);
-                        
+
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();
                             continue;
                         }
-                        
+
                         break;
                     }
                     accept(Token.RPAREN);
-                    
+
                     if (identifierEquals("INTERVAL")) {
                         lexer.nextToken();
                         clause.setInterval(this.exprParser.expr());
                     }
-                    
-                    if (identifierEquals("STORE")) {
+
+                    if (lexer.token() == Token.STORE) {
                         lexer.nextToken();
                         accept(Token.IN);
                         accept(Token.LPAREN);
                         for (;;) {
                             SQLName tablespace = this.exprParser.name();
                             clause.getStoreIn().add(tablespace);
-                            
+
                             if (lexer.token() == Token.COMMA) {
                                 lexer.nextToken();
                                 continue;
                             }
-                            
+
                             break;
                         }
                         accept(Token.RPAREN);
                     }
-                    
+
                     accept(Token.LPAREN);
-                    
+
                     for (;;) {
                         acceptIdentifier("PARTITION");
                         OracleRangeValuesClause range = new OracleRangeValuesClause();
                         range.setName(this.exprParser.name());
-                        
+
                         accept(Token.VALUES);
                         acceptIdentifier("LESS");
                         acceptIdentifier("THAN");
-                        
+
                         accept(Token.LPAREN);
                         for (;;) {
                             SQLExpr rangeValue = this.exprParser.expr();
                             range.getValues().add(rangeValue);
-                            
+
                             if (lexer.token() == Token.COMMA) {
                                 lexer.nextToken();
                                 continue;
                             }
-                            
+
                             break;
                         }
                         accept(Token.RPAREN);
-                        
+
                         clause.getRanges().add(range);
-                        
+
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();
                             continue;
                         }
-                        
+
                         break;
                     }
-                    
+
                     accept(Token.RPAREN);
-                    
+
                     stmt.setPartitioning(clause);
                     continue;
                 } else {
@@ -252,4 +232,5 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
 
         return stmt;
     }
+
 }

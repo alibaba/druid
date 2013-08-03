@@ -24,9 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectGroupByClause extends SQLObjectImpl {
 
-    private static final long   serialVersionUID = 1L;
-
-    private final List<SQLExpr> items            = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> items = new ArrayList<SQLExpr>();
     private SQLExpr             having;
 
     public SQLSelectGroupByClause(){

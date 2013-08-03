@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlDropViewStatement extends SQLDropViewStatement implements MySqlStatement {
 
-    private static final long serialVersionUID = 1L;
+    private boolean ifExists = false;
 
-    private boolean           ifExists         = false;
-
-    private String            option;
+    private String  option;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

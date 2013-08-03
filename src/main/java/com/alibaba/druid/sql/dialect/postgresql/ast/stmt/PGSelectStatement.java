@@ -23,8 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGSelectStatement extends SQLSelectStatement implements PGSQLStatement {
 
-    private static final long serialVersionUID = 1L;
-    private PGWithClause      with;
+    private PGWithClause with;
 
     public PGSelectStatement(){
     }

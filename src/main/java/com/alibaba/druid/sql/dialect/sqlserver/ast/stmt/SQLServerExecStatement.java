@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
-@SuppressWarnings("serial")
 public class SQLServerExecStatement extends SQLServerObjectImpl implements SQLServerStatement {
 
     private SQLName       moduleName;

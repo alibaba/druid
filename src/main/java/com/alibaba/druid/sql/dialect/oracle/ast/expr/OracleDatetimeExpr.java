@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleDatetimeExpr extends OracleSQLObjectImpl implements SQLExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           expr;
-    private SQLExpr           timeZone;
+    private SQLExpr expr;
+    private SQLExpr timeZone;
 
     public OracleDatetimeExpr(){
 

@@ -24,11 +24,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long          serialVersionUID = 1L;
-
     private SQLName                    name;
 
-    private List<SQLSelectOrderByItem> items            = new ArrayList<SQLSelectOrderByItem>();
+    private List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
 
     private String                     type;
 

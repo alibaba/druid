@@ -25,9 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleConstraintState extends SQLObjectImpl {
 
-    private static final long     serialVersionUID = 1L;
-
-    private final List<SQLObject> states           = new ArrayList<SQLObject>();
+    private final List<SQLObject> states = new ArrayList<SQLObject>();
 
     public OracleConstraintState(){
 

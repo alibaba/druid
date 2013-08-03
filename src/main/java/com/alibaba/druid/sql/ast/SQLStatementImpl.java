@@ -20,8 +20,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
 
-    private static final long serialVersionUID = 1L;
-
     public SQLStatementImpl(){
 
     }

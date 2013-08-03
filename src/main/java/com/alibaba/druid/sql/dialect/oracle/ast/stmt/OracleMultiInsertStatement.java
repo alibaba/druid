@@ -35,12 +35,10 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
         ALL, FIRST
     }
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLSelect         subQuery;
-    private Option            option;
-    private List<Entry>       entries          = new ArrayList<Entry>();
-    private List<SQLHint>     hints            = new ArrayList<SQLHint>(1);
+    private SQLSelect     subQuery;
+    private Option        option;
+    private List<Entry>   entries = new ArrayList<Entry>();
+    private List<SQLHint> hints   = new ArrayList<SQLHint>(1);
 
     public List<SQLHint> getHints() {
         return hints;
@@ -89,8 +87,7 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
 
     public static class ConditionalInsertClause extends OracleSQLObjectImpl implements Entry {
 
-        private static final long                 serialVersionUID = 1L;
-        private List<ConditionalInsertClauseItem> items            = new ArrayList<ConditionalInsertClauseItem>();
+        private List<ConditionalInsertClauseItem> items = new ArrayList<ConditionalInsertClauseItem>();
         private InsertIntoClause                  elseItem;
 
         public InsertIntoClause getElseItem() {
@@ -122,9 +119,8 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
 
     public static class ConditionalInsertClauseItem extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private SQLExpr           when;
-        private InsertIntoClause  then;
+        private SQLExpr          when;
+        private InsertIntoClause then;
 
         public SQLExpr getWhen() {
             return when;
@@ -154,8 +150,6 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
     }
 
     public static class InsertIntoClause extends SQLInsertInto implements OracleSQLObject, Entry {
-
-        private static final long        serialVersionUID = 1L;
 
         private OracleReturningClause    returning;
         private OracleErrorLoggingClause errorLogging;

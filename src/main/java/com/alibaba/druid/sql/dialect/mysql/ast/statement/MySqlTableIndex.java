@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-@SuppressWarnings("serial")
 public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement {
 
     private SQLName       name;

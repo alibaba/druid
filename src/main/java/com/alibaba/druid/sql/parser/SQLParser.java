@@ -65,7 +65,33 @@ public class SQLParser {
                     case KEY:
                     case INDEX:
                     case CASE:
-                        alias = lexer.token().name();
+                    case MODEL:
+                    case PCTFREE:
+                    case INITRANS:
+                    case MAXTRANS:
+                    case SEGMENT:
+                    case CREATION:
+                    case IMMEDIATE:
+                    case DEFERRED:
+                    case STORAGE:
+                    case NEXT:
+                    case MINEXTENTS:
+                    case MAXEXTENTS:
+                    case PCTINCREASE:
+                    case FLASH_CACHE:
+                    case CELL_FLASH_CACHE:
+                    case KEEP:
+                    case NONE:
+                    case LOB:
+                    case STORE:
+                    case ROW:
+                    case CHUNK:
+                    case CACHE:
+                    case NOCACHE:
+                    case LOGGING:
+                    case NOCOMPRESS:
+                    case KEEP_DUPLICATES:
+                        alias = lexer.stringVal();
                         lexer.nextToken();
                         return alias;
                     case QUES:

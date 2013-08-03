@@ -24,11 +24,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleBlockStatement extends OracleStatementImpl {
 
-    private static final long         serialVersionUID = 1L;
+    private List<OracleParameter> parameters    = new ArrayList<OracleParameter>();
 
-    private List<OracleParameter> parameters       = new ArrayList<OracleParameter>();
-
-    private List<SQLStatement>        statementList    = new ArrayList<SQLStatement>();
+    private List<SQLStatement>    statementList = new ArrayList<SQLStatement>();
 
     public List<SQLStatement> getStatementList() {
         return statementList;

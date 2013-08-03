@@ -26,12 +26,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatement {
 
-    private static final long serialVersionUID = 1L;
-    private PGWithClause      with;
-    private boolean           only             = false;
-    private List<SQLName>     using            = new ArrayList<SQLName>(2);
-    private boolean           returning;
-    private String            alias;
+    private PGWithClause  with;
+    private boolean       only  = false;
+    private List<SQLName> using = new ArrayList<SQLName>(2);
+    private boolean       returning;
+    private String        alias;
 
     public boolean isReturning() {
         return returning;

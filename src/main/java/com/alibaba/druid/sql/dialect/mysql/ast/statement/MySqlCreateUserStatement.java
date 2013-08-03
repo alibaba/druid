@@ -24,9 +24,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlCreateUserStatement extends MySqlStatementImpl {
 
-    private static final long       serialVersionUID = 1L;
-
-    private List<UserSpecification> users            = new ArrayList<UserSpecification>(2);
+    private List<UserSpecification> users = new ArrayList<UserSpecification>(2);
 
     public List<UserSpecification> getUsers() {
         return users;
@@ -35,7 +33,7 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl {
     public void setUsers(List<UserSpecification> users) {
         this.users = users;
     }
-    
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -46,11 +44,9 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl {
 
     public static class UserSpecification extends MySqlObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-
-        private SQLExpr           user;
-        private SQLExpr           password;
-        private SQLExpr           authPlugin;
+        private SQLExpr user;
+        private SQLExpr password;
+        private SQLExpr authPlugin;
 
         public SQLExpr getUser() {
             return user;

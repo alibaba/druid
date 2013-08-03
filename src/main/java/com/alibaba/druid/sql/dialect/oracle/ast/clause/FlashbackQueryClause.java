@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public abstract class FlashbackQueryClause extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private Type              type;
+    private Type type;
 
     public Type getType() {
         return type;
@@ -39,10 +37,8 @@ public abstract class FlashbackQueryClause extends OracleSQLObjectImpl {
 
     public static class VersionsFlashbackQueryClause extends FlashbackQueryClause {
 
-        private static final long serialVersionUID = 1L;
-
-        private SQLExpr           begin;
-        private SQLExpr           end;
+        private SQLExpr begin;
+        private SQLExpr end;
 
         public SQLExpr getBegin() {
             return begin;
@@ -72,9 +68,7 @@ public abstract class FlashbackQueryClause extends OracleSQLObjectImpl {
 
     public static class AsOfFlashbackQueryClause extends FlashbackQueryClause {
 
-        private static final long serialVersionUID = 1L;
-
-        private SQLExpr           expr;
+        private SQLExpr expr;
 
         public SQLExpr getExpr() {
             return expr;
@@ -92,12 +86,10 @@ public abstract class FlashbackQueryClause extends OracleSQLObjectImpl {
             visitor.endVisit(this);
         }
     }
-    
+
     public static class AsOfSnapshotClause extends FlashbackQueryClause {
 
-        private static final long serialVersionUID = 1L;
-
-        private SQLExpr           expr;
+        private SQLExpr expr;
 
         public SQLExpr getExpr() {
             return expr;

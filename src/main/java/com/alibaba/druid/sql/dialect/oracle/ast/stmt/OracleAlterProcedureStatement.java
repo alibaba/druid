@@ -20,12 +20,10 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterProcedureStatement extends OracleStatementImpl {
 
-    private SQLExpr           name;
+    private SQLExpr name;
 
-    private boolean           compile          = false;
-    private boolean           reuseSettings    = false;
-
-    private static final long serialVersionUID = 1L;
+    private boolean compile       = false;
+    private boolean reuseSettings = false;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlAlterTableAddIndex extends SQLAlterTableAddIndex implements SQLAlterTableItem, MySqlObject {
 
-    private static final long serialVersionUID = 1L;
-
-    private String            using;
+    private String using;
 
     public String getUsing() {
         return using;

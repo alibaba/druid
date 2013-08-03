@@ -22,10 +22,8 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
 public class PGParameter extends PGSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           name;
-    private SQLDataType       dataType;
-
+    private SQLExpr     name;
+    private SQLDataType dataType;
 
     public SQLExpr getName() {
         return name;

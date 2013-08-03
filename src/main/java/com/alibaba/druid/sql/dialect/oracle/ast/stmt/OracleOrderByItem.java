@@ -22,9 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleOrderByItem extends SQLSelectOrderByItem {
 
-    private static final long serialVersionUID = 1L;
-
-    private NullsOrderType    nullsOrderType;
+    private NullsOrderType nullsOrderType;
 
     public OracleOrderByItem(){
 

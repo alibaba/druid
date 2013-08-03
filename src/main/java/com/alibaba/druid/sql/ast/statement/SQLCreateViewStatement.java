@@ -25,12 +25,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    private static final long     serialVersionUID = 1L;
-    private boolean               orReplace        = false;
+    private boolean               orReplace = false;
     protected SQLName             name;
     protected SQLSelect           subQuery;
 
-    protected final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> columns   = new ArrayList<SQLExpr>();
 
     private Level                 with;
 

@@ -20,13 +20,11 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 
 public class MySqlSQLColumnDefinition extends SQLColumnDefinition {
 
-    private static final long serialVersionUID = 1L;
+    private boolean autoIncrement = false;
 
-    private boolean           autoIncrement    = false;
+    private SQLExpr onUpdate;
 
-    private SQLExpr           onUpdate;
-
-    private SQLExpr           storage;
+    private SQLExpr storage;
 
     public MySqlSQLColumnDefinition(){
 
@@ -48,12 +46,10 @@ public class MySqlSQLColumnDefinition extends SQLColumnDefinition {
         this.onUpdate = onUpdate;
     }
 
-    
     public SQLExpr getStorage() {
         return storage;
     }
 
-    
     public void setStorage(SQLExpr storage) {
         this.storage = storage;
     }

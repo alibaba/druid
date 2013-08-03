@@ -24,8 +24,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableChangeColumn extends MySqlObjectImpl implements SQLAlterTableItem {
 
-    private static final long   serialVersionUID = 1L;
-
     private SQLName             columnName;
 
     private SQLColumnDefinition newColumnDefinition;

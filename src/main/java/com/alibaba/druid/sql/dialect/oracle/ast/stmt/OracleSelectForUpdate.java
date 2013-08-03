@@ -24,13 +24,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSelectForUpdate extends OracleSQLObjectImpl {
 
-    private static final long   serialVersionUID = 1L;
+    private final List<SQLExpr> of         = new ArrayList<SQLExpr>();
 
-    private final List<SQLExpr> of               = new ArrayList<SQLExpr>();
-
-    private boolean             notWait          = false;
+    private boolean             notWait    = false;
     private SQLExpr             wait;
-    private boolean             skipLocked       = false;
+    private boolean             skipLocked = false;
 
     public OracleSelectForUpdate(){
 

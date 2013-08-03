@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleExtractExpr extends SQLExprImpl implements OracleExpr {
 
-    private static final long  serialVersionUID = 1L;
     private OracleDateTimeUnit unit;
     private SQLExpr            from;
 

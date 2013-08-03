@@ -23,14 +23,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           expr;
-    private String            dbLink;
+    private SQLExpr expr;
+    private String  dbLink;
 
     public OracleDbLinkExpr(){
 
     }
-    
+
     public String getSimleName() {
         return dbLink;
     }

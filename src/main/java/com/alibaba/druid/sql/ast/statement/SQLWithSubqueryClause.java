@@ -25,10 +25,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLWithSubqueryClause extends SQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
     private Boolean           recursive;
-    private final List<Entry> entries          = new ArrayList<Entry>();
+    private final List<Entry> entries = new ArrayList<Entry>();
 
     public List<Entry> getEntries() {
         return entries;
@@ -52,10 +50,9 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
 
     public static class Entry extends SQLObjectImpl {
 
-        private static final long     serialVersionUID = 1L;
         protected SQLIdentifierExpr   name;
-        protected final List<SQLName> columns          = new ArrayList<SQLName>();
-        protected SQLSelect      subQuery;
+        protected final List<SQLName> columns = new ArrayList<SQLName>();
+        protected SQLSelect           subQuery;
 
         @Override
         protected void accept0(SQLASTVisitor visitor) {

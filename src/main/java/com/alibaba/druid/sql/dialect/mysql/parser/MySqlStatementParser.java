@@ -508,7 +508,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.IDENTIFIER) {
                 if (identifierEquals("QUERY")) {
                     lexer.nextToken();
-                    acceptIdentifier("CACHE");
+                    accept(Token.CACHE);
                     stmt.getOptions().add("QUERY CACHE");
                 } else {
                     stmt.getOptions().add(lexer.stringVal());

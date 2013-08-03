@@ -24,9 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    private static final long          serialVersionUID = 1L;
-
-    protected List<SQLExprTableSource> tableSources     = new ArrayList<SQLExprTableSource>();
+    protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
 
     public SQLDropViewStatement(){
 
@@ -51,11 +49,11 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
     public void setName(SQLName name) {
         this.addTableSource(new SQLExprTableSource(name));
     }
-    
+
     public void addTableSource(SQLName name) {
         this.addTableSource(new SQLExprTableSource(name));
     }
-    
+
     public void addTableSource(SQLExprTableSource tableSource) {
         tableSources.add(tableSource);
     }

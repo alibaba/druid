@@ -20,17 +20,13 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
     public OracleSelectRestriction(){
 
     }
 
     public static class CheckOption extends OracleSelectRestriction {
 
-        private static final long serialVersionUID = 1L;
-
-        private OracleConstraint  constraint;
+        private OracleConstraint constraint;
 
         public CheckOption(){
 
@@ -54,8 +50,6 @@ public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
     }
 
     public static class ReadOnly extends OracleSelectRestriction {
-
-        private static final long serialVersionUID = 1L;
 
         public ReadOnly(){
 

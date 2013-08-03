@@ -27,15 +27,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatement {
 
-    private static final long serialVersionUID = 1L;
+    private boolean        only      = false;
 
-    private boolean           only             = false;
+    private PGWithClause   with;
 
-    private PGWithClause      with;
+    private List<SQLExpr>  returning = new ArrayList<SQLExpr>(2);
 
-    private List<SQLExpr>     returning        = new ArrayList<SQLExpr>(2);
-
-    private SQLTableSource    from;
+    private SQLTableSource from;
 
     public SQLTableSource getFrom() {
         return from;

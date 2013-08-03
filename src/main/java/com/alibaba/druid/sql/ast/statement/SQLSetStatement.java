@@ -24,14 +24,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSetStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private List<SQLAssignItem>        items            = new ArrayList<SQLAssignItem>();
+    private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
 
     public SQLSetStatement(){
     }
-    
-    public SQLSetStatement(SQLExpr target, SQLExpr value) {
+
+    public SQLSetStatement(SQLExpr target, SQLExpr value){
         this.items.add(new SQLAssignItem(target, value));
     }
 

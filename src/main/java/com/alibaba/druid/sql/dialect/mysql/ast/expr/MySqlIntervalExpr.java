@@ -22,8 +22,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlIntervalExpr extends SQLExprImpl implements MySqlExpr {
 
-    private static final long serialVersionUID = 1L;
-
     private SQLExpr           value;
     private MySqlIntervalUnit unit;
 

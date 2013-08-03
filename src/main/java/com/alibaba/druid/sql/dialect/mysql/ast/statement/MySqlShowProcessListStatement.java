@@ -19,9 +19,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowProcessListStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean           full             = false;
+    private boolean full = false;
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);

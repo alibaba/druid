@@ -20,8 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddPrimaryKey extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-    private SQLPrimaryKey     primaryKey;
+    private SQLPrimaryKey primaryKey;
 
     public SQLPrimaryKey getPrimaryKey() {
         return primaryKey;

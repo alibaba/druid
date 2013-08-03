@@ -88,6 +88,24 @@ public class OracleLexer extends Lexer {
         map.put("CREATION", Token.CREATION);
         map.put("IMMEDIATE", Token.IMMEDIATE);
         map.put("DEFERRED", Token.DEFERRED);
+        map.put("STORAGE", Token.STORAGE);
+        map.put("NEXT", Token.NEXT);
+        map.put("MINEXTENTS", Token.MINEXTENTS);
+        map.put("MAXEXTENTS", Token.MAXEXTENTS);
+        map.put("PCTINCREASE", Token.PCTINCREASE);
+        map.put("FLASH_CACHE", Token.FLASH_CACHE);
+        map.put("CELL_FLASH_CACHE", Token.CELL_FLASH_CACHE);
+        map.put("KEEP", Token.KEEP);
+        map.put("NONE", Token.NONE);
+        map.put("LOB", Token.LOB);
+        map.put("STORE", Token.STORE);
+        map.put("ROW", Token.ROW);
+        map.put("CHUNK", Token.CHUNK);
+        map.put("CACHE", Token.CACHE);
+        map.put("NOCACHE", Token.NOCACHE);
+        map.put("LOGGING", Token.LOGGING);
+        map.put("NOCOMPRESS", Token.NOCOMPRESS);
+        map.put("KEEP_DUPLICATES", Token.KEEP_DUPLICATES);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

@@ -24,13 +24,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class SampleClause extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
+    private boolean       block   = false;
 
-    private boolean           block            = false;
+    private List<SQLExpr> percent = new ArrayList<SQLExpr>();
 
-    private List<SQLExpr>     percent          = new ArrayList<SQLExpr>();
-
-    private SQLExpr           seedValue;
+    private SQLExpr       seedValue;
 
     public boolean isBlock() {
         return block;

@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    private static final long  serialVersionUID = 1L;
-
     private SQLExpr            indexName;
     private SQLExprTableSource tableName;
 
@@ -41,7 +39,7 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLSta
     public void setTableName(SQLExpr tableName) {
         this.setTableName(new SQLExprTableSource(tableName));
     }
-    
+
     public void setTableName(SQLExprTableSource tableName) {
         this.tableName = tableName;
     }

@@ -24,12 +24,10 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSelectPivot extends OracleSelectPivotBase {
 
-    private static final long   serialVersionUID = 1L;
-
     private boolean             xml;
-    private final List<Item>    items            = new ArrayList<Item>();
-    private final List<SQLExpr> pivotFor         = new ArrayList<SQLExpr>();
-    private final List<Item>    pivotIn          = new ArrayList<Item>();
+    private final List<Item>    items    = new ArrayList<Item>();
+    private final List<SQLExpr> pivotFor = new ArrayList<SQLExpr>();
+    private final List<Item>    pivotIn  = new ArrayList<Item>();
 
     public OracleSelectPivot(){
 
@@ -67,10 +65,8 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
 
     public static class Item extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-
-        private String            alias;
-        private SQLExpr           expr;
+        private String  alias;
+        private SQLExpr expr;
 
         public Item(){
 

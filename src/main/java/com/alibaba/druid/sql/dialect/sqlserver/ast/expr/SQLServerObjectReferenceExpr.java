@@ -24,11 +24,9 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
 public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements SQLServerExpr, SQLName {
 
-    private static final long serialVersionUID = 1L;
-
-    private String            server;
-    private String            database;
-    private String            schema;
+    private String server;
+    private String database;
+    private String schema;
 
     public SQLServerObjectReferenceExpr(){
 
@@ -46,12 +44,12 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
             throw new IllegalArgumentException(owner.toString());
         }
     }
-    
+
     public String getSimleName() {
         if (schema != null) {
             return schema;
         }
-        
+
         if (database != null) {
             return database;
         }
@@ -77,12 +75,12 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
         if (database != null) {
             buf.append(database);
             flag = true;
-        } 
+        }
 
         if (flag) {
             buf.append('.');
         }
-        
+
         if (schema != null) {
             buf.append(schema);
             flag = true;

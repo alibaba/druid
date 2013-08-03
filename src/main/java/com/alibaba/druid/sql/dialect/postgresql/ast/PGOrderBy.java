@@ -20,11 +20,8 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGOrderBy extends SQLOrderBy {
-    private static final long serialVersionUID = 1L;
 
-    private boolean           sibings;
-
-
+    private boolean sibings;
 
     public boolean isSibings() {
         return this.sibings;

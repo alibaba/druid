@@ -21,16 +21,15 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleCreateSequenceStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-    private SQLName           name;
+    private SQLName name;
 
-    private SQLExpr           startWith;
-    private SQLExpr           incrementBy;
-    private SQLExpr           maxValue;
+    private SQLExpr startWith;
+    private SQLExpr incrementBy;
+    private SQLExpr maxValue;
 
-    private Boolean           cycle;
-    private Boolean           cache;
-    private Boolean           order;
+    private Boolean cycle;
+    private Boolean cache;
+    private Boolean order;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

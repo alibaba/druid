@@ -20,9 +20,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTableMoveTablespace extends OracleAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           name;
+    private SQLName name;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

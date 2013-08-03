@@ -22,10 +22,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleErrorLoggingClause extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-    private SQLName           into;
-    private SQLExpr           simpleExpression;
-    private SQLExpr           limit;
+    private SQLName into;
+    private SQLExpr simpleExpression;
+    private SQLExpr limit;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

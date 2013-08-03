@@ -20,28 +20,27 @@ import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-
-@SuppressWarnings("serial")
 public class SQLExprHint extends SQLObjectImpl implements SQLHint {
+
     private SQLExpr expr;
-    
-    public SQLExprHint() {
-        
+
+    public SQLExprHint(){
+
     }
-    
-    public SQLExprHint(SQLExpr expr) {
+
+    public SQLExprHint(SQLExpr expr){
         this.setExpr(expr);
     }
 
     public SQLExpr getExpr() {
         return expr;
     }
-    
+
     public void setExpr(SQLExpr expr) {
         if (expr != null) {
             expr.setParent(this);
         }
-        
+
         this.expr = expr;
     }
 
@@ -52,6 +51,5 @@ public class SQLExprHint extends SQLObjectImpl implements SQLHint {
         }
         visitor.endVisit(this);
     }
-    
-    
+
 }

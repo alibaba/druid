@@ -26,14 +26,12 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTableSplitPartition extends OracleAlterTableItem {
 
-    private static final long              serialVersionUID = 1L;
-
     private SQLName                        name;
-    private List<SQLExpr>                  at               = new ArrayList<SQLExpr>();
-    private List<SQLExpr>                  values           = new ArrayList<SQLExpr>();
-    private List<NestedTablePartitionSpec> into             = new ArrayList<NestedTablePartitionSpec>();
+    private List<SQLExpr>                  at            = new ArrayList<SQLExpr>();
+    private List<SQLExpr>                  values        = new ArrayList<SQLExpr>();
+    private List<NestedTablePartitionSpec> into          = new ArrayList<NestedTablePartitionSpec>();
 
-    private UpdateIndexesClause            updateIndexes    = null;
+    private UpdateIndexesClause            updateIndexes = null;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -88,11 +86,9 @@ public class OracleAlterTableSplitPartition extends OracleAlterTableItem {
 
     public static class NestedTablePartitionSpec extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID      = 1L;
+        private SQLName         partition;
 
-        private SQLName           partition;
-
-        private List<SQLObject>   segmentAttributeItems = new ArrayList<SQLObject>();
+        private List<SQLObject> segmentAttributeItems = new ArrayList<SQLObject>();
 
         @Override
         public void accept0(OracleASTVisitor visitor) {
@@ -123,8 +119,7 @@ public class OracleAlterTableSplitPartition extends OracleAlterTableItem {
 
     public static class TableSpaceItem extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private SQLName           tablespace;
+        private SQLName tablespace;
 
         public TableSpaceItem(){
 
@@ -153,8 +148,7 @@ public class OracleAlterTableSplitPartition extends OracleAlterTableItem {
 
     public static class UpdateIndexesClause extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private List<SQLObject>   items            = new ArrayList<SQLObject>();
+        private List<SQLObject> items = new ArrayList<SQLObject>();
 
         @Override
         public void accept0(OracleASTVisitor visitor) {

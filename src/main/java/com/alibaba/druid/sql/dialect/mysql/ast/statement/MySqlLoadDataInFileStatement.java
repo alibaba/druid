@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlLoadDataInFileStatement extends MySqlStatementImpl {
 
-    private static final long   serialVersionUID          = 1L;
     private boolean             lowPriority               = false;
     private boolean             concurrent                = false;
     private boolean             local                     = false;

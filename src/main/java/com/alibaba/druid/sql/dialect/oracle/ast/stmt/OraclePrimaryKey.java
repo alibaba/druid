@@ -27,10 +27,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OraclePrimaryKey extends OracleSQLObjectImpl implements SQLPrimaryKey, SQLTableElement {
 
-    private static final long      serialVersionUID = 1L;
-
     private SQLName                name;
-    private List<SQLExpr>          columns          = new ArrayList<SQLExpr>();
+    private List<SQLExpr>          columns = new ArrayList<SQLExpr>();
 
     private OracleUsingIndexClause using;
 

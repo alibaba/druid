@@ -15,16 +15,13 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public abstract class SQLObjectImpl implements SQLObject, Serializable {
-
-    private static final long   serialVersionUID = 5569722716326763762L;
+public abstract class SQLObjectImpl implements SQLObject {
 
     private SQLObject           parent;
 

@@ -41,6 +41,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause.FlashCacheType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
@@ -71,6 +74,7 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
+
 
 
 
@@ -430,6 +434,24 @@ public class OracleExprParser extends SQLExprParser {
            case CREATION:
            case IMMEDIATE:
            case DEFERRED:
+           case STORAGE:
+           case NEXT:
+           case MINEXTENTS:
+           case MAXEXTENTS:
+           case PCTINCREASE:
+           case FLASH_CACHE:
+           case CELL_FLASH_CACHE:
+           case KEEP:
+           case NONE:
+           case LOB:
+           case STORE:
+           case ROW:
+           case CHUNK:
+           case CACHE:
+           case NOCACHE:
+           case LOGGING:
+           case NOCOMPRESS:
+           case KEEP_DUPLICATES:
                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                lexer.nextToken();
                return  primaryRest(sqlExpr);
@@ -994,6 +1016,10 @@ public class OracleExprParser extends SQLExprParser {
                     lexer.nextToken();
                     using.setEnable(false);
                     continue;
+                } else if (lexer.token() == Token.STORAGE) {
+                    OracleStorageClause storage = parseStorage();
+                    using.setStorage(storage);
+                    continue;
                 } else if (lexer.token() == Token.IDENTIFIER) {
                     using.setTablespace(this.name());
                     break;
@@ -1027,5 +1053,169 @@ public class OracleExprParser extends SQLExprParser {
         }
         
         return expr;
+    }
+    
+    public OracleLobStorageClause parseLobStorage() {
+        lexer.nextToken();
+        
+        OracleLobStorageClause clause = new OracleLobStorageClause();
+        
+        accept(Token.LPAREN);
+        this.names(clause.getItems());
+        accept(Token.RPAREN);
+        
+        accept(Token.STORE);
+        accept(Token.AS);
+        
+        for (;;) {
+            if (identifierEquals("SECUREFILE")) {
+                lexer.nextToken();
+                clause.setSecureFile(true);
+                continue;
+            }
+            
+            if (identifierEquals("BASICFILE")) {
+                lexer.nextToken();
+                clause.setBasicFile(true);
+                continue;
+            }
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                
+                for (;;) {
+                    if (lexer.token() == Token.TABLESPACE) {
+                        lexer.nextToken();
+                        clause.setTableSpace(this.name());
+                        continue;
+                    }
+                    
+                    if (lexer.token() == Token.ENABLE) {
+                        lexer.nextToken();
+                        accept(Token.STORAGE);
+                        accept(Token.IN);
+                        accept(Token.ROW);
+                        clause.setEnable(true);
+                        continue;
+                    }
+                    
+                    if (lexer.token() == Token.CHUNK) {
+                        lexer.nextToken();
+                        clause.setChunk(this.primary());
+                        continue;
+                    }
+                    
+                    if (lexer.token() == Token.NOCACHE) {
+                        lexer.nextToken();
+                        clause.setCache(false);
+                        if (lexer.token() == Token.LOGGING) {
+                            lexer.nextToken();
+                            clause.setLogging(true);
+                        }
+                        continue;
+                    }
+                    
+                    if (lexer.token() == Token.NOCOMPRESS) {
+                        lexer.nextToken();
+                        clause.setCompress(false);
+                        continue;
+                    }
+                    
+                    if (lexer.token() == Token.KEEP_DUPLICATES) {
+                        lexer.nextToken();
+                        clause.setKeepDuplicate(true);
+                        continue;
+                    }
+                    
+                    break;
+                }
+                
+                accept(Token.RPAREN);
+            }
+            
+            break;
+        }
+        return clause;
+    }
+    
+    public OracleStorageClause parseStorage() {
+        lexer.nextToken();
+        accept(Token.LPAREN);
+
+        OracleStorageClause storage = new OracleStorageClause();
+        for (;;) {
+            if (identifierEquals("INITIAL")) {
+                lexer.nextToken();
+                storage.setInitial(this.expr());
+                continue;
+            } else if (lexer.token() == Token.NEXT) {
+                lexer.nextToken();
+                storage.setNext(this.expr());
+                continue;
+            } else if (lexer.token() == Token.MINEXTENTS) {
+                lexer.nextToken();
+                storage.setMinExtents(this.expr());
+                continue;
+            } else if (lexer.token() == Token.MAXEXTENTS) {
+                lexer.nextToken();
+                storage.setMaxExtents(this.expr());
+                continue;
+            } else if (lexer.token() == Token.PCTINCREASE) {
+                lexer.nextToken();
+                storage.setPctIncrease(this.expr());
+                continue;
+            } else if (identifierEquals("FREELISTS")) {
+                lexer.nextToken();
+                storage.setFreeLists(this.expr());
+                continue;
+            } else if (identifierEquals("FREELIST")) {
+                lexer.nextToken();
+                acceptIdentifier("GROUPS");
+                storage.setFreeListGroups(this.expr());
+                continue;
+            } else if (identifierEquals("BUFFER_POOL")) {
+                lexer.nextToken();
+                storage.setBufferPool(this.expr());
+                continue;
+            } else if (identifierEquals("OBJNO")) {
+                lexer.nextToken();
+                storage.setObjno(this.expr());
+                continue;
+            } else if (lexer.token() == Token.FLASH_CACHE) {
+                lexer.nextToken();
+                FlashCacheType flashCacheType;
+                if (lexer.token() == Token.KEEP) {
+                    flashCacheType = FlashCacheType.KEEP;
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.NONE) {
+                    flashCacheType = FlashCacheType.NONE;
+                    lexer.nextToken();
+                } else {
+                    accept(Token.DEFAULT);
+                    flashCacheType = FlashCacheType.DEFAULT;
+                }
+                storage.setFlashCache(flashCacheType);
+                continue;
+            } else if (lexer.token() == Token.CELL_FLASH_CACHE) {
+                lexer.nextToken();
+                FlashCacheType flashCacheType;
+                if (lexer.token() == Token.KEEP) {
+                    flashCacheType = FlashCacheType.KEEP;
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.NONE) {
+                    flashCacheType = FlashCacheType.NONE;
+                    lexer.nextToken();
+                } else {
+                    accept(Token.DEFAULT);
+                    flashCacheType = FlashCacheType.DEFAULT;
+                }
+                storage.setCellFlashCache(flashCacheType);
+                continue;
+            }
+
+            break;
+        }
+        accept(Token.RPAREN);
+        return storage;
     }
 }

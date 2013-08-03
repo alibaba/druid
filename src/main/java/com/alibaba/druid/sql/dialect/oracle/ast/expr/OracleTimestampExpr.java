@@ -22,9 +22,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleTimestampExpr extends SQLExprImpl implements SQLLiteralExpr, OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-    private String            literal;
-    private String            timeZone;
+    private String literal;
+    private String timeZone;
 
     public OracleTimestampExpr(){
 

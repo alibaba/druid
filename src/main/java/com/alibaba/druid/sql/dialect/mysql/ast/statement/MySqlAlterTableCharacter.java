@@ -22,10 +22,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableCharacter extends MySqlObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           characterSet;
-    private SQLExpr           collate;
+    private SQLExpr characterSet;
+    private SQLExpr collate;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {

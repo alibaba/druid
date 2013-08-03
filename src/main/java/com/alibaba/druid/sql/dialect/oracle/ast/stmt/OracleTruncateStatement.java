@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleTruncateStatement extends SQLTruncateStatement implements OracleStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean           purgeSnapshotLog = false;
+    private boolean purgeSnapshotLog = false;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

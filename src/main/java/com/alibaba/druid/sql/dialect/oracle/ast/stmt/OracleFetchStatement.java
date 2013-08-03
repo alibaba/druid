@@ -24,11 +24,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleFetchStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private SQLName       cursorName;
 
-    private SQLName           cursorName;
-
-    private List<SQLExpr>     into             = new ArrayList<SQLExpr>();
+    private List<SQLExpr> into = new ArrayList<SQLExpr>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

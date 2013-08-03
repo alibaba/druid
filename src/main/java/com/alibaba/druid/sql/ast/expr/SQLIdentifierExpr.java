@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
-    private static final long serialVersionUID = -4101240977289682659L;
+    private String           name;
 
-    private String            name;
-
-    private transient String  lowerName;
+    private transient String lowerName;
 
     public SQLIdentifierExpr(){
 

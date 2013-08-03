@@ -23,8 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleGrantStatement extends OracleStatementImpl implements OracleStatement {
 
-    private static final long serialVersionUID = 1L;
-
     private List<String> privileges = new ArrayList<String>();
 
     private SQLExpr      on;

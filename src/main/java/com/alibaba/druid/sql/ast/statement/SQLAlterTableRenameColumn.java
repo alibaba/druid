@@ -21,9 +21,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableRenameColumn extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-    private SQLName           column;
-    private SQLName           to;
+    private SQLName column;
+    private SQLName to;
 
     public SQLAlterTableRenameColumn(){
 

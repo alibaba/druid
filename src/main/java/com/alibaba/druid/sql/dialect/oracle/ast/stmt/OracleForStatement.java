@@ -25,13 +25,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleForStatement extends OracleStatementImpl {
 
-    private static final long  serialVersionUID = 1L;
-
     private SQLName            index;
 
     private SQLExpr            range;
 
-    private List<SQLStatement> statements       = new ArrayList<SQLStatement>();
+    private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

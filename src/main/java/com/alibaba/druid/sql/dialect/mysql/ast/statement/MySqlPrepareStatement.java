@@ -21,9 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlPrepareStatement extends MySqlStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-    private SQLName           name;
-    private SQLExpr           from;
+    private SQLName name;
+    private SQLExpr from;
 
     public MySqlPrepareStatement(){
     }

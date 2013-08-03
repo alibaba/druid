@@ -26,8 +26,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlInsertStatement extends SQLInsertStatement {
 
-    private static final long   serialVersionUID   = 1L;
-
     private boolean             lowPriority        = false;
     private boolean             delayed            = false;
     private boolean             highPriority       = false;

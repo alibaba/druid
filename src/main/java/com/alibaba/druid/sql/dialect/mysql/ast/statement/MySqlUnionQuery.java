@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlUnionQuery extends SQLUnionQuery implements MySqlObject {
 
-    private static final long serialVersionUID = 1L;
-
-    private Limit             limit;
+    private Limit limit;
 
     public Limit getLimit() {
         return limit;

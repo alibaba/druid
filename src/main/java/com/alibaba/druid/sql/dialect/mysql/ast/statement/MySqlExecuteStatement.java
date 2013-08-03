@@ -24,10 +24,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlExecuteStatement extends MySqlStatementImpl {
 
-    private static final long   serialVersionUID = 1L;
-
     private SQLName             statementName;
-    private final List<SQLExpr> parameters       = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
     public SQLName getStatementName() {
         return statementName;

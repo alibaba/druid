@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerColumnDefinition extends SQLColumnDefinition implements SQLServerObject {
 
-    private static final long serialVersionUID = 1L;
-
-    private Identity          identity;
+    private Identity identity;
 
     public SQLServerColumnDefinition(){
 
@@ -57,16 +55,15 @@ public class SQLServerColumnDefinition extends SQLColumnDefinition implements SQ
         visitor.endVisit(this);
     }
 
-    @SuppressWarnings("serial")
     public static class Identity extends SQLServerObjectImpl {
 
         private Integer seed;
         private Integer increment;
 
         private boolean notForReplication;
-        
-        public Identity() {
-            
+
+        public Identity(){
+
         }
 
         public Integer getSeed() {

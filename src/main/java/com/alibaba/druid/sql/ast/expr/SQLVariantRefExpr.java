@@ -20,13 +20,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLVariantRefExpr extends SQLExprImpl {
 
-    private static final long serialVersionUID = 1L;
+    private String  name;
 
-    private String            name;
+    private boolean global = false;
 
-    private boolean           global           = false;
-
-    private int               index            = -1;
+    private int     index  = -1;
 
     public SQLVariantRefExpr(String name){
         this.name = name;

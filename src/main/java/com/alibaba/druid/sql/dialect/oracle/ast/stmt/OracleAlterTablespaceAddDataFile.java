@@ -23,9 +23,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTablespaceAddDataFile extends OracleSQLObjectImpl implements OracleAlterTablespaceItem {
 
-    private static final long             serialVersionUID = 1L;
-
-    private List<OracleFileSpecification> files            = new ArrayList<OracleFileSpecification>();
+    private List<OracleFileSpecification> files = new ArrayList<OracleFileSpecification>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

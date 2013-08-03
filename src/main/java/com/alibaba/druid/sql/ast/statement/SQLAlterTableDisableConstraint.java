@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDisableConstraint extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           constraintName;
+    private SQLName constraintName;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -33,15 +31,12 @@ public class SQLAlterTableDisableConstraint extends SQLObjectImpl implements SQL
         visitor.endVisit(this);
     }
 
-    
     public SQLName getConstraintName() {
         return constraintName;
     }
 
-    
     public void setConstraintName(SQLName constraintName) {
         this.constraintName = constraintName;
     }
 
-    
 }

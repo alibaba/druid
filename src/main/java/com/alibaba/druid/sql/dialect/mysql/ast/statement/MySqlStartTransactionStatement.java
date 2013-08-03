@@ -19,12 +19,10 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlStartTransactionStatement extends MySqlStatementImpl {
 
-    private static final long serialVersionUID   = 1L;
+    private boolean consistentSnapshot = false;
 
-    private boolean           consistentSnapshot = false;
-
-    private boolean           begin              = false;
-    private boolean           work               = false;
+    private boolean begin              = false;
+    private boolean work               = false;
 
     public boolean isConsistentSnapshot() {
         return consistentSnapshot;

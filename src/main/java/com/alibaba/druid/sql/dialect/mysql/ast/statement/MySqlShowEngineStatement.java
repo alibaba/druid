@@ -20,10 +20,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowEngineStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           name;
-    private Option            option;
+    private SQLExpr name;
+    private Option  option;
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

@@ -23,17 +23,24 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement {
 
-    private static final long serialVersionUID  = 1L;
+    private boolean online            = false;
 
-    private boolean           online            = false;
+    private boolean indexOnlyTopLevel = false;
 
-    private boolean           indexOnlyTopLevel = false;
+    private boolean noParallel;
 
-    private boolean           noParallel;
+    private SQLExpr parallel;
 
-    private SQLExpr           parallel;
+    private SQLName tablespace;
 
-    private SQLName           tablespace;
+    private SQLExpr ptcfree;
+    private SQLExpr pctused;
+    private SQLExpr initrans;
+    private SQLExpr maxtrans;
+
+    private Boolean enable            = null;
+
+    private boolean computeStatistics = false;
 
     public SQLName getTablespace() {
         return tablespace;
@@ -83,9 +90,53 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         visitor.endVisit(this);
     }
 
-    // public static enum Type {
-    // UNIQUE, BITMAP
-    // }
+    public SQLExpr getPtcfree() {
+        return ptcfree;
+    }
+
+    public void setPtcfree(SQLExpr ptcfree) {
+        this.ptcfree = ptcfree;
+    }
+
+    public SQLExpr getPctused() {
+        return pctused;
+    }
+
+    public void setPctused(SQLExpr pctused) {
+        this.pctused = pctused;
+    }
+
+    public SQLExpr getInitrans() {
+        return initrans;
+    }
+
+    public void setInitrans(SQLExpr initrans) {
+        this.initrans = initrans;
+    }
+
+    public SQLExpr getMaxtrans() {
+        return maxtrans;
+    }
+
+    public void setMaxtrans(SQLExpr maxtrans) {
+        this.maxtrans = maxtrans;
+    }
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
+    public boolean isComputeStatistics() {
+        return computeStatistics;
+    }
+
+    public void setComputeStatistics(boolean computeStatistics) {
+        this.computeStatistics = computeStatistics;
+    }
 
     public boolean isOnline() {
         return online;

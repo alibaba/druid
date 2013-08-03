@@ -23,12 +23,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlAlterTableAddColumn extends SQLAlterTableAddColumn implements MySqlObject {
 
-    private static final long serialVersionUID = 1L;
+    private SQLName firstColumn;
+    private SQLName afterColumn;
 
-    private SQLName           firstColumn;
-    private SQLName           afterColumn;
-
-    private boolean           first;
+    private boolean first;
 
     public SQLName getFirstColumn() {
         return firstColumn;
@@ -66,7 +64,7 @@ public class MySqlAlterTableAddColumn extends SQLAlterTableAddColumn implements 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, getColumns());
-            
+
             acceptChild(visitor, firstColumn);
             acceptChild(visitor, afterColumn);
         }

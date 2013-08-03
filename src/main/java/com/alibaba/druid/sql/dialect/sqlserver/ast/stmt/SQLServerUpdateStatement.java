@@ -24,15 +24,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLServerStatement {
 
-    private static final long serialVersionUID = 1L;
+    private SQLServerTop   top;
+    private SQLTableSource from;
 
-    private SQLServerTop      top;
-    private SQLTableSource    from;
-    
     public SQLServerTop getTop() {
         return top;
     }
-    
+
     public void setTop(SQLServerTop top) {
         this.top = top;
     }

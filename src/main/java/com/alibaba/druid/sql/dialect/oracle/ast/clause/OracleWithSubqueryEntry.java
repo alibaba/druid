@@ -22,10 +22,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  */
 public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
 
-    private static final long serialVersionUID = 1L;
-
-    private SearchClause      searchClause;
-    private CycleClause       cycleClause;
+    private SearchClause searchClause;
+    private CycleClause  cycleClause;
 
     public CycleClause getCycleClause() {
         return cycleClause;
@@ -42,7 +40,6 @@ public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
     public void setSearchClause(SearchClause searchClause) {
         this.searchClause = searchClause;
     }
-
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

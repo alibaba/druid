@@ -23,8 +23,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelectTableSource {
 
-    private static final long       serialVersionUID = 1L;
-
     protected OracleSelectPivotBase pivot;
     protected FlashbackQueryClause  flashback;
 
