@@ -48,7 +48,8 @@ public class OracleCreateTableTest24 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE TABLE locations_demo (" //
-                            + "\n\tlocation_id NUMBER(4)  CONSTRAINT loc_id_pk PRIMARY KEY," //
+                            + "\n\tlocation_id NUMBER(4)"//
+                            + "\n\t\tCONSTRAINT loc_id_pk PRIMARY KEY," //
                             + "\n\tstreet_address VARCHAR2(40)," //
                             + "\n\tpostal_code VARCHAR2(12)," //
                             + "\n\tcity VARCHAR2(30)," //

@@ -27,21 +27,19 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateTableTest22 extends OracleTest {
+public class OracleCreateTableTest29 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE promotions_var2" //
-                + "    ( promo_id         NUMBER(6)"//
-                + "    , promo_name       VARCHAR2(20)"//
-                + "    , promo_category   VARCHAR2(15)"//
-                + "    , promo_cost       NUMBER(10,2)"//
-                + "    , promo_begin_date DATE"//
-                + "    , promo_end_date   DATE"//
-                + "    , CONSTRAINT promo_id_u UNIQUE (promo_id)"//
-                + "   USING INDEX PCTFREE 20"//
-                + "      TABLESPACE stocks"//
-                + "      STORAGE (INITIAL 8M) );";
+        "CREATE TABLE dept_20" //
+                + "   (employee_id     NUMBER(4) PRIMARY KEY, "//
+                + "    last_name       VARCHAR2(10), "//
+                + "    job_id          VARCHAR2(9), "//
+                + "    manager_id      NUMBER(4), "//
+                + "    salary          NUMBER(7,2), "//
+                + "    commission_pct  NUMBER(7,2), "//
+                + "    department_id   NUMBER(2),"//
+                + "    CONSTRAINT check_sal CHECK (salary * commission_pct <= 5000));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -50,17 +48,16 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE promotions_var2 ("
-                + "\n\tpromo_id NUMBER(6),"
-                + "\n\tpromo_name VARCHAR2(20),"
-                + "\n\tpromo_category VARCHAR2(15),"
-                + "\n\tpromo_cost NUMBER(10, 2),"
-                + "\n\tpromo_begin_date DATE,"
-                + "\n\tpromo_end_date DATE,"
-                + "\n\tCONSTRAINT promo_id_u UNIQUE (promo_id)"
-                + "\n\tUSING INDEX PCTFREE 20 TABLESPACE stocks"
-                + "\n\tSTORAGE (INITIAL 8M)"
-                + "\n)",//
+        Assert.assertEquals("CREATE TABLE dept_20 (" //
+                            + "\n\temployee_id NUMBER(4) PRIMARY KEY," //
+                            + "\n\tlast_name VARCHAR2(10)," //
+                            + "\n\tjob_id VARCHAR2(9)," //
+                            + "\n\tmanager_id NUMBER(4)," //
+                            + "\n\tsalary NUMBER(7, 2)," //
+                            + "\n\tcommission_pct NUMBER(7, 2)," //
+                            + "\n\tdepartment_id NUMBER(2)," //
+                            + "\n\tCONSTRAINT check_sal CHECK (salary * commission_pct <= 5000)" //
+                            + "\n)",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -74,8 +71,8 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(8, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("promotions_var2", "promo_id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("dept_20", "employee_id")));
     }
 }

@@ -27,21 +27,13 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateTableTest22 extends OracleTest {
+public class OracleCreateTableTest33 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE promotions_var2" //
-                + "    ( promo_id         NUMBER(6)"//
-                + "    , promo_name       VARCHAR2(20)"//
-                + "    , promo_category   VARCHAR2(15)"//
-                + "    , promo_cost       NUMBER(10,2)"//
-                + "    , promo_begin_date DATE"//
-                + "    , promo_end_date   DATE"//
-                + "    , CONSTRAINT promo_id_u UNIQUE (promo_id)"//
-                + "   USING INDEX PCTFREE 20"//
-                + "      TABLESPACE stocks"//
-                + "      STORAGE (INITIAL 8M) );";
+        "CREATE TABLE games" //
+                + "  (scores NUMBER, CONSTRAINT unq_num UNIQUE (scores)" //
+                + "   INITIALLY DEFERRED DEFERRABLE);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -50,17 +42,10 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE promotions_var2 ("
-                + "\n\tpromo_id NUMBER(6),"
-                + "\n\tpromo_name VARCHAR2(20),"
-                + "\n\tpromo_category VARCHAR2(15),"
-                + "\n\tpromo_cost NUMBER(10, 2),"
-                + "\n\tpromo_begin_date DATE,"
-                + "\n\tpromo_end_date DATE,"
-                + "\n\tCONSTRAINT promo_id_u UNIQUE (promo_id)"
-                + "\n\tUSING INDEX PCTFREE 20 TABLESPACE stocks"
-                + "\n\tSTORAGE (INITIAL 8M)"
-                + "\n)",//
+        Assert.assertEquals("CREATE TABLE games (" //
+                            + "\n\tscores NUMBER," //
+                            + "\n\tCONSTRAINT unq_num UNIQUE (scores) INITIALLY DEFERRED DEFERRABLE" //
+                            + "\n)",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -74,8 +59,8 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("promotions_var2", "promo_id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("games", "scores")));
     }
 }

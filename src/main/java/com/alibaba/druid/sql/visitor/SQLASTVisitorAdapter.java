@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.visitor;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
@@ -870,7 +871,10 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLUnique x) {
-        return true;
+        for (SQLExpr column : x.getColumns()) {
+            column.accept(this);
+        }
+        return false;
     }
 
     @Override

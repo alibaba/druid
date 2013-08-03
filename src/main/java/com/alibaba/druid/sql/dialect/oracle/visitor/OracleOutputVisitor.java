@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
@@ -109,7 +110,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
@@ -2339,6 +2342,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         printAndAccept(x.getColumns(), ", ");
         print(")");
 
+        printConstraintState(x);
+
+        return false;
+    }
+
+    protected void printConstraintState(OracleConstraint x) {
         if (x.getUsing() != null) {
             println();
             x.getUsing().accept(this);
@@ -2357,8 +2366,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print(" DIABLE");
             }
         }
-
-        return false;
+        
+        if (x.getInitially() != null) {
+            print(" INITIALLY ");
+            print(x.getInitially().name());
+        }
+        
+        if (x.getDeferrable() != null) {
+            if(x.getDeferrable().booleanValue()) {
+                print(" DEFERRABLE");
+            } else {
+                print(" NOT DEFERRABLE");
+            }
+        }
     }
 
     @Override
@@ -3349,15 +3369,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleUnique x) {
         visit((SQLUnique) x);
 
-        if (x.getUsing() != null) {
-            println();
-            x.getUsing().accept(this);
-        }
-        if (x.getExceptionsInto() != null) {
-            println();
-            print("EXCEPTIONS INTO ");
-            x.getExceptionsInto().accept(this);
-        }
+        printConstraintState(x);
         return false;
     }
 
@@ -3370,20 +3382,25 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleForeignKey x) {
         visit((SQLForeignKeyImpl) x);
         
-        if (x.getUsing() != null) {
-            println();
-            x.getUsing().accept(this);
-        }
-        if (x.getExceptionsInto() != null) {
-            println();
-            print("EXCEPTIONS INTO ");
-            x.getExceptionsInto().accept(this);
-        }
+        printConstraintState(x);
         return false;
     }
     
     @Override
     public void endVisit(OracleForeignKey x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OracleCheck x) {
+        visit((SQLCheck) x);
+        
+        printConstraintState(x);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OracleCheck x) {
         
     }
 }

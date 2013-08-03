@@ -27,21 +27,23 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateTableTest22 extends OracleTest {
+public class OracleCreateTableTest30 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE promotions_var2" //
-                + "    ( promo_id         NUMBER(6)"//
-                + "    , promo_name       VARCHAR2(20)"//
-                + "    , promo_category   VARCHAR2(15)"//
-                + "    , promo_cost       NUMBER(10,2)"//
-                + "    , promo_begin_date DATE"//
-                + "    , promo_end_date   DATE"//
-                + "    , CONSTRAINT promo_id_u UNIQUE (promo_id)"//
-                + "   USING INDEX PCTFREE 20"//
-                + "      TABLESPACE stocks"//
-                + "      STORAGE (INITIAL 8M) );";
+        "CREATE TABLE order_detail " //
+                + "  (CONSTRAINT pk_od PRIMARY KEY (order_id, part_no), " //
+                + "   order_id    NUMBER " //
+                + "      CONSTRAINT fk_oid " //
+                + "         REFERENCES oe.orders(order_id), " //
+                + "   part_no     NUMBER " //
+                + "      CONSTRAINT fk_pno " //
+                + "         REFERENCES oe.product_information(product_id), " //
+                + "   quantity    NUMBER " //
+                + "      CONSTRAINT nn_qty NOT NULL " //
+                + "      CONSTRAINT check_qty CHECK (quantity > 0), " //
+                + "   cost        NUMBER " //
+                + "      CONSTRAINT check_cost CHECK (cost > 0) ); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -50,17 +52,18 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE promotions_var2 ("
-                + "\n\tpromo_id NUMBER(6),"
-                + "\n\tpromo_name VARCHAR2(20),"
-                + "\n\tpromo_category VARCHAR2(15),"
-                + "\n\tpromo_cost NUMBER(10, 2),"
-                + "\n\tpromo_begin_date DATE,"
-                + "\n\tpromo_end_date DATE,"
-                + "\n\tCONSTRAINT promo_id_u UNIQUE (promo_id)"
-                + "\n\tUSING INDEX PCTFREE 20 TABLESPACE stocks"
-                + "\n\tSTORAGE (INITIAL 8M)"
-                + "\n)",//
+        Assert.assertEquals("CREATE TABLE order_detail (" //
+                            + "\n\tCONSTRAINT pk_od PRIMARY KEY (order_id, part_no)," //
+                            + "\n\torder_id NUMBER" //
+                            + "\n\t\tCONSTRAINT fk_oid REFERENCES oe.orders (order_id)," //
+                            + "\n\tpart_no NUMBER" //
+                            + "\n\t\tCONSTRAINT fk_pno REFERENCES oe.product_information (product_id)," //
+                            + "\n\tquantity NUMBER" //
+                            + "\n\t\tCONSTRAINT nn_qty NOT NULL" //
+                            + "\n\t\tCONSTRAINT check_qty CHECK (quantity > 0)," //
+                            + "\n\tcost NUMBER" //
+                            + "\n\t\tCONSTRAINT check_cost CHECK (cost > 0)" //
+                            + "\n)",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -74,8 +77,8 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("promotions_var2", "promo_id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("order_detail", "order_id")));
     }
 }

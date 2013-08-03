@@ -71,6 +71,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
@@ -616,4 +617,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleForeignKey x);
     
     void endVisit(OracleForeignKey x);
+    
+    boolean visit(OracleCheck x);
+    
+    void endVisit(OracleCheck x);
 }

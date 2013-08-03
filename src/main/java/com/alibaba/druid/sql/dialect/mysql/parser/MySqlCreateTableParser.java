@@ -140,11 +140,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         fk.setParent(stmt);
                         stmt.getTableElementList().add(fk);
                     } else if (lexer.token() == Token.CHECK) {
-                        lexer.nextToken();
-                        SQLCheck check = new SQLCheck();
-                        accept(Token.LPAREN);
-                        check.setExpr(this.exprParser.expr());
-                        accept(Token.RPAREN);
+                        SQLCheck check = this.exprParser.parseCheck();
                         stmt.getTableElementList().add(check);
                     }
 

@@ -61,7 +61,7 @@ public class OracleAlterTableTest19 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("warehouses")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_IDS_ZZJ_TBD0209",
         // "discount_amount")));

@@ -36,9 +36,9 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
@@ -67,7 +67,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint.Initially;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
@@ -1273,6 +1275,36 @@ public class OracleExprParser extends SQLExprParser {
                 continue;
             }
             
+            if (lexer.token() == Token.INITIALLY) {
+                lexer.nextToken();
+                
+                if (lexer.token() == Token.IMMEDIATE) {
+                    lexer.nextToken();
+                    constraint.setInitially(Initially.IMMEDIATE);
+                } else {
+                    accept(Token.DEFERRED);
+                    constraint.setInitially(Initially.DEFERRED);
+                }
+                
+                continue;
+            }
+            
+            if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+                if (identifierEquals("DEFERRABLE")) {
+                    lexer.nextToken();
+                    constraint.setDeferrable(false);
+                    continue;
+                }
+                throw new ParserException("TODO " + lexer.token());
+            }
+            
+            if (identifierEquals("DEFERRABLE")) {
+                lexer.nextToken();
+                constraint.setDeferrable(true);
+                continue;
+            }
+            
             break;
         }
 
@@ -1281,5 +1313,9 @@ public class OracleExprParser extends SQLExprParser {
     
     protected SQLForeignKeyConstraint createForeignKey() {
         return new OracleForeignKey();
+    }
+    
+    protected SQLCheck createCheck() {
+        return new OracleCheck();
     }
 }

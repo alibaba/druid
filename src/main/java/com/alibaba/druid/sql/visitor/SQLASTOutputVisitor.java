@@ -818,16 +818,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         for (SQLColumnConstraint item : x.getConstaints()) {
-            boolean newLine = item instanceof SQLForeignKeyConstraint || item instanceof SQLPrimaryKey || item instanceof SQLColumnReference;
+            boolean newLine = item instanceof SQLForeignKeyConstraint //
+                              || item instanceof SQLPrimaryKey //
+                              || item instanceof SQLColumnCheck //
+                              || item instanceof SQLColumnCheck //
+                              || item.getName() != null;
             if (newLine) {
                 incrementIndent();
                 println();
             } else {
                 print(' ');
             }
-            
+
             item.accept(this);
-            
+
             if (newLine) {
                 decrementIndent();
             }
@@ -986,6 +990,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(NotNullConstraint x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(' ');
+        }
         print("NOT NULL");
         return false;
     }
@@ -1365,27 +1374,43 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     @Override
     public boolean visit(SQLColumnPrimaryKey x) {
         if (x.getName() != null) {
-            print(" CONSTRAINT ");
+            print("CONSTRAINT ");
             x.getName().accept(this);
+            print(' ');
         }
-        print(" PRIMARY KEY");
+        print("PRIMARY KEY");
         return false;
     }
 
     @Override
     public boolean visit(SQLColumnUniqueKey x) {
         if (x.getName() != null) {
-            print(" CONSTRAINT ");
+            print("CONSTRAINT ");
             x.getName().accept(this);
+            print(' ');
         }
-        print(" UNIQUE");
+        print("UNIQUE");
         return false;
     }
 
     @Override
     public boolean visit(SQLColumnCheck x) {
-        print("CHECK ");
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(' ');
+        }
+        print("CHECK (");
         x.getExpr().accept(this);
+        print(')');
+
+        if (x.getEnable() != null) {
+            if (x.getEnable().booleanValue()) {
+                print(" ENABLE");
+            } else {
+                print(" DISABLE");
+            }
+        }
         return false;
     }
 
@@ -1440,7 +1465,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(' ');
         }
         print("CHECK (");
+        incrementIndent();
         x.getExpr().accept(this);
+        decrementIndent();
         print(')');
         return false;
     }

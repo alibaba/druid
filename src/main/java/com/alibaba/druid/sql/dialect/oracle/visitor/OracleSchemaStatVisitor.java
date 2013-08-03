@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -103,6 +104,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
@@ -1816,6 +1818,16 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     
     @Override
     public void endVisit(OracleForeignKey x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OracleCheck x) {
+        return visit((SQLCheck) x);
+    }
+    
+    @Override
+    public void endVisit(OracleCheck x) {
         
     }
 }

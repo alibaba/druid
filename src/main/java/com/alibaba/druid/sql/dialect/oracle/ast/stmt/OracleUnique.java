@@ -25,7 +25,8 @@ public class OracleUnique extends SQLUnique implements OracleConstraint, OracleS
 
     private OracleUsingIndexClause using;
     private SQLName                exceptionsInto;
-    private Boolean                enable;
+    private Initially              initially;
+    private Boolean                deferrable;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -47,6 +48,14 @@ public class OracleUnique extends SQLUnique implements OracleConstraint, OracleS
         visitor.endVisit(this);
     }
 
+    public Boolean getDeferrable() {
+        return deferrable;
+    }
+
+    public void setDeferrable(Boolean deferrable) {
+        this.deferrable = deferrable;
+    }
+
     public SQLName getExceptionsInto() {
         return exceptionsInto;
     }
@@ -66,12 +75,12 @@ public class OracleUnique extends SQLUnique implements OracleConstraint, OracleS
         this.using = using;
     }
 
-    public Boolean getEnable() {
-        return enable;
+    public Initially getInitially() {
+        return initially;
     }
 
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
+    public void setInitially(Initially initially) {
+        this.initially = initially;
     }
 
 }

@@ -49,7 +49,8 @@ public class OracleCreateTableTest23 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE TABLE promotions_var1 (" //
-                            + "\n\tpromo_id NUMBER(6)  CONSTRAINT promo_id_u UNIQUE," //
+                            + "\n\tpromo_id NUMBER(6)" //
+                            + "\n\t\tCONSTRAINT promo_id_u UNIQUE," //
                             + "\n\tpromo_name VARCHAR2(20)," //
                             + "\n\tpromo_category VARCHAR2(15)," //
                             + "\n\tpromo_cost NUMBER(10, 2)," //

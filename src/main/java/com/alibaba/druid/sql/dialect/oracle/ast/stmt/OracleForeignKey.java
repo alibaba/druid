@@ -25,7 +25,8 @@ public class OracleForeignKey extends SQLForeignKeyImpl implements OracleConstra
 
     private OracleUsingIndexClause using;
     private SQLName                exceptionsInto;
-    private Boolean                enable;
+    private Initially              initially;
+    private Boolean                deferrable;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -43,11 +44,27 @@ public class OracleForeignKey extends SQLForeignKeyImpl implements OracleConstra
             acceptChild(visitor, this.getReferencedTableName());
             acceptChild(visitor, this.getReferencingColumns());
             acceptChild(visitor, this.getReferencedColumns());
-            
+
             acceptChild(visitor, using);
             acceptChild(visitor, exceptionsInto);
         }
         visitor.endVisit(this);
+    }
+
+    public Boolean getDeferrable() {
+        return deferrable;
+    }
+
+    public void setDeferrable(Boolean deferrable) {
+        this.deferrable = deferrable;
+    }
+
+    public Initially getInitially() {
+        return initially;
+    }
+
+    public void setInitially(Initially initially) {
+        this.initially = initially;
     }
 
     public SQLName getExceptionsInto() {
@@ -67,14 +84,6 @@ public class OracleForeignKey extends SQLForeignKeyImpl implements OracleConstra
             using.setParent(this);
         }
         this.using = using;
-    }
-
-    public Boolean getEnable() {
-        return enable;
-    }
-
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
     }
 
 }

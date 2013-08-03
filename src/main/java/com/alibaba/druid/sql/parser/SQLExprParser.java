@@ -62,6 +62,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
@@ -241,6 +242,7 @@ public class SQLExprParser extends SQLParser {
             case COMPUTE:
             case ENABLE:
             case DISABLE:
+            case INITIALLY:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -1347,16 +1349,49 @@ public class SQLExprParser extends SQLParser {
                 column.getConstaints().add(ref);
                 return parseColumnRest(column);
             }
+            
+            if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+                accept(Token.NULL);
+                NotNullConstraint notNull = new NotNullConstraint();
+                notNull.setName(name);
+                column.getConstaints().add(notNull);
+                return parseColumnRest(column);
+            }
+            
+            if (lexer.token == Token.CHECK) {
+                SQLColumnCheck check = parseColumnCheck();
+                check.setName(name);
+                check.setParent(column);
+                column.getConstaints().add(check);
+                return parseColumnRest(column);
+            }
+            
+            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
 
         if (lexer.token == Token.CHECK) {
-            lexer.nextToken();
-            SQLExpr expr = this.expr();
-            column.getConstaints().add(new SQLColumnCheck(expr));
+            SQLColumnCheck check = parseColumnCheck();
+            column.getConstaints().add(check);
             return parseColumnRest(column);
         }
 
         return column;
+    }
+
+    protected SQLColumnCheck parseColumnCheck() {
+        lexer.nextToken();
+        SQLExpr expr = this.expr();
+        SQLColumnCheck check = new SQLColumnCheck(expr);
+        
+        if (lexer.token() == Token.DISABLE) {
+            lexer.nextToken();
+            check.setEnable(false);
+        } else if (lexer.token() == Token.ENABLE) {
+            lexer.nextToken();
+            check.setEnable(true);
+        }
+        return check;
     }
 
     public SQLPrimaryKey parsePrimaryKey() {
@@ -1430,6 +1465,8 @@ public class SQLExprParser extends SQLParser {
             constraint = parseUnique();
         } else if (lexer.token() == Token.FOREIGN) {
             constraint = parseForeignKey();
+        } else if (lexer.token() == Token.CHECK) {
+            constraint = parseCheck();
         } else {
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
@@ -1437,6 +1474,19 @@ public class SQLExprParser extends SQLParser {
         constraint.setName(name);
 
         return constraint;
+    }
+    
+    public SQLCheck parseCheck() {
+        accept(Token.CHECK);
+        SQLCheck check = createCheck();
+        accept(Token.LPAREN);
+        check.setExpr(this.expr());
+        accept(Token.RPAREN);
+        return check;
+    }
+
+    protected SQLCheck createCheck() {
+        return new SQLCheck();
     }
 
     public SQLForeignKeyConstraint parseForeignKey() {

@@ -75,6 +75,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                     createTable.getTableElementList().add(column);
                 } else if (lexer.token == Token.PRIMARY //
                            || lexer.token == Token.UNIQUE //
+                           || lexer.token == Token.CHECK //
                            || lexer.token == Token.CONSTRAINT) {
                     OracleConstraint constraint = ((OracleExprParser) this.exprParser).parseConstaint();
                     constraint.setParent(createTable);

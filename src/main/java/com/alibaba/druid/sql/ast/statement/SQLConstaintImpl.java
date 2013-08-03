@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 public abstract class SQLConstaintImpl extends SQLObjectImpl implements SQLConstaint {
 
     private SQLName name;
+    private Boolean enable;
 
     public SQLConstaintImpl(){
 
@@ -32,6 +33,14 @@ public abstract class SQLConstaintImpl extends SQLObjectImpl implements SQLConst
 
     public void setName(SQLName name) {
         this.name = name;
+    }
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 
 }

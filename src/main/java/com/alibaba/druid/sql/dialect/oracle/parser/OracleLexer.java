@@ -108,6 +108,7 @@ public class OracleLexer extends Lexer {
         map.put("NOCOMPRESS", Token.NOCOMPRESS);
         map.put("KEEP_DUPLICATES", Token.KEEP_DUPLICATES);
         map.put("EXCEPTIONS", Token.EXCEPTIONS);
+        map.put("INITIALLY", Token.INITIALLY);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

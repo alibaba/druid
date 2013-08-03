@@ -26,7 +26,23 @@ public interface OracleConstraint extends OracleSQLObject, SQLConstaint, SQLTabl
 
     void setExceptionsInto(SQLName exceptionsInto);
 
+    Boolean getDeferrable();
+
+    void setDeferrable(Boolean enable);
+
     Boolean getEnable();
 
     void setEnable(Boolean enable);
+
+    Initially getInitially();
+
+    void setInitially(Initially value);
+
+    OracleUsingIndexClause getUsing();
+
+    void setUsing(OracleUsingIndexClause using);
+
+    public static enum Initially {
+        DEFERRED, IMMEDIATE
+    }
 }
