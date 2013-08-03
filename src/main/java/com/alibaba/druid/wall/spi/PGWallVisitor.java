@@ -193,6 +193,11 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
         return true;
     }
+    
+    @Override
+    public void endVisit(SQLSelectStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
+    }
 
     @Override
     public boolean visit(SQLInsertStatement x) {
@@ -201,11 +206,21 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
         return true;
     }
+    
+    @Override
+    public void endVisit(SQLInsertStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
+    }
 
     @Override
     public boolean visit(SQLDeleteStatement x) {
         WallVisitorUtils.checkDelete(this, x);
         return true;
+    }
+    
+    @Override
+    public void endVisit(SQLDeleteStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -214,6 +229,11 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
         WallVisitorUtils.checkUpdate(this, x);
 
         return true;
+    }
+    
+    @Override
+    public void endVisit(SQLUpdateStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override

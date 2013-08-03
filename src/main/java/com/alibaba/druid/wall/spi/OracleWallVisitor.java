@@ -68,7 +68,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         this.config = provider.getConfig();
         this.provider = provider;
     }
-    
+
     @Override
     public boolean isSqlModified() {
         return sqlModified;
@@ -204,6 +204,11 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
         return true;
     }
+    
+    @Override
+    public void endVisit(SQLSelectStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
+    }
 
     @Override
     public boolean visit(OracleInsertStatement x) {
@@ -216,6 +221,16 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         WallVisitorUtils.checkInsert(this, x);
 
         return true;
+    }
+
+    @Override
+    public void endVisit(OracleInsertStatement x) {
+        endVisit((SQLInsertStatement) x);
+    }
+
+    @Override
+    public void endVisit(SQLInsertStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
@@ -238,6 +253,11 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     }
 
     @Override
+    public void endVisit(OracleMultiInsertStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
+    }
+
+    @Override
     public boolean visit(OracleDeleteStatement x) {
         return visit((SQLDeleteStatement) x);
     }
@@ -246,6 +266,16 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     public boolean visit(SQLDeleteStatement x) {
         WallVisitorUtils.checkDelete(this, x);
         return true;
+    }
+    
+    @Override
+    public void endVisit(OracleDeleteStatement x) {
+        endVisit((SQLDeleteStatement) x);
+    }
+
+    @Override
+    public void endVisit(SQLDeleteStatement x) {
+        WallVisitorUtils.clearWallTopStatementContext();
     }
 
     @Override
