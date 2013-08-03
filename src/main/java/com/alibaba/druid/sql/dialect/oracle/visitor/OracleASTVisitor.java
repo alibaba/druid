@@ -118,6 +118,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface OracleASTVisitor extends SQLASTVisitor {
@@ -601,4 +602,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleDropSequenceStatement x);
 
     void endVisit(OracleDropSequenceStatement x);
+    
+    boolean visit(OracleUsingIndexClause x);
+    
+    void endVisit(OracleUsingIndexClause x);
 }

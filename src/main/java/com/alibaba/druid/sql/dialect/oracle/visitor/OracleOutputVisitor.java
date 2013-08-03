@@ -159,6 +159,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleASTVisitor {
@@ -2319,9 +2320,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("PRIMARY KEY (");
         printAndAccept(x.getColumns(), ", ");
         print(")");
-        if (x.getUsingIndex() != null) {
-            print(" USING INDEX ");
-            x.getUsingIndex().accept(this);
+        if (x.getUsing() != null) {
+            print(" ");
+            x.getUsing().accept(this);
         }
         return false;
     }
@@ -2340,12 +2341,22 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.isOrganizationIndex()) {
             print(" ORGANIZATION INDEX");
         }
-
-        if (x.getTablespace() != null) {
-            print(" TABLESPACE ");
-            x.getTablespace().accept(this);
+        
+        if (x.getPtcfree() != null) {
+            print(" PCTFREE ");
+            x.getPtcfree().accept(this);
         }
-
+        
+        if (x.getInitrans() != null) {
+            print(" INITRANS ");
+            x.getInitrans().accept(this);
+        }
+        
+        if (x.getMaxtrans() != null) {
+            print(" MAXTRANS ");
+            x.getMaxtrans().accept(this);
+        }
+        
         if (x.isInMemoryMetadata()) {
             print(" IN_MEMORY_METADATA");
         }
@@ -2376,6 +2387,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(" LOGGING");
         } else if (x.getLogging() == Boolean.FALSE) {
             print(" NOLOGGING");
+        }
+        
+        if (x.getTablespace() != null) {
+            print(" TABLESPACE ");
+            x.getTablespace().accept(this);
         }
 
         if (x.getStorage() != null) {
@@ -3095,6 +3111,54 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleDropSequenceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleUsingIndexClause x) {
+        print("USING INDEX");
+        if (x.getIndex() != null) {
+            print(' ');
+            x.getIndex().accept(this);
+        } else {
+            if (x.getPtcfree() != null) {
+                print(" PCTFREE ");
+                x.getPtcfree().accept(this);
+            }
+            
+            if (x.getInitrans() != null) {
+                print(" INITRANS ");
+                x.getInitrans().accept(this);
+            }
+            
+            if (x.getMaxtrans() != null) {
+                print(" MAXTRANS ");
+                x.getMaxtrans().accept(this);
+            }
+            
+            if (x.isComputeStatistics()) {
+                print(" COMPUTE STATISTICS");
+            }
+            
+            if (x.getTablespace() != null) {
+                print(" TABLESPACE ");
+                x.getTablespace().accept(this);
+            }
+            
+            if (x.getEnable() != null) {
+                if (x.getEnable().booleanValue()) {
+                    print(" ENABLE");
+                } else {
+                    print(" DISABLE");
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleUsingIndexClause x) {
 
     }
 }

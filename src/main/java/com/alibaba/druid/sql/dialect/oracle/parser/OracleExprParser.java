@@ -64,12 +64,18 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
+
+
+
+
+
 
 
 
@@ -417,6 +423,13 @@ public class OracleExprParser extends SQLExprParser {
                     sqlExpr = cursorExpr;
                     return  primaryRest(sqlExpr);
            case MODEL:
+           case PCTFREE:
+           case INITRANS:
+           case MAXTRANS:
+           case SEGMENT:
+           case CREATION:
+           case IMMEDIATE:
+           case DEFERRED:
                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                lexer.nextToken();
                return  primaryRest(sqlExpr);
@@ -948,7 +961,47 @@ public class OracleExprParser extends SQLExprParser {
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
             accept(Token.INDEX);
-            primaryKey.setUsingIndex(expr());
+            
+            OracleUsingIndexClause using = new OracleUsingIndexClause();
+            
+            for (;;) {
+                if (lexer.token() == Token.TABLESPACE) {
+                    lexer.nextToken();
+                    using.setTablespace(this.name());
+                    continue;
+                } else if (lexer.token() == Token.PCTFREE) {
+                    lexer.nextToken();
+                    using.setPtcfree(this.expr());
+                    continue;
+                } else if (lexer.token() == Token.INITRANS) {
+                    lexer.nextToken();
+                    using.setInitrans(this.expr());
+                    continue;
+                } else if (lexer.token() == Token.MAXTRANS) {
+                    lexer.nextToken();
+                    using.setMaxtrans(this.expr());
+                    continue;
+                } else if (lexer.token() == Token.COMPUTE) {
+                    lexer.nextToken();
+                    acceptIdentifier("STATISTICS");
+                    using.setComputeStatistics(true);
+                   continue;
+                } else if (lexer.token() == Token.ENABLE) {
+                    lexer.nextToken();
+                    using.setEnable(true);
+                    continue;
+                } else if (lexer.token() == Token.DISABLE) {
+                    lexer.nextToken();
+                    using.setEnable(false);
+                    continue;
+                } else if (lexer.token() == Token.IDENTIFIER) {
+                    using.setTablespace(this.name());
+                    break;
+                } else {
+                    break;
+                }
+            }
+            primaryKey.setUsing(using);
         }
         return primaryKey;
     }
@@ -956,7 +1009,7 @@ public class OracleExprParser extends SQLExprParser {
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         column = super.parseColumnRest(column);
         
-        if (identifierEquals("ENABLE")) {
+        if (lexer.token() == Token.ENABLE) {
             lexer.nextToken();
             column.setEnable(Boolean.TRUE);
         }

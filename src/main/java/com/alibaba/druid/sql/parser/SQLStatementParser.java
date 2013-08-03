@@ -324,7 +324,7 @@ public class SQLStatementParser extends SQLParser {
                     } else {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     }
-                } else if (identifierEquals("DISABLE")) {
+                } else if (lexer.token() == Token.DISABLE) {
                     lexer.nextToken();
 
                     if (lexer.token() == Token.CONSTRAINT) {
@@ -337,7 +337,7 @@ public class SQLStatementParser extends SQLParser {
                         SQLAlterTableDisableKeys item = new SQLAlterTableDisableKeys();
                         stmt.getItems().add(item);
                     }
-                } else if (identifierEquals("ENABLE")) {
+                } else if (lexer.token() == Token.ENABLE) {
                     lexer.nextToken();
                     if (lexer.token() == Token.CONSTRAINT) {
                         lexer.nextToken();

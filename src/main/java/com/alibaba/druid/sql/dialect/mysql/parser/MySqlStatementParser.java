@@ -2348,7 +2348,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         }
                     }
                     stmt.getItems().add(item);
-                } else if (identifierEquals("DISABLE")) {
+                } else if (lexer.token() == Token.DISABLE) {
                     lexer.nextToken();
 
                     if (lexer.token() == Token.CONSTRAINT) {
@@ -2361,7 +2361,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         SQLAlterTableDisableKeys item = new SQLAlterTableDisableKeys();
                         stmt.getItems().add(item);
                     }
-                } else if (identifierEquals("ENABLE")) {
+                } else if (lexer.token() == Token.ENABLE) {
                     lexer.nextToken();
                     if (lexer.token() == Token.CONSTRAINT) {
                         lexer.nextToken();
@@ -2390,12 +2390,12 @@ public class MySqlStatementParser extends SQLStatementParser {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("DISCARD")) {
                     lexer.nextToken();
-                    acceptIdentifier("TABLESPACE");
+                    accept(Token.TABLESPACE);
                     MySqlAlterTableDiscardTablespace item = new MySqlAlterTableDiscardTablespace();
                     stmt.getItems().add(item);
                 } else if (identifierEquals("IMPORT")) {
                     lexer.nextToken();
-                    acceptIdentifier("TABLESPACE");
+                    accept(Token.TABLESPACE);
                     MySqlAlterTableImportTablespace item = new MySqlAlterTableImportTablespace();
                     stmt.getItems().add(item);
                 } else if (identifierEquals("FORCE")) {

@@ -130,6 +130,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements OracleASTVisitor {
@@ -1363,6 +1364,16 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     @Override
     public void endVisit(OracleDropSequenceStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleUsingIndexClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleUsingIndexClause x) {
+        
     }
 
 }

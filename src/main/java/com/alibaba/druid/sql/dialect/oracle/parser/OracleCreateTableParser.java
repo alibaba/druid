@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement.DeferredSegmentCreation;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -45,7 +46,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCrateTable(acceptCreate);
 
         for (;;) {
-            if (identifierEquals("TABLESPACE")) {
+            if (lexer.token() == Token.TABLESPACE) {
                 lexer.nextToken();
                 stmt.setTablespace(this.exprParser.name());
                 continue;
@@ -126,7 +127,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 accept(Token.INDEX);
                 stmt.setOrganizationIndex(true);
                 continue;
-            } else if (identifierEquals("PCTFREE")) {
+            } else if (lexer.token() == Token.PCTFREE) {
                 lexer.nextToken();
                 stmt.setPtcfree(this.exprParser.expr());
                 continue;
@@ -134,13 +135,23 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 stmt.setPctused(this.exprParser.expr());
                 continue;
-            } else if (identifierEquals("INITRANS")) {
+            } else if (lexer.token() == Token.INITRANS) {
                 lexer.nextToken();
                 stmt.setInitrans(this.exprParser.expr());
                 continue;
-            } else if (identifierEquals("MAXTRANS")) {
+            } else if (lexer.token() == Token.MAXTRANS) {
                 lexer.nextToken();
                 stmt.setMaxtrans(this.exprParser.expr());
+                continue;
+            } else if (lexer.token() == Token.SEGMENT) {
+                lexer.nextToken();
+                accept(Token.CREATION);
+                if (lexer.token() == Token.IMMEDIATE) {
+                    stmt.setDeferredSegmentCreation(DeferredSegmentCreation.IMMEDIATE);
+                } else {
+                    accept(Token.DEFERRED);
+                    stmt.setDeferredSegmentCreation(DeferredSegmentCreation.DEFERRED);
+                }
                 continue;
             } else if (identifierEquals("PARTITION")) {
                 lexer.nextToken();

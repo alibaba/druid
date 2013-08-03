@@ -77,6 +77,8 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 } else if (lexer.token == Token.UNIQUE) {
                     SQLUnique unique = exprParser.parseUnique();
                     createTable.getTableElementList().add(unique);
+                } else if (lexer.token() == Token.TABLESPACE) {
+                    throw new ParserException("TODO " + lexer.token());
                 } else {
                     throw new ParserException("TODO " + lexer.token());
                 }

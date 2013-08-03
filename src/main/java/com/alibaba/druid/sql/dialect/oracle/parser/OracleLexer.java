@@ -33,7 +33,7 @@ public class OracleLexer extends Lexer {
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
-        
+
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("BEGIN", Token.BEGIN);
@@ -78,8 +78,16 @@ public class OracleLexer extends Lexer {
 
         map.put("WAIT", Token.WAIT);
         map.put("WITH", Token.WITH);
-        
+
         map.put("IDENTIFIED", Token.IDENTIFIED);
+
+        map.put("PCTFREE", Token.PCTFREE);
+        map.put("INITRANS", Token.INITRANS);
+        map.put("MAXTRANS", Token.MAXTRANS);
+        map.put("SEGMENT", Token.SEGMENT);
+        map.put("CREATION", Token.CREATION);
+        map.put("IMMEDIATE", Token.IMMEDIATE);
+        map.put("DEFERRED", Token.DEFERRED);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -120,7 +128,7 @@ public class OracleLexer extends Lexer {
             bufPos++;
             mybatisFlag = true;
         }
-        
+
         for (;;) {
             ch = charAt(++pos);
 
@@ -131,7 +139,7 @@ public class OracleLexer extends Lexer {
             bufPos++;
             continue;
         }
-        
+
         if (quoteFlag) {
             if (ch != '"') {
                 throw new ParserException("syntax error");

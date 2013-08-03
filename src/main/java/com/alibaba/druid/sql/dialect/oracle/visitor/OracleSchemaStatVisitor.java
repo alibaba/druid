@@ -152,6 +152,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
@@ -1783,5 +1784,15 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     @Override
     public void endVisit(OracleDropSequenceStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleUsingIndexClause x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleUsingIndexClause x) {
+        
     }
 }

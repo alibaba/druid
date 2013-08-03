@@ -35,6 +35,7 @@ public enum Token {
     ALTER("ALTER"), 
     DROP("DROP"), 
     TABLE("TABLE"), 
+    TABLESPACE("TABLESPACE"), 
     UPDATE("UPDATE"), 
     SET("SET"), 
     SELECT("SELECT"), 
@@ -166,6 +167,18 @@ public enum Token {
     COMMIT("COMMIT"),
     SAVEPOINT("SAVEPOINT"),
     CROSS("CROSS"),
+    
+    PCTFREE("PCTFREE"),
+    INITRANS("INITRANS"),
+    MAXTRANS("MAXTRANS"),
+    ENABLE("ENABLE"),
+    DISABLE("DISABLE"),
+    SEGMENT("SEGMENT"),
+    CREATION("CREATION"),
+    IMMEDIATE("IMMEDIATE"),
+    DEFERRED("DEFERRED"),
+    
+    COMPUTE("COMPUTE"),
     
     // transact-sql
     TOP("TOP"),

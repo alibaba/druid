@@ -333,7 +333,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 continue;
             }
 
-            if (identifierEquals("TABLESPACE")) {
+            if (lexer.token() == Token.TABLESPACE) {
                 lexer.nextToken();
 
                 TableSpaceOption option = new TableSpaceOption();
