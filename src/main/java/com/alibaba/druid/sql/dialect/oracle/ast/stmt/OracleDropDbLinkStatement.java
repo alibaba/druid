@@ -18,18 +18,18 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleDropDatabaseLinkStatement extends OracleStatementImpl {
+public class OracleDropDbLinkStatement extends OracleStatementImpl {
 
-    private boolean _public;
+    private boolean isPublic;
 
     private SQLName name;
 
     public boolean isPublic() {
-        return _public;
+        return isPublic;
     }
 
     public void setPublic(boolean value) {
-        this._public = value;
+        this.isPublic = value;
     }
 
     public SQLName getName() {

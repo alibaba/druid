@@ -96,7 +96,10 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -786,14 +789,49 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLDropTableStatement x) {
-        print("DROP TABLE ");
+        if (x.isTemporary()) {
+            print("DROP TEMPORARY TABLE ");
+        } else {
+            print("DROP TABLE ");
+        }
+        
+        if (x.isIfExists()) {
+            print("IF EXISTS ");
+        }
+
         printAndAccept(x.getTableSources(), ", ");
+
+        if (x.isCascade()) {
+            printCascade();
+        }
+
+        if (x.isRestrict()) {
+            print(" RESTRICT");
+        }
+
+        if (x.isPurge()) {
+            print(" PURGE");
+        }
+
         return false;
+    }
+
+    protected void printCascade() {
+        print(" CASCADE");
     }
 
     public boolean visit(SQLDropViewStatement x) {
         print("DROP VIEW ");
+        
+        if (x.isIfExists()) {
+            print("IF EXISTS ");
+        }
+        
         printAndAccept(x.getTableSources(), ", ");
+
+        if (x.isCascade()) {
+            printCascade();
+        }
         return false;
     }
 
@@ -1634,6 +1672,37 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(" (");
         printAndAccept(x.getReferencedColumns(), ", ");
         print(")");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropSequenceStatement x) {
+        print("DROP SEQUENCE ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLDropSequenceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropTriggerStatement x) {
+        print("DROP TRIGGER ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLDropUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropUserStatement x) {
+        print("DROP USER ");
+        printAndAccept(x.getUsers(), ", ");
         return false;
     }
 }

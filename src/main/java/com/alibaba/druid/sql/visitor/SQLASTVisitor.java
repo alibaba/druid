@@ -80,7 +80,10 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -396,9 +399,9 @@ public interface SQLASTVisitor {
     void endVisit(SQLColumnPrimaryKey x);
 
     boolean visit(SQLColumnPrimaryKey x);
-    
+
     boolean visit(SQLColumnUniqueKey x);
-    
+
     void endVisit(SQLColumnUniqueKey x);
 
     void endVisit(SQLWithSubqueryClause x);
@@ -472,16 +475,28 @@ public interface SQLASTVisitor {
     boolean visit(SQLCreateIndexStatement x);
 
     void endVisit(SQLCreateIndexStatement x);
-    
+
     boolean visit(SQLAlterTableRenameColumn x);
-    
+
     void endVisit(SQLAlterTableRenameColumn x);
-    
+
     boolean visit(SQLColumnReference x);
-    
+
     void endVisit(SQLColumnReference x);
-    
+
     boolean visit(SQLForeignKeyImpl x);
-    
+
     void endVisit(SQLForeignKeyImpl x);
+
+    boolean visit(SQLDropSequenceStatement x);
+
+    void endVisit(SQLDropSequenceStatement x);
+    
+    boolean visit(SQLDropTriggerStatement x);
+    
+    void endVisit(SQLDropTriggerStatement x);
+    
+    void endVisit(SQLDropUserStatement x);
+
+    boolean visit(SQLDropUserStatement x);
 }

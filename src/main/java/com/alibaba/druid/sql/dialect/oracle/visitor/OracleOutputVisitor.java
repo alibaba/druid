@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
@@ -119,8 +120,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropSequenceStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -163,7 +163,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
@@ -2360,20 +2359,20 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         if (x.getEnable() != null) {
-            if(x.getEnable().booleanValue()) {
+            if (x.getEnable().booleanValue()) {
                 print(" ENABLE");
             } else {
                 print(" DIABLE");
             }
         }
-        
+
         if (x.getInitially() != null) {
             print(" INITIALLY ");
             print(x.getInitially().name());
         }
-        
+
         if (x.getDeferrable() != null) {
-            if(x.getDeferrable().booleanValue()) {
+            if (x.getDeferrable().booleanValue()) {
                 print(" DEFERRABLE");
             } else {
                 print(" NOT DEFERRABLE");
@@ -2833,7 +2832,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleTruncateStatement x) {
+    public boolean visit(SQLTruncateStatement x) {
         print("TRUNCATE TABLE ");
         printAndAccept(x.getTableSources(), ", ");
 
@@ -2841,11 +2840,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(" PURGE SNAPSHOT LOG");
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleTruncateStatement x) {
-
     }
 
     @Override
@@ -3109,7 +3103,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleDropDatabaseLinkStatement x) {
+    public boolean visit(OracleDropDbLinkStatement x) {
         print("DROP ");
         if (x.isPublic()) {
             print("PUBLIC ");
@@ -3121,7 +3115,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleDropDatabaseLinkStatement x) {
+    public void endVisit(OracleDropDbLinkStatement x) {
 
     }
 
@@ -3203,18 +3197,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleDataTypeIntervalDay x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleDropSequenceStatement x) {
-        print("DROP SEQUENCE ");
-        x.getName().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleDropSequenceStatement x) {
 
     }
 
@@ -3377,30 +3359,35 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void endVisit(OracleUnique x) {
 
     }
-    
+
     @Override
     public boolean visit(OracleForeignKey x) {
         visit((SQLForeignKeyImpl) x);
-        
+
         printConstraintState(x);
         return false;
     }
-    
+
     @Override
     public void endVisit(OracleForeignKey x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleCheck x) {
         visit((SQLCheck) x);
-        
+
         printConstraintState(x);
         return false;
     }
-    
+
     @Override
     public void endVisit(OracleCheck x) {
-        
+
+    }
+
+    @Override
+    protected void printCascade() {
+        print(" CASCADE CONSTRAINTS");
     }
 }

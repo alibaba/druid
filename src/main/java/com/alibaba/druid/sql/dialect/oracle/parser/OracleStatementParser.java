@@ -37,7 +37,10 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -54,6 +57,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
@@ -62,7 +66,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.TableSpaceItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.UpdateIndexesClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
@@ -77,8 +80,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropSequenceStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -100,7 +102,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -440,7 +441,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     if (identifierEquals("LINK")) {
                         lexer.nextToken();
 
-                        OracleDropDatabaseLinkStatement stmt = new OracleDropDatabaseLinkStatement();
+                        OracleDropDbLinkStatement stmt = new OracleDropDbLinkStatement();
                         if (isPublic) {
                             stmt.setPublic(isPublic);
                         }
@@ -451,21 +452,33 @@ public class OracleStatementParser extends SQLStatementParser {
                         continue;
                     }
                 }
-                
+
                 if (lexer.token() == Token.INDEX) {
                     SQLStatement stmt = parseDropIndex();
                     statementList.add(stmt);
                     continue;
                 }
 
-                if (identifierEquals("SEQUENCE")) {
-                    lexer.nextToken();
+                if (lexer.token() == Token.VIEW) {
+                    SQLStatement stmt = parseDropView(false);
+                    statementList.add(stmt);
+                    continue;
+                }
 
-                    SQLName name = this.exprParser.name();
+                if (lexer.token() == Token.SEQUENCE) {
+                    SQLDropSequenceStatement stmt = parseDropSequece(false);
+                    statementList.add(stmt);
+                    continue;
+                }
+                
+                if (lexer.token() == Token.TRIGGER) {
+                    SQLDropTriggerStatement stmt = parseDropTrigger(false);
+                    statementList.add(stmt);
+                    continue;
+                }
 
-                    OracleDropSequenceStatement stmt = new OracleDropSequenceStatement();
-                    stmt.setName(name);
-
+                if (lexer.token() == Token.USER) {
+                    SQLDropUserStatement stmt = parseDropUser();
                     statementList.add(stmt);
                     continue;
                 }
@@ -620,29 +633,6 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleTruncateStatement parseTruncate() {
-        accept(Token.TRUNCATE);
-        accept(Token.TABLE);
-        OracleTruncateStatement stmt = new OracleTruncateStatement();
-
-        SQLName name = this.exprParser.name();
-        stmt.addTableSource(name);
-
-        if (identifierEquals("PURGE")) {
-            lexer.nextToken();
-
-            if (identifierEquals("SNAPSHOT")) {
-                lexer.nextToken();
-                acceptIdentifier("LOG");
-                stmt.setPurgeSnapshotLog(true);
-            } else {
-                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
-            }
-        }
-
-        return stmt;
-    }
-
     public OracleStatement parserAlter() {
         accept(Token.ALTER);
         if (lexer.token() == Token.SESSION) {
@@ -705,7 +695,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             return stmt;
-        } else if (identifierEquals("TRIGGER")) {
+        } else if (lexer.token() == Token.TRIGGER) {
             lexer.nextToken();
             OracleAlterTriggerStatement stmt = new OracleAlterTriggerStatement();
             stmt.setName(this.exprParser.name());
@@ -1655,7 +1645,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 acceptIdentifier("STATISTICS");
                 stmt.setComputeStatistics(true);
-               continue;
+                continue;
             } else if (lexer.token() == Token.ENABLE) {
                 lexer.nextToken();
                 stmt.setEnable(true);
@@ -1694,7 +1684,7 @@ public class OracleStatementParser extends SQLStatementParser {
             accept(Token.CREATE);
         }
 
-        acceptIdentifier("SEQUENCE");
+        accept(Token.SEQUENCE);
 
         OracleCreateSequenceStatement stmt = new OracleCreateSequenceStatement();
         stmt.setName(this.exprParser.name());

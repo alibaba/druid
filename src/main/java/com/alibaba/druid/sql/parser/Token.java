@@ -31,6 +31,9 @@ public enum Token {
     CONSTRAINT("CONSTRAINT"), 
     CHECK("CHECK"), 
     VIEW("VIEW"), 
+    SEQUENCE("SEQUENCE"), 
+    TRIGGER("TRIGGER"), 
+    USER("USER"), 
     CREATE("CREATE"),
     ALTER("ALTER"), 
     DROP("DROP"), 
@@ -196,6 +199,7 @@ public enum Token {
     NOCOMPRESS("NOCOMPRESS"),
     KEEP_DUPLICATES("KEEP_DUPLICATES"),
     EXCEPTIONS("EXCEPTIONS"),
+    PURGE("PURGE"),
     
     COMPUTE("COMPUTE"),
     

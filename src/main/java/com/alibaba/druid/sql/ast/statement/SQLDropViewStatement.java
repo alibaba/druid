@@ -26,6 +26,10 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
 
     protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
 
+    protected boolean                  cascade      = false;
+    protected boolean                  restrict     = false;
+    protected boolean                  ifExists     = false;
+
     public SQLDropViewStatement(){
 
     }
@@ -58,6 +62,14 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
         tableSources.add(tableSource);
     }
 
+    public boolean isCascade() {
+        return cascade;
+    }
+
+    public void setCascade(boolean cascade) {
+        this.cascade = cascade;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -65,4 +77,21 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
         }
         visitor.endVisit(this);
     }
+
+    public boolean isRestrict() {
+        return restrict;
+    }
+
+    public void setRestrict(boolean restrict) {
+        this.restrict = restrict;
+    }
+
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
+    }
+
 }

@@ -10,7 +10,6 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
 
 public class PGASTVisitorAdapterTest extends TestCase {
@@ -19,13 +18,12 @@ public class PGASTVisitorAdapterTest extends TestCase {
         PGASTVisitorAdapter adapter = new PGASTVisitorAdapter();
 
         new WindowClause().accept(adapter);
-        new FetchClause ().accept(adapter);
-        new ForClause ().accept(adapter);
-        new PGWithQuery ().accept(adapter);
-        new PGWithClause ().accept(adapter);
-        new PGTruncateStatement ().accept(adapter);
-        new PGDeleteStatement ().accept(adapter);
-        new PGParameter ().accept(adapter);
-        new PGFunctionTableSource ().accept(adapter);
+        new FetchClause().accept(adapter);
+        new ForClause().accept(adapter);
+        new PGWithQuery().accept(adapter);
+        new PGWithClause().accept(adapter);
+        new PGDeleteStatement().accept(adapter);
+        new PGParameter().accept(adapter);
+        new PGFunctionTableSource().accept(adapter);
     }
 }

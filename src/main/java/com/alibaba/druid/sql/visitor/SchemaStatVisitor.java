@@ -53,7 +53,11 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -514,6 +518,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropViewStatement x) {
+        setMode(x, Mode.Drop);
+        return true;
     }
 
     @Override
@@ -1213,14 +1223,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLForeignKeyImpl x) {
-        
+
         for (SQLName column : x.getReferencedColumns()) {
             column.accept(this);
         }
-        
+
         String table = x.getReferencedTableName().getSimleName();
         setCurrentTable(table);
 
@@ -1230,7 +1240,27 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             String columnName = column.getSimleName();
             addColumn(table, columnName);
         }
-        
+
         return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropSequenceStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropTriggerStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLDropUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropUserStatement x) {
+        return true;
     }
 }

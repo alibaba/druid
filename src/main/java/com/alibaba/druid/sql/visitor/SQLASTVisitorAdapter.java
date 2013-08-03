@@ -81,7 +81,10 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -700,12 +703,12 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public boolean visit(SQLColumnPrimaryKey x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLColumnUniqueKey x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLColumnUniqueKey x) {
         return true;
@@ -879,7 +882,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLUnique x) {
-        
+
     }
 
     @Override
@@ -889,7 +892,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCreateIndexStatement x) {
-        
+
     }
 
     @Override
@@ -899,7 +902,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLPrimaryKeyImpl x) {
-        
+
     }
 
     @Override
@@ -909,26 +912,56 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableRenameColumn x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLColumnReference x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLColumnReference x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLForeignKeyImpl x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLForeignKeyImpl x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(SQLDropSequenceStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropSequenceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropTriggerStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDropTriggerStatement x) {
+
+    }
+
+    @Override
+    public void endVisit(SQLDropUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLDropUserStatement x) {
+        return true;
     }
 }

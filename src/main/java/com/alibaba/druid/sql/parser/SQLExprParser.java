@@ -243,6 +243,8 @@ public class SQLExprParser extends SQLParser {
             case ENABLE:
             case DISABLE:
             case INITIALLY:
+            case SEQUENCE:
+            case USER:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;

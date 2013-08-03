@@ -35,6 +35,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
@@ -71,9 +72,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -1467,43 +1465,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public void endVisit(MySqlDropUser x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlDropUser x) {
-        print("DROP USER ");
-        printAndAccept(x.getUsers(), ", ");
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlDropTableStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlDropTableStatement x) {
-        if (x.isTemporary()) {
-            print("DROP TEMPORARY TABLE ");
-        } else {
-            print("DROP TABLE ");
-        }
-        if (x.isIfExists()) {
-            print("IF EXISTS ");
-        }
-
-        printAndAccept(x.getTableSources(), ", ");
-
-        if (x.getOption() != null) {
-            print(' ');
-            print(x.getOption());
-        }
-        return false;
-    }
-
-    @Override
     public void endVisit(MySqlPartitionByKey x) {
 
     }
@@ -2558,27 +2519,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlRenameTableStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlDropViewStatement x) {
-        print("DROP VIEW ");
-        if (x.isIfExists()) {
-            print("IF EXISTS ");
-        }
-
-        printAndAccept(x.getTableSources(), ", ");
-
-        if (x.getOption() != null) {
-            print(' ');
-            print(x.getOption());
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlDropViewStatement x) {
 
     }
 

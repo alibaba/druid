@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
@@ -33,7 +32,6 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.Fetc
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -46,7 +44,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     public String getDbType() {
         return JdbcUtils.POSTGRESQL;
     }
-    
+
     @Override
     public void endVisit(WindowClause x) {
 
@@ -109,17 +107,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     @Override
     public boolean visit(PGWithClause x) {
         return true;
-    }
-
-    @Override
-    public void endVisit(PGTruncateStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(PGTruncateStatement x) {
-        this.visit((SQLTruncateStatement) x);
-        return false;
     }
 
     @Override
@@ -206,7 +193,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     public void endVisit(PGSelectStatement x) {
 
     }
-    
+
     @Override
     public boolean visit(PGSelectStatement x) {
         if (x.getWith() != null) {
@@ -250,7 +237,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public void endVisit(PGSelectQueryBlock x) {
-        
+
     }
 
     @Override
@@ -260,7 +247,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public void endVisit(PGParameter x) {
-        
+
     }
 
     @Override
@@ -270,7 +257,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public void endVisit(PGFunctionTableSource x) {
-        
+
     }
 
     @Override

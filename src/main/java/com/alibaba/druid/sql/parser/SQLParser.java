@@ -93,11 +93,14 @@ public class SQLParser {
                     case NOCOMPRESS:
                     case KEEP_DUPLICATES:
                     case EXCEPTIONS:
+                    case PURGE:
                     case INITIALLY:
                     case END:
                     case COMMENT:
                     case ENABLE:
                     case DISABLE:
+                    case SEQUENCE:
+                    case USER:
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         return alias;

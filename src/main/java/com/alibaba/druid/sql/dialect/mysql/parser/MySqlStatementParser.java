@@ -45,8 +45,6 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
@@ -76,9 +74,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -152,8 +147,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     private static final String AUTO_INCREMENT = "AUTO_INCREMENT";
     private static final String COLLATE2       = "COLLATE";
-    private static final String CASCADE        = "CASCADE";
-    private static final String RESTRICT       = "RESTRICT";
     private static final String CHAIN          = "CHAIN";
     private static final String ENGINES        = "ENGINES";
     private static final String ENGINE         = "ENGINE";
@@ -173,7 +166,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     private static final String LOCAL          = "LOCAL";
     private static final String TABLES         = "TABLES";
     private static final String TEMPORARY      = "TEMPORARY";
-    private static final String USER           = "USER";
     private static final String SPATIAL        = "SPATIAL";
     private static final String FULLTEXT       = "FULLTEXT";
     private static final String DELAYED        = "DELAYED";
@@ -339,7 +331,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return parseCreateIndex(false);
         }
 
-        if (identifierEquals(USER)) {
+        if (lexer.token() == Token.USER) {
             if (replace) {
                 lexer.reset(markBp, markChar, Token.CREATE);
             }
@@ -425,7 +417,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
         }
 
-        acceptIdentifier(USER);
+        accept(Token.USER);
 
         MySqlCreateUserStatement stmt = new MySqlCreateUserStatement();
 
@@ -928,7 +920,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 return stmt;
             }
 
-            if (identifierEquals("TRIGGER")) {
+            if (lexer.token() == Token.TRIGGER) {
                 lexer.nextToken();
 
                 MySqlShowCreateTriggerStatement stmt = new MySqlShowCreateTriggerStatement();
@@ -1951,100 +1943,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                 break;
             }
         }
-    }
-
-    public SQLStatement parseDropUser() {
-        acceptIdentifier(USER);
-
-        MySqlDropUser stmt = new MySqlDropUser();
-        for (;;) {
-            SQLExpr expr = this.exprParser.expr();
-            stmt.getUsers().add(expr);
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
-        }
-
-        return stmt;
-    }
-
-    protected SQLDropTableStatement parseDropTable(boolean acceptDrop) {
-        if (acceptDrop) {
-            accept(Token.DROP);
-        }
-
-        MySqlDropTableStatement stmt = new MySqlDropTableStatement();
-
-        if (identifierEquals(TEMPORARY)) {
-            lexer.nextToken();
-            stmt.setTemporary(true);
-        }
-
-        accept(Token.TABLE);
-
-        if (lexer.token() == Token.IF) {
-            lexer.nextToken();
-            accept(Token.EXISTS);
-            stmt.setIfExists(true);
-        }
-
-        for (;;) {
-            SQLName name = this.exprParser.name();
-            stmt.addTableSource(name);
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
-        }
-
-        if (identifierEquals(RESTRICT)) {
-            stmt.setOption(RESTRICT);
-            lexer.nextToken();
-        } else if (identifierEquals(CASCADE)) {
-            stmt.setOption(CASCADE);
-            lexer.nextToken();
-        }
-
-        return stmt;
-    }
-
-    protected SQLDropViewStatement parseDropView(boolean acceptDrop) {
-        if (acceptDrop) {
-            accept(Token.DROP);
-        }
-
-        MySqlDropViewStatement stmt = new MySqlDropViewStatement();
-
-        accept(Token.VIEW);
-
-        if (lexer.token() == Token.IF) {
-            lexer.nextToken();
-            accept(Token.EXISTS);
-            stmt.setIfExists(true);
-        }
-
-        for (;;) {
-            SQLName name = this.exprParser.name();
-            stmt.addTableSource(name);
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
-        }
-
-        if (identifierEquals(RESTRICT)) {
-            stmt.setOption(RESTRICT);
-            lexer.nextToken();
-        } else if (identifierEquals(CASCADE)) {
-            stmt.setOption(CASCADE);
-            lexer.nextToken();
-        }
-
-        return stmt;
     }
 
     public SQLSelectParser createSQLSelectParser() {

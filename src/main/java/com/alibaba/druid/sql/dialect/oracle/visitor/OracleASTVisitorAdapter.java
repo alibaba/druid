@@ -87,8 +87,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropSequenceStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -130,7 +129,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
@@ -1209,16 +1207,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleTruncateStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleTruncateStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateSequenceStatement x) {
         return true;
     }
@@ -1309,12 +1297,12 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleDropDatabaseLinkStatement x) {
+    public boolean visit(OracleDropDbLinkStatement x) {
         return true;
     }
 
     @Override
-    public void endVisit(OracleDropDatabaseLinkStatement x) {
+    public void endVisit(OracleDropDbLinkStatement x) {
 
     }
 
@@ -1349,16 +1337,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleDropSequenceStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleDropSequenceStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleUsingIndexClause x) {
         return true;
     }
@@ -1387,25 +1365,25 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     public void endVisit(OracleUnique x) {
 
     }
-    
+
     @Override
     public boolean visit(OracleForeignKey x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleForeignKey x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleCheck x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleCheck x) {
-        
+
     }
 
 }

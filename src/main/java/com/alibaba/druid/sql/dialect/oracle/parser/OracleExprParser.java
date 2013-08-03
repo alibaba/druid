@@ -459,6 +459,7 @@ public class OracleExprParser extends SQLExprParser {
            case NOCOMPRESS:
            case KEEP_DUPLICATES:
            case EXCEPTIONS:
+           case PURGE:
                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                lexer.nextToken();
                return  primaryRest(sqlExpr);

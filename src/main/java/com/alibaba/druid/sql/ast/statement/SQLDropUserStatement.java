@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlDropUser extends MySqlStatementImpl {
+public class SQLDropUserStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private List<SQLExpr> users = new ArrayList<SQLExpr>(2);
 
@@ -33,7 +34,7 @@ public class MySqlDropUser extends MySqlStatementImpl {
         this.users = users;
     }
 
-    public void accept0(MySqlASTVisitor visitor) {
+    protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, users);
         }

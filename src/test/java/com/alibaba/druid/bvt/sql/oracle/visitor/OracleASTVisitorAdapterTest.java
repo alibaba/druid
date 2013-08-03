@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -68,8 +69,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropSequenceStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -181,11 +181,11 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleArgumentExpr().accept(adapter);
         new OracleSetTransactionStatement().accept(adapter);
         new OracleGrantStatement().accept(adapter);
-        new OracleDropSequenceStatement().accept(adapter);
+        new SQLDropSequenceStatement().accept(adapter);
         new OracleDataTypeIntervalDay().accept(adapter);
         new OracleDataTypeIntervalYear().accept(adapter);
         new OracleDataTypeTimestamp().accept(adapter);
-        new OracleDropDatabaseLinkStatement().accept(adapter);
+        new OracleDropDbLinkStatement().accept(adapter);
         new OracleCreateDatabaseDbLinkStatement().accept(adapter);
         new OracleCreateProcedureStatement().accept(adapter);
         new OracleSavePointStatement().accept(adapter);

@@ -30,9 +30,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -135,8 +132,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlResetStatement().accept(adapter);
         new MySqlCreateUserStatement().accept(adapter);
         new UserSpecification().accept(adapter);
-        new MySqlDropUser().accept(adapter);
-        new MySqlDropTableStatement().accept(adapter);
         new MySqlPartitionByKey().accept(adapter);
         new MySqlOutFileExpr().accept(adapter);
         new MySqlUpdateStatement().accept(adapter);
@@ -182,7 +177,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlShowTriggersStatement().accept(adapter);
         new MySqlAlterTableStatement().accept(adapter);
         new MySqlRenameTableStatement().accept(adapter);
-        new MySqlDropViewStatement().accept(adapter);
         new MySqlUnionQuery().accept(adapter);
         new MySqlUseIndexHint().accept(adapter);
         new MySqlIgnoreIndexHint().accept(adapter);

@@ -47,9 +47,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -248,10 +245,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     boolean visit(MySqlResetStatement x);
 
-    void endVisit(MySqlDropUser x);
-
-    boolean visit(MySqlDropUser x);
-
     void endVisit(MySqlCreateUserStatement x);
 
     boolean visit(MySqlCreateUserStatement x);
@@ -259,10 +252,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlCreateUserStatement.UserSpecification x);
 
     boolean visit(MySqlCreateUserStatement.UserSpecification x);
-
-    void endVisit(MySqlDropTableStatement x);
-
-    boolean visit(MySqlDropTableStatement x);
 
     void endVisit(MySqlPartitionByKey x);
 
@@ -467,10 +456,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlRenameTableStatement x);
 
     void endVisit(MySqlRenameTableStatement x);
-
-    boolean visit(MySqlDropViewStatement x);
-
-    void endVisit(MySqlDropViewStatement x);
 
     boolean visit(MySqlUnionQuery x);
 
