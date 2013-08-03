@@ -27,33 +27,22 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateTableTest21 extends OracleTest {
+public class OracleAlterTableTest20 extends OracleTest {
 
-    public void test_types() throws Exception {
+    public void test_0() throws Exception {
         String sql = //
-        "CREATE TABLE divisions " //
-                + "    (div_no     NUMBER(2), " //
-                + "     div_name   VARCHAR2(14), "//
-                + "     location   VARCHAR2(13) ) " //
-                + "     STORAGE  ( INITIAL 8M MAXSIZE 1G );";
+        "ALTER TABLE sales " //
+                + "    ADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DISABLE; ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statement = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE divisions ("//
-                            + "\n\tdiv_no NUMBER(2),"//
-                            + "\n\tdiv_name VARCHAR2(14),"//
-                            + "\n\tlocation VARCHAR2(13)"//
-                            + "\n)"//
-                            + "\nSTORAGE (INITIAL 8M MAXSIZE 1G)",//
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
-
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statement.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -61,10 +50,20 @@ public class OracleCreateTableTest21 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
+        Assert.assertEquals("ALTER TABLE sales" //
+                            + "\n\tADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DIABLE", //
+                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("divisions", "div_no")));
+        Assert.assertEquals(2, visitor.getColumns().size());
+
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_IDS_ZZJ_TBD0209",
+        // "discount_amount")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product",
+        // "commission_amount")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

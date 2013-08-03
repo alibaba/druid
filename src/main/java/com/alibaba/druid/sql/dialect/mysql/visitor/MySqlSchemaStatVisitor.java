@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -1256,16 +1255,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlForeignKey x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlForeignKey x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlAlterTableDiscardTablespace x) {
         return false;
     }
@@ -1279,7 +1268,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(MySqlAlterTableImportTablespace x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlAlterTableImportTablespace x) {
 
@@ -1292,7 +1281,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(TableSpaceOption x) {
-        
+
     }
 
     @Override
@@ -1302,7 +1291,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlPartitionByHash x) {
-        
+
     }
 
     @Override
@@ -1312,7 +1301,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlPartitionByRange x) {
-        
+
     }
 
     @Override
@@ -1322,7 +1311,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlPartitioningDef x) {
-        
+
     }
 
     @Override
@@ -1332,7 +1321,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(LessThanValues x) {
-        
+
     }
 
     @Override
@@ -1342,7 +1331,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(InValues x) {
-        
+
     }
 
     @Override
@@ -1352,7 +1341,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlPartitionByList x) {
-        
+
     }
 
 }

@@ -19,6 +19,8 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 
 public class SQLCreateTableParser extends SQLDDLParser {
 
@@ -71,18 +73,18 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_ALIAS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
-                } else if (lexer.token() == Token.PRIMARY) {
-                    SQLPrimaryKey primaryKey = exprParser.parsePrimaryKey();
-                    createTable.getTableElementList().add(primaryKey);
-                } else if (lexer.token == Token.UNIQUE) {
-                    SQLUnique unique = exprParser.parseUnique();
-                    createTable.getTableElementList().add(unique);
+                } else if (lexer.token == Token.PRIMARY //
+                           || lexer.token == Token.UNIQUE //
+                           || lexer.token == Token.CONSTRAINT) {
+                    OracleConstraint constraint = ((OracleExprParser) this.exprParser).parseConstaint();
+                    constraint.setParent(createTable);
+                    createTable.getTableElementList().add(constraint);
                 } else if (lexer.token() == Token.TABLESPACE) {
                     throw new ParserException("TODO " + lexer.token());
                 } else {
                     throw new ParserException("TODO " + lexer.token());
                 }
-                
+
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;

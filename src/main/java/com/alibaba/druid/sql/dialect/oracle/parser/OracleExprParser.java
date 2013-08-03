@@ -37,6 +37,8 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
@@ -65,6 +67,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -76,13 +80,6 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
-
-
-
-
-
-
-
 
 
     public boolean                allowStringAdditive = false;
@@ -154,6 +151,10 @@ public class OracleExprParser extends SQLExprParser {
     }
     
     public SQLDataType parseDataType() {
+        
+        if (lexer.token() == Token.CONSTRAINT || lexer.token() == Token.COMMA) {
+            return null;
+        }
         
         if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
             return null;
@@ -1246,5 +1247,39 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         return unique;
+    }
+    
+    public OracleConstraint parseConstaint() {
+        OracleConstraint constraint = (OracleConstraint) super.parseConstaint();
+        
+        for (;;) {
+            if (lexer.token() == Token.EXCEPTIONS) {
+                lexer.nextToken();
+                accept(Token.INTO);
+                SQLName exceptionsInto = this.name();
+                constraint.setExceptionsInto(exceptionsInto);
+                continue;
+            }
+            
+            if (lexer.token() == Token.DISABLE) {
+                lexer.nextToken();
+                constraint.setEnable(false);
+                continue;
+            }
+            
+            if (lexer.token() == Token.ENABLE) {
+                lexer.nextToken();
+                constraint.setEnable(true);
+                continue;
+            }
+            
+            break;
+        }
+
+        return constraint;
+    }
+    
+    protected SQLForeignKeyConstraint createForeignKey() {
+        return new OracleForeignKey();
     }
 }

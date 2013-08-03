@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
@@ -124,6 +125,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
@@ -2336,15 +2338,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("PRIMARY KEY (");
         printAndAccept(x.getColumns(), ", ");
         print(")");
+
         if (x.getUsing() != null) {
             println();
             x.getUsing().accept(this);
         }
+
         if (x.getExceptionsInto() != null) {
             println();
             print("EXCEPTIONS INTO ");
             x.getExceptionsInto().accept(this);
         }
+
+        if (x.getEnable() != null) {
+            if(x.getEnable().booleanValue()) {
+                print(" ENABLE");
+            } else {
+                print(" DIABLE");
+            }
+        }
+
         return false;
     }
 
@@ -3223,6 +3236,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                     print(" DISABLE");
                 }
             }
+
+            if (x.getStorage() != null) {
+                println();
+                x.getStorage().accept(this);
+            }
         }
 
         return false;
@@ -3346,5 +3364,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleUnique x) {
 
+    }
+    
+    @Override
+    public boolean visit(OracleForeignKey x) {
+        visit((SQLForeignKeyImpl) x);
+        
+        if (x.getUsing() != null) {
+            println();
+            x.getUsing().accept(this);
+        }
+        if (x.getExceptionsInto() != null) {
+            println();
+            print("EXCEPTIONS INTO ");
+            x.getExceptionsInto().accept(this);
+        }
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OracleForeignKey x) {
+        
     }
 }

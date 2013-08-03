@@ -55,6 +55,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
@@ -1210,6 +1211,26 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         }
 
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLForeignKeyImpl x) {
+        
+        for (SQLName column : x.getReferencedColumns()) {
+            column.accept(this);
+        }
+        
+        String table = x.getReferencedTableName().getSimleName();
+        setCurrentTable(table);
+
+        TableStat stat = getTableStat(table);
+        stat.incrementReferencedCount();
+        for (SQLName column : x.getReferencedColumns()) {
+            String columnName = column.getSimleName();
+            addColumn(table, columnName);
+        }
+        
         return false;
     }
 }

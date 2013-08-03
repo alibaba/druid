@@ -34,6 +34,15 @@ public class TableStat {
     int alterCount       = 0;
     int createIndexCount = 0;
     int dropIndexCount   = 0;
+    int referencedCount  = 0;
+
+    public int getReferencedCount() {
+        return referencedCount;
+    }
+
+    public void incrementReferencedCount() {
+        referencedCount++;
+    }
 
     public int getDropIndexCount() {
         return dropIndexCount;

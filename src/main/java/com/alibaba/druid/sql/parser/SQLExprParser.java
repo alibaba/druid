@@ -65,6 +65,11 @@ import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLColumnReference;
+import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
+import com.alibaba.druid.sql.ast.statement.SQLConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -620,6 +625,10 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final void names(Collection<SQLName> exprCol) {
+        names(exprCol, null);
+    }
+
+    public final void names(Collection<SQLName> exprCol, SQLObject parent) {
         if (lexer.token() == Token.RBRACE) {
             return;
         }
@@ -628,11 +637,16 @@ public class SQLExprParser extends SQLParser {
             return;
         }
 
-        exprCol.add(name());
+        SQLName name = name();
+        name.setParent(parent);
+        exprCol.add(name);
 
         while (lexer.token() == Token.COMMA) {
             lexer.nextToken();
-            exprCol.add(name());
+
+            name = name();
+            name.setParent(parent);
+            exprCol.add(name);
         }
     }
 
@@ -1293,11 +1307,46 @@ public class SQLExprParser extends SQLParser {
             return parseColumnRest(column);
         }
 
-        if (lexer.token == Token.UNION) {
+        if (lexer.token == Token.UNIQUE) {
             lexer.nextToken();
             accept(Token.KEY);
             column.getConstaints().add(new SQLColumnPrimaryKey());
             return parseColumnRest(column);
+        }
+
+        if (lexer.token == Token.CONSTRAINT) {
+            lexer.nextToken();
+
+            SQLName name = this.name();
+
+            if (lexer.token() == Token.PRIMARY) {
+                lexer.nextToken();
+                accept(Token.KEY);
+                SQLColumnPrimaryKey pk = new SQLColumnPrimaryKey();
+                pk.setName(name);
+                column.getConstaints().add(pk);
+                return parseColumnRest(column);
+            }
+
+            if (lexer.token() == Token.UNIQUE) {
+                lexer.nextToken();
+                SQLColumnUniqueKey uk = new SQLColumnUniqueKey();
+                uk.setName(name);
+                column.getConstaints().add(uk);
+                return parseColumnRest(column);
+            }
+
+            if (lexer.token() == Token.REFERENCES) {
+                lexer.nextToken();
+                SQLColumnReference ref = new SQLColumnReference();
+                ref.setName(name);
+                ref.setTable(this.name());
+                accept(Token.LPAREN);
+                this.names(ref.getColumns(), ref);
+                accept(Token.RPAREN);
+                column.getConstaints().add(ref);
+                return parseColumnRest(column);
+            }
         }
 
         if (lexer.token == Token.CHECK) {
@@ -1364,5 +1413,53 @@ public class SQLExprParser extends SQLParser {
             hints.add(new SQLCommentHint(lexer.stringVal()));
             lexer.nextToken();
         }
+    }
+
+    public SQLConstaint parseConstaint() {
+        SQLName name = null;
+
+        if (lexer.token() == Token.CONSTRAINT) {
+            lexer.nextToken();
+            name = this.name();
+        }
+
+        SQLConstaint constraint;
+        if (lexer.token() == Token.PRIMARY) {
+            constraint = parsePrimaryKey();
+        } else if (lexer.token() == Token.UNIQUE) {
+            constraint = parseUnique();
+        } else if (lexer.token() == Token.FOREIGN) {
+            constraint = parseForeignKey();
+        } else {
+            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+        }
+
+        constraint.setName(name);
+
+        return constraint;
+    }
+
+    public SQLForeignKeyConstraint parseForeignKey() {
+        accept(Token.FOREIGN);
+        accept(Token.KEY);
+
+        SQLForeignKeyConstraint fk = createForeignKey();
+
+        accept(Token.LPAREN);
+        this.names(fk.getReferencingColumns());
+        accept(Token.RPAREN);
+
+        accept(Token.REFERENCES);
+
+        fk.setReferencedTableName(this.name());
+
+        accept(Token.LPAREN);
+        this.names(fk.getReferencedColumns());
+        accept(Token.RPAREN);
+        return fk;
+    }
+
+    protected SQLForeignKeyConstraint createForeignKey() {
+        return new SQLForeignKeyImpl();
     }
 }

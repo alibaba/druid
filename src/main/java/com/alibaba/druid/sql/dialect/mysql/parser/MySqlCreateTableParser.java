@@ -19,9 +19,9 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
@@ -132,9 +132,12 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     } else if (lexer.token() == (Token.KEY)) {
                         stmt.getTableElementList().add(parseConstraint());
                     } else if (lexer.token() == (Token.PRIMARY)) {
-                        stmt.getTableElementList().add(parseConstraint());
+                        SQLTableConstaint pk = parseConstraint();
+                        pk.setParent(stmt);
+                        stmt.getTableElementList().add(pk);
                     } else if (lexer.token() == (Token.FOREIGN)) {
-                        MySqlForeignKey fk = this.getExprParser().parseForeignKey();
+                        SQLForeignKeyConstraint fk = this.getExprParser().parseForeignKey();
+                        fk.setParent(stmt);
                         stmt.getTableElementList().add(fk);
                     } else if (lexer.token() == Token.CHECK) {
                         lexer.nextToken();

@@ -3,7 +3,6 @@ package com.alibaba.druid.bvt.sql.mysql;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -199,7 +198,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlCharExpr().accept(adapter);
         new MySqlAlterTableAddUnique().accept(adapter);
         new MySqlUnique().accept(adapter);
-        new MySqlForeignKey().accept(adapter);
         new MySqlAlterTableModifyColumn().accept(adapter);
         new MySqlAlterTableDiscardTablespace().accept(adapter);
         new MySqlAlterTableImportTablespace().accept(adapter);

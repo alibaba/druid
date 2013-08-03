@@ -27,33 +27,43 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateTableTest21 extends OracleTest {
+public class OracleCreateTableTest26 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE divisions " //
-                + "    (div_no     NUMBER(2), " //
-                + "     div_name   VARCHAR2(14), "//
-                + "     location   VARCHAR2(13) ) " //
-                + "     STORAGE  ( INITIAL 8M MAXSIZE 1G );";
+        "CREATE TABLE dept_20 " //
+                + "   (employee_id     NUMBER(4), "//
+                + "    last_name       VARCHAR2(10), "//
+                + "    job_id          VARCHAR2(9), "//
+                + "    manager_id      NUMBER(4), "//
+                + "    hire_date       DATE, "//
+                + "    salary          NUMBER(7,2), "//
+                + "    commission_pct  NUMBER(7,2), "//
+                + "    department_id   CONSTRAINT fk_deptno "//
+                + "                    REFERENCES departments(department_id) ); ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statement = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE divisions ("//
-                            + "\n\tdiv_no NUMBER(2),"//
-                            + "\n\tdiv_name VARCHAR2(14),"//
-                            + "\n\tlocation VARCHAR2(13)"//
-                            + "\n)"//
-                            + "\nSTORAGE (INITIAL 8M MAXSIZE 1G)",//
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+        Assert.assertEquals("CREATE TABLE dept_20 (" //
+                            + "\n\temployee_id NUMBER(4),"//
+                            + "\n\tlast_name VARCHAR2(10),"//
+                            + "\n\tjob_id VARCHAR2(9),"//
+                            + "\n\tmanager_id NUMBER(4),"//
+                            + "\n\thire_date DATE,"//
+                            + "\n\tsalary NUMBER(7, 2),"//
+                            + "\n\tcommission_pct NUMBER(7, 2),"//
+                            + "\n\tdepartment_id"//
+                            + "\n\t\tCONSTRAINT fk_deptno REFERENCES departments (department_id)"//
+                            + "\n)",//
+                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statement.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -63,8 +73,8 @@ public class OracleCreateTableTest21 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(8, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("divisions", "div_no")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("dept_20", "employee_id")));
     }
 }

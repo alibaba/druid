@@ -15,58 +15,39 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement {
-
-    private SQLName                name;
-    private List<SQLExpr>          columns = new ArrayList<SQLExpr>();
+public class OracleForeignKey extends SQLForeignKeyImpl implements OracleConstraint, OracleSQLObject {
 
     private OracleUsingIndexClause using;
     private SQLName                exceptionsInto;
     private Boolean                enable;
 
     @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+
+        super.accept(visitor);
+    }
+
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, name);
-            acceptChild(visitor, columns);
+            acceptChild(visitor, this.getName());
+            acceptChild(visitor, this.getReferencedTableName());
+            acceptChild(visitor, this.getReferencingColumns());
+            acceptChild(visitor, this.getReferencedColumns());
+            
             acceptChild(visitor, using);
             acceptChild(visitor, exceptionsInto);
         }
         visitor.endVisit(this);
-    }
-
-    public SQLName getName() {
-        return name;
-    }
-
-    public void setName(SQLName name) {
-        this.name = name;
-    }
-
-    public List<SQLExpr> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<SQLExpr> columns) {
-        this.columns = columns;
-    }
-
-    public OracleUsingIndexClause getUsing() {
-        return using;
-    }
-
-    public void setUsing(OracleUsingIndexClause using) {
-        this.using = using;
     }
 
     public SQLName getExceptionsInto() {
@@ -75,6 +56,17 @@ public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConst
 
     public void setExceptionsInto(SQLName exceptionsInto) {
         this.exceptionsInto = exceptionsInto;
+    }
+
+    public OracleUsingIndexClause getUsing() {
+        return using;
+    }
+
+    public void setUsing(OracleUsingIndexClause using) {
+        if (using != null) {
+            using.setParent(this);
+        }
+        this.using = using;
     }
 
     public Boolean getEnable() {

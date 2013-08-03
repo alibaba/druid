@@ -54,7 +54,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
@@ -63,6 +62,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.TableSpaceItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.UpdateIndexesClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
@@ -863,7 +863,12 @@ public class OracleStatementParser extends SQLStatementParser {
 
                     accept(Token.RPAREN);
                 } else if (lexer.token() == Token.CONSTRAINT) {
-                    stmt.getItems().add(parseConstaint());
+                    OracleConstraint constraint = ((OracleExprParser) this.exprParser).parseConstaint();
+                    OracleAlterTableAddConstaint item = new OracleAlterTableAddConstaint();
+                    constraint.setParent(item);
+                    item.setParent(stmt);
+                    item.setConstraint(constraint);
+                    stmt.getItems().add(item);
                 } else if (lexer.token() == Token.IDENTIFIER) {
                     SQLAlterTableAddColumn item = parseAlterTableAddColumn();
                     stmt.getItems().add(item);
@@ -988,36 +993,6 @@ public class OracleStatementParser extends SQLStatementParser {
             return item;
         }
         throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
-    }
-
-    private OracleAlterTableAddConstaint parseConstaint() {
-        accept(Token.CONSTRAINT);
-
-        OracleAlterTableAddConstaint item = new OracleAlterTableAddConstaint();
-
-        SQLName name = this.exprParser.name();
-
-        OracleConstraint constraint;
-        if (lexer.token() == Token.PRIMARY) {
-            constraint = (OracleConstraint) exprParser.parsePrimaryKey();
-        } else if (lexer.token() == Token.UNIQUE) {
-            constraint = (OracleConstraint) exprParser.parseUnique();
-        } else {
-            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
-        }
-        
-        if (lexer.token() == Token.EXCEPTIONS) {
-            lexer.nextToken();
-            accept(Token.INTO);
-            SQLName exceptionsInto = this.exprParser.name();
-            constraint.setExceptionsInto(exceptionsInto);
-        }
-
-        constraint.setName(name);
-
-        item.setConstraint(constraint);
-
-        return item;
     }
 
     public void parseAlterDrop(SQLAlterTableStatement stmt) {

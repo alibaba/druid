@@ -47,6 +47,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -57,7 +58,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
@@ -2274,12 +2274,18 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                             SQLAlterTableAddPrimaryKey item = new SQLAlterTableAddPrimaryKey();
                             item.setPrimaryKey(primaryKey);
+
+                            item.setParent(stmt);
+
                             stmt.getItems().add(item);
                         } else if (lexer.token() == Token.FOREIGN) {
-                            MySqlForeignKey fk = this.getExprParser().parseForeignKey();
+                            SQLForeignKeyConstraint fk = this.getExprParser().parseForeignKey();
                             fk.setName(constraintName);
 
                             SQLAlterTableAddForeignKey item = new SQLAlterTableAddForeignKey(fk);
+
+                            item.setParent(stmt);
+
                             stmt.getItems().add(item);
                         } else {
                             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
@@ -2516,7 +2522,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     lexer.reset();
                     break;
                 }
-                
+
                 if (lexer.token() == Token.IDENTIFIER) {
                     name = exprParser.name();
                     name.setParent(item);

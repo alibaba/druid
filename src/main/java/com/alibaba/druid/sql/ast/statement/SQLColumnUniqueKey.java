@@ -13,29 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast;
+package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlForeignKey extends SQLForeignKeyImpl implements SQLForeignKeyConstraint, SQLTableElement {
+public class SQLColumnUniqueKey extends SQLConstaintImpl implements SQLColumnConstraint {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof MySqlASTVisitor) {
-            accept0((MySqlASTVisitor) visitor);
-        }
-    }
-
-    protected void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.getName());
-            acceptChild(visitor, this.getReferencedTableName());
-            acceptChild(visitor, this.getReferencingColumns());
-            acceptChild(visitor, this.getReferencedColumns());
         }
         visitor.endVisit(this);
     }

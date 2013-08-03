@@ -38,7 +38,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -2931,32 +2930,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlUnique x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlForeignKey x) {
-        if (x.getName() != null) {
-            print("CONSTRAINT ");
-            x.getName().accept(this);
-            print(' ');
-        }
-
-        print("FOREIGN KEY (");
-        printAndAccept(x.getReferencedColumns(), ", ");
-        print(")");
-
-        print(" REFERENCES ");
-        x.getReferencedTableName().accept(this);
-
-        print(" (");
-        printAndAccept(x.getReferencedColumns(), ", ");
-        print(")");
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlForeignKey x) {
 
     }
 

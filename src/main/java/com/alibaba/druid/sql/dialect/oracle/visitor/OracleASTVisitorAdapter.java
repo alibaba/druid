@@ -95,6 +95,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
@@ -1384,6 +1385,16 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     @Override
     public void endVisit(OracleUnique x) {
 
+    }
+    
+    @Override
+    public boolean visit(OracleForeignKey x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OracleForeignKey x) {
+        
     }
 
 }

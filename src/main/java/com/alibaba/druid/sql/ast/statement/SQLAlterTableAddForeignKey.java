@@ -27,7 +27,7 @@ public class SQLAlterTableAddForeignKey extends SQLObjectImpl implements SQLAlte
     }
 
     public SQLAlterTableAddForeignKey(SQLForeignKeyConstraint foreignKey){
-        this.foreignKey = foreignKey;
+       this.setForeignKey(foreignKey);
     }
 
     public SQLForeignKeyConstraint getForeignKey() {
@@ -35,6 +35,9 @@ public class SQLAlterTableAddForeignKey extends SQLObjectImpl implements SQLAlte
     }
 
     public void setForeignKey(SQLForeignKeyConstraint foreignKey) {
+        if (foreignKey != null) {
+            foreignKey.setParent(this);
+        }
         this.foreignKey = foreignKey;
     }
 

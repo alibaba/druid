@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -529,10 +528,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlAlterTableAddUnique x);
 
-    boolean visit(MySqlForeignKey x);
-
-    void endVisit(MySqlForeignKey x);
-
     boolean visit(MySqlAlterTableModifyColumn x);
 
     void endVisit(MySqlAlterTableModifyColumn x);
@@ -548,28 +543,28 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlCreateTableStatement.TableSpaceOption x);
 
     void endVisit(MySqlCreateTableStatement.TableSpaceOption x);
-    
+
     boolean visit(MySqlPartitionByHash x);
 
     void endVisit(MySqlPartitionByHash x);
-    
+
     boolean visit(MySqlPartitionByRange x);
 
     void endVisit(MySqlPartitionByRange x);
-    
+
     boolean visit(MySqlPartitionByList x);
 
     void endVisit(MySqlPartitionByList x);
-    
+
     boolean visit(MySqlPartitioningDef x);
 
     void endVisit(MySqlPartitioningDef x);
-    
+
     boolean visit(MySqlPartitioningDef.LessThanValues x);
 
     void endVisit(MySqlPartitioningDef.LessThanValues x);
-    
+
     boolean visit(MySqlPartitioningDef.InValues x);
 
     void endVisit(MySqlPartitioningDef.InValues x);
-} //  
+} //

@@ -88,6 +88,8 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLColumnReference;
+import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
@@ -98,12 +100,14 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
@@ -118,6 +122,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -813,8 +818,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         for (SQLColumnConstraint item : x.getConstaints()) {
-            print(' ');
+            boolean newLine = item instanceof SQLForeignKeyConstraint || item instanceof SQLPrimaryKey || item instanceof SQLColumnReference;
+            if (newLine) {
+                incrementIndent();
+                println();
+            } else {
+                print(' ');
+            }
+            
             item.accept(this);
+            
+            if (newLine) {
+                decrementIndent();
+            }
         }
 
         if (x.getEnable() != null) {
@@ -1348,7 +1364,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     @Override
     public boolean visit(SQLColumnPrimaryKey x) {
+        if (x.getName() != null) {
+            print(" CONSTRAINT ");
+            x.getName().accept(this);
+        }
         print(" PRIMARY KEY");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLColumnUniqueKey x) {
+        if (x.getName() != null) {
+            print(" CONSTRAINT ");
+            x.getName().accept(this);
+        }
+        print(" UNIQUE");
         return false;
     }
 
@@ -1534,13 +1564,49 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(")");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableRenameColumn x) {
         print("RENAME COLUMN ");
         x.getColumn().accept(this);
         print(" TO ");
         x.getTo().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLColumnReference x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(" ");
+        }
+        print("REFERENCES ");
+        x.getTable().accept(this);
+        print(" (");
+        printAndAccept(x.getColumns(), ", ");
+        print(")");
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLForeignKeyImpl x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(' ');
+        }
+
+        print("FOREIGN KEY (");
+        printAndAccept(x.getReferencedColumns(), ", ");
+        print(")");
+
+        print(" REFERENCES ");
+        x.getReferencedTableName().accept(this);
+
+        print(" (");
+        printAndAccept(x.getReferencedColumns(), ", ");
+        print(")");
         return false;
     }
 }

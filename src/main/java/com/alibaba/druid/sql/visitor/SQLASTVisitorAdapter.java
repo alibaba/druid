@@ -71,6 +71,8 @@ import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLColumnReference;
+import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
@@ -82,6 +84,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -696,6 +699,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public boolean visit(SQLColumnPrimaryKey x) {
         return true;
     }
+    
+    @Override
+    public void endVisit(SQLColumnUniqueKey x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLColumnUniqueKey x) {
+        return true;
+    }
 
     @Override
     public void endVisit(SQLWithSubqueryClause x) {
@@ -892,6 +905,26 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableRenameColumn x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLColumnReference x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLColumnReference x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLForeignKeyImpl x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLForeignKeyImpl x) {
         
     }
 }

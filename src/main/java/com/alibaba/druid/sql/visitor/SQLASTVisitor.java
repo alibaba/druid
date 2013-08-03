@@ -71,6 +71,8 @@ import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLColumnReference;
+import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
@@ -82,6 +84,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
@@ -393,6 +396,10 @@ public interface SQLASTVisitor {
     void endVisit(SQLColumnPrimaryKey x);
 
     boolean visit(SQLColumnPrimaryKey x);
+    
+    boolean visit(SQLColumnUniqueKey x);
+    
+    void endVisit(SQLColumnUniqueKey x);
 
     void endVisit(SQLWithSubqueryClause x);
 
@@ -469,5 +476,12 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableRenameColumn x);
     
     void endVisit(SQLAlterTableRenameColumn x);
-
+    
+    boolean visit(SQLColumnReference x);
+    
+    void endVisit(SQLColumnReference x);
+    
+    boolean visit(SQLForeignKeyImpl x);
+    
+    void endVisit(SQLForeignKeyImpl x);
 }
