@@ -3,7 +3,7 @@ package com.alibaba.druid;
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.pool.adapter;
 
 import javax.sql.DataSource;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;

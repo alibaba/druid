@@ -28,7 +28,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockCallableStatement;

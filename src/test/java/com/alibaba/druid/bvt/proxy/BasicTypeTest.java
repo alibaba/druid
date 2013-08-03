@@ -29,7 +29,7 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.proxy.DruidDriver;

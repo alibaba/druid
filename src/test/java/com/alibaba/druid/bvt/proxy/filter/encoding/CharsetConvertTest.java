@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.proxy.filter.encoding;
 
 import java.io.UnsupportedEncodingException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.encoding.CharsetConvert;

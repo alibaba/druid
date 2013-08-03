@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import oracle.jdbc.OracleStatement;
 
 import com.alibaba.druid.pool.DruidDataSource;

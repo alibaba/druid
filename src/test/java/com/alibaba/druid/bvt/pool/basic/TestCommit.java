@@ -18,7 +18,7 @@ package com.alibaba.druid.bvt.pool.basic;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;

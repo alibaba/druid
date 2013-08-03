@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Collections;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -191,7 +191,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
         
-        Assert.assertEquals(0F, stmt.getFloat(1));
+        Assert.assertTrue(0F == stmt.getFloat(1));
         
         stmt.close();
         conn.close();
@@ -202,7 +202,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
         
-        Assert.assertEquals(0F, stmt.getFloat("1"));
+        Assert.assertTrue(0F == stmt.getFloat("1"));
         
         stmt.close();
         conn.close();
@@ -213,7 +213,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
         
-        Assert.assertEquals(0D, stmt.getDouble(1));
+        Assert.assertTrue(0D == stmt.getDouble(1));
         
         stmt.close();
         conn.close();
@@ -224,7 +224,7 @@ public class FilterChainImplTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("select ?");
         stmt.registerOutParameter(1, Types.VARCHAR);
         
-        Assert.assertEquals(0D, stmt.getDouble("1"));
+        Assert.assertTrue(0D == stmt.getDouble("1"));
         
         stmt.close();
         conn.close();

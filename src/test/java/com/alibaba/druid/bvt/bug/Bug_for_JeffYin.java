@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.bug;
 
 import java.sql.Driver;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.util.IOUtils;

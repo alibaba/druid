@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
