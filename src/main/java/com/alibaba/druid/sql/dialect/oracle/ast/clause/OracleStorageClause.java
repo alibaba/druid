@@ -25,6 +25,7 @@ public class OracleStorageClause extends OracleSQLObjectImpl {
     private SQLExpr        next;
     private SQLExpr        minExtents;
     private SQLExpr        maxExtents;
+    private SQLExpr        maxSize;
     private SQLExpr        pctIncrease;
     private SQLExpr        freeLists;
     private SQLExpr        freeListGroups;
@@ -40,6 +41,7 @@ public class OracleStorageClause extends OracleSQLObjectImpl {
             acceptChild(visitor, next);
             acceptChild(visitor, minExtents);
             acceptChild(visitor, maxExtents);
+            acceptChild(visitor, maxSize);
             acceptChild(visitor, pctIncrease);
             acceptChild(visitor, freeLists);
             acceptChild(visitor, freeListGroups);
@@ -47,6 +49,14 @@ public class OracleStorageClause extends OracleSQLObjectImpl {
             acceptChild(visitor, objno);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLExpr getMaxSize() {
+        return maxSize;
+    }
+
+    public void setMaxSize(SQLExpr maxSize) {
+        this.maxSize = maxSize;
     }
 
     public FlashCacheType getFlashCache() {

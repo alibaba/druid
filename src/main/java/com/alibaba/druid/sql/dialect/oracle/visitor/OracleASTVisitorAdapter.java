@@ -80,7 +80,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
@@ -130,6 +129,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
@@ -145,11 +145,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleAggregateExpr astNode) {
-
-    }
-
-    @Override
-    public void endVisit(OracleConstraintState astNode) {
 
     }
 
@@ -265,12 +260,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleAggregateExpr astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleConstraintState astNode) {
 
         return true;
     }
@@ -1374,7 +1363,7 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleUsingIndexClause x) {
-        
+
     }
 
     @Override
@@ -1384,7 +1373,17 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleLobStorageClause x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(OracleUnique x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleUnique x) {
+
     }
 
 }

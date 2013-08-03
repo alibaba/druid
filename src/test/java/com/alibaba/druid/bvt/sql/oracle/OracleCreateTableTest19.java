@@ -71,7 +71,7 @@ public class OracleCreateTableTest19 extends OracleTest {
                 + "\nNOCOMPRESS"
                 + "\nLOGGING"
                 + "\nTABLESPACE \"USERS\""
-                + "\nSTORAGE ( INITIAL 65536 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)",
+                + "\nSTORAGE (INITIAL 65536 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)",
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

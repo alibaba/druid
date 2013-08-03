@@ -36,6 +36,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -108,7 +109,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
@@ -159,6 +159,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -811,11 +812,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleConstraintState astNode) {
-
-    }
-
-    @Override
     public void endVisit(OraclePLSQLCommitStatement astNode) {
 
     }
@@ -1131,12 +1127,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleSelect x) {
 
-    }
-
-    @Override
-    public boolean visit(OracleConstraintState x) {
-        printlnAndAccept(x.getStates(), " ");
-        return false;
     }
 
     @Override
@@ -2089,25 +2079,25 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             print("INDEX ONLY TOPLEVEL");
         }
-        
+
         if (x.getPtcfree() != null) {
             println();
             print("PCTFREE ");
             x.getPtcfree().accept(this);
         }
-        
+
         if (x.getInitrans() != null) {
             println();
             print("INITRANS ");
             x.getInitrans().accept(this);
         }
-        
+
         if (x.getMaxtrans() != null) {
             println();
             print("MAXTRANS ");
             x.getMaxtrans().accept(this);
         }
-        
+
         if (x.isComputeStatistics()) {
             println();
             print("COMPUTE STATISTICS");
@@ -2350,6 +2340,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             x.getUsing().accept(this);
         }
+        if (x.getExceptionsInto() != null) {
+            println();
+            print("EXCEPTIONS INTO ");
+            x.getExceptionsInto().accept(this);
+        }
         return false;
     }
 
@@ -2366,25 +2361,25 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             print("ORGANIZATION INDEX");
         }
-        
+
         if (x.getPtcfree() != null) {
             println();
             print("PCTFREE ");
             x.getPtcfree().accept(this);
         }
-        
+
         if (x.getInitrans() != null) {
             println();
             print("INITRANS ");
             x.getInitrans().accept(this);
         }
-        
+
         if (x.getMaxtrans() != null) {
             println();
             print("MAXTRANS ");
             x.getMaxtrans().accept(this);
         }
-        
+
         if (x.isInMemoryMetadata()) {
             println();
             print("IN_MEMORY_METADATA");
@@ -2426,7 +2421,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             print("NOLOGGING");
         }
-        
+
         if (x.getTablespace() != null) {
             println();
             print("TABLESPACE ");
@@ -2437,7 +2432,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             x.getStorage().accept(this);
         }
-        
+
         if (x.getLobStorage() != null) {
             println();
             x.getLobStorage().accept(this);
@@ -2488,29 +2483,60 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleStorageClause x) {
         print("STORAGE (");
 
+        boolean first = true;
         if (x.getInitial() != null) {
-            print(" INITIAL ");
+            if (!first) {
+                print(' ');
+            }
+            print("INITIAL ");
             x.getInitial().accept(this);
+            first = false;
+        }
+
+        if (x.getMaxSize() != null) {
+            if (!first) {
+                print(' ');
+            }
+            print("MAXSIZE ");
+            x.getMaxSize().accept(this);
+            first = false;
         }
 
         if (x.getFreeLists() != null) {
-            print(" FREELISTS ");
+            if (!first) {
+                print(' ');
+            }
+            print("FREELISTS ");
             x.getFreeLists().accept(this);
+            first = false;
         }
 
         if (x.getFreeListGroups() != null) {
-            print(" FREELIST GROUPS ");
+            if (!first) {
+                print(' ');
+            }
+
+            print("FREELIST GROUPS ");
             x.getFreeListGroups().accept(this);
+            first = false;
         }
 
         if (x.getBufferPool() != null) {
-            print(" BUFFER_POOL ");
+            if (!first) {
+                print(' ');
+            }
+            print("BUFFER_POOL ");
             x.getBufferPool().accept(this);
+            first = false;
         }
 
         if (x.getObjno() != null) {
-            print(" OBJNO ");
+            if (!first) {
+                print(' ');
+            }
+            print("OBJNO ");
             x.getObjno().accept(this);
+            first = false;
         }
 
         print(")");
@@ -3170,26 +3196,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print(" PCTFREE ");
                 x.getPtcfree().accept(this);
             }
-            
+
             if (x.getInitrans() != null) {
                 print(" INITRANS ");
                 x.getInitrans().accept(this);
             }
-            
+
             if (x.getMaxtrans() != null) {
                 print(" MAXTRANS ");
                 x.getMaxtrans().accept(this);
             }
-            
+
             if (x.isComputeStatistics()) {
                 print(" COMPUTE STATISTICS");
             }
-            
+
             if (x.getTablespace() != null) {
                 print(" TABLESPACE ");
                 x.getTablespace().accept(this);
             }
-            
+
             if (x.getEnable() != null) {
                 if (x.getEnable().booleanValue()) {
                     print(" ENABLE");
@@ -3212,15 +3238,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("LOB (");
         printAndAccept(x.getItems(), ",");
         print(") STORE AS ");
-        
+
         if (x.isSecureFile()) {
             print("SECUREFILE ");
         }
-        
+
         if (x.isBasicFile()) {
             print("BASICFILE ");
         }
-        
+
         boolean first = true;
         print('(');
         if (x.getTableSpace() != null) {
@@ -3231,7 +3257,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getTableSpace().accept(this);
             first = false;
         }
-        
+
         if (x.getEnable() != null) {
             if (!first) {
                 print(' ');
@@ -3242,7 +3268,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print("DISABLE STORAGE IN ROW");
             }
         }
-        
+
         if (x.getChunk() != null) {
             if (!first) {
                 print(' ');
@@ -3250,7 +3276,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print("CHUNK ");
             x.getChunk().accept(this);
         }
-        
+
         if (x.getCache() != null) {
             if (!first) {
                 print(' ');
@@ -3260,7 +3286,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             } else {
                 print("NOCACHE");
             }
-            
+
             if (x.getLogging() != null) {
                 if (x.getLogging().booleanValue()) {
                     print(" LOGGING");
@@ -3269,7 +3295,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 }
             }
         }
-        
+
         if (x.getCompress() != null) {
             if (!first) {
                 print(' ');
@@ -3280,7 +3306,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print("NOCOMPRESS");
             }
         }
-        
+
         if (x.getKeepDuplicate() != null) {
             if (!first) {
                 print(' ');
@@ -3291,13 +3317,34 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print("DEDUPLICATE");
             }
         }
-        
+
         print(')');
         return false;
     }
 
     @Override
     public void endVisit(OracleLobStorageClause x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(OracleUnique x) {
+        visit((SQLUnique) x);
+
+        if (x.getUsing() != null) {
+            println();
+            x.getUsing().accept(this);
+        }
+        if (x.getExceptionsInto() != null) {
+            println();
+            print("EXCEPTIONS INTO ");
+            x.getExceptionsInto().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleUnique x) {
+
     }
 }

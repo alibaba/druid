@@ -37,7 +37,6 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLConstaint;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
@@ -72,6 +71,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
@@ -997,11 +997,20 @@ public class OracleStatementParser extends SQLStatementParser {
 
         SQLName name = this.exprParser.name();
 
-        SQLConstaint constraint;
+        OracleConstraint constraint;
         if (lexer.token() == Token.PRIMARY) {
-            constraint = exprParser.parsePrimaryKey();
+            constraint = (OracleConstraint) exprParser.parsePrimaryKey();
+        } else if (lexer.token() == Token.UNIQUE) {
+            constraint = (OracleConstraint) exprParser.parseUnique();
         } else {
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+        }
+        
+        if (lexer.token() == Token.EXCEPTIONS) {
+            lexer.nextToken();
+            accept(Token.INTO);
+            SQLName exceptionsInto = this.exprParser.name();
+            constraint.setExceptionsInto(exceptionsInto);
         }
 
         constraint.setName(name);

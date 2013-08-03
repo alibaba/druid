@@ -62,7 +62,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
@@ -114,7 +113,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
     public void test_adapter() throws Exception {
         OracleASTVisitorAdapter adapter = new OracleASTVisitorAdapter();
 
-        new OracleConstraintState().accept(adapter);
         new OraclePLSQLCommitStatement().accept(adapter);
         new OracleAnalytic().accept(adapter);
         new OracleAnalyticWindowing().accept(adapter);

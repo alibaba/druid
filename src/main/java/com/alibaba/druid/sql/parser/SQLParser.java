@@ -77,6 +77,7 @@ public class SQLParser {
                     case NEXT:
                     case MINEXTENTS:
                     case MAXEXTENTS:
+                    case MAXSIZE:
                     case PCTINCREASE:
                     case FLASH_CACHE:
                     case CELL_FLASH_CACHE:
@@ -91,6 +92,7 @@ public class SQLParser {
                     case LOGGING:
                     case NOCOMPRESS:
                     case KEEP_DUPLICATES:
+                    case EXCEPTIONS:
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         return alias;

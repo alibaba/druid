@@ -72,7 +72,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
@@ -118,6 +117,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTruncateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -125,8 +125,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleAggregateExpr astNode);
-
-    void endVisit(OracleConstraintState astNode);
 
     void endVisit(OraclePLSQLCommitStatement astNode);
 
@@ -173,8 +171,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleUpdateStatement x);
 
     boolean visit(OracleAggregateExpr astNode);
-
-    boolean visit(OracleConstraintState astNode);
 
     boolean visit(OraclePLSQLCommitStatement astNode);
 
@@ -587,15 +583,15 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleDropDatabaseLinkStatement x);
 
     void endVisit(OracleDropDatabaseLinkStatement x);
-    
+
     boolean visit(OracleDataTypeTimestamp x);
 
     void endVisit(OracleDataTypeTimestamp x);
-    
+
     boolean visit(OracleDataTypeIntervalYear x);
 
     void endVisit(OracleDataTypeIntervalYear x);
-    
+
     boolean visit(OracleDataTypeIntervalDay x);
 
     void endVisit(OracleDataTypeIntervalDay x);
@@ -603,12 +599,16 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleDropSequenceStatement x);
 
     void endVisit(OracleDropSequenceStatement x);
-    
+
     boolean visit(OracleUsingIndexClause x);
-    
+
     void endVisit(OracleUsingIndexClause x);
-    
+
     boolean visit(OracleLobStorageClause x);
-    
+
     void endVisit(OracleLobStorageClause x);
+
+    boolean visit(OracleUnique x);
+
+    void endVisit(OracleUnique x);
 }

@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -67,6 +68,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -438,6 +440,7 @@ public class OracleExprParser extends SQLExprParser {
            case NEXT:
            case MINEXTENTS:
            case MAXEXTENTS:
+           case MAXSIZE:
            case PCTINCREASE:
            case FLASH_CACHE:
            case CELL_FLASH_CACHE:
@@ -452,6 +455,7 @@ public class OracleExprParser extends SQLExprParser {
            case LOGGING:
            case NOCOMPRESS:
            case KEEP_DUPLICATES:
+           case EXCEPTIONS:
                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                lexer.nextToken();
                return  primaryRest(sqlExpr);
@@ -981,55 +985,60 @@ public class OracleExprParser extends SQLExprParser {
 
         
         if (lexer.token() == Token.USING) {
-            lexer.nextToken();
-            accept(Token.INDEX);
-            
-            OracleUsingIndexClause using = new OracleUsingIndexClause();
-            
-            for (;;) {
-                if (lexer.token() == Token.TABLESPACE) {
-                    lexer.nextToken();
-                    using.setTablespace(this.name());
-                    continue;
-                } else if (lexer.token() == Token.PCTFREE) {
-                    lexer.nextToken();
-                    using.setPtcfree(this.expr());
-                    continue;
-                } else if (lexer.token() == Token.INITRANS) {
-                    lexer.nextToken();
-                    using.setInitrans(this.expr());
-                    continue;
-                } else if (lexer.token() == Token.MAXTRANS) {
-                    lexer.nextToken();
-                    using.setMaxtrans(this.expr());
-                    continue;
-                } else if (lexer.token() == Token.COMPUTE) {
-                    lexer.nextToken();
-                    acceptIdentifier("STATISTICS");
-                    using.setComputeStatistics(true);
-                   continue;
-                } else if (lexer.token() == Token.ENABLE) {
-                    lexer.nextToken();
-                    using.setEnable(true);
-                    continue;
-                } else if (lexer.token() == Token.DISABLE) {
-                    lexer.nextToken();
-                    using.setEnable(false);
-                    continue;
-                } else if (lexer.token() == Token.STORAGE) {
-                    OracleStorageClause storage = parseStorage();
-                    using.setStorage(storage);
-                    continue;
-                } else if (lexer.token() == Token.IDENTIFIER) {
-                    using.setTablespace(this.name());
-                    break;
-                } else {
-                    break;
-                }
-            }
+            OracleUsingIndexClause using = parseUsingIndex();
             primaryKey.setUsing(using);
         }
         return primaryKey;
+    }
+
+    private OracleUsingIndexClause parseUsingIndex() {
+        accept(Token.USING);
+        accept(Token.INDEX);
+        
+        OracleUsingIndexClause using = new OracleUsingIndexClause();
+        
+        for (;;) {
+            if (lexer.token() == Token.TABLESPACE) {
+                lexer.nextToken();
+                using.setTablespace(this.name());
+                continue;
+            } else if (lexer.token() == Token.PCTFREE) {
+                lexer.nextToken();
+                using.setPtcfree(this.expr());
+                continue;
+            } else if (lexer.token() == Token.INITRANS) {
+                lexer.nextToken();
+                using.setInitrans(this.expr());
+                continue;
+            } else if (lexer.token() == Token.MAXTRANS) {
+                lexer.nextToken();
+                using.setMaxtrans(this.expr());
+                continue;
+            } else if (lexer.token() == Token.COMPUTE) {
+                lexer.nextToken();
+                acceptIdentifier("STATISTICS");
+                using.setComputeStatistics(true);
+               continue;
+            } else if (lexer.token() == Token.ENABLE) {
+                lexer.nextToken();
+                using.setEnable(true);
+                continue;
+            } else if (lexer.token() == Token.DISABLE) {
+                lexer.nextToken();
+                using.setEnable(false);
+                continue;
+            } else if (lexer.token() == Token.STORAGE) {
+                OracleStorageClause storage = parseStorage();
+                using.setStorage(storage);
+                continue;
+            } else if (lexer.token() == Token.IDENTIFIER) {
+                using.setTablespace(this.name());
+                break;
+            } else {
+                break;
+            }
+        }
+        return using;
     }
     
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
@@ -1160,6 +1169,10 @@ public class OracleExprParser extends SQLExprParser {
                 lexer.nextToken();
                 storage.setMaxExtents(this.expr());
                 continue;
+            } else if (lexer.token() == Token.MAXSIZE) {
+                lexer.nextToken();
+                storage.setMaxSize(this.expr());
+                continue;
             } else if (lexer.token() == Token.PCTINCREASE) {
                 lexer.nextToken();
                 storage.setPctIncrease(this.expr());
@@ -1217,5 +1230,21 @@ public class OracleExprParser extends SQLExprParser {
         }
         accept(Token.RPAREN);
         return storage;
+    }
+    
+    public SQLUnique parseUnique() {
+        accept(Token.UNIQUE);
+
+        OracleUnique unique = new OracleUnique();
+        accept(Token.LPAREN);
+        exprList(unique.getColumns(), unique);
+        accept(Token.RPAREN);
+        
+        if (lexer.token() == Token.USING) {
+            OracleUsingIndexClause using = parseUsingIndex();
+            unique.setUsing(using);
+        }
+
+        return unique;
     }
 }

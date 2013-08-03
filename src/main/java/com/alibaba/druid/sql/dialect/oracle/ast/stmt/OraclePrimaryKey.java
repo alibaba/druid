@@ -25,12 +25,13 @@ import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OraclePrimaryKey extends OracleSQLObjectImpl implements SQLPrimaryKey, SQLTableElement {
+public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement {
 
     private SQLName                name;
     private List<SQLExpr>          columns = new ArrayList<SQLExpr>();
 
     private OracleUsingIndexClause using;
+    private SQLName                exceptionsInto;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -38,6 +39,7 @@ public class OraclePrimaryKey extends OracleSQLObjectImpl implements SQLPrimaryK
             acceptChild(visitor, name);
             acceptChild(visitor, columns);
             acceptChild(visitor, using);
+            acceptChild(visitor, exceptionsInto);
         }
         visitor.endVisit(this);
     }
@@ -64,6 +66,14 @@ public class OraclePrimaryKey extends OracleSQLObjectImpl implements SQLPrimaryK
 
     public void setUsing(OracleUsingIndexClause using) {
         this.using = using;
+    }
+
+    public SQLName getExceptionsInto() {
+        return exceptionsInto;
+    }
+
+    public void setExceptionsInto(SQLName exceptionsInto) {
+        this.exceptionsInto = exceptionsInto;
     }
 
 }

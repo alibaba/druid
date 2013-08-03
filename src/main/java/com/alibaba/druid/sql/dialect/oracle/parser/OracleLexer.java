@@ -92,6 +92,7 @@ public class OracleLexer extends Lexer {
         map.put("NEXT", Token.NEXT);
         map.put("MINEXTENTS", Token.MINEXTENTS);
         map.put("MAXEXTENTS", Token.MAXEXTENTS);
+        map.put("MAXSIZE", Token.MAXSIZE);
         map.put("PCTINCREASE", Token.PCTINCREASE);
         map.put("FLASH_CACHE", Token.FLASH_CACHE);
         map.put("CELL_FLASH_CACHE", Token.CELL_FLASH_CACHE);
@@ -106,6 +107,7 @@ public class OracleLexer extends Lexer {
         map.put("LOGGING", Token.LOGGING);
         map.put("NOCOMPRESS", Token.NOCOMPRESS);
         map.put("KEEP_DUPLICATES", Token.KEEP_DUPLICATES);
+        map.put("EXCEPTIONS", Token.EXCEPTIONS);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
