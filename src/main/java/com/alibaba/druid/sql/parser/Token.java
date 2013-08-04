@@ -22,6 +22,7 @@ package com.alibaba.druid.sql.parser;
  * @formatter:off
  */
 public enum Token {
+    EXPLAIN("EXPLAIN"), 
     FOR("FOR"), 
     IF("IF"), 
     INDEX("INDEX"), 

@@ -48,6 +48,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -89,7 +90,17 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public void parseStatementList(List<SQLStatement> statementList) {
+        parseStatementList(statementList, -1);
+    }
+
+    public void parseStatementList(List<SQLStatement> statementList, int max) {
         for (;;) {
+            if (max != -1) {
+                if (statementList.size() >= max) {
+                    return;
+                }
+            }
+
             if (lexer.token() == Token.EOF) {
                 return;
             }
@@ -123,6 +134,11 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.token() == (Token.DELETE)) {
                 statementList.add(parseDeleteStatement());
+                continue;
+            }
+            
+            if (lexer.token() == (Token.EXPLAIN)) {
+                statementList.add(parseExplain());
                 continue;
             }
 
@@ -587,7 +603,7 @@ public class SQLStatementParser extends SQLParser {
                 stmt.setCascade(Boolean.FALSE);
                 continue;
             }
-            
+
             break;
         }
 
@@ -999,5 +1015,29 @@ public class SQLStatementParser extends SQLParser {
             break;
         }
         return item;
+    }
+
+    public SQLStatement parseStatement() {
+        List<SQLStatement> list = new ArrayList<SQLStatement>();
+
+        this.parseStatementList(list, 1);
+
+        return list.get(0);
+    }
+
+    public SQLExplainStatement parseExplain() {
+        accept(Token.EXPLAIN);
+        if (identifierEquals("PLAN")) {
+            lexer.nextToken();
+        }
+        
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+        }
+        
+        SQLExplainStatement explain = new SQLExplainStatement();
+        explain.setStatement(parseStatement());
+
+        return explain;
     }
 }

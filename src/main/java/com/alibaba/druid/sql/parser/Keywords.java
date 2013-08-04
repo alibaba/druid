@@ -58,6 +58,7 @@ public class Keywords {
         map.put("DISTINCT", Token.DISTINCT);
         map.put("DROP", Token.DROP);
         map.put("ELSE", Token.ELSE);
+        map.put("EXPLAIN", Token.EXPLAIN);
 
         map.put("END", Token.END);
         map.put("ESCAPE", Token.ESCAPE);

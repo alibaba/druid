@@ -86,6 +86,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
@@ -962,6 +963,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLDropUserStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLExplainStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLExplainStatement x) {
         return true;
     }
 }

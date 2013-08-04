@@ -1882,7 +1882,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         print("FRO");
         println();
-        x.getForStatement().accept(this);
+        x.getStatement().accept(this);
 
         decrementIndent();
         return false;

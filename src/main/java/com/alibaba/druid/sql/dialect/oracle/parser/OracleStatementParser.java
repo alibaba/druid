@@ -140,11 +140,6 @@ public class OracleStatementParser extends SQLStatementParser {
         }
     }
 
-    @Override
-    public void parseStatementList(List<SQLStatement> statementList) {
-        parseStatementList(statementList, -1);
-    }
-
     public void parseStatementList(List<SQLStatement> statementList, int max) {
         for (;;) {
             if (max != -1) {
@@ -298,12 +293,12 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
-            if (lexer.token() == Token.IDENTIFIER) {
-                if (identifierEquals("EXPLAIN")) {
-                    statementList.add(this.parseExplain());
-                    continue;
-                }
+            if (lexer.token() == Token.EXPLAIN) {
+                statementList.add(this.parseExplain());
+                continue;
+            }
 
+            if (lexer.token() == Token.IDENTIFIER) {
                 SQLExpr expr = exprParser.expr();
                 OracleExprStatement stmt = new OracleExprStatement(expr);
                 statementList.add(stmt);
@@ -470,7 +465,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     statementList.add(stmt);
                     continue;
                 }
-                
+
                 if (lexer.token() == Token.TRIGGER) {
                     SQLDropTriggerStatement stmt = parseDropTrigger(false);
                     statementList.add(stmt);
@@ -1453,16 +1448,8 @@ public class OracleStatementParser extends SQLStatementParser {
         return clause;
     }
 
-    public SQLStatement parseStatement() {
-        List<SQLStatement> list = new ArrayList<SQLStatement>();
-
-        this.parseStatementList(list, 1);
-
-        return list.get(0);
-    }
-
     public OracleExplainStatement parseExplain() {
-        acceptIdentifier("EXPLAIN");
+        accept(Token.EXPLAIN);
         acceptIdentifier("PLAN");
         OracleExplainStatement stmt = new OracleExplainStatement();
 
@@ -1479,7 +1466,7 @@ public class OracleStatementParser extends SQLStatementParser {
         }
 
         accept(Token.FOR);
-        stmt.setForStatement(parseStatement());
+        stmt.setStatement(parseStatement());
 
         return stmt;
     }
