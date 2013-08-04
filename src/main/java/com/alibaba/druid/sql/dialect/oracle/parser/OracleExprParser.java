@@ -83,7 +83,6 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
 
-
     public boolean                allowStringAdditive = false;
 
     /**
@@ -200,8 +199,15 @@ public class OracleExprParser extends SQLExprParser {
             }
         }
         
-        SQLName typeExpr = name();
-        String typeName = typeExpr.toString();
+        String typeName;
+        if (identifierEquals("LONG")) {
+            lexer.nextToken();
+            acceptIdentifier("RAW");
+            typeName = "LONG RAW";
+        } else {
+            SQLName typeExpr = name();
+            typeName = typeExpr.toString();
+        }
         
         if ("TIMESTAMP".equalsIgnoreCase(typeName)) {
             OracleDataTypeTimestamp timestamp = new OracleDataTypeTimestamp();
@@ -263,6 +269,8 @@ public class OracleExprParser extends SQLExprParser {
                 throw new ParserException("syntax error : " + lexer.token() + " " + lexer.stringVal());
             }
         }
+        
+
 
         SQLDataType dataType = new SQLDataTypeImpl(typeName);        
         return parseDataTypeRest(dataType);
