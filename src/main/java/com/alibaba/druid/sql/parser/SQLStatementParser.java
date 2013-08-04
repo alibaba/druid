@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
@@ -51,6 +52,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
+import com.alibaba.druid.sql.ast.statement.SQLGrantStatement.ObjectType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -318,41 +320,141 @@ public class SQLStatementParser extends SQLParser {
         SQLGrantStatement stmt = new SQLGrantStatement();
 
         for (;;) {
+            String privilege = null;
             if (lexer.token() == Token.ALL) {
                 lexer.nextToken();
                 if (identifierEquals("PRIVILEGES")) {
-                    lexer.nextToken();
-                    stmt.addPrivileges("ALL PRIVILEGES");
+                    privilege = "ALL PRIVILEGES";
                 } else {
-                    stmt.addPrivileges("ALL");
+                    privilege = "ALL";
                 }
             } else if (lexer.token() == Token.SELECT) {
-                stmt.addPrivileges("SELECT");
+                privilege = "SELECT";
                 lexer.nextToken();
             } else if (lexer.token() == Token.UPDATE) {
-                stmt.addPrivileges("UPDATE");
+                privilege = "UPDATE";
                 lexer.nextToken();
             } else if (lexer.token() == Token.DELETE) {
-                stmt.addPrivileges("DELETE");
+                privilege = "DELETE";
                 lexer.nextToken();
             } else if (lexer.token() == Token.INSERT) {
-                stmt.addPrivileges("INSERT");
+                privilege = "INSERT";
+                lexer.nextToken();
+            } else if (lexer.token() == Token.REFERENCES) {
+                privilege = "REFERENCES";
                 lexer.nextToken();
             } else if (lexer.token() == Token.CREATE) {
                 lexer.nextToken();
 
                 if (lexer.token() == Token.TABLE) {
-                    stmt.addPrivileges("CREATE TABLE");
+                    privilege = "CREATE TABLE";
                     lexer.nextToken();
+                } else if (lexer.token() == Token.SESSION) {
+                    privilege = "CREATE SESSION";
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.ANY) {
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.TABLE) {
+                        lexer.nextToken();
+                        privilege = "CREATE ANY TABLE";
+                    } else if (identifierEquals("MATERIALIZED")) {
+                        lexer.nextToken();
+                        accept(Token.VIEW);
+                        privilege = "CREATE ANY MATERIALIZED VIEW";
+                    } else {
+                        throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    }
                 } else if (identifierEquals("SYNONYM")) {
-                    stmt.addPrivileges("CREATE SYNONYM");
+                    privilege = "CREATE SYNONYM";
+                    lexer.nextToken();
+                } else if (identifierEquals("ROUTINE")) {
+                    privilege = "CREATE ROUTINE";
                     lexer.nextToken();
                 } else {
                     throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
                 }
-            } else if (identifierEquals("USAGE")) {
-                stmt.addPrivileges("USAGE");
+            } else if (lexer.token() == Token.ALTER) {
                 lexer.nextToken();
+                if (lexer.token() == Token.TABLE) {
+                    privilege = "ALTER TABLE";
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.SESSION) {
+                    privilege = "ALTER SESSION";
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.ANY) {
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.TABLE) {
+                        lexer.nextToken();
+                        privilege = "ALTER ANY TABLE";
+                    } else if (identifierEquals("MATERIALIZED")) {
+                        lexer.nextToken();
+                        accept(Token.VIEW);
+                        privilege = "ALTER ANY MATERIALIZED VIEW";
+                    } else {
+                        throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    }
+                } else {
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
+            } else if (lexer.token() == Token.DROP) {
+                lexer.nextToken();
+                if (lexer.token() == Token.DROP) {
+                    privilege = "DROP TABLE";
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.SESSION) {
+                    privilege = "DROP SESSION";
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.ANY) {
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.TABLE) {
+                        lexer.nextToken();
+                        privilege = "DROP ANY TABLE";
+                    } else if (identifierEquals("MATERIALIZED")) {
+                        lexer.nextToken();
+                        accept(Token.VIEW);
+                        privilege = "DROP ANY MATERIALIZED VIEW";
+                    } else {
+                        throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    }
+                } else {
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
+            } else if (identifierEquals("USAGE")) {
+                privilege = "USAGE";
+                lexer.nextToken();
+            } else if (identifierEquals("EXECUTE")) {
+                privilege = "EXECUTE";
+                lexer.nextToken();
+            } else if (identifierEquals("PROXY")) {
+                privilege = "PROXY";
+                lexer.nextToken();
+            } else if (identifierEquals("QUERY")) {
+                lexer.nextToken();
+                acceptIdentifier("REWRITE");
+                privilege = "QUERY REWRITE";
+            } else if (identifierEquals("GLOBAL")) {
+                lexer.nextToken();
+                acceptIdentifier("QUERY");
+                acceptIdentifier("REWRITE");
+                privilege = "GLOBAL QUERY REWRITE";
+            } else if (identifierEquals("INHERIT")) {
+                lexer.nextToken();
+                acceptIdentifier("PRIVILEGES");
+                privilege = "INHERIT PRIVILEGES";
+            }
+
+            if (privilege != null) {
+                SQLExpr expr = new SQLIdentifierExpr(privilege);
+
+                if (lexer.token() == Token.LPAREN) {
+                    expr = this.exprParser.primaryRest(expr);
+                }
+
+                expr.setParent(stmt);
+                stmt.getPrivileges().add(expr);
             }
 
             if (lexer.token() == Token.COMMA) {
@@ -364,6 +466,21 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token() == Token.ON) {
             lexer.nextToken();
+
+            if (lexer.token() == Token.PROCEDURE) {
+                lexer.nextToken();
+                stmt.setObjectType(ObjectType.PROCEDURE);
+            } else if (lexer.token() == Token.FUNCTION) {
+                lexer.nextToken();
+                stmt.setObjectType(ObjectType.FUNCTION);
+            } else if (lexer.token() == Token.TABLE) {
+                lexer.nextToken();
+                stmt.setObjectType(ObjectType.TABLE);
+            } else if (lexer.token() == Token.USER) {
+                lexer.nextToken();
+                stmt.setObjectType(ObjectType.USER);
+            }
+
             stmt.setOn(this.exprParser.expr());
         }
 
@@ -381,27 +498,33 @@ public class SQLStatementParser extends SQLParser {
                     stmt.setMaxQueriesPerHour(this.exprParser.primary());
                     continue;
                 }
-                
+
                 if (identifierEquals("MAX_UPDATES_PER_HOUR")) {
                     lexer.nextToken();
                     stmt.setMaxUpdatesPerHour(this.exprParser.primary());
                     continue;
                 }
-                
+
                 if (identifierEquals("MAX_CONNECTIONS_PER_HOUR")) {
                     lexer.nextToken();
                     stmt.setMaxConnectionsPerHour(this.exprParser.primary());
                     continue;
                 }
-                
+
                 if (identifierEquals("MAX_USER_CONNECTIONS")) {
                     lexer.nextToken();
                     stmt.setMaxUserConnections(this.exprParser.primary());
                     continue;
                 }
-                
+
                 break;
             }
+        }
+        
+        if (identifierEquals("ADMIN")) {
+            lexer.nextToken();
+            acceptIdentifier("OPTION");
+            stmt.setAdminOption(true);
         }
 
         return stmt;

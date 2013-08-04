@@ -1723,6 +1723,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         if (x.getOn() != null) {
             print(" ON ");
+            
+            if (x.getObjectType() != null) {
+                print(x.getObjectType().name());
+                print(' ');
+            }
+            
             x.getOn().accept(this);
         }
 
@@ -1766,6 +1772,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
             print(" MAX_USER_CONNECTIONS ");
             x.getMaxUserConnections().accept(this);
+        }
+        
+        if (x.isAdminOption()) {
+            if (!with) {
+                print(" WITH");
+                with = true;
+            }
+            print(" ADMIN OPTION");
         }
 
         return false;

@@ -52,6 +52,8 @@ public class Keywords {
         map.put("DEFAULT", Token.DEFAULT);
         map.put("COLUMN", Token.COLUMN);
         map.put("TABLESPACE", Token.TABLESPACE);
+        map.put("PROCEDURE", Token.PROCEDURE);
+        map.put("FUNCTION", Token.FUNCTION);
 
         map.put("DELETE", Token.DELETE);
         map.put("DESC", Token.DESC);

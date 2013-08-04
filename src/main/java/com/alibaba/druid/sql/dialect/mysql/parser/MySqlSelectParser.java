@@ -196,7 +196,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             queryBlock.setLimit(parseLimit());
         }
 
-        if (identifierEquals("PROCEDURE")) {
+        if (lexer.token() == Token.PROCEDURE) {
             lexer.nextToken();
             throw new ParserException("TODO");
         }

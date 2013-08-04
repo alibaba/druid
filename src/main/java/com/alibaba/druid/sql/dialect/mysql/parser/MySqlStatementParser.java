@@ -85,6 +85,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement.LockType;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
@@ -506,6 +507,20 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
         return stmt;
     }
+    
+    public MySqlOptimizeStatement parseOptimize() {
+        accept(Token.OPTIMIZE);
+        accept(Token.TABLE);
+        
+        MySqlOptimizeStatement stmt = new MySqlOptimizeStatement();
+        List<SQLName> names = new ArrayList<SQLName>();
+        this.exprParser.names(names, stmt);
+        
+        for (SQLName name : names) {
+            stmt.getTableSources().add(new SQLExprTableSource(name));
+        }
+        return stmt;
+    }
 
     public SQLStatement parseReset() {
         acceptIdentifier(RESET);
@@ -591,6 +606,12 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.ANALYZE) {
             SQLStatement stmt = parseAnalyze();
+            statementList.add(stmt);
+            return true;
+        }
+        
+        if (lexer.token() == Token.OPTIMIZE) {
+            SQLStatement stmt = parseOptimize();
             statementList.add(stmt);
             return true;
         }
@@ -910,7 +931,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 return stmt;
             }
 
-            if (identifierEquals("FUNCTION")) {
+            if (lexer.token() == Token.FUNCTION) {
                 lexer.nextToken();
 
                 MySqlShowCreateFunctionStatement stmt = new MySqlShowCreateFunctionStatement();
@@ -918,7 +939,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 return stmt;
             }
 
-            if (identifierEquals("PROCEDURE")) {
+            if (lexer.token() == Token.PROCEDURE) {
                 lexer.nextToken();
 
                 MySqlShowCreateProcedureStatement stmt = new MySqlShowCreateProcedureStatement();
@@ -997,7 +1018,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        if (identifierEquals("FUNCTION")) {
+        if (lexer.token() == Token.FUNCTION) {
             lexer.nextToken();
 
             if (identifierEquals("CODE")) {
@@ -1131,7 +1152,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        if (identifierEquals("PROCEDURE")) {
+        if (lexer.token() == Token.PROCEDURE) {
             lexer.nextToken();
 
             if (identifierEquals("CODE")) {
@@ -2342,7 +2363,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("CHECK")) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
-                } else if (identifierEquals("OPTIMIZE")) {
+                } else if (lexer.token() == Token.OPTIMIZE) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("REBUILD")) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());

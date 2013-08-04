@@ -63,7 +63,6 @@ public class OracleLexer extends Lexer {
         map.put("OF", Token.OF);
         map.put("PRIOR", Token.PRIOR);
 
-        map.put("PROCEDURE", Token.PROCEDURE);
         map.put("REJECT", Token.REJECT);
         map.put("RETURNING", Token.RETURNING);
         map.put("SAVEPOINT", Token.SAVEPOINT);

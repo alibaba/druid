@@ -162,6 +162,7 @@ public enum Token {
     ADVISE("ADVISE"),
     SESSION("SESSION"),
     PROCEDURE("PROCEDURE"),
+    FUNCTION("FUNCTION"),
     SYSDATE("SYSDATE"),
     DECLARE("DECLARE"),
     EXCEPTION("EXCEPTION"),
@@ -204,6 +205,7 @@ public enum Token {
     
     COMPUTE("COMPUTE"),
     ANALYZE("ANALYZE"),
+    OPTIMIZE("OPTIMIZE"),
     
     // transact-sql
     TOP("TOP"),

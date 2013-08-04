@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLGrantStatement extends SQLStatementImpl {
@@ -31,10 +30,13 @@ public class SQLGrantStatement extends SQLStatementImpl {
     private SQLExpr             to;
 
     // mysql
+    private ObjectType          objectType;
     private SQLExpr             maxQueriesPerHour;
     private SQLExpr             maxUpdatesPerHour;
     private SQLExpr             maxConnectionsPerHour;
     private SQLExpr             maxUserConnections;
+
+    private boolean             adminOption;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -43,6 +45,14 @@ public class SQLGrantStatement extends SQLStatementImpl {
             acceptChild(visitor, to);
         }
         visitor.endVisit(this);
+    }
+
+    public ObjectType getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(ObjectType objectType) {
+        this.objectType = objectType;
     }
 
     public SQLExpr getOn() {
@@ -63,12 +73,6 @@ public class SQLGrantStatement extends SQLStatementImpl {
 
     public List<SQLExpr> getPrivileges() {
         return privileges;
-    }
-
-    public void addPrivileges(String privilege) {
-        SQLIdentifierExpr expr = new SQLIdentifierExpr(privilege);
-        expr.setParent(this);
-        this.privileges.add(expr);
     }
 
     public SQLExpr getMaxQueriesPerHour() {
@@ -103,4 +107,15 @@ public class SQLGrantStatement extends SQLStatementImpl {
         this.maxUserConnections = maxUserConnections;
     }
 
+    public boolean isAdminOption() {
+        return adminOption;
+    }
+
+    public void setAdminOption(boolean adminOption) {
+        this.adminOption = adminOption;
+    }
+
+    public static enum ObjectType {
+        TABLE, FUNCTION, PROCEDURE, USER
+    }
 }

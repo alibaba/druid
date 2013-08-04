@@ -50,6 +50,7 @@ public class MySqlLexer extends Lexer {
         map.put("SHOW", Token.SHOW);
         map.put("CACHE", Token.CACHE);
         map.put("ANALYZE", Token.ANALYZE);
+        map.put("OPTIMIZE", Token.OPTIMIZE);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }
