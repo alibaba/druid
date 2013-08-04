@@ -92,15 +92,15 @@ import com.alibaba.druid.util.StringUtils;
  */
 public class ConfigFilter extends FilterAdapter {
 
-    private static Log         LOG                       = LogFactory.getLog(ConfigFilter.class);
+    private static Log         LOG                     = LogFactory.getLog(ConfigFilter.class);
 
-    public static final String CONFIG_FILE               = "config.file";
-    public static final String CONFIG_DECRYPT            = "config.decrypt";
-    public static final String CONFIG_KEY                = "config.decrypt.key";
+    public static final String CONFIG_FILE             = "config.file";
+    public static final String CONFIG_DECRYPT          = "config.decrypt";
+    public static final String CONFIG_KEY              = "config.decrypt.key";
 
-    public static final String SYS_PROP_CONFIG_FILE      = "druid.config.file";
-    public static final String SYS_PROP_CONFIG_DECRYPT   = "druid.config.decrypt";
-    public static final String SYS_PROP_CONFIG_KEY       = "druid.config.decrypt.key";
+    public static final String SYS_PROP_CONFIG_FILE    = "druid.config.file";
+    public static final String SYS_PROP_CONFIG_DECRYPT = "druid.config.decrypt";
+    public static final String SYS_PROP_CONFIG_KEY     = "druid.config.decrypt.key";
 
     public ConfigFilter(){
     }
@@ -213,7 +213,10 @@ public class ConfigFilter extends FilterAdapter {
     }
 
     public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
-        String key = configFileProperties.getProperty(CONFIG_KEY);
+        String key = null;
+        if (configFileProperties != null) {
+            configFileProperties.getProperty(CONFIG_KEY);
+        }
 
         if (StringUtils.isEmpty(key) && connectinProperties != null) {
             key = connectinProperties.getProperty(CONFIG_KEY);
@@ -232,7 +235,7 @@ public class ConfigFilter extends FilterAdapter {
         InputStream inStream = null;
         try {
             boolean xml = false;
-            if(filePath.startsWith("file://")) {
+            if (filePath.startsWith("file://")) {
                 filePath = filePath.substring("file://".length());
                 inStream = getFileAsStream(filePath);
                 xml = filePath.endsWith(".xml");
