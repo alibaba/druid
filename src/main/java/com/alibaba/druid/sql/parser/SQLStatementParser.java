@@ -43,6 +43,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
@@ -178,6 +179,10 @@ public class SQLStatementParser extends SQLParser {
                     continue;
                 } else if (lexer.token() == Token.TRIGGER) {
                     SQLStatement stmt = parseDropTrigger(false);
+                    statementList.add(stmt);
+                    continue;
+                } else if (lexer.token() == Token.DATABASE) {
+                    SQLStatement stmt = parseDropDatabase(false);
                     statementList.add(stmt);
                     continue;
                 } else {
@@ -765,6 +770,28 @@ public class SQLStatementParser extends SQLParser {
             stmt.setCascade(true);
         }
 
+        return stmt;
+    }
+    
+    protected SQLDropDatabaseStatement parseDropDatabase(boolean acceptDrop) {
+        if (acceptDrop) {
+            accept(Token.DROP);
+        }
+
+        SQLDropDatabaseStatement stmt = new SQLDropDatabaseStatement();
+
+        accept(Token.DATABASE);
+
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+
+        SQLName name = this.exprParser.name();
+        stmt.setDatabase(name);
+
+        
         return stmt;
     }
 

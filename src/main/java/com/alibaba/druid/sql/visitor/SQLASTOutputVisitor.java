@@ -95,6 +95,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
@@ -1723,12 +1724,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         if (x.getOn() != null) {
             print(" ON ");
-            
+
             if (x.getObjectType() != null) {
                 print(x.getObjectType().name());
                 print(' ');
             }
-            
+
             x.getOn().accept(this);
         }
 
@@ -1773,7 +1774,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(" MAX_USER_CONNECTIONS ");
             x.getMaxUserConnections().accept(this);
         }
-        
+
         if (x.isAdminOption()) {
             if (!with) {
                 print(" WITH");
@@ -1781,6 +1782,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
             print(" ADMIN OPTION");
         }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropDatabaseStatement x) {
+        print("DROP DATABASE ");
+        
+        if (x.isIfExists()) {
+            print("IF EXISTS ");
+        }
+
+        x.getDatabase().accept(this);
 
         return false;
     }
