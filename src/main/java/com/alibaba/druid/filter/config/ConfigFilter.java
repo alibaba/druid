@@ -213,8 +213,12 @@ public class ConfigFilter extends FilterAdapter {
     }
 
     public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
-        String key = configFileProperties.getProperty(CONFIG_KEY);
+        String key = "";
 
+        if(configFileProperties!=null){
+        	key=configFileProperties.getProperty(CONFIG_KEY);
+        }
+        
         if (StringUtils.isEmpty(key) && connectinProperties != null) {
             key = connectinProperties.getProperty(CONFIG_KEY);
         }
