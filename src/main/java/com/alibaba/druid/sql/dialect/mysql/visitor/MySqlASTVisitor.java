@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTa
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
@@ -552,4 +553,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlPartitioningDef.InValues x);
 
     void endVisit(MySqlPartitioningDef.InValues x);
+    
+    boolean visit(MySqlAnalyzeStatement x);
+    
+    void endVisit(MySqlAnalyzeStatement x);
 } //

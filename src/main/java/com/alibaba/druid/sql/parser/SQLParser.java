@@ -101,6 +101,7 @@ public class SQLParser {
                     case DISABLE:
                     case SEQUENCE:
                     case USER:
+                    case ANALYZE:
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         return alias;

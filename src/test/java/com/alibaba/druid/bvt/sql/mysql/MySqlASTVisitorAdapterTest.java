@@ -188,7 +188,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlAlterTableAddIndex().accept(adapter);
         new MySqlAlterTableOption().accept(adapter);
         new MySqlCreateTableStatement().accept(adapter);
-        new MySqlHelpStatement().accept(adapter);
         new MySqlCharExpr().accept(adapter);
         new MySqlAlterTableAddUnique().accept(adapter);
         new MySqlUnique().accept(adapter);

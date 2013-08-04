@@ -899,27 +899,29 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             TableStat stat = getTableStat(ident);
 
             Mode mode = getMode();
-            switch (mode) {
-                case Delete:
-                    stat.incrementDeleteCount();
-                    break;
-                case Insert:
-                    stat.incrementInsertCount();
-                    break;
-                case Update:
-                    stat.incrementUpdateCount();
-                    break;
-                case Select:
-                    stat.incrementSelectCount();
-                    break;
-                case Merge:
-                    stat.incrementMergeCount();
-                    break;
-                case Drop:
-                    stat.incrementDropCount();
-                    break;
-                default:
-                    break;
+            if (mode != null) {
+                switch (mode) {
+                    case Delete:
+                        stat.incrementDeleteCount();
+                        break;
+                    case Insert:
+                        stat.incrementInsertCount();
+                        break;
+                    case Update:
+                        stat.incrementUpdateCount();
+                        break;
+                    case Select:
+                        stat.incrementSelectCount();
+                        break;
+                    case Merge:
+                        stat.incrementMergeCount();
+                        break;
+                    case Drop:
+                        stat.incrementDropCount();
+                        break;
+                    default:
+                        break;
+                }
             }
 
             if (aliasMap != null) {

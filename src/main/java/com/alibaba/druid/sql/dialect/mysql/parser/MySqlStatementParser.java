@@ -45,6 +45,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
@@ -67,6 +68,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTa
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
@@ -491,6 +493,20 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public MySqlAnalyzeStatement parseAnalyze() {
+        accept(Token.ANALYZE);
+        accept(Token.TABLE);
+
+        MySqlAnalyzeStatement stmt = new MySqlAnalyzeStatement();
+        List<SQLName> names = new ArrayList<SQLName>();
+        this.exprParser.names(names, stmt);
+        
+        for (SQLName name : names) {
+            stmt.getTableSources().add(new SQLExprTableSource(name));
+        }
+        return stmt;
+    }
+
     public SQLStatement parseReset() {
         acceptIdentifier(RESET);
 
@@ -569,6 +585,12 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals(RESET)) {
             SQLStatement stmt = parseReset();
+            statementList.add(stmt);
+            return true;
+        }
+
+        if (lexer.token() == Token.ANALYZE) {
+            SQLStatement stmt = parseAnalyze();
             statementList.add(stmt);
             return true;
         }

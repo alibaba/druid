@@ -203,6 +203,7 @@ public enum Token {
     PURGE("PURGE"),
     
     COMPUTE("COMPUTE"),
+    ANALYZE("ANALYZE"),
     
     // transact-sql
     TOP("TOP"),

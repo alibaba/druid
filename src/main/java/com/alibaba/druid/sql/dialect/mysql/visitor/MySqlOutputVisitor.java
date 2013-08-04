@@ -62,6 +62,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTa
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
@@ -2993,6 +2994,28 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 ((SQLObject) value).accept(this);
             }
         }
+    }
+
+    @Override
+    public boolean visit(MySqlAnalyzeStatement x) {
+        print("ANALYZE ");
+        if (x.isNoWriteToBinlog()) {
+            print("NO_WRITE_TO_BINLOG ");
+        }
+        
+        if (x.isLocal()) {
+            print("LOCAL ");
+        }
+        
+        print("TABLE ");
+        
+        printAndAccept(x.getTableSources(), ", ");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAnalyzeStatement x) {
+        
     }
 
 } //
