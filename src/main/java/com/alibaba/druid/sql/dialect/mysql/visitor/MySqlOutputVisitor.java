@@ -53,8 +53,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
@@ -2751,66 +2749,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public boolean visit(MySqlAlterTableAddIndex x) {
-        print("ADD ");
-        if (x.getType() != null) {
-            print(x.getType());
-            print(" ");
-        }
-
-        print("INDEX ");
-
-        if (x.getName() != null) {
-            x.getName().accept(this);
-            print(' ');
-        }
-        print("(");
-        printAndAccept(x.getItems(), ", ");
-        print(")");
-
-        if (x.getUsing() != null) {
-            print(" USING ");
-            print(x.getUsing());
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddIndex x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlAlterTableAddUnique x) {
-        print("ADD ");
-        if (x.getType() != null) {
-            print(x.getType());
-            print(" ");
-        }
-
-        print("UNIQUE ");
-
-        if (x.getName() != null) {
-            x.getName().accept(this);
-            print(' ');
-        }
-        print("(");
-        printAndAccept(x.getItems(), ", ");
-        print(")");
-
-        if (x.getUsing() != null) {
-            print(" USING ");
-            print(x.getUsing());
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddUnique x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlAlterTableOption x) {
         print(x.getName());
         print(" = ");
@@ -3007,44 +2945,44 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.isNoWriteToBinlog()) {
             print("NO_WRITE_TO_BINLOG ");
         }
-        
+
         if (x.isLocal()) {
             print("LOCAL ");
         }
-        
+
         print("TABLE ");
-        
+
         printAndAccept(x.getTableSources(), ", ");
         return false;
     }
 
     @Override
     public void endVisit(MySqlAnalyzeStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlOptimizeStatement x) {
         print("OPTIMIZE ");
         if (x.isNoWriteToBinlog()) {
             print("NO_WRITE_TO_BINLOG ");
         }
-        
+
         if (x.isLocal()) {
             print("LOCAL ");
         }
-        
+
         print("TABLE ");
-        
+
         printAndAccept(x.getTableSources(), ", ");
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlOptimizeStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlAlterUserStatement x) {
         print("ALTER USER");
@@ -3055,10 +2993,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlAlterUserStatement x) {
-        
+
     }
 
 } //

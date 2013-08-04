@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
@@ -1011,9 +1012,9 @@ public class SQLStatementParser extends SQLParser {
             SQLCreateTableParser createTableParser = getSQLCreateTableParser();
             return createTableParser.parseCrateTable(false);
         } else if (token == Token.INDEX //
-                || token == Token.UNIQUE //
-                || identifierEquals("NONCLUSTERED") // sql server
-                ) {
+                   || token == Token.UNIQUE //
+                   || identifierEquals("NONCLUSTERED") // sql server
+        ) {
             return parseCreateIndex(false);
         } else if (lexer.token() == Token.SEQUENCE) {
             return parseCreateSequence(false);
@@ -1303,5 +1304,38 @@ public class SQLStatementParser extends SQLParser {
         explain.setStatement(parseStatement());
 
         return explain;
+    }
+
+    protected SQLAlterTableAddIndex parseAlterTableAddIndex() {
+        SQLAlterTableAddIndex item = new SQLAlterTableAddIndex();
+
+        if (lexer.token() == Token.UNIQUE) {
+            item.setUnique(true);
+            lexer.nextToken();
+            if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+            }
+        } else {
+            accept(Token.INDEX);
+        }
+
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+        } else {
+            item.setName(this.exprParser.name());
+            accept(Token.LPAREN);
+        }
+
+        for (;;) {
+            SQLSelectOrderByItem column = this.exprParser.parseSelectOrderByItem();
+            item.getItems().add(column);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        accept(Token.RPAREN);
+        return item;
     }
 }

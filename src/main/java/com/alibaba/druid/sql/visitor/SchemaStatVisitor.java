@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
@@ -1270,6 +1271,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     
     @Override
     public boolean visit(SQLDropDatabaseStatement x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAddIndex x) {
+        for (SQLSelectOrderByItem item : x.getItems()) {
+            item.accept(this);
+        }
         return false;
     }
 }

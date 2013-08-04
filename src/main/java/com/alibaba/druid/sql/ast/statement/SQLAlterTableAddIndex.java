@@ -24,23 +24,35 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private SQLName                    name;
+    private boolean                          unique;
 
-    private List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
+    private SQLName                          name;
 
-    private String                     type;
+    private final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
+
+    private String                           type;
+
+    private String                           using;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, getName());
+            acceptChild(visitor, getItems());
+        }
+        visitor.endVisit(this);
+    }
 
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public void setUnique(boolean unique) {
+        this.unique = unique;
     }
 
     public List<SQLSelectOrderByItem> getItems() {
         return items;
-    }
-
-    public void setItems(List<SQLSelectOrderByItem> items) {
-        this.items = items;
     }
 
     public SQLName getName() {
@@ -57,6 +69,14 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getUsing() {
+        return using;
+    }
+
+    public void setUsing(String using) {
+        this.using = using;
     }
 
 }

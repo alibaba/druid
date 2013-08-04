@@ -44,8 +44,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
@@ -1153,16 +1151,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlAlterTableAddIndex x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddIndex x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlAlterTableOption x) {
         return false;
     }
@@ -1199,16 +1187,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlCharExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlAlterTableAddUnique x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddUnique x) {
 
     }
 
@@ -1319,27 +1297,27 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAnalyzeStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlAlterUserStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(MySqlAlterUserStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlOptimizeStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(MySqlOptimizeStatement x) {
-        
+
     }
 
 }
