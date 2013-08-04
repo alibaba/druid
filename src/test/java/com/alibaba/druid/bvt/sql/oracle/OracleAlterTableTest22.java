@@ -27,19 +27,13 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateTableTest29 extends OracleTest {
+public class OracleAlterTableTest22 extends OracleTest {
 
-    public void test_types() throws Exception {
+    public void test_0() throws Exception {
         String sql = //
-        "CREATE TABLE dept_20" //
-                + "   (employee_id     NUMBER(4) PRIMARY KEY, "//
-                + "    last_name       VARCHAR2(10), "//
-                + "    job_id          VARCHAR2(9), "//
-                + "    manager_id      NUMBER(4), "//
-                + "    salary          NUMBER(7,2), "//
-                + "    commission_pct  NUMBER(7,2), "//
-                + "    department_id   NUMBER(2),"//
-                + "    CONSTRAINT check_sal CHECK (salary * commission_pct <= 5000));";
+        "ALTER TABLE employees ADD CONSTRAINT check_comp " //
+                + "   CHECK (salary + (commission_pct*salary) <= 5000)" //
+                + "   DISABLE;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -47,18 +41,6 @@ public class OracleCreateTableTest29 extends OracleTest {
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-
-        Assert.assertEquals("CREATE TABLE dept_20 (" //
-                            + "\n\temployee_id NUMBER(4) PRIMARY KEY," //
-                            + "\n\tlast_name VARCHAR2(10)," //
-                            + "\n\tjob_id VARCHAR2(9)," //
-                            + "\n\tmanager_id NUMBER(4)," //
-                            + "\n\tsalary NUMBER(7, 2)," //
-                            + "\n\tcommission_pct NUMBER(7, 2)," //
-                            + "\n\tdepartment_id NUMBER(2)," //
-                            + "\n\tCONSTRAINT check_sal CHECK (salary * commission_pct <= 5000)" //
-                            + "\n)",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -69,10 +51,17 @@ public class OracleCreateTableTest29 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
+        Assert.assertEquals("ALTER TABLE employees" //
+                            + "\n\tADD CONSTRAINT check_comp CHECK (salary + commission_pct * salary <= 5000) DIABLE", //
+                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("dept_20", "employee_id")));
+        Assert.assertEquals(2, visitor.getColumns().size());
+
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
 }

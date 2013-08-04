@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
+    private final List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -35,10 +35,6 @@ public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTab
 
     public List<SQLColumnDefinition> getColumns() {
         return columns;
-    }
-
-    public void setColumns(List<SQLColumnDefinition> columns) {
-        this.columns = columns;
     }
 
 }
