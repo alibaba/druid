@@ -525,7 +525,7 @@ public class SQLStatementParser extends SQLParser {
                 break;
             }
         }
-        
+
         if (identifierEquals("ADMIN")) {
             lexer.nextToken();
             acceptIdentifier("OPTION");
@@ -772,7 +772,7 @@ public class SQLStatementParser extends SQLParser {
 
         return stmt;
     }
-    
+
     protected SQLDropDatabaseStatement parseDropDatabase(boolean acceptDrop) {
         if (acceptDrop) {
             accept(Token.DROP);
@@ -791,7 +791,6 @@ public class SQLStatementParser extends SQLParser {
         SQLName name = this.exprParser.name();
         stmt.setDatabase(name);
 
-        
         return stmt;
     }
 
@@ -1011,7 +1010,10 @@ public class SQLStatementParser extends SQLParser {
         if (token == Token.TABLE || identifierEquals("GLOBAL")) {
             SQLCreateTableParser createTableParser = getSQLCreateTableParser();
             return createTableParser.parseCrateTable(false);
-        } else if (token == Token.INDEX || token == Token.UNIQUE) {
+        } else if (token == Token.INDEX //
+                || token == Token.UNIQUE //
+                || identifierEquals("NONCLUSTERED") // sql server
+                ) {
             return parseCreateIndex(false);
         } else if (lexer.token() == Token.SEQUENCE) {
             return parseCreateSequence(false);
@@ -1075,7 +1077,18 @@ public class SQLStatementParser extends SQLParser {
 
         SQLCreateIndexStatement stmt = new SQLCreateIndexStatement();
         if (lexer.token() == Token.UNIQUE) {
-            stmt.setType("UNIQUE");
+            lexer.nextToken();
+            if (identifierEquals("CLUSTERED")) {
+                lexer.nextToken();
+                stmt.setType("UNIQUE CLUSTERED");
+            } else {
+                stmt.setType("UNIQUE");
+            }
+        } else if (identifierEquals("FULLTEXT")) {
+            stmt.setType("FULLTEXT");
+            lexer.nextToken();
+        } else if (identifierEquals("NONCLUSTERED")) {
+            stmt.setType("NONCLUSTERED");
             lexer.nextToken();
         }
 

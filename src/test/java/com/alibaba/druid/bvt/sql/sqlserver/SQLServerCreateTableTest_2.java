@@ -23,26 +23,30 @@ import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLServerCreateIndexTest extends TestCase {
+public class SQLServerCreateTableTest_2 extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])";
+        String sql = "CREATE TABLE #Test (C1 nvarchar(10), C2 nvarchar(50), C3 datetime);";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLCreateIndexStatement stmt = (SQLCreateIndexStatement) statementList.get(0);
+        SQLCreateTableStatement stmt = (SQLCreateTableStatement) statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
-        Assert.assertEquals("CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
+        String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
+        Assert.assertEquals("CREATE TABLE #Test (" //
+                            + "\n\tC1 nvarchar(10),"//
+                            + "\n\tC2 nvarchar(50),"//
+                            + "\n\tC3 datetime"//
+                            + "\n)", output);
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
@@ -53,11 +57,13 @@ public class SQLServerCreateIndexTest extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("schema_migrations")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("#Test")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("schema_migrations", "version")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("#Test", "C1")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("#Test", "C2")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("#Test", "C3")));
     }
 }

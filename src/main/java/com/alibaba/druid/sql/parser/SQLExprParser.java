@@ -702,6 +702,9 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.token() == Token.LITERAL_CHARS) {
             identName = '\'' + lexer.stringVal() + '\'';
             lexer.nextToken();
+        } else if (lexer.token() == Token.VARIANT) {
+            identName = lexer.stringVal();
+            lexer.nextToken();
         } else {
             throw new ParserException("error " + lexer.token());
         }

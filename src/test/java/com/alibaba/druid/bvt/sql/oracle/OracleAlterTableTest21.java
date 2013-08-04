@@ -13,51 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.sqlserver;
+package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
 
+import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLServerCreateIndexTest extends TestCase {
+public class OracleAlterTableTest21 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])";
+        String sql = //
+        "ALTER TABLE long_tab DROP COLUMN long_pics;";
 
-        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLCreateIndexStatement stmt = (SQLCreateIndexStatement) statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-        
-        Assert.assertEquals("CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
-        SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
+        Assert.assertEquals("ALTER TABLE long_tab"//
+                            + "\n\tDROP COLUMN long_pics", //
+                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+
         Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("long_tab")));
+
         Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("schema_migrations")));
-
-        Assert.assertTrue(visitor.getColumns().contains(new Column("schema_migrations", "version")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("long_tab", "long_pics")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product",
+        // "commission_amount")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

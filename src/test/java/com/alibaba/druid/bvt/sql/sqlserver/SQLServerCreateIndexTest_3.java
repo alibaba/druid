@@ -30,18 +30,20 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLServerCreateIndexTest extends TestCase {
+public class SQLServerCreateIndexTest_3 extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])";
+        String sql = "CREATE NONCLUSTERED INDEX IX_SalesPerson_SalesQuota_SalesYTD" //
+                     + "    ON Sales.SalesPerson (SalesQuota, SalesYTD);";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLCreateIndexStatement stmt = (SQLCreateIndexStatement) statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        
-        Assert.assertEquals("CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])", //
+
+        Assert.assertEquals("CREATE NONCLUSTERED INDEX IX_SalesPerson_SalesQuota_SalesYTD" //
+                            + " ON Sales.SalesPerson (SalesQuota, SalesYTD)", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
@@ -53,11 +55,12 @@ public class SQLServerCreateIndexTest extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("schema_migrations")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("Sales.SalesPerson")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("schema_migrations", "version")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("Sales.SalesPerson", "SalesQuota")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("Sales.SalesPerson", "SalesYTD")));
     }
 }

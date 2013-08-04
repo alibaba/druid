@@ -13,51 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.sqlserver;
+package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
 
+import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLServerCreateIndexTest extends TestCase {
+public class OracleInsertTest11 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])";
+        String sql = "INSERT INTO departments"
+                + "   VALUES (280, 'Recreation', DEFAULT, 1700);";
 
-        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLCreateIndexStatement stmt = (SQLCreateIndexStatement) statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
         
-        Assert.assertEquals("CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])", //
+        Assert.assertEquals("INSERT INTO departments"//
+                            + "\nVALUES"//
+                            + "\n(280, 'Recreation', DEFAULT, 1700)",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
-        SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        System.out.println("relationships : " + visitor.getRelationships());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("schema_migrations")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("schema_migrations", "version")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
     }
+
 }

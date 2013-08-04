@@ -30,10 +30,10 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLServerCreateIndexTest extends TestCase {
+public class SQLServerCreateIndexTest_2 extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])";
+        String sql = "CREATE UNIQUE CLUSTERED INDEX Idx1 ON t1(c);";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -41,7 +41,7 @@ public class SQLServerCreateIndexTest extends TestCase {
 
         Assert.assertEquals(1, statementList.size());
         
-        Assert.assertEquals("CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])", //
+        Assert.assertEquals("CREATE UNIQUE CLUSTERED INDEX Idx1 ON t1 (c)", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
@@ -56,8 +56,8 @@ public class SQLServerCreateIndexTest extends TestCase {
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("schema_migrations")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("schema_migrations", "version")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "c")));
     }
 }
