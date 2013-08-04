@@ -406,7 +406,7 @@ public class MySqlExprParser extends SQLExprParser {
                         lexer.nextToken();
                         acceptIdentifier("LANGUAGE");
                         acceptIdentifier("MODE");
-                        if (identifierEquals("WITH")) {
+                        if (lexer.token() == Token.WITH) {
                             lexer.nextToken();
                             acceptIdentifier("QUERY");
                             acceptIdentifier("EXPANSION");
@@ -421,7 +421,7 @@ public class MySqlExprParser extends SQLExprParser {
                     } else {
                         throw new ParserException("TODO");
                     }
-                } else if (identifierEquals("WITH")) {
+                } else if (lexer.token() == Token.WITH) {
                     throw new ParserException("TODO");
                 }
 

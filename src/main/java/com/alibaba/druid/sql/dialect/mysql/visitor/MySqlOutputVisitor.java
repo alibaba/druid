@@ -62,6 +62,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTa
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -1454,6 +1455,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getPassword() != null) {
             print(" IDENTIFIED BY ");
+            if (x.isPasswordHash()) {
+                print("PASSWORD ");
+            }
             x.getPassword().accept(this);
         }
 
@@ -3015,6 +3019,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlAnalyzeStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlAlterUserStatement x) {
+        print("ALTER USER");
+        for (SQLExpr user : x.getUsers()) {
+            print(' ');
+            user.accept(this);
+            print(" PASSWORD EXPIRE");
+        }
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlAlterUserStatement x) {
         
     }
 

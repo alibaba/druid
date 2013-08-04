@@ -121,7 +121,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
@@ -1215,16 +1214,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleSetTransactionStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleGrantStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleGrantStatement x) {
 
     }
 

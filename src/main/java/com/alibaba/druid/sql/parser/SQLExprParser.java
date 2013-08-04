@@ -95,7 +95,15 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.STAR) {
             lexer.nextToken();
 
-            return new SQLAllColumnExpr();
+            SQLExpr expr = new SQLAllColumnExpr();
+            
+            if (lexer.token() == Token.DOT) {
+                lexer.nextToken();
+                accept(Token.STAR);
+                return new SQLPropertyExpr(expr, "*");
+            }
+
+            return expr;
         }
 
         SQLExpr expr = primary();
@@ -246,6 +254,8 @@ public class SQLExprParser extends SQLParser {
             case SEQUENCE:
             case USER:
             case EXPLAIN:
+            case WITH:
+            case GRANT:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -1352,7 +1362,7 @@ public class SQLExprParser extends SQLParser {
                 column.getConstaints().add(ref);
                 return parseColumnRest(column);
             }
-            
+
             if (lexer.token() == Token.NOT) {
                 lexer.nextToken();
                 accept(Token.NULL);
@@ -1361,7 +1371,7 @@ public class SQLExprParser extends SQLParser {
                 column.getConstaints().add(notNull);
                 return parseColumnRest(column);
             }
-            
+
             if (lexer.token == Token.CHECK) {
                 SQLColumnCheck check = parseColumnCheck();
                 check.setName(name);
@@ -1369,7 +1379,7 @@ public class SQLExprParser extends SQLParser {
                 column.getConstaints().add(check);
                 return parseColumnRest(column);
             }
-            
+
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
 
@@ -1386,7 +1396,7 @@ public class SQLExprParser extends SQLParser {
         lexer.nextToken();
         SQLExpr expr = this.expr();
         SQLColumnCheck check = new SQLColumnCheck(expr);
-        
+
         if (lexer.token() == Token.DISABLE) {
             lexer.nextToken();
             check.setEnable(false);
@@ -1478,7 +1488,7 @@ public class SQLExprParser extends SQLParser {
 
         return constraint;
     }
-    
+
     public SQLCheck parseCheck() {
         accept(Token.CHECK);
         SQLCheck check = createCheck();

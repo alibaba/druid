@@ -13,32 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.ast.statement;
+package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SQLExplainStatement extends SQLStatementImpl {
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-    protected SQLStatement statement;
+public class MySqlAlterUserStatement extends MySqlStatementImpl {
 
-    public SQLStatement getStatement() {
-        return statement;
-    }
-
-    public void setStatement(SQLStatement statement) {
-        if (statement != null) {
-            statement.setParent(this);
-        }
-        this.statement = statement;
-    }
-
-    @Override
-    protected void accept0(SQLASTVisitor visitor) {
+    private final List<SQLExpr> users = new ArrayList<SQLExpr>();
+    
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, statement);
+            acceptChild(visitor, users);
         }
         visitor.endVisit(this);
     }
+
+    public List<SQLExpr> getUsers() {
+        return users;
+    }
+
 }

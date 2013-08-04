@@ -68,6 +68,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTa
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -436,15 +437,14 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                     if (identifierEquals("PASSWORD")) {
                         lexer.nextToken();
+                        userSpec.setPasswordHash(true);
                     }
 
                     SQLCharExpr password = (SQLCharExpr) this.exprParser.expr();
                     userSpec.setPassword(password);
                 } else if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
-
-                    SQLCharExpr text = (SQLCharExpr) this.exprParser.expr();
-                    userSpec.setAuthPlugin(text);
+                    userSpec.setAuthPlugin(this.exprParser.expr());
                 }
             }
 
@@ -500,7 +500,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlAnalyzeStatement stmt = new MySqlAnalyzeStatement();
         List<SQLName> names = new ArrayList<SQLName>();
         this.exprParser.names(names, stmt);
-        
+
         for (SQLName name : names) {
             stmt.getTableSources().add(new SQLExprTableSource(name));
         }
@@ -1450,7 +1450,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         MySqlStartTransactionStatement stmt = new MySqlStartTransactionStatement();
 
-        if (identifierEquals("WITH")) {
+        if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             acceptIdentifier("CONSISTENT");
             acceptIdentifier("SNAPSHOT");
@@ -2087,6 +2087,10 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public SQLStatement parseAlter() {
         accept(Token.ALTER);
+        
+        if (lexer.token() == Token.USER) {
+            return parseAlterUser();
+        }
 
         boolean ignore = false;
 
@@ -2534,6 +2538,26 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             lexer.nextToken();
         }
+    }
+
+    public MySqlAlterUserStatement parseAlterUser() {
+        accept(Token.USER);
+        
+        MySqlAlterUserStatement stmt = new MySqlAlterUserStatement();
+        for (;;) {
+            SQLExpr user = this.exprParser.expr();
+            acceptIdentifier("PASSWORD");
+            acceptIdentifier("EXPIRE");
+            stmt.getUsers().add(user);
+            
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            
+            break;
+        }
+        return stmt;
     }
 
     public MySqlExprParser getExprParser() {

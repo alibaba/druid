@@ -45,6 +45,7 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl {
     public static class UserSpecification extends MySqlObjectImpl {
 
         private SQLExpr user;
+        private boolean passwordHash = false;
         private SQLExpr password;
         private SQLExpr authPlugin;
 
@@ -54,6 +55,14 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl {
 
         public void setUser(SQLExpr user) {
             this.user = user;
+        }
+
+        public boolean isPasswordHash() {
+            return passwordHash;
+        }
+
+        public void setPasswordHash(boolean passwordHash) {
+            this.passwordHash = passwordHash;
         }
 
         public SQLExpr getPassword() {

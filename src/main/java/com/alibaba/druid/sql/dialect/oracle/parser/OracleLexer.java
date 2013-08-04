@@ -50,7 +50,6 @@ public class OracleLexer extends Lexer {
         map.put("EXCLUSIVE", Token.EXCLUSIVE);
         map.put("EXTRACT", Token.EXTRACT);
         map.put("GOTO", Token.GOTO);
-        map.put("GRANT", Token.GRANT);
         map.put("IF", Token.IF);
 
         map.put("LIMIT", Token.LIMIT);

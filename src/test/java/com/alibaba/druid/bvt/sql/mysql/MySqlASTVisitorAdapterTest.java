@@ -27,11 +27,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
@@ -130,7 +128,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlKillStatement().accept(adapter);
         new MySqlBinlogStatement().accept(adapter);
         new MySqlResetStatement().accept(adapter);
-        new MySqlCreateUserStatement().accept(adapter);
         new UserSpecification().accept(adapter);
         new MySqlPartitionByKey().accept(adapter);
         new MySqlOutFileExpr().accept(adapter);

@@ -78,7 +78,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
@@ -180,7 +179,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleExceptionStatement.Item().accept(adapter);
         new OracleArgumentExpr().accept(adapter);
         new OracleSetTransactionStatement().accept(adapter);
-        new OracleGrantStatement().accept(adapter);
         new SQLDropSequenceStatement().accept(adapter);
         new OracleDataTypeIntervalDay().accept(adapter);
         new OracleDataTypeIntervalYear().accept(adapter);

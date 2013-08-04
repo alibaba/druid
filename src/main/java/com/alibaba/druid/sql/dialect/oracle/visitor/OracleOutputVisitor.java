@@ -130,7 +130,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
@@ -1838,28 +1837,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleSetTransactionStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleGrantStatement x) {
-        print("GRANT ");
-        for (int i = 0, size = x.getPrivileges().size(); i < size; ++i) {
-            if (i != 0) {
-                print(", ");
-            }
-            print(x.getPrivileges().get(i));
-        }
-
-        if (x.getOn() != null) {
-            print(" ON ");
-            x.getOn().accept(this);
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleGrantStatement x) {
 
     }
 

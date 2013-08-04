@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -136,7 +137,7 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(parseDeleteStatement());
                 continue;
             }
-            
+
             if (lexer.token() == (Token.EXPLAIN)) {
                 statementList.add(parseExplain());
                 continue;
@@ -190,6 +191,12 @@ public class SQLStatementParser extends SQLParser {
 
             if (lexer.token() == Token.USE) {
                 SQLStatement stmt = parseUse();
+                statementList.add(stmt);
+                continue;
+            }
+
+            if (lexer.token() == Token.GRANT) {
+                SQLStatement stmt = parseGrant();
                 statementList.add(stmt);
                 continue;
             }
@@ -303,6 +310,100 @@ public class SQLStatementParser extends SQLParser {
         accept(Token.USE);
         SQLUseStatement stmt = new SQLUseStatement();
         stmt.setDatabase(this.exprParser.name());
+        return stmt;
+    }
+
+    public SQLGrantStatement parseGrant() {
+        accept(Token.GRANT);
+        SQLGrantStatement stmt = new SQLGrantStatement();
+
+        for (;;) {
+            if (lexer.token() == Token.ALL) {
+                lexer.nextToken();
+                if (identifierEquals("PRIVILEGES")) {
+                    lexer.nextToken();
+                    stmt.addPrivileges("ALL PRIVILEGES");
+                } else {
+                    stmt.addPrivileges("ALL");
+                }
+            } else if (lexer.token() == Token.SELECT) {
+                stmt.addPrivileges("SELECT");
+                lexer.nextToken();
+            } else if (lexer.token() == Token.UPDATE) {
+                stmt.addPrivileges("UPDATE");
+                lexer.nextToken();
+            } else if (lexer.token() == Token.DELETE) {
+                stmt.addPrivileges("DELETE");
+                lexer.nextToken();
+            } else if (lexer.token() == Token.INSERT) {
+                stmt.addPrivileges("INSERT");
+                lexer.nextToken();
+            } else if (lexer.token() == Token.CREATE) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.TABLE) {
+                    stmt.addPrivileges("CREATE TABLE");
+                    lexer.nextToken();
+                } else if (identifierEquals("SYNONYM")) {
+                    stmt.addPrivileges("CREATE SYNONYM");
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
+            } else if (identifierEquals("USAGE")) {
+                stmt.addPrivileges("USAGE");
+                lexer.nextToken();
+            }
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            stmt.setOn(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.TO) {
+            lexer.nextToken();
+            stmt.setTo(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+
+            for (;;) {
+                if (identifierEquals("MAX_QUERIES_PER_HOUR")) {
+                    lexer.nextToken();
+                    stmt.setMaxQueriesPerHour(this.exprParser.primary());
+                    continue;
+                }
+                
+                if (identifierEquals("MAX_UPDATES_PER_HOUR")) {
+                    lexer.nextToken();
+                    stmt.setMaxUpdatesPerHour(this.exprParser.primary());
+                    continue;
+                }
+                
+                if (identifierEquals("MAX_CONNECTIONS_PER_HOUR")) {
+                    lexer.nextToken();
+                    stmt.setMaxConnectionsPerHour(this.exprParser.primary());
+                    continue;
+                }
+                
+                if (identifierEquals("MAX_USER_CONNECTIONS")) {
+                    lexer.nextToken();
+                    stmt.setMaxUserConnections(this.exprParser.primary());
+                    continue;
+                }
+                
+                break;
+            }
+        }
+
         return stmt;
     }
 
@@ -1030,11 +1131,11 @@ public class SQLStatementParser extends SQLParser {
         if (identifierEquals("PLAN")) {
             lexer.nextToken();
         }
-        
+
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
         }
-        
+
         SQLExplainStatement explain = new SQLExplainStatement();
         explain.setStatement(parseStatement());
 

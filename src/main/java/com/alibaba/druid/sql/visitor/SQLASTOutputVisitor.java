@@ -106,6 +106,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -795,7 +796,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         } else {
             print("DROP TABLE ");
         }
-        
+
         if (x.isIfExists()) {
             print("IF EXISTS ");
         }
@@ -823,11 +824,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     public boolean visit(SQLDropViewStatement x) {
         print("DROP VIEW ");
-        
+
         if (x.isIfExists()) {
             print("IF EXISTS ");
         }
-        
+
         printAndAccept(x.getTableSources(), ", ");
 
         if (x.isCascade()) {
@@ -1706,12 +1707,67 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         printAndAccept(x.getUsers(), ", ");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLExplainStatement x) {
         print("EXPLAIN");
         println();
         x.getStatement().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLGrantStatement x) {
+        print("GRANT ");
+        printAndAccept(x.getPrivileges(), ", ");
+
+        if (x.getOn() != null) {
+            print(" ON ");
+            x.getOn().accept(this);
+        }
+
+        if (x.getTo() != null) {
+            print(" TO ");
+            x.getTo().accept(this);
+        }
+
+        boolean with = false;
+        if (x.getMaxQueriesPerHour() != null) {
+            if (!with) {
+                print(" WITH");
+                with = true;
+            }
+            print(" MAX_QUERIES_PER_HOUR ");
+            x.getMaxQueriesPerHour().accept(this);
+        }
+
+        if (x.getMaxUpdatesPerHour() != null) {
+            if (!with) {
+                print(" WITH");
+                with = true;
+            }
+            print(" MAX_UPDATES_PER_HOUR ");
+            x.getMaxUpdatesPerHour().accept(this);
+        }
+
+        if (x.getMaxConnectionsPerHour() != null) {
+            if (!with) {
+                print(" WITH");
+                with = true;
+            }
+            print(" MAX_CONNECTIONS_PER_HOUR ");
+            x.getMaxConnectionsPerHour().accept(this);
+        }
+
+        if (x.getMaxUserConnections() != null) {
+            if (!with) {
+                print(" WITH");
+                with = true;
+            }
+            print(" MAX_USER_CONNECTIONS ");
+            x.getMaxUserConnections().accept(this);
+        }
+
         return false;
     }
 }

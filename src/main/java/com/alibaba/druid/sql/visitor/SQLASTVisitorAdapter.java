@@ -90,6 +90,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -973,6 +974,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     
     @Override
     public boolean visit(SQLExplainStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLGrantStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLGrantStatement x) {
         return true;
     }
 }

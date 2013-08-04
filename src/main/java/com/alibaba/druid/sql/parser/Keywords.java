@@ -128,6 +128,8 @@ public class Keywords {
         
         map.put("COMMENT", Token.COMMENT);
         map.put("COMPUTE", Token.COMPUTE);
+        map.put("WITH", Token.WITH);
+        map.put("GRANT", Token.GRANT);
         
         DEFAULT_KEYWORDS = new Keywords(map);
     }

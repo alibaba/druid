@@ -89,7 +89,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
@@ -391,10 +390,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleSetTransactionStatement x);
 
     void endVisit(OracleSetTransactionStatement x);
-
-    boolean visit(OracleGrantStatement x);
-
-    void endVisit(OracleGrantStatement x);
 
     boolean visit(OracleExplainStatement x);
 

@@ -53,6 +53,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTa
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -515,7 +516,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlCreateUserStatement x) {
-        return true;
+        return false;
     }
 
     @Override
@@ -1317,6 +1318,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAnalyzeStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlAlterUserStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(MySqlAlterUserStatement x) {
         
     }
 

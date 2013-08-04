@@ -242,7 +242,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                 lexer.nextToken();
             }
 
-            if (identifierEquals("WITH")) {
+            if (lexer.token() == Token.WITH) {
                 lexer.nextToken();
                 acceptIdentifier("ROLLUP");
 

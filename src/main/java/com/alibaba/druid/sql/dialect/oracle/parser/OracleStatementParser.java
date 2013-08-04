@@ -89,7 +89,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
@@ -555,58 +554,6 @@ public class OracleStatementParser extends SQLStatementParser {
         this.parseStatementList(stmt.getStatements());
         accept(Token.END);
         accept(Token.LOOP);
-        return stmt;
-    }
-
-    public SQLStatement parseGrant() {
-        accept(Token.GRANT);
-        OracleGrantStatement stmt = new OracleGrantStatement();
-
-        for (;;) {
-            if (lexer.token() == Token.ALL) {
-                lexer.nextToken();
-                if (identifierEquals("PRIVILEGES")) {
-                    lexer.nextToken();
-                }
-                stmt.getPrivileges().add("ALL");
-            } else if (lexer.token() == Token.SELECT) {
-                stmt.getPrivileges().add("SELECT");
-                lexer.nextToken();
-            } else if (lexer.token() == Token.UPDATE) {
-                stmt.getPrivileges().add("UPDATE");
-                lexer.nextToken();
-            } else if (lexer.token() == Token.DELETE) {
-                stmt.getPrivileges().add("DELETE");
-                lexer.nextToken();
-            } else if (lexer.token() == Token.INSERT) {
-                stmt.getPrivileges().add("INSERT");
-                lexer.nextToken();
-            } else if (lexer.token() == Token.CREATE) {
-                lexer.nextToken();
-
-                if (lexer.token() == Token.TABLE) {
-                    stmt.getPrivileges().add("CREATE TABLE");
-                    lexer.nextToken();
-                } else if (identifierEquals("SYNONYM")) {
-                    stmt.getPrivileges().add("CREATE SYNONYM");
-                    lexer.nextToken();
-                } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
-                }
-            }
-
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
-        }
-
-        if (lexer.token() == Token.ON) {
-            lexer.nextToken();
-            stmt.setOn(this.exprParser.expr());
-        }
-
         return stmt;
     }
 
