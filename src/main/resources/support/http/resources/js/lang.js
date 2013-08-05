@@ -204,6 +204,7 @@ druid.lang = function() {
 		'WhiteListSize':['WhiteListSize', '白名单长度'],
 		'SyntaxErrrorCount':['SyntaxErrrorCount', '语法错误次数'],
 		'TableName':['TableName', '表名'],
+		'TableNumber':['Number','序号'],
 		
 		'Sample':['Sample','样本'],
 		'ExecuteCount':['ExecuteCount','执行数'],
