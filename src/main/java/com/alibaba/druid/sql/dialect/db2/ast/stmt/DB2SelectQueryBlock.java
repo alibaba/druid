@@ -23,7 +23,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Object {
 
-    private SQLExpr first;
+    private SQLExpr   first;
+
+    private Isolation isolation;
 
     public SQLExpr getFirst() {
         return first;
@@ -53,5 +55,17 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
             acceptChild(visitor, this.first);
         }
         visitor.endVisit(this);
+    }
+
+    public Isolation getIsolation() {
+        return isolation;
+    }
+
+    public void setIsolation(Isolation isolation) {
+        this.isolation = isolation;
+    }
+
+    public static enum Isolation {
+        RR, RS, CS, UR
     }
 }

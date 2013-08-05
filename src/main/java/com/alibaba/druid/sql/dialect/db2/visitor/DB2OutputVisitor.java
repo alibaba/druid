@@ -36,6 +36,12 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
             print(" ROWS ONLY");
         }
         
+        if (x.getIsolation() != null) {
+            println();
+            print("WITH ");
+            print(x.getIsolation().name());
+        }
+        
         return false;
     }
 
