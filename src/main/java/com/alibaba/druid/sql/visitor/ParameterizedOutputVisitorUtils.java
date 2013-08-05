@@ -30,10 +30,12 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGParameterizedOutputVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerParameterizedOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -55,11 +57,11 @@ public class ParameterizedOutputVisitorUtils {
         StringBuilder out = new StringBuilder();
         ParameterizedVisitor visitor = createParameterizedOutputVisitor(out, dbType);
         stmt.accept(visitor);
-        
+
         if (visitor.getReplaceCount() == 0) {
             return sql;
         }
-        
+
         return out.toString();
     }
 
@@ -120,11 +122,14 @@ public class ParameterizedOutputVisitorUtils {
 
     public static boolean visit(ParameterizedVisitor v, SQLIntegerExpr x) {
         SQLObject parent = x.getParent();
-        
-        if (parent instanceof SQLDataType) {
+
+        if (parent instanceof SQLDataType //
+            || parent instanceof SQLColumnDefinition //
+            || parent instanceof SQLServerTop //
+        ) {
             return SQLASTOutputVisitorUtils.visit(v, x);
         }
-        
+
         v.print('?');
         v.incrementReplaceCunt();
         return false;
@@ -132,11 +137,11 @@ public class ParameterizedOutputVisitorUtils {
 
     public static boolean visit(ParameterizedVisitor v, SQLNumberExpr x) {
         SQLObject parent = x.getParent();
-        
+
         if (parent instanceof SQLDataType) {
             return SQLASTOutputVisitorUtils.visit(v, x);
         }
-        
+
         v.print('?');
         v.incrementReplaceCunt();
         return false;

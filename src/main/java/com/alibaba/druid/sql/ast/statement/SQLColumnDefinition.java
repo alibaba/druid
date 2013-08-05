@@ -67,6 +67,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setDefaultExpr(SQLExpr defaultExpr) {
+        if (defaultExpr != null) {
+            defaultExpr.setParent(this);
+        }
         this.defaultExpr = defaultExpr;
     }
 
