@@ -75,6 +75,8 @@
 					class="table table-bordered table-striped responsive-utilities">
 					<thead>
 						<tr>
+							<th class="td_lable"><a id="th-TableNumber" class="lang"
+								langKey="TableNumber">TableNumber</a></th>
 							<th class="td_lable"><a id="th-TableName" class="lang"
 								langKey="TableName">TableName</a></th>
 							<th class="td_lable"><a id="th-SelectCount" class="lang"
@@ -191,6 +193,7 @@
 						for ( var i = 0; i < tables.length; i++) {
 							var table = tables[i];
 							html += "<tr>";
+							html += "<td>" + (i+1) + "</td>";
 							html += "<td>" + table.name + "</td>";
 							html += "<td>"
 									+ replace(table.selectCount) + "</td>";
