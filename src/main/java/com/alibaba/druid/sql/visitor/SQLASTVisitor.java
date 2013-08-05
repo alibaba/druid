@@ -50,9 +50,8 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
@@ -364,10 +363,6 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLAlterTableDropIndex x);
 
-    boolean visit(SQLAlterTableAddPrimaryKey x);
-
-    void endVisit(SQLAlterTableAddPrimaryKey x);
-
     boolean visit(SQLDropIndexStatement x);
 
     void endVisit(SQLDropIndexStatement x);
@@ -444,10 +439,6 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLAlterTableStatement x);
 
-    boolean visit(SQLAlterTableAddForeignKey x);
-
-    void endVisit(SQLAlterTableAddForeignKey x);
-
     boolean visit(SQLAlterTableDisableConstraint x);
 
     void endVisit(SQLAlterTableDisableConstraint x);
@@ -495,28 +486,32 @@ public interface SQLASTVisitor {
     boolean visit(SQLDropSequenceStatement x);
 
     void endVisit(SQLDropSequenceStatement x);
-    
+
     boolean visit(SQLDropTriggerStatement x);
-    
+
     void endVisit(SQLDropTriggerStatement x);
-    
+
     void endVisit(SQLDropUserStatement x);
 
     boolean visit(SQLDropUserStatement x);
-    
+
     void endVisit(SQLExplainStatement x);
-    
+
     boolean visit(SQLExplainStatement x);
-    
+
     void endVisit(SQLGrantStatement x);
-    
+
     boolean visit(SQLGrantStatement x);
-    
+
     void endVisit(SQLDropDatabaseStatement x);
-    
+
     boolean visit(SQLDropDatabaseStatement x);
-    
+
     void endVisit(SQLAlterTableAddIndex x);
-    
+
     boolean visit(SQLAlterTableAddIndex x);
+
+    void endVisit(SQLAlterTableAddConstraint x);
+
+    boolean visit(SQLAlterTableAddConstraint x);
 }

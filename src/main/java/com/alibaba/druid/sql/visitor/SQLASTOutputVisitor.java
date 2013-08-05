@@ -65,9 +65,8 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
@@ -1393,13 +1392,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     @Override
-    public boolean visit(SQLAlterTableAddPrimaryKey x) {
-        print("ADD ");
-        x.getPrimaryKey().accept(this);
-        return false;
-    }
-
-    @Override
     public boolean visit(SQLOver x) {
         print("OVER (");
         if (x.getPartitionBy().size() > 0) {
@@ -1536,13 +1528,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     @Override
     public boolean visit(SQLAlterTableDisableKeys x) {
         print("DISABLE KEYS");
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLAlterTableAddForeignKey x) {
-        print("ADD ");
-        x.getForeignKey().accept(this);
         return false;
     }
 
@@ -1790,7 +1775,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     @Override
     public boolean visit(SQLDropDatabaseStatement x) {
         print("DROP DATABASE ");
-        
+
         if (x.isIfExists()) {
             print("IF EXISTS ");
         }
@@ -1799,7 +1784,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableAddIndex x) {
         print("ADD ");
@@ -1807,7 +1792,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(x.getType());
             print(" ");
         }
-        
+
         if (x.isUnique()) {
             print("UNIQUE ");
         }
@@ -1826,6 +1811,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(" USING ");
             print(x.getUsing());
         }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableAddConstraint x) {
+        if (x.isWithNoCheck()) {
+            print("WITH NOCHECK ");
+        }
+
+        print("ADD ");
+
+        x.getConstraint().accept(this);
         return false;
     }
 }

@@ -29,9 +29,8 @@ import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
@@ -2159,8 +2158,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         stmt.getItems().add(item);
                     } else if (lexer.token() == Token.PRIMARY) {
                         SQLPrimaryKey primaryKey = this.exprParser.parsePrimaryKey();
-                        SQLAlterTableAddPrimaryKey item = new SQLAlterTableAddPrimaryKey();
-                        item.setPrimaryKey(primaryKey);
+                        SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(primaryKey);
                         stmt.getItems().add(item);
                     } else if (lexer.token() == Token.KEY) {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
@@ -2173,9 +2171,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                             primaryKey.setName(constraintName);
 
-                            SQLAlterTableAddPrimaryKey item = new SQLAlterTableAddPrimaryKey();
-                            item.setPrimaryKey(primaryKey);
-
+                            SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(primaryKey);
                             item.setParent(stmt);
 
                             stmt.getItems().add(item);
@@ -2183,7 +2179,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                             SQLForeignKeyConstraint fk = this.getExprParser().parseForeignKey();
                             fk.setName(constraintName);
 
-                            SQLAlterTableAddForeignKey item = new SQLAlterTableAddForeignKey(fk);
+                            SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
 
                             item.setParent(stmt);
 

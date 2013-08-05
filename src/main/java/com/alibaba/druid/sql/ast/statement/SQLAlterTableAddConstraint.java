@@ -18,24 +18,44 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAlterTableAddPrimaryKey extends SQLObjectImpl implements SQLAlterTableItem {
+public class SQLAlterTableAddConstraint extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private SQLPrimaryKey primaryKey;
+    private SQLConstaint constraint;
+    private boolean      withNoCheck = false;
 
-    public SQLPrimaryKey getPrimaryKey() {
-        return primaryKey;
+    public SQLAlterTableAddConstraint(){
+
     }
 
-    public void setPrimaryKey(SQLPrimaryKey primaryKey) {
-        this.primaryKey = primaryKey;
+    public SQLAlterTableAddConstraint(SQLConstaint constraint){
+        this.setConstraint(constraint);
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, primaryKey);
+            acceptChild(visitor, constraint);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLConstaint getConstraint() {
+        return constraint;
+    }
+
+    public void setConstraint(SQLConstaint constraint) {
+        if (constraint != null) {
+            constraint.setParent(this);
+        }
+        this.constraint = constraint;
+    }
+
+    public boolean isWithNoCheck() {
+        return withNoCheck;
+    }
+
+    public void setWithNoCheck(boolean withNoCheck) {
+        this.withNoCheck = withNoCheck;
     }
 
 }

@@ -12,7 +12,6 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
@@ -62,7 +61,6 @@ public class SQLASTVisitorAdapterTest extends TestCase {
         new SQLReleaseSavePointStatement ().accept(adapter);
         new SQLCreateDatabaseStatement ().accept(adapter);
         new SQLAlterTableDropIndex ().accept(adapter);
-        new SQLAlterTableAddPrimaryKey ().accept(adapter);
         new SQLOver ().accept(adapter);
         new SQLWithSubqueryClause().accept(adapter);
         new SQLAlterTableAlterColumn ().accept(adapter);
