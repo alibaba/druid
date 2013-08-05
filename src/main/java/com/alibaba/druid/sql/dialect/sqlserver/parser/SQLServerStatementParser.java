@@ -133,6 +133,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
         } else if (acceptSubQuery && (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN)) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             insertStatement.setQuery(queryExpr.getSubQuery());
+        } else if (lexer.token() == Token.DEFAULT) {
+            lexer.nextToken();
+            accept(Token.VALUES);
+            insertStatement.setDefaultValues(true);
         }
     }
 

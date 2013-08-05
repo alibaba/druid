@@ -27,6 +27,8 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
 
     private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
 
+    private boolean            defaultValues;
+
     public ValuesClause getValues() {
         if (valuesList.size() == 0) {
             return null;
@@ -62,4 +64,13 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
 
         visitor.endVisit(this);
     }
+
+    public boolean isDefaultValues() {
+        return defaultValues;
+    }
+
+    public void setDefaultValues(boolean defaultValues) {
+        this.defaultValues = defaultValues;
+    }
+
 }

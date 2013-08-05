@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
@@ -132,7 +133,7 @@ public class SQLServerExprParser extends SQLExprParser {
 
         return null;
     }
-    
+
     protected SQLColumnDefinition createColumnDefinition() {
         SQLColumnDefinition column = new SQLServerColumnDefinition();
         return column;
@@ -151,12 +152,18 @@ public class SQLServerExprParser extends SQLExprParser {
             SQLServerColumnDefinition.Identity identity = new SQLServerColumnDefinition.Identity();
             identity.setSeed((Integer) seed.getNumber());
             identity.setIncrement((Integer) increment.getNumber());
-            
+
             if (lexer.token() == Token.NOT) {
                 lexer.nextToken();
-                accept(Token.FOR);
-                identifierEquals("REPLICATION ");
-                identity.setNotForReplication(true);
+
+                if (lexer.token() == Token.NULL) {
+                    lexer.nextToken();
+                    column.setDefaultExpr(new SQLNullExpr());
+                } else {
+                    accept(Token.FOR);
+                    identifierEquals("REPLICATION ");
+                    identity.setNotForReplication(true);
+                }
             }
 
             SQLServerColumnDefinition sqlSreverColumn = (SQLServerColumnDefinition) column;
