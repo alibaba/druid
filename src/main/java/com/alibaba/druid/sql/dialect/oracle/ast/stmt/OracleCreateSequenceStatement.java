@@ -25,7 +25,10 @@ public class OracleCreateSequenceStatement extends OracleStatementImpl {
 
     private SQLExpr startWith;
     private SQLExpr incrementBy;
+    private SQLExpr minValue;
     private SQLExpr maxValue;
+    private boolean noMaxValue;
+    private boolean noMinValue;
 
     private Boolean cycle;
     private Boolean cache;
@@ -37,6 +40,7 @@ public class OracleCreateSequenceStatement extends OracleStatementImpl {
             acceptChild(visitor, name);
             acceptChild(visitor, startWith);
             acceptChild(visitor, incrementBy);
+            acceptChild(visitor, minValue);
             acceptChild(visitor, maxValue);
         }
         visitor.endVisit(this);
@@ -96,6 +100,30 @@ public class OracleCreateSequenceStatement extends OracleStatementImpl {
 
     public void setOrder(Boolean order) {
         this.order = order;
+    }
+
+    public SQLExpr getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(SQLExpr minValue) {
+        this.minValue = minValue;
+    }
+
+    public boolean isNoMaxValue() {
+        return noMaxValue;
+    }
+
+    public void setNoMaxValue(boolean noMaxValue) {
+        this.noMaxValue = noMaxValue;
+    }
+
+    public boolean isNoMinValue() {
+        return noMinValue;
+    }
+
+    public void setNoMinValue(boolean noMinValue) {
+        this.noMinValue = noMinValue;
     }
 
 }

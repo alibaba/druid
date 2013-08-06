@@ -51,10 +51,13 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
@@ -1700,8 +1703,9 @@ public class WallVisitorUtils {
         } else if (x instanceof SQLCreateTableStatement //
                    || x instanceof SQLCreateIndexStatement //
                    || x instanceof SQLCreateViewStatement //
+                   || x instanceof SQLCreateTriggerStatement //
                    || x instanceof OracleCreateSequenceStatement //
-                   ) {
+        ) {
             allow = config.isCreateTableAllow();
             denyMessage = "create table not allow";
             errorCode = ErrorCode.CREATE_TABLE_NOT_ALLOW;
@@ -1711,7 +1715,10 @@ public class WallVisitorUtils {
             errorCode = ErrorCode.ALTER_TABLE_NOT_ALLOW;
         } else if (x instanceof SQLDropTableStatement //
                    || x instanceof SQLDropIndexStatement //
-                   || x instanceof SQLDropViewStatement) {
+                   || x instanceof SQLDropViewStatement //
+                   || x instanceof SQLDropTriggerStatement //
+                   || x instanceof SQLDropSequenceStatement //
+        ) {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
             errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;

@@ -21,16 +21,11 @@ import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
-public class OracleWallTest3 extends TestCase {
+public class OracleWallTest5 extends TestCase {
 
     public void test_true() throws Exception {
         String sql = //
-        "CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\" " //
-                + "BEFORE INSERT"//
-                + "    ON \"AO_4AEACD_WEBHOOK_DAO\"   FOR EACH ROW "//
-                + "BEGIN"//
-                + "    SELECT \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\".NEXTVAL INTO :NEW.\"ID\" FROM DUAL;"//
-                + "END;";
+        "DROP TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\"";
         Assert.assertTrue(WallUtils.isValidateOracle(sql));
     }
 }

@@ -1650,6 +1650,22 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 stmt.setCycle(Boolean.FALSE);
                 continue;
+            } else if (identifierEquals("MINVALUE")) {
+                lexer.nextToken();
+                stmt.setMinValue(this.exprParser.expr());
+                continue;
+            } else if (identifierEquals("MAXVALUE")) {
+                lexer.nextToken();
+                stmt.setMaxValue(this.exprParser.expr());
+                continue;
+            } else if (identifierEquals("NOMAXVALUE")) {
+                lexer.nextToken();
+                stmt.setNoMaxValue(true);
+                continue;
+            } else if (identifierEquals("NOMINVALUE")) {
+                lexer.nextToken();
+                stmt.setNoMinValue(true);
+                continue;
             }
             break;
         }

@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -436,6 +437,11 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 tableStat.incrementShowCount();
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTriggerStatement x) {
         return false;
     }
 }

@@ -77,6 +77,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
@@ -514,4 +515,8 @@ public interface SQLASTVisitor {
     void endVisit(SQLAlterTableAddConstraint x);
 
     boolean visit(SQLAlterTableAddConstraint x);
+
+    void endVisit(SQLCreateTriggerStatement x);
+
+    boolean visit(SQLCreateTriggerStatement x);
 }

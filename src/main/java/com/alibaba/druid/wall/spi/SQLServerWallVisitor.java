@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -64,7 +65,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         this.config = provider.getConfig();
         this.provider = provider;
     }
-    
+
     @Override
     public boolean isSqlModified() {
         return sqlModified;
@@ -320,6 +321,11 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLCallStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTriggerStatement x) {
         return false;
     }
 }

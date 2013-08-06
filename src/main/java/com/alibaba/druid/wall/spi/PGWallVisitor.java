@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -193,7 +194,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLSelectStatement x) {
         WallVisitorUtils.clearWallTopStatementContext();
@@ -206,7 +207,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLInsertStatement x) {
         WallVisitorUtils.clearWallTopStatementContext();
@@ -217,7 +218,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
         WallVisitorUtils.checkDelete(this, x);
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLDeleteStatement x) {
         WallVisitorUtils.clearWallTopStatementContext();
@@ -230,7 +231,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLUpdateStatement x) {
         WallVisitorUtils.clearWallTopStatementContext();
@@ -267,6 +268,11 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
     @Override
     public boolean visit(SQLCallStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTriggerStatement x) {
         return false;
     }
 }

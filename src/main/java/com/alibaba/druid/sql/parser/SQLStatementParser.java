@@ -43,6 +43,9 @@ import com.alibaba.druid.sql.ast.statement.SQLConstaint;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
@@ -1052,12 +1055,72 @@ public class SQLStatementParser extends SQLParser {
             return parseCreateDbLink();
         } else if (token == Token.VIEW) {
             return parseCreateView();
+        } else if (token == Token.TRIGGER) {
+            return parseCreateTrigger();
         }
 
         throw new ParserException("TODO " + lexer.token());
     }
 
     public SQLStatement parseCreateDbLink() {
+        throw new ParserException("TODO " + lexer.token());
+    }
+
+    public SQLStatement parseCreateTrigger() {
+        accept(Token.TRIGGER);
+
+        SQLCreateTriggerStatement stmt = new SQLCreateTriggerStatement();
+        stmt.setName(this.exprParser.name());
+
+        if (identifierEquals("BEFORE")) {
+            stmt.setTriggerType(TriggerType.BEFORE);
+            lexer.nextToken();
+        } else if (identifierEquals("AFTER")) {
+            stmt.setTriggerType(TriggerType.AFTER);
+            lexer.nextToken();
+        } else if (identifierEquals("INSTEAD")) {
+            lexer.nextToken();
+            accept(Token.OF);
+            stmt.setTriggerType(TriggerType.INSTEAD_OF);
+        }
+
+        for (;;) {
+            if (lexer.token() == Token.INSERT) {
+                lexer.nextToken();
+                stmt.getTriggerEvents().add(TriggerEvent.INSERT);
+                continue;
+            }
+
+            if (lexer.token() == Token.UPDATE) {
+                lexer.nextToken();
+                stmt.getTriggerEvents().add(TriggerEvent.UPDATE);
+                continue;
+            }
+
+            if (lexer.token() == Token.DELETE) {
+                lexer.nextToken();
+                stmt.getTriggerEvents().add(TriggerEvent.DELETE);
+                continue;
+            }
+            break;
+        }
+
+        accept(Token.ON);
+        stmt.setOn(this.exprParser.name());
+
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+            acceptIdentifier("EACH");
+            accept(Token.ROW);
+            stmt.setForEachRow(true);
+        }
+
+        SQLStatement body = this.parseBlock();
+        stmt.setBody(body);
+        return stmt;
+    }
+
+    public SQLStatement parseBlock() {
         throw new ParserException("TODO " + lexer.token());
     }
 

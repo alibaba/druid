@@ -185,24 +185,27 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public void postVisit(SQLObject x) {
-        if (!isPrintPostSemi()) {
+        if (!(x instanceof SQLStatement)) {
             return;
         }
 
-        if (x instanceof SQLStatement) {
-            if (x instanceof OraclePLSQLCommitStatement) {
-                return;
-            }
-            if (x.getParent() instanceof OracleCreateProcedureStatement) {
-                return;
-            }
+        if ((!isPrintPostSemi()) //
+            && (!(x.getParent() instanceof OracleBlockStatement))) {
+            return;
+        }
 
-            if (isPrettyFormat()) {
-                if (x.getParent() != null) {
-                    print(";");
-                } else {
-                    println(";");
-                }
+        if (x instanceof OraclePLSQLCommitStatement) {
+            return;
+        }
+        if (x.getParent() instanceof OracleCreateProcedureStatement) {
+            return;
+        }
+
+        if (isPrettyFormat()) {
+            if (x.getParent() != null) {
+                print(";");
+            } else {
+                println(";");
             }
         }
     }
@@ -2837,6 +2840,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getMaxValue() != null) {
             print(" MAXVALUE ");
             x.getMaxValue().accept(this);
+        }
+
+        if (x.isNoMaxValue()) {
+            print(" NOMAXVALUE");
+        }
+
+        if (x.getMinValue() != null) {
+            print(" MINVALUE ");
+            x.getMinValue().accept(this);
+        }
+
+        if (x.isNoMinValue()) {
+            print(" NOMINVALUE");
         }
 
         if (x.getCycle() != null) {

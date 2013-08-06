@@ -94,6 +94,8 @@ import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
@@ -109,6 +111,7 @@ import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
@@ -1823,6 +1826,43 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print("ADD ");
 
         x.getConstraint().accept(this);
+        return false;
+    }
+    
+    public boolean visit(SQLCreateTriggerStatement x) {
+        print("CREATE ");
+        
+        if (x.isOrReplace()) {
+            print("OR REPLEACE ");
+        }
+        
+        print("TRIGGER ");
+        
+        x.getName().accept(this);
+        
+        incrementIndent();
+        println();
+        if (TriggerType.INSTEAD_OF.equals(x.getTriggerType())) {
+            print("INSTEAD OF");
+        } else {
+            print(x.getTriggerType().name());
+        }
+        
+        for (TriggerEvent event : x.getTriggerEvents()) {
+            print(' ');
+            print(event.name());
+        }
+        println();
+        print("ON ");
+        x.getOn().accept(this);
+        
+        if (x.isForEachRow()) {
+            println();
+            print("FOR EACH ROW");
+        }
+        decrementIndent();
+        println();
+        x.getBody().accept(this);
         return false;
     }
 }

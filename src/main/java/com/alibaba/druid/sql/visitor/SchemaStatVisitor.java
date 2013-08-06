@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
@@ -1285,6 +1286,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     
     public boolean visit(SQLCheck x) {
         x.getExpr().accept(this);
+        return false;
+    }
+    
+    public boolean visit(SQLCreateTriggerStatement x) {
         return false;
     }
 }
