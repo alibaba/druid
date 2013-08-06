@@ -27,6 +27,10 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
 
     private Isolation isolation;
 
+    private boolean   forReadOnly;
+
+    private SQLExpr   optimizeFor;
+
     public SQLExpr getFirst() {
         return first;
     }
@@ -63,6 +67,22 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
 
     public void setIsolation(Isolation isolation) {
         this.isolation = isolation;
+    }
+
+    public boolean isForReadOnly() {
+        return forReadOnly;
+    }
+
+    public void setForReadOnly(boolean forReadOnly) {
+        this.forReadOnly = forReadOnly;
+    }
+
+    public SQLExpr getOptimizeFor() {
+        return optimizeFor;
+    }
+
+    public void setOptimizeFor(SQLExpr optimizeFor) {
+        this.optimizeFor = optimizeFor;
     }
 
     public static enum Isolation {
