@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
@@ -266,8 +267,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlPrimaryKey x) {
-
-        return true;
+        for (SQLObject item : x.getColumns()) {
+            item.accept(this);
+        }
+        return false;
     }
 
     @Override
