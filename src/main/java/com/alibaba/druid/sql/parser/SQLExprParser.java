@@ -256,6 +256,7 @@ public class SQLExprParser extends SQLParser {
             case EXPLAIN:
             case WITH:
             case GRANT:
+            case REPLACE:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
