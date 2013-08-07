@@ -239,6 +239,49 @@ public abstract class WallProvider {
 
     public WallSqlStat addWhiteSql(String sql, Map<String, WallSqlTableStat> tableStats,
                                    Map<String, WallSqlFunctionStat> functionStats, boolean syntaxError) {
+        String mergedSql;
+        try {
+            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+        } catch (Exception ex) {
+            WallSqlStat stat = new WallSqlStat(tableStats, functionStats, syntaxError);
+            stat.incrementAndGetExecuteCount();
+            return stat;
+        }
+
+        if (mergedSql != sql) {
+            WallSqlStat mergedStat;
+            lock.readLock().lock();
+            try {
+                if (whiteMergedList == null) {
+                    whiteMergedList = new LRUCache<String, WallSqlStat>(whiteSqlMaxSize);
+                }
+
+                mergedStat = whiteMergedList.get(mergedSql);
+            } finally {
+                lock.readLock().unlock();
+            }
+
+            if (mergedStat == null) {
+                WallSqlStat newStat = new WallSqlStat(tableStats, functionStats, syntaxError);
+                newStat.setSample(sql);
+
+                lock.writeLock().lock();
+                try {
+                    mergedStat = whiteMergedList.get(mergedSql);
+                    if (mergedStat == null) {
+                        whiteMergedList.put(mergedSql, newStat);
+                        mergedStat = newStat;
+                    }
+                } finally {
+                    lock.writeLock().unlock();
+                }
+            }
+
+            mergedStat.incrementAndGetExecuteCount();
+
+            return mergedStat;
+        }
+
         lock.writeLock().lock();
         try {
             if (whiteList == null) {
@@ -251,12 +294,6 @@ public abstract class WallProvider {
 
             WallSqlStat wallStat = whiteList.get(sql);
             if (wallStat == null) {
-                String mergedSql;
-                try {
-                    mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-                } catch (Exception ex) {
-                    mergedSql = sql;
-                }
                 wallStat = whiteMergedList.get(mergedSql);
                 if (wallStat == null) {
                     wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
@@ -277,6 +314,14 @@ public abstract class WallProvider {
     public WallSqlStat addBlackSql(String sql, Map<String, WallSqlTableStat> tableStats,
                                    Map<String, WallSqlFunctionStat> functionStats, List<Violation> violations,
                                    boolean syntaxError) {
+        String mergedSql;
+        try {
+            mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+        } catch (Exception ex) {
+            // skip
+            mergedSql = sql;
+        }
+
         lock.writeLock().lock();
         try {
             if (blackList == null) {
@@ -289,12 +334,6 @@ public abstract class WallProvider {
 
             WallSqlStat wallStat = blackList.get(sql);
             if (wallStat == null) {
-                String mergedSql;
-                try {
-                    mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
-                } catch (Exception ex) {
-                    mergedSql = sql;
-                }
                 wallStat = blackMergedList.get(mergedSql);
                 if (wallStat == null) {
                     wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
@@ -401,16 +440,37 @@ public abstract class WallProvider {
     }
 
     public WallSqlStat getWhiteSql(String sql) {
+        WallSqlStat stat = null;
         lock.readLock().lock();
         try {
-            if (whiteList == null) {
-                return null;
+            if (whiteList != null) {
+                stat = whiteList.get(sql);
             }
-
-            return whiteList.get(sql);
         } finally {
             lock.readLock().unlock();
         }
+
+        if (stat == null) {
+            String mergedSql;
+            try {
+                mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+            } catch (Exception ex) {
+                // skip
+                return null;
+            }
+
+            lock.readLock().lock();
+            try {
+                if (whiteMergedList == null) {
+                    return null;
+                }
+
+                stat = whiteMergedList.get(mergedSql);
+            } finally {
+                lock.readLock().unlock();
+            }
+        }
+        return stat;
     }
 
     public WallSqlStat getBlackSql(String sql) {
@@ -832,13 +892,13 @@ public abstract class WallProvider {
             WallTableStat tableStat = entry.getValue();
 
             WallTableStatValue tableStatValue = tableStat.getStatValue(reset);
-            
+
             if (tableStatValue.getTotalExecuteCount() == 0) {
                 continue;
             }
-            
+
             tableStatValue.setName(tableName);
-            
+
             statValue.getTables().add(tableStatValue);
         }
 
@@ -847,7 +907,7 @@ public abstract class WallProvider {
             WallFunctionStat functionStat = entry.getValue();
 
             WallFunctionStatValue functionStatValue = functionStat.getStatValue(reset);
-            
+
             if (functionStatValue.getInvokeCount() == 0) {
                 continue;
             }
@@ -864,11 +924,11 @@ public abstract class WallProvider {
                     String sql = entry.getKey();
                     WallSqlStat sqlStat = entry.getValue();
                     WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
-                    
+
                     if (sqlStatValue.getExecuteCount() == 0) {
                         continue;
                     }
-                    
+
                     sqlStatValue.setSql(sql);
                     statValue.getWhiteList().add(sqlStatValue);
                 }
@@ -879,11 +939,11 @@ public abstract class WallProvider {
                     String sql = entry.getKey();
                     WallSqlStat sqlStat = entry.getValue();
                     WallSqlStatValue sqlStatValue = sqlStat.getStatValue(reset);
-                    
+
                     if (sqlStatValue.getExecuteCount() == 0) {
                         continue;
                     }
-                    
+
                     sqlStatValue.setSql(sql);
                     statValue.getBlackList().add(sqlStatValue);
                 }

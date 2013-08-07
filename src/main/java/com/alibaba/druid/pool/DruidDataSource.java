@@ -77,6 +77,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
@@ -143,6 +144,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private boolean                          useGloalDataSourceStat  = false;
 
     private boolean                          mbeanRegistered         = false;
+
+    public static ThreadLocal<Long>          waitNanosLocal          = new ThreadLocal<Long>();
 
     public DruidDataSource(){
         this(false);
@@ -1012,12 +1015,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 holder = takeLast();
             }
 
-            activeCount++;
-            if (activeCount > activePeak) {
-                activePeak = activeCount;
-                activePeakTime = System.currentTimeMillis();
+            if (holder != null) {
+                activeCount++;
+                if (activeCount > activePeak) {
+                    activePeak = activeCount;
+                    activePeakTime = System.currentTimeMillis();
+                }
             }
-
         } catch (InterruptedException e) {
             connectErrorCount.incrementAndGet();
             throw new SQLException(e.getMessage(), e);
@@ -1026,6 +1030,38 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw e;
         } finally {
             lock.unlock();
+        }
+
+        if (holder == null) {
+            long waitNanos = waitNanosLocal.get();
+
+            StringBuilder buf = new StringBuilder();
+            buf.append("wait millis ")//
+            .append(waitNanos / (1000 * 1000))//
+            .append(", active " + activeCount)//
+            ;
+
+            List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();
+            for (int i = 0; i < sqlList.size(); ++i) {
+                if (i != 0) {
+                    buf.append('\n');
+                } else {
+                    buf.append(", ");
+                }
+                JdbcSqlStatValue sql = sqlList.get(i);
+                buf.append("runningCount ");
+                buf.append(sql.getRunningCount());
+                buf.append(" : ");
+                buf.append(sql.getSql());
+            }
+
+            String errorMessage = buf.toString();
+
+            if (this.createError == null) {
+                throw new GetConnectionTimeoutException(errorMessage, createError);
+            } else {
+                throw new GetConnectionTimeoutException(errorMessage);
+            }
         }
 
         holder.incrementUseCount();
@@ -1313,19 +1349,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     DruidConnectionHolder pollLast(long nanos) throws InterruptedException, SQLException {
         long estimate = nanos;
 
-        for (int i = 0;; ++i) {
+        for (;;) {
             if (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {
-                    String errorMessage = "loopWaitCount " + i + ", wait millis " + (nanos - estimate) / (1000 * 1000)
-                                          + ", active " + activeCount;
-
-                    if (this.createError == null) {
-                        throw new GetConnectionTimeoutException(errorMessage, createError);
-                    } else {
-                        throw new GetConnectionTimeoutException(errorMessage);
-                    }
+                    waitNanosLocal.set(nanos - estimate);
+                    return null;
                 }
 
                 notEmptyWaitThreadCount++;
@@ -1358,13 +1388,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
-                    String errorMessage = "loopWaitCount " + i + ", wait millis " + (nanos - estimate) / (1000 * 1000)
-                                          + ", active " + activeCount;
-                    if (createError != null) {
-                        throw new GetConnectionTimeoutException(errorMessage, createError);
-                    } else {
-                        throw new GetConnectionTimeoutException(errorMessage);
-                    }
+                    waitNanosLocal.set(nanos - estimate);
+                    return null;
                 }
             }
 

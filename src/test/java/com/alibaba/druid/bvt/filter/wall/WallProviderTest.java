@@ -52,7 +52,7 @@ public class WallProviderTest extends TestCase {
             Assert.assertSame(whiteStat_1, provider.getSqlStat(sql_x));
         }
 
-        Assert.assertEquals(500, provider.getWhiteList().size());
+        Assert.assertEquals(0, provider.getWhiteList().size());
         Assert.assertEquals(2, provider.getSqlList().size());
 
         Assert.assertFalse(provider.checkValid("slelc"));
@@ -66,10 +66,10 @@ public class WallProviderTest extends TestCase {
             
             Assert.assertEquals(1009, statValue.getCheckCount());
             Assert.assertEquals(2, statValue.getBlackListHitCount());
-            Assert.assertEquals(1005, statValue.getHardCheckCount());
+            Assert.assertEquals(4, statValue.getHardCheckCount());
             Assert.assertEquals(1, statValue.getSyntaxErrorCount());
             Assert.assertEquals(5, statValue.getViolationCount());
-            Assert.assertEquals(2, statValue.getWhiteListHitCount());
+            Assert.assertEquals(1003, statValue.getWhiteListHitCount());
             
             Assert.assertEquals(1, statValue.getWhiteList().size());
             Assert.assertEquals(2, statValue.getBlackList().size());

@@ -30,7 +30,7 @@ public class WallStatTest_whiteList_syntaxError extends TestCase {
             Assert.assertEquals(0, tableStat.getSelectCount());
             Assert.assertEquals(0, provider.getBlackListHitCount());
             Assert.assertEquals(0, provider.getWhiteListHitCount());
-            Assert.assertEquals(1, provider.getWhiteList().size());
+            Assert.assertEquals(0, provider.getWhiteList().size());
             Assert.assertEquals(0, provider.getBlackList().size());
             Assert.assertEquals(1, provider.getCheckCount());
             Assert.assertEquals(1, provider.getSyntaxErrorCount());
@@ -42,12 +42,12 @@ public class WallStatTest_whiteList_syntaxError extends TestCase {
             WallTableStat tableStat = provider.getTableStat("t");
             Assert.assertEquals(0, tableStat.getSelectCount());
             Assert.assertEquals(0, provider.getBlackListHitCount());
-            Assert.assertEquals(1, provider.getWhiteListHitCount());
-            Assert.assertEquals(1, provider.getWhiteList().size());
+            Assert.assertEquals(0, provider.getWhiteListHitCount());
+            Assert.assertEquals(0, provider.getWhiteList().size());
             Assert.assertEquals(0, provider.getBlackList().size());
             Assert.assertEquals(2, provider.getCheckCount());
             Assert.assertEquals(2, provider.getSyntaxErrorCount());
-            Assert.assertEquals(1, provider.getHardCheckCount());
+            Assert.assertEquals(2, provider.getHardCheckCount());
         }
     }
 
