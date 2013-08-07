@@ -583,7 +583,7 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleAlterSessionStatement stmt = new OracleAlterSessionStatement();
             if (lexer.token() == Token.SET) {
                 lexer.nextToken();
-                parseAssignItems(stmt.getItems());
+                parseAssignItems(stmt.getItems(), stmt);
             } else {
                 throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
             }

@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
@@ -121,12 +122,7 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLIntegerExpr x) {
-        SQLObject parent = x.getParent();
-
-        if (parent instanceof SQLDataType //
-            || parent instanceof SQLColumnDefinition //
-            || parent instanceof SQLServerTop //
-        ) {
+        if (!checkParameterize(x)) {
             return SQLASTOutputVisitorUtils.visit(v, x);
         }
 
@@ -136,9 +132,7 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLNumberExpr x) {
-        SQLObject parent = x.getParent();
-
-        if (parent instanceof SQLDataType) {
+        if (!checkParameterize(x)) {
             return SQLASTOutputVisitorUtils.visit(v, x);
         }
 
@@ -151,6 +145,24 @@ public class ParameterizedOutputVisitorUtils {
         v.print('?');
         v.incrementReplaceCunt();
         return false;
+    }
+
+    public static boolean checkParameterize(SQLObject x) {
+        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+            return false;
+        }
+        
+        SQLObject parent = x.getParent();
+
+        if (parent instanceof SQLDataType //
+            || parent instanceof SQLColumnDefinition //
+            || parent instanceof SQLServerTop //
+            || parent instanceof SQLAssignItem //
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLNCharExpr x) {

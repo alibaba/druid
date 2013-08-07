@@ -59,7 +59,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
     }
 
     public boolean visit(SQLIntegerExpr x) {
-        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
 
@@ -67,7 +67,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
     }
 
     public boolean visit(SQLNumberExpr x) {
-        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
 
@@ -77,7 +77,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
     }
 
     public boolean visit(SQLCharExpr x) {
-        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
 
@@ -85,7 +85,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
     }
 
     public boolean visit(SQLNCharExpr x) {
-        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
 

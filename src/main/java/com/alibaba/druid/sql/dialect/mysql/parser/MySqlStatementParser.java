@@ -2089,7 +2089,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         } else {
             SQLSetStatement stmt = new SQLSetStatement();
 
-            parseAssignItems(stmt.getItems());
+            parseAssignItems(stmt.getItems(), stmt);
 
             if (global != null && global.booleanValue()) {
                 SQLVariantRefExpr varRef = (SQLVariantRefExpr) stmt.getItems().get(0).getTarget();

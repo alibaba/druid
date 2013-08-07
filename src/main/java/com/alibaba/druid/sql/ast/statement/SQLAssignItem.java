@@ -28,8 +28,8 @@ public class SQLAssignItem extends SQLObjectImpl {
     }
 
     public SQLAssignItem(SQLExpr target, SQLExpr value){
-        this.target = target;
-        this.value = value;
+        setTarget(target);
+        setValue(value);
     }
 
     public SQLExpr getTarget() {
@@ -37,6 +37,9 @@ public class SQLAssignItem extends SQLObjectImpl {
     }
 
     public void setTarget(SQLExpr target) {
+        if (target != null) {
+            target.setParent(this);
+        }
         this.target = target;
     }
 
@@ -45,6 +48,9 @@ public class SQLAssignItem extends SQLObjectImpl {
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 

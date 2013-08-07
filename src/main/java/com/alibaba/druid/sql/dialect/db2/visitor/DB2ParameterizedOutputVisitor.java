@@ -55,7 +55,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
     }
 
     public boolean visit(SQLIntegerExpr x) {
-        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
 
@@ -63,7 +63,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
     }
 
     public boolean visit(SQLNumberExpr x) {
-        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
 
@@ -71,7 +71,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
     }
 
     public boolean visit(SQLCharExpr x) {
-        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
 
@@ -79,7 +79,7 @@ public class DB2ParameterizedOutputVisitor extends DB2OutputVisitor implements P
     }
 
     public boolean visit(SQLNCharExpr x) {
-        if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
 

@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
@@ -1136,14 +1137,15 @@ public class SQLStatementParser extends SQLParser {
         accept(Token.SET);
         SQLSetStatement stmt = new SQLSetStatement();
 
-        parseAssignItems(stmt.getItems());
+        parseAssignItems(stmt.getItems(), stmt);
 
         return stmt;
     }
 
-    public void parseAssignItems(List<SQLAssignItem> items) {
+    public void parseAssignItems(List<SQLAssignItem> items, SQLObject parent) {
         for (;;) {
             SQLAssignItem item = exprParser.parseAssignItem();
+            item.setParent(parent);
             items.add(item);
 
             if (lexer.token() == Token.COMMA) {
