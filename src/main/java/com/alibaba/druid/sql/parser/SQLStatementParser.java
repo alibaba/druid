@@ -350,6 +350,12 @@ public class SQLStatementParser extends SQLParser {
             } else if (lexer.token() == Token.INSERT) {
                 privilege = "INSERT";
                 lexer.nextToken();
+            } else if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+                privilege = "INDEX";
+            } else if (lexer.token() == Token.TRIGGER) {
+                lexer.nextToken();
+                privilege = "TRIGGER";
             } else if (lexer.token() == Token.REFERENCES) {
                 privilege = "REFERENCES";
                 lexer.nextToken();
@@ -361,6 +367,15 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                 } else if (lexer.token() == Token.SESSION) {
                     privilege = "CREATE SESSION";
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.TABLESPACE) {
+                    privilege = "CREATE TABLESPACE";
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.USER) {
+                    privilege = "CREATE USER";
+                    lexer.nextToken();
+                } else if (lexer.token() == Token.VIEW) {
+                    privilege = "CREATE VIEW";
                     lexer.nextToken();
                 } else if (lexer.token() == Token.ANY) {
                     lexer.nextToken();
@@ -381,6 +396,10 @@ public class SQLStatementParser extends SQLParser {
                 } else if (identifierEquals("ROUTINE")) {
                     privilege = "CREATE ROUTINE";
                     lexer.nextToken();
+                } else if (identifierEquals("TEMPORARY")) {
+                    lexer.nextToken();
+                    accept(Token.TABLE);
+                    privilege = "CREATE TEMPORARY TABLE";
                 } else {
                     throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
                 }
@@ -430,7 +449,7 @@ public class SQLStatementParser extends SQLParser {
                         throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
                     }
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    privilege = "DROP";
                 }
             } else if (identifierEquals("USAGE")) {
                 privilege = "USAGE";
@@ -454,6 +473,51 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken();
                 acceptIdentifier("PRIVILEGES");
                 privilege = "INHERIT PRIVILEGES";
+            } else if (identifierEquals("EVENT")) {
+                lexer.nextToken();
+                privilege = "EVENT";
+            } else if (identifierEquals("FILE")) {
+                lexer.nextToken();
+                privilege = "FILE";
+            } else if (lexer.token() == Token.GRANT) {
+                lexer.nextToken();
+                acceptIdentifier("OPTION");
+                privilege = "GRANT OPTION";
+            } else if (lexer.token() == Token.LOCK) {
+                lexer.nextToken();
+                acceptIdentifier("TABLES");
+                privilege = "LOCK TABLES";
+            } else if (identifierEquals("PROCESS")) {
+                lexer.nextToken();
+                privilege = "PROCESS";
+            } else if (identifierEquals("RELOAD")) {
+                lexer.nextToken();
+                privilege = "RELOAD";
+            } else if (identifierEquals("REPLICATION")) {
+                lexer.nextToken();
+                if (identifierEquals("SLAVE")) {
+                    lexer.nextToken();
+                    privilege = "REPLICATION SLAVE";
+                } else {
+                    acceptIdentifier("CLIENT");
+                    privilege = "REPLICATION CLIENT";
+                }
+            } else if (lexer.token() == Token.SHOW) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.VIEW) {
+                    lexer.nextToken();
+                    privilege = "SHOW VIEW";
+                } else {
+                    acceptIdentifier("DATABASES");
+                    privilege = "SHOW DATABASES";
+                }
+            } else if (identifierEquals("SHUTDOWN")) {
+                lexer.nextToken();
+                privilege = "SHUTDOWN";
+            } else if (identifierEquals("SUPER")) {
+                lexer.nextToken();
+                privilege = "SUPER";
             }
 
             if (privilege != null) {

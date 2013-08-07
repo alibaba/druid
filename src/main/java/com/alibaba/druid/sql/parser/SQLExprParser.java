@@ -257,6 +257,54 @@ public class SQLExprParser extends SQLParser {
             case WITH:
             case GRANT:
             case REPLACE:
+            case INDEX:
+            case MODEL:
+            case PCTFREE:
+            case INITRANS:
+            case MAXTRANS:
+            case SEGMENT:
+            case CREATION:
+            case IMMEDIATE:
+            case DEFERRED:
+            case STORAGE:
+            case NEXT:
+            case MINEXTENTS:
+            case MAXEXTENTS:
+            case MAXSIZE:
+            case PCTINCREASE:
+            case FLASH_CACHE:
+            case CELL_FLASH_CACHE:
+            case KEEP:
+            case NONE:
+            case LOB:
+            case STORE:
+            case ROW:
+            case CHUNK:
+            case CACHE:
+            case NOCACHE:
+            case LOGGING:
+            case NOCOMPRESS:
+            case KEEP_DUPLICATES:
+            case EXCEPTIONS:
+            case PURGE:
+            case FULL:
+            case TO:
+            case IDENTIFIED:
+            case PASSWORD:
+            case BINARY:
+            case WINDOW:
+            case OFFSET:
+            case SHARE:
+            case START:
+            case CONNECT:
+            case MATCHED:
+            case ERRORS:
+            case REJECT:
+            case UNLIMITED:
+            case BEGIN:
+            case EXCLUSIVE:
+            case MODE:
+            case ADVISE:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;

@@ -104,6 +104,28 @@ public class SQLParser {
                     case ANALYZE:
                     case OPTIMIZE:
                     case GRANT:
+                    case FULL:
+                    case TO:
+                    case NEW:
+                    case INTERVAL:
+                    case LOCK:
+                    case LIMIT:
+                    case IDENTIFIED:
+                    case PASSWORD:
+                    case BINARY:
+                    case WINDOW:
+                    case OFFSET:
+                    case SHARE:
+                    case START:
+                    case CONNECT:
+                    case MATCHED:
+                    case ERRORS:
+                    case REJECT:
+                    case UNLIMITED:
+                    case BEGIN:
+                    case EXCLUSIVE:
+                    case MODE:
+                    case ADVISE:
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         return alias;
