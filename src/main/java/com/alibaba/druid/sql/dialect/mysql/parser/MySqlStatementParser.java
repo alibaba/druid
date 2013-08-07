@@ -92,6 +92,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
@@ -1992,6 +1993,22 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public SQLStatement parseSet() {
         accept(Token.SET);
+
+        if (identifierEquals("PASSWORD")) {
+            lexer.nextToken();
+            MySqlSetPasswordStatement stmt = new MySqlSetPasswordStatement();
+            
+            if (lexer.token() == Token.FOR) {
+                lexer.nextToken();
+                stmt.setUser(this.exprParser.name());
+            }
+            
+            accept(Token.EQ);
+            
+            stmt.setPassword(this.exprParser.expr());
+
+            return stmt;
+        }
 
         Boolean global = null;
         if (identifierEquals(GLOBAL)) {

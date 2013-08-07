@@ -616,6 +616,12 @@ public class SQLStatementParser extends SQLParser {
             acceptIdentifier("OPTION");
             stmt.setAdminOption(true);
         }
+        
+        if (lexer.token() == Token.IDENTIFIED) {
+            lexer.nextToken();
+            accept(Token.BY);
+            stmt.setIdentifiedBy(this.exprParser.expr());
+        }
 
         return stmt;
     }

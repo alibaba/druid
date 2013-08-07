@@ -97,6 +97,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
@@ -2997,6 +2998,29 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlAlterUserStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(MySqlSetPasswordStatement x) {
+        print("SET PASSWORD ");
+        
+        if (x.getUser() != null){
+            print("FOR ");
+            x.getUser().accept(this);
+            print(' ');
+        }
+        
+        print("= ");
+        
+        if (x.getPassword() != null) {
+            x.getPassword().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSetPasswordStatement x) {
+        
     }
 
 } //

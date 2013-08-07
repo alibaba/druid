@@ -52,7 +52,7 @@ public class WallProviderTest extends TestCase {
             Assert.assertSame(whiteStat_1, provider.getSqlStat(sql_x));
         }
 
-        Assert.assertEquals(0, provider.getWhiteList().size());
+        Assert.assertEquals(1, provider.getWhiteList().size());
         Assert.assertEquals(2, provider.getSqlList().size());
 
         Assert.assertFalse(provider.checkValid("slelc"));

@@ -1774,6 +1774,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
             print(" ADMIN OPTION");
         }
+        
+        if (x.getIdentifiedBy() != null) {
+            print(" IDENTIFIED BY ");
+            x.getIdentifiedBy().accept(this);
+        }
 
         return false;
     }

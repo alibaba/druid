@@ -38,11 +38,14 @@ public class SQLGrantStatement extends SQLStatementImpl {
 
     private boolean             adminOption;
 
+    private SQLExpr             identifiedBy;
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, on);
             acceptChild(visitor, to);
+            acceptChild(visitor, identifiedBy);
         }
         visitor.endVisit(this);
     }
@@ -113,6 +116,14 @@ public class SQLGrantStatement extends SQLStatementImpl {
 
     public void setAdminOption(boolean adminOption) {
         this.adminOption = adminOption;
+    }
+
+    public SQLExpr getIdentifiedBy() {
+        return identifiedBy;
+    }
+
+    public void setIdentifiedBy(SQLExpr identifiedBy) {
+        this.identifiedBy = identifiedBy;
     }
 
     public static enum ObjectType {
