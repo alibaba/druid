@@ -81,8 +81,11 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableSpaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
@@ -519,4 +522,16 @@ public interface SQLASTVisitor {
     void endVisit(SQLCreateTriggerStatement x);
 
     boolean visit(SQLCreateTriggerStatement x);
+    
+    void endVisit(SQLDropFunctionStatement x);
+    
+    boolean visit(SQLDropFunctionStatement x);
+    
+    void endVisit(SQLDropTableSpaceStatement x);
+    
+    boolean visit(SQLDropTableSpaceStatement x);
+    
+    void endVisit(SQLDropProcedureStatement x);
+    
+    boolean visit(SQLDropProcedureStatement x);
 }

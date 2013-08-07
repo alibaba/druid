@@ -96,10 +96,14 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableSpaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
@@ -111,7 +115,6 @@ import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
@@ -1785,6 +1788,45 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         x.getDatabase().accept(this);
 
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDropFunctionStatement x) {
+        print("DROP FUNCTION ");
+        
+        if (x.isIfExists()) {
+            print("IF EXISTS ");
+        }
+        
+        x.getName().accept(this);
+        
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDropTableSpaceStatement x) {
+        print("DROP TABLESPACE ");
+        
+        if (x.isIfExists()) {
+            print("IF EXISTS ");
+        }
+        
+        x.getName().accept(this);
+        
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDropProcedureStatement x) {
+        print("DROP PROCEDURE ");
+        
+        if (x.isIfExists()) {
+            print("IF EXISTS ");
+        }
+        
+        x.getName().accept(this);
+        
         return false;
     }
 

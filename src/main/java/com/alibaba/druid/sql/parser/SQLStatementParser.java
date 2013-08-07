@@ -49,8 +49,11 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableSpaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
@@ -188,6 +191,18 @@ public class SQLStatementParser extends SQLParser {
                     continue;
                 } else if (lexer.token() == Token.DATABASE) {
                     SQLStatement stmt = parseDropDatabase(false);
+                    statementList.add(stmt);
+                    continue;
+                } else if (lexer.token() == Token.FUNCTION) {
+                    SQLStatement stmt = parseDropFunction(false);
+                    statementList.add(stmt);
+                    continue;
+                } else if (lexer.token() == Token.TABLESPACE) {
+                    SQLStatement stmt = parseDropTablespace(false);
+                    statementList.add(stmt);
+                    continue;
+                } else if (lexer.token() == Token.PROCEDURE) {
+                    SQLStatement stmt = parseDropProcedure(false);
                     statementList.add(stmt);
                     continue;
                 } else {
@@ -869,6 +884,69 @@ public class SQLStatementParser extends SQLParser {
         SQLName name = this.exprParser.name();
         stmt.setDatabase(name);
 
+        return stmt;
+    }
+    
+    protected SQLDropFunctionStatement parseDropFunction(boolean acceptDrop) {
+        if (acceptDrop) {
+            accept(Token.DROP);
+        }
+        
+        SQLDropFunctionStatement stmt = new SQLDropFunctionStatement();
+        
+        accept(Token.FUNCTION);
+        
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+        
+        SQLName name = this.exprParser.name();
+        stmt.setName(name);
+        
+        return stmt;
+    }
+    
+    protected SQLDropTableSpaceStatement parseDropTablespace(boolean acceptDrop) {
+        if (acceptDrop) {
+            accept(Token.DROP);
+        }
+        
+        SQLDropTableSpaceStatement stmt = new SQLDropTableSpaceStatement();
+        
+        accept(Token.TABLESPACE);
+        
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+        
+        SQLName name = this.exprParser.name();
+        stmt.setName(name);
+        
+        return stmt;
+    }
+    
+    protected SQLDropProcedureStatement parseDropProcedure(boolean acceptDrop) {
+        if (acceptDrop) {
+            accept(Token.DROP);
+        }
+        
+        SQLDropProcedureStatement stmt = new SQLDropProcedureStatement();
+        
+        accept(Token.PROCEDURE);
+        
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+        
+        SQLName name = this.exprParser.name();
+        stmt.setName(name);
+        
         return stmt;
     }
 

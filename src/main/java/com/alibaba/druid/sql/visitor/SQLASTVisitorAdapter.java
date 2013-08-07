@@ -82,8 +82,11 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableSpaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
@@ -1006,6 +1009,36 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     
     @Override
     public boolean visit(SQLCreateTriggerStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLDropFunctionStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLDropFunctionStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLDropTableSpaceStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLDropTableSpaceStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLDropProcedureStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLDropProcedureStatement x) {
         return true;
     }
 }
