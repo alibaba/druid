@@ -4,7 +4,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.25-SNAPSHOT</version>
+	<version>0.2.25</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
