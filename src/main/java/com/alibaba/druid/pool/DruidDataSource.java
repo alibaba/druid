@@ -18,6 +18,8 @@ package com.alibaba.druid.pool;
 import static com.alibaba.druid.util.IOUtils.getBoolean;
 
 import java.io.Closeable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -1283,16 +1285,31 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void registerMbean() {
         if (!mbeanRegistered) {
-            ObjectName objectName = DruidDataSourceStatManager.addDataSource(this, this.name);
-            this.setObjectName(objectName);
-            this.mbeanRegistered = true;
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                @Override
+                public Object run() {
+                    ObjectName objectName = DruidDataSourceStatManager.addDataSource(DruidDataSource.this,
+                                                                                     DruidDataSource.this.name);
+                    DruidDataSource.this.setObjectName(objectName);
+                    DruidDataSource.this.mbeanRegistered = true;
+                    return null;
+                }
+            });
         }
     }
 
     public void unregisterMbean() {
         if (mbeanRegistered) {
-            DruidDataSourceStatManager.removeDataSource(this);
-            mbeanRegistered = false;
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                @Override
+                public Object run() {
+                    DruidDataSourceStatManager.removeDataSource(DruidDataSource.this);
+                    DruidDataSource.this.mbeanRegistered = false;
+                    return null;
+                }
+            });
         }
     }
 

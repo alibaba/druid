@@ -16,6 +16,8 @@
 package com.alibaba.druid.proxy;
 
 import java.lang.management.ManagementFactory;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -76,7 +78,13 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     private final static String                                     MBEAN_NAME               = "com.alibaba.druid:type=DruidDriver";
 
     static {
-        registerDriver(instance);
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+                registerDriver(instance);
+                return null;
+            }
+        });
     }
 
     public static boolean registerDriver(Driver driver) {
