@@ -916,9 +916,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 if (isTestWhileIdle()) {
-                    long idleMillis = System.currentTimeMillis()
-                                      - poolalbeConnection.getConnectionHolder().getLastActiveTimeMillis();
-                    if (idleMillis >= this.getTimeBetweenEvictionRunsMillis()) {
+                    final long currentTimeMillis = System.currentTimeMillis();
+                    final long lastActiveTimeMillis = poolalbeConnection.getConnectionHolder().getLastActiveTimeMillis();
+                    final long idleMillis = currentTimeMillis - lastActiveTimeMillis;
+                    long timeBetweenEvictionRunsMillis = this.getTimeBetweenEvictionRunsMillis();
+                    if (timeBetweenEvictionRunsMillis <= 0) {
+                        timeBetweenEvictionRunsMillis = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
+                    }
+                    
+                    if (idleMillis >= timeBetweenEvictionRunsMillis) {
                         boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
                         if (!validate) {
                             if (LOG.isDebugEnabled()) {
