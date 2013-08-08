@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.db2.visitor;
+package com.alibaba.druid.sql.dialect.db2.ast;
 
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public interface DB2ASTVisitor extends SQLASTVisitor {
+public abstract class DB2StatementImpl extends SQLStatementImpl implements DB2Object {
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof DB2ASTVisitor) {
+            accept0((DB2ASTVisitor) visitor);
+            return;
+        }
 
-    boolean visit(DB2SelectQueryBlock x);
+        super.accept0(visitor);
+    }
 
-    void endVisit(DB2SelectQueryBlock x);
-    
-    boolean visit(DB2ValuesStatement x);
-    
-    void endVisit(DB2ValuesStatement x);
+    @Override
+    public abstract void accept0(DB2ASTVisitor visitor);
 }
