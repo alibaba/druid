@@ -90,7 +90,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 if (!mbeanServer.isRegistered(objectName)) {
                     mbeanServer.registerMBean(instance, objectName);
                 }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 if (LOG == null) {
                     LOG = LogFactory.getLog(DruidDriver.class);
                 }
