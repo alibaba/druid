@@ -67,7 +67,7 @@ public class WebStatFilter implements Filter {
     public static final String           PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "principalCookieName";
     public static final String           PARAM_NAME_REAL_IP_HEADER         = "realIpHeader";
 
-    public final static int              DEFAULT_MAX_STAT_SESSION_COUNT    = 1000 * 100;
+    public final static int              DEFAULT_MAX_STAT_SESSION_COUNT    = 1000 * 1;
 
     private WebAppStat                   webAppStat                        = null;
     private WebStatFilterContextListener statFilterContextListener         = new WebStatFilterContextListener();
