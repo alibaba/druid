@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.util.StringUtils;
 
 public class WebAppStatManager {
 
@@ -34,6 +35,22 @@ public class WebAppStatManager {
 
     public static WebAppStatManager getInstance() {
         return instance;
+    }
+    
+    public synchronized WebAppStat getWebAppStat(String contextPath) {
+        Set<Object> stats = getWebAppStatSet();
+        for (Object item : stats) {
+            if (item instanceof WebAppStat) {
+                WebAppStat stat = (WebAppStat) item;
+                if (StringUtils.equals(stat.getContextPath(), contextPath)) {
+                    return stat;
+                }
+            }
+        }
+        
+        WebAppStat stat = new WebAppStat(contextPath);
+        this.addWebAppStatSet(stat);
+        return stat;
     }
 
     public Set<Object> getWebAppStatSet() {
