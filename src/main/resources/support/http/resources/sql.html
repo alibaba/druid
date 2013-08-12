@@ -104,11 +104,12 @@
 	    				
 	    				var html = "";
 	    				for ( var i = 0; i < sqlStatList.length; i++) {
-	    					var stat = sqlStatList[i];
+	    					var stat = sqlStatList[i], statSQL=stat.SQL;
+	    					var newStatSQL=statSQL.replace(/\"/g,"'");
 	    					var newRow = sqlStatTable.insertRow(-1);
 	    					html += "<tr>";
 	    					html += "<td>" + (i + 1) + "</td>";
-	    					html += "<td>" + '<a data-dismiss="alert"  title="'+replace(stat.SQL,"\"","'")+'" target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
+	    					html += "<td>" + '<a data-dismiss="alert"  title="'+newStatSQL+'" target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
 	    					html += "<td>" + replace(stat.ExecuteCount) + "</td>";
 	    					html += "<td>" + replace(stat.TotalTime) + "</td>";
 	    					
