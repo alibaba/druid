@@ -8,6 +8,7 @@
     	<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script src="js/lang.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/bootstrap.min.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
 		
@@ -107,7 +108,7 @@
 	    					var newRow = sqlStatTable.insertRow(-1);
 	    					html += "<tr>";
 	    					html += "<td>" + (i + 1) + "</td>";
-	    					html += "<td>" + '<a target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
+	    					html += "<td>" + '<a data-dismiss="alert"  title="'+replace(stat.SQL,"\"","'")+'" target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
 	    					html += "<td>" + replace(stat.ExecuteCount) + "</td>";
 	    					html += "<td>" + replace(stat.TotalTime) + "</td>";
 	    					
