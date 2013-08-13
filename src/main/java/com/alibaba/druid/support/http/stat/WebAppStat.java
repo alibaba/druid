@@ -77,6 +77,7 @@ public class WebAppStat {
     private final AtomicLong                        osWindows2000Count             = new AtomicLong();
     private final AtomicLong                        osWindowsVistaCount            = new AtomicLong();
     private final AtomicLong                        osWindows7Count                = new AtomicLong();
+    private final AtomicLong                        osWindows8Count                = new AtomicLong();
 
     private final AtomicLong                        osAndroid15Count               = new AtomicLong(0);
     private final AtomicLong                        osAndroid16Count               = new AtomicLong(0);
@@ -170,6 +171,7 @@ public class WebAppStat {
         osWindows2000Count.set(0);
         osWindowsVistaCount.set(0);
         osWindows7Count.set(0);
+        osWindows8Count.set(0);
 
         osLinuxUbuntuCount.set(0);
 
@@ -487,6 +489,7 @@ public class WebAppStat {
         data.put("OSWindows2000Count", this.getOSWindows2000Count());
         data.put("OSWindowsVistaCount", this.getOSWindowsVistaCount());
         data.put("OSWindows7Count", this.getOSWindows7Count());
+        data.put("OSWindows8Count", this.getOSWindows8Count());
 
         data.put("OSAndroid15Count", this.getOSAndroid15Count());
         data.put("OSAndroid16Count", this.getOSAndroid16Count());
@@ -859,6 +862,9 @@ public class WebAppStat {
 
         } else if (userAgent.startsWith("Windows NT 6.1", 13)) {
             osWindows7Count.incrementAndGet();
+            
+        } else if (userAgent.startsWith("Windows NT 6.2", 13)) {
+            osWindows8Count.incrementAndGet();
 
         } else if (userAgent.startsWith("Windows NT 5.0", 13)) {
             osWindows2000Count.incrementAndGet();
@@ -878,6 +884,8 @@ public class WebAppStat {
             osWindowsVistaCount.incrementAndGet();
         } else if (userAgent.startsWith("Windows NT 6.1", 35)) {
             osWindows7Count.incrementAndGet();
+        } else if (userAgent.startsWith("Windows NT 6.2", 36)) {
+            osWindows8Count.incrementAndGet();
         } else if (userAgent.startsWith("Windows 98", 36)) {
             osWindows98Count.incrementAndGet();
         } else if (userAgent.startsWith("Windows 98", 35)) {
@@ -973,6 +981,10 @@ public class WebAppStat {
 
     public long getOSWindows7Count() {
         return osWindows7Count.get();
+    }
+    
+    public long getOSWindows8Count() {
+        return osWindows8Count.get();
     }
 
     public long getOSAndroid15Count() {
