@@ -90,6 +90,8 @@ public class WebAppStat {
     private final AtomicLong                        osAndroid32Count               = new AtomicLong(0);
     private final AtomicLong                        osAndroid40Count               = new AtomicLong(0);
     private final AtomicLong                        osAndroid41Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid42Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid43Count               = new AtomicLong(0);
 
     private final AtomicLong                        osLinuxUbuntuCount             = new AtomicLong(0);
 
@@ -187,6 +189,8 @@ public class WebAppStat {
         osAndroid32Count.set(0);
         osAndroid40Count.set(0);
         osAndroid41Count.set(0);
+        osAndroid42Count.set(0);
+        osAndroid43Count.set(0);
 
         browserIE6Count.set(0);
         browserIE7Count.set(0);
@@ -504,6 +508,8 @@ public class WebAppStat {
         data.put("OSAndroid32Count", this.getOSAndroid32Count());
         data.put("OSAndroid40Count", this.getOSAndroid40Count());
         data.put("OSAndroid41Count", this.getOSAndroid41Count());
+        data.put("OSAndroid42Count", this.getOSAndroid42Count());
+        data.put("OSAndroid43Count", this.getOSAndroid43Count());
         data.put("OSLinuxUbuntuCount", this.getOSLinuxUbuntuCount());
 
         data.put("BrowserIECount", this.getBrowserIECount());
@@ -936,6 +942,10 @@ public class WebAppStat {
                 osAndroid40Count.incrementAndGet();
             } else if (userAgent.startsWith("4.1", toffset)) {
                 osAndroid41Count.incrementAndGet();
+            } else if (userAgent.startsWith("4.2", toffset)) {
+                osAndroid42Count.incrementAndGet();
+            } else if (userAgent.startsWith("4.3", toffset)) {
+                osAndroid43Count.incrementAndGet();
             }
 
             return true;
@@ -1038,6 +1048,14 @@ public class WebAppStat {
     
     public long getOSAndroid41Count() {
         return osAndroid41Count.get();
+    }
+    
+    public long getOSAndroid42Count() {
+        return osAndroid42Count.get();
+    }
+    
+    public long getOSAndroid43Count() {
+        return osAndroid43Count.get();
     }
 
     public long getOSLinuxUbuntuCount() {
