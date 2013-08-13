@@ -1506,8 +1506,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (WallVisitorUtils.queryBlockFromIsNull(visitor, x.getLeft())
-            || WallVisitorUtils.queryBlockFromIsNull(visitor, x.getRight())) {
+        if (WallVisitorUtils.queryBlockFromIsNull(visitor, x.getRight())) {
             boolean isTopUpdateStatement = false;
             SQLObject selectParent = x.getParent();
             while (selectParent instanceof SQLUnionQuery //
