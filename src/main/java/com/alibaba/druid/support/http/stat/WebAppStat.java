@@ -89,6 +89,7 @@ public class WebAppStat {
     private final AtomicLong                        osAndroid31Count               = new AtomicLong(0);
     private final AtomicLong                        osAndroid32Count               = new AtomicLong(0);
     private final AtomicLong                        osAndroid40Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid41Count               = new AtomicLong(0);
 
     private final AtomicLong                        osLinuxUbuntuCount             = new AtomicLong(0);
 
@@ -185,6 +186,7 @@ public class WebAppStat {
         osAndroid31Count.set(0);
         osAndroid32Count.set(0);
         osAndroid40Count.set(0);
+        osAndroid41Count.set(0);
 
         browserIE6Count.set(0);
         browserIE7Count.set(0);
@@ -501,6 +503,7 @@ public class WebAppStat {
         data.put("OSAndroid31Count", this.getOSAndroid31Count());
         data.put("OSAndroid32Count", this.getOSAndroid32Count());
         data.put("OSAndroid40Count", this.getOSAndroid40Count());
+        data.put("OSAndroid41Count", this.getOSAndroid41Count());
         data.put("OSLinuxUbuntuCount", this.getOSLinuxUbuntuCount());
 
         data.put("BrowserIECount", this.getBrowserIECount());
@@ -899,12 +902,16 @@ public class WebAppStat {
 
     private boolean computeUserAgentAndroid(String userAgent) {
         boolean isAndroid = userAgent.startsWith("Android", 23);
+        int toffset = 31;
+        if (!isAndroid) {
+            isAndroid = userAgent.startsWith("Android", 20);
+            toffset = 28;
+        }
+        
         if (isAndroid) {
             osAndroidCount.incrementAndGet();
-
             deviceAndroidCount.incrementAndGet();
-
-            int toffset = 31;
+        
             if (userAgent.startsWith("1.5", toffset)) {
                 osAndroid15Count.incrementAndGet();
             } else if (userAgent.startsWith("1.6", toffset)) {
@@ -927,6 +934,8 @@ public class WebAppStat {
                 osAndroid32Count.incrementAndGet();
             } else if (userAgent.startsWith("4.0", toffset)) {
                 osAndroid40Count.incrementAndGet();
+            } else if (userAgent.startsWith("4.1", toffset)) {
+                osAndroid41Count.incrementAndGet();
             }
 
             return true;
@@ -1025,6 +1034,10 @@ public class WebAppStat {
 
     public long getOSAndroid40Count() {
         return osAndroid40Count.get();
+    }
+    
+    public long getOSAndroid41Count() {
+        return osAndroid41Count.get();
     }
 
     public long getOSLinuxUbuntuCount() {
