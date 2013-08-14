@@ -376,6 +376,7 @@ public class WebSessionStat {
         val.sessionId = sessionId;
         val.runningCount = this.getRunningCount();
         val.concurrentMax = get(this, concurrentMaxUpdater, reset);
+        val.requestCount = get(this, requestCountUpdater, reset);
         val.requestErrorCount = get(this, requestErrorCountUpdater, reset);
         val.requestTimeNano = get(this, requestTimeNanoUpdater, reset);
         val.jdbcFetchRowCount = get(this, jdbcFetchRowCountUpdater, reset);

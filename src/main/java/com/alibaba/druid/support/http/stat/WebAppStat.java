@@ -503,7 +503,7 @@ public class WebAppStat {
     }
 
     public List<Map<String, Object>> getSessionStatDataList() {
-        List<Map<String, Object>> uriStatDataList = new ArrayList<Map<String, Object>>(this.sessionStatMap.size());
+        List<Map<String, Object>> sessionStatDataList = new ArrayList<Map<String, Object>>(this.sessionStatMap.size());
         for (WebSessionStat sessionStat : this.sessionStatMap.values()) {
             Map<String, Object> sessionStatData = sessionStat.getStatData();
 
@@ -514,9 +514,9 @@ public class WebAppStat {
                 continue;
             }
 
-            uriStatDataList.add(sessionStatData);
+            sessionStatDataList.add(sessionStatData);
         }
-        return uriStatDataList;
+        return sessionStatDataList;
     }
 
     public void computeUserAgent(String userAgent) {
