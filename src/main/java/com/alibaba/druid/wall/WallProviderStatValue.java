@@ -20,16 +20,28 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.support.monitor.MTable;
+
+@MTable(name = "druid_wall")
 public class WallProviderStatValue {
 
+    @MField
     private String                            name;
 
+    @MField
     private long                              checkCount;
+    @MField
     private long                              hardCheckCount;
+    @MField
     private long                              violationCount;
+    @MField
     private long                              whiteListHitCount;
+    @MField
     private long                              blackListHitCount;
+    @MField
     private long                              syntaxErrorCount;
+    @MField
     private long                              violationEffectRowCount;
 
     private final List<WallTableStatValue>    tables    = new ArrayList<WallTableStatValue>();

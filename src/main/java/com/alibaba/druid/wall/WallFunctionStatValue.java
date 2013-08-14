@@ -18,9 +18,16 @@ package com.alibaba.druid.wall;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.support.monitor.MTable;
+
+@MTable(name = "druid_wall_function")
 public class WallFunctionStatValue {
 
+    @MField
     private String name;
+
+    @MField
     private long   invokeCount;
 
     public WallFunctionStatValue(){

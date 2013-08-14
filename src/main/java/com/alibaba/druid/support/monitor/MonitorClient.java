@@ -37,6 +37,7 @@ import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
 import com.alibaba.druid.support.spring.stat.SpringStat;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.wall.WallProviderStatValue;
 
 public class MonitorClient {
 
@@ -95,6 +96,7 @@ public class MonitorClient {
         Set<Object> dataSources = DruidDataSourceStatManager.getInstances().keySet();
 
         List<DruidDataSourceStatValue> statValueList = new ArrayList<DruidDataSourceStatValue>(dataSources.size());
+        List<WallProviderStatValue> wallStatValueList = new ArrayList<WallProviderStatValue>();
 
         for (Object item : dataSources) {
             if (!(item instanceof DruidDataSource)) {
@@ -104,6 +106,13 @@ public class MonitorClient {
             DruidDataSource dataSource = (DruidDataSource) item;
             DruidDataSourceStatValue statValue = dataSource.getStatValueAndReset();
             statValueList.add(statValue);
+
+            dataSource.getWallStatMap();
+            
+            WallProviderStatValue wallStatValue = dataSource.getWallStatValue(true);
+            if (wallStatValue != null && wallStatValue.getCheckCount() > 0) {
+                wallStatValueList.add(wallStatValue);
+            }
         }
 
         MonitorContext ctx = createContext();
@@ -155,7 +164,7 @@ public class MonitorClient {
         dao.saveWebURI(ctx, webURIValueList);
         dao.saveWebApp(ctx, webAppStatValueList);
     }
-    
+
     public List<JdbcSqlStatValue> loadSqlList(Map<String, Object> filters) {
         return dao.loadSqlList(filters);
     }

@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.management.JMException;
 
 import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.dao.MTable;
+import com.alibaba.druid.support.monitor.MTable;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.Utils;
 

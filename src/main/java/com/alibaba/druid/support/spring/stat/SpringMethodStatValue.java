@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.dao.MTable;
+import com.alibaba.druid.support.monitor.MTable;
 import com.alibaba.druid.util.Utils;
 
 @MTable(name = "druid_springmethod")

@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.dao.MTable;
+import com.alibaba.druid.support.monitor.MTable;
 
 @MTable(name="druid_datasource")
 public class DruidDataSourceStatValue {

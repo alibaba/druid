@@ -18,14 +18,31 @@ package com.alibaba.druid.wall;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.support.monitor.MTable;
+
+@MTable(name = "druid_wall_sql")
 public class WallSqlStatValue {
 
+    @MField
     private String  sql;
+
+    @MField
     private String  sqlSample;
+
+    @MField
     private long    executeCount;
+
+    @MField
     private long    fetchRowCount;
+
+    @MField
     private long    updateCount;
+
+    @MField
     private boolean syntaxError;
+
+    @MField
     private String  violationMessage;
 
     public WallSqlStatValue(){

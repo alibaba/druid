@@ -129,6 +129,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
+        
+        provider.setName(dataSource.getName());
 
         this.inited = true;
     }

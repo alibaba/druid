@@ -39,11 +39,13 @@ import com.alibaba.druid.support.http.stat.WebURIStatValue;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.support.monitor.MTable;
 import com.alibaba.druid.support.monitor.MonitorContext;
 import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.wall.WallProviderStatValue;
 
 public class MonitorDaoJdbcImpl implements MonitorDao {
 
@@ -523,5 +525,10 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         public Class<?> getFieldType() {
             return field.getType();
         }
+    }
+
+    @Override
+    public void saveSqlWall(MonitorContext ctx, List<WallProviderStatValue> statList) {
+        
     }
 }

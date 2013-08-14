@@ -24,16 +24,19 @@ import com.alibaba.druid.support.http.stat.WebAppStatValue;
 import com.alibaba.druid.support.http.stat.WebURIStatValue;
 import com.alibaba.druid.support.monitor.MonitorContext;
 import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
+import com.alibaba.druid.wall.WallProviderStatValue;
 
 public interface MonitorDao {
 
     void saveSql(MonitorContext ctx, List<DruidDataSourceStatValue> statList);
+
+    void saveSqlWall(MonitorContext ctx, List<WallProviderStatValue> statList);
 
     void saveSpringMethod(MonitorContext ctx, List<SpringMethodStatValue> methodList);
 
     void saveWebURI(MonitorContext ctx, List<WebURIStatValue> uriList);
 
     void saveWebApp(MonitorContext ctx, List<WebAppStatValue> uriList);
-    
+
     List<JdbcSqlStatValue> loadSqlList(Map<String, Object> filters);
 }
