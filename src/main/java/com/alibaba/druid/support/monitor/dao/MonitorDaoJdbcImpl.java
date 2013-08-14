@@ -43,11 +43,16 @@ import com.alibaba.druid.util.Utils;
 
 public class MonitorDaoJdbcImpl implements MonitorDao {
 
-    private final static Log LOG             = LogFactory.getLog(MonitorDaoJdbcImpl.class);
+    private final static Log LOG                      = LogFactory.getLog(MonitorDaoJdbcImpl.class);
 
     private DataSource       dataSource;
 
-    private BeanInfo         sqlStatBeanInfo = new BeanInfo(JdbcSqlStatValue.class);
+    private BeanInfo         sqlStatBeanInfo          = new BeanInfo(JdbcSqlStatValue.class);
+    private BeanInfo         springMethodStatBeanInfo = new BeanInfo(SpringMethodStatValue.class);
+    private BeanInfo         webURIStatBeanInfo       = new BeanInfo(WebURIStatValue.class);
+    private BeanInfo         webAppStatBeanInfo       = new BeanInfo(WebAppStatValue.class);
+
+    //
 
     public MonitorDaoJdbcImpl(){
     }
@@ -64,34 +69,60 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     public void saveSql(MonitorContext ctx, List<DruidDataSourceStatValue> dataSourceList) {
         for (DruidDataSourceStatValue dataSourceStatValue : dataSourceList) {
             List<JdbcSqlStatValue> sqlList = dataSourceStatValue.getSqlList();
-
-            String sql = buildInsertSql(sqlStatBeanInfo);
-            Connection conn = null;
-            PreparedStatement stmt = null;
-            try {
-                conn = dataSource.getConnection();
-                stmt = conn.prepareStatement(sql);
-
-                for (JdbcSqlStatValue statValue : sqlList) {
-                    setParameterForSqlStat(sqlStatBeanInfo, stmt, statValue);
-                    stmt.addBatch();
-                }
-
-                stmt.executeBatch();
-
-                stmt.close();
-            } catch (SQLException ex) {
-                LOG.error("save sql error", ex);
-            } finally {
-                JdbcUtils.close(stmt);
-                JdbcUtils.close(conn);
-            }
+            save(sqlStatBeanInfo, ctx, sqlList);
         }
     }
 
-    protected void setParameterForSqlStat(BeanInfo beanInfo, PreparedStatement stmt, JdbcSqlStatValue sqlStat)
-                                                                                                              throws SQLException {
+    @Override
+    public void saveSpringMethod(MonitorContext ctx, List<SpringMethodStatValue> list) {
+        save(springMethodStatBeanInfo, ctx, list);
+    }
+
+    @Override
+    public void saveWebURI(MonitorContext ctx, List<WebURIStatValue> list) {
+        save(webURIStatBeanInfo, ctx, list);
+    }
+
+    @Override
+    public void saveWebApp(MonitorContext ctx, List<WebAppStatValue> list) {
+        save(webAppStatBeanInfo, ctx, list);
+    }
+
+    private void save(BeanInfo beanInfo, MonitorContext ctx, List<?> list) {
+        String sql = buildInsertSql(beanInfo);
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = dataSource.getConnection();
+            stmt = conn.prepareStatement(sql);
+
+            for (Object statValue : list) {
+                setParameterForSqlStat(beanInfo, ctx, stmt, statValue);
+                stmt.addBatch();
+            }
+
+            stmt.executeBatch();
+
+            stmt.close();
+        } catch (SQLException ex) {
+            LOG.error("save sql error", ex);
+        } finally {
+            JdbcUtils.close(stmt);
+            JdbcUtils.close(conn);
+        }
+    }
+
+    protected void setParameterForSqlStat(BeanInfo beanInfo, MonitorContext ctx, PreparedStatement stmt, Object sqlStat)
+                                                                                                                        throws SQLException {
         int paramIndex = 1;
+
+        setParam(stmt, paramIndex++, ctx.getDomainName());
+        setParam(stmt, paramIndex++, ctx.getAppName());
+        setParam(stmt, paramIndex++, ctx.getClusterName());
+        setParam(stmt, paramIndex++, ctx.getHost());
+        setParam(stmt, paramIndex++, ctx.getPID());
+        setParam(stmt, paramIndex++, ctx.getCollectTime());
+
         try {
             List<FieldInfo> fields = beanInfo.getFields();
             for (int i = 0; i < fields.size(); ++i) {
@@ -132,22 +163,16 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         buf.append("INSERT INTO ") //
         .append(getTableName(beanInfo));
 
-        buf.append(" (");
+        buf.append(" (domain, app, cluster, host, pid, collectTime");
         List<FieldInfo> fields = beanInfo.getFields();
         for (int i = 0; i < fields.size(); ++i) {
             FieldInfo field = fields.get(i);
-            if (i != 0) {
-                buf.append(", ");
-            }
+            buf.append(", ");
             buf.append(field.getColumnName());
         }
-        buf.append(")\nVALUES (");
+        buf.append(")\nVALUES (?, ?, ?, ?, ?, ?");
         for (int i = 0; i < fields.size(); ++i) {
-            if (i != 0) {
-                buf.append(", ?");
-            } else {
-                buf.append("?");
-            }
+            buf.append(", ?");
         }
         buf.append(")");
         sql = buf.toString();
@@ -161,21 +186,6 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
     protected long getSqlHash(String sql) {
         return Utils.murmurhash2_64(sql);
-    }
-
-    @Override
-    public void saveSpringMethod(MonitorContext ctx, List<SpringMethodStatValue> methodList) {
-
-    }
-
-    @Override
-    public void saveWebURI(MonitorContext ctx, List<WebURIStatValue> uriList) {
-
-    }
-
-    @Override
-    public void saveWebApp(MonitorContext ctx, List<WebAppStatValue> uriList) {
-
     }
 
     static void setParam(PreparedStatement stmt, int paramIndex, String value) throws SQLException {

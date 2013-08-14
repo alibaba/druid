@@ -23,8 +23,13 @@ public class MonitorContext {
 
     private final Map<String, Object> atrributes = new HashMap<String, Object>();
 
-    private Date                      collectTime;
+    private String                    domainName;
+    private String                    appName;
+    private String                    clusterName;
+    private String                    host;
     private int                       pid;
+
+    private Date                      collectTime;
     private Date                      startTime;
 
     public Date getCollectTime() {
@@ -53,6 +58,46 @@ public class MonitorContext {
 
     public void setPID(int pid) {
         this.pid = pid;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPid() {
+        return pid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getClusterName() {
+        return clusterName;
+    }
+
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
     }
 
 }
