@@ -1,33 +1,5 @@
-INSERT INTO druid_sql (domain, app, cluster, host, pid
-	, collectTime, sqlHash, dataSource, lastStartTime, batchTotal
-	, batchToMax, execSuccessCount, execNanoTotal, execNanoMax, running
-	, concurrentMax, rsHoldTime, execRsHoldTime, name, file
-	, dbType, execNanoMaxOccurTime, errorCount, errorLastMsg, errorLastClass
-	, errorLastStackTrace, errorLastTime, updateCount, updateCountMax, fetchRowCount
-	, fetchRowCountMax, inTxnCount, lastSlowParameters, clobOpenCount, blobOpenCount
-	, readStringLength, readBytesLength, inputStreamOpenCount, readerOpenCount, h1
-	, h10, h100, h1000, h10000, h100000
-	, h1000000, hmore, eh1, eh10, eh100
-	, eh1000, eh10000, eh100000, eh1000000, ehmore
-	, f1, f10, f100, f1000, f10000
-	, fmore, u1, u10, u100, u1000
-	, u10000, umore)
-VALUES (?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?, ?, ?, ?
-	, ?, ?)
 CREATE TABLE druid_sql (
-	id bigint(20) NOT NULL, 
+	id bigint(20) AUTO_INCREMENT NOT NULL, 
 	domain varchar(45), 
 	app varchar(45), 
 	cluster varchar(45), 

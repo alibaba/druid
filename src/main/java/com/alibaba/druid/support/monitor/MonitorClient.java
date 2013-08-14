@@ -89,7 +89,7 @@ public class MonitorClient {
     }
 
     @SuppressWarnings("resource")
-    private void collectSql() {
+    public void collectSql() {
         Set<Object> dataSources = DruidDataSourceStatManager.getInstances().keySet();
 
         List<DruidDataSourceStatValue> statValueList = new ArrayList<DruidDataSourceStatValue>(dataSources.size());
