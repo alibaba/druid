@@ -24,7 +24,9 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 public class IOUtils {
@@ -220,5 +222,28 @@ public class IOUtils {
         } catch (ClassNotFoundException e) {
             return null;
         }
+    }
+
+    private static int pid;
+
+    public final static int getPID() {
+        if (pid == 0) {
+            String name = ManagementFactory.getRuntimeMXBean().getName();
+
+            String[] items = name.split("@");
+
+            pid = Integer.parseInt(items[0]);
+        }
+
+        return pid;
+    }
+
+    private static Date startTime;
+
+    public final static Date getStartTime() {
+        if (startTime == null) {
+            startTime = new Date(ManagementFactory.getRuntimeMXBean().getStartTime());
+        }
+        return startTime;
     }
 }

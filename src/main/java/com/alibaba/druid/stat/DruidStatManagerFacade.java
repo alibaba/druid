@@ -15,12 +15,10 @@
  */
 package com.alibaba.druid.stat;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +34,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.DruidDataSourceUtils;
+import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcSqlStatUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -167,7 +166,7 @@ public final class DruidStatManagerFacade {
 
         if (dataSourceId == null) {
             Map<String, Object> map = new HashMap<String, Object>();
-            
+
             for (Object datasource : dataSources) {
                 Map<String, Object> wallStat = DruidDataSourceUtils.getWallStatMap(datasource);
                 map = mergWallStat(map, wallStat);
@@ -185,50 +184,50 @@ public final class DruidStatManagerFacade {
         }
 
         return new HashMap<String, Object>();
-        // 
+        //
     }
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Map mergWallStat(Map mapA, Map mapB) {
         if (mapA == null || mapA.size() == 0) {
             return mapB;
         }
-        
+
         if (mapB == null || mapB.size() == 0) {
             return mapA;
         }
-        
+
         Map<String, Object> newMap = new LinkedHashMap<String, Object>();
         for (Object item : mapB.entrySet()) {
-            Map.Entry entry = (Map.Entry) item; 
+            Map.Entry entry = (Map.Entry) item;
             String key = (String) entry.getKey();
             Object valueB = entry.getValue();
             Object valueA = mapA.get(key);
-            
+
             if (valueA == null) {
                 newMap.put(key, valueB);
             } else if (valueB == null) {
                 newMap.put(key, valueA);
             } else if ("blackList".equals(key)) {
                 Map<String, Map<String, Object>> newSet = new HashMap<String, Map<String, Object>>();
-                
+
                 Collection<Map<String, Object>> collectionA = (Collection<Map<String, Object>>) valueA;
                 for (Map<String, Object> blackItem : collectionA) {
                     if (newSet.size() >= 1000) {
                         break;
                     }
-                    
+
                     String sql = (String) blackItem.get("sql");
                     Map<String, Object> oldItem = newSet.get(sql);
                     newSet.put(sql, mergWallStat(oldItem, blackItem));
                 }
-                
+
                 Collection<Map<String, Object>> collectionB = (Collection<Map<String, Object>>) valueB;
                 for (Map<String, Object> blackItem : collectionB) {
                     if (newSet.size() >= 1000) {
                         break;
                     }
-                    
+
                     String sql = (String) blackItem.get("sql");
                     Map<String, Object> oldItem = newSet.get(sql);
                     newSet.put(sql, mergWallStat(oldItem, blackItem));
@@ -236,7 +235,7 @@ public final class DruidStatManagerFacade {
                 newMap.put(key, newSet.values());
             } else {
                 if (valueA instanceof Map && valueB instanceof Map) {
-                    Object newValue = mergWallStat((Map)valueA, (Map)valueB);
+                    Object newValue = mergWallStat((Map) valueA, (Map) valueB);
                     newMap.put(key, newValue);
                 } else if (valueA instanceof Set && valueB instanceof Set) {
                     Set<Object> set = new HashSet<Object>();
@@ -254,7 +253,7 @@ public final class DruidStatManagerFacade {
                 }
             }
         }
-        
+
         return newMap;
     }
 
@@ -266,17 +265,17 @@ public final class DruidStatManagerFacade {
             String name = (String) map.get("name");
             mapped.put(name, map);
         }
-        
+
         List<Map<String, Object>> mergedList = new ArrayList<Map<String, Object>>();
         for (Object item : (List) listB) {
             Map<String, Object> mapB = (Map<String, Object>) item;
             String name = (String) mapB.get("name");
             Map<String, Object> mapA = mapped.get(name);
-            
+
             Map<String, Object> mergedMap = mergWallStat(mapA, mapB);
             mergedList.add(mergedMap);
         }
-        
+
         return mergedList;
     }
 
@@ -345,7 +344,7 @@ public final class DruidStatManagerFacade {
         dataMap.put("JavaVMName", System.getProperty("java.vm.name"));
         dataMap.put("JavaVersion", System.getProperty("java.version"));
         dataMap.put("JavaClassPath", System.getProperty("java.class.path"));
-        dataMap.put("StartTime", new Date(ManagementFactory.getRuntimeMXBean().getStartTime()));
+        dataMap.put("StartTime", IOUtils.getStartTime());
         return dataMap;
     }
 

@@ -48,6 +48,22 @@ public class SpringStat {
 
         return methodStat;
     }
+    
+    public List<SpringMethodStatValue> getStatList(boolean reset) {
+        List<SpringMethodStatValue> statValueList = new ArrayList<SpringMethodStatValue>(this.methodStats.size());
+        
+        for (SpringMethodStat methodStat : this.methodStats.values()) {
+            SpringMethodStatValue statValue = methodStat.getStatValue(reset);
+            
+            if (statValue.getRunningCount() == 0 && statValue.getExecuteCount() == 0) {
+                continue;
+            }
+            
+            statValueList.add(statValue);
+        }
+        
+        return statValueList;
+    }
 
     public List<Map<String, Object>> getMethodStatDataList() {
         List<Map<String, Object>> methodStatDataList = new ArrayList<Map<String, Object>>(this.methodStats.size());

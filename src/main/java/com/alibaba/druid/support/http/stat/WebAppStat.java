@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.support.http.stat;
 
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,7 +57,10 @@ public class WebAppStat {
     private final AtomicLong                        jdbcCommitCount                = new AtomicLong();
     private final AtomicLong                        jdbcRollbackCount              = new AtomicLong();
 
-    private final ConcurrentMap<String, WebURIStat> uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>(16, 0.75f, 1);
+    private final ConcurrentMap<String, WebURIStat> uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>(
+                                                                                                                               16,
+                                                                                                                               0.75f,
+                                                                                                                               1);
     private final LRUCache<String, WebSessionStat>  sessionStatMap;
 
     private final ReadWriteLock                     sessionStatLock                = new ReentrantReadWriteLock();
@@ -136,7 +140,7 @@ public class WebAppStat {
         requestCount.set(0);
         requestCount.set(0);
         sessionCount.set(0);
-        
+
         jdbcFetchRowCount.set(0);
         jdbcUpdateCount.set(0);
         jdbcExecuteCount.set(0);
@@ -354,7 +358,7 @@ public class WebAppStat {
     public void afterInvoke(Throwable error, long nanoSpan) {
         runningCount.decrementAndGet();
         currentLocal.set(null);
-        
+
         WebRequestStat requestStat = WebRequestStat.current();
         if (requestStat != null) {
             this.addJdbcExecuteCount(requestStat.getJdbcExecuteCount());
@@ -365,15 +369,15 @@ public class WebAppStat {
             this.addJdbcExecuteTimeNano(requestStat.getJdbcExecuteTimeNano());
         }
     }
-    
+
     public void incrementSessionCount() {
         sessionCount.incrementAndGet();
     }
-    
+
     public long getSessionCount() {
         return sessionCount.get();
     }
-    
+
     public void addJdbcFetchRowCount(long delta) {
         this.jdbcFetchRowCount.addAndGet(delta);
     }
@@ -400,10 +404,6 @@ public class WebAppStat {
 
     public long getJdbcExecuteCount() {
         return jdbcExecuteCount.get();
-    }
-
-    public long getJdbcExecuteTimeMillis() {
-        return getJdbcExecuteTimeNano() / (1000 * 1000);
     }
 
     public long getJdbcExecuteTimeNano() {
@@ -467,81 +467,22 @@ public class WebAppStat {
     }
 
     public Map<String, Object> getStatData() {
-        Map<String, Object> data = new LinkedHashMap<String, Object>();
-
-        data.put("ContextPath", this.getContextPath());
-        data.put("RunningCount", this.getRunningCount());
-        data.put("ConcurrentMax", this.getConcurrentMax());
-        data.put("RequestCount", this.getRequestCount());
-        data.put("SessionCount", this.getSessionCount());
+        return getStatValue(false).getStatData();
+    }
+    
+    public List<WebURIStatValue> getURIStatValueList(boolean reset) {
+        List<WebURIStatValue> list = new ArrayList<WebURIStatValue>(this.uriStatMap.size());
         
-        data.put("JdbcCommitCount", this.getJdbcCommitCount());
-        data.put("JdbcRollbackCount", this.getJdbcRollbackCount());
-
-        data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
-        data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
-        data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
-        data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
-
-        data.put("OSMacOSXCount", this.getOSMacOSXCount());
-        data.put("OSWindowsCount", this.getOSWindowsCount());
-        data.put("OSLinuxCount", this.getOSLinuxCount());
-        data.put("OSSymbianCount", this.getOSSymbianCount());
-        data.put("OSFreeBSDCount", this.getOSFreeBSDCount());
-        data.put("OSOpenBSDCount", this.getOSOpenBSDCount());
-        data.put("OSAndroidCount", this.getOSAndroidCount());
-        data.put("OSWindows98Count", this.getOSWindows98Count());
-        data.put("OSWindowsXPCount", this.getOSWindowsXPCount());
-        data.put("OSWindows2000Count", this.getOSWindows2000Count());
-        data.put("OSWindowsVistaCount", this.getOSWindowsVistaCount());
-        data.put("OSWindows7Count", this.getOSWindows7Count());
-        data.put("OSWindows8Count", this.getOSWindows8Count());
-
-        data.put("OSAndroid15Count", this.getOSAndroid15Count());
-        data.put("OSAndroid16Count", this.getOSAndroid16Count());
-        data.put("OSAndroid20Count", this.getOSAndroid20Count());
-        data.put("OSAndroid21Count", this.getOSAndroid21Count());
-        data.put("OSAndroid22Count", this.getOSAndroid22Count());
-        data.put("OSAndroid23Count", this.getOSAndroid23Count());
-        data.put("OSAndroid30Count", this.getOSAndroid30Count());
-        data.put("OSAndroid31Count", this.getOSAndroid31Count());
-        data.put("OSAndroid32Count", this.getOSAndroid32Count());
-        data.put("OSAndroid40Count", this.getOSAndroid40Count());
-        data.put("OSAndroid41Count", this.getOSAndroid41Count());
-        data.put("OSAndroid42Count", this.getOSAndroid42Count());
-        data.put("OSAndroid43Count", this.getOSAndroid43Count());
-        data.put("OSLinuxUbuntuCount", this.getOSLinuxUbuntuCount());
-
-        data.put("BrowserIECount", this.getBrowserIECount());
-        data.put("BrowserFirefoxCount", this.getBrowserFirefoxCount());
-        data.put("BrowserChromeCount", this.getBrowserChromeCount());
-        data.put("BrowserSafariCount", this.getBrowserSafariCount());
-        data.put("BrowserOperaCount", this.getBrowserOperaCount());
-
-        data.put("BrowserIE5Count", this.getBrowserIE5Count());
-        data.put("BrowserIE6Count", this.getBrowserIE6Count());
-        data.put("BrowserIE7Count", this.getBrowserIE7Count());
-        data.put("BrowserIE8Count", this.getBrowserIE8Count());
-        data.put("BrowserIE9Count", this.getBrowserIE9Count());
-        data.put("BrowserIE10Count", this.getBrowserIE10Count());
-
-        data.put("Browser360SECount", this.getBrowser360SECount());
-        data.put("DeviceAndroidCount", this.getDeviceAndroidCount());
-        data.put("DeviceIpadCount", this.getDeviceIpadCount());
-        data.put("DeviceIphoneCount", this.getDeviceIphoneCount());
-        data.put("DeviceWindowsPhoneCount", this.getDeviceWindowsPhoneCount());
-
-        data.put("BotCount", this.getBotCount());
-        data.put("BotBaiduCount", this.getBotBaiduCount());
-        data.put("BotYoudaoCount", this.getBotYoudaoCount());
-        data.put("BotGoogleCount", this.getBotGoogleCount());
-        data.put("BotMsnCount", this.getBotMsnCount());
-        data.put("BotBingCount", this.getBotBingCount());
-        data.put("BotSosoCount", this.getBotSosoCount());
-        data.put("BotSogouCount", this.getBotSogouCount());
-        data.put("BotYahooCount", this.getBotYahooCount());
-
-        return data;
+        for (WebURIStat uriStat : this.uriStatMap.values()) {
+            WebURIStatValue statValue = uriStat.getValue(reset);
+            
+            if (statValue.getRunningCount() == 0 && statValue.getRequestCount() == 0) {
+                continue;
+            }
+            list.add(statValue);
+        }
+        
+        return list;
     }
 
     public List<Map<String, Object>> getURIStatDataList() {
@@ -871,7 +812,7 @@ public class WebAppStat {
 
         } else if (userAgent.startsWith("Windows NT 6.1", 13)) {
             osWindows7Count.incrementAndGet();
-            
+
         } else if (userAgent.startsWith("Windows NT 6.2", 13)) {
             osWindows8Count.incrementAndGet();
 
@@ -913,11 +854,11 @@ public class WebAppStat {
             isAndroid = userAgent.startsWith("Android", 20);
             toffset = 28;
         }
-        
+
         if (isAndroid) {
             osAndroidCount.incrementAndGet();
             deviceAndroidCount.incrementAndGet();
-        
+
             if (userAgent.startsWith("1.5", toffset)) {
                 osAndroid15Count.incrementAndGet();
             } else if (userAgent.startsWith("1.6", toffset)) {
@@ -1001,7 +942,7 @@ public class WebAppStat {
     public long getOSWindows7Count() {
         return osWindows7Count.get();
     }
-    
+
     public long getOSWindows8Count() {
         return osWindows8Count.get();
     }
@@ -1045,15 +986,15 @@ public class WebAppStat {
     public long getOSAndroid40Count() {
         return osAndroid40Count.get();
     }
-    
+
     public long getOSAndroid41Count() {
         return osAndroid41Count.get();
     }
-    
+
     public long getOSAndroid42Count() {
         return osAndroid42Count.get();
     }
-    
+
     public long getOSAndroid43Count() {
         return osAndroid43Count.get();
     }
@@ -1162,4 +1103,81 @@ public class WebAppStat {
         return botYahooCount.get();
     }
 
+    public WebAppStatValue getStatValue(boolean reset) {
+        WebAppStatValue val = new WebAppStatValue();
+        val.setContextPath(contextPath);
+
+        val.setRunningCount(getRunningCount());
+        val.concurrentMax = get(concurrentMax, reset);
+        val.requestCount = get(requestCount, reset);
+        val.sessionCount = get(sessionCount, reset);
+        val.jdbcFetchRowCount = get(jdbcFetchRowCount, reset);
+        val.jdbcUpdateCount = get(jdbcUpdateCount, reset);
+        val.jdbcExecuteCount = get(jdbcExecuteCount, reset);
+        val.jdbcExecuteTimeNano = get(jdbcExecuteTimeNano, reset);
+        val.jdbcCommitCount = get(jdbcCommitCount, reset);
+        val.jdbcRollbackCount = get(jdbcRollbackCount, reset);
+
+        val.osMacOSXCount = get(osMacOSXCount, reset);
+        val.osWindowsCount = get(osWindowsCount, reset);
+        val.osLinuxCount = get(osLinuxCount, reset);
+        val.osSymbianCount = get(osSymbianCount, reset);
+        val.osFreeBSDCount = get(osFreeBSDCount, reset);
+        val.osOpenBSDCount = get(osOpenBSDCount, reset);
+        val.osAndroidCount = get(osAndroidCount, reset);
+
+        val.osWindows98Count = get(osWindows98Count, reset);
+        val.osWindowsXPCount = get(osWindowsXPCount, reset);
+        val.osWindows2000Count = get(osWindows2000Count, reset);
+        val.osWindowsVistaCount = get(osWindowsVistaCount, reset);
+        val.osWindows7Count = get(osWindows7Count, reset);
+        val.osWindows8Count = get(osWindows8Count, reset);
+
+        val.osAndroid15Count = get(osAndroid15Count, reset);
+        val.osAndroid16Count = get(osAndroid16Count, reset);
+        val.osAndroid20Count = get(osAndroid20Count, reset);
+        val.osAndroid21Count = get(osAndroid21Count, reset);
+        val.osAndroid22Count = get(osAndroid22Count, reset);
+        val.osAndroid23Count = get(osAndroid23Count, reset);
+        val.osAndroid30Count = get(osAndroid30Count, reset);
+        val.osAndroid31Count = get(osAndroid31Count, reset);
+        val.osAndroid32Count = get(osAndroid32Count, reset);
+        val.osAndroid40Count = get(osAndroid40Count, reset);
+        val.osAndroid41Count = get(osAndroid41Count, reset);
+        val.osAndroid42Count = get(osAndroid42Count, reset);
+        val.osAndroid43Count = get(osAndroid43Count, reset);
+
+        val.osLinuxUbuntuCount = get(osLinuxUbuntuCount, reset);
+
+        val.browserIECount = get(browserIECount, reset);
+        val.browserFirefoxCount = get(browserFirefoxCount, reset);
+        val.browserChromeCount = get(browserChromeCount, reset);
+        val.browserSafariCount = get(browserSafariCount, reset);
+        val.browserOperaCount = get(browserOperaCount, reset);
+
+        val.browserIE5Count = get(browserIE5Count, reset);
+        val.browserIE6Count = get(browserIE6Count, reset);
+        val.browserIE7Count = get(browserIE7Count, reset);
+        val.browserIE8Count = get(browserIE8Count, reset);
+        val.browserIE9Count = get(browserIE9Count, reset);
+        val.browserIE10Count = get(browserIE10Count, reset);
+
+        val.browser360SECount = get(browser360SECount, reset);
+        val.deviceAndroidCount = get(deviceAndroidCount, reset);
+        val.deviceIpadCount = get(deviceIpadCount, reset);
+        val.deviceIphoneCount = get(deviceIphoneCount, reset);
+        val.deviceWindowsPhoneCount = get(deviceWindowsPhoneCount, reset);
+
+        val.botCount = get(botCount, reset);
+        val.botBaiduCount = get(botBaiduCount, reset);
+        val.botYoudaoCount = get(botYoudaoCount, reset);
+        val.botGoogleCount = get(botGoogleCount, reset);
+        val.botMsnCount = get(botMsnCount, reset);
+        val.botBingCount = get(botBingCount, reset);
+        val.botSosoCount = get(botSosoCount, reset);
+        val.botSogouCount = get(botSogouCount, reset);
+        val.botYahooCount = get(botYahooCount, reset);
+
+        return val;
+    }
 }
