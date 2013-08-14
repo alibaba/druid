@@ -463,7 +463,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                 tableName = annotation.name();
             }
 
-            for (Field field : JdbcSqlStatValue.class.getDeclaredFields()) {
+            for (Field field : clazz.getDeclaredFields()) {
                 MField annotation = field.getAnnotation(MField.class);
                 if (annotation == null) {
                     continue;

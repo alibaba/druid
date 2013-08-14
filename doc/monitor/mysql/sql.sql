@@ -1,10 +1,10 @@
 CREATE TABLE druid_sql (
 	id bigint(20) AUTO_INCREMENT NOT NULL, 
-	domain varchar(45), 
-	app varchar(45), 
-	cluster varchar(45), 
+	domain varchar(45) NOT NULL, 
+	app varchar(45) NOT NULL, 
+	cluster varchar(45) NOT NULL, 
 	host varchar(128), 
-	pid int(10), 
+	pid int(10) NOT NULL, 
 	collectTime datetime NOT NULL, 
 	sqlHash bigint(20), 
 	dataSource varchar(256), 
@@ -67,5 +67,7 @@ CREATE TABLE druid_sql (
 	u1000 int(10), 
 	u10000 int(10), 
 	umore int(10), 
-	PRIMARY KEY (id)
+	PRIMARY KEY (id), 
+	KEY (collectTime, domain, app),
+	KEY(collectTime, domain, app)
 )
