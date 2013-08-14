@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.servlet.GenericServlet;
+
 public class Utils {
 
     public final static int DEFAULT_BUFFER_SIZE = 1024 * 4;
@@ -161,6 +163,16 @@ public class Utils {
 
     public static Boolean getBoolean(Properties properties, String key) {
         String property = properties.getProperty(key);
+        if ("true".equals(property)) {
+            return Boolean.TRUE;
+        } else if ("false".equals(property)) {
+            return Boolean.FALSE;
+        }
+        return null;
+    }
+    
+    public static Boolean getBoolean(GenericServlet servlet, String key) {
+        String property = servlet.getInitParameter(key);
         if ("true".equals(property)) {
             return Boolean.TRUE;
         } else if ("false".equals(property)) {
