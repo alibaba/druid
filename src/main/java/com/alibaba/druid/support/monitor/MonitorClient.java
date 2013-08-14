@@ -18,6 +18,7 @@ package com.alibaba.druid.support.monitor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceStatValue;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.http.stat.WebAppStatValue;
@@ -152,6 +154,10 @@ public class MonitorClient {
         MonitorContext ctx = createContext();
         dao.saveWebURI(ctx, webURIValueList);
         dao.saveWebApp(ctx, webAppStatValueList);
+    }
+    
+    public List<JdbcSqlStatValue> loadSqlList(Map<String, Object> filters) {
+        return dao.loadSqlList(filters);
     }
 
     public MonitorDao getDao() {

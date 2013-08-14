@@ -16,8 +16,10 @@
 package com.alibaba.druid.support.monitor.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.pool.DruidDataSourceStatValue;
+import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.http.stat.WebAppStatValue;
 import com.alibaba.druid.support.http.stat.WebURIStatValue;
 import com.alibaba.druid.support.monitor.MonitorContext;
@@ -32,4 +34,6 @@ public interface MonitorDao {
     void saveWebURI(MonitorContext ctx, List<WebURIStatValue> uriList);
 
     void saveWebApp(MonitorContext ctx, List<WebAppStatValue> uriList);
+    
+    List<JdbcSqlStatValue> loadSqlList(Map<String, Object> filters);
 }

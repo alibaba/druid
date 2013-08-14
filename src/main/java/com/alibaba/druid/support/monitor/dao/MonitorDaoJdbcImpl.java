@@ -18,12 +18,16 @@ package com.alibaba.druid.support.monitor.dao;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -88,6 +92,216 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         save(webAppStatBeanInfo, ctx, list);
     }
 
+    @SuppressWarnings("unchecked")
+    public List<JdbcSqlStatValue> loadSqlList(Map<String, Object> filters) {
+        return ((List<JdbcSqlStatValue>) load(sqlStatBeanInfo, filters));
+    }
+
+    static Integer getInteger(Map<String, Object> filters, String key) {
+        Object value = filters.get(key);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Integer) {
+            return (Integer) value;
+        }
+
+        if (value instanceof Number) {
+            return ((Number) value).intValue();
+        }
+
+        if (value instanceof String) {
+
+            String text = (String) value;
+            if (StringUtils.isEmpty(text)) {
+                return null;
+            }
+
+            return Integer.parseInt(text);
+        }
+
+        return null;
+    }
+
+    static Date getDate(Map<String, Object> filters, String key) {
+        Object value = filters.get(key);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Number) {
+            long millis = ((Number) value).longValue();
+            return new Date(millis);
+        }
+
+        if (value instanceof String) {
+
+            String text = (String) value;
+            if (StringUtils.isEmpty(text)) {
+                return null;
+            }
+
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(text);
+            } catch (ParseException e) {
+                LOG.error("parse filter error", e);
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private List<?> load(BeanInfo beanInfo, Map<String, Object> filters) {
+        List<Object> list = new ArrayList<Object>();
+
+        StringBuilder buf = new StringBuilder();
+
+        buf.append("SELECT ");
+
+        List<FieldInfo> fields = beanInfo.getFields();
+        for (int i = 0; i < fields.size(); ++i) {
+            FieldInfo field = fields.get(i);
+            if (i != 0) {
+                buf.append(", ");
+            }
+            buf.append(field.getColumnName());
+        }
+
+        buf.append("\nFROM ");
+        buf.append(getTableName(beanInfo));
+        buf.append("\nWHERE collectTime >= ? AND collectTime <= ? AND domain = ? AND app = ? AND cluster = ?");
+
+        Date startTime = getDate(filters, "startTime");
+        if (startTime == null) {
+            long now = System.currentTimeMillis();
+            startTime = new Date(now - 1000 * 60 * 30); // 3 hours
+        }
+
+        Date endTime = getDate(filters, "endTime");
+        if (endTime == null) {
+            endTime = new Date(); // now
+        }
+
+        String domain = (String) filters.get("domain");
+        if (StringUtils.isEmpty(domain)) {
+            domain = "defaultDomain";
+        }
+        String app = (String) filters.get("app");
+        if (StringUtils.isEmpty(app)) {
+            app = "defaultApp";
+        }
+
+        String cluster = (String) filters.get("cluster");
+        if (StringUtils.isEmpty(cluster)) {
+            cluster = "defaultCluster";
+        }
+
+        String host = (String) filters.get("host");
+        if (!StringUtils.isEmpty(host)) {
+            buf.append("\nAND host = ?");
+        }
+
+        Integer pid = getInteger(filters, "pid");
+        if (pid != null) {
+            buf.append("\nAND pid = ?");
+        }
+
+        {
+            Integer offset = (Integer) filters.get("offset");
+            Integer limit = (Integer) filters.get("limit");
+
+            if (limit == null) {
+                limit = 1000;
+            }
+
+            buf.append("\nLIMIT ");
+            if (offset != null) {
+                buf.append(offset);
+                buf.append(", ");
+            }
+            buf.append(limit);
+        }
+
+        String sql = buf.toString();
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            stmt = conn.prepareStatement(sql);
+
+            int paramIndex = 1;
+
+            stmt.setTimestamp(paramIndex++, new Timestamp(startTime.getTime()));
+            stmt.setTimestamp(paramIndex++, new Timestamp(endTime.getTime()));
+
+            stmt.setString(paramIndex++, domain);
+            stmt.setString(paramIndex++, app);
+            stmt.setString(paramIndex++, cluster);
+
+            if (!StringUtils.isEmpty(host)) {
+                stmt.setString(paramIndex++, host);
+            }
+
+            if (pid != null) {
+                stmt.setInt(paramIndex++, pid);
+            }
+
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Object object = createInstance(beanInfo);
+
+                for (int i = 0; i < fields.size(); ++i) {
+                    FieldInfo field = fields.get(i);
+                    readFieldValue(object, field, rs, i + 1);
+                }
+
+                list.add(object);
+            }
+
+            stmt.close();
+        } catch (SQLException ex) {
+            LOG.error("save sql error", ex);
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+            JdbcUtils.close(conn);
+        }
+
+        return list;
+    }
+
+    protected void readFieldValue(Object object, FieldInfo field, ResultSet rs, int paramIndex) throws SQLException {
+        Class<?> fieldType = field.getFieldType();
+        Object fieldValue = null;
+        if (fieldType.equals(int.class) || fieldType.equals(Integer.class)) {
+            fieldValue = rs.getInt(paramIndex);
+        } else if (fieldType.equals(long.class) || fieldType.equals(Long.class)) {
+            fieldValue = rs.getLong(paramIndex);
+        } else if (fieldType.equals(String.class)) {
+            fieldValue = rs.getString(paramIndex);
+        } else if (fieldType.equals(Date.class)) {
+            Timestamp timestamp = rs.getTimestamp(paramIndex);
+            if (timestamp != null) {
+                fieldValue = new Date(timestamp.getTime());
+            }
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        try {
+            field.getField().set(object, fieldValue);
+        } catch (IllegalArgumentException e) {
+            throw new DruidRuntimeException("set field error" + field.getField(), e);
+        } catch (IllegalAccessException e) {
+            throw new DruidRuntimeException("set field error" + field.getField(), e);
+        }
+    }
+
     private void save(BeanInfo beanInfo, MonitorContext ctx, List<?> list) {
         String sql = buildInsertSql(beanInfo);
         Connection conn = null;
@@ -148,6 +362,16 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
             throw ex;
         } catch (Exception ex) {
             throw new DruidRuntimeException("setParam error", ex);
+        }
+    }
+
+    public Object createInstance(BeanInfo beanInfo) {
+        try {
+            return beanInfo.getClazz().newInstance();
+        } catch (InstantiationException ex) {
+            throw new DruidRuntimeException("create instance error", ex);
+        } catch (IllegalAccessException ex) {
+            throw new DruidRuntimeException("create instance error", ex);
         }
     }
 

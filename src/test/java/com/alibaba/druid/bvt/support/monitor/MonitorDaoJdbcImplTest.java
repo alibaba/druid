@@ -6,6 +6,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.junit.Assert;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
@@ -41,7 +43,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
 
         MonitorClient client = new MonitorClient();
         client.setDao(dao);
-        
+
         {
             String sql = buildCreateSql(dao, new BeanInfo(JdbcSqlStatValue.class));
             System.out.println(SQLUtils.format(sql, JdbcConstants.MYSQL));
@@ -50,6 +52,23 @@ public class MonitorDaoJdbcImplTest extends TestCase {
 
         client.collectSql();
 
+        {
+            List<JdbcSqlStatValue> sqlList = client.loadSqlList(Collections.<String, Object> emptyMap());
+            for (JdbcSqlStatValue sqlStatValue : sqlList) {
+                System.out.println(sqlStatValue.getData());
+            }
+            Assert.assertEquals(1, sqlList.size());
+        }
+
+        client.collectSql();
+        
+        {
+            List<JdbcSqlStatValue> sqlList = client.loadSqlList(Collections.<String, Object> emptyMap());
+            for (JdbcSqlStatValue sqlStatValue : sqlList) {
+                System.out.println(sqlStatValue.getData());
+            }
+            Assert.assertEquals(3, sqlList.size());
+        }
     }
 
     public String buildCreateSql(MonitorDaoJdbcImpl dao, BeanInfo beanInfo) {

@@ -21,11 +21,11 @@ import java.util.Map;
 
 public class MonitorContext {
 
-    private final Map<String, Object> atrributes = new HashMap<String, Object>();
+    private final Map<String, Object> atrributes  = new HashMap<String, Object>();
 
-    private String                    domainName;
-    private String                    appName;
-    private String                    clusterName;
+    private String                    domainName  = "defaultDomain";
+    private String                    appName     = "defaultApp";
+    private String                    clusterName = "defaultCluster";
     private String                    host;
     private int                       pid;
 
