@@ -19,12 +19,22 @@ import java.util.Date;
 import java.util.List;
 
 import com.alibaba.druid.stat.JdbcSqlStatValue;
+import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.support.monitor.dao.MTable;
 
+@MTable(name="druid_datasource")
 public class DruidDataSourceStatValue {
 
+    @MField
     protected String                 name;
+
+    @MField
     protected String                 dbType;
+
+    @MField
     protected String                 driverClassName;
+
+    @MField
     protected String                 url;
     protected String                 userName;
     protected List<String>           filterClassNames;
@@ -45,40 +55,80 @@ public class DruidDataSourceStatValue {
     protected boolean                defaultReadOnly;
     protected Integer                defaultTransactionIsolation;
 
+    @MField
     protected int                    activeCount;
+
+    @MField
     protected int                    activePeak;
+
+    @MField
     protected long                   activePeakTime;
 
+    @MField
     protected int                    poolingCount;
+
+    @MField
     protected int                    poolingPeak;
+
+    @MField
     protected long                   poolingPeakTime;
 
+    @MField
     protected long                   connectCount;
+
+    @MField
     protected long                   closeCount;
+
+    @MField
     protected long                   waitThreadCount;
+
+    @MField
     protected long                   notEmptyWaitCount;
+
+    @MField
     protected long                   notEmptyWaitNanos;
 
+    @MField
     protected long                   logicConnectErrorCount;
+
+    @MField
     protected long                   physicalConnectCount;
+
+    @MField
     protected long                   physicalCloseCount;
+
+    @MField
     protected long                   physicalConnectErrorCount;
+
+    @MField
     protected long                   executeCount;
+    @MField
     protected long                   errorCount;
+    @MField
     protected long                   commitCount;
+    @MField
     protected long                   rollbackCount;
+    @MField
     protected long                   pstmtCacheHitCount;
+    @MField
     protected long                   pstmtCacheMissCount;
+    @MField
     protected long                   startTransactionCount;
+
     protected long[]                 transactionHistogram;
     protected long[]                 connectionHoldTimeHistogram;
 
+    @MField
     protected long                   clobOpenCount;
+
+    @MField
     protected long                   blobOpenCount;
+    
+    
     protected long                   sqlSkipCount;
 
     protected List<JdbcSqlStatValue> sqlList;
-    
+
     public Date getPoolingPeakTime() {
         if (poolingPeakTime <= 0) {
             return null;
@@ -482,6 +532,5 @@ public class DruidDataSourceStatValue {
     public void setPoolingPeakTime(long poolingPeakTime) {
         this.poolingPeakTime = poolingPeakTime;
     }
-    
 
 }

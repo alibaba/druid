@@ -22,9 +22,11 @@ import java.util.Map;
 import javax.management.JMException;
 
 import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.support.monitor.dao.MTable;
 import com.alibaba.druid.util.JMXUtils;
+import com.alibaba.druid.util.Utils;
 
+@MTable(name = "druid_sql")
 public class JdbcSqlStatValue {
 
     protected long      id;
@@ -37,31 +39,31 @@ public class JdbcSqlStatValue {
     @MField
     protected String    dataSource;
 
-    @MField
+    @MField(name = "lastStartTime")
     protected long      executeLastStartTime;
 
-    @MField
+    @MField(name = "batchTotal")
     protected long      executeBatchSizeTotal;
 
-    @MField
+    @MField(name = "batchToMax")
     protected int       executeBatchSizeMax;
 
-    @MField
+    @MField(name = "execSuccessCount")
     protected long      executeSuccessCount;
 
-    @MField
+    @MField(name = "execNanoTotal")
     protected long      executeSpanNanoTotal;
 
-    @MField
+    @MField(name = "execNanoMax")
     protected long      executeSpanNanoMax;
 
-    @MField
+    @MField(name = "running")
     protected int       runningCount;
 
     @MField
     protected int       concurrentMax;
 
-    @MField
+    @MField(name = "running")
     protected long      resultSetHoldTimeNano;
 
     @MField
@@ -76,24 +78,24 @@ public class JdbcSqlStatValue {
     @MField
     protected String    dbType;
 
-    @MField
+    @MField(name = "execNanoMaxOccurTime")
     protected long      executeNanoSpanMaxOccurTime;
 
-    @MField
+    @MField(name = "errorCount")
     protected long      executeErrorCount;
 
     protected Throwable executeErrorLast;
 
-    @MField
+    @MField(name = "errorLastMsg")
     protected String    executeErrorLastMessage;
 
-    @MField
+    @MField(name = "errorLastClass")
     protected String    executeErrorLastClass;
 
-    @MField
+    @MField(name = "errorLastStackTrace")
     protected String    executeErrorLastStackTrace;
 
-    @MField
+    @MField(name = "errorLastTime")
     protected long      executeErrorLastTime;
 
     @MField
@@ -108,7 +110,7 @@ public class JdbcSqlStatValue {
     @MField
     protected long      fetchRowCountMax;
 
-    @MField
+    @MField(name = "inTxnCount")
     protected long      inTransactionCount;
 
     @MField
@@ -452,7 +454,7 @@ public class JdbcSqlStatValue {
 
     public void setExecuteErrorLast(Throwable executeErrorLast) {
         this.executeErrorLast = executeErrorLast;
-        
+
         if (executeErrorLast != null) {
             this.executeErrorLastMessage = executeErrorLast.getMessage();
             this.executeErrorLastClass = executeErrorLast.getClass().getName();

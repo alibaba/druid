@@ -150,19 +150,6 @@ public class Utils {
         return buf.toString();
     }
 
-    public static String toString(Throwable error) {
-        if (error == null) {
-            return null;
-        }
-
-        StringWriter strWriter = new StringWriter();
-        PrintWriter out = new PrintWriter(strWriter);
-        error.printStackTrace(out);
-        out.close();
-        String text = strWriter.toString();
-        return text;
-    }
-
     public static String toString(StackTraceElement[] stackTrace) {
         StringBuilder buf = new StringBuilder();
         for (StackTraceElement item : stackTrace) {

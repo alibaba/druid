@@ -21,50 +21,99 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.support.monitor.dao.MTable;
 import com.alibaba.druid.support.profile.ProfileEntryStatValue;
 
+@MTable(name = "druid_weburi")
 public class WebURIStatValue {
 
+    @MField
     protected String                    uri;
 
+    @MField
     protected int                       runningCount;
+
+    @MField
     protected int                       concurrentMax;
+
+    @MField
     protected long                      requestCount;
+
+    @MField
     protected long                      requestTimeNano;
 
+    @MField
     protected long                      jdbcFetchRowCount;
+
+    @MField
     protected long                      jdbcFetchRowPeak;
 
+    @MField
     protected long                      jdbcUpdateCount;
+
+    @MField
     protected long                      jdbcUpdatePeak;
 
+    @MField
     protected long                      jdbcExecuteCount;
+
+    @MField
     protected long                      jdbcExecuteErrorCount;
+
+    @MField
     protected long                      jdbcExecutePeak;             // 单次请求执行SQL次数的峰值
+
+    @MField
     protected long                      jdbcExecuteTimeNano;
 
+    @MField
     protected long                      jdbcCommitCount;
+
+    @MField
     protected long                      jdbcRollbackCount;
 
+    @MField
     protected long                      jdbcPoolConnectionOpenCount;
+
+    @MField
     protected long                      jdbcPoolConnectionCloseCount;
 
+    @MField
     protected long                      jdbcResultSetOpenCount;
+
+    @MField
     protected long                      jdbcResultSetCloseCount;
 
+    @MField
     protected long                      errorCount;
 
+    @MField
     protected long                      lastAccessTimeMillis = -1L;
 
     private List<ProfileEntryStatValue> profileEntryStatValueList;
 
+    @MField(name = "h1")
     protected long                      histogram_0_1;
+
+    @MField(name = "h10")
     protected long                      histogram_1_10;
+
+    @MField(name = "h100")
     protected long                      histogram_10_100;
+    @MField(name = "h1000")
     protected long                      histogram_100_1000;
+
+    @MField(name = "h10000")
     protected int                       histogram_1000_10000;
+
+    @MField(name = "h100000")
     protected int                       histogram_10000_100000;
+
+    @MField(name = "h1000000")
     protected int                       histogram_100000_1000000;
+
+    @MField(name = "hmore")
     protected int                       histogram_1000000_more;
 
     public long[] getHistogram() {

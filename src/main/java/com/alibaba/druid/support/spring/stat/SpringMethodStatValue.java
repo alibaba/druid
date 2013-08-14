@@ -19,43 +19,102 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.support.monitor.dao.MTable;
+import com.alibaba.druid.util.Utils;
+
+@MTable(name = "druid_springmethod")
 public class SpringMethodStatValue {
 
-    private String    className;
-    private String    signature;
+    @MField
+    private String className;
 
-    private int       runningCount;
-    private int       concurrentMax;
-    private long      executeCount;
-    private long      executeErrorCount;
-    private long      executeTimeNano;
+    @MField
+    private String signature;
 
-    private long      jdbcFetchRowCount;
-    private long      jdbcUpdateCount;
-    private long      jdbcExecuteCount;
-    private long      jdbcExecuteErrorCount;
-    private long      jdbcExecuteTimeNano;
+    @MField
+    private int    runningCount;
 
-    private long      jdbcCommitCount;
-    private long      jdbcRollbackCount;
+    @MField
+    private int    concurrentMax;
 
-    private long      jdbcPoolConnectionOpenCount;
-    private long      jdbcPoolConnectionCloseCount;
+    @MField
+    private long   executeCount;
 
-    private long      jdbcResultSetOpenCount;
-    private long      jdbcResultSetCloseCount;
+    @MField
+    private long   executeErrorCount;
 
-    private Throwable lastError;
-    private long      lastErrorTimeMillis;
+    @MField
+    private long   executeTimeNano;
 
-    long              histogram_0_1;
-    long              histogram_1_10;
-    long              histogram_10_100;
-    long              histogram_100_1000;
-    int               histogram_1000_10000;
-    int               histogram_10000_100000;
-    int               histogram_100000_1000000;
-    int               histogram_1000000_more;
+    @MField
+    private long   jdbcFetchRowCount;
+
+    @MField
+    private long   jdbcUpdateCount;
+
+    @MField
+    private long   jdbcExecuteCount;
+
+    @MField
+    private long   jdbcExecuteErrorCount;
+
+    @MField
+    private long   jdbcExecuteTimeNano;
+
+    @MField
+    private long   jdbcCommitCount;
+
+    @MField
+    private long   jdbcRollbackCount;
+
+    @MField
+    private long   jdbcPoolConnectionOpenCount;
+
+    @MField
+    private long   jdbcPoolConnectionCloseCount;
+
+    @MField
+    private long   jdbcResultSetOpenCount;
+
+    @MField
+    private long   jdbcResultSetCloseCount;
+
+    @MField
+    private String lastErrorClass;
+
+    @MField
+    private String lastErrorMessage;
+
+    @MField
+    private String lastErrorStackTrace;
+
+    @MField
+    private long   lastErrorTimeMillis;
+
+    @MField(name = "h1")
+    long           histogram_0_1;
+
+    @MField(name = "h10")
+    long           histogram_1_10;
+
+    @MField(name = "h100")
+    long           histogram_10_100;
+
+    @MField(name = "h1000")
+    long           histogram_100_1000;
+
+    @MField(name = "h10000")
+    int            histogram_1000_10000;
+
+    @MField(name = "h100000")
+    int            histogram_10000_100000;
+
+    @MField(name = "h1000000")
+    int            histogram_100000_1000000;
+
+    @MField(name = "hmore")
+    int            histogram_1000000_more;
 
     public String getClassName() {
         return className;
@@ -201,12 +260,12 @@ public class SpringMethodStatValue {
         this.jdbcResultSetCloseCount = jdbcResultSetCloseCount;
     }
 
-    public Throwable getLastError() {
-        return lastError;
-    }
-
     public void setLastError(Throwable lastError) {
-        this.lastError = lastError;
+        if (lastError != null) {
+            lastErrorClass = lastError.getClass().getName();
+            lastErrorMessage = lastError.getMessage();
+            lastErrorStackTrace = Utils.toString(lastError.getStackTrace());
+        }
     }
 
     public long getLastErrorTimeMillis() {
@@ -274,11 +333,20 @@ public class SpringMethodStatValue {
         data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
         data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
 
-        data.put("LastError", this.getLastError());
+        if (this.lastErrorClass == null) {
+            data.put("LastError", null);
+        } else {
+            Map<String, Object> map = new LinkedHashMap<String, Object>(3);
+            map.put("Class", lastErrorClass);
+            map.put("Message", lastErrorMessage);
+            map.put("StackTrace", lastErrorStackTrace);
+            data.put("LastError", map);
+        }
+
         data.put("LastErrorTime", this.getLastErrorTime());
 
         data.put("Histogram", this.getHistogram());
-        
+
         return data;
     }
 }

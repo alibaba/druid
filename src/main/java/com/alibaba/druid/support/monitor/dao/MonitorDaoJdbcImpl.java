@@ -180,8 +180,8 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         return sql;
     }
 
-    protected String getTableName(BeanInfo beanInfo) {
-        return "druid_sql";
+    public String getTableName(BeanInfo beanInfo) {
+        return beanInfo.getTableName();
     }
 
     protected long getSqlHash(String sql) {
@@ -225,9 +225,20 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         private final Class<?>        clazz;
         private final List<FieldInfo> fields = new ArrayList<FieldInfo>();
         private String                insertSql;
+        private String                tableName;
 
         public BeanInfo(Class<?> clazz){
             this.clazz = clazz;
+
+            {
+                MTable annotation = clazz.getAnnotation(MTable.class);
+                if (annotation == null) {
+                    throw new IllegalArgumentException(clazz.getName() + " not contains @MTable");
+                }
+
+                tableName = annotation.name();
+            }
+
             for (Field field : JdbcSqlStatValue.class.getDeclaredFields()) {
                 MField annotation = field.getAnnotation(MField.class);
                 if (annotation == null) {
@@ -241,6 +252,10 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
                 fields.add(new FieldInfo(field, columnName));
             }
+        }
+
+        public String getTableName() {
+            return tableName;
         }
 
         public Class<?> getClazz() {
