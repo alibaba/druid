@@ -60,8 +60,8 @@ public class WebURIStatValue {
 
     protected long                      histogram_0_1;
     protected long                      histogram_1_10;
-    protected long                       histogram_10_100;
-    protected long                       histogram_100_1000;
+    protected long                      histogram_10_100;
+    protected long                      histogram_100_1000;
     protected int                       histogram_1000_10000;
     protected int                       histogram_10000_100000;
     protected int                       histogram_100000_1000000;

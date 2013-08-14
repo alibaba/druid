@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
-import static com.alibaba.druid.util.IOUtils.getBoolean;
+import static com.alibaba.druid.util.Utils.getBoolean;
 
 import java.io.Closeable;
 import java.security.AccessController;
@@ -82,7 +82,7 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
@@ -492,7 +492,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             init = true;
 
-            initStackTrace = IOUtils.toString(Thread.currentThread().getStackTrace());
+            initStackTrace = Utils.toString(Thread.currentThread().getStackTrace());
 
             this.id = DruidDriver.createDataSourceId();
             if (this.id > 1) {
@@ -1995,7 +1995,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         buf.append("{");
 
         buf.append("\n\tCreateTime:\"");
-        buf.append(IOUtils.toString(getCreatedTime()));
+        buf.append(Utils.toString(getCreatedTime()));
         buf.append("\"");
 
         buf.append(",\n\tActiveCount:");

@@ -37,7 +37,7 @@ import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.StringUtils;
 
 /**
@@ -89,7 +89,7 @@ public class StatViewServlet extends HttpServlet {
         initAuthEnv();
 
         try {
-            templatePage = IOUtils.readFromResource(TEMPLATE_PAGE_RESOURCE_PATH);
+            templatePage = Utils.readFromResource(TEMPLATE_PAGE_RESOURCE_PATH);
 
         } catch (IOException e) {
             throw new ServletException("error read templatePage:" + TEMPLATE_PAGE_RESOURCE_PATH, e);
@@ -392,7 +392,7 @@ public class StatViewServlet extends HttpServlet {
     private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException,
                                                                                               IOException {
         if (fileName.endsWith(".jpg")) {
-            byte[] bytes = IOUtils.readByteArrayFromResource(RESOURCE_PATH + fileName);
+            byte[] bytes = Utils.readByteArrayFromResource(RESOURCE_PATH + fileName);
             if (bytes != null) {
                 response.getOutputStream().write(bytes);
             }
@@ -400,7 +400,7 @@ public class StatViewServlet extends HttpServlet {
             return;
         }
 
-        String text = IOUtils.readFromResource(RESOURCE_PATH + fileName);
+        String text = Utils.readFromResource(RESOURCE_PATH + fileName);
         if (text == null) {
             response.sendRedirect(uri + "/index.html");
             return;

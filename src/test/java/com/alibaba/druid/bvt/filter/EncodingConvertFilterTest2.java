@@ -39,7 +39,7 @@ import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
@@ -163,26 +163,26 @@ public class EncodingConvertFilterTest2 extends TestCase {
         Assert.assertEquals(param1, raw.getParameters().get(0));
         
         stmt.setObject(2, new StringReader(C_TEXT));
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(1)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(1)));
         
         stmt.setCharacterStream(3, new StringReader(C_TEXT));
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(2)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(2)));
        
         stmt.setCharacterStream(4, new StringReader(C_TEXT), C_TEXT.length());
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(3)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(3)));
         
         stmt.setCharacterStream(5, new StringReader(C_TEXT), (long) C_TEXT.length());
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(4)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(4)));
         
         stmt.setObject(6, C_TEXT, Types.VARCHAR);
         Assert.assertEquals(param1, raw.getParameters().get(5));
         stmt.setObject(7, new StringReader(C_TEXT), Types.VARCHAR);
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(6)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(6)));
         
         stmt.setObject(8, C_TEXT, Types.VARCHAR, 0);
         Assert.assertEquals(param1, raw.getParameters().get(7));
         stmt.setObject(9, new StringReader(C_TEXT), Types.VARCHAR, 0);
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(8)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(8)));
         
         stmt.setObject(10, 1, Types.INTEGER);
         Assert.assertEquals(1, raw.getParameters().get(9));
@@ -196,12 +196,12 @@ public class EncodingConvertFilterTest2 extends TestCase {
         stmt.setObject("13", C_TEXT, Types.VARCHAR);
         Assert.assertEquals(param1, raw.getParameters().get(12));
         stmt.setObject("14", new StringReader(C_TEXT), Types.VARCHAR);
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(13)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(13)));
         
         stmt.setObject("15", C_TEXT, Types.VARCHAR, 0);
         Assert.assertEquals(param1, raw.getParameters().get(14));
         stmt.setObject("16", new StringReader(C_TEXT), Types.VARCHAR, 0);
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(15)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(15)));
         
         stmt.setObject("17", 1, Types.INTEGER);
         Assert.assertEquals(1, raw.getParameters().get(16));
@@ -213,19 +213,19 @@ public class EncodingConvertFilterTest2 extends TestCase {
         Assert.assertEquals(3, raw.getParameters().get(18));
         
         stmt.setCharacterStream("20", new StringReader(C_TEXT));
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(19)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(19)));
        
         stmt.setCharacterStream("21", new StringReader(C_TEXT), C_TEXT.length());
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(20)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(20)));
         
         stmt.setCharacterStream("22", new StringReader(C_TEXT), (long) C_TEXT.length());
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(21)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(21)));
         
         stmt.setObject("23", C_TEXT);
         Assert.assertEquals(param1, raw.getParameters().get(22));
         
         stmt.setObject("24", new StringReader(C_TEXT));
-        Assert.assertEquals(param1, IOUtils.read((Reader) raw.getParameters().get(23)));
+        Assert.assertEquals(param1, Utils.read((Reader) raw.getParameters().get(23)));
         
         stmt.setObject("25", 1, Types.INTEGER);
         Assert.assertEquals(1, raw.getParameters().get(24));

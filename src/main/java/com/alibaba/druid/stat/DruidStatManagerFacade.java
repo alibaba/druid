@@ -34,7 +34,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.DruidDataSourceUtils;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcSqlStatUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -344,7 +344,7 @@ public final class DruidStatManagerFacade {
         dataMap.put("JavaVMName", System.getProperty("java.vm.name"));
         dataMap.put("JavaVersion", System.getProperty("java.version"));
         dataMap.put("JavaClassPath", System.getProperty("java.class.path"));
-        dataMap.put("StartTime", IOUtils.getStartTime());
+        dataMap.put("StartTime", Utils.getStartTime());
         return dataMap;
     }
 

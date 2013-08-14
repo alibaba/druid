@@ -34,9 +34,9 @@ import com.alibaba.druid.support.monitor.dao.MonitorDao;
 import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
 import com.alibaba.druid.support.spring.stat.SpringStat;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 
-public class MonitorService {
+public class MonitorClient {
 
     private final static long        DEFAULT_TIME_BETWEEN_COLLECT = 60 * 5;
 
@@ -111,8 +111,8 @@ public class MonitorService {
     private MonitorContext createContext() {
         MonitorContext ctx = new MonitorContext();
         ctx.setCollectTime(new Date());
-        ctx.setPID(IOUtils.getPID());
-        ctx.setCollectTime(IOUtils.getStartTime());
+        ctx.setPID(Utils.getPID());
+        ctx.setCollectTime(Utils.getStartTime());
         return ctx;
     }
 

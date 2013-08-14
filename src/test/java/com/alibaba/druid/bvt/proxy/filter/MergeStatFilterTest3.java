@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 
 public class MergeStatFilterTest3 extends TestCase {
 	private DruidDataSource dataSource;
@@ -41,7 +41,7 @@ public class MergeStatFilterTest3 extends TestCase {
 	}
 
 	public void test_merge() throws Exception {
-		String sqllist = IOUtils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql.txt")));
+		String sqllist = Utils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql.txt")));
 		String[] ss = sqllist.split("--");
 		for(String sql:ss)
 		{

@@ -30,8 +30,8 @@ import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 
 public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
@@ -44,7 +44,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
     public MySqlValidConnectionChecker(){
         try {
-            clazz = IOUtils.loadClass("com.mysql.jdbc.Connection");
+            clazz = Utils.loadClass("com.mysql.jdbc.Connection");
             ping = clazz.getMethod("ping");
             if (ping != null) {
                 usePingMethod = true;

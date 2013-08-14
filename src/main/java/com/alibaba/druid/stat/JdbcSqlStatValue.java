@@ -21,61 +21,139 @@ import java.util.Map;
 
 import javax.management.JMException;
 
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JMXUtils;
 
 public class JdbcSqlStatValue {
 
-    protected String    sql;
     protected long      id;
+
+    protected String    sql;
+
+    @MField
+    private long        sqlHash;
+
+    @MField
     protected String    dataSource;
+
+    @MField
     protected long      executeLastStartTime;
 
+    @MField
     protected long      executeBatchSizeTotal;
+
+    @MField
     protected int       executeBatchSizeMax;
 
+    @MField
     protected long      executeSuccessCount;
+
+    @MField
     protected long      executeSpanNanoTotal;
+
+    @MField
     protected long      executeSpanNanoMax;
+
+    @MField
     protected int       runningCount;
+
+    @MField
     protected int       concurrentMax;
+
+    @MField
     protected long      resultSetHoldTimeNano;
+
+    @MField
     protected long      executeAndResultSetHoldTime;
 
+    @MField
     protected String    name;
+
+    @MField
     protected String    file;
+
+    @MField
     protected String    dbType;
 
+    @MField
     protected long      executeNanoSpanMaxOccurTime;
 
+    @MField
     protected long      executeErrorCount;
+
     protected Throwable executeErrorLast;
+
+    @MField
+    protected String    executeErrorLastMessage;
+
+    @MField
+    protected String    executeErrorLastClass;
+
+    @MField
+    protected String    executeErrorLastStackTrace;
+
+    @MField
     protected long      executeErrorLastTime;
 
+    @MField
     protected long      updateCount;
+
+    @MField
     protected long      updateCountMax;
+
+    @MField
     protected long      fetchRowCount;
+
+    @MField
     protected long      fetchRowCountMax;
 
+    @MField
     protected long      inTransactionCount;
 
+    @MField
     protected String    lastSlowParameters;
 
+    @MField
     protected long      clobOpenCount;
+
+    @MField
     protected long      blobOpenCount;
+
+    @MField
     protected long      readStringLength;
+
+    @MField
     protected long      readBytesLength;
 
+    @MField
     protected long      inputStreamOpenCount;
+
+    @MField
     protected long      readerOpenCount;
 
+    @MField(name = "h1")
     protected long      histogram_0_1;
+
+    @MField(name = "h10")
     protected long      histogram_1_10;
+
+    @MField(name = "h100")
     protected int       histogram_10_100;
+
+    @MField(name = "h1000")
     protected int       histogram_100_1000;
+
+    @MField(name = "h10000")
     protected int       histogram_1000_10000;
+
+    @MField(name = "h100000")
     protected int       histogram_10000_100000;
+
+    @MField(name = "h1000000")
     protected int       histogram_100000_1000000;
+
+    @MField(name = "hmore")
     protected int       histogram_1000000_more;
 
     public long[] getExecuteHistogram() {
@@ -90,13 +168,28 @@ public class JdbcSqlStatValue {
         };
     }
 
+    @MField(name = "eh1")
     protected long executeAndResultHoldTime_0_1;
+
+    @MField(name = "eh10")
     protected long executeAndResultHoldTime_1_10;
+
+    @MField(name = "eh100")
     protected int  executeAndResultHoldTime_10_100;
+
+    @MField(name = "eh1000")
     protected int  executeAndResultHoldTime_100_1000;
+
+    @MField(name = "eh10000")
     protected int  executeAndResultHoldTime_1000_10000;
+
+    @MField(name = "eh100000")
     protected int  executeAndResultHoldTime_10000_100000;
+
+    @MField(name = "eh1000000")
     protected int  executeAndResultHoldTime_100000_1000000;
+
+    @MField(name = "ehmore")
     protected int  executeAndResultHoldTime_1000000_more;
 
     public long[] getExecuteAndResultHoldHistogram() {
@@ -111,11 +204,22 @@ public class JdbcSqlStatValue {
         };
     }
 
+    @MField(name = "f1")
     protected long fetchRowCount_0_1;
+
+    @MField(name = "f10")
     protected long fetchRowCount_1_10;
+
+    @MField(name = "f100")
     protected long fetchRowCount_10_100;
+
+    @MField(name = "f1000")
     protected int  fetchRowCount_100_1000;
+
+    @MField(name = "f10000")
     protected int  fetchRowCount_1000_10000;
+
+    @MField(name = "fmore")
     protected int  fetchRowCount_10000_more;
 
     public long[] getFetchRowHistogram() {
@@ -128,11 +232,22 @@ public class JdbcSqlStatValue {
         };
     }
 
+    @MField(name = "u1")
     protected long updateCount_0_1;
+
+    @MField(name = "u10")
     protected long updateCount_1_10;
+
+    @MField(name = "u100")
     protected long updateCount_10_100;
+
+    @MField(name = "u1000")
     protected int  updateCount_100_1000;
+
+    @MField(name = "u10000")
     protected int  updateCount_1000_10000;
+
+    @MField(name = "umore")
     protected int  updateCount_10000_more;
 
     public long[] getUpdateHistogram() {
@@ -165,6 +280,14 @@ public class JdbcSqlStatValue {
         this.sql = sql;
     }
 
+    public long getSqlHash() {
+        return sqlHash;
+    }
+
+    public void setSqlHash(long sqlHash) {
+        this.sqlHash = sqlHash;
+    }
+
     public long getId() {
         return id;
     }
@@ -184,7 +307,7 @@ public class JdbcSqlStatValue {
     public long getExecuteLastStartTimeMillis() {
         return executeLastStartTime;
     }
-    
+
     public Date getExecuteLastStartTime() {
         if (executeLastStartTime <= 0) {
             return null;
@@ -296,7 +419,7 @@ public class JdbcSqlStatValue {
     public long getExecuteNanoSpanMaxOccurTimeMillis() {
         return executeNanoSpanMaxOccurTime;
     }
-    
+
     public Date getExecuteNanoSpanMaxOccurTime() {
         if (executeNanoSpanMaxOccurTime <= 0) {
             return null;
@@ -329,6 +452,12 @@ public class JdbcSqlStatValue {
 
     public void setExecuteErrorLast(Throwable executeErrorLast) {
         this.executeErrorLast = executeErrorLast;
+        
+        if (executeErrorLast != null) {
+            this.executeErrorLastMessage = executeErrorLast.getMessage();
+            this.executeErrorLastClass = executeErrorLast.getClass().getName();
+            this.executeErrorLastStackTrace = Utils.toString(executeErrorLast.getStackTrace());
+        }
     }
 
     public long getExecuteErrorLastTimeMillis() {
@@ -448,7 +577,7 @@ public class JdbcSqlStatValue {
                 histogram_1000000_more //
         };
     }
-    
+
     public long[] getFetchRowCountHistogramValues() {
         return new long[] {
                 //
@@ -472,7 +601,7 @@ public class JdbcSqlStatValue {
                 updateCount_10000_more //
         };
     }
-    
+
     public long[] getExecuteAndResultHoldTimeHistogramValues() {
         return new long[] {
                 //
@@ -524,12 +653,11 @@ public class JdbcSqlStatValue {
         map.put("Name", getName()); // 16
         map.put("File", getFile()); // 17
 
-        Throwable lastError = this.executeErrorLast;
-        if (lastError != null) {
-            map.put("LastErrorMessage", lastError.getMessage()); // 18
-            map.put("LastErrorClass", lastError.getClass().getName()); // 19
+        if (executeErrorLastMessage != null) {
+            map.put("LastErrorMessage", executeErrorLastMessage); // 18
+            map.put("LastErrorClass", executeErrorLastClass); // 19
 
-            map.put("LastErrorStackTrace", IOUtils.getStackTrace(lastError)); // 20
+            map.put("LastErrorStackTrace", executeErrorLastStackTrace); // 20
             map.put("LastErrorTime", new Date(executeErrorLastTime)); // 21
         } else {
             map.put("LastErrorMessage", null);
@@ -562,4 +690,69 @@ public class JdbcSqlStatValue {
 
         return map;
     }
+
+    public long getHistogram_0_1() {
+        return histogram_0_1;
+    }
+
+    public void setHistogram_0_1(long histogram_0_1) {
+        this.histogram_0_1 = histogram_0_1;
+    }
+
+    public long getHistogram_1_10() {
+        return histogram_1_10;
+    }
+
+    public void setHistogram_1_10(long histogram_1_10) {
+        this.histogram_1_10 = histogram_1_10;
+    }
+
+    public int getHistogram_10_100() {
+        return histogram_10_100;
+    }
+
+    public void setHistogram_10_100(int histogram_10_100) {
+        this.histogram_10_100 = histogram_10_100;
+    }
+
+    public int getHistogram_100_1000() {
+        return histogram_100_1000;
+    }
+
+    public void setHistogram_100_1000(int histogram_100_1000) {
+        this.histogram_100_1000 = histogram_100_1000;
+    }
+
+    public int getHistogram_1000_10000() {
+        return histogram_1000_10000;
+    }
+
+    public void setHistogram_1000_10000(int histogram_1000_10000) {
+        this.histogram_1000_10000 = histogram_1000_10000;
+    }
+
+    public int getHistogram_10000_100000() {
+        return histogram_10000_100000;
+    }
+
+    public void setHistogram_10000_100000(int histogram_10000_100000) {
+        this.histogram_10000_100000 = histogram_10000_100000;
+    }
+
+    public int getHistogram_100000_1000000() {
+        return histogram_100000_1000000;
+    }
+
+    public void setHistogram_100000_1000000(int histogram_100000_1000000) {
+        this.histogram_100000_1000000 = histogram_100000_1000000;
+    }
+
+    public int getHistogram_1000000_more() {
+        return histogram_1000000_more;
+    }
+
+    public void setHistogram_1000000_more(int histogram_1000000_more) {
+        this.histogram_1000000_more = histogram_1000000_more;
+    }
+
 }
