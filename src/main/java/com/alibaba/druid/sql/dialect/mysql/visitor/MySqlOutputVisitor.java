@@ -541,7 +541,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
         }
 
-        print("PRIAMRY KEY");
+        print("PRIMARY KEY");
 
         if (x.getIndexType() != null) {
             print(" USING ");

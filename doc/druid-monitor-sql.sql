@@ -1,3 +1,31 @@
+INSERT INTO druid_sql (domain, app, cluster, host, pid
+	, collectTime, sqlHash, dataSource, lastStartTime, batchTotal
+	, batchToMax, execSuccessCount, execNanoTotal, execNanoMax, running
+	, concurrentMax, rsHoldTime, execRsHoldTime, name, file
+	, dbType, execNanoMaxOccurTime, errorCount, errorLastMsg, errorLastClass
+	, errorLastStackTrace, errorLastTime, updateCount, updateCountMax, fetchRowCount
+	, fetchRowCountMax, inTxnCount, lastSlowParameters, clobOpenCount, blobOpenCount
+	, readStringLength, readBytesLength, inputStreamOpenCount, readerOpenCount, h1
+	, h10, h100, h1000, h10000, h100000
+	, h1000000, hmore, eh1, eh10, eh100
+	, eh1000, eh10000, eh100000, eh1000000, ehmore
+	, f1, f10, f100, f1000, f10000
+	, fmore, u1, u10, u100, u1000
+	, u10000, umore)
+VALUES (?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?, ?, ?, ?
+	, ?, ?)
 CREATE TABLE druid_sql (
 	id bigint(20) NOT NULL, 
 	domain varchar(45), 
@@ -16,8 +44,8 @@ CREATE TABLE druid_sql (
 	execNanoMax bigint(20), 
 	running int(10), 
 	concurrentMax int(10), 
-	running bigint(20), 
-	executeAndResultSetHoldTime bigint(20), 
+	rsHoldTime bigint(20), 
+	execRsHoldTime bigint(20), 
 	name varchar(256), 
 	file varchar(256), 
 	dbType varchar(256), 
@@ -67,5 +95,5 @@ CREATE TABLE druid_sql (
 	u1000 int(10), 
 	u10000 int(10), 
 	umore int(10), 
-	PRIAMRY KEY (id)
+	PRIMARY KEY (id)
 )

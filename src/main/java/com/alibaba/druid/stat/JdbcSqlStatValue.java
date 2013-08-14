@@ -63,10 +63,10 @@ public class JdbcSqlStatValue {
     @MField
     protected int       concurrentMax;
 
-    @MField(name = "running")
+    @MField(name = "rsHoldTime")
     protected long      resultSetHoldTimeNano;
 
-    @MField
+    @MField(name = "execRsHoldTime")
     protected long      executeAndResultSetHoldTime;
 
     @MField
