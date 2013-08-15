@@ -24,8 +24,8 @@ public class MonitorDaoJdbcImplTest extends TestCase {
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:h2:mem:test");
-        dataSource.setInitialSize(2);
-        dataSource.setMinIdle(2);
+        dataSource.setInitialSize(1);
+        dataSource.setMinIdle(1);
         dataSource.setFilters("wall,stat,log4j");
         dataSource.init();
     }

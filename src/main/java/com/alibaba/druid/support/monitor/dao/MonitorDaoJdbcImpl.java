@@ -373,14 +373,49 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
         for (Object statValue : list) {
             try {
-                String sql = "select hash, value from druid_const where domain = ? AND app = ? and type = ? and value = ?";
                 Long hash = (Long) hashField.field.get(statValue);
+                String value = hashField.getCacheValue(hash);
+
+                if (value == null) {
+                    value = getConstValueFromDb(domain, app, hashField.getHashForType(), hash);
+                }
+                hashField.getHashFor().set(statValue, value);
             } catch (IllegalArgumentException e) {
                 throw new DruidRuntimeException("set field error" + hashField.getField(), e);
             } catch (IllegalAccessException e) {
                 throw new DruidRuntimeException("set field error" + hashField.getField(), e);
             }
         }
+    }
+
+    protected String getConstValueFromDb(String domain, String app, String type, Long hash) {
+        String sql = "select value from druid_const where domain = ? AND app = ? and type = ? and hash = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, domain);
+            stmt.setString(2, app);
+            stmt.setString(3, type);
+            stmt.setLong(4, hash);
+
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (SQLException ex) {
+            LOG.error("save const error error", ex);
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+            JdbcUtils.close(conn);
+        }
+
+        return null;
     }
 
     private void saveHash(FieldInfo hashField, MonitorContext ctx, List<?> list) {
@@ -703,12 +738,16 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
             if (hashCache.size() > 1000) {
                 return;
             }
-            
+
             hashCache.put(hash, value);
         }
 
         public boolean hashCacheContains(long hash) {
             return hashCache.containsKey(hash);
+        }
+
+        public String getCacheValue(long hash) {
+            return hashCache.get(hash);
         }
     }
 
