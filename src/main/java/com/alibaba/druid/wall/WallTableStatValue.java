@@ -18,23 +18,55 @@ package com.alibaba.druid.wall;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.MField;
+import com.alibaba.druid.support.monitor.MTable;
+
+@MTable(name = "druid_wall_table")
 public class WallTableStatValue {
 
+    @MField
     private String name;
 
+    @MField
     private long   selectCount;
+
+    @MField
     private long   selectIntoCount;
+
+    @MField
     private long   insertCount;
+
+    @MField
     private long   updateCount;
+
+    @MField
     private long   deleteCount;
+
+    @MField
     private long   truncateCount;
+
+    @MField
     private long   createCount;
+
+    @MField
     private long   alterCount;
+
+    @MField
     private long   dropCount;
+
+    @MField
     private long   replaceCount;
+
+    @MField
     private long   deleteDataCount;
+
+    @MField
     private long   updateDataCount;
+
+    @MField
     private long   insertDataCount;
+
+    @MField
     private long   fetchRowCount;
 
     public WallTableStatValue(){

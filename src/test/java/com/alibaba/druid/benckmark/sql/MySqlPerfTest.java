@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 
 public class MySqlPerfTest extends TestCase {
 
@@ -33,7 +33,7 @@ public class MySqlPerfTest extends TestCase {
         sql = "SELECT * FROM T";
         sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ?";
 
-        sql = IOUtils.readFromResource("benchmark/sql/ob_sql.txt");
+        sql = Utils.readFromResource("benchmark/sql/ob_sql.txt");
     }
 
     public void test_pert() throws Exception {

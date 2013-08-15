@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
-import static com.alibaba.druid.util.IOUtils.getBoolean;
+import static com.alibaba.druid.util.Utils.getBoolean;
 
 import java.io.Closeable;
 import java.security.AccessController;
@@ -82,12 +82,13 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.WallFilter;
+import com.alibaba.druid.wall.WallProviderStatValue;
 
 ;
 /**
@@ -492,7 +493,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             init = true;
 
-            initStackTrace = IOUtils.toString(Thread.currentThread().getStackTrace());
+            initStackTrace = Utils.toString(Thread.currentThread().getStackTrace());
 
             this.id = DruidDriver.createDataSourceId();
             if (this.id > 1) {
@@ -923,7 +924,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (timeBetweenEvictionRunsMillis <= 0) {
                         timeBetweenEvictionRunsMillis = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
                     }
-                    
+
                     if (idleMillis >= timeBetweenEvictionRunsMillis) {
                         boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
                         if (!validate) {
@@ -1995,7 +1996,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         buf.append("{");
 
         buf.append("\n\tCreateTime:\"");
-        buf.append(IOUtils.toString(getCreatedTime()));
+        buf.append(Utils.toString(getCreatedTime()));
         buf.append("\"");
 
         buf.append(",\n\tActiveCount:");
@@ -2338,10 +2339,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public Map<String, Object> getWallStatMap() {
+        WallProviderStatValue wallStatValue = getWallStatValue(false);
+
+        if (wallStatValue != null) {
+            return wallStatValue.toMap();
+        }
+
+        return null;
+    }
+
+    public WallProviderStatValue getWallStatValue(boolean reset) {
         for (Filter filter : this.filters) {
             if (filter instanceof WallFilter) {
                 WallFilter wallFilter = (WallFilter) filter;
-                return wallFilter.getProvider().getStatsMap();
+                return wallFilter.getProvider().getStatValue(reset);
             }
         }
 

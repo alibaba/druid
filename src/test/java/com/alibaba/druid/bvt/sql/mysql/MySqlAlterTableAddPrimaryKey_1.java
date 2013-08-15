@@ -33,7 +33,7 @@ public class MySqlAlterTableAddPrimaryKey_1 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE tabelname" + //
-                            "\n\tADD CONSTRAINT mYconstraint PRIAMRY KEY (id)", output);
+                            "\n\tADD CONSTRAINT mYconstraint PRIMARY KEY (id)", output);
     }
 
 }

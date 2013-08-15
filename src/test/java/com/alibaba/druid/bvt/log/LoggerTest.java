@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class LoggerTest extends TestCase {
@@ -66,7 +66,7 @@ public class LoggerTest extends TestCase {
                 throw new ClassNotFoundException();
             }
             try {
-                byte[] bytes = IOUtils.readByteArray(is);
+                byte[] bytes = Utils.readByteArray(is);
                 this.defineClass(name, bytes, 0, bytes.length, DOMAIN);
                 definedSet.add(name);
             } catch (IOException e) {

@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.wall;
 
-import static com.alibaba.druid.util.IOUtils.getBoolean;
+import static com.alibaba.druid.util.Utils.getBoolean;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -45,9 +45,9 @@ import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
-    private final static Log   LOG                       = LogFactory.getLog(WallFilter.class);
+    private final static Log   LOG            = LogFactory.getLog(WallFilter.class);
 
-    private boolean            inited                    = false;
+    private boolean            inited         = false;
 
     private WallProvider       provider;
 
@@ -55,12 +55,10 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     private WallConfig         config;
 
-    private volatile boolean   logViolation              = false;
-    private volatile boolean   throwException            = true;
+    private volatile boolean   logViolation   = false;
+    private volatile boolean   throwException = true;
 
-    private boolean            autoRegisterToGlobalTimer = false;
-
-    public final static String ATTR_SQL_STAT             = "wall.sqlStat";
+    public final static String ATTR_SQL_STAT  = "wall.sqlStat";
 
     public WallFilter(){
         configFromProperties(System.getProperties());
@@ -78,12 +76,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             Boolean value = getBoolean(properties, "druid.wall.throwException");
             if (value != null) {
                 this.throwException = value;
-            }
-        }
-        {
-            Boolean value = getBoolean(properties, "druid.wall.autoRegisterToGlobalTimer");
-            if (value != null) {
-                this.autoRegisterToGlobalTimer = value;
             }
         }
     }
@@ -137,15 +129,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
-
-        if (autoRegisterToGlobalTimer) {
-            WallProviderStatTimer timer = WallProviderStatTimer.getInstance();
-            if (timer == null) {
-                timer = new WallProviderStatTimer();
-                timer.start();
-            }
-            timer.register(provider);
-        }
+        
+        provider.setName(dataSource.getName());
 
         this.inited = true;
     }

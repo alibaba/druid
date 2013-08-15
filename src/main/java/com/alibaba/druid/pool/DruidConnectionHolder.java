@@ -28,7 +28,7 @@ import javax.sql.StatementEventListener;
 
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcConstants;
 
 /**
@@ -251,14 +251,14 @@ public final class DruidConnectionHolder {
         buf.append("{ID:");
         buf.append(System.identityHashCode(conn));
         buf.append(", ConnectTime:\"");
-        buf.append(IOUtils.toString(new Date(this.connecttimeMillis)));
+        buf.append(Utils.toString(new Date(this.connecttimeMillis)));
 
         buf.append("\", UseCount:");
         buf.append(useCount);
 
         if (lastActiveTimeMillis > 0) {
             buf.append(", LastActiveTime:\"");
-            buf.append(IOUtils.toString(new Date(this.lastActiveTimeMillis)));
+            buf.append(Utils.toString(new Date(this.lastActiveTimeMillis)));
             buf.append("\"");
         }
 
