@@ -24,7 +24,7 @@ import com.alibaba.druid.support.monitor.MTable;
 @MTable(name = "druid_webapp")
 public class WebAppStatValue {
 
-    @MField
+    @MField(groupBy = true)
     String contextPath;
 
     @MField

@@ -328,8 +328,10 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         }
     }
 
-    protected void setParameterForSqlStat(BeanInfo beanInfo, MonitorContext ctx, PreparedStatement stmt, Object sqlStat)
-                                                                                                                        throws SQLException {
+    protected void setParameterForSqlStat(BeanInfo beanInfo, //
+                                          MonitorContext ctx, //
+                                          PreparedStatement stmt, //
+                                          Object sqlStat) throws SQLException {
         int paramIndex = 1;
 
         setParam(stmt, paramIndex++, ctx.getDomainName());
@@ -449,7 +451,8 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     public static class BeanInfo {
 
         private final Class<?>        clazz;
-        private final List<FieldInfo> fields = new ArrayList<FieldInfo>();
+        private final List<FieldInfo> fields        = new ArrayList<FieldInfo>();
+        private final List<FieldInfo> groupByFields = new ArrayList<FieldInfo>();
         private String                insertSql;
         private String                tableName;
 
@@ -476,7 +479,11 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                     columnName = field.getName();
                 }
 
-                fields.add(new FieldInfo(field, columnName));
+                FieldInfo fieldInfo = new FieldInfo(field, columnName);
+                fields.add(fieldInfo);
+                if (annotation.groupBy()) {
+                    groupByFields.add(fieldInfo);
+                }
             }
         }
 
@@ -498,6 +505,10 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
         public List<FieldInfo> getFields() {
             return fields;
+        }
+
+        public List<FieldInfo> getGroupByFields() {
+            return groupByFields;
         }
 
     }
@@ -529,6 +540,6 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
     @Override
     public void saveSqlWall(MonitorContext ctx, List<WallProviderStatValue> statList) {
-        
+
     }
 }

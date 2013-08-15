@@ -59,7 +59,7 @@ public class MySqlCreateTableTest47 extends MysqlTest {
                             + "\n\tpname VARCHAR(60), "//
                             + "\n\tDESCRIPTION TEXT, "//
                             + "\n\tICONURL VARCHAR(255), "//
-                            + "\n\tCONSTRAINT PK_issuestatus PRIAMRY KEY (ID)"//
+                            + "\n\tCONSTRAINT PK_issuestatus PRIMARY KEY (ID)"//
                             + "\n)", output);
 
     }

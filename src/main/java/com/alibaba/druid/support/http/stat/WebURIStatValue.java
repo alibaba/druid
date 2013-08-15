@@ -28,7 +28,7 @@ import com.alibaba.druid.support.profile.ProfileEntryStatValue;
 @MTable(name = "druid_weburi")
 public class WebURIStatValue {
 
-    @MField
+    @MField(groupBy = true)
     protected String                    uri;
 
     @MField

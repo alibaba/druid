@@ -25,4 +25,6 @@ import java.lang.annotation.Target;
 public @interface MField {
 
     String name() default "";
+    
+    boolean groupBy() default false;
 }

@@ -22,10 +22,10 @@ import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.monitor.MField;
 import com.alibaba.druid.support.monitor.MTable;
 
-@MTable(name="druid_datasource")
+@MTable(name = "druid_datasource")
 public class DruidDataSourceStatValue {
 
-    @MField
+    @MField(groupBy = true)
     protected String                 name;
 
     @MField
@@ -34,7 +34,6 @@ public class DruidDataSourceStatValue {
     @MField
     protected String                 driverClassName;
 
-    @MField
     protected String                 url;
     protected String                 userName;
     protected List<String>           filterClassNames;
@@ -123,8 +122,7 @@ public class DruidDataSourceStatValue {
 
     @MField
     protected long                   blobOpenCount;
-    
-    
+
     protected long                   sqlSkipCount;
 
     protected List<JdbcSqlStatValue> sqlList;

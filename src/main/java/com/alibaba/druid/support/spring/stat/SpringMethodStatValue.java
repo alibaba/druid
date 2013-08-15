@@ -26,10 +26,10 @@ import com.alibaba.druid.util.Utils;
 @MTable(name = "druid_springmethod")
 public class SpringMethodStatValue {
 
-    @MField
+    @MField(groupBy = true)
     private String className;
 
-    @MField
+    @MField(groupBy = true)
     private String signature;
 
     @MField

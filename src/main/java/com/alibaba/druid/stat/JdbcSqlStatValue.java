@@ -33,7 +33,7 @@ public class JdbcSqlStatValue {
 
     protected String    sql;
 
-    @MField
+    @MField(groupBy = true)
     private long        sqlHash;
 
     @MField
