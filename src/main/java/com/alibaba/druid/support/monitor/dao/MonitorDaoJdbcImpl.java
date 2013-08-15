@@ -443,7 +443,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                         stmt.close();
 
                     } catch (SQLException ex) {
-                        LOG.error("save const error error", ex);
+                        // LOG.error("save const error error", ex);
                     } finally {
                         JdbcUtils.close(stmt);
                         JdbcUtils.close(conn);
