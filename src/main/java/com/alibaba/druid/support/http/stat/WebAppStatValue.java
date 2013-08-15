@@ -18,165 +18,166 @@ package com.alibaba.druid.support.http.stat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.MTable;
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 
 @MTable(name = "druid_webapp")
 public class WebAppStatValue {
 
-    @MField(groupBy = true)
+    @MField(groupBy = true, aggregate=AggregateType.None)
     String contextPath;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     int    runningCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     int    concurrentMax;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   requestCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     long   sessionCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   jdbcFetchRowCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   jdbcUpdateCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   jdbcExecuteCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   jdbcExecuteTimeNano;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   jdbcCommitCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   jdbcRollbackCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osMacOSXCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osWindowsCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osLinuxCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osSymbianCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osFreeBSDCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osOpenBSDCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroidCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osWindows98Count;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osWindowsXPCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osWindows2000Count;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osWindowsVistaCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osWindows7Count;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osWindows8Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid15Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid16Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid20Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid21Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid22Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid23Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid30Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid31Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid32Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid40Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid41Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid42Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osAndroid43Count;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   osLinuxUbuntuCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserIECount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserFirefoxCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserChromeCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserSafariCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserOperaCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserIE5Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserIE6Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserIE7Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserIE8Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserIE9Count;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browserIE10Count;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   browser360SECount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   deviceAndroidCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   deviceIpadCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   deviceIphoneCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   deviceWindowsPhoneCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botBaiduCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botYoudaoCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botGoogleCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botMsnCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botBingCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botSosoCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botSogouCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     long   botYahooCount;
 
     public String getContextPath() {

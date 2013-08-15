@@ -866,11 +866,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.LONG, //
                 SimpleType.LONG, //
 
-                // 35 -
+                // 35 - 39
                 SimpleType.LONG, //
                 SimpleType.LONG, //
                 SimpleType.LONG, //
                 SimpleType.LONG, //
+                SimpleType.LONG, //
+                
+                // 40 -
                 SimpleType.LONG, //
 
         };
@@ -931,6 +934,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "ReadBytesLength", //
                 "InputStreamOpenCount", //
                 "ReaderOpenCount", //
+                
+                // 40
+                "HASH", //
 
         //
         };

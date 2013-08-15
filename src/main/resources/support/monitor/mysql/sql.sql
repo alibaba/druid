@@ -67,7 +67,7 @@ CREATE TABLE druid_sql (
 	u1000 int(10), 
 	u10000 int(10), 
 	umore int(10), 
-	PRIMARY KEY (id), 
-	KEY (collectTime, domain, app),
-	KEY(collectTime, domain, app)
-)
+	PRIMARY KEY (id)
+);
+
+CREATE INDEX druid_sql_index ON druid_sql (collectTime, domain, app);

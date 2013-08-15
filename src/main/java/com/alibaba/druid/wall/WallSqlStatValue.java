@@ -18,31 +18,32 @@ package com.alibaba.druid.wall;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.MTable;
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 
 @MTable(name = "druid_wall_sql")
 public class WallSqlStatValue {
 
-    @MField
+    @MField(aggregate = AggregateType.None)
     private String  sql;
 
-    @MField
+    @MField(aggregate = AggregateType.None)
     private String  sqlSample;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long    executeCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long    fetchRowCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long    updateCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     private boolean syntaxError;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     private String  violationMessage;
 
     public WallSqlStatValue(){

@@ -9,17 +9,11 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceStatValue;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
-import com.alibaba.druid.support.http.stat.WebAppStatValue;
-import com.alibaba.druid.support.http.stat.WebURIStatValue;
 import com.alibaba.druid.support.monitor.MonitorClient;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl.BeanInfo;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl.FieldInfo;
-import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MonitorDaoJdbcImplTest extends TestCase {
@@ -32,7 +26,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
         dataSource.setUrl("jdbc:h2:mem:test");
         dataSource.setInitialSize(2);
         dataSource.setMinIdle(2);
-        dataSource.setFilters("stat,log4j");
+        dataSource.setFilters("wall,stat,log4j");
         dataSource.init();
     }
 
@@ -44,40 +38,12 @@ public class MonitorDaoJdbcImplTest extends TestCase {
     public void testBuildSql() throws Exception {
         MonitorDaoJdbcImpl dao = new MonitorDaoJdbcImpl();
         dao.setDataSource(dataSource);
+        
+        dao.createTables("mysql");
 
         MonitorClient client = new MonitorClient();
         client.setDao(dao);
 
-        {
-            String sql = buildCreateSql(dao, new BeanInfo(JdbcSqlStatValue.class));
-            System.out.println(SQLUtils.format(sql, JdbcConstants.MYSQL));
-            JdbcUtils.execute(dataSource, sql, Collections.emptyList());
-        }
-        
-        {
-            String sql = buildCreateSql(dao, new BeanInfo(DruidDataSourceStatValue.class));
-            System.out.println(SQLUtils.format(sql, JdbcConstants.MYSQL));
-            JdbcUtils.execute(dataSource, sql, Collections.emptyList());
-        }
-        
-        {
-            String sql = buildCreateSql(dao, new BeanInfo(WebURIStatValue.class));
-            System.out.println(SQLUtils.format(sql, JdbcConstants.MYSQL));
-            JdbcUtils.execute(dataSource, sql, Collections.emptyList());
-        }
-
-
-        {
-            String sql = buildCreateSql(dao, new BeanInfo(WebAppStatValue.class));
-            System.out.println(SQLUtils.format(sql, JdbcConstants.MYSQL));
-            JdbcUtils.execute(dataSource, sql, Collections.emptyList());
-        }
-        
-        {
-            String sql = buildCreateSql(dao, new BeanInfo(SpringMethodStatValue.class));
-            System.out.println(SQLUtils.format(sql, JdbcConstants.MYSQL));
-            JdbcUtils.execute(dataSource, sql, Collections.emptyList());
-        }
         client.collectSql();
 
         {
@@ -85,7 +51,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
             for (JdbcSqlStatValue sqlStatValue : sqlList) {
                 System.out.println(sqlStatValue.getData());
             }
-            Assert.assertEquals(5, sqlList.size());
+            Assert.assertEquals(11, sqlList.size());
         }
 
         client.collectSql();
@@ -95,7 +61,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
             for (JdbcSqlStatValue sqlStatValue : sqlList) {
                 System.out.println(sqlStatValue.getData());
             }
-            Assert.assertEquals(7, sqlList.size());
+            Assert.assertEquals(14, sqlList.size());
         }
     }
 
@@ -128,9 +94,13 @@ public class MonitorDaoJdbcImplTest extends TestCase {
             }
         }
         buf.append(", PRIMARY KEY(id)");
-//        buf.append(", KEY(collectTime, domain, app)");
-        buf.append(")");
-
+        buf.append(");");
+        
+        buf.append("\n\nCREATE INDEX ");
+        buf.append(dao.getTableName(beanInfo));
+        buf.append("_index ON ");
+        buf.append(dao.getTableName(beanInfo));
+        buf.append(" (collectTime, domain, app);");
         return buf.toString();
     }
 }

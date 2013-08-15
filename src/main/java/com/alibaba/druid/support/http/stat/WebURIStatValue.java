@@ -21,99 +21,100 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.MTable;
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 import com.alibaba.druid.support.profile.ProfileEntryStatValue;
 
 @MTable(name = "druid_weburi")
 public class WebURIStatValue {
 
-    @MField(groupBy = true)
+    @MField(groupBy = true, aggregate = AggregateType.None)
     protected String                    uri;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     protected int                       runningCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     protected int                       concurrentMax;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      requestCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      requestTimeNano;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcFetchRowCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     protected long                      jdbcFetchRowPeak;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcUpdateCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     protected long                      jdbcUpdatePeak;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcExecuteCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcExecuteErrorCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     protected long                      jdbcExecutePeak;             // 单次请求执行SQL次数的峰值
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcExecuteTimeNano;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcCommitCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcRollbackCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcPoolConnectionOpenCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcPoolConnectionCloseCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcResultSetOpenCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcResultSetCloseCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                      errorCount;
 
-    @MField
-    protected long                      lastAccessTimeMillis = -1L;
+    @MField(aggregate = AggregateType.Last)
+    protected Date                      lastAccessTime = null;
 
     private List<ProfileEntryStatValue> profileEntryStatValueList;
 
-    @MField(name = "h1")
+    @MField(name = "h1", aggregate = AggregateType.Sum)
     protected long                      histogram_0_1;
 
-    @MField(name = "h10")
+    @MField(name = "h10", aggregate = AggregateType.Sum)
     protected long                      histogram_1_10;
 
-    @MField(name = "h100")
+    @MField(name = "h100", aggregate = AggregateType.Sum)
     protected long                      histogram_10_100;
-    @MField(name = "h1000")
+    @MField(name = "h1000", aggregate = AggregateType.Sum)
     protected long                      histogram_100_1000;
 
-    @MField(name = "h10000")
+    @MField(name = "h10000", aggregate = AggregateType.Sum)
     protected int                       histogram_1000_10000;
 
-    @MField(name = "h100000")
+    @MField(name = "h100000", aggregate = AggregateType.Sum)
     protected int                       histogram_10000_100000;
 
-    @MField(name = "h1000000")
+    @MField(name = "h1000000", aggregate = AggregateType.Sum)
     protected int                       histogram_100000_1000000;
 
-    @MField(name = "hmore")
+    @MField(name = "hmore", aggregate = AggregateType.Sum)
     protected int                       histogram_1000000_more;
 
     public long[] getHistogram() {
@@ -296,12 +297,12 @@ public class WebURIStatValue {
         this.errorCount = errorCount;
     }
 
-    public long getLastAccessTimeMillis() {
-        return lastAccessTimeMillis;
-    }
-
     public void setLastAccessTimeMillis(long lastAccessTimeMillis) {
-        this.lastAccessTimeMillis = lastAccessTimeMillis;
+        if (lastAccessTimeMillis > 0) {
+            this.lastAccessTime = new Date(lastAccessTimeMillis);
+        } else {
+            this.lastAccessTime = null;
+        }
     }
 
     public long getRequestTimeMillis() {
@@ -309,11 +310,7 @@ public class WebURIStatValue {
     }
 
     public Date getLastAccessTime() {
-        if (lastAccessTimeMillis < 0L) {
-            return null;
-        }
-
-        return new Date(lastAccessTimeMillis);
+        return lastAccessTime;
     }
 
     public long getJdbcExecuteTimeMillis() {

@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
@@ -38,9 +40,10 @@ import com.alibaba.druid.support.http.stat.WebAppStatValue;
 import com.alibaba.druid.support.http.stat.WebURIStatValue;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.MTable;
 import com.alibaba.druid.support.monitor.MonitorContext;
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
@@ -58,9 +61,29 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     private BeanInfo         webURIStatBeanInfo       = new BeanInfo(WebURIStatValue.class);
     private BeanInfo         webAppStatBeanInfo       = new BeanInfo(WebAppStatValue.class);
 
-    //
-
     public MonitorDaoJdbcImpl(){
+    }
+
+    public void createTables(String dbType) {
+        String[] resources = new String[] { "const.sql", //
+                "datasource.sql", //
+                "springmethod.sql", //
+                "sql.sql", //
+                "webapp.sql", //
+                "weburi.sql" };
+
+        for (String item : resources) {
+            String path = "/support/monitor/" + dbType + "/" + item;
+            try {
+                String text = Utils.readFromResource(path);
+                String[] sqls = text.split(";");
+                for (String sql : sqls) {
+                    JdbcUtils.execute(dataSource, sql);
+                }
+            } catch (Exception ex) {
+                LOG.error("create table error", ex);
+            }
+        }
     }
 
     public DataSource getDataSource() {
@@ -166,11 +189,30 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
         List<FieldInfo> fields = beanInfo.getFields();
         for (int i = 0; i < fields.size(); ++i) {
-            FieldInfo field = fields.get(i);
+            FieldInfo fieldInfo = fields.get(i);
             if (i != 0) {
                 buf.append(", ");
             }
-            buf.append(field.getColumnName());
+
+            AggregateType aggregateType = fieldInfo.getField().getAnnotation(MField.class).aggregate();
+
+            switch (aggregateType) {
+                case Sum:
+                    buf.append("SUM(");
+                    buf.append(fieldInfo.getColumnName());
+                    buf.append(")");
+                    break;
+                case Max:
+                    buf.append("MAX(");
+                    buf.append(fieldInfo.getColumnName());
+                    buf.append(")");
+                    break;
+                case None:
+                case Last:
+                default:
+                    buf.append(fieldInfo.getColumnName());
+                    break;
+            }
         }
 
         buf.append("\nFROM ");
@@ -210,6 +252,17 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         Integer pid = getInteger(filters, "pid");
         if (pid != null) {
             buf.append("\nAND pid = ?");
+        }
+
+        List<FieldInfo> groupByFields = beanInfo.getGroupByFields();
+        for (int i = 0; i < groupByFields.size(); ++i) {
+            if (i == 0) {
+                buf.append("\nGROUP BY ");
+            } else {
+                buf.append(", ");
+            }
+            FieldInfo fieldInfo = groupByFields.get(i);
+            buf.append(fieldInfo.getColumnName());
         }
 
         {
@@ -275,6 +328,10 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
             JdbcUtils.close(conn);
         }
 
+        for (FieldInfo hashField : beanInfo.getHashFields()) {
+            loadHashValue(hashField, list, filters);
+        }
+
         return list;
     }
 
@@ -304,7 +361,73 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         }
     }
 
+    private void loadHashValue(FieldInfo hashField, List<?> list, Map<String, Object> filters) {
+        String domain = (String) filters.get("domain");
+        if (StringUtils.isEmpty(domain)) {
+            domain = "defaultDomain";
+        }
+        String app = (String) filters.get("app");
+        if (StringUtils.isEmpty(app)) {
+            app = "defaultApp";
+        }
+
+        for (Object statValue : list) {
+            try {
+                String sql = "select hash, value from druid_const where domain = ? AND app = ? and type = ? and value = ?";
+                Long hash = (Long) hashField.field.get(statValue);
+            } catch (IllegalArgumentException e) {
+                throw new DruidRuntimeException("set field error" + hashField.getField(), e);
+            } catch (IllegalAccessException e) {
+                throw new DruidRuntimeException("set field error" + hashField.getField(), e);
+            }
+        }
+    }
+
+    private void saveHash(FieldInfo hashField, MonitorContext ctx, List<?> list) {
+        final String hashType = hashField.getHashForType();
+
+        for (Object statValue : list) {
+            try {
+                Long hash = (Long) hashField.field.get(statValue);
+                if (!hashField.hashCacheContains(hash)) {
+                    String value = (String) hashField.getHashFor().get(statValue);
+                    final String sql = "insert into druid_const (domain, app, type, hash, value) values (?, ?, ?, ?, ?)";
+                    Connection conn = null;
+                    PreparedStatement stmt = null;
+                    try {
+                        conn = dataSource.getConnection();
+                        stmt = conn.prepareStatement(sql);
+
+                        stmt.setString(1, ctx.getDomainName());
+                        stmt.setString(2, ctx.getAppName());
+                        stmt.setString(3, hashType);
+                        stmt.setLong(4, hash);
+                        stmt.setString(5, value);
+
+                        stmt.execute();
+                        stmt.close();
+
+                    } catch (SQLException ex) {
+                        LOG.error("save const error error", ex);
+                    } finally {
+                        JdbcUtils.close(stmt);
+                        JdbcUtils.close(conn);
+                    }
+                    hashField.hashCacheAdd(hash, value);
+                }
+            } catch (IllegalArgumentException e) {
+                throw new DruidRuntimeException("set field error" + hashField.getField(), e);
+            } catch (IllegalAccessException e) {
+                throw new DruidRuntimeException("set field error" + hashField.getField(), e);
+            }
+        }
+    }
+
     private void save(BeanInfo beanInfo, MonitorContext ctx, List<?> list) {
+        for (FieldInfo hashField : beanInfo.getHashFields()) {
+            saveHash(hashField, ctx, list);
+        }
+
         String sql = buildInsertSql(beanInfo);
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -453,8 +576,10 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         private final Class<?>        clazz;
         private final List<FieldInfo> fields        = new ArrayList<FieldInfo>();
         private final List<FieldInfo> groupByFields = new ArrayList<FieldInfo>();
+        private final List<FieldInfo> hashFields    = new ArrayList<FieldInfo>();
+        private final String          tableName;
+
         private String                insertSql;
-        private String                tableName;
 
         public BeanInfo(Class<?> clazz){
             this.clazz = clazz;
@@ -479,10 +604,26 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                     columnName = field.getName();
                 }
 
-                FieldInfo fieldInfo = new FieldInfo(field, columnName);
+                Field hashFor = null;
+                String hashForType = null;
+                if (!StringUtils.isEmpty(annotation.hashFor())) {
+                    try {
+                        hashFor = clazz.getDeclaredField(annotation.hashFor());
+                        hashForType = annotation.hashForType();
+                    } catch (Exception e) {
+                        throw new IllegalStateException("hashFor error", e);
+                    }
+                }
+
+                FieldInfo fieldInfo = new FieldInfo(field, columnName, hashFor, hashForType);
                 fields.add(fieldInfo);
+
                 if (annotation.groupBy()) {
                     groupByFields.add(fieldInfo);
+                }
+
+                if (hashFor != null) {
+                    hashFields.add(fieldInfo);
                 }
             }
         }
@@ -511,22 +652,43 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
             return groupByFields;
         }
 
+        public List<FieldInfo> getHashFields() {
+            return hashFields;
+        }
+
     }
 
     public static class FieldInfo {
 
-        private final Field  field;
-        private final String columnName;
+        private final Field                 field;
+        private final String                columnName;
+        private final Field                 hashFor;
+        private final String                hashForType;
 
-        public FieldInfo(Field field, String columnName){
+        private ConcurrentMap<Long, String> hashCache = new ConcurrentHashMap<Long, String>(16, 0.75f, 1);
+
+        public FieldInfo(Field field, String columnName, Field hashFor, String hashForType){
             this.field = field;
             this.columnName = columnName;
+            this.hashFor = hashFor;
+            this.hashForType = hashForType;
 
             field.setAccessible(true);
+            if (hashFor != null) {
+                hashFor.setAccessible(true);
+            }
+        }
+
+        public String getHashForType() {
+            return hashForType;
         }
 
         public Field getField() {
             return field;
+        }
+
+        public Field getHashFor() {
+            return hashFor;
         }
 
         public String getColumnName() {
@@ -535,6 +697,18 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
         public Class<?> getFieldType() {
             return field.getType();
+        }
+
+        public void hashCacheAdd(long hash, String value) {
+            if (hashCache.size() > 1000) {
+                return;
+            }
+            
+            hashCache.put(hash, value);
+        }
+
+        public boolean hashCacheContains(long hash) {
+            return hashCache.containsKey(hash);
         }
     }
 

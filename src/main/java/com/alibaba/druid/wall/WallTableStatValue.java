@@ -18,55 +18,56 @@ package com.alibaba.druid.wall;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.MTable;
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 
 @MTable(name = "druid_wall_table")
 public class WallTableStatValue {
 
-    @MField
+    @MField(aggregate = AggregateType.None)
     private String name;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   selectCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   selectIntoCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   insertCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   updateCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   deleteCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   truncateCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   createCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   alterCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   dropCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   replaceCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   deleteDataCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   updateDataCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   insertDataCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   fetchRowCount;
 
     public WallTableStatValue(){

@@ -20,28 +20,29 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.MTable;
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 
 @MTable(name = "druid_wall")
 public class WallProviderStatValue {
 
-    @MField
+    @MField(aggregate = AggregateType.None)
     private String                            name;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long                              checkCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long                              hardCheckCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long                              violationCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long                              whiteListHitCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long                              blackListHitCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long                              syntaxErrorCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long                              violationEffectRowCount;
 
     private final List<WallTableStatValue>    tables    = new ArrayList<WallTableStatValue>();

@@ -36,6 +36,7 @@ CREATE TABLE druid_springmethod (
 	h100000 int(10), 
 	h1000000 int(10), 
 	hmore int(10), 
-	PRIMARY KEY (id),
-	KEY(collectTime, domain, app)
-)
+	PRIMARY KEY (id)
+);
+
+CREATE INDEX druid_springmethod_index ON druid_springmethod (collectTime, domain, app);

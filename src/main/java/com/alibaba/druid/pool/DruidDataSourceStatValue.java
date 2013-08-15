@@ -19,19 +19,20 @@ import java.util.Date;
 import java.util.List;
 
 import com.alibaba.druid.stat.JdbcSqlStatValue;
-import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.MTable;
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 
 @MTable(name = "druid_datasource")
 public class DruidDataSourceStatValue {
 
-    @MField(groupBy = true)
+    @MField(groupBy = true, aggregate = AggregateType.None)
     protected String                 name;
 
-    @MField
+    @MField(aggregate = AggregateType.None)
     protected String                 dbType;
 
-    @MField
+    @MField(aggregate = AggregateType.None)
     protected String                 driverClassName;
 
     protected String                 url;
@@ -54,75 +55,93 @@ public class DruidDataSourceStatValue {
     protected boolean                defaultReadOnly;
     protected Integer                defaultTransactionIsolation;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     protected int                    activeCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     protected int                    activePeak;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     protected long                   activePeakTime;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     protected int                    poolingCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     protected int                    poolingPeak;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     protected long                   poolingPeakTime;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   connectCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   closeCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   waitThreadCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   notEmptyWaitCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   notEmptyWaitNanos;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   logicConnectErrorCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   physicalConnectCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   physicalCloseCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   physicalConnectErrorCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   executeCount;
-    @MField
+
+    @MField(aggregate = AggregateType.Sum)
     protected long                   errorCount;
-    @MField
+
+    @MField(aggregate = AggregateType.Sum)
     protected long                   commitCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   rollbackCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   pstmtCacheHitCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   pstmtCacheMissCount;
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   startTransactionCount;
 
-    protected long[]                 transactionHistogram;
+    // protected long[] transactionHistogram;
     protected long[]                 connectionHoldTimeHistogram;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
+    protected long                   txn_0_1;
+    @MField(aggregate = AggregateType.Sum)
+    protected long                   txn_1_10;
+    @MField(aggregate = AggregateType.Sum)
+    protected long                   txn_10_100;
+    @MField(aggregate = AggregateType.Sum)
+    protected long                   txn_100_1000;
+    @MField(aggregate = AggregateType.Sum)
+    protected long                   txn_1000_10000;
+    @MField(aggregate = AggregateType.Sum)
+    protected long                   txn_10000_100000;
+    @MField(aggregate = AggregateType.Sum)
+    protected long                   txn_more;
+
+    @MField(aggregate = AggregateType.Sum)
     protected long                   clobOpenCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     protected long                   blobOpenCount;
 
+    @MField(aggregate = AggregateType.Sum)
     protected long                   sqlSkipCount;
 
     protected List<JdbcSqlStatValue> sqlList;
@@ -484,11 +503,22 @@ public class DruidDataSourceStatValue {
     }
 
     public long[] getTransactionHistogram() {
-        return transactionHistogram;
+        return new long[] { txn_0_1,// txn_0_1
+                txn_10_100, //
+                txn_100_1000, //
+                txn_1000_10000, //
+                txn_10000_100000, //
+                txn_more, //
+        };
     }
 
-    public void setTransactionHistogram(long[] transactionHistogram) {
-        this.transactionHistogram = transactionHistogram;
+    public void setTransactionHistogram(long[] values) {
+        txn_0_1 = values[0];
+        txn_10_100 = values[1];
+        txn_100_1000 = values[2];
+        txn_1000_10000 = values[3];
+        txn_10000_100000 = values[4];
+        txn_more = values[5];
     }
 
     public long[] getConnectionHoldTimeHistogram() {

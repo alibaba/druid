@@ -26,7 +26,7 @@ CREATE TABLE druid_weburi (
 	jdbcResultSetOpenCount bigint(20), 
 	jdbcResultSetCloseCount bigint(20), 
 	errorCount bigint(20), 
-	lastAccessTimeMillis bigint(20), 
+	lastAccessTime datetime, 
 	h1 bigint(20), 
 	h10 bigint(20), 
 	h100 bigint(20), 
@@ -35,6 +35,7 @@ CREATE TABLE druid_weburi (
 	h100000 int(10), 
 	h1000000 int(10), 
 	hmore int(10), 
-	PRIMARY KEY (id),
-	KEY(collectTime, domain, app)
-)
+	PRIMARY KEY (id)
+);
+
+CREATE INDEX druid_weburi_index ON druid_weburi (collectTime, domain, app);

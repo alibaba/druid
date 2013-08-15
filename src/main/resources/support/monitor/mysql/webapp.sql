@@ -69,6 +69,7 @@ CREATE TABLE druid_webapp (
 	botSosoCount bigint(20), 
 	botSogouCount bigint(20), 
 	botYahooCount bigint(20), 
-	PRIMARY KEY (id),
-	KEY(collectTime, domain, app)
-)
+	PRIMARY KEY (id)
+);
+
+CREATE INDEX druid_webapp_index ON druid_webapp (collectTime, domain, app);

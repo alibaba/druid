@@ -9,7 +9,6 @@ CREATE TABLE druid_datasource (
 	name varchar(256), 
 	dbType varchar(256), 
 	driverClassName varchar(256), 
-	url varchar(256), 
 	activeCount int(10), 
 	activePeak int(10), 
 	activePeakTime bigint(20), 
@@ -32,8 +31,17 @@ CREATE TABLE druid_datasource (
 	pstmtCacheHitCount bigint(20), 
 	pstmtCacheMissCount bigint(20), 
 	startTransactionCount bigint(20), 
+	txn_0_1 bigint(20), 
+	txn_1_10 bigint(20), 
+	txn_10_100 bigint(20), 
+	txn_100_1000 bigint(20), 
+	txn_1000_10000 bigint(20), 
+	txn_10000_100000 bigint(20), 
+	txn_more bigint(20), 
 	clobOpenCount bigint(20), 
 	blobOpenCount bigint(20), 
-	PRIMARY KEY (id),
-	KEY(collectTime, domain, app)
-)
+	sqlSkipCount bigint(20), 
+	PRIMARY KEY (id)
+);
+
+CREATE INDEX druid_datasource_index ON druid_datasource (collectTime, domain, app);

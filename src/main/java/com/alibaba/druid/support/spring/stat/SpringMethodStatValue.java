@@ -19,101 +19,102 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.alibaba.druid.support.monitor.MField;
-import com.alibaba.druid.support.monitor.MTable;
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
 import com.alibaba.druid.util.Utils;
 
 @MTable(name = "druid_springmethod")
 public class SpringMethodStatValue {
 
-    @MField(groupBy = true)
+    @MField(groupBy = true, aggregate=AggregateType.None)
     private String className;
 
-    @MField(groupBy = true)
+    @MField(groupBy = true, aggregate=AggregateType.None)
     private String signature;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     private int    runningCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Max)
     private int    concurrentMax;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   executeCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   executeErrorCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   executeTimeNano;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcFetchRowCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcUpdateCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcExecuteCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcExecuteErrorCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcExecuteTimeNano;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcCommitCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcRollbackCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcPoolConnectionOpenCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcPoolConnectionCloseCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcResultSetOpenCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Sum)
     private long   jdbcResultSetCloseCount;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     private String lastErrorClass;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     private String lastErrorMessage;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     private String lastErrorStackTrace;
 
-    @MField
+    @MField(aggregate = AggregateType.Last)
     private long   lastErrorTimeMillis;
 
-    @MField(name = "h1")
+    @MField(name = "h1", aggregate=AggregateType.Sum)
     long           histogram_0_1;
 
-    @MField(name = "h10")
+    @MField(name = "h10", aggregate=AggregateType.Sum)
     long           histogram_1_10;
 
-    @MField(name = "h100")
+    @MField(name = "h100", aggregate=AggregateType.Sum)
     long           histogram_10_100;
 
-    @MField(name = "h1000")
+    @MField(name = "h1000", aggregate=AggregateType.Sum)
     long           histogram_100_1000;
 
-    @MField(name = "h10000")
+    @MField(name = "h10000", aggregate=AggregateType.Sum)
     int            histogram_1000_10000;
 
-    @MField(name = "h100000")
+    @MField(name = "h100000", aggregate=AggregateType.Sum)
     int            histogram_10000_100000;
 
-    @MField(name = "h1000000")
+    @MField(name = "h1000000", aggregate=AggregateType.Sum)
     int            histogram_100000_1000000;
 
-    @MField(name = "hmore")
+    @MField(name = "hmore", aggregate=AggregateType.Sum)
     int            histogram_1000000_more;
 
     public String getClassName() {
