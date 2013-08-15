@@ -1421,7 +1421,9 @@ public class SQLExprParser extends SQLParser {
 
         if (lexer.token == Token.UNIQUE) {
             lexer.nextToken();
-            accept(Token.KEY);
+            if (lexer.token() == Token.KEY) {
+                lexer.nextToken();
+            }
             column.getConstaints().add(new SQLColumnPrimaryKey());
             return parseColumnRest(column);
         }
