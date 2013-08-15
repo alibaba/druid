@@ -21,7 +21,9 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
@@ -31,7 +33,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
 
 @SuppressWarnings("serial")
-public class ResourceSerlvet extends HttpServlet {
+public abstract class ResourceSerlvet extends HttpServlet {
 
     private final static Log   LOG                 = LogFactory.getLog(ResourceSerlvet.class);
 
@@ -175,4 +177,86 @@ public class ResourceSerlvet extends HttpServlet {
         }
         response.getWriter().write(text);
     }
+
+    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String contextPath = request.getContextPath();
+        String servletPath = request.getServletPath();
+        String requestURI = request.getRequestURI();
+
+        response.setCharacterEncoding("utf-8");
+
+        if (contextPath == null) { // root context
+            contextPath = "";
+        }
+        String uri = contextPath + servletPath;
+        String path = requestURI.substring(contextPath.length() + servletPath.length());
+
+        if (!isPermittedRequest(request)) {
+            path = "/nopermit.html";
+            returnResourceFile(path, uri, response);
+            return;
+        }
+
+        if ("/submitLogin".equals(path)) {
+            String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
+            String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
+            if (username.equals(usernameParam) && password.equals(passwordParam)) {
+                request.getSession().setAttribute(SESSION_USER_KEY, username);
+                response.getWriter().print("success");
+            } else {
+                response.getWriter().print("error");
+            }
+            return;
+        }
+
+        if (isRequireAuth()
+            && session.getAttribute(SESSION_USER_KEY) == null
+            && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js") || path.startsWith("/img"))) {
+            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+                response.sendRedirect("/druid/login.html");
+            } else {
+                response.sendRedirect("druid/login.html");
+            }
+            return;
+        }
+
+        if ("".equals(path)) {
+            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+                response.sendRedirect("/druid/index.html");
+            } else {
+                response.sendRedirect("druid/index.html");
+            }
+            return;
+        }
+
+        if ("/".equals(path)) {
+            response.sendRedirect("index.html");
+            return;
+        }
+
+        if (path.indexOf(".json") >= 0) {
+            String fullUrl = path;
+            if (request.getQueryString() != null && request.getQueryString().length() > 0) {
+                fullUrl += "?" + request.getQueryString();
+            }
+            response.getWriter().print(process(fullUrl));
+            return;
+        }
+
+        // find file in resources path
+        returnResourceFile(path, uri, response);
+    }
+    
+
+    public boolean isRequireAuth() {
+        return this.username != null;
+    }
+
+    public boolean isPermittedRequest(HttpServletRequest request) {
+        String remoteAddress = request.getRemoteAddr();
+        return isPermittedRequest(remoteAddress);
+    }
+    
+    protected abstract String process(String url);
 }
