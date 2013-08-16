@@ -6,8 +6,6 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.monitor.MonitorClient;
@@ -23,8 +21,8 @@ public class MonitorDaoJdbcImplTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-//        dataSource.setUrl("jdbc:h2:mem:test");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/druid-monitor");
+        dataSource.setUrl("jdbc:h2:mem:test");
+//        dataSource.setUrl("jdbc:mysql://localhost:3306/druid-monitor");
         dataSource.setUsername("druid");
         dataSource.setPassword("druid");
         dataSource.setInitialSize(1);
@@ -42,7 +40,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
         MonitorDaoJdbcImpl dao = new MonitorDaoJdbcImpl();
         dao.setDataSource(dataSource);
         
-//        dao.createTables("mysql");
+        dao.createTables("mysql");
 
         MonitorClient client = new MonitorClient();
         client.setDao(dao);

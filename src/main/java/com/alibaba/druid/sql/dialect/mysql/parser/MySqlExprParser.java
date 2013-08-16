@@ -727,6 +727,10 @@ public class MySqlExprParser extends SQLExprParser {
         if (lexer.token() == Token.KEY) {
             lexer.nextToken();
         }
+        
+        if (lexer.token() == Token.INDEX) {
+            lexer.nextToken();
+        }
 
         MySqlUnique unique = new MySqlUnique();
 

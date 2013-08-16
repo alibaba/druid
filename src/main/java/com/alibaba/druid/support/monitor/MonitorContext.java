@@ -23,9 +23,9 @@ public class MonitorContext {
 
     private final Map<String, Object> atrributes  = new HashMap<String, Object>();
 
-    private String                    domainName  = "defaultDomain";
-    private String                    appName     = "defaultApp";
-    private String                    clusterName = "defaultCluster";
+    private String                    domainName  = "default";
+    private String                    appName     = "default";
+    private String                    clusterName = "default";
     private String                    host;
     private int                       pid;
 

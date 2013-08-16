@@ -56,6 +56,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
     private DataSource       dataSource;
 
+    private BeanInfo         dataSourceStatBeanInfo   = new BeanInfo(DruidDataSourceStatValue.class);
     private BeanInfo         sqlStatBeanInfo          = new BeanInfo(JdbcSqlStatValue.class);
     private BeanInfo         springMethodStatBeanInfo = new BeanInfo(SpringMethodStatValue.class);
     private BeanInfo         webURIStatBeanInfo       = new BeanInfo(WebURIStatValue.class);
@@ -65,7 +66,8 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     public void createTables(String dbType) {
-        String[] resources = new String[] { "const.sql", //
+        String[] resources = new String[] { "basic.sql", //
+                "const.sql", //
                 "datasource.sql", //
                 "springmethod.sql", //
                 "sql.sql", //
@@ -96,6 +98,8 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
     @Override
     public void saveSql(MonitorContext ctx, List<DruidDataSourceStatValue> dataSourceList) {
+        save(dataSourceStatBeanInfo, ctx, dataSourceList);
+        
         for (DruidDataSourceStatValue dataSourceStatValue : dataSourceList) {
             List<JdbcSqlStatValue> sqlList = dataSourceStatValue.getSqlList();
             save(sqlStatBeanInfo, ctx, sqlList);
@@ -232,16 +236,16 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
         String domain = (String) filters.get("domain");
         if (StringUtils.isEmpty(domain)) {
-            domain = "defaultDomain";
+            domain = "default";
         }
         String app = (String) filters.get("app");
         if (StringUtils.isEmpty(app)) {
-            app = "defaultApp";
+            app = "default";
         }
 
         String cluster = (String) filters.get("cluster");
         if (StringUtils.isEmpty(cluster)) {
-            cluster = "defaultCluster";
+            cluster = "default";
         }
 
         String host = (String) filters.get("host");
@@ -364,11 +368,11 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     private void loadHashValue(FieldInfo hashField, List<?> list, Map<String, Object> filters) {
         String domain = (String) filters.get("domain");
         if (StringUtils.isEmpty(domain)) {
-            domain = "defaultDomain";
+            domain = "default";
         }
         String app = (String) filters.get("app");
         if (StringUtils.isEmpty(app)) {
-            app = "defaultApp";
+            app = "default";
         }
 
         for (Object statValue : list) {
