@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.support.monitor.dao;
 
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,4 +41,11 @@ public interface MonitorDao {
     void saveWebApp(MonitorContext ctx, List<WebAppStatValue> uriList);
 
     List<JdbcSqlStatValue> loadSqlList(Map<String, Object> filters);
+
+    void insertAppIfNotExits(String domain, String app) throws SQLException;
+
+    void insertClusterIfNotExits(String domain, String app, String cluster) throws SQLException;
+
+    void insertOrUpdateInstance(String domain, String app, String cluster, String host, String ip, Date startTime,
+                                long pid) throws SQLException;
 }

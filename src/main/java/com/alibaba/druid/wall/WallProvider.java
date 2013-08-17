@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.LRUCache;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
@@ -918,6 +919,14 @@ public abstract class WallProvider {
                     }
 
                     sqlStatValue.setSql(sql);
+                    
+                    long sqlHash = sqlStat.getSqlHash();
+                    if (sqlHash == 0) {
+                        sqlHash = Utils.murmurhash2_64(sql);
+                        sqlStat.setSqlHash(sqlHash);
+                    }
+                    sqlStatValue.setSqlHash(sqlHash);
+                    
                     statValue.getWhiteList().add(sqlStatValue);
                 }
             }

@@ -53,6 +53,8 @@ public class MonitorDaoJdbcImplTest extends TestCase {
 
         MonitorClient client = new MonitorClient();
         client.setDao(dao);
+        
+        client.checkInst();
 
         client.collectSql();
 

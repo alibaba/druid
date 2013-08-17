@@ -19,8 +19,11 @@ import static com.alibaba.druid.util.Utils.getBoolean;
 import static com.alibaba.druid.util.Utils.getInteger;
 
 import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -37,6 +40,8 @@ import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.http.stat.WebAppStatValue;
 import com.alibaba.druid.support.http.stat.WebURIStatValue;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.monitor.dao.MonitorDao;
 import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
 import com.alibaba.druid.support.spring.stat.SpringStat;
@@ -46,6 +51,8 @@ import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.WallProviderStatValue;
 
 public class MonitorClient {
+
+    private final static Log         LOG                          = LogFactory.getLog(MonitorClient.class);
 
     private final static long        DEFAULT_TIME_BETWEEN_COLLECT = 60 * 5;
 
@@ -69,6 +76,7 @@ public class MonitorClient {
     private String                   app;
     private String                   cluster;
     private String                   host;
+    private String                   ip;
     private int                      pid;
 
     public MonitorClient(){
@@ -78,6 +86,7 @@ public class MonitorClient {
 
         pid = Integer.parseInt(items[0]);
         host = items[1];
+        ip = getLocalIPAddress().getHostAddress();
 
         configFromPropety(System.getProperties());
     }
@@ -170,6 +179,8 @@ public class MonitorClient {
     }
 
     public void start() {
+        checkInst();
+
         if (scheduler == null) {
             scheduler = new ScheduledThreadPoolExecutor(schedulerThreadSize);
         }
@@ -205,6 +216,18 @@ public class MonitorClient {
 
     public void setScheduler(ScheduledExecutorService scheduler) {
         this.scheduler = scheduler;
+    }
+
+    public void checkInst() {
+        try {
+            dao.insertAppIfNotExits(domain, app);
+
+            dao.insertClusterIfNotExits(domain, app, cluster);
+
+            dao.insertOrUpdateInstance(domain, app, cluster, host, ip, Utils.getStartTime(), pid);
+        } catch (Exception ex) {
+            LOG.error("checkInst error", ex);
+        }
     }
 
     @SuppressWarnings("resource")
@@ -457,4 +480,25 @@ public class MonitorClient {
         this.pid = pid;
     }
 
+    public static InetAddress getLocalIPAddress() {
+        try {
+            Enumeration<?> netInterfaces = NetworkInterface.getNetworkInterfaces();
+            InetAddress inetAddr = null;
+            boolean flag = true;
+            while (netInterfaces.hasMoreElements() && flag) {
+                NetworkInterface ni = (NetworkInterface) netInterfaces.nextElement();
+                Enumeration<?> e2 = ni.getInetAddresses();
+                while (e2.hasMoreElements()) {
+                    inetAddr = (InetAddress) e2.nextElement();
+                    if (!inetAddr.isLoopbackAddress() && inetAddr.getHostAddress().indexOf(":") == -1) {
+                        return inetAddr;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("getLocalIP error", e);
+        }
+
+        return null;
+    }
 }

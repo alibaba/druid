@@ -631,7 +631,8 @@ public final class JdbcUtils implements JdbcConstants {
 
     private static void setParameters(PreparedStatement stmt, List<Object> parameters) throws SQLException {
         for (int i = 0, size = parameters.size(); i < size; ++i) {
-            stmt.setObject(i + 1, parameters.get(i));
+            Object param = parameters.get(i);
+            stmt.setObject(i + 1, param);
         }
     }
 

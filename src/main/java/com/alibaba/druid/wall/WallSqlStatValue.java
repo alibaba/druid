@@ -25,11 +25,15 @@ import com.alibaba.druid.support.monitor.annotation.MTable;
 @MTable(name = "druid_wall_sql")
 public class WallSqlStatValue {
 
-    @MField(aggregate = AggregateType.None)
     private String  sql;
 
-    @MField(aggregate = AggregateType.None)
+    @MField(groupBy = true, aggregate = AggregateType.None, hashFor = "sql", hashForType = "sql")
+    private long    sqlHash;
+
     private String  sqlSample;
+
+    @MField(groupBy = true, aggregate = AggregateType.None, hashFor = "sqlSample", hashForType = "sqlSample")
+    private long    sqlSampleHash;
 
     @MField(aggregate = AggregateType.Sum)
     private long    executeCount;
@@ -56,6 +60,14 @@ public class WallSqlStatValue {
 
     public void setSql(String sql) {
         this.sql = sql;
+    }
+
+    public long getSqlHash() {
+        return sqlHash;
+    }
+
+    public void setSqlHash(long sqlHash) {
+        this.sqlHash = sqlHash;
     }
 
     public String getSqlSample() {

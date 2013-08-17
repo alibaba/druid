@@ -44,6 +44,8 @@ public class WallSqlStat {
 
     private String                                   sample;
 
+    private long                                     sqlHash;
+
     public WallSqlStat(Map<String, WallSqlTableStat> tableStats, Map<String, WallSqlFunctionStat> functionStats,
                        boolean syntaxError){
         this(tableStats, functionStats, Collections.<Violation> emptyList(), syntaxError);
@@ -55,6 +57,14 @@ public class WallSqlStat {
         this.tableStats = tableStats;
         this.functionStats = functionStats;
         this.syntaxError = syntaxError;
+    }
+
+    public long getSqlHash() {
+        return sqlHash;
+    }
+
+    public void setSqlHash(long sqlHash) {
+        this.sqlHash = sqlHash;
     }
 
     public String getSample() {

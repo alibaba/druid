@@ -28,7 +28,7 @@ create table druid_cluster (
 
 insert into druid_cluster (domain, app, cluster) values ('default', 'default', 'default');
 
-create table druid_instance (
+create table druid_inst (
 	id bigint(20) AUTO_INCREMENT NOT NULL,
 	app varchar(45) NOT NULL,
 	domain varchar(45) NOT NULL,
@@ -36,7 +36,7 @@ create table druid_instance (
 	host varchar(128) NOT NULL,
 	ip varchar(32) NOT NULL,
 	lastActiveTime datetime NOT NULL,
-	lastPID int(10) NOT NULL,
+	lastPID bigint(20) NOT NULL,
 	PRIMARY KEY (id),
 	UNIQUE (domain, app, cluster, host)		  
 );
