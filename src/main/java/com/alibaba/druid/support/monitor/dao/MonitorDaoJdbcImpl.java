@@ -44,11 +44,15 @@ import com.alibaba.druid.support.monitor.MonitorContext;
 import com.alibaba.druid.support.monitor.annotation.AggregateType;
 import com.alibaba.druid.support.monitor.annotation.MField;
 import com.alibaba.druid.support.monitor.annotation.MTable;
+import com.alibaba.druid.support.monitor.entity.MonitorApp;
 import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.wall.WallFunctionStatValue;
 import com.alibaba.druid.wall.WallProviderStatValue;
+import com.alibaba.druid.wall.WallSqlStatValue;
+import com.alibaba.druid.wall.WallTableStatValue;
 
 public class MonitorDaoJdbcImpl implements MonitorDao {
 
@@ -62,6 +66,11 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     private BeanInfo         webURIStatBeanInfo       = new BeanInfo(WebURIStatValue.class);
     private BeanInfo         webAppStatBeanInfo       = new BeanInfo(WebAppStatValue.class);
 
+    private BeanInfo         wallProviderStatBeanInfo = new BeanInfo(WallProviderStatValue.class);
+    private BeanInfo         wallSqlStatBeanInfo      = new BeanInfo(WallSqlStatValue.class);
+    private BeanInfo         wallTableStatBeanInfo    = new BeanInfo(WallTableStatValue.class);
+    private BeanInfo         wallFunctionStatBeanInfo = new BeanInfo(WallFunctionStatValue.class);
+
     public MonitorDaoJdbcImpl(){
     }
 
@@ -72,7 +81,9 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                 "springmethod.sql", //
                 "sql.sql", //
                 "webapp.sql", //
-                "weburi.sql" };
+                "weburi.sql", 
+                "wall.sql"
+                };
 
         for (String item : resources) {
             String path = "/support/monitor/" + dbType + "/" + item;
@@ -99,7 +110,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     @Override
     public void saveSql(MonitorContext ctx, List<DruidDataSourceStatValue> dataSourceList) {
         save(dataSourceStatBeanInfo, ctx, dataSourceList);
-        
+
         for (DruidDataSourceStatValue dataSourceStatValue : dataSourceList) {
             List<JdbcSqlStatValue> sqlList = dataSourceStatValue.getSqlList();
             save(sqlStatBeanInfo, ctx, sqlList);
@@ -114,6 +125,19 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     @Override
     public void saveWebURI(MonitorContext ctx, List<WebURIStatValue> list) {
         save(webURIStatBeanInfo, ctx, list);
+    }
+    
+    @Override
+    public void saveSqlWall(MonitorContext ctx, List<WallProviderStatValue> statList) {
+        save(wallProviderStatBeanInfo, ctx, statList);
+        
+        for (WallProviderStatValue providerStat : statList) {
+            save(wallSqlStatBeanInfo, ctx, providerStat.getWhiteList());
+            save(wallSqlStatBeanInfo, ctx, providerStat.getBlackList());
+            
+            save(wallTableStatBeanInfo, ctx, providerStat.getTables());
+            save(wallFunctionStatBeanInfo, ctx, providerStat.getFunctions());
+        }
     }
 
     @Override
@@ -437,8 +461,8 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                         conn = dataSource.getConnection();
                         stmt = conn.prepareStatement(sql);
 
-                        stmt.setString(1, ctx.getDomainName());
-                        stmt.setString(2, ctx.getAppName());
+                        stmt.setString(1, ctx.getDomain());
+                        stmt.setString(2, ctx.getApp());
                         stmt.setString(3, hashType);
                         stmt.setLong(4, hash);
                         stmt.setString(5, value);
@@ -463,6 +487,10 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     private void save(BeanInfo beanInfo, MonitorContext ctx, List<?> list) {
+        if (list.size() == 0) {
+            return;
+        }
+        
         for (FieldInfo hashField : beanInfo.getHashFields()) {
             saveHash(hashField, ctx, list);
         }
@@ -496,9 +524,9 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                                           Object sqlStat) throws SQLException {
         int paramIndex = 1;
 
-        setParam(stmt, paramIndex++, ctx.getDomainName());
-        setParam(stmt, paramIndex++, ctx.getAppName());
-        setParam(stmt, paramIndex++, ctx.getClusterName());
+        setParam(stmt, paramIndex++, ctx.getDomain());
+        setParam(stmt, paramIndex++, ctx.getApp());
+        setParam(stmt, paramIndex++, ctx.getCluster());
         setParam(stmt, paramIndex++, ctx.getHost());
         setParam(stmt, paramIndex++, ctx.getPID());
         setParam(stmt, paramIndex++, ctx.getCollectTime());
@@ -518,8 +546,10 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
                     setParam(stmt, paramIndex, (String) value);
                 } else if (fieldType.equals(Date.class)) {
                     setParam(stmt, paramIndex, (Date) value);
+                } else if (fieldType.equals(boolean.class) || fieldType.equals(Boolean.class)) {
+                    setParam(stmt, paramIndex, (Boolean) value);
                 } else {
-                    throw new UnsupportedOperationException();
+                    throw new UnsupportedOperationException("not support type : " + fieldType);
                 }
 
                 paramIndex++;
@@ -583,6 +613,14 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
             stmt.setNull(paramIndex, Types.VARCHAR);
         } else {
             stmt.setString(paramIndex, value);
+        }
+    }
+    
+    static void setParam(PreparedStatement stmt, int paramIndex, Boolean value) throws SQLException {
+        if (value == null) {
+            stmt.setNull(paramIndex, Types.BOOLEAN);
+        } else {
+            stmt.setBoolean(paramIndex, value);
         }
     }
 
@@ -755,8 +793,67 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
         }
     }
 
-    @Override
-    public void saveSqlWall(MonitorContext ctx, List<WallProviderStatValue> statList) {
+    public void insertAppIfNotExits(String domain, String app) throws SQLException {
+        MonitorApp monitorApp = findApp(domain, app);
+        if (monitorApp != null) {
+            return;
+        }
 
+        String sql = "insert druid_app (domain, app) values (?, ?)";
+        JdbcUtils.execute(dataSource, sql, domain, app);
+    }
+
+    public List<MonitorApp> listApp(String domain) throws SQLException {
+        List<MonitorApp> list = new ArrayList<MonitorApp>();
+
+        String sql = "select id, domain, app from druid_app where domain = ? and app = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                list.add(readApp(rs));
+            }
+
+            return list;
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+            JdbcUtils.close(conn);
+        }
+    }
+
+    public MonitorApp findApp(String domain, String app) throws SQLException {
+        String sql = "select id, domain, app from druid_app where domain = ? and app = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                return readApp(rs);
+            }
+
+            return null;
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+            JdbcUtils.close(conn);
+        }
+    }
+
+    private MonitorApp readApp(ResultSet rs) throws SQLException {
+        MonitorApp app = new MonitorApp();
+
+        app.setId(rs.getLong(1));
+        app.setDomain(rs.getString(2));
+        app.setApp(rs.getString(3));
+
+        return app;
     }
 }

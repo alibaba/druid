@@ -18,6 +18,7 @@ package com.alibaba.druid.support.monitor;
 import static com.alibaba.druid.util.Utils.getBoolean;
 import static com.alibaba.druid.util.Utils.getInteger;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,7 @@ import com.alibaba.druid.support.monitor.dao.MonitorDao;
 import com.alibaba.druid.support.spring.stat.SpringMethodStatValue;
 import com.alibaba.druid.support.spring.stat.SpringStat;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.WallProviderStatValue;
 
@@ -63,7 +65,20 @@ public class MonitorClient {
 
     private MonitorDao               dao;
 
+    private String                   domain;
+    private String                   app;
+    private String                   cluster;
+    private String                   host;
+    private int                      pid;
+
     public MonitorClient(){
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+
+        String[] items = name.split("@");
+
+        pid = Integer.parseInt(items[0]);
+        host = items[1];
+
         configFromPropety(System.getProperties());
     }
 
@@ -128,10 +143,30 @@ public class MonitorClient {
                 this.setCollectWebURIEnable(value);
             }
         }
+        {
+            domain = properties.getProperty("druid.monitor.domain");
+            if (StringUtils.isEmpty(domain)) {
+                domain = "default";
+            }
+        }
+
+        {
+            app = properties.getProperty("druid.monitor.app");
+            if (StringUtils.isEmpty(app)) {
+                app = "default";
+            }
+        }
+
+        {
+            cluster = properties.getProperty("druid.monitor.cluster");
+            if (StringUtils.isEmpty(cluster)) {
+                cluster = "default";
+            }
+        }
     }
-    
+
     public void stop() {
-        
+
     }
 
     public void start() {
@@ -216,8 +251,14 @@ public class MonitorClient {
 
     private MonitorContext createContext() {
         MonitorContext ctx = new MonitorContext();
+
+        ctx.setDomain(domain);
+        ctx.setApp(app);
+        ctx.setCluster(cluster);
+
         ctx.setCollectTime(new Date());
-        ctx.setPID(Utils.getPID());
+        ctx.setPID(pid);
+        ctx.setHost(host);
         ctx.setCollectTime(Utils.getStartTime());
         return ctx;
     }
@@ -374,6 +415,46 @@ public class MonitorClient {
 
     public void setSchedulerThreadSize(int schedulerThreadSize) {
         this.schedulerThreadSize = schedulerThreadSize;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public String getApp() {
+        return app;
+    }
+
+    public void setApp(String app) {
+        this.app = app;
+    }
+
+    public String getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPid() {
+        return pid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
     }
 
 }

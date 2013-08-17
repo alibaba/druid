@@ -13,6 +13,10 @@ import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl.BeanInfo;
 import com.alibaba.druid.support.monitor.dao.MonitorDaoJdbcImpl.FieldInfo;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.wall.WallFunctionStatValue;
+import com.alibaba.druid.wall.WallProviderStatValue;
+import com.alibaba.druid.wall.WallSqlStatValue;
+import com.alibaba.druid.wall.WallTableStatValue;
 
 public class MonitorDaoJdbcImplTest extends TestCase {
 
@@ -22,7 +26,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:h2:mem:test");
-//        dataSource.setUrl("jdbc:mysql://localhost:3306/druid-monitor");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/druid-monitor");
         dataSource.setUsername("druid");
         dataSource.setPassword("druid");
         dataSource.setInitialSize(1);
@@ -39,8 +43,13 @@ public class MonitorDaoJdbcImplTest extends TestCase {
     public void testBuildSql() throws Exception {
         MonitorDaoJdbcImpl dao = new MonitorDaoJdbcImpl();
         dao.setDataSource(dataSource);
-        
-        dao.createTables("mysql");
+
+//        System.out.println(buildCreateSql(dao, new BeanInfo(WallProviderStatValue.class)));
+//        System.out.println(buildCreateSql(dao, new BeanInfo(WallSqlStatValue.class)));
+//        System.out.println(buildCreateSql(dao, new BeanInfo(WallTableStatValue.class)));
+//        System.out.println(buildCreateSql(dao, new BeanInfo(WallFunctionStatValue.class)));
+
+//         dao.createTables("mysql");
 
         MonitorClient client = new MonitorClient();
         client.setDao(dao);
@@ -52,17 +61,17 @@ public class MonitorDaoJdbcImplTest extends TestCase {
             for (JdbcSqlStatValue sqlStatValue : sqlList) {
                 System.out.println(sqlStatValue.getData());
             }
-//            Assert.assertEquals(11, sqlList.size());
+            // Assert.assertEquals(11, sqlList.size());
         }
 
         client.collectSql();
-        
+
         {
             List<JdbcSqlStatValue> sqlList = client.loadSqlList(Collections.<String, Object> emptyMap());
             for (JdbcSqlStatValue sqlStatValue : sqlList) {
                 System.out.println(sqlStatValue.getData());
             }
-//            Assert.assertEquals(14, sqlList.size());
+            // Assert.assertEquals(14, sqlList.size());
         }
     }
 
@@ -92,11 +101,13 @@ public class MonitorDaoJdbcImplTest extends TestCase {
                 buf.append(" varchar(256)");
             } else if (field.getFieldType().equals(Date.class)) {
                 buf.append(" datetime");
+            } else if (field.getFieldType().equals(boolean.class) || field.getFieldType().equals(Boolean.class)) {
+                buf.append(" int(1)");
             }
         }
         buf.append(", PRIMARY KEY(id)");
         buf.append(");");
-        
+
         buf.append("\n\nCREATE INDEX ");
         buf.append(dao.getTableName(beanInfo));
         buf.append("_index ON ");

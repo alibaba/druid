@@ -21,16 +21,22 @@ import java.util.Map;
 
 public class MonitorContext {
 
+    public static String              DEFAULT_DOMAIN;
+
     private final Map<String, Object> atrributes  = new HashMap<String, Object>();
 
-    private String                    domainName  = "default";
-    private String                    appName     = "default";
-    private String                    clusterName = "default";
+    private String                    domain  = "default";
+    private String                    app     = "default";
+    private String                    cluster = "default";
     private String                    host;
     private int                       pid;
 
     private Date                      collectTime;
     private Date                      startTime;
+
+    public MonitorContext(){
+
+    }
 
     public Date getCollectTime() {
         return collectTime;
@@ -76,28 +82,28 @@ public class MonitorContext {
         this.pid = pid;
     }
 
-    public String getDomainName() {
-        return domainName;
+    public String getDomain() {
+        return domain;
     }
 
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
-    public String getAppName() {
-        return appName;
+    public String getApp() {
+        return app;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setApp(String app) {
+        this.app = app;
     }
 
-    public String getClusterName() {
-        return clusterName;
+    public String getCluster() {
+        return cluster;
     }
 
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
     }
 
 }

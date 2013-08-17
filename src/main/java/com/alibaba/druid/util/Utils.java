@@ -170,7 +170,7 @@ public class Utils {
         }
         return null;
     }
-    
+
     public static Boolean getBoolean(GenericServlet servlet, String key) {
         String property = servlet.getInitParameter(key);
         if ("true".equals(property)) {
@@ -234,20 +234,6 @@ public class Utils {
         } catch (ClassNotFoundException e) {
             return null;
         }
-    }
-
-    private static int pid;
-
-    public final static int getPID() {
-        if (pid == 0) {
-            String name = ManagementFactory.getRuntimeMXBean().getName();
-
-            String[] items = name.split("@");
-
-            pid = Integer.parseInt(items[0]);
-        }
-
-        return pid;
     }
 
     private static Date startTime;
