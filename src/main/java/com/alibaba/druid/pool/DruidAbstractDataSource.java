@@ -529,6 +529,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize) {
         if (maxPoolPreparedStatementPerConnectionSize > 0) {
             this.poolPreparedStatements = true;
+        } else {
+            this.poolPreparedStatements = false;
         }
 
         this.maxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize;
