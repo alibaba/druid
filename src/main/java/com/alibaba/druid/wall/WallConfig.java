@@ -31,7 +31,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             selectIntoAllow            = true;
     private boolean             selectIntoOutfileAllow     = false;
     private boolean             selectWhereAlwayTrueCheck  = true;
-    private boolean             selectHavingAlwayTrueCheck = false;
+    private boolean             selectHavingAlwayTrueCheck = true;
     private boolean             selectUnionCheck           = true;
     private boolean             createTableAllow           = true;
     private boolean             dropTableAllow             = true;
@@ -65,7 +65,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             commentAllow               = false;
     private boolean             strictSyntaxCheck          = true;
     private boolean             constArithmeticAllow       = true;
-    private boolean             limitZeroAllow                  = false;
+    private boolean             limitZeroAllow             = false;
 
     private boolean             describeAllow              = true;
     private boolean             showAllow                  = true;
@@ -109,11 +109,11 @@ public class WallConfig implements WallConfigMBean {
     public WallConfig(){
 
     }
-    
+
     public boolean isLimitZeroAllow() {
         return limitZeroAllow;
     }
-    
+
     public void setLimitZeroAllow(boolean limitZero) {
         this.limitZeroAllow = limitZero;
     }
