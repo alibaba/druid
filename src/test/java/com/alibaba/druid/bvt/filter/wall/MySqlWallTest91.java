@@ -111,9 +111,48 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    public void test_false8() throws Exception {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select * from A where id = 1 or EXTRACTVALUE(4484,CONCAT(0x5c,0x7163646371,(SELECT (CASE WHEN (4484=4484) THEN 1 ELSE 0 END)),0x7165767271))";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+    }
+
+    public void test_true1() throws Exception {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "SELECT *, DATABASE(), NOW() AS a_now FROM `acp_globalauth` WHERE `username` = 'info@nyip.cn'";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+    }
+
+    public void test_true2() throws Exception {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "DELETE SYS_ACCNBAL WHERE ISNULL(AMTN_Y,0)=0 AND ISNULL(AMTN_B,0)=0 AND ISNULL(AMTN_D,0)=0 AND ISNULL(AMTN_C,0)=0";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+        {
+            String sql = "select * from (select '已结算' as JSFare,TB_LogisticsCostSettle.s_id,TB_LogisticsCostSettle.XSD_billsn,TB_LogisticsCostSettle.OrderDD_list,TB_LogisticsCostSettle.OrderId_list,TBShop.ShopName,TB_LogisticsCostSettle.consign_time,TB_LogisticsCostSettle.Logistics_ID,TB_LogisticsCompanySet.Company,isnull(TB_LogisticsCostSettle.TBFareMoney,0.00)TBFareMoney,TB_LogisticsCostSettle.TBProdSJZNNumber,isnull(TB_LogisticsCostSettle.SJLogisticsCostMoney,0.00)LogisticsCostMoney,isnull(TB_LogisticsCostSettle.SJLogisticsCostMoney,0.00)SJLogisticsCostMoney,isnull(TB_LogisticsCostSettle.SJLogisticsCostMoney,0)-isnull(TB_LogisticsCostSettle.TBJSFareMoney,0) as NotMoney,TB_LogisticsCostSettle.TBAddressee,TB_LogisticsCostSettle.TBAddress,TB_LogisticsCostSettle.TBMobile,TB_LogisticsCostSettle.TBLinephone,TB_LogisticsCostSettle.TBJSFareMoney,TB_LogisticsCostSettle.Express,TB_LogisticsCostSettle.Fhuser_list,TB_LogisticsCostSettle.LogisticsCost_billsn,dbo.F_GetLogisticsFKDMoney(TB_LogisticsCostSettle.s_id,TB_LogisticsCostSettle.LogisticsCost_billsn) fkdmoney,isnull(TB_LogisticsCostSettle.TBFareMoney,0)-isnull(TB_LogisticsCostSettle.SJLogisticsCostMoney,0) LogisticsProfitMoney,isnull(TB_LogisticsCostSettle.IsEnterFare,0)IsEnterFare from TB_LogisticsCostSettle left join TBShop on TB_LogisticsCostSettle.TBShop_ID=TBShop.ShopID left join TB_LogisticsCompanySet on TB_LogisticsCostSettle.Logistics_ID=TB_LogisticsCompanySet.s_ID where isnull(TB_LogisticsCostSettle.IsEnterFare,0)=1 or (isnull(TB_LogisticsCostSettle.IsEnterFare,0)=2 and isnull(TB_LogisticsCostSettle.SJLogisticsCostMoney,0)-isnull(TB_LogisticsCostSettle.TBJSFareMoney,0)>0))MTwhere 1=1and MT.consign_time>='2013-04-28 00:00:00' and MT.consign_time<='2013-05-28 23:59:59'";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+    }
+
+    public void test_true3() throws Exception {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select  PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, CURRENT_TIMESTAMP() start_time from (SELECT PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, @rank := @rank + 1 AS rank FROM (  SELECT  PROJECT_NAME,  TABLE_NAME,  (   SELECT   CASE   WHEN GROUP_CONCAT(COLUMN_name) LIKE 'ID,%' THEN   SUBSTR(    GROUP_CONCAT(COLUMN_name),    4   )   ELSE   GROUP_CONCAT(COLUMN_name)   END   FROM   Information_schema.`COLUMNS` A   WHERE   A.table_name = B.TABLE_NAME   ORDER BY   ORDINAL_POSITION  ) EXPORT_COLUMNS  FROM  ETL_EXPORT b   ORDER BY  PROJECT_NAME,  TABLE_NAME ) tmp, (SELECT @rank := 0) a) b WHERE rank='2';";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+        {
+            String sql = "select  PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, CURRENT_TIMESTAMP() start_time, case when type=1 then ' where day_id = 20130101 '  when type=2 and substr('20130101','7,2')='01' then 'where month_id=201301 ' else 'where 3=5 ' end export_where_data from (SELECT PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, type, @rank := @rank + 1 AS rank FROM (  SELECT  PROJECT_NAME,  TABLE_NAME,  type,  (   SELECT   CASE   WHEN GROUP_CONCAT(COLUMN_name) LIKE 'ID,%' THEN   SUBSTR(    GROUP_CONCAT(COLUMN_name),    4   )   ELSE   GROUP_CONCAT(COLUMN_name)   END   FROM   Information_schema.`COLUMNS` A   WHERE   A.table_name = concat(B.TABLE_NAME,'_','201301')   ORDER BY   ORDINAL_POSITION  ) EXPORT_COLUMNS  FROM  ETL_EXPORT b  where project_name in ('acc')  ORDER BY  PROJECT_NAME,  TABLE_NAME ) tmp, (SELECT @rank := 0) a) b WHERE rank='3';";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+    }
+
     public void test_true() throws Exception {
         WallProvider provider = initWallProvider();
-
         {
             String sql = "SELECT CONVERT(load_file(concat(@@datadir, 'sandbox', '/', 'ccp_application', '.frm')) USING utf8) AS source";
             Assert.assertTrue(provider.checkValid(sql));
@@ -149,7 +188,5 @@ public class MySqlWallTest91 extends TestCase {
             String sql = "select * from tb_product_word where name='' or CONCAT(name,style)='' or CONCAT(shop,style)='' or CONCAT(ename,style)=''";
             Assert.assertTrue(provider.checkValid(sql));
         }
-
     }
-
 }
