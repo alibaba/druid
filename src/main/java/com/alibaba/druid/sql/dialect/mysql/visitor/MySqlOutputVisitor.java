@@ -38,7 +38,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -54,8 +53,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
@@ -63,6 +60,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTa
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
@@ -72,9 +71,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -82,6 +78,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
@@ -100,6 +97,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
@@ -543,7 +541,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
         }
 
-        print("PRIAMRY KEY");
+        print("PRIMARY KEY");
 
         if (x.getIndexType() != null) {
             print(" USING ");
@@ -1457,49 +1455,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getPassword() != null) {
             print(" IDENTIFIED BY ");
+            if (x.isPasswordHash()) {
+                print("PASSWORD ");
+            }
             x.getPassword().accept(this);
         }
 
         if (x.getAuthPlugin() != null) {
             print(" IDENTIFIED WITH ");
             x.getAuthPlugin().accept(this);
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlDropUser x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlDropUser x) {
-        print("DROP USER ");
-        printAndAccept(x.getUsers(), ", ");
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlDropTableStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlDropTableStatement x) {
-        if (x.isTemporary()) {
-            print("DROP TEMPORARY TABLE ");
-        } else {
-            print("DROP TABLE ");
-        }
-        if (x.isIfExists()) {
-            print("IF EXISTS ");
-        }
-
-        printAndAccept(x.getTableSources(), ", ");
-
-        if (x.getOption() != null) {
-            print(' ');
-            print(x.getOption());
         }
         return false;
     }
@@ -2563,27 +2527,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public boolean visit(MySqlDropViewStatement x) {
-        print("DROP VIEW ");
-        if (x.isIfExists()) {
-            print("IF EXISTS ");
-        }
-
-        printAndAccept(x.getTableSources(), ", ");
-
-        if (x.getOption() != null) {
-            print(' ');
-            print(x.getOption());
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlDropViewStatement x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlUnionQuery x) {
         {
             boolean needParen = false;
@@ -2807,66 +2750,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public boolean visit(MySqlAlterTableAddIndex x) {
-        print("ADD ");
-        if (x.getType() != null) {
-            print(x.getType());
-            print(" ");
-        }
-
-        print("INDEX ");
-
-        if (x.getName() != null) {
-            x.getName().accept(this);
-            print(' ');
-        }
-        print("(");
-        printAndAccept(x.getItems(), ", ");
-        print(")");
-
-        if (x.getUsing() != null) {
-            print(" USING ");
-            print(x.getUsing());
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddIndex x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlAlterTableAddUnique x) {
-        print("ADD ");
-        if (x.getType() != null) {
-            print(x.getType());
-            print(" ");
-        }
-
-        print("UNIQUE ");
-
-        if (x.getName() != null) {
-            x.getName().accept(this);
-            print(' ');
-        }
-        print("(");
-        printAndAccept(x.getItems(), ", ");
-        print(")");
-
-        if (x.getUsing() != null) {
-            print(" USING ");
-            print(x.getUsing());
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddUnique x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlAlterTableOption x) {
         print(x.getName());
         print(" = ");
@@ -2931,32 +2814,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlUnique x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlForeignKey x) {
-        if (x.getName() != null) {
-            print("CONSTRAINT ");
-            x.getName().accept(this);
-            print(' ');
-        }
-
-        print("FOREIGN KEY (");
-        printAndAccept(x.getReferencedColumns(), ", ");
-        print(")");
-
-        print(" REFERENCES ");
-        x.getReferencedTableName().accept(this);
-
-        print(" (");
-        printAndAccept(x.getReferencedColumns(), ", ");
-        print(")");
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlForeignKey x) {
 
     }
 
@@ -3081,6 +2938,89 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 ((SQLObject) value).accept(this);
             }
         }
+    }
+
+    @Override
+    public boolean visit(MySqlAnalyzeStatement x) {
+        print("ANALYZE ");
+        if (x.isNoWriteToBinlog()) {
+            print("NO_WRITE_TO_BINLOG ");
+        }
+
+        if (x.isLocal()) {
+            print("LOCAL ");
+        }
+
+        print("TABLE ");
+
+        printAndAccept(x.getTableSources(), ", ");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAnalyzeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlOptimizeStatement x) {
+        print("OPTIMIZE ");
+        if (x.isNoWriteToBinlog()) {
+            print("NO_WRITE_TO_BINLOG ");
+        }
+
+        if (x.isLocal()) {
+            print("LOCAL ");
+        }
+
+        print("TABLE ");
+
+        printAndAccept(x.getTableSources(), ", ");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlOptimizeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterUserStatement x) {
+        print("ALTER USER");
+        for (SQLExpr user : x.getUsers()) {
+            print(' ');
+            user.accept(this);
+            print(" PASSWORD EXPIRE");
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlSetPasswordStatement x) {
+        print("SET PASSWORD ");
+        
+        if (x.getUser() != null){
+            print("FOR ");
+            x.getUser().accept(this);
+            print(' ');
+        }
+        
+        print("= ");
+        
+        if (x.getPassword() != null) {
+            x.getPassword().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSetPasswordStatement x) {
+        
     }
 
 } //

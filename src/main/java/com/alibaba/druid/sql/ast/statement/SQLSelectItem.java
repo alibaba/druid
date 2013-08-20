@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectItem extends SQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           expr;
-    private String            alias;
+    private SQLExpr expr;
+    private String  alias;
 
     public SQLSelectItem(){
 

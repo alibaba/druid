@@ -30,8 +30,8 @@ public class WallStatTest_WhiteList extends TestCase {
         WallTableStat tableStat = provider.getTableStat("t");
         Assert.assertEquals(3001, tableStat.getSelectCount());
         Assert.assertEquals(0, provider.getBlackListHitCount());
-        Assert.assertEquals(0, provider.getWhiteListHitCount());
-        Assert.assertEquals(500, provider.getWhiteList().size());
+        Assert.assertEquals(3000, provider.getWhiteListHitCount());
+        Assert.assertEquals(1, provider.getWhiteList().size());
         Assert.assertEquals(3001, provider.getCheckCount());
     }
 

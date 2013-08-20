@@ -21,10 +21,13 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
 public class SQLUnique extends SQLConstaintImpl implements SQLUniqueConstraint, SQLTableElement {
 
     private final List<SQLExpr> columns = new ArrayList<SQLExpr>();
+
+    public SQLUnique(){
+
+    }
 
     public List<SQLExpr> getColumns() {
         return columns;

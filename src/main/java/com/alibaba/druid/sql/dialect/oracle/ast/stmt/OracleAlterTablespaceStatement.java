@@ -20,8 +20,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTablespaceStatement extends OracleStatementImpl {
 
-    private static final long         serialVersionUID = 1L;
-
     private SQLName                   name;
     private OracleAlterTablespaceItem item;
 

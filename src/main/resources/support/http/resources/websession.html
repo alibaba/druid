@@ -80,19 +80,19 @@
     					} else {
     						html += "<td></td>";
     					}
-    					html += "<td>" + stat.CreateTime + "</td>";
-    					html += "<td>" + stat.LastAccessTime + "</td>";
-    					html += "<td>" + stat.RemoteAddress + "</td>";
-    					html += "<td>" + stat.RequestCount + "</td>";
-    					html += "<td>" + stat.RequestTimeMillisTotal + "</td>";
-    					html += "<td>" + stat.RunningCount + "</td>";
-    					html += "<td>" + stat.ConcurrentMax + "</td>";
-    					html += "<td>" + stat.JdbcExecuteCount + "</td>";
-    					html += "<td>" + stat.JdbcExecuteTimeMillis + "</td>";
-    					html += "<td>" + stat.JdbcCommitCount + "</td>";
-    					html += "<td>" + stat.JdbcRollbackCount + "</td>";
-    					html += "<td>" + stat.JdbcFetchRowCount + "</td>";
-    					html += "<td>" + stat.JdbcUpdateCount + "</td>";
+    					html += "<td>" + replace(stat.CreateTime) + "</td>";
+    					html += "<td>" + replace(stat.LastAccessTime) + "</td>";
+    					html += "<td>" + replace(stat.RemoteAddress) + "</td>";
+    					html += "<td>" + replace(stat.RequestCount) + "</td>";
+    					html += "<td>" + replace(stat.RequestTimeMillisTotal) + "</td>";
+    					html += "<td>" + replace(stat.RunningCount) + "</td>";
+    					html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
+    					html += "<td>" + replace(stat.JdbcExecuteCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcExecuteTimeMillis) + "</td>";
+    					html += "<td>" + replace(stat.JdbcCommitCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcRollbackCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcFetchRowCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcUpdateCount) + "</td>";
     					html += "</tr>";
     				}
     				$("#dataTable tbody").html(html);

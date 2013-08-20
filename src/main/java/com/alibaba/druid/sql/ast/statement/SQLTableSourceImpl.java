@@ -23,11 +23,9 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 
 public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
 
-    private static final long serialVersionUID = 1L;
+    protected String        alias;
 
-    protected String          alias;
-
-    protected List<SQLHint>   hints;
+    protected List<SQLHint> hints;
 
     public SQLTableSourceImpl(){
 
@@ -45,12 +43,12 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     public void setAlias(String alias) {
         this.alias = alias;
     }
-    
+
     public int getHintsSize() {
         if (hints == null) {
             return 0;
         }
-        
+
         return hints.size();
     }
 

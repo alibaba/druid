@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlAlterTableOption extends MySqlObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-
-    private String            name;
-    private Object            value;
+    private String name;
+    private Object value;
 
     public MySqlAlterTableOption(String name, Object value){
         this.name = name;

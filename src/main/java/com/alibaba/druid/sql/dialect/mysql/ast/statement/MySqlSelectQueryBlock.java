@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
 
     private boolean              hignPriority;

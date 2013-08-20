@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.db2.visitor;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisitor {
@@ -28,19 +29,48 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
     @Override
     public boolean visit(DB2SelectQueryBlock x) {
         this.visit((SQLSelectQueryBlock) x);
-        
+
         if (x.getFirst() != null) {
             println();
             print("FETCH FIRST ");
             x.getFirst().accept(this);
             print(" ROWS ONLY");
         }
-        
+
+        if (x.isForReadOnly()) {
+            println();
+            print("FOR READ ONLY");
+        }
+
+        if (x.getIsolation() != null) {
+            println();
+            print("WITH ");
+            print(x.getIsolation().name());
+        }
+
+        if (x.getOptimizeFor() != null) {
+            println();
+            print("OPTIMIZE FOR ");
+            x.getOptimizeFor().accept(this);
+        }
+
         return false;
     }
 
     @Override
     public void endVisit(DB2SelectQueryBlock x) {
+
+    }
+
+    @Override
+    public boolean visit(DB2ValuesStatement x) {
+        print("VALUES ");
+        x.getExpr().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(DB2ValuesStatement x) {
 
     }
 }

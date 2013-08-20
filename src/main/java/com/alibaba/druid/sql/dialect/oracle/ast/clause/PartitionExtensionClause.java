@@ -24,11 +24,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class PartitionExtensionClause extends OracleSQLObjectImpl {
 
-    private static final long   serialVersionUID = 1L;
-
     private boolean             subPartition;
     private SQLName             partition;
-    private final List<SQLName> target           = new ArrayList<SQLName>();
+    private final List<SQLName> target = new ArrayList<SQLName>();
 
     public boolean isSubPartition() {
         return subPartition;

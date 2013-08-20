@@ -97,9 +97,9 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public static void setGlobal(JdbcDataSourceStat value) {
         global = value;
     }
-    
+
     public void configFromProperties(Properties properties) {
-        
+
     }
 
     public boolean isResetStatEnable() {
@@ -207,7 +207,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         if (!isResetStatEnable()) {
             return;
         }
-        
+
         blobOpenCount.set(0);
         clobOpenCount.set(0);
 
@@ -371,6 +371,33 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
                 continue;
             }
             values.add(value);
+        }
+        return values;
+    }
+
+    public List<JdbcSqlStatValue> getRuningSqlList() {
+        List<JdbcSqlStat> stats = new ArrayList<JdbcSqlStat>(sqlStatMap.size());
+        lock.readLock().lock();
+        try {
+            Iterator<Map.Entry<String, JdbcSqlStat>> iter = sqlStatMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, JdbcSqlStat> entry = iter.next();
+                JdbcSqlStat stat = entry.getValue();
+                if (stat.getRunningCount() >= 0) {
+                    stats.add(entry.getValue());
+                }
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+
+        List<JdbcSqlStatValue> values = new ArrayList<JdbcSqlStatValue>(stats.size());
+        for (int i = 0; i < stats.size(); ++i) {
+            JdbcSqlStat stat = stats.get(i);
+            JdbcSqlStatValue value = stat.getValue(false);
+            if (value.getRunningCount() > 0) {
+                values.add(value);
+            }
         }
         return values;
     }

@@ -61,7 +61,7 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidPasswordCallback;
 import com.alibaba.druid.util.Histogram;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
@@ -84,7 +84,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public final static boolean                        DEFAULT_TEST_ON_BORROW                    = false;
     public final static boolean                        DEFAULT_TEST_ON_RETURN                    = false;
     public final static boolean                        DEFAULT_WHILE_IDLE                        = true;
-    public static final long                           DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
+    public static final long                           DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = 60 * 1000L;
     public static final long                           DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
     public static final int                            DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
 
@@ -563,7 +563,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
-        Class<?> clazz = JdbcUtils.loadDriverClass(validConnectionCheckerClass);
+        Class<?> clazz = Utils.loadClass(validConnectionCheckerClass);
         ValidConnectionChecker validConnectionChecker = null;
         if (clazz != null) {
             validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
@@ -798,7 +798,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setPasswordCallbackClassName(String passwordCallbackClassName) throws Exception {
-        Class<?> clazz = JdbcUtils.loadDriverClass(passwordCallbackClassName);
+        Class<?> clazz = Utils.loadClass(passwordCallbackClassName);
         if (clazz != null) {
             this.passwordCallback = (PasswordCallback) clazz.newInstance();
         } else {
@@ -1130,7 +1130,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             return;
         }
 
-        Class<?> clazz = JdbcUtils.loadDriverClass(exceptionSorter);
+        Class<?> clazz = Utils.loadClass(exceptionSorter);
         if (clazz == null) {
             LOG.error("load exceptionSorter error : " + exceptionSorter);
         } else {
@@ -1286,7 +1286,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         List<String> list = new ArrayList<String>();
 
         for (DruidPooledConnection conn : this.getActiveConnections()) {
-            list.add(IOUtils.toString(conn.getConnectStackTrace()));
+            list.add(Utils.toString(conn.getConnectStackTrace()));
         }
 
         return list;
@@ -1475,7 +1475,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 if (sql == null) {
                     continue;
                 }
-                
+
                 stmt.execute(sql);
             }
         } finally {
@@ -1515,7 +1515,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (createError != null) {
             map.put("ConnectionConnectErrorLastTime", getLastCreateErrorTime());
             map.put("ConnectionConnectErrorLastMessage", createError.getMessage());
-            map.put("ConnectionConnectErrorLastStackTrace", IOUtils.getStackTrace(createError));
+            map.put("ConnectionConnectErrorLastStackTrace", Utils.getStackTrace(createError));
         } else {
             map.put("ConnectionConnectErrorLastTime", null);
             map.put("ConnectionConnectErrorLastMessage", null);
@@ -1561,7 +1561,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         map.put("ConnectionConnectCount", this.getConnectCount());
         if (createError != null) {
             map.put("ConnectionErrorLastMessage", createError.getMessage());
-            map.put("ConnectionErrorLastStackTrace", IOUtils.getStackTrace(createError));
+            map.put("ConnectionErrorLastStackTrace", Utils.getStackTrace(createError));
         } else {
             map.put("ConnectionErrorLastMessage", null);
             map.put("ConnectionErrorLastStackTrace", null);

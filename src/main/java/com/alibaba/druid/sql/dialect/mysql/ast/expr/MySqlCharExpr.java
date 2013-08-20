@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private String            charset;
-    private String            collate;
+    private String charset;
+    private String collate;
 
     public MySqlCharExpr(){
 
@@ -63,7 +61,7 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
             buf.append(collate);
         }
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {

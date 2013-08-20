@@ -165,10 +165,10 @@ public class SQLEvalVisitorUtils {
             return new PGEvalVisitor();
         }
 
-        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerEvalVisitor();
         }
-        
+
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2EvalVisitor();
         }
@@ -1576,11 +1576,11 @@ public class SQLEvalVisitorUtils {
         if (a instanceof Short || b instanceof Short) {
             Short shortA = castToShort(a);
             Short shortB = castToShort(b);
-            
+
             if (shortA == null || shortB == null) {
                 return null;
             }
-            
+
             return shortA * shortB;
         }
 

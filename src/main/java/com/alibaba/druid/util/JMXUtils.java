@@ -91,7 +91,7 @@ public final class JMXUtils {
         map.put("class", error.getClass().getName());
         map.put("message", error.getMessage());
 
-        map.put("stackTrace", IOUtils.getStackTrace(error));
+        map.put("stackTrace", Utils.getStackTrace(error));
 
         return new CompositeDataSupport(getThrowableCompositeType(), map);
     }

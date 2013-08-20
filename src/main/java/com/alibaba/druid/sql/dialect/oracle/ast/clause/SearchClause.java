@@ -25,8 +25,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class SearchClause extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
     public static enum Type {
         DEPTH, BREADTH
     }

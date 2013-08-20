@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUpdateSetItem extends SQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           column;
-    private SQLExpr           value;
+    private SQLExpr column;
+    private SQLExpr value;
 
     public SQLUpdateSetItem(){
 

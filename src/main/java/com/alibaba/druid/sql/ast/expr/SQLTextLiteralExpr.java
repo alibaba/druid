@@ -19,9 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 
 public abstract class SQLTextLiteralExpr extends SQLExprImpl implements SQLLiteralExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    protected String          text;
+    protected String text;
 
     public SQLTextLiteralExpr(){
 

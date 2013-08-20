@@ -22,8 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleOuterExpr extends SQLExprImpl implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           expr;
+    private SQLExpr expr;
 
     public OracleOuterExpr(){
 

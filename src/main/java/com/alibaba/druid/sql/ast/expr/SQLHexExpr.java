@@ -21,9 +21,7 @@ import com.alibaba.druid.util.HexBin;
 
 public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private final String      hex;
+    private final String hex;
 
     public SQLHexExpr(String hex){
         this.hex = hex;
@@ -78,7 +76,7 @@ public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr {
         }
         return true;
     }
-    
+
     public byte[] toBytes() {
         return HexBin.decode(this.hex);
     }

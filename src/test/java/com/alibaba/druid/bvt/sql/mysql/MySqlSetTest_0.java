@@ -30,14 +30,14 @@ public class MySqlSetTest_0 extends MysqlTest {
         String sql = "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> stmt = parser.parseStatementList();
-        SQLStatement statemen = stmt.get(0);
-        print(stmt);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        SQLStatement stmt = stmtList.get(0);
+        print(stmtList);
 
-        Assert.assertEquals(1, stmt.size());
+        Assert.assertEquals(1, stmtList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -48,7 +48,7 @@ public class MySqlSetTest_0 extends MysqlTest {
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        String text = output(stmt);
+        String text = output(stmtList);
 
         Assert.assertEquals("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ", text);
     }

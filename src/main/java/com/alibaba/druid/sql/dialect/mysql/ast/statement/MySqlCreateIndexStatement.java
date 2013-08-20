@@ -21,12 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlCreateIndexStatement extends SQLCreateIndexStatement implements MySqlStatement {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
-
-    private String            using;
+    private String using;
 
     public String getUsing() {
         return using;

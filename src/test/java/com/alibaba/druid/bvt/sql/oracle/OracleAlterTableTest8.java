@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -29,7 +29,8 @@ public class OracleAlterTableTest8 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE ws_i18n_translate_item ADD CONSTRAINT ws_i18n_translate_item_pk PRIMARY KEY (id) USING INDEX ws_i18n_translate_item_pk";
+        "ALTER TABLE ws_i18n_translate_item ADD CONSTRAINT ws_i18n_translate_item_pk "//
+                + "PRIMARY KEY (id) USING INDEX ws_i18n_translate_item_pk";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -53,7 +54,7 @@ public class OracleAlterTableTest8 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_i18n_translate_item", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_i18n_translate_item", "id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

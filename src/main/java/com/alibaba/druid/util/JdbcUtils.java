@@ -631,34 +631,8 @@ public final class JdbcUtils implements JdbcConstants {
 
     private static void setParameters(PreparedStatement stmt, List<Object> parameters) throws SQLException {
         for (int i = 0, size = parameters.size(); i < size; ++i) {
-            stmt.setObject(i + 1, parameters.get(i));
-        }
-    }
-
-    public static Class<?> loadDriverClass(String className) {
-        Class<?> clazz = null;
-
-        if (className == null) {
-            return null;
-        }
-
-        ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
-        if (ctxClassLoader != null) {
-            try {
-                clazz = ctxClassLoader.loadClass(className);
-            } catch (ClassNotFoundException e) {
-                // skip
-            }
-        }
-
-        if (clazz != null) {
-            return clazz;
-        }
-
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            return null;
+            Object param = parameters.get(i);
+            stmt.setObject(i + 1, param);
         }
     }
 

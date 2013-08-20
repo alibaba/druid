@@ -19,8 +19,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCharExpr extends SQLTextLiteralExpr {
 
-    private static final long serialVersionUID = 1L;
-
     public SQLCharExpr(){
 
     }

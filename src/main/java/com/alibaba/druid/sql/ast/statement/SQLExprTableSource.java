@@ -20,9 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLExprTableSource extends SQLTableSourceImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    protected SQLExpr         expr;
+    protected SQLExpr expr;
 
     public SQLExprTableSource(){
 

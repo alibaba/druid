@@ -21,12 +21,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleDataTypeTimestamp extends SQLDataTypeImpl implements OracleSQLObject {
 
-    private static final long serialVersionUID  = 1L;
+    private boolean withTimeZone      = false;
+    private boolean withLocalTimeZone = false;
 
-    private boolean           withTimeZone      = false;
-    private boolean           withLocalTimeZone = false;
-    
-    public OracleDataTypeTimestamp() {
+    public OracleDataTypeTimestamp(){
         this.setName("TIMESTAMP");
     }
 

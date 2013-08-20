@@ -23,9 +23,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDeleteStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-    protected SQLTableSource  tableSource;
-    protected SQLExpr         where;
+    protected SQLTableSource tableSource;
+    protected SQLExpr        where;
 
     public SQLDeleteStatement(){
 

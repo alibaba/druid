@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLRollbackStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           to;
+    private SQLName to;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

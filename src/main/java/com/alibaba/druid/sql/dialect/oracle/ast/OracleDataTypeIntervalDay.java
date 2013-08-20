@@ -25,8 +25,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleDataTypeIntervalDay extends SQLDataTypeImpl implements OracleSQLObject {
 
-    private static final long     serialVersionUID  = 1L;
-
     private boolean               toSecond          = false;
 
     protected final List<SQLExpr> fractionalSeconds = new ArrayList<SQLExpr>();

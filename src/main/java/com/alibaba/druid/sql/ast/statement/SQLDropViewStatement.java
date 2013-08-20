@@ -24,9 +24,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    private static final long          serialVersionUID = 1L;
+    protected List<SQLExprTableSource> tableSources = new ArrayList<SQLExprTableSource>();
 
-    protected List<SQLExprTableSource> tableSources     = new ArrayList<SQLExprTableSource>();
+    protected boolean                  cascade      = false;
+    protected boolean                  restrict     = false;
+    protected boolean                  ifExists     = false;
 
     public SQLDropViewStatement(){
 
@@ -51,13 +53,21 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
     public void setName(SQLName name) {
         this.addTableSource(new SQLExprTableSource(name));
     }
-    
+
     public void addTableSource(SQLName name) {
         this.addTableSource(new SQLExprTableSource(name));
     }
-    
+
     public void addTableSource(SQLExprTableSource tableSource) {
         tableSources.add(tableSource);
+    }
+
+    public boolean isCascade() {
+        return cascade;
+    }
+
+    public void setCascade(boolean cascade) {
+        this.cascade = cascade;
     }
 
     @Override
@@ -67,4 +77,21 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
         }
         visitor.endVisit(this);
     }
+
+    public boolean isRestrict() {
+        return restrict;
+    }
+
+    public void setRestrict(boolean restrict) {
+        this.restrict = restrict;
+    }
+
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
+    }
+
 }

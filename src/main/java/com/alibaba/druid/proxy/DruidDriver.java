@@ -16,6 +16,8 @@
 package com.alibaba.druid.proxy;
 
 import java.lang.management.ManagementFactory;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -41,6 +43,7 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -75,7 +78,13 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     private final static String                                     MBEAN_NAME               = "com.alibaba.druid:type=DruidDriver";
 
     static {
-        registerDriver(instance);
+        AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+                registerDriver(instance);
+                return null;
+            }
+        });
     }
 
     public static boolean registerDriver(Driver driver) {
@@ -89,7 +98,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 if (!mbeanServer.isRegistered(objectName)) {
                     mbeanServer.registerMBean(instance, objectName);
                 }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 if (LOG == null) {
                     LOG = LogFactory.getLog(DruidDriver.class);
                 }
@@ -247,7 +256,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     }
 
     public Driver createDriver(String className) throws SQLException {
-        Class<?> rawDriverClass = JdbcUtils.loadDriverClass(className);
+        Class<?> rawDriverClass = Utils.loadClass(className);
 
         if (rawDriverClass == null) {
             throw new SQLException("jdbc-driver's class not found. '" + className + "'");

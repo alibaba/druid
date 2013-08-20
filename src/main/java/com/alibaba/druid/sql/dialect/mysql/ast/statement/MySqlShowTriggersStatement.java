@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowTriggersStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           database;
-    private SQLExpr           like;
-    private SQLExpr           where;
+    private SQLName database;
+    private SQLExpr like;
+    private SQLExpr where;
 
     public SQLName getDatabase() {
         return database;

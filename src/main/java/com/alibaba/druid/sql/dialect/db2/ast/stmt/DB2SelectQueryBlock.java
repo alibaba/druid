@@ -23,9 +23,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Object {
 
-    private SQLExpr           first;
+    private SQLExpr   first;
 
-    private static final long serialVersionUID = 1L;
+    private Isolation isolation;
+
+    private boolean   forReadOnly;
+
+    private SQLExpr   optimizeFor;
 
     public SQLExpr getFirst() {
         return first;
@@ -34,8 +38,7 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
     public void setFirst(SQLExpr first) {
         this.first = first;
     }
-    
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof DB2ASTVisitor) {
@@ -56,5 +59,33 @@ public class DB2SelectQueryBlock extends SQLSelectQueryBlock implements DB2Objec
             acceptChild(visitor, this.first);
         }
         visitor.endVisit(this);
+    }
+
+    public Isolation getIsolation() {
+        return isolation;
+    }
+
+    public void setIsolation(Isolation isolation) {
+        this.isolation = isolation;
+    }
+
+    public boolean isForReadOnly() {
+        return forReadOnly;
+    }
+
+    public void setForReadOnly(boolean forReadOnly) {
+        this.forReadOnly = forReadOnly;
+    }
+
+    public SQLExpr getOptimizeFor() {
+        return optimizeFor;
+    }
+
+    public void setOptimizeFor(SQLExpr optimizeFor) {
+        this.optimizeFor = optimizeFor;
+    }
+
+    public static enum Isolation {
+        RR, RS, CS, UR
     }
 }

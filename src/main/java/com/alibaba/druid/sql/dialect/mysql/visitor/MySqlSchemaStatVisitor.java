@@ -18,18 +18,18 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -45,8 +45,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
@@ -54,6 +52,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTa
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
@@ -63,9 +63,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -73,6 +70,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
@@ -90,6 +88,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
@@ -269,8 +268,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlPrimaryKey x) {
-
-        return true;
+        for (SQLObject item : x.getColumns()) {
+            item.accept(this);
+        }
+        return false;
     }
 
     @Override
@@ -518,7 +519,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlCreateUserStatement x) {
-        return true;
+        return false;
     }
 
     @Override
@@ -529,26 +530,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public boolean visit(UserSpecification x) {
         return true;
-    }
-
-    @Override
-    public void endVisit(MySqlDropUser x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlDropUser x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlDropTableStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlDropTableStatement x) {
-        return visit((SQLDropTableStatement) x);
     }
 
     @Override
@@ -1045,7 +1026,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlCreateIndexStatement x) {
-        return false;
+        return visit((SQLCreateIndexStatement) x);
     }
 
     @Override
@@ -1070,17 +1051,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlRenameTableStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlDropViewStatement x) {
-        setMode(x, Mode.Drop);
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlDropViewStatement x) {
 
     }
 
@@ -1185,16 +1155,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlAlterTableAddIndex x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddIndex x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlAlterTableOption x) {
         return false;
     }
@@ -1235,32 +1195,12 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlAlterTableAddUnique x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddUnique x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlUnique x) {
         return false;
     }
 
     @Override
     public void endVisit(MySqlUnique x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlForeignKey x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlForeignKey x) {
 
     }
 
@@ -1278,7 +1218,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(MySqlAlterTableImportTablespace x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlAlterTableImportTablespace x) {
 
@@ -1291,7 +1231,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(TableSpaceOption x) {
-        
+
     }
 
     @Override
@@ -1301,7 +1241,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlPartitionByHash x) {
-        
+
     }
 
     @Override
@@ -1311,7 +1251,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlPartitionByRange x) {
-        
+
     }
 
     @Override
@@ -1321,7 +1261,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlPartitioningDef x) {
-        
+
     }
 
     @Override
@@ -1331,7 +1271,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(LessThanValues x) {
-        
+
     }
 
     @Override
@@ -1341,7 +1281,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(InValues x) {
-        
+
     }
 
     @Override
@@ -1351,6 +1291,46 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlPartitionByList x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAnalyzeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAnalyzeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterUserStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlOptimizeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlOptimizeStatement x) {
+
+    }
+    
+    @Override
+    public boolean visit(MySqlSetPasswordStatement x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlSetPasswordStatement x) {
         
     }
 

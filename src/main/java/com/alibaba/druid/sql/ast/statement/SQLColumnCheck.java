@@ -20,29 +20,26 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLColumnCheck extends SQLConstaintImpl implements SQLColumnConstraint {
 
-    private static final long serialVersionUID = 1L;
-    
     private SQLExpr expr;
-   
-    public SQLColumnCheck() {
-        
+
+    public SQLColumnCheck(){
+
     }
-    
-    public SQLColumnCheck(SQLExpr expr) {
+
+    public SQLColumnCheck(SQLExpr expr){
         this.setExpr(expr);
     }
-    
+
     public SQLExpr getExpr() {
         return expr;
     }
-    
+
     public void setExpr(SQLExpr expr) {
         if (expr != null) {
             expr.setParent(this);
         }
         this.expr = expr;
     }
-
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

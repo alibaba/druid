@@ -67,7 +67,7 @@ public class SQLServerWallTest_0 extends TestCase {
         }
         {
             String sql = "update dbo.dml_health_check set name='123' where id=OBJECT_ID(N'taobao_order')";
-            Assert.assertFalse(provider.checkValid(sql));
+            Assert.assertTrue(provider.checkValid(sql));
         }
     }
 

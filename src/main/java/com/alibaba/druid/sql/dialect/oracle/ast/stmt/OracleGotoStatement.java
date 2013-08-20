@@ -20,9 +20,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleGotoStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           label;
+    private SQLName label;
 
     public OracleGotoStatement(){
     }

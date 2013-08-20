@@ -40,6 +40,7 @@ public class SQLServerLexer extends Lexer {
         map.put("USE", Token.USE);
         map.put("WITH", Token.WITH);
         map.put("PERCENT", Token.PERCENT);
+        map.put("IDENTITY", Token.IDENTITY);
 
         DEFAULT_SQL_SERVER_KEYWORDS = new Keywords(map);
     }

@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -62,15 +63,13 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropSequenceStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -79,7 +78,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
@@ -114,7 +112,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
     public void test_adapter() throws Exception {
         OracleASTVisitorAdapter adapter = new OracleASTVisitorAdapter();
 
-        new OracleConstraintState().accept(adapter);
         new OraclePLSQLCommitStatement().accept(adapter);
         new OracleAnalytic().accept(adapter);
         new OracleAnalyticWindowing().accept(adapter);
@@ -182,12 +179,11 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleExceptionStatement.Item().accept(adapter);
         new OracleArgumentExpr().accept(adapter);
         new OracleSetTransactionStatement().accept(adapter);
-        new OracleGrantStatement().accept(adapter);
-        new OracleDropSequenceStatement().accept(adapter);
+        new SQLDropSequenceStatement().accept(adapter);
         new OracleDataTypeIntervalDay().accept(adapter);
         new OracleDataTypeIntervalYear().accept(adapter);
         new OracleDataTypeTimestamp().accept(adapter);
-        new OracleDropDatabaseLinkStatement().accept(adapter);
+        new OracleDropDbLinkStatement().accept(adapter);
         new OracleCreateDatabaseDbLinkStatement().accept(adapter);
         new OracleCreateProcedureStatement().accept(adapter);
         new OracleSavePointStatement().accept(adapter);

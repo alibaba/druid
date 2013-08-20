@@ -22,10 +22,9 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleParameter extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           name;
-    private SQLDataType       dataType;
-    private SQLExpr           defaultValue;
+    private SQLExpr     name;
+    private SQLDataType dataType;
+    private SQLExpr     defaultValue;
 
     public SQLExpr getDefaultValue() {
         return defaultValue;

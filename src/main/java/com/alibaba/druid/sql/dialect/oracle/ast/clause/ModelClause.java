@@ -26,8 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class ModelClause extends OracleSQLObjectImpl {
 
-    private static final long                serialVersionUID      = 1L;
-
     private final List<CellReferenceOption>  cellReferenceOptions  = new ArrayList<CellReferenceOption>();
     private ReturnRowsClause                 returnRowsClause;
     private final List<ReferenceModelClause> referenceModelClauses = new ArrayList<ReferenceModelClause>();
@@ -91,8 +89,7 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class ReturnRowsClause extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private boolean           all              = false;
+        private boolean all = false;
 
         public boolean isAll() {
             return all;
@@ -111,7 +108,6 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class ReferenceModelClause extends OracleSQLObjectImpl {
 
-        private static final long               serialVersionUID     = 1L;
         private SQLExpr                         name;
         private SQLSelect                       subQuery;
         private final List<CellReferenceOption> cellReferenceOptions = new ArrayList<CellReferenceOption>();
@@ -144,7 +140,6 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class ModelColumnClause extends OracleSQLObjectImpl {
 
-        private static final long       serialVersionUID   = 1L;
         private QueryPartitionClause    queryPartitionClause;
         private String                  alias;
         private final List<ModelColumn> dimensionByColumns = new ArrayList<ModelColumn>();
@@ -188,10 +183,8 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class ModelColumn extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-
-        private SQLExpr           expr;
-        private String            alias;
+        private SQLExpr expr;
+        private String  alias;
 
         public SQLExpr getExpr() {
             return expr;
@@ -221,8 +214,7 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class QueryPartitionClause extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private List<SQLExpr>     exprList         = new ArrayList<SQLExpr>();
+        private List<SQLExpr> exprList = new ArrayList<SQLExpr>();
 
         public List<SQLExpr> getExprList() {
             return exprList;
@@ -243,7 +235,6 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class MainModelClause extends OracleSQLObjectImpl {
 
-        private static final long               serialVersionUID     = 1L;
         private SQLExpr                         mainModelName;
         private ModelColumnClause               modelColumnClause;
 
@@ -292,7 +283,6 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class ModelRulesClause extends OracleSQLObjectImpl {
 
-        private static final long              serialVersionUID    = 1L;
         private final List<ModelRuleOption>    options             = new ArrayList<ModelRuleOption>();
         private SQLExpr                        iterate;
         private SQLExpr                        until;
@@ -352,11 +342,10 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class CellAssignmentItem extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private ModelRuleOption   option;
-        private CellAssignment    cellAssignment;
-        private SQLOrderBy        orderBy;
-        private SQLExpr           expr;
+        private ModelRuleOption option;
+        private CellAssignment  cellAssignment;
+        private SQLOrderBy      orderBy;
+        private SQLExpr         expr;
 
         public ModelRuleOption getOption() {
             return option;
@@ -404,9 +393,8 @@ public class ModelClause extends OracleSQLObjectImpl {
 
     public static class CellAssignment extends OracleSQLObjectImpl {
 
-        private static final long   serialVersionUID = 1L;
         private SQLExpr             measureColumn;
-        private final List<SQLExpr> conditions       = new ArrayList<SQLExpr>();
+        private final List<SQLExpr> conditions = new ArrayList<SQLExpr>();
 
         public List<SQLExpr> getConditions() {
             return conditions;

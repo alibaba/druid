@@ -25,16 +25,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlDeleteStatement extends SQLDeleteStatement {
 
-    private static final long serialVersionUID = 1L;
+    private boolean        lowPriority = false;
+    private boolean        quick       = false;
+    private boolean        ignore      = false;
 
-    private boolean           lowPriority      = false;
-    private boolean           quick            = false;
-    private boolean           ignore           = false;
-
-    private SQLTableSource    from;
-    private SQLTableSource    using;
-    private SQLOrderBy        orderBy;
-    private Limit             limit;
+    private SQLTableSource from;
+    private SQLTableSource using;
+    private SQLOrderBy     orderBy;
+    private Limit          limit;
 
     public boolean isLowPriority() {
         return lowPriority;

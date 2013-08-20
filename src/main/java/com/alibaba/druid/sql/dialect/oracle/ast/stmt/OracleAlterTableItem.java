@@ -20,6 +20,4 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 
 public abstract class OracleAlterTableItem extends OracleSQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-
 }

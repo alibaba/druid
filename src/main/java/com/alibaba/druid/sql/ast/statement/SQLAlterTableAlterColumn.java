@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAlterColumn extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long   serialVersionUID = 1L;
-
     private SQLColumnDefinition column;
 
     @Override

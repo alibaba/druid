@@ -49,12 +49,20 @@ public class MySqlWallTest55 extends TestCase {
         Assert.assertEquals(1, provider.getTableStats().size());
     }
     
+    public void test_true_2() throws Exception {
+        WallProvider provider = new MySqlWallProvider();
+        
+        Assert.assertTrue(provider.checkValid(//
+                "SELECT USER() FROM X"));
+        
+        Assert.assertEquals(1, provider.getTableStats().size());
+    }
+    
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         
         Assert.assertFalse(provider.checkValid(//
-                "SELECT USER() FROM X"));
+                "select * from t where fid = 1 union SELECT USER() FROM X"));
         
-        Assert.assertEquals(1, provider.getTableStats().size());
     }
 }

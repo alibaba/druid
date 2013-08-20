@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlSelectGroupBy extends SQLSelectGroupByClause {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean           rollUp           = false;
+    private boolean rollUp = false;
 
     public boolean isRollUp() {
         return rollUp;

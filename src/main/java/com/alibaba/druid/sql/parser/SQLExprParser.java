@@ -62,10 +62,17 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLColumnReference;
+import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
+import com.alibaba.druid.sql.ast.statement.SQLConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
@@ -88,7 +95,15 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.STAR) {
             lexer.nextToken();
 
-            return new SQLAllColumnExpr();
+            SQLExpr expr = new SQLAllColumnExpr();
+
+            if (lexer.token() == Token.DOT) {
+                lexer.nextToken();
+                accept(Token.STAR);
+                return new SQLPropertyExpr(expr, "*");
+            }
+
+            return expr;
         }
 
         SQLExpr expr = primary();
@@ -232,6 +247,64 @@ public class SQLExprParser extends SQLParser {
             case IF:
             case END:
             case COMMENT:
+            case COMPUTE:
+            case ENABLE:
+            case DISABLE:
+            case INITIALLY:
+            case SEQUENCE:
+            case USER:
+            case EXPLAIN:
+            case WITH:
+            case GRANT:
+            case REPLACE:
+            case INDEX:
+            case MODEL:
+            case PCTFREE:
+            case INITRANS:
+            case MAXTRANS:
+            case SEGMENT:
+            case CREATION:
+            case IMMEDIATE:
+            case DEFERRED:
+            case STORAGE:
+            case NEXT:
+            case MINEXTENTS:
+            case MAXEXTENTS:
+            case MAXSIZE:
+            case PCTINCREASE:
+            case FLASH_CACHE:
+            case CELL_FLASH_CACHE:
+            case KEEP:
+            case NONE:
+            case LOB:
+            case STORE:
+            case ROW:
+            case CHUNK:
+            case CACHE:
+            case NOCACHE:
+            case LOGGING:
+            case NOCOMPRESS:
+            case KEEP_DUPLICATES:
+            case EXCEPTIONS:
+            case PURGE:
+            case FULL:
+            case TO:
+            case IDENTIFIED:
+            case PASSWORD:
+            case BINARY:
+            case WINDOW:
+            case OFFSET:
+            case SHARE:
+            case START:
+            case CONNECT:
+            case MATCHED:
+            case ERRORS:
+            case REJECT:
+            case UNLIMITED:
+            case BEGIN:
+            case EXCLUSIVE:
+            case MODE:
+            case ADVISE:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -616,6 +689,10 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final void names(Collection<SQLName> exprCol) {
+        names(exprCol, null);
+    }
+
+    public final void names(Collection<SQLName> exprCol, SQLObject parent) {
         if (lexer.token() == Token.RBRACE) {
             return;
         }
@@ -624,11 +701,16 @@ public class SQLExprParser extends SQLParser {
             return;
         }
 
-        exprCol.add(name());
+        SQLName name = name();
+        name.setParent(parent);
+        exprCol.add(name);
 
         while (lexer.token() == Token.COMMA) {
             lexer.nextToken();
-            exprCol.add(name());
+
+            name = name();
+            name.setParent(parent);
+            exprCol.add(name);
         }
     }
 
@@ -669,8 +751,56 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.token() == Token.LITERAL_CHARS) {
             identName = '\'' + lexer.stringVal() + '\'';
             lexer.nextToken();
+        } else if (lexer.token() == Token.VARIANT) {
+            identName = lexer.stringVal();
+            lexer.nextToken();
         } else {
-            throw new ParserException("error " + lexer.token());
+            switch (lexer.token()) {
+                case MODEL:
+                case PCTFREE:
+                case INITRANS:
+                case MAXTRANS:
+                case SEGMENT:
+                case CREATION:
+                case IMMEDIATE:
+                case DEFERRED:
+                case STORAGE:
+                case NEXT:
+                case MINEXTENTS:
+                case MAXEXTENTS:
+                case MAXSIZE:
+                case PCTINCREASE:
+                case FLASH_CACHE:
+                case CELL_FLASH_CACHE:
+                case KEEP:
+                case NONE:
+                case LOB:
+                case STORE:
+                case ROW:
+                case CHUNK:
+                case CACHE:
+                case NOCACHE:
+                case LOGGING:
+                case NOCOMPRESS:
+                case KEEP_DUPLICATES:
+                case EXCEPTIONS:
+                case PURGE:
+                case INITIALLY:
+                case END:
+                case COMMENT:
+                case ENABLE:
+                case DISABLE:
+                case SEQUENCE:
+                case USER:
+                case ANALYZE:
+                case OPTIMIZE:
+                case GRANT:
+                    identName = lexer.stringVal();
+                    lexer.nextToken();
+                    break;
+                default:
+                    throw new ParserException("error " + lexer.token());
+            }
         }
 
         SQLName name = new SQLIdentifierExpr(identName);
@@ -871,13 +1001,18 @@ public class SQLExprParser extends SQLParser {
     public final SQLExpr inRest(SQLExpr expr) {
         if (lexer.token() == Token.IN) {
             lexer.nextToken();
-            accept(Token.LPAREN);
 
             SQLInListExpr inListExpr = new SQLInListExpr(expr);
-            exprList(inListExpr.getTargetList());
-            expr = inListExpr;
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                exprList(inListExpr.getTargetList());
+                accept(Token.RPAREN);
+                expr = inListExpr;
+            } else {
+                SQLExpr itemExpr = primary();
+                inListExpr.getTargetList().add(itemExpr);
+            }
 
-            accept(Token.RPAREN);
             expr = inListExpr;
 
             if (inListExpr.getTargetList().size() == 1) {
@@ -1171,7 +1306,9 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
-                charType.getArguments().add(this.expr());
+                SQLExpr arg = this.expr();
+                arg.setParent(charType);
+                charType.getArguments().add(arg);
                 accept(Token.RPAREN);
             }
 
@@ -1190,7 +1327,7 @@ public class SQLExprParser extends SQLParser {
     protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
-            exprList(dataType.getArguments());
+            exprList(dataType.getArguments(), dataType);
             accept(Token.RPAREN);
         }
 
@@ -1243,11 +1380,16 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLColumnDefinition parseColumn() {
-        SQLColumnDefinition column = new SQLColumnDefinition();
+        SQLColumnDefinition column = createColumnDefinition();
         column.setName(name());
         column.setDataType(parseDataType());
 
         return parseColumnRest(column);
+    }
+
+    protected SQLColumnDefinition createColumnDefinition() {
+        SQLColumnDefinition column = new SQLColumnDefinition();
+        return column;
     }
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
@@ -1277,25 +1419,110 @@ public class SQLExprParser extends SQLParser {
             return parseColumnRest(column);
         }
 
-        if (lexer.token == Token.UNION) {
+        if (lexer.token == Token.UNIQUE) {
             lexer.nextToken();
-            accept(Token.KEY);
+            if (lexer.token() == Token.KEY) {
+                lexer.nextToken();
+            }
             column.getConstaints().add(new SQLColumnPrimaryKey());
             return parseColumnRest(column);
         }
 
-        if (lexer.token == Token.CHECK) {
+        if (lexer.token == Token.CONSTRAINT) {
             lexer.nextToken();
-            SQLExpr expr = this.expr();
-            column.getConstaints().add(new SQLColumnCheck(expr));
+
+            SQLName name = this.name();
+
+            if (lexer.token() == Token.PRIMARY) {
+                lexer.nextToken();
+                accept(Token.KEY);
+                SQLColumnPrimaryKey pk = new SQLColumnPrimaryKey();
+                pk.setName(name);
+                column.getConstaints().add(pk);
+                return parseColumnRest(column);
+            }
+
+            if (lexer.token() == Token.UNIQUE) {
+                lexer.nextToken();
+                SQLColumnUniqueKey uk = new SQLColumnUniqueKey();
+                uk.setName(name);
+                column.getConstaints().add(uk);
+                return parseColumnRest(column);
+            }
+
+            if (lexer.token() == Token.REFERENCES) {
+                lexer.nextToken();
+                SQLColumnReference ref = new SQLColumnReference();
+                ref.setName(name);
+                ref.setTable(this.name());
+                accept(Token.LPAREN);
+                this.names(ref.getColumns(), ref);
+                accept(Token.RPAREN);
+                column.getConstaints().add(ref);
+                return parseColumnRest(column);
+            }
+
+            if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+                accept(Token.NULL);
+                NotNullConstraint notNull = new NotNullConstraint();
+                notNull.setName(name);
+                column.getConstaints().add(notNull);
+                return parseColumnRest(column);
+            }
+
+            if (lexer.token == Token.CHECK) {
+                SQLColumnCheck check = parseColumnCheck();
+                check.setName(name);
+                check.setParent(column);
+                column.getConstaints().add(check);
+                return parseColumnRest(column);
+            }
+            
+            if (lexer.token == Token.DEFAULT) {
+                lexer.nextToken();
+                SQLExpr expr = this.expr();
+                column.setDefaultExpr(expr);
+                return parseColumnRest(column);
+            }
+
+            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+        }
+
+        if (lexer.token == Token.CHECK) {
+            SQLColumnCheck check = parseColumnCheck();
+            column.getConstaints().add(check);
             return parseColumnRest(column);
         }
 
         return column;
     }
 
+    protected SQLColumnCheck parseColumnCheck() {
+        lexer.nextToken();
+        SQLExpr expr = this.expr();
+        SQLColumnCheck check = new SQLColumnCheck(expr);
+
+        if (lexer.token() == Token.DISABLE) {
+            lexer.nextToken();
+            check.setEnable(false);
+        } else if (lexer.token() == Token.ENABLE) {
+            lexer.nextToken();
+            check.setEnable(true);
+        }
+        return check;
+    }
+
     public SQLPrimaryKey parsePrimaryKey() {
-        throw new ParserException("TODO");
+        accept(Token.PRIMARY);
+        accept(Token.KEY);
+
+        SQLPrimaryKeyImpl pk = new SQLPrimaryKeyImpl();
+        accept(Token.LPAREN);
+        exprList(pk.getColumns());
+        accept(Token.RPAREN);
+
+        return pk;
     }
 
     public SQLUnique parseUnique() {
@@ -1340,5 +1567,68 @@ public class SQLExprParser extends SQLParser {
             hints.add(new SQLCommentHint(lexer.stringVal()));
             lexer.nextToken();
         }
+    }
+
+    public SQLConstaint parseConstaint() {
+        SQLName name = null;
+
+        if (lexer.token() == Token.CONSTRAINT) {
+            lexer.nextToken();
+            name = this.name();
+        }
+
+        SQLConstaint constraint;
+        if (lexer.token() == Token.PRIMARY) {
+            constraint = parsePrimaryKey();
+        } else if (lexer.token() == Token.UNIQUE) {
+            constraint = parseUnique();
+        } else if (lexer.token() == Token.FOREIGN) {
+            constraint = parseForeignKey();
+        } else if (lexer.token() == Token.CHECK) {
+            constraint = parseCheck();
+        } else {
+            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+        }
+
+        constraint.setName(name);
+
+        return constraint;
+    }
+
+    public SQLCheck parseCheck() {
+        accept(Token.CHECK);
+        SQLCheck check = createCheck();
+        accept(Token.LPAREN);
+        check.setExpr(this.expr());
+        accept(Token.RPAREN);
+        return check;
+    }
+
+    protected SQLCheck createCheck() {
+        return new SQLCheck();
+    }
+
+    public SQLForeignKeyConstraint parseForeignKey() {
+        accept(Token.FOREIGN);
+        accept(Token.KEY);
+
+        SQLForeignKeyConstraint fk = createForeignKey();
+
+        accept(Token.LPAREN);
+        this.names(fk.getReferencingColumns());
+        accept(Token.RPAREN);
+
+        accept(Token.REFERENCES);
+
+        fk.setReferencedTableName(this.name());
+
+        accept(Token.LPAREN);
+        this.names(fk.getReferencedColumns());
+        accept(Token.RPAREN);
+        return fk;
+    }
+
+    protected SQLForeignKeyConstraint createForeignKey() {
+        return new SQLForeignKeyImpl();
     }
 }

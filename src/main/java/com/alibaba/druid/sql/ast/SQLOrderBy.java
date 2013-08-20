@@ -21,7 +21,6 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
 public class SQLOrderBy extends SQLObjectImpl {
 
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
@@ -29,8 +28,8 @@ public class SQLOrderBy extends SQLObjectImpl {
     public SQLOrderBy(){
 
     }
-    
-    public SQLOrderBy(SQLExpr expr) {
+
+    public SQLOrderBy(SQLExpr expr){
         SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr);
         item.setParent(this);
         this.items.add(item);

@@ -19,6 +19,8 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock.Isolation;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -74,16 +76,58 @@ public class DB2SelectParser extends SQLSelectParser {
         parseWhere(queryBlock);
 
         parseGroupBy(queryBlock);
-        
-        if (lexer.token() == Token.FETCH) {
-            lexer.nextToken();
-            accept(Token.FIRST);
-            SQLExpr first = this.exprParser.primary();
-            queryBlock.setFirst(first);
-            if (identifierEquals("ROW") || identifierEquals("ROWS")) {
+
+
+        for (;;) {
+            if (lexer.token() == Token.FETCH) {
                 lexer.nextToken();
+                accept(Token.FIRST);
+                SQLExpr first = this.exprParser.primary();
+                queryBlock.setFirst(first);
+                if (identifierEquals("ROW") || identifierEquals("ROWS")) {
+                    lexer.nextToken();
+                }
+                accept(Token.ONLY);
+                continue;
             }
-            accept(Token.ONLY);
+            
+            if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                if (identifierEquals("RR")) {
+                    queryBlock.setIsolation(Isolation.RR);
+                } else if (identifierEquals("RS")) {
+                    queryBlock.setIsolation(Isolation.RS);
+                } else if (identifierEquals("CS")) {
+                    queryBlock.setIsolation(Isolation.CS);
+                } else if (identifierEquals("UR")) {
+                    queryBlock.setIsolation(Isolation.UR);
+                } else {
+                    throw new ParserException("TODO");
+                }
+                lexer.nextToken();
+                continue;
+            }
+            
+            if (lexer.token() == Token.FOR) {
+                lexer.nextToken();
+                acceptIdentifier("READ");
+                accept(Token.ONLY);
+                queryBlock.setForReadOnly(true);
+            }
+            
+            if (lexer.token() == Token.OPTIMIZE) {
+                lexer.nextToken();
+                accept(Token.FOR);
+                
+                queryBlock.setOptimizeFor(this.expr());
+                if (identifierEquals("ROW")) {
+                    lexer.nextToken();
+                } else {
+                    acceptIdentifier("ROWS");
+                }
+            }
+            
+            break;
         }
 
         return queryRest(queryBlock);

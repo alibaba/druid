@@ -20,8 +20,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDefaultExpr extends SQLExprImpl implements SQLLiteralExpr {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public boolean equals(Object o) {
         return o instanceof SQLDefaultExpr;

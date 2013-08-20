@@ -25,11 +25,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCallStatement extends SQLStatementImpl {
 
-    private static final long   serialVersionUID = 1L;
-
     private SQLName             procedureName;
 
-    private final List<SQLExpr> parameters       = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
     public SQLName getProcedureName() {
         return procedureName;

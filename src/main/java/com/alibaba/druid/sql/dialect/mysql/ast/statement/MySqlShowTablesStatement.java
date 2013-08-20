@@ -21,13 +21,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowTablesStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
+    private boolean full;
 
-    private boolean           full;
-
-    private SQLName           database;
-    private SQLExpr           like;
-    private SQLExpr           where;
+    private SQLName database;
+    private SQLExpr like;
+    private SQLExpr where;
 
     public boolean isFull() {
         return full;

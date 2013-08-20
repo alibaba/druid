@@ -17,7 +17,11 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -128,5 +132,44 @@ public class SQLServerExprParser extends SQLExprParser {
         }
 
         return null;
+    }
+
+    protected SQLColumnDefinition createColumnDefinition() {
+        SQLColumnDefinition column = new SQLServerColumnDefinition();
+        return column;
+    }
+
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        if (lexer.token() == Token.IDENTITY) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            SQLIntegerExpr seed = (SQLIntegerExpr) this.primary();
+            accept(Token.COMMA);
+            SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
+            accept(Token.RPAREN);
+
+            SQLServerColumnDefinition.Identity identity = new SQLServerColumnDefinition.Identity();
+            identity.setSeed((Integer) seed.getNumber());
+            identity.setIncrement((Integer) increment.getNumber());
+
+            if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+
+                if (lexer.token() == Token.NULL) {
+                    lexer.nextToken();
+                    column.setDefaultExpr(new SQLNullExpr());
+                } else {
+                    accept(Token.FOR);
+                    identifierEquals("REPLICATION ");
+                    identity.setNotForReplication(true);
+                }
+            }
+
+            SQLServerColumnDefinition sqlSreverColumn = (SQLServerColumnDefinition) column;
+            sqlSreverColumn.setIdentity(identity);
+        }
+
+        return super.parseColumnRest(column);
     }
 }

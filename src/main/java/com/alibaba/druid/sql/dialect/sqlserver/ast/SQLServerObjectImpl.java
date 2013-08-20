@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLServerObjectImpl extends SQLObjectImpl implements SQLServerObject {
 
-    private static final long serialVersionUID = 1L;
-
     public SQLServerObjectImpl(){
 
     }

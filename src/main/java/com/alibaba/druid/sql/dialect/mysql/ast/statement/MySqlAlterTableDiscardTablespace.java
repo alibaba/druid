@@ -15,15 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlAlterTableDiscardTablespace extends SQLAlterTableAddIndex implements SQLAlterTableItem, MySqlObject {
-
-    private static final long serialVersionUID = 1L;
+public class MySqlAlterTableDiscardTablespace extends MySqlObjectImpl implements SQLAlterTableItem, MySqlObject {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

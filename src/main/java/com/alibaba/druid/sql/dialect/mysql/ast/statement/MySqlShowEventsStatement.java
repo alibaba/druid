@@ -20,11 +20,9 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowEventsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           schema;
-    private SQLExpr           like;
-    private SQLExpr           where;
+    private SQLExpr schema;
+    private SQLExpr like;
+    private SQLExpr where;
 
     public SQLExpr getSchema() {
         return schema;

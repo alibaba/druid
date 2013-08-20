@@ -21,7 +21,7 @@ import java.util.Properties;
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;

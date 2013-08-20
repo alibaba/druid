@@ -15,29 +15,31 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-    private SQLName           columnName;
+    private List<SQLName> columns = new ArrayList<SQLName>();
+
+    public SQLAlterTableDropColumnItem(){
+
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, columnName);
+            acceptChild(visitor, columns);
         }
         visitor.endVisit(this);
     }
 
-    public SQLName getColumnName() {
-        return columnName;
-    }
-
-    public void setColumnName(SQLName columnName) {
-        this.columnName = columnName;
+    public List<SQLName> getColumns() {
+        return columns;
     }
 
 }

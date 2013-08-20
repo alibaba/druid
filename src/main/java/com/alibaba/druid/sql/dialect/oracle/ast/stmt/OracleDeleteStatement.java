@@ -26,12 +26,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleDeleteStatement extends SQLDeleteStatement {
 
-    private static final long      serialVersionUID = 1L;
+    private boolean               only      = false;
 
-    private boolean                only             = false;
-    
-    private final List<SQLHint> hints            = new ArrayList<SQLHint>();
-    private OracleReturningClause  returning        = null;
+    private final List<SQLHint>   hints     = new ArrayList<SQLHint>();
+    private OracleReturningClause returning = null;
 
     public OracleDeleteStatement(){
 
@@ -72,5 +70,4 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
         this.only = only;
     }
 
- 
 }

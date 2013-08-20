@@ -33,11 +33,10 @@ public class OracleLexer extends Lexer {
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
-        
+
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
         map.put("BEGIN", Token.BEGIN);
-        map.put("COLUMN", Token.COLUMN);
         map.put("COMMENT", Token.COMMENT);
         map.put("COMMIT", Token.COMMIT);
         map.put("CONNECT", Token.CONNECT);
@@ -51,7 +50,6 @@ public class OracleLexer extends Lexer {
         map.put("EXCLUSIVE", Token.EXCLUSIVE);
         map.put("EXTRACT", Token.EXTRACT);
         map.put("GOTO", Token.GOTO);
-        map.put("GRANT", Token.GRANT);
         map.put("IF", Token.IF);
 
         map.put("LIMIT", Token.LIMIT);
@@ -65,7 +63,6 @@ public class OracleLexer extends Lexer {
         map.put("OF", Token.OF);
         map.put("PRIOR", Token.PRIOR);
 
-        map.put("PROCEDURE", Token.PROCEDURE);
         map.put("REJECT", Token.REJECT);
         map.put("RETURNING", Token.RETURNING);
         map.put("SAVEPOINT", Token.SAVEPOINT);
@@ -79,8 +76,38 @@ public class OracleLexer extends Lexer {
 
         map.put("WAIT", Token.WAIT);
         map.put("WITH", Token.WITH);
-        
+
         map.put("IDENTIFIED", Token.IDENTIFIED);
+
+        map.put("PCTFREE", Token.PCTFREE);
+        map.put("INITRANS", Token.INITRANS);
+        map.put("MAXTRANS", Token.MAXTRANS);
+        map.put("SEGMENT", Token.SEGMENT);
+        map.put("CREATION", Token.CREATION);
+        map.put("IMMEDIATE", Token.IMMEDIATE);
+        map.put("DEFERRED", Token.DEFERRED);
+        map.put("STORAGE", Token.STORAGE);
+        map.put("NEXT", Token.NEXT);
+        map.put("MINEXTENTS", Token.MINEXTENTS);
+        map.put("MAXEXTENTS", Token.MAXEXTENTS);
+        map.put("MAXSIZE", Token.MAXSIZE);
+        map.put("PCTINCREASE", Token.PCTINCREASE);
+        map.put("FLASH_CACHE", Token.FLASH_CACHE);
+        map.put("CELL_FLASH_CACHE", Token.CELL_FLASH_CACHE);
+        map.put("KEEP", Token.KEEP);
+        map.put("NONE", Token.NONE);
+        map.put("LOB", Token.LOB);
+        map.put("STORE", Token.STORE);
+        map.put("ROW", Token.ROW);
+        map.put("CHUNK", Token.CHUNK);
+        map.put("CACHE", Token.CACHE);
+        map.put("NOCACHE", Token.NOCACHE);
+        map.put("LOGGING", Token.LOGGING);
+        map.put("NOCOMPRESS", Token.NOCOMPRESS);
+        map.put("KEEP_DUPLICATES", Token.KEEP_DUPLICATES);
+        map.put("EXCEPTIONS", Token.EXCEPTIONS);
+        map.put("PURGE", Token.PURGE);
+        map.put("INITIALLY", Token.INITIALLY);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -121,7 +148,7 @@ public class OracleLexer extends Lexer {
             bufPos++;
             mybatisFlag = true;
         }
-        
+
         for (;;) {
             ch = charAt(++pos);
 
@@ -132,7 +159,7 @@ public class OracleLexer extends Lexer {
             bufPos++;
             continue;
         }
-        
+
         if (quoteFlag) {
             if (ch != '"') {
                 throw new ParserException("syntax error");

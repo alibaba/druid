@@ -22,9 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleOrderBy extends SQLOrderBy {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean           sibings;
+    private boolean sibings;
 
     public OracleOrderBy(){
 

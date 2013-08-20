@@ -47,7 +47,7 @@ public class MySqlAlterTableTest_addFk extends TestCase {
                             "\n\tADD INDEX FK4CF5DC0F5DD7C31 (test1_name)," + //
                             "\n\tADD CONSTRAINT FK4CF5DC0F5DD7C31 FOREIGN KEY (name) REFERENCES Test1 (name)", output);
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
     }
 }

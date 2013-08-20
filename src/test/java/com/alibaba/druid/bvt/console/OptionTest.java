@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.console;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.junit.runner.JUnitCore;

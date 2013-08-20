@@ -24,9 +24,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class CycleClause extends OracleSQLObjectImpl {
 
-    private static final long   serialVersionUID = 1L;
-
-    private final List<SQLExpr> aliases          = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> aliases = new ArrayList<SQLExpr>();
     private SQLExpr             mark;
     private SQLExpr             value;
     private SQLExpr             defaultValue;

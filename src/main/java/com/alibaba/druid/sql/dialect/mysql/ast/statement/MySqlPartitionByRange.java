@@ -24,13 +24,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlPartitionByRange extends MySqlPartitioningClause {
 
-    private static final long serialVersionUID = 1L;
+    private SQLExpr       expr;
 
-    private SQLExpr           expr;
+    private List<SQLName> columns = new ArrayList<SQLName>();
 
-    private List<SQLName>     columns          = new ArrayList<SQLName>();
-
-    private SQLExpr           partitionCount;
+    private SQLExpr       partitionCount;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {

@@ -26,9 +26,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
-    private static final long                  serialVersionUID = 1L;
-
-    private final List<SQLCommentHint>         hints            = new ArrayList<SQLCommentHint>(1);
+    private final List<SQLCommentHint>         hints = new ArrayList<SQLCommentHint>(1);
 
     private OracleSelectHierachicalQueryClause hierachicalQueryClause;
     private ModelClause                        modelClause;

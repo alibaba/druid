@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.db2.visitor;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -37,4 +38,13 @@ public class DB2SchemaStatVisitor extends SchemaStatVisitor implements DB2ASTVis
         
     }
 
+    @Override
+    public boolean visit(DB2ValuesStatement x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(DB2ValuesStatement x) {
+        
+    }
 }

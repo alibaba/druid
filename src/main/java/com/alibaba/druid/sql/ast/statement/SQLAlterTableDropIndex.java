@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDropIndex extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLName           indexName;
+    private SQLName indexName;
 
     public SQLName getIndexName() {
         return indexName;

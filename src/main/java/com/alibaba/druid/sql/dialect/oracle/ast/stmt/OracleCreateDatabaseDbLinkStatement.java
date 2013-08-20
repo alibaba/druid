@@ -21,21 +21,19 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleCreateDatabaseDbLinkStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private boolean shared;
+    private boolean _public;
 
-    private boolean           shared;
-    private boolean           _public;
+    private SQLName name;
 
-    private SQLName           name;
+    private SQLName user;
 
-    private SQLName           user;
+    private String  password;
 
-    private String            password;
+    private SQLExpr using;
 
-    private SQLExpr           using;
-
-    private SQLExpr           authenticatedUser;
-    private String            authenticatedPassword;
+    private SQLExpr authenticatedUser;
+    private String  authenticatedPassword;
 
     public boolean isShared() {
         return shared;

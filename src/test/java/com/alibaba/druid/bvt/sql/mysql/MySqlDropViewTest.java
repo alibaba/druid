@@ -17,15 +17,14 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlDropViewTest extends MysqlTest {
 
@@ -34,7 +33,7 @@ public class MySqlDropViewTest extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlDropViewStatement stmt = (MySqlDropViewStatement) statementList.get(0);
+        SQLDropViewStatement stmt = (SQLDropViewStatement) statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());

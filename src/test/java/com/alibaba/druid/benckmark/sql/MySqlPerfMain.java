@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 
 public class MySqlPerfMain {
 
@@ -31,7 +31,7 @@ public class MySqlPerfMain {
         List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
         System.out.println(arguments);
         
-        String sql = IOUtils.readFromResource("benchmark/sql/ob_sql.txt");
+        String sql = Utils.readFromResource("benchmark/sql/ob_sql.txt");
         
         for (int i = 0; i < 10; ++i) {
             perfMySql(sql);

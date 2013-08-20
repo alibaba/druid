@@ -196,7 +196,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             queryBlock.setLimit(parseLimit());
         }
 
-        if (identifierEquals("PROCEDURE")) {
+        if (lexer.token() == Token.PROCEDURE) {
             lexer.nextToken();
             throw new ParserException("TODO");
         }
@@ -242,7 +242,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                 lexer.nextToken();
             }
 
-            if (identifierEquals("WITH")) {
+            if (lexer.token() == Token.WITH) {
                 lexer.nextToken();
                 acceptIdentifier("ROLLUP");
 

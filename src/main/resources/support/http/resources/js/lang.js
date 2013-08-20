@@ -204,6 +204,12 @@ druid.lang = function() {
 		'WhiteListSize':['WhiteListSize', '白名单长度'],
 		'SyntaxErrrorCount':['SyntaxErrrorCount', '语法错误次数'],
 		'TableName':['TableName', '表名'],
+		'TableNumber':['Number','序号'],
+		
+		'Sample':['Sample','样本'],
+		'ExecuteCount':['ExecuteCount','执行数'],
+		'FetchRowCount':['FetchRowCount','读取行数'],
+		'SQLUpdateCount':['UpdateCount','更新行数'],
 		
 		'SelectCount':['SelectCount', 'Select数'],
 		'SelectIntoCount':['SelectIntoCount', 'SelectInto数'],
@@ -218,6 +224,11 @@ druid.lang = function() {
 		'DeleteDataCount':['DeleteDataCount', '删除数据行数'],
 		'UpdateDataCount':['UpdateDataCount', '更新数据行数'],
 		'FetchRowCount':['FetchRowCount', '读取行数'],
+		'WallStat':['Wall Stat', '防御统计'],
+		'TableStat':['Table Stat', '表访问统计'],
+		'FunctionStat':['Function Stat', '函数调用统计'],
+    'SQLStatWhiteList':['SQL Stat - White List', 'SQL防御统计 - 白名单'],
+    'SQLStatBlackList':['SQL Stat - Black List', 'SQL防御统计 - 黑名单'],
 		/**session-detail*/
 		'SESSIONID':['SESSIONID', 'SESSIONID'],
 		'UserAgent':['UserAgent', 'UserAgent'],

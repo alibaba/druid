@@ -65,7 +65,68 @@ public class SQLParser {
                     case KEY:
                     case INDEX:
                     case CASE:
-                        alias = lexer.token().name();
+                    case MODEL:
+                    case PCTFREE:
+                    case INITRANS:
+                    case MAXTRANS:
+                    case SEGMENT:
+                    case CREATION:
+                    case IMMEDIATE:
+                    case DEFERRED:
+                    case STORAGE:
+                    case NEXT:
+                    case MINEXTENTS:
+                    case MAXEXTENTS:
+                    case MAXSIZE:
+                    case PCTINCREASE:
+                    case FLASH_CACHE:
+                    case CELL_FLASH_CACHE:
+                    case KEEP:
+                    case NONE:
+                    case LOB:
+                    case STORE:
+                    case ROW:
+                    case CHUNK:
+                    case CACHE:
+                    case NOCACHE:
+                    case LOGGING:
+                    case NOCOMPRESS:
+                    case KEEP_DUPLICATES:
+                    case EXCEPTIONS:
+                    case PURGE:
+                    case INITIALLY:
+                    case END:
+                    case COMMENT:
+                    case ENABLE:
+                    case DISABLE:
+                    case SEQUENCE:
+                    case USER:
+                    case ANALYZE:
+                    case OPTIMIZE:
+                    case GRANT:
+                    case FULL:
+                    case TO:
+                    case NEW:
+                    case INTERVAL:
+                    case LOCK:
+                    case LIMIT:
+                    case IDENTIFIED:
+                    case PASSWORD:
+                    case BINARY:
+                    case WINDOW:
+                    case OFFSET:
+                    case SHARE:
+                    case START:
+                    case CONNECT:
+                    case MATCHED:
+                    case ERRORS:
+                    case REJECT:
+                    case UNLIMITED:
+                    case BEGIN:
+                    case EXCLUSIVE:
+                    case MODE:
+                    case ADVISE:
+                        alias = lexer.stringVal();
                         lexer.nextToken();
                         return alias;
                     case QUES:

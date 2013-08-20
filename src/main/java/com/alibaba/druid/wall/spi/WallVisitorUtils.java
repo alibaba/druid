@@ -51,10 +51,13 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
@@ -85,8 +88,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.support.logging.Log;
@@ -1501,8 +1506,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (WallVisitorUtils.queryBlockFromIsNull(visitor, x.getLeft())
-            || WallVisitorUtils.queryBlockFromIsNull(visitor, x.getRight())) {
+        if (WallVisitorUtils.queryBlockFromIsNull(visitor, x.getRight())) {
             boolean isTopUpdateStatement = false;
             SQLObject selectParent = x.getParent();
             while (selectParent instanceof SQLUnionQuery //
@@ -1687,7 +1691,7 @@ public class WallVisitorUtils {
             allow = config.isMergeAllow();
             denyMessage = "merge not allow";
             errorCode = ErrorCode.MERGE_NOT_ALLOW;
-        } else if (x instanceof SQLCallStatement) {
+        } else if (x instanceof SQLCallStatement || x instanceof SQLServerExecStatement) {
             allow = config.isCallAllow();
             denyMessage = "call not allow";
             errorCode = ErrorCode.CALL_NOT_ALLOW;
@@ -1697,7 +1701,10 @@ public class WallVisitorUtils {
             errorCode = ErrorCode.TRUNCATE_NOT_ALLOW;
         } else if (x instanceof SQLCreateTableStatement //
                    || x instanceof SQLCreateIndexStatement //
-                   || x instanceof SQLCreateViewStatement) {
+                   || x instanceof SQLCreateViewStatement //
+                   || x instanceof SQLCreateTriggerStatement //
+                   || x instanceof OracleCreateSequenceStatement //
+        ) {
             allow = config.isCreateTableAllow();
             denyMessage = "create table not allow";
             errorCode = ErrorCode.CREATE_TABLE_NOT_ALLOW;
@@ -1707,7 +1714,10 @@ public class WallVisitorUtils {
             errorCode = ErrorCode.ALTER_TABLE_NOT_ALLOW;
         } else if (x instanceof SQLDropTableStatement //
                    || x instanceof SQLDropIndexStatement //
-                   || x instanceof SQLDropViewStatement) {
+                   || x instanceof SQLDropViewStatement //
+                   || x instanceof SQLDropTriggerStatement //
+                   || x instanceof SQLDropSequenceStatement //
+        ) {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
             errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;

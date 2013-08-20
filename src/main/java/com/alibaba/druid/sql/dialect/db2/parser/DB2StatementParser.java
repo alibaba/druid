@@ -15,8 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.db2.parser;
 
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 
 
 public class DB2StatementParser extends SQLStatementParser {
@@ -30,5 +35,17 @@ public class DB2StatementParser extends SQLStatementParser {
     
     public DB2SelectParser createSQLSelectParser() {
         return new DB2SelectParser(this.exprParser);
+    }
+    
+    public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+            DB2ValuesStatement stmt = new DB2ValuesStatement();
+            stmt.setExpr(this.exprParser.expr());
+            statementList.add(stmt);
+            return true;
+        }
+        
+        return false;
     }
 }

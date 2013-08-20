@@ -21,8 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSavePointStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-    private SQLExpr           name;
+    private SQLExpr name;
 
     public SQLExpr getName() {
         return name;

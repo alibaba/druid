@@ -28,18 +28,16 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 
-    private static final long serialVersionUID = 1L;
+    private PGWithClause  with;
+    private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
+    private SQLExpr       limit;
+    private SQLExpr       offset;
+    private WindowClause  window;
 
-    private PGWithClause      with;
-    private List<SQLExpr>     distinctOn       = new ArrayList<SQLExpr>(2);
-    private SQLExpr           limit;
-    private SQLExpr           offset;
-    private WindowClause      window;
-
-    private SQLOrderBy        orderBy;
-    private FetchClause       fetch;
-    private ForClause         forClause;
-    private IntoOption        intoOption;
+    private SQLOrderBy    orderBy;
+    private FetchClause   fetch;
+    private ForClause     forClause;
+    private IntoOption    intoOption;
 
     public static enum IntoOption {
         TEMPORARY, TEMP, UNLOGGED
@@ -143,9 +141,8 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 
     public static class WindowClause extends PGSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private SQLExpr           name;
-        private List<SQLExpr>     definition       = new ArrayList<SQLExpr>(2);
+        private SQLExpr       name;
+        private List<SQLExpr> definition = new ArrayList<SQLExpr>(2);
 
         public SQLExpr getName() {
             return name;
@@ -174,8 +171,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public static class FetchClause extends PGSQLObjectImpl {
-
-        private static final long serialVersionUID = 1L;
 
         public static enum Option {
             FIRST, NEXT
@@ -211,8 +206,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public static class ForClause extends PGSQLObjectImpl {
-
-        private static final long serialVersionUID = 1L;
 
         public static enum Option {
             UPDATE, SHARE

@@ -15,11 +15,14 @@
  */
 package com.alibaba.druid.wall;
 
+import static com.alibaba.druid.util.Utils.getBoolean;
+
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Wrapper;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -56,6 +59,26 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     private volatile boolean   throwException = true;
 
     public final static String ATTR_SQL_STAT  = "wall.sqlStat";
+
+    public WallFilter(){
+        configFromProperties(System.getProperties());
+    }
+
+    @Override
+    public void configFromProperties(Properties properties) {
+        {
+            Boolean value = getBoolean(properties, "druid.wall.logViolation");
+            if (value != null) {
+                this.logViolation = value;
+            }
+        }
+        {
+            Boolean value = getBoolean(properties, "druid.wall.throwException");
+            if (value != null) {
+                this.throwException = value;
+            }
+        }
+    }
 
     @Override
     public synchronized void init(DataSourceProxy dataSource) {
@@ -106,6 +129,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
+        
+        provider.setName(dataSource.getName());
 
         this.inited = true;
     }

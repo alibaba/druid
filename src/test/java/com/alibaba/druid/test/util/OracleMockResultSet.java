@@ -511,4 +511,46 @@ public class OracleMockResultSet extends MockResultSet implements OracleResultSe
         
     }
 
+    @Override
+    public AuthorizationIndicator getAuthorizationIndicator(int arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public AuthorizationIndicator getAuthorizationIndicator(String arg0) throws SQLException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void updateINTERVALDS(String arg0, INTERVALDS arg1) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void updateINTERVALYM(String arg0, INTERVALYM arg1) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void updateTIMESTAMP(String arg0, TIMESTAMP arg1) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void updateTIMESTAMPLTZ(String arg0, TIMESTAMPLTZ arg1) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void updateTIMESTAMPTZ(String arg0, TIMESTAMPTZ arg1) throws SQLException {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

@@ -22,16 +22,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  */
 public class SQLOver extends SQLObjectImpl {
 
-    private static final long     serialVersionUID = 1L;
-
-    protected final List<SQLExpr> partitionBy      = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> partitionBy = new ArrayList<SQLExpr>();
     protected SQLOrderBy          orderBy;
-    
-    public SQLOver() {
-        
+
+    public SQLOver(){
+
     }
-    
-    public SQLOver(SQLOrderBy orderBy) {
+
+    public SQLOver(SQLOrderBy orderBy){
         this.setOrderBy(orderBy);
     }
 

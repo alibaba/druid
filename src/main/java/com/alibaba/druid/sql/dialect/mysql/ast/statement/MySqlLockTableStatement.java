@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlLockTableStatement extends MySqlStatementImpl {
 
-    private static final long  serialVersionUID = 1L;
-
     private SQLExprTableSource tableSource;
 
     private LockType           lockType;
@@ -34,7 +32,7 @@ public class MySqlLockTableStatement extends MySqlStatementImpl {
     public void setTableSource(SQLExprTableSource tableSource) {
         this.tableSource = tableSource;
     }
-    
+
     public void setTableSource(SQLName name) {
         this.tableSource = new SQLExprTableSource(name);
     }
@@ -46,7 +44,7 @@ public class MySqlLockTableStatement extends MySqlStatementImpl {
     public void setLockType(LockType lockType) {
         this.lockType = lockType;
     }
-    
+
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, tableSource);

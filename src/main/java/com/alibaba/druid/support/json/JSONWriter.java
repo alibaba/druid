@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 
 public class JSONWriter {
 
@@ -152,7 +152,7 @@ public class JSONWriter {
         write(",\"Message\":");
         writeString(error.getMessage());
         write(",\"StackTrace\":");
-        writeString(IOUtils.getStackTrace(error));
+        writeString(Utils.getStackTrace(error));
         write('}');
     }
 

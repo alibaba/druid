@@ -25,8 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class GroupingSetExpr extends SQLExprImpl {
 
-    private static final long   serialVersionUID = 1L;
-    private final List<SQLExpr> parameters       = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
     public List<SQLExpr> getParameters() {
         return parameters;

@@ -20,13 +20,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterViewStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private SQLName name;
 
-    private SQLName           name;
+    private Boolean enable;
 
-    private Boolean           enable;
-
-    private boolean           compile;
+    private boolean compile;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

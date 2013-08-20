@@ -19,9 +19,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCommentHint extends SQLObjectImpl implements SQLHint {
 
-    private static final long serialVersionUID = 1L;
-
-    private String            text;
+    private String text;
 
     public SQLCommentHint(){
 

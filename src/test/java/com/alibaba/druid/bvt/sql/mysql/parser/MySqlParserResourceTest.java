@@ -20,14 +20,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
-import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MySqlParserResourceTest extends TestCase {
@@ -55,7 +55,7 @@ public class MySqlParserResourceTest extends TestCase {
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         Reader reader = new InputStreamReader(is, "UTF-8");
-        String input = IOUtils.read(reader);
+        String input = Utils.read(reader);
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();

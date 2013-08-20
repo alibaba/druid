@@ -19,13 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public abstract class SQLForeignKeyImpl extends SQLConstaintImpl implements SQLForeignKeyConstraint {
+public class SQLForeignKeyImpl extends SQLConstaintImpl implements SQLForeignKeyConstraint {
 
-    private static final long serialVersionUID   = 1L;
-    private SQLName           referencedTableName;
-    private List<SQLName>     referencingColumns = new ArrayList<SQLName>();
-    private List<SQLName>     referencedColumns  = new ArrayList<SQLName>();
+    private SQLName       referencedTableName;
+    private List<SQLName> referencingColumns = new ArrayList<SQLName>();
+    private List<SQLName> referencedColumns  = new ArrayList<SQLName>();
+
+    public SQLForeignKeyImpl(){
+
+    }
 
     @Override
     public List<SQLName> getReferencingColumns() {
@@ -45,6 +49,17 @@ public abstract class SQLForeignKeyImpl extends SQLConstaintImpl implements SQLF
     @Override
     public List<SQLName> getReferencedColumns() {
         return referencedColumns;
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.getName());
+            acceptChild(visitor, this.getReferencedTableName());
+            acceptChild(visitor, this.getReferencingColumns());
+            acceptChild(visitor, this.getReferencedColumns());
+        }
+        visitor.endVisit(this);        
     }
 
 }

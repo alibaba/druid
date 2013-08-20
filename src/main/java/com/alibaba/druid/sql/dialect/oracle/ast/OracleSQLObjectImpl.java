@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements OracleSQLObject {
 
-    private static final long serialVersionUID = 1L;
-
     public OracleSQLObjectImpl(){
 
     }

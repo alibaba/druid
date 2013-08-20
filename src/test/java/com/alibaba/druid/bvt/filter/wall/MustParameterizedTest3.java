@@ -38,7 +38,8 @@ public class MustParameterizedTest3 extends TestCase {
         Assert.assertTrue(WallUtils.isValidateMySql("select * from t where id  = ? ORDER BY 1", config));
         Assert.assertTrue(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ?", config));
         Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = 7", config));
-        Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t", config));
+        Assert.assertTrue(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t", config));
+        Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select 1, 2, 3", config));
         Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t fid = fid", config));
         Assert.assertFalse(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ? union select * from t fid > 5", config));
     }

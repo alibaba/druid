@@ -4,8 +4,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
@@ -21,9 +22,9 @@ public class DruidDataSourceTest_oracle3 extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:oracle:thin:@192.168.122.184:1521:ORCL");
-        dataSource.setUsername("system");
-        dataSource.setPassword("druid");
+        dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:sonardb");
+        dataSource.setUsername("jira");
+        dataSource.setPassword("jira");
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(14);
         dataSource.setMinIdle(1);

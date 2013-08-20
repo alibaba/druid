@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class PagerUtils {
 
@@ -93,7 +94,7 @@ public class PagerUtils {
             return limitDB2(select, dbType, offset, count);
         }
 
-        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
+        if (JdbcConstants.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return limitSQLServer(select, dbType, offset, count);
         }
 
@@ -354,7 +355,7 @@ public class PagerUtils {
             return new PGSelectQueryBlock();
         }
 
-        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
+        if (JdbcConstants.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerSelectQueryBlock();
         }
 

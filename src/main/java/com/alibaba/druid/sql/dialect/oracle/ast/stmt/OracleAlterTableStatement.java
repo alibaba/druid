@@ -21,10 +21,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleAlterTableStatement extends SQLAlterTableStatement implements OracleDDLStatement {
 
-    private static final long  serialVersionUID        = 1L;
-
-    private boolean            updateGlobalIndexes     = false;
-    private boolean            invalidateGlobalIndexes = false;
+    private boolean updateGlobalIndexes     = false;
+    private boolean invalidateGlobalIndexes = false;
 
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);

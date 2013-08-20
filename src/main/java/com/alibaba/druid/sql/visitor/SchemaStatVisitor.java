@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
@@ -46,14 +47,27 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableSpaceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
@@ -150,38 +164,42 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     private String handleName(String ident) {
-        boolean flag0 = false;
-        boolean flag1 = false;
-        boolean flag2 = false;
-        boolean flag3 = false;
-        for (int i = 0; i < ident.length(); ++i) {
-            final char ch = ident.charAt(i);
-            if (ch == '\"') {
-                flag0 = true;
-            } else if (ch == '`') {
-                flag1 = true;
-            } else if (ch == ' ') {
-                flag2 = true;
-            } else if (ch == '\'') {
-                flag3 = true;
+        int len = ident.length();
+        if (ident.charAt(0) == '[' && ident.charAt(len - 1) == ']') {
+            ident = ident.substring(1, len - 1);
+        } else {
+            boolean flag0 = false;
+            boolean flag1 = false;
+            boolean flag2 = false;
+            boolean flag3 = false;
+            for (int i = 0; i < len; ++i) {
+                final char ch = ident.charAt(i);
+                if (ch == '\"') {
+                    flag0 = true;
+                } else if (ch == '`') {
+                    flag1 = true;
+                } else if (ch == ' ') {
+                    flag2 = true;
+                } else if (ch == '\'') {
+                    flag3 = true;
+                }
+            }
+            if (flag0) {
+                ident = ident.replaceAll("\"", "");
+            }
+
+            if (flag1) {
+                ident = ident.replaceAll("`", "");
+            }
+
+            if (flag2) {
+                ident = ident.replaceAll(" ", "");
+            }
+
+            if (flag3) {
+                ident = ident.replaceAll("'", "");
             }
         }
-        if (flag0) {
-            ident = ident.replaceAll("\"", "");
-        }
-
-        if (flag1) {
-            ident = ident.replaceAll("`", "");
-        }
-
-        if (flag2) {
-            ident = ident.replaceAll(" ", "");
-        }
-
-        if (flag3) {
-            ident = ident.replaceAll("'", "");
-        }
-
         ident = aliasWrap(ident);
 
         return ident;
@@ -508,6 +526,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropViewStatement x) {
+        setMode(x, Mode.Drop);
+        return true;
     }
 
     @Override
@@ -883,27 +907,29 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             TableStat stat = getTableStat(ident);
 
             Mode mode = getMode();
-            switch (mode) {
-                case Delete:
-                    stat.incrementDeleteCount();
-                    break;
-                case Insert:
-                    stat.incrementInsertCount();
-                    break;
-                case Update:
-                    stat.incrementUpdateCount();
-                    break;
-                case Select:
-                    stat.incrementSelectCount();
-                    break;
-                case Merge:
-                    stat.incrementMergeCount();
-                    break;
-                case Drop:
-                    stat.incrementDropCount();
-                    break;
-                default:
-                    break;
+            if (mode != null) {
+                switch (mode) {
+                    case Delete:
+                        stat.incrementDeleteCount();
+                        break;
+                    case Insert:
+                        stat.incrementInsertCount();
+                        break;
+                    case Update:
+                        stat.incrementUpdateCount();
+                        break;
+                    case Select:
+                        stat.incrementSelectCount();
+                        break;
+                    case Merge:
+                        stat.incrementMergeCount();
+                        break;
+                    case Drop:
+                        stat.incrementDropCount();
+                        break;
+                    default:
+                        break;
+                }
             }
 
             if (aliasMap != null) {
@@ -1152,28 +1178,133 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropConstraint x) {
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLDropIndexStatement x) {
         setMode(x, Mode.DropIndex);
-        SQLName name = (SQLName) x.getTableName().getExpr();
+        SQLExprTableSource table = x.getTableName();
+        if (table != null) {
+            SQLName name = (SQLName) table.getExpr();
 
-        String ident = name.toString();
-        setCurrentTable(ident);
-        
-        TableStat stat = getTableStat(ident);
+            String ident = name.toString();
+            setCurrentTable(ident);
+
+            TableStat stat = getTableStat(ident);
+            stat.incrementDropIndexCount();
+
+            Map<String, String> aliasMap = getAliasMap();
+            if (aliasMap != null) {
+                aliasMap.put(ident, ident);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateIndexStatement x) {
+        setMode(x, Mode.CreateIndex);
+
+        SQLName name = (SQLName) ((SQLExprTableSource) x.getTable()).getExpr();
+
+        String table = name.toString();
+        setCurrentTable(table);
+
+        TableStat stat = getTableStat(table);
         stat.incrementDropIndexCount();
 
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
-            aliasMap.put(ident, ident);
+            aliasMap.put(table, table);
         }
-        
+
+        for (SQLSelectOrderByItem item : x.getItems()) {
+            SQLExpr expr = item.getExpr();
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                String columnName = identExpr.getName();
+                addColumn(table, columnName);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLForeignKeyImpl x) {
+
+        for (SQLName column : x.getReferencedColumns()) {
+            column.accept(this);
+        }
+
+        String table = x.getReferencedTableName().getSimleName();
+        setCurrentTable(table);
+
+        TableStat stat = getTableStat(table);
+        stat.incrementReferencedCount();
+        for (SQLName column : x.getReferencedColumns()) {
+            String columnName = column.getSimleName();
+            addColumn(table, columnName);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropSequenceStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropTriggerStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDropUserStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLGrantStatement x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDropDatabaseStatement x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAddIndex x) {
+        for (SQLSelectOrderByItem item : x.getItems()) {
+            item.accept(this);
+        }
+        return false;
+    }
+    
+    public boolean visit(SQLCheck x) {
+        x.getExpr().accept(this);
+        return false;
+    }
+    
+    public boolean visit(SQLCreateTriggerStatement x) {
+        return false;
+    }
+    
+    public boolean visit(SQLDropFunctionStatement x) {
+        return false;
+    }
+    
+    public boolean visit(SQLDropTableSpaceStatement x) {
+        return false;
+    }
+    
+    public boolean visit(SQLDropProcedureStatement x) {
         return false;
     }
 }

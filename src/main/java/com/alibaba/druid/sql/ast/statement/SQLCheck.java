@@ -20,15 +20,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCheck extends SQLConstaintImpl implements SQLTableElement {
 
-    private static final long serialVersionUID = 1L;
+    private SQLExpr expr;
 
-    private SQLExpr           expr;
-    
-    public SQLCheck() {
-        
+    public SQLCheck(){
+
     }
-    
-    public SQLCheck(SQLExpr expr) {
+
+    public SQLCheck(SQLExpr expr){
         this.setExpr(expr);
     }
 
@@ -51,6 +49,5 @@ public class SQLCheck extends SQLConstaintImpl implements SQLTableElement {
         }
         visitor.endVisit(this);
     }
-
 
 }

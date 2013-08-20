@@ -11,7 +11,7 @@ public class PGDenyFunctionTest extends TestCase {
 
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidatePostgres(//
-        "SELECT current_catalog() from t where id = ?")); //
+        "select * from t where fid = 1 union SELECT current_catalog() from t where id = ?")); //
     }
 
     public void test_true() throws Exception {

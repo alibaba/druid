@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlAlterTableStatement extends SQLAlterTableStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean           ignore           = false;
+    private boolean ignore = false;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

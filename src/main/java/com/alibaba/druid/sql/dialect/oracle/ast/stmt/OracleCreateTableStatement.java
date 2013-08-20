@@ -20,42 +20,60 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement {
 
-    private static final long        serialVersionUID  = 1L;
+    private SQLName                 tablespace;
 
-    private SQLName                  tablespace;
+    private SQLSelect               select;
 
-    private SQLSelect                select;
+    private boolean                 inMemoryMetadata;
 
-    private boolean                  inMemoryMetadata;
-
-    private boolean                  cursorSpecificSegment;
+    private boolean                 cursorSpecificSegment;
 
     // NOPARALLEL
-    private Boolean                  parallel;
+    private Boolean                 parallel;
 
-    private OracleStorageClause      storage;
+    private OracleStorageClause     storage;
+    private OracleLobStorageClause  lobStorage;
 
-    private boolean                  organizationIndex = false;
+    private boolean                 organizationIndex = false;
 
-    private SQLExpr                  ptcfree;
-    private SQLExpr                  pctused;
-    private SQLExpr                  initrans;
-    private SQLExpr                  maxtrans;
+    private SQLExpr                 ptcfree;
+    private SQLExpr                 pctused;
+    private SQLExpr                 initrans;
+    private SQLExpr                 maxtrans;
 
-    private Boolean                  logging;
-    private Boolean                  compress;
-    private boolean                  onCommit;
-    private boolean                  preserveRows;
+    private Boolean                 logging;
+    private Boolean                 compress;
+    private boolean                 onCommit;
+    private boolean                 preserveRows;
 
-    private Boolean                  cache;
+    private Boolean                 cache;
 
-    private SQLPartitioningClause partitioning;
+    private SQLPartitioningClause   partitioning;
+
+    private DeferredSegmentCreation deferredSegmentCreation;
+
+    public OracleLobStorageClause getLobStorage() {
+        return lobStorage;
+    }
+
+    public void setLobStorage(OracleLobStorageClause lobStorage) {
+        this.lobStorage = lobStorage;
+    }
+
+    public DeferredSegmentCreation getDeferredSegmentCreation() {
+        return deferredSegmentCreation;
+    }
+
+    public void setDeferredSegmentCreation(DeferredSegmentCreation deferredSegmentCreation) {
+        this.deferredSegmentCreation = deferredSegmentCreation;
+    }
 
     public SQLPartitioningClause getPartitioning() {
         return partitioning;
@@ -209,4 +227,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         visitor.endVisit(this);
     }
 
+    public static enum DeferredSegmentCreation {
+        IMMEDIATE, DEFERRED
+    }
 }

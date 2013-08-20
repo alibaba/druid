@@ -15,7 +15,11 @@
  */
 package com.alibaba.druid.pool;
 
+import static com.alibaba.druid.util.Utils.getBoolean;
+
 import java.io.Closeable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -75,16 +79,17 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.stat.JdbcSqlStatValue;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.WallFilter;
+import com.alibaba.druid.wall.WallProviderStatValue;
 
-;
 /**
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
@@ -142,6 +147,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private boolean                          mbeanRegistered         = false;
 
+    public static ThreadLocal<Long>          waitNanosLocal          = new ThreadLocal<Long>();
+
     public DruidDataSource(){
         this(false);
     }
@@ -154,19 +161,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void configFromPropety(Properties properties) {
         {
-            String property = properties.getProperty("druid.testWhileIdle");
-            if ("true".equals(property)) {
-                this.setTestWhileIdle(true);
-            } else if ("false".equals(property)) {
-                this.setTestWhileIdle(false);
+            Boolean value = getBoolean(properties, "druid.testWhileIdle");
+            if (value != null) {
+                this.setTestWhileIdle(value);
             }
         }
         {
-            String property = properties.getProperty("druid.testOnBorrow");
-            if ("true".equals(property)) {
-                this.setTestOnBorrow(true);
-            } else if ("false".equals(property)) {
-                this.setTestOnBorrow(false);
+            Boolean value = getBoolean(properties, "druid.testOnBorrow");
+            if (value != null) {
+                this.setTestOnBorrow(value);
             }
         }
         {
@@ -176,11 +179,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = properties.getProperty("druid.useGloalDataSourceStat");
-            if ("true".equals(property)) {
-                this.setUseGloalDataSourceStat(true);
-            } else if ("false".equals(property)) {
-                this.setUseGloalDataSourceStat(false);
+            Boolean value = getBoolean(properties, "druid.useGloalDataSourceStat");
+            if (value != null) {
+                this.setUseGloalDataSourceStat(value);
             }
         }
         {
@@ -219,19 +220,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            String property = properties.getProperty("druid.clearFiltersEnable");
-            if ("true".equals(property)) {
-                this.setClearFiltersEnable(true);
-            } else if ("false".equals(property)) {
-                this.setClearFiltersEnable(false);
+            Boolean value = getBoolean(properties, "druid.clearFiltersEnable");
+            if (value != null) {
+                this.setClearFiltersEnable(value);
             }
         }
         {
-            String property = properties.getProperty("druid.resetStatEnable");
-            if ("true".equals(property)) {
-                this.setResetStatEnable(true);
-            } else if ("false".equals(property)) {
-                this.setResetStatEnable(false);
+            Boolean value = getBoolean(properties, "druid.resetStatEnable");
+            if (value != null) {
+                this.setResetStatEnable(value);
             }
         }
     }
@@ -495,7 +492,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             init = true;
 
-            initStackTrace = IOUtils.toString(Thread.currentThread().getStackTrace());
+            initStackTrace = Utils.toString(Thread.currentThread().getStackTrace());
 
             this.id = DruidDriver.createDataSourceId();
             if (this.id > 1) {
@@ -548,8 +545,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.driverClass = driverClass.trim();
             }
 
-            validationQueryCheck();
-
             if (this.jdbcUrl != null) {
                 this.jdbcUrl = this.jdbcUrl.trim();
                 initFromWrapDriverUrl();
@@ -581,6 +576,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initExceptionSorter();
             initValidConnectionChecker();
+            validationQueryCheck();
 
             if (isUseGloalDataSourceStat()) {
                 dataSourceStat = JdbcDataSourceStat.getGlobal();
@@ -920,9 +916,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 if (isTestWhileIdle()) {
-                    long idleMillis = System.currentTimeMillis()
-                                      - poolalbeConnection.getConnectionHolder().getLastActiveTimeMillis();
-                    if (idleMillis >= this.getTimeBetweenEvictionRunsMillis()) {
+                    final long currentTimeMillis = System.currentTimeMillis();
+                    final long lastActiveTimeMillis = poolalbeConnection.getConnectionHolder().getLastActiveTimeMillis();
+                    final long idleMillis = currentTimeMillis - lastActiveTimeMillis;
+                    long timeBetweenEvictionRunsMillis = this.getTimeBetweenEvictionRunsMillis();
+                    if (timeBetweenEvictionRunsMillis <= 0) {
+                        timeBetweenEvictionRunsMillis = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
+                    }
+
+                    if (idleMillis >= timeBetweenEvictionRunsMillis) {
                         boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
                         if (!validate) {
                             if (LOG.isDebugEnabled()) {
@@ -1021,12 +1023,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 holder = takeLast();
             }
 
-            activeCount++;
-            if (activeCount > activePeak) {
-                activePeak = activeCount;
-                activePeakTime = System.currentTimeMillis();
+            if (holder != null) {
+                activeCount++;
+                if (activeCount > activePeak) {
+                    activePeak = activeCount;
+                    activePeakTime = System.currentTimeMillis();
+                }
             }
-
         } catch (InterruptedException e) {
             connectErrorCount.incrementAndGet();
             throw new SQLException(e.getMessage(), e);
@@ -1035,6 +1038,38 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw e;
         } finally {
             lock.unlock();
+        }
+
+        if (holder == null) {
+            long waitNanos = waitNanosLocal.get();
+
+            StringBuilder buf = new StringBuilder();
+            buf.append("wait millis ")//
+            .append(waitNanos / (1000 * 1000))//
+            .append(", active " + activeCount)//
+            ;
+
+            List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();
+            for (int i = 0; i < sqlList.size(); ++i) {
+                if (i != 0) {
+                    buf.append('\n');
+                } else {
+                    buf.append(", ");
+                }
+                JdbcSqlStatValue sql = sqlList.get(i);
+                buf.append("runningCount ");
+                buf.append(sql.getRunningCount());
+                buf.append(" : ");
+                buf.append(sql.getSql());
+            }
+
+            String errorMessage = buf.toString();
+
+            if (this.createError == null) {
+                throw new GetConnectionTimeoutException(errorMessage, createError);
+            } else {
+                throw new GetConnectionTimeoutException(errorMessage);
+            }
         }
 
         holder.incrementUseCount();
@@ -1256,16 +1291,31 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void registerMbean() {
         if (!mbeanRegistered) {
-            ObjectName objectName = DruidDataSourceStatManager.addDataSource(this, this.name);
-            this.setObjectName(objectName);
-            this.mbeanRegistered = true;
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                @Override
+                public Object run() {
+                    ObjectName objectName = DruidDataSourceStatManager.addDataSource(DruidDataSource.this,
+                                                                                     DruidDataSource.this.name);
+                    DruidDataSource.this.setObjectName(objectName);
+                    DruidDataSource.this.mbeanRegistered = true;
+                    return null;
+                }
+            });
         }
     }
 
     public void unregisterMbean() {
         if (mbeanRegistered) {
-            DruidDataSourceStatManager.removeDataSource(this);
-            mbeanRegistered = false;
+            AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                @Override
+                public Object run() {
+                    DruidDataSourceStatManager.removeDataSource(DruidDataSource.this);
+                    DruidDataSource.this.mbeanRegistered = false;
+                    return null;
+                }
+            });
         }
     }
 
@@ -1322,19 +1372,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     DruidConnectionHolder pollLast(long nanos) throws InterruptedException, SQLException {
         long estimate = nanos;
 
-        for (int i = 0;; ++i) {
+        for (;;) {
             if (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {
-                    String errorMessage = "loopWaitCount " + i + ", wait millis " + (nanos - estimate) / (1000 * 1000)
-                                          + ", active " + activeCount;
-
-                    if (this.createError == null) {
-                        throw new GetConnectionTimeoutException(errorMessage, createError);
-                    } else {
-                        throw new GetConnectionTimeoutException(errorMessage);
-                    }
+                    waitNanosLocal.set(nanos - estimate);
+                    return null;
                 }
 
                 notEmptyWaitThreadCount++;
@@ -1367,13 +1411,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
-                    String errorMessage = "loopWaitCount " + i + ", wait millis " + (nanos - estimate) / (1000 * 1000)
-                                          + ", active " + activeCount;
-                    if (createError != null) {
-                        throw new GetConnectionTimeoutException(errorMessage, createError);
-                    } else {
-                        throw new GetConnectionTimeoutException(errorMessage);
-                    }
+                    waitNanosLocal.set(nanos - estimate);
+                    return null;
                 }
             }
 
@@ -1956,7 +1995,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         buf.append("{");
 
         buf.append("\n\tCreateTime:\"");
-        buf.append(IOUtils.toString(getCreatedTime()));
+        buf.append(Utils.toString(getCreatedTime()));
         buf.append("\"");
 
         buf.append(",\n\tActiveCount:");
@@ -2299,10 +2338,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public Map<String, Object> getWallStatMap() {
+        WallProviderStatValue wallStatValue = getWallStatValue(false);
+
+        if (wallStatValue != null) {
+            return wallStatValue.toMap();
+        }
+
+        return null;
+    }
+
+    public WallProviderStatValue getWallStatValue(boolean reset) {
         for (Filter filter : this.filters) {
             if (filter instanceof WallFilter) {
                 WallFilter wallFilter = (WallFilter) filter;
-                return wallFilter.getProvider().getStatsMap();
+                return wallFilter.getProvider().getStatValue(reset);
             }
         }
 

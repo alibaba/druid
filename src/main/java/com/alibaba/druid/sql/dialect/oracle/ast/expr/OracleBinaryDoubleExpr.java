@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements OracleExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private Double            value;
+    private Double value;
 
     public OracleBinaryDoubleExpr(){
 
@@ -93,7 +91,7 @@ public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements Ora
             this.setValue(null);
             return;
         }
-        
+
         this.setValue(number.doubleValue());
     }
 

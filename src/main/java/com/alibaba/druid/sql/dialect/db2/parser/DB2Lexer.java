@@ -35,6 +35,7 @@ public class DB2Lexer extends Lexer {
         map.put("FETCH", Token.FETCH);
         map.put("FIRST", Token.FIRST);
         map.put("ONLY", Token.ONLY);
+        map.put("OPTIMIZE", Token.OPTIMIZE);
         
         DEFAULT_DB2_KEYWORDS = new Keywords(map);
     }

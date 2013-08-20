@@ -18,23 +18,56 @@ package com.alibaba.druid.wall;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
+
+@MTable(name = "druid_wall_table")
 public class WallTableStatValue {
 
+    @MField(aggregate = AggregateType.None)
     private String name;
 
+    @MField(aggregate = AggregateType.Sum)
     private long   selectCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   selectIntoCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   insertCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   updateCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   deleteCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   truncateCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   createCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   alterCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   dropCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   replaceCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   deleteDataCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   updateDataCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   insertDataCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long   fetchRowCount;
 
     public WallTableStatValue(){
@@ -43,6 +76,19 @@ public class WallTableStatValue {
 
     public WallTableStatValue(String name){
         this.name = name;
+    }
+
+    public long getTotalExecuteCount() {
+        return selectCount //
+               + selectIntoCount //
+               + insertCount //
+               + updateCount //
+               + deleteCount //
+               + truncateCount //
+               + createCount //
+               + dropCount //
+               + replaceCount //
+        ;
     }
 
     public String getName() {
@@ -164,7 +210,7 @@ public class WallTableStatValue {
     public void setFetchRowCount(long fetchRowCount) {
         this.fetchRowCount = fetchRowCount;
     }
-    
+
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         toMap(map);
@@ -172,6 +218,8 @@ public class WallTableStatValue {
     }
 
     public Map<String, Object> toMap(Map<String, Object> map) {
+        map.put("name", name);
+
         if (selectCount > 0) {
             map.put("selectCount", selectCount);
         }

@@ -22,14 +22,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class OracleStatementImpl extends SQLStatementImpl implements OracleStatement {
 
-    private static final long serialVersionUID = 1L;
-
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
     }
 
     public abstract void accept0(OracleASTVisitor visitor);
-    
+
     public String toString() {
         return SQLUtils.toOracleString(this);
     }

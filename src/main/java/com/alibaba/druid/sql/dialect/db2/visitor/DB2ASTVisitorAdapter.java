@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.db2.visitor;
 
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class DB2ASTVisitorAdapter extends SQLASTVisitorAdapter implements DB2ASTVisitor {
@@ -28,6 +29,16 @@ public class DB2ASTVisitorAdapter extends SQLASTVisitorAdapter implements DB2AST
     @Override
     public void endVisit(DB2SelectQueryBlock x) {
 
+    }
+    
+    @Override
+    public boolean visit(DB2ValuesStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(DB2ValuesStatement x) {
+        
     }
 
 }

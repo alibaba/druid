@@ -29,7 +29,7 @@ import com.alibaba.druid.stat.TableStat;
 public class MySqlCreateTableTest29 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE lookup" + //
+        String sql = "CREATE TABLE user" + //
                      "  (id INT, INDEX USING BTREE (id))" + //
                      "  MIN_ROWS 1024;"; //
 
@@ -52,10 +52,10 @@ public class MySqlCreateTableTest29 extends MysqlTest {
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("lookup")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("user")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE lookup (" + //
+        Assert.assertEquals("CREATE TABLE user (" + //
                             "\n\tid INT, " + //
                             "\n\tINDEX USING BTREE(id)" + //
                             "\n) MIN_ROWS = 1024", output);

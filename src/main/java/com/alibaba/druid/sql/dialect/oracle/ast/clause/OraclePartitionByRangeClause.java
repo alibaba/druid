@@ -26,14 +26,12 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OraclePartitionByRangeClause extends OracleSQLObjectImpl implements SQLPartitioningClause {
 
-    private static final long             serialVersionUID = 1L;
-
-    private List<SQLName>                 columns          = new ArrayList<SQLName>();
+    private List<SQLName>                 columns = new ArrayList<SQLName>();
 
     private SQLExpr                       interval;
-    private List<SQLName>                 storeIn          = new ArrayList<SQLName>();
+    private List<SQLName>                 storeIn = new ArrayList<SQLName>();
 
-    private List<OracleRangeValuesClause> ranges           = new ArrayList<OracleRangeValuesClause>();
+    private List<OracleRangeValuesClause> ranges  = new ArrayList<OracleRangeValuesClause>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

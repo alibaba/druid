@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleExitStatement extends OracleStatementImpl {
 
-    private static final long serialVersionUID = 1L;
     private SQLExpr when;
 
     public SQLExpr getWhen() {

@@ -50,7 +50,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE t2\n\tADD INDEX (d),\n\tADD UNIQUE (a)", output);
+        Assert.assertEquals("ALTER TABLE t2\n\tADD INDEX (d),\n\tADD UNIQUE INDEX (a)", output);
     }
 
 }

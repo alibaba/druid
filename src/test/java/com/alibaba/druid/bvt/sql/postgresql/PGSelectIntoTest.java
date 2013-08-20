@@ -17,7 +17,7 @@ package com.alibaba.druid.bvt.sql.postgresql;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;

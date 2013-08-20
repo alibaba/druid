@@ -16,41 +16,33 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
+import com.alibaba.druid.sql.ast.statement.SQLConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 
-public abstract class OracleConstraint extends OracleSQLObjectImpl {
+public interface OracleConstraint extends OracleSQLObject, SQLConstaint, SQLTableElement {
 
-    private static final long       serialVersionUID = 1L;
+    SQLName getExceptionsInto();
 
-    protected OracleConstraintState state;
-    protected SQLName               name;
+    void setExceptionsInto(SQLName exceptionsInto);
 
-    public OracleConstraint(){
+    Boolean getDeferrable();
 
-    }
+    void setDeferrable(Boolean enable);
 
-    public SQLName getName() {
-        return this.name;
-    }
+    Boolean getEnable();
 
-    public void setName(String name) {
-        if (name == null) {
-            this.name = null;
-        } else {
-            this.name = new SQLIdentifierExpr(name);
-        }
-    }
+    void setEnable(Boolean enable);
 
-    public void setName(SQLName name) {
-        this.name = name;
-    }
+    Initially getInitially();
 
-    public OracleConstraintState getState() {
-        return this.state;
-    }
+    void setInitially(Initially value);
 
-    public void setState(OracleConstraintState state) {
-        this.state = state;
+    OracleUsingIndexClause getUsing();
+
+    void setUsing(OracleUsingIndexClause using);
+
+    public static enum Initially {
+        DEFERRED, IMMEDIATE
     }
 }

@@ -23,12 +23,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlStatement {
 
-    private static final long serialVersionUID = 1L;
-    private SQLOrderBy        orderBy;
-    private Limit             limit;
+    private SQLOrderBy orderBy;
+    private Limit      limit;
 
-    private boolean           lowPriority      = false;
-    private boolean           ignore           = false;
+    private boolean    lowPriority = false;
+    private boolean    ignore      = false;
 
     public Limit getLimit() {
         return limit;

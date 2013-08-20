@@ -19,7 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 
-public interface SQLForeignKeyConstraint extends SQLConstaint, SQLTableElement {
+public interface SQLForeignKeyConstraint extends SQLConstaint, SQLTableElement, SQLTableConstaint {
 
     List<SQLName> getReferencingColumns();
 

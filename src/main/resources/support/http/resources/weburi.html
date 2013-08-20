@@ -74,17 +74,17 @@
     					html += "<tr>";
     					html += "<td>" + (i + 1) + "</td>";
     					html += "<td>" + '<a target="_blank" href="weburi-detail.html?uri='+ encodeURI(stat.URI) + '">' + druid.common.subSqlString(stat.URI, 64) + '</a>' + "</td>";
-    					html += "<td>" + stat.RequestCount + "</td>";
-    					html += "<td>" + stat.RequestTimeMillis + "</td>";
-    					html += "<td>" + stat.RunningCount + "</td>";
-    					html += "<td>" + stat.ConcurrentMax + "</td>";
-    					html += "<td>" + stat.JdbcExecuteCount + "</td>";
-    					html += "<td>" + stat.JdbcExecuteErrorCount + "</td>";
-    					html += "<td>" + stat.JdbcExecuteTimeMillis + "</td>";
-    					html += "<td>" + stat.JdbcCommitCount + "</td>";
-    					html += "<td>" + stat.JdbcRollbackCount + "</td>";
-    					html += "<td>" + stat.JdbcFetchRowCount + "</td>";
-    					html += "<td>" + stat.JdbcUpdateCount + "</td>";
+    					html += "<td>" + replace(stat.RequestCount) + "</td>";
+    					html += "<td>" + replace(stat.RequestTimeMillis) + "</td>";
+    					html += "<td>" + replace(stat.RunningCount) + "</td>";
+    					html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
+    					html += "<td>" + replace(stat.JdbcExecuteCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcExecuteErrorCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcExecuteTimeMillis) + "</td>";
+    					html += "<td>" + replace(stat.JdbcCommitCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcRollbackCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcFetchRowCount) + "</td>";
+    					html += "<td>" + replace(stat.JdbcUpdateCount) + "</td>";
     					html += "</tr>";
     				}
     				$("#dataTable tbody").html(html);

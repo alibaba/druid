@@ -24,13 +24,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowProfileStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
+    private List<Type> types = new ArrayList<Type>();
 
-    private List<Type>        types            = new ArrayList<Type>();
+    private SQLExpr    forQuery;
 
-    private SQLExpr           forQuery;
-
-    private Limit             limit;
+    private Limit      limit;
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);

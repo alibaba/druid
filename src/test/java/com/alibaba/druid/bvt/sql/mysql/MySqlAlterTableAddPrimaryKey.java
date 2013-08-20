@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -33,7 +33,7 @@ public class MySqlAlterTableAddPrimaryKey extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
                             "\n\tCHANGE COLUMN `fid` `fid` INT(11) NULL NOT NULL,\n\t" + //
-                            "ADD PRIAMRY KEY (`fid`)", output);
+                            "ADD PRIMARY KEY (`fid`)", output);
     }
 
 }

@@ -21,12 +21,10 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSelectHierachicalQueryClause extends OracleSQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           startWith;
-    private SQLExpr           connectBy;
-    private boolean           prior            = false;
-    private boolean           noCycle          = false;
+    private SQLExpr startWith;
+    private SQLExpr connectBy;
+    private boolean prior   = false;
+    private boolean noCycle = false;
 
     public OracleSelectHierachicalQueryClause(){
 

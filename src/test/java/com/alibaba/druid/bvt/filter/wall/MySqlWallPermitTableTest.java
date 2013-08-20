@@ -24,9 +24,14 @@ import com.alibaba.druid.wall.WallUtils;
 
 public class MySqlWallPermitTableTest extends TestCase {
 
-    public void test_default() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("select benchmark( 500000, sha1( 'test' ) ) FROM X"));
+    public void test_default_true() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql("select * from t union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
     }
+    
+    public void test_default_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql("select * from t where fid = 1 union select benchmark( 500000, sha1( 'test' ) ) FROM X"));
+    }
+    
     
     public void test_allow() throws Exception {
         WallConfig config = new WallConfig();

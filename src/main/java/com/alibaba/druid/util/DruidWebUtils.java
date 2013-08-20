@@ -34,7 +34,7 @@ public class DruidWebUtils {
 
         return ip;
     }
-    
+
     private static String getContextPath_2_5(ServletContext context) {
         String contextPath = context.getContextPath();
 
@@ -56,4 +56,5 @@ public class DruidWebUtils {
             return null;
         }
     }
+
 }

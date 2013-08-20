@@ -25,23 +25,34 @@ import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OraclePrimaryKey extends OracleSQLObjectImpl implements SQLPrimaryKey, SQLTableElement {
+public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement {
 
-    private static final long serialVersionUID = 1L;
+    private SQLName                name;
+    private List<SQLExpr>          columns = new ArrayList<SQLExpr>();
 
-    private SQLName           name;
-    private List<SQLExpr>     columns          = new ArrayList<SQLExpr>();
-
-    private SQLExpr           usingIndex;
+    private OracleUsingIndexClause using;
+    private SQLName                exceptionsInto;
+    private Boolean                enable;
+    private Initially              initially;
+    private Boolean                deferrable;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, columns);
-            acceptChild(visitor, usingIndex);
+            acceptChild(visitor, using);
+            acceptChild(visitor, exceptionsInto);
         }
         visitor.endVisit(this);
+    }
+
+    public Boolean getDeferrable() {
+        return deferrable;
+    }
+
+    public void setDeferrable(Boolean deferrable) {
+        this.deferrable = deferrable;
     }
 
     public SQLName getName() {
@@ -60,12 +71,36 @@ public class OraclePrimaryKey extends OracleSQLObjectImpl implements SQLPrimaryK
         this.columns = columns;
     }
 
-    public SQLExpr getUsingIndex() {
-        return usingIndex;
+    public OracleUsingIndexClause getUsing() {
+        return using;
     }
 
-    public void setUsingIndex(SQLExpr usingIndex) {
-        this.usingIndex = usingIndex;
+    public void setUsing(OracleUsingIndexClause using) {
+        this.using = using;
+    }
+
+    public SQLName getExceptionsInto() {
+        return exceptionsInto;
+    }
+
+    public void setExceptionsInto(SQLName exceptionsInto) {
+        this.exceptionsInto = exceptionsInto;
+    }
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
+    public Initially getInitially() {
+        return initially;
+    }
+
+    public void setInitially(Initially initially) {
+        this.initially = initially;
     }
 
 }

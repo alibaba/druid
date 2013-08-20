@@ -21,9 +21,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleArgumentExpr extends OracleSQLObjectImpl implements SQLExpr {
 
-    private static final long serialVersionUID = 1L;
-    private String            argumentName;
-    private SQLExpr           value;
+    private String  argumentName;
+    private SQLExpr value;
 
     public OracleArgumentExpr(){
 

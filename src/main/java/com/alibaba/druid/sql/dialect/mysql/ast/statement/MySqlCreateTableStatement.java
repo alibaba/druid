@@ -32,25 +32,23 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
 public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
 
-    private boolean               ifNotExiists = false;
+    private boolean                ifNotExiists = false;
 
-    private Map<String, SQLObject>   tableOptions = new LinkedHashMap<String, SQLObject>();
+    private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
-    protected SQLSelect           query;
+    protected SQLSelect            query;
 
-    private SQLPartitioningClause partitioning;
+    private SQLPartitioningClause  partitioning;
 
-    private List<SQLCommentHint>  hints        = new ArrayList<SQLCommentHint>();
+    private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
 
-    private SQLExprTableSource    like;
+    private SQLExprTableSource     like;
 
     public MySqlCreateTableStatement(){
 
     }
-    
 
     public SQLExprTableSource getLike() {
         return like;

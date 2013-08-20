@@ -22,10 +22,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCastExpr extends SQLExprImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           expr;
-    private SQLDataType       dataType;
+    private SQLExpr     expr;
+    private SQLDataType dataType;
 
     public SQLCastExpr(){
 

@@ -23,11 +23,9 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public abstract class MySqlIndexHintImpl extends MySqlObjectImpl implements MySqlIndexHint {
 
-    private static final long     serialVersionUID = 1L;
-
     private MySqlIndexHint.Option option;
 
-    private List<SQLName>         indexList        = new ArrayList<SQLName>();
+    private List<SQLName>         indexList = new ArrayList<SQLName>();
 
     @Override
     public abstract void accept0(MySqlASTVisitor visitor);

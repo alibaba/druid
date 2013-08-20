@@ -2,7 +2,7 @@ package com.alibaba.druid.test;
 
 import javax.sql.DataSource;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.nutz.dao.Chain;

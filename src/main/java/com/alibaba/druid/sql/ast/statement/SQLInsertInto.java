@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 
 public abstract class SQLInsertInto extends SQLObjectImpl {
 
-    private static final long     serialVersionUID = 1L;
     protected SQLExprTableSource  tableSource;
 
-    protected final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
     protected ValuesClause        values;
     protected SQLSelect           query;
 

@@ -150,7 +150,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 try {
                     objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + name);
                     mbeanServer.registerMBean(dataSource, objectName);
-                } catch (JMException ex) {
+                } catch (Throwable ex) {
                     LOG.error("register mbean error", ex);
                     objectName = null;
                 }
@@ -161,7 +161,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                     int id = System.identityHashCode(dataSource);
                     objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id);
                     mbeanServer.registerMBean(dataSource, objectName);
-                } catch (JMException ex) {
+                } catch (Throwable ex) {
                     LOG.error("register mbean error", ex);
                     objectName = null;
                 }
@@ -192,7 +192,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
             if (objectName != null) {
                 try {
                     mbeanServer.unregisterMBean(objectName);
-                } catch (JMException ex) {
+                } catch (Throwable ex) {
                     LOG.error("unregister mbean error", ex);
                 }
             }
@@ -200,7 +200,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
             if (instances.size() == 0) {
                 try {
                     mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
-                } catch (JMException ex) {
+                } catch (Throwable ex) {
                     LOG.error("unregister mbean error", ex);
                 }
                 

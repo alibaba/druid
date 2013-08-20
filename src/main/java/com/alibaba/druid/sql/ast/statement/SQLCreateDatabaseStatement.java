@@ -21,16 +21,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateDatabaseStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private SQLName name;
 
-    private SQLName           name;
-
-    private String            characterSet;
-    private String            collate;
+    private String  characterSet;
+    private String  collate;
 
     public SQLCreateDatabaseStatement(){
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

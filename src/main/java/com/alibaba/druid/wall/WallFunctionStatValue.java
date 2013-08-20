@@ -18,9 +18,17 @@ package com.alibaba.druid.wall;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
+
+@MTable(name = "druid_wall_function")
 public class WallFunctionStatValue {
 
+    @MField(groupBy=true, aggregate=AggregateType.None)
     private String name;
+
+    @MField(aggregate=AggregateType.Sum)
     private long   invokeCount;
 
     public WallFunctionStatValue(){

@@ -20,14 +20,29 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
+
+@MTable(name = "druid_wall")
 public class WallProviderStatValue {
 
+    @MField(aggregate = AggregateType.None)
+    private String                            name;
+
+    @MField(aggregate = AggregateType.Sum)
     private long                              checkCount;
+    @MField(aggregate = AggregateType.Sum)
     private long                              hardCheckCount;
+    @MField(aggregate = AggregateType.Sum)
     private long                              violationCount;
+    @MField(aggregate = AggregateType.Sum)
     private long                              whiteListHitCount;
+    @MField(aggregate = AggregateType.Sum)
     private long                              blackListHitCount;
-    private long                              syntaxErrroCount;
+    @MField(aggregate = AggregateType.Sum)
+    private long                              syntaxErrorCount;
+    @MField(aggregate = AggregateType.Sum)
     private long                              violationEffectRowCount;
 
     private final List<WallTableStatValue>    tables    = new ArrayList<WallTableStatValue>();
@@ -35,6 +50,18 @@ public class WallProviderStatValue {
 
     private final List<WallSqlStatValue>      whiteList = new ArrayList<WallSqlStatValue>();
     private final List<WallSqlStatValue>      blackList = new ArrayList<WallSqlStatValue>();
+
+    public WallProviderStatValue(){
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public long getCheckCount() {
         return checkCount;
@@ -77,11 +104,11 @@ public class WallProviderStatValue {
     }
 
     public long getSyntaxErrorCount() {
-        return syntaxErrroCount;
+        return syntaxErrorCount;
     }
 
     public void setSyntaxErrorCount(long syntaxErrroCount) {
-        this.syntaxErrroCount = syntaxErrroCount;
+        this.syntaxErrorCount = syntaxErrroCount;
     }
 
     public long getViolationEffectRowCount() {

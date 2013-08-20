@@ -24,10 +24,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    private static final long       serialVersionUID = 1L;
-
     private SQLExprTableSource      tableSource;
-    private List<SQLAlterTableItem> items            = new ArrayList<SQLAlterTableItem>();
+    private List<SQLAlterTableItem> items = new ArrayList<SQLAlterTableItem>();
 
     public List<SQLAlterTableItem> getItems() {
         return items;
@@ -55,7 +53,7 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

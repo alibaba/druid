@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -43,4 +45,17 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     boolean visit(SQLServerUpdateStatement x);
     
     void endVisit(SQLServerUpdateStatement x);
+    
+    boolean visit(SQLServerColumnDefinition x);
+    
+    void endVisit(SQLServerColumnDefinition x);
+    
+    boolean visit(SQLServerColumnDefinition.Identity x);
+    
+    void endVisit(SQLServerColumnDefinition.Identity x);
+    
+    boolean visit(SQLServerExecStatement x);
+    
+    void endVisit(SQLServerExecStatement x);
+    
 }

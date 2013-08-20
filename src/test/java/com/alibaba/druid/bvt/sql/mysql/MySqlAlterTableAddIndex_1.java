@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -32,7 +32,7 @@ public class MySqlAlterTableAddIndex_1 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD UNIQUE `ix2` (`fid` ASC)", output);
+                            "\n\tADD UNIQUE INDEX `ix2` (`fid` ASC)", output);
     }
 
 }

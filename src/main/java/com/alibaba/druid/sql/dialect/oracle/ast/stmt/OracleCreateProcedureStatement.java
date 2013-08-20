@@ -24,12 +24,10 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleCreateProcedureStatement extends OracleStatementImpl {
 
-    private static final long     serialVersionUID = 1L;
-
     private boolean               orReplace;
     private SQLName               name;
     private OracleBlockStatement  block;
-    private List<OracleParameter> parameters       = new ArrayList<OracleParameter>();
+    private List<OracleParameter> parameters = new ArrayList<OracleParameter>();
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

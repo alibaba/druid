@@ -33,7 +33,6 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
@@ -178,6 +177,7 @@ public class MySqlExprParser extends SQLExprParser {
                     SQLUnaryExpr binaryExpr = new SQLUnaryExpr(SQLUnaryOperator.BINARY, expr());
                     return primaryRest(binaryExpr);
                 }
+            case CACHE:
             case GROUP:
                 lexer.nextToken();
                 return primaryRest(new SQLIdentifierExpr(lexer.stringVal()));
@@ -406,7 +406,7 @@ public class MySqlExprParser extends SQLExprParser {
                         lexer.nextToken();
                         acceptIdentifier("LANGUAGE");
                         acceptIdentifier("MODE");
-                        if (identifierEquals("WITH")) {
+                        if (lexer.token() == Token.WITH) {
                             lexer.nextToken();
                             acceptIdentifier("QUERY");
                             acceptIdentifier("EXPANSION");
@@ -421,7 +421,7 @@ public class MySqlExprParser extends SQLExprParser {
                     } else {
                         throw new ParserException("TODO");
                     }
-                } else if (identifierEquals("WITH")) {
+                } else if (lexer.token() == Token.WITH) {
                     throw new ParserException("TODO");
                 }
 
@@ -727,6 +727,10 @@ public class MySqlExprParser extends SQLExprParser {
         if (lexer.token() == Token.KEY) {
             lexer.nextToken();
         }
+        
+        if (lexer.token() == Token.INDEX) {
+            lexer.nextToken();
+        }
 
         MySqlUnique unique = new MySqlUnique();
 
@@ -753,26 +757,6 @@ public class MySqlExprParser extends SQLExprParser {
         accept(Token.RPAREN);
 
         return unique;
-    }
-
-    public MySqlForeignKey parseForeignKey() {
-        accept(Token.FOREIGN);
-        accept(Token.KEY);
-
-        MySqlForeignKey fk = new MySqlForeignKey();
-
-        accept(Token.LPAREN);
-        this.names(fk.getReferencingColumns());
-        accept(Token.RPAREN);
-
-        accept(Token.REFERENCES);
-
-        fk.setReferencedTableName(this.name());
-
-        accept(Token.LPAREN);
-        this.names(fk.getReferencedColumns());
-        accept(Token.RPAREN);
-        return fk;
     }
 
     protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {

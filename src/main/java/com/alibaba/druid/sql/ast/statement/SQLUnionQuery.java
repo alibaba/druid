@@ -20,12 +20,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnionQuery extends SQLSelectQuery {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLSelectQuery    left;
-    private SQLSelectQuery    right;
-    private SQLUnionOperator  operator         = SQLUnionOperator.UNION;
-    private SQLOrderBy        orderBy;
+    private SQLSelectQuery   left;
+    private SQLSelectQuery   right;
+    private SQLUnionOperator operator = SQLUnionOperator.UNION;
+    private SQLOrderBy       orderBy;
 
     public SQLUnionOperator getOperator() {
         return operator;

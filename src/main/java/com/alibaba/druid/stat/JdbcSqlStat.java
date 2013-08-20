@@ -32,10 +32,12 @@ import javax.management.openmbean.SimpleType;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.StatementExecuteType;
 import com.alibaba.druid.util.JMXUtils;
+import com.alibaba.druid.util.Utils;
 
 public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final String                                sql;
+    private long                                        sqlHash;
     private long                                        id;
     private String                                      dataSource;
     private long                                        executeLastStartTime;
@@ -385,6 +387,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         val.setDbType(dbType);
         val.setSql(sql);
+        val.setSqlHash(getSqlHash());
         val.setId(id);
         val.setExecuteLastStartTime(executeLastStartTime);
         if (reset) {
@@ -585,6 +588,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     public String getSql() {
         return sql;
+    }
+    
+    public long getSqlHash() {
+        if (sqlHash == 0) {
+            sqlHash = Utils.murmurhash2_64(sql);
+        }
+        return sqlHash;
     }
 
     public Date getExecuteLastStartTime() {
@@ -856,11 +866,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.LONG, //
                 SimpleType.LONG, //
 
-                // 35 -
+                // 35 - 39
                 SimpleType.LONG, //
                 SimpleType.LONG, //
                 SimpleType.LONG, //
                 SimpleType.LONG, //
+                SimpleType.LONG, //
+                
+                // 40 -
                 SimpleType.LONG, //
 
         };
@@ -921,6 +934,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "ReadBytesLength", //
                 "InputStreamOpenCount", //
                 "ReaderOpenCount", //
+                
+                // 40
+                "HASH", //
 
         //
         };

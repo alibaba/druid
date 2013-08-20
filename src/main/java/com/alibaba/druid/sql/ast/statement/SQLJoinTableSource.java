@@ -23,13 +23,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl {
 
-    private static final long     serialVersionUID = 1L;
-
     protected SQLTableSource      left;
     protected JoinType            joinType;
     protected SQLTableSource      right;
     protected SQLExpr             condition;
-    protected final List<SQLExpr> using            = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> using = new ArrayList<SQLExpr>();
 
     public SQLJoinTableSource(String alias){
         super(alias);

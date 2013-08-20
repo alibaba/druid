@@ -24,8 +24,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLTruncateStatement extends SQLStatementImpl {
 
-    private static final long          serialVersionUID = 1L;
     protected List<SQLExprTableSource> tableSources     = new ArrayList<SQLExprTableSource>(2);
+
+    private boolean                    purgeSnapshotLog = false;
+
+    private boolean                    only;
+    private Boolean                    restartIdentity;
+    private Boolean                    cascade;
 
     public List<SQLExprTableSource> getTableSources() {
         return tableSources;
@@ -34,7 +39,7 @@ public class SQLTruncateStatement extends SQLStatementImpl {
     public void setTableSources(List<SQLExprTableSource> tableSources) {
         this.tableSources = tableSources;
     }
-    
+
     public void addTableSource(SQLName name) {
         SQLExprTableSource tableSource = new SQLExprTableSource(name);
         tableSource.setParent(this);
@@ -47,5 +52,37 @@ public class SQLTruncateStatement extends SQLStatementImpl {
             acceptChild(visitor, tableSources);
         }
         visitor.endVisit(this);
+    }
+
+    public boolean isPurgeSnapshotLog() {
+        return purgeSnapshotLog;
+    }
+
+    public void setPurgeSnapshotLog(boolean purgeSnapshotLog) {
+        this.purgeSnapshotLog = purgeSnapshotLog;
+    }
+
+    public boolean isOnly() {
+        return only;
+    }
+
+    public void setOnly(boolean only) {
+        this.only = only;
+    }
+
+    public Boolean getRestartIdentity() {
+        return restartIdentity;
+    }
+
+    public void setRestartIdentity(Boolean restartIdentity) {
+        this.restartIdentity = restartIdentity;
+    }
+
+    public Boolean getCascade() {
+        return cascade;
+    }
+
+    public void setCascade(Boolean cascade) {
+        this.cascade = cascade;
     }
 }

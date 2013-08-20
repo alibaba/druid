@@ -21,17 +21,15 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAssignItem extends SQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           target;
-    private SQLExpr           value;
+    private SQLExpr target;
+    private SQLExpr value;
 
     public SQLAssignItem(){
     }
 
     public SQLAssignItem(SQLExpr target, SQLExpr value){
-        this.target = target;
-        this.value = value;
+        setTarget(target);
+        setValue(value);
     }
 
     public SQLExpr getTarget() {
@@ -39,6 +37,9 @@ public class SQLAssignItem extends SQLObjectImpl {
     }
 
     public void setTarget(SQLExpr target) {
+        if (target != null) {
+            target.setParent(this);
+        }
         this.target = target;
     }
 
@@ -47,6 +48,9 @@ public class SQLAssignItem extends SQLObjectImpl {
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 

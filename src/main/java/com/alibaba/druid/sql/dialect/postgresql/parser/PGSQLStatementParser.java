@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -39,8 +38,8 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class PGSQLStatementParser extends SQLStatementParser {
 
-    public PGSQLStatementParser(String sql) {
-        super (new PGExprParser(sql));
+    public PGSQLStatementParser(String sql){
+        super(new PGExprParser(sql));
     }
 
     public PGSQLStatementParser(Lexer lexer){
@@ -113,7 +112,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 SQLInsertStatement.ValuesClause valuesCaluse = new SQLInsertStatement.ValuesClause();
                 this.exprParser.exprList(valuesCaluse.getValues());
                 stmt.addValueCause(valuesCaluse);
-                
+
                 accept(Token.RPAREN);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
@@ -185,53 +184,6 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
 
         return deleteStatement;
-    }
-
-    public SQLStatement parseTruncate() {
-        accept(Token.TRUNCATE);
-
-        PGTruncateStatement stmt = new PGTruncateStatement();
-
-        if (lexer.token() == Token.TABLE) {
-            lexer.nextToken();
-        }
-
-        if (lexer.token() == Token.ONLY) {
-            lexer.nextToken();
-            stmt.setOnly(true);
-        }
-
-        for (;;) {
-            SQLName name = this.exprParser.name();
-            stmt.addTableSource(name);
-
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-
-            break;
-        }
-
-        if (lexer.token() == Token.RESTART) {
-            lexer.nextToken();
-            accept(Token.IDENTITY);
-            stmt.setRestartIdentity(Boolean.TRUE);
-        } else if (lexer.token() == Token.SHARE) {
-            lexer.nextToken();
-            accept(Token.IDENTITY);
-            stmt.setRestartIdentity(Boolean.FALSE);
-        }
-
-        if (lexer.token() == Token.CASCADE) {
-            lexer.nextToken();
-            stmt.setCascade(Boolean.TRUE);
-        } else if (lexer.token() == Token.RESTRICT) {
-            lexer.nextToken();
-            stmt.setCascade(Boolean.FALSE);
-        }
-
-        return stmt;
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {

@@ -27,11 +27,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleInsertStatement extends SQLInsertStatement implements OracleStatement {
 
-    private static final long        serialVersionUID = 1L;
-
     private OracleReturningClause    returning;
     private OracleErrorLoggingClause errorLogging;
-    private List<SQLHint>            hints            = new ArrayList<SQLHint>();
+    private List<SQLHint>            hints = new ArrayList<SQLHint>();
 
     public List<SQLHint> getHints() {
         return hints;

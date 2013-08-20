@@ -22,8 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUseStatement extends SQLStatementImpl implements SQLStatement {
 
-    private static final long serialVersionUID = 1L;
-    private SQLName           database;
+    private SQLName database;
 
     public SQLName getDatabase() {
         return database;

@@ -24,9 +24,8 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
 public class PGWithQuery extends PGSQLObjectImpl {
 
-    private static final long   serialVersionUID = 1L;
     private SQLExpr             name;
-    private final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> columns = new ArrayList<SQLExpr>();
     private SQLStatement        query;
 
     public SQLExpr getName() {

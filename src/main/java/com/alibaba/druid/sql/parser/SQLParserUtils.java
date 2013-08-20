@@ -46,11 +46,7 @@ public class SQLParserUtils {
             return new PGSQLStatementParser(sql);
         }
 
-        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
-            return new SQLServerStatementParser(sql);
-        }
-
-        if (JdbcUtils.JTDS.equals(dbType)) {
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerStatementParser(sql);
         }
 
@@ -80,11 +76,7 @@ public class SQLParserUtils {
             return new PGExprParser(sql);
         }
 
-        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
-            return new SQLServerExprParser(sql);
-        }
-
-        if (JdbcUtils.JTDS.equals(dbType)) {
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerExprParser(sql);
         }
         

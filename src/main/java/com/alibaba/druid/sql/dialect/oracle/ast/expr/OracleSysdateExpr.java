@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSysdateExpr extends OracleSQLObjectImpl implements SQLExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private String            option;
+    private String option;
 
     public String getOption() {
         return option;

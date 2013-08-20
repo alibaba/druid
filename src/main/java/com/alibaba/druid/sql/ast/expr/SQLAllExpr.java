@@ -21,8 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAllExpr extends SQLExprImpl {
 
-    private static final long serialVersionUID = 1L;
-    public SQLSelect          subQuery;
+    public SQLSelect subQuery;
 
     public SQLAllExpr(){
 

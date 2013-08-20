@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
 public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTableConstaint {
 
     private String indexType;

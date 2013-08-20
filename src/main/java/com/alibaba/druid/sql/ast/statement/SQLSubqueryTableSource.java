@@ -19,9 +19,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
-    private static final long serialVersionUID = 1L;
-
-    protected SQLSelect       select;
+    protected SQLSelect select;
 
     public SQLSubqueryTableSource(){
 

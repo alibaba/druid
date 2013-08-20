@@ -26,10 +26,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatement {
 
-    private static final long  serialVersionUID = 1L;
-
     private PGWithClause       with;
-    private List<ValuesClause> valuesList       = new ArrayList<ValuesClause>();
+    private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
     private SQLExpr            returning;
 
     public SQLExpr getReturning() {
@@ -66,7 +64,7 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
     public List<ValuesClause> getValuesList() {
         return valuesList;
     }
-    
+
     public void addValueCause(ValuesClause valueClause) {
         valueClause.setParent(this);
         valuesList.add(valueClause);

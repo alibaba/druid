@@ -20,13 +20,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowVariantsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
+    private boolean global  = false;
+    private boolean session = false;
 
-    private boolean           global           = false;
-    private boolean           session          = false;
-
-    private SQLExpr           like;
-    private SQLExpr           where;
+    private SQLExpr like;
+    private SQLExpr where;
 
     public boolean isGlobal() {
         return global;

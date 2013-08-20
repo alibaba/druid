@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, OracleExpr {
 
-    private static final long  serialVersionUID = 1L;
     private SQLExpr            value;
     private OracleIntervalType type;
     private Integer            precision;

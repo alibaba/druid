@@ -21,9 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlBooleanExpr extends MySqlExprImpl implements MySqlExpr, SQLLiteralExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    private boolean           value;
+    private boolean value;
 
     public MySqlBooleanExpr(){
 

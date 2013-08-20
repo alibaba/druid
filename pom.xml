@@ -4,20 +4,20 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.24-SNAPSHOT</version>
+	<version>0.2.26-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
 	<description>An JDBC datasource implementation.</description>
-	<url>https://github.com/AlibabaTech/druid</url>
-	<inceptionYear>2012</inceptionYear>
+	<url>https://github.com/alibaba/druid</url>
+	<inceptionYear>2013</inceptionYear>
 
 	<properties>
-		<spring.version>3.1.1.RELEASE</spring.version>
+		<spring.version>3.2.3.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 
 		<gpg.skip>true</gpg.skip>
-	        <javadoc.skip>true</javadoc.skip>
+		<javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
@@ -51,8 +51,8 @@
 	</developers>
 
 	<scm>
-		<url>https://wenshao@github.com/AlibabaTech/druid.git</url>
-		<connection>scm:git:https://wenshao@github.com/AlibabaTech/druid.git</connection>
+		<url>https://wenshao@github.com/alibaba/druid.git</url>
+		<connection>scm:git:https://wenshao@github.com/alibaba/druid.git</connection>
 	</scm>
 
 	<organization>
@@ -347,11 +347,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-ibatis</artifactId>
@@ -412,13 +419,11 @@
 			<version>9.1-901-1.jdbc4</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc5</artifactId> 
-			<version>11.2.0.3</version> <scope>provided</scope> </dependency> -->
 
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<version>10.2.0.2</version>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -509,28 +514,41 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-dbutils</groupId>
-			<artifactId>commons-dbutils</artifactId>
-			<version>1.5</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
 			<version>1.b.47</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.taobao.tbdatasource</groupId>
 			<artifactId>tbdatasource</artifactId>
 			<version>2.0.2</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.1.29</version>
+			<groupId>org.javasimon</groupId>
+			<artifactId>javasimon-spring</artifactId>
+			<version>3.3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.javasimon</groupId>
+			<artifactId>javasimon-jdbc4</artifactId>
+			<version>3.3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.javasimon</groupId>
+			<artifactId>javasimon-javaee</artifactId>
+			<version>3.3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

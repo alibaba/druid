@@ -19,12 +19,10 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlCommitStatement extends MySqlStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private boolean work = false;
 
-    private boolean           work             = false;
-
-    private Boolean           chain;
-    private Boolean           release;
+    private Boolean chain;
+    private Boolean release;
 
     public Boolean getChain() {
         return chain;

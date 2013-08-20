@@ -48,6 +48,9 @@ public class MySqlLexer extends Lexer {
         map.put("TRUE", Token.TRUE);
         map.put("BINARY", Token.BINARY);
         map.put("SHOW", Token.SHOW);
+        map.put("CACHE", Token.CACHE);
+        map.put("ANALYZE", Token.ANALYZE);
+        map.put("OPTIMIZE", Token.OPTIMIZE);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }
@@ -432,14 +435,12 @@ public class MySqlLexer extends Lexer {
                 token = Token.MULTI_LINE_COMMENT;
             }
 
-            if (token != Token.HINT) {
-                if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
-                    return;
-                }
-                
-                if (!isAllowComment()) {
-                    throw new NotAllowCommentException();
-                }
+            if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+                return;
+            }
+            
+            if (!isAllowComment()) {
+                throw new NotAllowCommentException();
             }
 
             return;

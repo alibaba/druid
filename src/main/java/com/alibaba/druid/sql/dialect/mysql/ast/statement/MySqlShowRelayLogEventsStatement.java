@@ -21,11 +21,9 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowRelayLogEventsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private static final long serialVersionUID = 1L;
-
-    private SQLExpr           logName;
-    private SQLExpr           from;
-    private Limit             limit;
+    private SQLExpr logName;
+    private SQLExpr from;
+    private Limit   limit;
 
     public SQLExpr getLogName() {
         return logName;

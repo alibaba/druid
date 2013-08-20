@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class PGSQLObjectImpl extends SQLObjectImpl implements PGSQLObject {
 
-    private static final long serialVersionUID = 1L;
-
     public PGSQLObjectImpl(){
 
     }

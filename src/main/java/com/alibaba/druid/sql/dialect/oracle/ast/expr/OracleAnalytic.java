@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleAnalytic extends SQLOver implements OracleExpr {
 
-    private static final long       serialVersionUID = 1L;
     private OracleAnalyticWindowing windowing;
 
     public OracleAnalytic(){

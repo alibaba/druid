@@ -18,13 +18,36 @@ package com.alibaba.druid.wall;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
+
+@MTable(name = "druid_wall_sql")
 public class WallSqlStatValue {
 
     private String  sql;
+
+    @MField(groupBy = true, aggregate = AggregateType.None, hashFor = "sql", hashForType = "sql")
+    private long    sqlHash;
+
     private String  sqlSample;
+
+    @MField(groupBy = true, aggregate = AggregateType.None, hashFor = "sqlSample", hashForType = "sqlSample")
+    private long    sqlSampleHash;
+
+    @MField(aggregate = AggregateType.Sum)
     private long    executeCount;
-    private long    effectRowCount;
+
+    @MField(aggregate = AggregateType.Sum)
+    private long    fetchRowCount;
+
+    @MField(aggregate = AggregateType.Sum)
+    private long    updateCount;
+
+    @MField(aggregate = AggregateType.Last)
     private boolean syntaxError;
+
+    @MField(aggregate = AggregateType.Last)
     private String  violationMessage;
 
     public WallSqlStatValue(){
@@ -37,6 +60,14 @@ public class WallSqlStatValue {
 
     public void setSql(String sql) {
         this.sql = sql;
+    }
+
+    public long getSqlHash() {
+        return sqlHash;
+    }
+
+    public void setSqlHash(long sqlHash) {
+        this.sqlHash = sqlHash;
     }
 
     public String getSqlSample() {
@@ -55,12 +86,20 @@ public class WallSqlStatValue {
         this.executeCount = executeCount;
     }
 
-    public long getEffectRowCount() {
-        return effectRowCount;
+    public long getFetchRowCount() {
+        return fetchRowCount;
     }
 
-    public void setEffectRowCount(long effectRowCount) {
-        this.effectRowCount = effectRowCount;
+    public void setFetchRowCount(long fetchRowCount) {
+        this.fetchRowCount = fetchRowCount;
+    }
+
+    public long getUpdateCount() {
+        return updateCount;
+    }
+
+    public void setUpdateCount(long updateCount) {
+        this.updateCount = updateCount;
     }
 
     public boolean isSyntaxError() {
@@ -86,8 +125,18 @@ public class WallSqlStatValue {
             sqlStatMap.put("sample", sqlSample);
         }
         sqlStatMap.put("executeCount", getExecuteCount());
-        sqlStatMap.put("effectRowCount", getEffectRowCount());
-        sqlStatMap.put("violationMessage", getViolationMessage());
+
+        if (fetchRowCount > 0) {
+            sqlStatMap.put("fetchRowCount", fetchRowCount);
+        }
+
+        if (updateCount > 0) {
+            sqlStatMap.put("updateCount", updateCount);
+        }
+
+        if (violationMessage != null) {
+            sqlStatMap.put("violationMessage", violationMessage);
+        }
 
         return sqlStatMap;
     }

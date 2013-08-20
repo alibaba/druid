@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockConnection;
