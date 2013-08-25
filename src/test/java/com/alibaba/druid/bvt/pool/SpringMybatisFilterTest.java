@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -82,6 +83,10 @@ public class SpringMybatisFilterTest extends TestCase {
         }
         
         {
+            userMapper.errorSelect(1);
+        }
+        
+        {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             stmt.execute("DROP TABLE sequence_seed");
@@ -105,5 +110,8 @@ public class SpringMybatisFilterTest extends TestCase {
 
         @Insert(value = "insert into t_User (id, name) values (#{user.id}, #{user.name})")
         void addUser(@Param("user") User user);
+        
+        @Select(value = "delete from t_User where id = #{id}")
+        void errorSelect(@Param("id") long id);
     }
 }
