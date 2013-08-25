@@ -43,6 +43,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
@@ -60,6 +61,11 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
     public PGWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
+    }
+    
+    @Override
+    public String getDbType() {
+        return JdbcConstants.POSTGRESQL;
     }
 
     @Override

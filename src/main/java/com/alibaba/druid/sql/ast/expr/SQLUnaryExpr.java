@@ -52,12 +52,6 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
         this.expr = expr;
     }
 
-    @Override
-    public void output(StringBuffer buf) {
-        buf.append(" NOT ");
-        this.expr.output(buf);
-    }
-
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.expr);

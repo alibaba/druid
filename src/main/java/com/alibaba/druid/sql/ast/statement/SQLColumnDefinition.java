@@ -30,7 +30,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     protected SQLDataType                     dataType;
     protected SQLExpr                         defaultExpr;
     protected final List<SQLColumnConstraint> constaints = new ArrayList<SQLColumnConstraint>(0);
-    protected String                          comment;
+    protected SQLExpr                          comment;
 
     protected Boolean                         enable;
 
@@ -99,11 +99,11 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         visitor.endVisit(this);
     }
 
-    public String getComment() {
+    public SQLExpr getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(SQLExpr comment) {
         this.comment = comment;
     }
 

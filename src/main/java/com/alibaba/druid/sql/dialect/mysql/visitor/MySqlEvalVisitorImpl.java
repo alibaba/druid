@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -33,6 +34,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
@@ -92,6 +94,14 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     }
 
     public boolean visit(SQLNumberExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(SQLHexExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(MySqlBinaryExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
 

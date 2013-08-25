@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
@@ -40,6 +41,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -53,6 +55,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2EvalVisitor;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
@@ -84,6 +87,7 @@ import com.alibaba.druid.sql.visitor.functions.Substring;
 import com.alibaba.druid.sql.visitor.functions.Trim;
 import com.alibaba.druid.sql.visitor.functions.Ucase;
 import com.alibaba.druid.sql.visitor.functions.Unhex;
+import com.alibaba.druid.util.HexBin;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
@@ -192,6 +196,7 @@ public class SQLEvalVisitorUtils {
         functions.put("lpad", Lpad.instance);
         functions.put("ltrim", Ltrim.instance);
         functions.put("mid", Substring.instance);
+        functions.put("substr", Substring.instance);
         functions.put("substring", Substring.instance);
         functions.put("right", Right.instance);
         functions.put("reverse", Reverse.instance);
@@ -554,6 +559,19 @@ public class SQLEvalVisitorUtils {
         return true;
     }
 
+    public static boolean visit(SQLEvalVisitor visitor, SQLHexExpr x) {
+        String hex = x.getHex();
+        byte[] bytes = HexBin.decode(hex);
+        String val = new String(bytes);
+        x.putAttribute(EVAL_VALUE, val);
+        return true;
+    }
+
+    public static boolean visit(SQLEvalVisitor visitor, MySqlBinaryExpr x) {
+
+        return true;
+    }
+
     public static boolean visit(SQLEvalVisitor visitor, SQLBetweenExpr x) {
         x.getTestExpr().accept(visitor);
 
@@ -715,6 +733,36 @@ public class SQLEvalVisitorUtils {
             wallConditionContext.setBitwise(true);
         }
 
+        x.getExpr().accept(visitor);
+
+        Object val = x.getExpr().getAttribute(EVAL_VALUE);
+        if (val == EVAL_ERROR) {
+            x.putAttribute(EVAL_VALUE, EVAL_ERROR);
+            return false;
+        }
+
+        switch (x.getOperator()) {
+            case BINARY:
+            case RAW:
+                x.putAttribute(EVAL_VALUE, val);
+                break;
+            case NOT:
+            case Not:
+                x.putAttribute(EVAL_VALUE, !castToBoolean(val));
+                break;
+            case Plus:
+                x.putAttribute(EVAL_VALUE, val);
+                break;
+            case Negative:
+                x.putAttribute(EVAL_VALUE, multi(val, -1));
+                break;
+            case Compl:
+                x.putAttribute(EVAL_VALUE, ~castToInteger(val));
+                break;
+            default:
+                break;
+        }
+
         return false;
     }
 
@@ -832,6 +880,18 @@ public class SQLEvalVisitorUtils {
                 break;
             case Divide:
                 value = div(leftValue, rightValue);
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case RightShift:
+                value = rightShift(leftValue, rightValue);
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case BitwiseAnd:
+                value = bitAnd(leftValue, rightValue);
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case BitwiseOr:
+                value = bitOr(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case GreaterThan:
@@ -978,7 +1038,17 @@ public class SQLEvalVisitorUtils {
         }
 
         if (val instanceof Number) {
-            return ((Number) val).intValue() == 1;
+            return ((Number) val).intValue() > 0;
+        }
+
+        if (val instanceof String) {
+            if ("1".equals(val) || "true".equalsIgnoreCase((String) val)) {
+                return true;
+            }
+
+            if ("0".equals(val) || "false".equalsIgnoreCase((String) val)) {
+                return false;
+            }
         }
 
         throw new IllegalArgumentException(val.getClass() + " not supported.");
@@ -1184,6 +1254,42 @@ public class SQLEvalVisitorUtils {
         }
 
         return BigDecimal.valueOf(((Number) val).longValue());
+    }
+
+    public static Object rightShift(Object a, Object b) {
+        if (a == null || b == null) {
+            return null;
+        }
+
+        if (a instanceof Long || b instanceof Long) {
+            return castToLong(a).longValue() >> castToLong(b).longValue();
+        }
+
+        return castToInteger(a).intValue() >> castToInteger(b).intValue();
+    }
+
+    public static Object bitAnd(Object a, Object b) {
+        if (a == null || b == null) {
+            return null;
+        }
+
+        if (a instanceof Long || b instanceof Long) {
+            return castToLong(a).longValue() & castToLong(b).longValue();
+        }
+
+        return castToInteger(a).intValue() & castToInteger(b).intValue();
+    }
+
+    public static Object bitOr(Object a, Object b) {
+        if (a == null || b == null) {
+            return null;
+        }
+
+        if (a instanceof Long || b instanceof Long) {
+            return castToLong(a).longValue() | castToLong(b).longValue();
+        }
+
+        return castToInteger(a).intValue() | castToInteger(b).intValue();
     }
 
     public static Object div(Object a, Object b) {

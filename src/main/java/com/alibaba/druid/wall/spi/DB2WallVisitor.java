@@ -43,6 +43,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
@@ -60,6 +61,11 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
     public DB2WallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
+    }
+
+    @Override
+    public String getDbType() {
+        return JdbcConstants.DB2;
     }
 
     @Override

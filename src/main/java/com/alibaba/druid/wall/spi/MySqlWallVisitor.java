@@ -57,6 +57,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallContext;
@@ -76,6 +77,11 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public MySqlWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
+    }
+    
+    @Override
+    public String getDbType() {
+        return JdbcConstants.MYSQL;
     }
 
     @Override

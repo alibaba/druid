@@ -33,7 +33,7 @@ public class MySqlPerfTest extends TestCase {
         sql = "SELECT * FROM T";
         sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ?";
 
-        sql = Utils.readFromResource("benchmark/sql/ob_sql.txt");
+//        sql = Utils.readFromResource("benchmark/sql/ob_sql.txt");
     }
 
     public void test_pert() throws Exception {
@@ -48,7 +48,7 @@ public class MySqlPerfTest extends TestCase {
         long startFGC = TestUtils.getFullGC();
 
         long startMillis = System.currentTimeMillis();
-        for (int i = 0; i < 1000 * 1; ++i) {
+        for (int i = 0; i < 1000 * 1000; ++i) {
             execMySql(sql);
         }
         long millis = System.currentTimeMillis() - startMillis;

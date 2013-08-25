@@ -51,6 +51,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
@@ -68,6 +69,11 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     public OracleWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
+    }
+    
+    @Override
+    public String getDbType() {
+        return JdbcConstants.ORACLE;
     }
 
     @Override

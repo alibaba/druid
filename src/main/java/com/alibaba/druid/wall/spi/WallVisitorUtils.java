@@ -47,6 +47,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
@@ -612,8 +613,10 @@ public class WallVisitorUtils {
 
             boolean allFalse = true;
             for (int i = groupList.size() - 1; i >= 0; --i) {
-                Object result = getValue(visitor, groupList.get(i));
-                if (Boolean.TRUE == result) {
+                SQLExpr item = groupList.get(i);
+                Object result = getValue(visitor, item);
+                Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
+                if (Boolean.TRUE == booleanVal) {
                     final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
                     if (wallContext != null && i != 0) {
                         wallContext.setPartAlwayTrue(true);
@@ -621,7 +624,7 @@ public class WallVisitorUtils {
                     return true;
                 }
 
-                if (Boolean.FALSE != result) {
+                if (Boolean.FALSE != booleanVal) {
                     allFalse = false;
                 }
             }
@@ -973,63 +976,14 @@ public class WallVisitorUtils {
             }
         }
 
-        if (x instanceof SQLMethodInvokeExpr) {
-            return getValue(visitor, (SQLMethodInvokeExpr) x);
+        if (x instanceof SQLMethodInvokeExpr || x instanceof SQLUnaryExpr) {
+            String dbType = null;
+            if (visitor != null) {
+                dbType = visitor.getDbType();
+            }
+            return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
         }
-
-        return null;
-    }
-
-    public static Object getValue(WallVisitor visitor, SQLMethodInvokeExpr x) {
-        String methodName = x.getMethodName();
-        if ("len".equalsIgnoreCase(methodName) || "length".equalsIgnoreCase(methodName)) {
-            Object firstValue = null;
-            if (x.getParameters().size() > 0) {
-                firstValue = (getValue(visitor, x.getParameters().get(0)));
-            }
-
-            if (firstValue instanceof String) {
-                return ((String) firstValue).length();
-            }
-        }
-
-        if ("if".equalsIgnoreCase(methodName) && x.getParameters().size() == 3) {
-            SQLExpr first = x.getParameters().get(0);
-            Object firstResult = getValue(visitor, first);
-
-            if (Boolean.TRUE == firstResult) {
-                return getValue(visitor, x.getParameters().get(1));
-            }
-
-            if (Boolean.FALSE == firstResult) {
-                getValue(visitor, x.getParameters().get(2));
-            }
-        }
-
-        if ("chr".equalsIgnoreCase(methodName) && x.getParameters().size() == 1) {
-            SQLExpr first = x.getParameters().get(0);
-            Object firstResult = getValue(visitor, first);
-            if (firstResult instanceof Number) {
-                int intValue = ((Number) firstResult).intValue();
-                char ch = (char) intValue;
-
-                return "" + ch;
-            }
-        }
-
-        if ("concat".equalsIgnoreCase(methodName)) {
-            StringBuffer buf = new StringBuffer();
-            for (SQLExpr expr : x.getParameters()) {
-                Object value = getValue(visitor, expr);
-                if (value == null) {
-                    return null;
-                }
-
-                buf.append(value.toString());
-            }
-            return buf.toString();
-        }
-
+        
         return null;
     }
 

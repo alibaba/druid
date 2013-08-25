@@ -92,7 +92,7 @@ public class SQLServerEvalVisitor extends SQLServerASTVisitorAdapter implements 
     public boolean visit(SQLNumberExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-
+    
     @Override
     public boolean visit(SQLCaseExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);

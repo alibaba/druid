@@ -135,7 +135,7 @@ public class PGEvalVisitor extends PGASTVisitorAdapter implements SQLEvalVisitor
     public void registerFunction(String funcName, Function function) {
         functions.put(funcName, function);
     }
-    
+
     public boolean visit(SQLIdentifierExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }

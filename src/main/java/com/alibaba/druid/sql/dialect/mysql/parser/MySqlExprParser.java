@@ -558,12 +558,6 @@ public class MySqlExprParser extends SQLExprParser {
             throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
         }
 
-        if (lexer.token() == Token.COMMENT) {
-            lexer.nextToken();
-            column.setComment(lexer.stringVal());
-            accept(Token.LITERAL_CHARS);
-        }
-
         if (identifierEquals("STORAGE")) {
             lexer.nextToken();
             SQLExpr expr = expr();
@@ -727,7 +721,7 @@ public class MySqlExprParser extends SQLExprParser {
         if (lexer.token() == Token.KEY) {
             lexer.nextToken();
         }
-        
+
         if (lexer.token() == Token.INDEX) {
             lexer.nextToken();
         }

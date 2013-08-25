@@ -23,6 +23,7 @@ import java.util.Map;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -84,6 +85,10 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     }
 
     public boolean visit(SQLNumberExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(SQLHexExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
 

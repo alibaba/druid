@@ -47,6 +47,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReference
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
@@ -64,6 +65,11 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     public SQLServerWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
         this.provider = provider;
+    }
+    
+    @Override
+    public String getDbType() {
+        return JdbcConstants.SQL_SERVER;
     }
 
     @Override

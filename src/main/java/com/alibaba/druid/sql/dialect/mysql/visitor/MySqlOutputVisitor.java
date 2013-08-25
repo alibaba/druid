@@ -324,6 +324,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
             item.accept(this);
         }
+        
+        if (x.getComment() != null) {
+            print(" COMMENT ");
+            x.getComment().accept(this);
+        }
 
         return false;
     }

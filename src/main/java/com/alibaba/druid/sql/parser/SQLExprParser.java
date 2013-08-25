@@ -1478,7 +1478,7 @@ public class SQLExprParser extends SQLParser {
                 column.getConstaints().add(check);
                 return parseColumnRest(column);
             }
-            
+
             if (lexer.token == Token.DEFAULT) {
                 lexer.nextToken();
                 SQLExpr expr = this.expr();
@@ -1493,6 +1493,11 @@ public class SQLExprParser extends SQLParser {
             SQLColumnCheck check = parseColumnCheck();
             column.getConstaints().add(check);
             return parseColumnRest(column);
+        }
+        
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            column.setComment(primary());
         }
 
         return column;
