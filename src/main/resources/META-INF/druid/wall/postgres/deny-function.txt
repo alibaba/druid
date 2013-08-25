@@ -18,3 +18,4 @@ pg_trigger_depth
 session_user
 user
 version
+pg_sleep

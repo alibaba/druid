@@ -39,6 +39,9 @@ public class WallSqlStatValue {
     private long    executeCount;
 
     @MField(aggregate = AggregateType.Sum)
+    private long    executeErrorCount;
+
+    @MField(aggregate = AggregateType.Sum)
     private long    fetchRowCount;
 
     @MField(aggregate = AggregateType.Sum)
@@ -118,6 +121,14 @@ public class WallSqlStatValue {
         this.violationMessage = violationMessage;
     }
 
+    public long getExecuteErrorCount() {
+        return executeErrorCount;
+    }
+
+    public void setExecuteErrorCount(long executeErrorCount) {
+        this.executeErrorCount = executeErrorCount;
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> sqlStatMap = new LinkedHashMap<String, Object>();
         sqlStatMap.put("sql", sql);
@@ -125,6 +136,10 @@ public class WallSqlStatValue {
             sqlStatMap.put("sample", sqlSample);
         }
         sqlStatMap.put("executeCount", getExecuteCount());
+        
+        if (executeErrorCount > 0) {
+            sqlStatMap.put("executeErrorCount", executeErrorCount);
+        }
 
         if (fetchRowCount > 0) {
             sqlStatMap.put("fetchRowCount", fetchRowCount);

@@ -27,7 +27,7 @@ import com.alibaba.druid.wall.WallUtils;
  *
  */
 public class WallSelectWhereTest0 extends TestCase {
-    private String sql = "SELECT F1, F2 WHERE 1 = 1 OR F1 = ?";
+    private String sql = "SELECT F1, F2 from t WHERE 1 = 1 OR F1 = ?";
 
     public void testMySql() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(sql));

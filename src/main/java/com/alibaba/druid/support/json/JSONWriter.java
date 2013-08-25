@@ -213,6 +213,15 @@ public class JSONWriter {
                 write("\\\\");
             } else if (c == '\t') {
                 write("\\t");
+            } else if (c < 16) {
+                write("\\u000");
+                write(Integer.toHexString(c));
+            } else if (c < 32) {
+                write("\\u00");
+                write(Integer.toHexString(c));
+            } else if (c >= 0x7f && c <= 0xA0) {
+                write("\\u00");
+                write(Integer.toHexString(c));
             } else {
                 write(c);
             }

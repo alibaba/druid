@@ -64,7 +64,7 @@ public abstract class WallProvider {
     private LRUCache<String, WallSqlStat>                 blackList;
     private LRUCache<String, WallSqlStat>                 blackMergedList;
 
-    private int                                           blackSqlMaxSize         = 100;                                               // 1k
+    private int                                           blackSqlMaxSize         = 200;                                               // 1k
 
     protected final WallConfig                            config;
 

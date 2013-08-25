@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -211,6 +213,10 @@ public class WallVisitorUtils {
 
             SQLExpr where = x.getWhere();
             if (where != null) {
+                if (queryBlockFromIsNull(visitor, x, false)) {
+                    addViolation(visitor, ErrorCode.EmptyQueryHasCondition, "empty select has condition", x);
+                }
+
                 where.setParent(x);
                 checkCondition(visitor, x.getWhere());
 
@@ -641,6 +647,10 @@ public class WallVisitorUtils {
         SQLExpr right = x.getRight();
         Object leftResult = getValue(visitor, left);
         Object rightResult = getValue(visitor, right);
+        
+        if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String && leftResult.equals(rightResult)) {
+            addViolation(visitor, ErrorCode.DoubleConstCondition, "same const like", x);
+        }
 
         if (x.getOperator() == SQLBinaryOperator.Like || x.getOperator() == SQLBinaryOperator.NotLike) {
             WallContext context = WallContext.current();
@@ -652,8 +662,14 @@ public class WallVisitorUtils {
         }
 
         if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
-            if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
-                return false;
+            if (rightResult != null && x.getLeft() instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr leftBinaryOpExpr = (SQLBinaryOpExpr) x.getLeft();
+                if (leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanAnd) {
+                    Object leftRightVal = getValue(leftBinaryOpExpr.getRight());
+                    if (leftRightVal != null) {
+                        addViolation(visitor, ErrorCode.DoubleConstCondition, "double const condition", x);
+                    }
+                }
             }
 
             if (leftResult == Boolean.TRUE) {
@@ -679,6 +695,10 @@ public class WallVisitorUtils {
 
             if (Boolean.TRUE == leftResult && Boolean.TRUE == rightResult) {
                 return true;
+            }
+
+            if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
+                return false;
             }
         }
 
@@ -944,6 +964,10 @@ public class WallVisitorUtils {
     }
 
     public static Object getValue(WallVisitor visitor, SQLExpr x) {
+        if (x != null && x.getAttributes().containsKey(EVAL_VALUE)) {
+            return x.getAttribute(EVAL_VALUE);
+        }
+
         if (x instanceof SQLBinaryOpExpr) {
             return getValue(visitor, (SQLBinaryOpExpr) x);
         }
@@ -978,17 +1002,17 @@ public class WallVisitorUtils {
         }
 
         if (x instanceof SQLMethodInvokeExpr //
-                || x instanceof SQLBetweenExpr //
-                || x instanceof SQLInListExpr //
-                || x instanceof SQLUnaryExpr //
-                ) {
+            || x instanceof SQLBetweenExpr //
+            || x instanceof SQLInListExpr //
+            || x instanceof SQLUnaryExpr //
+        ) {
             String dbType = null;
             if (visitor != null) {
                 dbType = visitor.getDbType();
             }
             return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
         }
-        
+
         return null;
     }
 
@@ -1495,6 +1519,10 @@ public class WallVisitorUtils {
     }
 
     public static boolean queryBlockFromIsNull(WallVisitor visitor, SQLSelectQuery query) {
+        return queryBlockFromIsNull(visitor, query, true);
+    }
+
+    public static boolean queryBlockFromIsNull(WallVisitor visitor, SQLSelectQuery query, boolean checkSelectConst) {
         if (query instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
             SQLTableSource from = queryBlock.getFrom();
@@ -1526,15 +1554,17 @@ public class WallVisitorUtils {
                 }
             }
 
-            boolean allIsConst = true;
-            for (SQLSelectItem item : queryBlock.getSelectList()) {
-                if (getValue(visitor, item.getExpr()) == null) {
-                    allIsConst = false;
-                    break;
+            if (checkSelectConst) {
+                boolean allIsConst = true;
+                for (SQLSelectItem item : queryBlock.getSelectList()) {
+                    if (getValue(visitor, item.getExpr()) == null) {
+                        allIsConst = false;
+                        break;
+                    }
                 }
-            }
-            if (allIsConst) {
-                return true;
+                if (allIsConst) {
+                    return true;
+                }
             }
         }
 

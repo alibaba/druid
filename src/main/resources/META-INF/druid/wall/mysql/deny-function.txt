@@ -10,3 +10,6 @@ current_user
 sleep
 extractvalue
 updatexml
+xmltype
+receive_message
+pg_sleep

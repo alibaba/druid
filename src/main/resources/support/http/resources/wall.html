@@ -132,6 +132,7 @@
 							<th class="td_lable">SQL</th>
 							<th class="td_lable" ><span id="WhiteListSample" class="lang" langKey="Sample">Sample</span></th>
 							<th class="td_lable" style="width: 50px;"><span id="WhiteListExecuteCount" class="lang" langKey="ExecuteCount">ExecuteCount</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="WhiteListExecuteErrorCount" class="lang" langKey="ExecuteErrorCount">ExecuteErrorCount</span></th>
 							<th class="td_lable" style="width: 50px;"><span id="WhiteListFetchRowCount" class="lang" langKey="FetchRowCount">FetchRowCount</span></th>
 							<th class="td_lable" style="width: 50px;"><span id="WhiteListUpdateCount" class="lang" langKey="SQLUpdateCount">UpdateCount</span></th>
 						</tr>
@@ -147,6 +148,7 @@
 							<th class="td_lable" style="width: 50px;"><span id="BlackListNumber" class="lang" langKey="TableNumber">TableNumber</span></th>
 							<th class="td_lable">SQL</th>
 							<th class="td_lable" ><span id="BlackListSample" class="lang" langKey="Sample">Sample</span></th>
+							<th class="td_lable" style="width: 50px;"><span id="violationMessage" class="lang" langKey="violationMessage">violationMessage</span></th>
 							<th class="td_lable" style="width: 50px;"><span id="BlackListExecuteCount" class="lang" langKey="ExecuteCount">ExecuteCount</span></th>
 							<th class="td_lable" style="width: 50px;"><span id="BlackListFetchRowCount" class="lang" langKey="FetchRowCount">FetchRowCount</span></th>
 							<th class="td_lable" style="width: 50px;"><span id="BlackListUpdateCount" class="lang" langKey="SQLUpdateCount">UpdateCount</span></th>
@@ -250,7 +252,7 @@
 							var white = whiteList[i];
 							html += "<tr>";
 							html += "<td>"+ (i+1) +"</td>";
-							html += "<td>" + white.sql + "</td>";
+							html += '<td style="word-break:break-all">' + white.sql + "</td>";
 
 							if (white.sample === undefined) {
 								html += "<td></td>";
@@ -258,11 +260,17 @@
 								html += '<td style="word-break:break-all">'
 										+ white.sample + "</td>";
 							}
-
+							
 							if (white.executeCount === undefined) {
 								html += "<td></td>";
 							} else {
 								html += "<td>" + white.executeCount + "</td>";
+							}
+							
+							if (white.executeErrorCount === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + white.executeErrorCount + "</td>";
 							}
 
 							if (white.fetchRowCount === undefined) {
@@ -288,13 +296,19 @@
 							var black = blackList[i];
 							html += "<tr>";
 							html += "<td>"+ (i+1) +"</td>";
-							html += "<td>" + black.sql + "</td>";
+							html += '<td style="word-break:break-all">' + black.sql + "</td>";
 
 							if (black.sample === undefined) {
 								html += "<td></td>";
 							} else {
 								html += '<td style="word-break:break-all">'
 										+ black.sample + "</td>";
+							}
+							
+							if (black.violationMessage === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + black.violationMessage + "</td>";
 							}
 
 							if (black.executeCount === undefined) {

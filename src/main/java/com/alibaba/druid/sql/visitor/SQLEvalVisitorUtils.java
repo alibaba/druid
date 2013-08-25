@@ -555,7 +555,7 @@ public class SQLEvalVisitorUtils {
                 char ch = (char) intValue;
                 x.putAttribute(EVAL_VALUE, Character.toString(ch));
             }
-        } else if ("CURRENT_USER".equals(methodName)) {
+        } else if ("current_user".equals(methodName)) {
             x.putAttribute(EVAL_VALUE, "CURRENT_USER");
         }
         return false;
