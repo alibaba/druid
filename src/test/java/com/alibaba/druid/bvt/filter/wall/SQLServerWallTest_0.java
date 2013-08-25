@@ -67,15 +67,35 @@ public class SQLServerWallTest_0 extends TestCase {
         }
     }
 
-    public void test_true1() throws Exception {
+    public void test_false2() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = "SELECT characteristic.columnname + '|' + RTRIM(characteristic.rpid) as rpid , characteristic.columnname, characteristic.chnname FROM characteristic inner join content_sort on characteristic.rpid = content_sort.rpid and content_sort.opid = 2  WHERE (characteristic.columnname IN (SELECT name FROM syscolumns WHERE (id =(SELECT id FROM sysobjects WHERE (name = 'content'))) AND (name NOT IN ('billid', 'itemno', 'tableid', 'rpid')))) AND (characteristic.closed = 0) ORDER BY content_sort.sort, characteristic.code";
-            Assert.assertTrue(provider.checkValid(sql));
+            String sql = "SELECT characteristic.columnname + '|' + RTRIM(characteristic.rpid) as rpid ," //
+                         + " characteristic.columnname, characteristic.chnname " //
+                         + "FROM characteristic" //
+                         + "     inner join content_sort" //
+                         + "         on characteristic.rpid = content_sort.rpid and content_sort.opid = 2"
+                         + "WHERE (characteristic.columnname IN (" //
+                         + "         SELECT name FROM syscolumns" //
+                         + "         WHERE (id =(SELECT id FROM sysobjects WHERE (name = 'content')))" //
+                         + "                 AND (name NOT IN ('billid', 'itemno', 'tableid', 'rpid'))" //
+                         + "         ))" //
+                         + "     AND (characteristic.closed = 0)" //
+                         + "ORDER BY content_sort.sort, characteristic.code";
+            Assert.assertFalse(provider.checkValid(sql));
         }
+    }
+
+    public void test_false3() throws Exception {
+        WallProvider provider = initWallProvider();
+
         {
-            String sql = "SELECT rpid, columnname, chnname, type, textfield, valuefield, ddlbtable, ddlbwhere, ddlbsort, datatype FROM characteristic WHERE (closed = 0) AND ((SELECT COUNT(*) FROM sysobjects WHERE (id IN (SELECT id FROM syscolumns WHERE name = columnname)) AND (name = 'content')) > 0) ORDER BY code";
-            Assert.assertTrue(provider.checkValid(sql));
+            String sql = "SELECT rpid, columnname, chnname, type, textfield" //
+                         + "     , valuefield, ddlbtable, ddlbwhere, ddlbsort, datatype "//
+                         + "FROM characteristic "//
+                         + "WHERE (closed = 0)" //
+                         + "     AND ((SELECT COUNT(*) FROM sysobjects WHERE (id IN (SELECT id FROM syscolumns WHERE name = columnname)) AND (name = 'content')) > 0) ORDER BY code";
+            Assert.assertFalse(provider.checkValid(sql));
         }
     }
 
