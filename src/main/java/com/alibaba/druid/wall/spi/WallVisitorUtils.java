@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr.Item;
@@ -976,7 +977,11 @@ public class WallVisitorUtils {
             }
         }
 
-        if (x instanceof SQLMethodInvokeExpr || x instanceof SQLUnaryExpr) {
+        if (x instanceof SQLMethodInvokeExpr //
+                || x instanceof SQLBetweenExpr //
+                || x instanceof SQLInListExpr //
+                || x instanceof SQLUnaryExpr //
+                ) {
             String dbType = null;
             if (visitor != null) {
                 dbType = visitor.getDbType();

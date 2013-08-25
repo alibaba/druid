@@ -25,6 +25,8 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -309,4 +311,26 @@ public class Utils {
         return h;
     }
 
+    public static byte[] md5Bytes(String text) {
+        MessageDigest msgDigest = null;
+
+        try {
+            msgDigest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("System doesn't support MD5 algorithm.");
+        }
+
+        msgDigest.update(text.getBytes());
+
+        byte[] bytes = msgDigest.digest();
+
+        return bytes;
+    }
+
+    public static String md5(String text) {
+        byte[] bytes = md5Bytes(text);
+        return HexBin.encode(bytes, false);
+    }
+    
+   
 }

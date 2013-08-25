@@ -26,6 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +82,7 @@ import com.alibaba.druid.sql.visitor.functions.Locate;
 import com.alibaba.druid.sql.visitor.functions.Lpad;
 import com.alibaba.druid.sql.visitor.functions.Ltrim;
 import com.alibaba.druid.sql.visitor.functions.Now;
+import com.alibaba.druid.sql.visitor.functions.OneParamFunctions;
 import com.alibaba.druid.sql.visitor.functions.Reverse;
 import com.alibaba.druid.sql.visitor.functions.Right;
 import com.alibaba.druid.sql.visitor.functions.Substring;
@@ -215,6 +217,11 @@ public class SQLEvalVisitorUtils {
         functions.put("least", Least.instance);
         functions.put("isnull", Isnull.instance);
         functions.put("if", If.instance);
+
+        functions.put("md5", OneParamFunctions.instance);
+        functions.put("bit_count", OneParamFunctions.instance);
+        functions.put("soundex", OneParamFunctions.instance);
+        functions.put("space", OneParamFunctions.instance);
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
@@ -568,8 +575,28 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, MySqlBinaryExpr x) {
+        String text = x.getValue();
+        BitSet bits = new BitSet(text.length());
+        for (int i = 0; i < text.length(); ++i) {
+            char ch = text.charAt(i);
+            if (ch == '1') {
+                bits.set(i);
+            }
+        }
 
-        return true;
+        long[] longValues = bits.toLongArray();
+
+        Object val;
+
+        if (longValues.length == 1) {
+            val = longValues[0];
+        } else {
+            val = new BigInteger(bits.toByteArray());
+        }
+
+        x.putAttribute(EVAL_VALUE, val);
+
+        return false;
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLBetweenExpr x) {
