@@ -243,7 +243,8 @@ druid.lang = function() {
 		'RequestTimeMillis':['RequestTimeMillis', '请求时间'],
 		'JdbcExecutePeak':['JdbcExecutePeak', 'jdbc执行峰值'],
 		'JdbcFetchRowPeak':['JdbcFetchRowPeak', 'jdbc查询取回行数峰值'],
-		'JdbcUpdatePeak':['JdbcUpdatePeak', 'jdbc更新峰值']
+		'JdbcUpdatePeak':['JdbcUpdatePeak', 'jdbc更新峰值'],
+		'Histogram':['Histogram','区间分布']
 		
 	};
 	

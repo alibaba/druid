@@ -35,6 +35,16 @@
 									<th><a id="th-JdbcRollbackCount" class="lang" langKey="JdbcRollbackCount">JdbcRollbackCount</a></th>
 									<th><a id="th-JdbcFetchRowCount" class="lang" langKey="JdbcFetchRowCount">JdbcFetchRowCount</a></th>
 									<th><a id="th-JdbcUpdateCount" class="lang" langKey="JdbcUpdateCount">JdbcUpdateCount</a></th> 
+									<th align="left" width="100"><span class="lang" langKey="Histogram">Histogram</span> <br />[ 
+										<a id="th-Histogram[0]" class="langTitle" langKey="count1ms" title="count of '0-1 ms'" >-</a>
+										<a id="th-Histogram[1]" class="langTitle" langKey="count10ms" title="count of '1-10 ms'" >-</a>
+										<a id="th-Histogram[2]" class="langTitle" langKey="count100ms" title="count of '10-100 ms'" >-</a>
+										<a id="th-Histogram[3]" class="langTitle" langKey="count1s" title="count of '100ms-1 s'" >-</a>
+										<a id="th-Histogram[4]" class="langTitle" langKey="count10s" title="count of '1-10 s'" >-</a>
+										<a id="th-Histogram[5]" class="langTitle" langKey="count100s" title="count of '10-100 s'" >-</a>
+										<a id="th-Histogram[6]" class="langTitle" langKey="count1000s" title="count of '100-1000 s'" >-</a>
+										<a id="th-Histogram[7]" class="langTitle" langKey="countBg1000s" title="count of '> 1000 s'" >-</a> ]
+									</th>
 								</tr>
 							</thead> 
 							<tbody></tbody>
@@ -85,6 +95,7 @@
     					html += "<td>" + replace(stat.JdbcRollbackCount) + "</td>";
     					html += "<td>" + replace(stat.JdbcFetchRowCount) + "</td>";
     					html += "<td>" + replace(stat.JdbcUpdateCount) + "</td>";
+    					html += "<td>" + '[' + stat.Histogram + ']' + "</td>";
     					html += "</tr>";
     				}
     				$("#dataTable tbody").html(html);
