@@ -647,9 +647,9 @@ public class WallVisitorUtils {
         SQLExpr right = x.getRight();
         Object leftResult = getValue(visitor, left);
         Object rightResult = getValue(visitor, right);
-        
+
         if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String && leftResult.equals(rightResult)) {
-            addViolation(visitor, ErrorCode.DoubleConstCondition, "same const like", x);
+            addViolation(visitor, ErrorCode.SameConstLike, "same const like", x);
         }
 
         if (x.getOperator() == SQLBinaryOperator.Like || x.getOperator() == SQLBinaryOperator.NotLike) {
@@ -664,7 +664,16 @@ public class WallVisitorUtils {
         if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
             if (rightResult != null && x.getLeft() instanceof SQLBinaryOpExpr) {
                 SQLBinaryOpExpr leftBinaryOpExpr = (SQLBinaryOpExpr) x.getLeft();
-                if (leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanAnd) {
+
+                if (leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanAnd //
+                    && leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanOr //
+                    && leftResult != null //
+                    && visitor != null) {
+                    addViolation(visitor, ErrorCode.DoubleConstCondition, "double const condition", x);
+                }
+
+                if (leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanAnd //
+                    || leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanOr) {
                     Object leftRightVal = getValue(leftBinaryOpExpr.getRight());
                     if (leftRightVal != null) {
                         addViolation(visitor, ErrorCode.DoubleConstCondition, "double const condition", x);
