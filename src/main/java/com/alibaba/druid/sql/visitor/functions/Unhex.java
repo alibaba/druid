@@ -20,7 +20,6 @@ import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 import java.io.UnsupportedEncodingException;
 
-import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;

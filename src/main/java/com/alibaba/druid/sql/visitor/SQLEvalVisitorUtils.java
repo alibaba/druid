@@ -633,30 +633,32 @@ public class SQLEvalVisitorUtils {
         SQLExpr testExpr = unwrap(x.getTestExpr());
         testExpr.accept(visitor);
 
-        if (!x.getTestExpr().getAttributes().containsKey(EVAL_VALUE)) {
+        if (!testExpr.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
 
-        Object value = x.getTestExpr().getAttribute(EVAL_VALUE);
+        Object value = testExpr.getAttribute(EVAL_VALUE);
 
-        x.getBeginExpr().accept(visitor);
-        if (!x.getBeginExpr().getAttributes().containsKey(EVAL_VALUE)) {
+        SQLExpr beginExpr = unwrap(x.getBeginExpr());
+        beginExpr.accept(visitor);
+        if (!beginExpr.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
 
-        Object begin = x.getBeginExpr().getAttribute(EVAL_VALUE);
+        Object begin = beginExpr.getAttribute(EVAL_VALUE);
 
         if (lt(value, begin)) {
             x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
             return false;
         }
 
-        x.getEndExpr().accept(visitor);
-        if (!x.getEndExpr().getAttributes().containsKey(EVAL_VALUE)) {
+        SQLExpr endExpr = unwrap(x.getEndExpr());
+        endExpr.accept(visitor);
+        if (!endExpr.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
 
-        Object end = x.getEndExpr().getAttribute(EVAL_VALUE);
+        Object end = endExpr.getAttribute(EVAL_VALUE);
 
         if (gt(value, end)) {
             x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
@@ -825,8 +827,8 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryOpExpr x) {
-        SQLExpr left = x.getLeft();
-        SQLExpr right = x.getRight();
+        SQLExpr left = unwrap(x.getLeft());
+        SQLExpr right = unwrap(x.getRight());
 
         // final WallConditionContext old = wallConditionContextLocal.get();
 
@@ -937,12 +939,8 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Divide:
-                if (rightValue instanceof Number && ((Number) rightValue).intValue() == 0) {
-                    x.putAttribute(EVAL_VALUE, EVAL_ERROR);
-                } else {
-                    value = div(leftValue, rightValue);
-                    x.putAttribute(EVAL_VALUE, value);
-                }
+                value = div(leftValue, rightValue);
+                x.putAttribute(EVAL_VALUE, value);
                 break;
             case RightShift:
                 value = rightShift(leftValue, rightValue);
@@ -1369,7 +1367,10 @@ public class SQLEvalVisitorUtils {
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
             BigDecimal decimalA = castToDecimal(a);
             BigDecimal decimalB = castToDecimal(b);
-            return decimalA.divide(decimalB, BigDecimal.ROUND_HALF_UP);
+            if (decimalB.scale() < decimalA.scale()) {
+                decimalB.setScale(decimalA.scale());
+            }
+            return decimalA.divide(decimalB);
         }
 
         if (a instanceof Double || b instanceof Double) {
@@ -1401,6 +1402,15 @@ public class SQLEvalVisitorUtils {
         if (a instanceof Integer || b instanceof Integer) {
             Integer intA = castToInteger(a);
             Integer intB = castToInteger(b);
+            if (intB == 0) {
+                if (intA > 0) {
+                    return Double.POSITIVE_INFINITY;
+                } else if (intA < 0) {
+                    return Double.NEGATIVE_INFINITY;
+                } else {
+                    return Double.NaN;
+                }
+            }
             return intA / intB;
         }
 
