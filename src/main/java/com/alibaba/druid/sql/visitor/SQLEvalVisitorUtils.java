@@ -91,7 +91,6 @@ import com.alibaba.druid.sql.visitor.functions.Ucase;
 import com.alibaba.druid.sql.visitor.functions.Unhex;
 import com.alibaba.druid.util.HexBin;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallSelectQueryContext;

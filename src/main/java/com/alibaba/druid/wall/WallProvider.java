@@ -55,12 +55,14 @@ public abstract class WallProvider {
                                                                                                                           0.75f,
                                                                                                                           1);
 
+    private boolean                                       whiteListEnable         = true;
     private LRUCache<String, WallSqlStat>                 whiteList;
 
     private int                                           MAX_SQL_LENGTH          = 2048;                                              // 1k
 
     private int                                           whiteSqlMaxSize         = 500;                                               // 1k
 
+    private boolean                                       blackListEnable         = true;
     private LRUCache<String, WallSqlStat>                 blackList;
     private LRUCache<String, WallSqlStat>                 blackMergedList;
 
@@ -239,6 +241,12 @@ public abstract class WallProvider {
 
     public WallSqlStat addWhiteSql(String sql, Map<String, WallSqlTableStat> tableStats,
                                    Map<String, WallSqlFunctionStat> functionStats, boolean syntaxError) {
+
+        if (!whiteListEnable) {
+            WallSqlStat stat = new WallSqlStat(tableStats, functionStats, syntaxError);
+            return stat;
+        }
+
         String mergedSql;
         try {
             mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
@@ -306,6 +314,11 @@ public abstract class WallProvider {
     public WallSqlStat addBlackSql(String sql, Map<String, WallSqlTableStat> tableStats,
                                    Map<String, WallSqlFunctionStat> functionStats, List<Violation> violations,
                                    boolean syntaxError) {
+        if (!blackListEnable) {
+            WallSqlStat stat = new WallSqlStat(tableStats, functionStats, syntaxError);
+            return stat;
+        }
+
         String mergedSql;
         try {
             mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
@@ -364,7 +377,7 @@ public abstract class WallProvider {
             if (whiteList != null) {
                 hashSet.addAll(whiteList.keySet());
             }
-            
+
             if (blackMergedList != null) {
                 hashSet.addAll(blackMergedList.keySet());
             }
@@ -705,7 +718,7 @@ public abstract class WallProvider {
     }
 
     private WallCheckResult checkWhiteAndBlackList(String sql) {
-        {
+        if (whiteListEnable) {
             WallSqlStat sqlStat = getWhiteSql(sql);
             if (sqlStat != null) {
                 whiteListHitCount.incrementAndGet();
@@ -724,7 +737,7 @@ public abstract class WallProvider {
             }
         }
         // check black list
-        {
+        if (blackListEnable) {
             WallSqlStat sqlStat = getBlackSql(sql);
             if (sqlStat != null) {
                 blackListHitCount.incrementAndGet();
@@ -919,14 +932,14 @@ public abstract class WallProvider {
                     }
 
                     sqlStatValue.setSql(sql);
-                    
+
                     long sqlHash = sqlStat.getSqlHash();
                     if (sqlHash == 0) {
                         sqlHash = Utils.murmurhash2_64(sql);
                         sqlStat.setSqlHash(sqlHash);
                     }
                     sqlStatValue.setSqlHash(sqlHash);
-                    
+
                     statValue.getWhiteList().add(sqlStatValue);
                 }
             }
@@ -954,5 +967,21 @@ public abstract class WallProvider {
 
     public Map<String, Object> getStatsMap() {
         return getStatValue(false).toMap();
+    }
+
+    public boolean isWhiteListEnable() {
+        return whiteListEnable;
+    }
+
+    public void setWhiteListEnable(boolean whiteListEnable) {
+        this.whiteListEnable = whiteListEnable;
+    }
+
+    public boolean isBlackListEnable() {
+        return blackListEnable;
+    }
+
+    public void setBlackListEnable(boolean blackListEnable) {
+        this.blackListEnable = blackListEnable;
     }
 }

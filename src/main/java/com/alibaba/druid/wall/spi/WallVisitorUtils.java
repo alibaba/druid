@@ -1011,15 +1011,16 @@ public class WallVisitorUtils {
             }
         }
 
+        String dbType = null;
+        if (visitor != null) {
+            dbType = visitor.getDbType();
+        }
+        
         if (x instanceof SQLMethodInvokeExpr //
             || x instanceof SQLBetweenExpr //
             || x instanceof SQLInListExpr //
             || x instanceof SQLUnaryExpr //
         ) {
-            String dbType = null;
-            if (visitor != null) {
-                dbType = visitor.getDbType();
-            }
             return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
         }
 
@@ -1032,6 +1033,8 @@ public class WallVisitorUtils {
                     addViolation(visitor, ErrorCode.CONST_CASE_CONDITION, "const case condition", caseExpr);
                 }
             }
+            
+            return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
         }
 
         return null;
