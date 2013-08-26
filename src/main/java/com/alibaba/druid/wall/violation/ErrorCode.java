@@ -63,6 +63,7 @@ public interface ErrorCode {
     public final static int EmptyQueryHasCondition        = 2106;
     public final static int DoubleConstCondition          = 2107;
     public final static int SameConstLike                 = 2108;
+    public final static int CONST_CASE_CONDITION          = 2109;
 
     public final static int NOT_PARAMETERIZED             = 2200;
     public final static int MULTI_TENANT                  = 2201;

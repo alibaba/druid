@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr.Item;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -1020,6 +1021,17 @@ public class WallVisitorUtils {
                 dbType = visitor.getDbType();
             }
             return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
+        }
+
+        if (x instanceof SQLCaseExpr) {
+            SQLCaseExpr caseExpr = (SQLCaseExpr) x;
+            if (caseExpr.getItems().size() > 0) {
+                SQLCaseExpr.Item item = caseExpr.getItems().get(0);
+                Object conditionVal = getValue(visitor, item.getConditionExpr());
+                if (conditionVal instanceof Boolean) {
+                    addViolation(visitor, ErrorCode.CONST_CASE_CONDITION, "const case condition", caseExpr);
+                }
+            }
         }
 
         return null;
