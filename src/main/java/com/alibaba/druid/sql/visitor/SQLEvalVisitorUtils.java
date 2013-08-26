@@ -961,8 +961,11 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case IsNot:
-                value = !eq(leftValue, rightValue);
-                x.putAttribute(EVAL_VALUE, value);
+                if (leftValue == EVAL_VALUE_NULL) {
+                    x.putAttribute(EVAL_VALUE, false);
+                } else if (leftValue != null) {
+                    x.putAttribute(EVAL_VALUE, true);
+                }
                 break;
             case RegExp:
             case RLike: {
