@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2EvalVisitor;
@@ -605,8 +606,32 @@ public class SQLEvalVisitorUtils {
         return false;
     }
 
+    public static SQLExpr unwrap(SQLExpr expr) {
+        if (expr == null) {
+            return null;
+        }
+
+        if (expr instanceof SQLQueryExpr) {
+            SQLSelect select = ((SQLQueryExpr) expr).getSubQuery();
+            if (select == null) {
+                return null;
+            }
+            if (select.getQuery() instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
+                if (queryBlock.getFrom() == null) {
+                    if (queryBlock.getSelectList().size() == 1) {
+                        return queryBlock.getSelectList().get(0).getExpr();
+                    }
+                }
+            }
+        }
+
+        return expr;
+    }
+
     public static boolean visit(SQLEvalVisitor visitor, SQLBetweenExpr x) {
-        x.getTestExpr().accept(visitor);
+        SQLExpr testExpr = unwrap(x.getTestExpr());
+        testExpr.accept(visitor);
 
         if (!x.getTestExpr().getAttributes().containsKey(EVAL_VALUE)) {
             return false;
@@ -912,8 +937,12 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Divide:
-                value = div(leftValue, rightValue);
-                x.putAttribute(EVAL_VALUE, value);
+                if (rightValue instanceof Number && ((Number) rightValue).intValue() == 0) {
+                    x.putAttribute(EVAL_VALUE, EVAL_ERROR);
+                } else {
+                    value = div(leftValue, rightValue);
+                    x.putAttribute(EVAL_VALUE, value);
+                }
                 break;
             case RightShift:
                 value = rightShift(leftValue, rightValue);
@@ -1161,7 +1190,11 @@ public class SQLEvalVisitorUtils {
             }
         }
 
-        return ((Number) val).intValue();
+        if (val instanceof Number) {
+            return ((Number) val).intValue();
+        }
+
+        throw new DruidRuntimeException("cast error");
     }
 
     @SuppressWarnings("rawtypes")
@@ -1334,7 +1367,9 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
-            return castToDecimal(a).divide(castToDecimal(b));
+            BigDecimal decimalA = castToDecimal(a);
+            BigDecimal decimalB = castToDecimal(b);
+            return decimalA.divide(decimalB, BigDecimal.ROUND_HALF_UP);
         }
 
         if (a instanceof Double || b instanceof Double) {
@@ -1364,7 +1399,9 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Integer || b instanceof Integer) {
-            return castToInteger(a) / castToInteger(b);
+            Integer intA = castToInteger(a);
+            Integer intB = castToInteger(b);
+            return intA / intB;
         }
 
         if (a instanceof Short || b instanceof Short) {
@@ -1379,11 +1416,11 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean gt(Object a, Object b) {
-        if (a == null) {
+        if (a == null || a == EVAL_VALUE_NULL) {
             return false;
         }
 
-        if (b == null) {
+        if (b == null || a == EVAL_VALUE_NULL) {
             return true;
         }
 
@@ -1471,7 +1508,9 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Integer || b instanceof Integer) {
-            return castToInteger(a) < castToInteger(b);
+            Integer intA = castToInteger(a);
+            Integer intB = castToInteger(b);
+            return intA < intB;
         }
 
         if (a instanceof Short || b instanceof Short) {

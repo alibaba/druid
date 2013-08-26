@@ -44,6 +44,10 @@ public class Left implements Function {
 
         String strValue = param0Value.toString();
         int intValue = SQLEvalVisitorUtils.castToInteger(param1Value);
+        
+        if (intValue > strValue.length()) {
+            return SQLEvalVisitor.EVAL_ERROR;
+        }
 
         String result = strValue.substring(0, intValue);
 

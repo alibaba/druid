@@ -60,9 +60,9 @@ public interface ErrorCode {
     public final static int BITWISE                       = 2103;
     public final static int NONE_CONDITION                = 2104;
     public final static int LIKE_NUMBER                   = 2105;
-    public final static int EmptyQueryHasCondition        = 2106;
-    public final static int DoubleConstCondition          = 2107;
-    public final static int SameConstLike                 = 2108;
+    public final static int EMPTY_QUERY_HAS_CONDITION     = 2106;
+    public final static int DOUBLE_CONST_CONDITION        = 2107;
+    public final static int SAME_CONST_LIKE               = 2108;
     public final static int CONST_CASE_CONDITION          = 2109;
 
     public final static int NOT_PARAMETERIZED             = 2200;

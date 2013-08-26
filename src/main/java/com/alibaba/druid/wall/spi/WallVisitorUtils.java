@@ -215,7 +215,7 @@ public class WallVisitorUtils {
             SQLExpr where = x.getWhere();
             if (where != null) {
                 if (queryBlockFromIsNull(visitor, x, false)) {
-                    addViolation(visitor, ErrorCode.EmptyQueryHasCondition, "empty select has condition", x);
+                    addViolation(visitor, ErrorCode.EMPTY_QUERY_HAS_CONDITION, "empty select has condition", x);
                 }
 
                 where.setParent(x);
@@ -650,7 +650,7 @@ public class WallVisitorUtils {
         Object rightResult = getValue(visitor, right);
 
         if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String && leftResult.equals(rightResult)) {
-            addViolation(visitor, ErrorCode.SameConstLike, "same const like", x);
+            addViolation(visitor, ErrorCode.SAME_CONST_LIKE, "same const like", x);
         }
 
         if (x.getOperator() == SQLBinaryOperator.Like || x.getOperator() == SQLBinaryOperator.NotLike) {
@@ -670,14 +670,14 @@ public class WallVisitorUtils {
                     && leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanOr //
                     && leftResult != null //
                     && visitor != null) {
-                    addViolation(visitor, ErrorCode.DoubleConstCondition, "double const condition", x);
+                    addViolation(visitor, ErrorCode.DOUBLE_CONST_CONDITION, "double const condition", x);
                 }
 
                 if (leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanAnd //
                     || leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanOr) {
                     Object leftRightVal = getValue(leftBinaryOpExpr.getRight());
                     if (leftRightVal != null) {
-                        addViolation(visitor, ErrorCode.DoubleConstCondition, "double const condition", x);
+                        addViolation(visitor, ErrorCode.DOUBLE_CONST_CONDITION, "double const condition", x);
                     }
                 }
             }
@@ -1029,7 +1029,8 @@ public class WallVisitorUtils {
             if (caseExpr.getItems().size() > 0) {
                 SQLCaseExpr.Item item = caseExpr.getItems().get(0);
                 Object conditionVal = getValue(visitor, item.getConditionExpr());
-                if (conditionVal instanceof Boolean) {
+                Object itemVal = getValue(visitor, item.getValueExpr());
+                if (conditionVal instanceof Boolean && itemVal != null) {
                     addViolation(visitor, ErrorCode.CONST_CASE_CONDITION, "const case condition", caseExpr);
                 }
             }
