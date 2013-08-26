@@ -26,7 +26,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +90,7 @@ import com.alibaba.druid.sql.visitor.functions.Ucase;
 import com.alibaba.druid.sql.visitor.functions.Unhex;
 import com.alibaba.druid.util.HexBin;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallSelectQueryContext;
@@ -576,22 +576,28 @@ public class SQLEvalVisitorUtils {
 
     public static boolean visit(SQLEvalVisitor visitor, MySqlBinaryExpr x) {
         String text = x.getValue();
-        BitSet bits = new BitSet(text.length());
+
+        long[] words = new long[text.length() / 64 + 1];
         for (int i = 0; i < text.length(); ++i) {
             char ch = text.charAt(i);
             if (ch == '1') {
-                bits.set(i);
+                int wordIndex = i >> 6;
+                words[wordIndex] |= (1L << i);
             }
         }
 
-        long[] longValues = bits.toLongArray();
-
         Object val;
 
-        if (longValues.length == 1) {
-            val = longValues[0];
+        if (words.length == 1) {
+            val = words[0];
         } else {
-            val = new BigInteger(bits.toByteArray());
+            byte[] bytes = new byte[words.length * 8];
+
+            for (int i = 0; i < words.length; ++i) {
+                Utils.putLong(bytes, i * 8, words[i]);
+            }
+
+            val = new BigInteger(bytes);
         }
 
         x.putAttribute(EVAL_VALUE, val);
