@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.parser.CharTypes;
+
 public class JSONParser {
 
     private String text;
@@ -160,7 +162,7 @@ public class JSONParser {
         }
 
         for (;;) {
-            if (ch == ' ' || ch == '\r' || ch == '\n' || ch == '\t') {
+            if (CharTypes.isWhitespace(ch)) {
                 nextChar();
                 continue;
             }
