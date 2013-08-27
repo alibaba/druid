@@ -152,7 +152,7 @@ public class JSONParser {
             return;
         }
 
-        throw new IllegalArgumentException("illegal token : " + token + ", expect " + token);
+        throw new IllegalArgumentException("illegal token : " + this.token + ", expect " + token);
     }
 
     final void nextToken() {
@@ -312,7 +312,6 @@ public class JSONParser {
                     char c4 = ch;
                     int val = Integer.parseInt(new String(new char[] { c1, c2, c3, c4 }), 16);
                     strBuf.append((char) val);
-                    break;
                 } else {
                     throw new IllegalArgumentException("illegal string : " + strBuf);
                 }
