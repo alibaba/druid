@@ -570,8 +570,12 @@ public class SQLEvalVisitorUtils {
     public static boolean visit(SQLEvalVisitor visitor, SQLHexExpr x) {
         String hex = x.getHex();
         byte[] bytes = HexBin.decode(hex);
-        String val = new String(bytes);
-        x.putAttribute(EVAL_VALUE, val);
+        if (bytes == null) {
+            x.putAttribute(EVAL_VALUE, EVAL_ERROR);
+        } else {
+            String val = new String(bytes);
+            x.putAttribute(EVAL_VALUE, val);
+        }
         return true;
     }
 
@@ -807,9 +811,13 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, val);
                 break;
             case NOT:
-            case Not:
-                x.putAttribute(EVAL_VALUE, !castToBoolean(val));
+            case Not: {
+                Boolean booleanVal = castToBoolean(val);
+                if (booleanVal != null) {
+                    x.putAttribute(EVAL_VALUE, !booleanVal);
+                }
                 break;
+            }
             case Plus:
                 x.putAttribute(EVAL_VALUE, val);
                 break;
@@ -1368,9 +1376,9 @@ public class SQLEvalVisitorUtils {
             BigDecimal decimalA = castToDecimal(a);
             BigDecimal decimalB = castToDecimal(b);
             if (decimalB.scale() < decimalA.scale()) {
-                decimalB.setScale(decimalA.scale());
+                decimalB = decimalB.setScale(decimalA.scale());
             }
-            return decimalA.divide(decimalB);
+            return decimalA.divide(decimalB, BigDecimal.ROUND_HALF_UP);
         }
 
         if (a instanceof Double || b instanceof Double) {

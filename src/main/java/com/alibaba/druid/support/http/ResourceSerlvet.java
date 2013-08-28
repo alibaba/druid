@@ -179,7 +179,6 @@ public abstract class ResourceSerlvet extends HttpServlet {
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
         String contextPath = request.getContextPath();
         String servletPath = request.getServletPath();
         String requestURI = request.getRequestURI();
@@ -210,9 +209,12 @@ public abstract class ResourceSerlvet extends HttpServlet {
             return;
         }
 
-        if (isRequireAuth()
-            && session.getAttribute(SESSION_USER_KEY) == null
-            && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js") || path.startsWith("/img"))) {
+        if (isRequireAuth() //
+            && !ContainsUser(request)//
+            && !("/login.html".equals(path) //
+                 || path.startsWith("/css")//
+                 || path.startsWith("/js") //
+            || path.startsWith("/img"))) {
             if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/druid/login.html");
             } else {
@@ -247,7 +249,14 @@ public abstract class ResourceSerlvet extends HttpServlet {
         // find file in resources path
         returnResourceFile(path, uri, response);
     }
-    
+
+    public boolean ContainsUser(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return false;
+        }
+        return session.getAttribute(SESSION_USER_KEY) != null;
+    }
 
     public boolean isRequireAuth() {
         return this.username != null;
@@ -257,6 +266,6 @@ public abstract class ResourceSerlvet extends HttpServlet {
         String remoteAddress = request.getRemoteAddr();
         return isPermittedRequest(remoteAddress);
     }
-    
+
     protected abstract String process(String url);
 }

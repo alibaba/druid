@@ -1210,7 +1210,7 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.token() == Token.ESCAPE) {
                 lexer.nextToken();
-                rightExp = expr();
+                rightExp = primary();
                 expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Escape, rightExp);
             }
         } else if (lexer.token() == (Token.NOT)) {

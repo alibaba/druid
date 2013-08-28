@@ -36,7 +36,9 @@ public class WallConfig implements WallConfigMBean {
     private boolean             createTableAllow           = true;
     private boolean             dropTableAllow             = true;
     private boolean             alterTableAllow            = true;
+
     private boolean             conditionAndAlwayTrueAllow = false;
+    private boolean             conditionDoubleConstAllow  = false;
 
     private boolean             selectAllColumnAllow       = true;
 
@@ -108,6 +110,14 @@ public class WallConfig implements WallConfigMBean {
 
     public WallConfig(){
 
+    }
+
+    public boolean isConditionDoubleConstAllow() {
+        return conditionDoubleConstAllow;
+    }
+
+    public void setConditionDoubleConstAllow(boolean conditionDoubleConstAllow) {
+        this.conditionDoubleConstAllow = conditionDoubleConstAllow;
     }
 
     public boolean isLimitZeroAllow() {
