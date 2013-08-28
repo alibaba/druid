@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -78,7 +79,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         this.config = provider.getConfig();
         this.provider = provider;
     }
-    
+
     @Override
     public String getDbType() {
         return JdbcConstants.MYSQL;
@@ -431,6 +432,53 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(SQLCallStatement x) {
         return false;
+    }
+
+    @Override
+    public boolean visit(SQLCommentHint x) {
+        String text = x.getText();
+        text = text.trim();
+        if (text.startsWith("!")) {
+            text = text.substring(1);
+        }
+
+        if (text.length() == 0) {
+            return true;
+        }
+
+        if (Character.isDigit(text.charAt(0))) {
+            addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints", SQLUtils.toMySqlString(x)));
+        }
+
+        text = text.toLowerCase();
+
+        if (text.indexOf(';') != -1 //
+            || text.indexOf("or") != -1 //
+            || text.indexOf("and") != -1 //
+            || text.indexOf("union") != -1 //
+            
+            || text.indexOf("select") != -1 //
+            || text.indexOf("delete") != -1 //
+            || text.indexOf("insert") != -1 //
+            || text.indexOf("update") != -1 //
+
+            || text.indexOf("create") != -1 //
+            || text.indexOf("drop") != -1 //
+            || text.indexOf("alter") != -1 //
+            || text.indexOf("truncate") != -1 //
+
+            || text.indexOf("information_schema") != -1 //
+            || text.indexOf("mysql") != -1 //
+            || text.indexOf("performance_schema") != -1 //
+
+            || text.indexOf("sleep") != -1 //
+            || text.indexOf("benchmark") != -1 //
+            || text.indexOf("load_file") != -1 //
+        ) {
+            addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints", SQLUtils.toMySqlString(x)));
+        }
+
+        return true;
     }
 
     @Override

@@ -62,6 +62,10 @@ public class SQLSelectParser extends SQLParser {
         if (select.getOrderBy() == null) {
             select.setOrderBy(parseOrderBy());
         }
+        
+        if (lexer.token() == Token.HINT) {
+            this.exprParser.parseHints(select.getHints());
+        }
 
         return select;
     }

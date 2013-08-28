@@ -290,11 +290,6 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (lexer.token() == Token.HINT) {
-                lexer.nextToken();
-                continue;
-            }
-
             if (lexer.token() == Token.COMMENT) {
                 statementList.add(this.parseComment());
                 continue;
