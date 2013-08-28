@@ -456,14 +456,24 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             || text.indexOf("or") != -1 //
             || text.indexOf("and") != -1 //
             || text.indexOf("union") != -1 //
+            
+            || text.indexOf("select") != -1 //
             || text.indexOf("delete") != -1 //
+            || text.indexOf("insert") != -1 //
             || text.indexOf("update") != -1 //
+
             || text.indexOf("create") != -1 //
             || text.indexOf("drop") != -1 //
-            || text.indexOf("drop") != -1 //
+            || text.indexOf("alter") != -1 //
+            || text.indexOf("truncate") != -1 //
+
             || text.indexOf("information_schema") != -1 //
             || text.indexOf("mysql") != -1 //
             || text.indexOf("performance_schema") != -1 //
+
+            || text.indexOf("sleep") != -1 //
+            || text.indexOf("benchmark") != -1 //
+            || text.indexOf("load_file") != -1 //
         ) {
             addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints", SQLUtils.toMySqlString(x)));
         }
