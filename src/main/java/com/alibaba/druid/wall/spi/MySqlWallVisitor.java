@@ -451,16 +451,33 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         text = text.toLowerCase();
+        
+        for (int i = 0; i < text.length(); ++i) {
+            char ch = text.charAt(i);
+            switch (ch) {
+                case ';':
+                case '>':
+                case '=':
+                case '<':
+                case '&':
+                case '|':
+                case '^':
+                case '\n':
+                    addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints", SQLUtils.toMySqlString(x)));
+                default:
+                    break;
+            }
+        }
 
-        if (text.indexOf(';') != -1 //
-            || text.indexOf("or") != -1 //
+        if (text.indexOf("or") != -1 //
             || text.indexOf("and") != -1 //
             || text.indexOf("union") != -1 //
-            
+
             || text.indexOf("select") != -1 //
             || text.indexOf("delete") != -1 //
             || text.indexOf("insert") != -1 //
             || text.indexOf("update") != -1 //
+            || text.indexOf("into") != -1 //
 
             || text.indexOf("create") != -1 //
             || text.indexOf("drop") != -1 //
