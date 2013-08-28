@@ -58,15 +58,15 @@ public abstract class WallProvider {
     private boolean                                       whiteListEnable         = true;
     private LRUCache<String, WallSqlStat>                 whiteList;
 
-    private int                                           MAX_SQL_LENGTH          = 2048;                                              // 1k
+    private int                                           MAX_SQL_LENGTH          = 8192;                                              // 8k
 
-    private int                                           whiteSqlMaxSize         = 1000;                                               // 1k
+    private int                                           whiteSqlMaxSize         = 1000;
 
     private boolean                                       blackListEnable         = true;
     private LRUCache<String, WallSqlStat>                 blackList;
     private LRUCache<String, WallSqlStat>                 blackMergedList;
 
-    private int                                           blackSqlMaxSize         = 200;                                               // 1k
+    private int                                           blackSqlMaxSize         = 200;
 
     protected final WallConfig                            config;
 
@@ -616,6 +616,7 @@ public abstract class WallProvider {
         final List<Violation> violations = new ArrayList<Violation>();
         List<SQLStatement> statementList = new ArrayList<SQLStatement>();
         boolean syntaxError = false;
+        boolean illegal = false;
         try {
             SQLStatementParser parser = createParser(sql);
             parser.getLexer().setCommentHandler(WallCommentHandler.instance);
@@ -630,17 +631,19 @@ public abstract class WallProvider {
             if (lastToken != Token.EOF) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.SYNTAX_ERROR, "not terminal sql, token "
                                                                                      + lastToken, sql));
+                illegal = true;
             }
         } catch (NotAllowCommentException e) {
             violations.add(new SyntaxErrorViolation(e, sql));
             incrementCommentDeniedCount();
         } catch (ParserException e) {
             syntaxErrrorCount.incrementAndGet();
-            syntaxError = true;
+            illegal = syntaxError = true;
             if (config.isStrictSyntaxCheck()) {
                 violations.add(new SyntaxErrorViolation(e, sql));
             }
         } catch (Exception e) {
+            illegal = true;
             violations.add(new SyntaxErrorViolation(e, sql));
         }
 
@@ -655,6 +658,7 @@ public abstract class WallProvider {
             try {
                 stmt.accept(visitor);
             } catch (ParserException e) {
+                illegal = true;
                 violations.add(new SyntaxErrorViolation(e, sql));
             }
         }
