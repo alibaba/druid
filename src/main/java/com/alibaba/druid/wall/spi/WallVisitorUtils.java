@@ -164,7 +164,7 @@ public class WallVisitorUtils {
 
     public static void check(WallVisitor visitor, SQLSelectItem x) {
         SQLExpr expr = x.getExpr();
-        
+
         if (expr instanceof SQLVariantRefExpr) {
             if ("@".equals(((SQLVariantRefExpr) expr).getName())) {
                 addViolation(visitor, ErrorCode.EVIL_NAME, "@ not allow", x);
@@ -223,14 +223,16 @@ public class WallVisitorUtils {
 
             SQLExpr where = x.getWhere();
             if (where != null) {
-                if (queryBlockFromIsNull(visitor, x, false)) {
-                    addViolation(visitor, ErrorCode.EMPTY_QUERY_HAS_CONDITION, "empty select has condition", x);
-                }
-
                 where.setParent(x);
                 checkCondition(visitor, x.getWhere());
 
-                if (Boolean.TRUE == getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck())) {
+                Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
+
+                if (queryBlockFromIsNull(visitor, x, false) && whereValue != null) {
+                    addViolation(visitor, ErrorCode.EMPTY_QUERY_HAS_CONDITION, "empty select has condition", x);
+                }
+
+                if (Boolean.TRUE == whereValue) {
                     boolean isSimpleConstExpr = false;
                     SQLExpr first = getFirst(where);
 
@@ -672,21 +674,23 @@ public class WallVisitorUtils {
         }
 
         if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
-            if (rightResult != null && x.getLeft() instanceof SQLBinaryOpExpr) {
-                SQLBinaryOpExpr leftBinaryOpExpr = (SQLBinaryOpExpr) x.getLeft();
+            if (visitor != null && !visitor.getConfig().isConditionDoubleConstAllow()) {
+                if (rightResult != null && x.getLeft() instanceof SQLBinaryOpExpr) {
+                    SQLBinaryOpExpr leftBinaryOpExpr = (SQLBinaryOpExpr) x.getLeft();
 
-                if (leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanAnd //
-                    && leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanOr //
-                    && leftResult != null //
-                    && visitor != null) {
-                    addViolation(visitor, ErrorCode.DOUBLE_CONST_CONDITION, "double const condition", x);
-                }
-
-                if (leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanAnd //
-                    || leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanOr) {
-                    Object leftRightVal = getValue(leftBinaryOpExpr.getRight());
-                    if (leftRightVal != null) {
+                    if (leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanAnd //
+                        && leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanOr //
+                        && leftResult != null //
+                        && visitor != null) {
                         addViolation(visitor, ErrorCode.DOUBLE_CONST_CONDITION, "double const condition", x);
+                    }
+
+                    if (leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanAnd //
+                        || leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanOr) {
+                        Object leftRightVal = getValue(leftBinaryOpExpr.getRight());
+                        if (leftRightVal != null) {
+                            addViolation(visitor, ErrorCode.DOUBLE_CONST_CONDITION, "double const condition", x);
+                        }
                     }
                 }
             }
