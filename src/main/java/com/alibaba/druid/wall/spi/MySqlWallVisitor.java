@@ -300,6 +300,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             varName = varName.substring(2);
         }
 
+        varName = varName.toLowerCase();
         return config.getDenyVariants().contains(varName);
     }
 
