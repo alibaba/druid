@@ -1117,9 +1117,7 @@ public class SQLEvalVisitorUtils {
                 return true;
             }
 
-            if ("0".equals(val) || "false".equalsIgnoreCase((String) val)) {
-                return false;
-            }
+            return false;
         }
 
         throw new IllegalArgumentException(val.getClass() + " not supported.");
