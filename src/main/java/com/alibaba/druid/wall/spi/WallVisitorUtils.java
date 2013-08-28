@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
@@ -162,11 +163,19 @@ public class WallVisitorUtils {
     }
 
     public static void check(WallVisitor visitor, SQLSelectItem x) {
+        SQLExpr expr = x.getExpr();
+        
+        if (expr instanceof SQLVariantRefExpr) {
+            if ("@".equals(((SQLVariantRefExpr) expr).getName())) {
+                addViolation(visitor, ErrorCode.EVIL_NAME, "@ not allow", x);
+            }
+        }
+
         if (visitor.getConfig().isSelectAllColumnAllow()) {
             return;
         }
 
-        if (x.getExpr() instanceof SQLAllColumnExpr //
+        if (expr instanceof SQLAllColumnExpr //
             && x.getParent() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getParent();
             SQLTableSource from = queryBlock.getFrom();
@@ -1015,7 +1024,7 @@ public class WallVisitorUtils {
         if (visitor != null) {
             dbType = visitor.getDbType();
         }
-        
+
         if (x instanceof SQLMethodInvokeExpr //
             || x instanceof SQLBetweenExpr //
             || x instanceof SQLInListExpr //
@@ -1034,7 +1043,7 @@ public class WallVisitorUtils {
                     addViolation(visitor, ErrorCode.CONST_CASE_CONDITION, "const case condition", caseExpr);
                 }
             }
-            
+
             return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
         }
 

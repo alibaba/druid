@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -25,8 +29,24 @@ public class SQLSelect extends SQLObjectImpl {
     protected SQLSelectQuery        query;
     protected SQLOrderBy            orderBy;
 
+    private List<SQLHint>           hints;
+
     public SQLSelect(){
 
+    }
+
+    public List<SQLHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLHint>(2);
+        }
+        return hints;
+    }
+    
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+        return hints.size();
     }
 
     public SQLSelect(SQLSelectQuery query){
@@ -64,6 +84,7 @@ public class SQLSelect extends SQLObjectImpl {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.query);
             acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.hints);
         }
 
         visitor.endVisit(this);

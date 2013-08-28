@@ -718,6 +718,24 @@ public abstract class WallProvider {
     }
 
     private WallCheckResult checkWhiteAndBlackList(String sql) {
+        // check black list
+        if (blackListEnable) {
+            WallSqlStat sqlStat = getBlackSql(sql);
+            if (sqlStat != null) {
+                blackListHitCount.incrementAndGet();
+                violationCount.incrementAndGet();
+
+                if (sqlStat.isSyntaxError()) {
+                    syntaxErrrorCount.incrementAndGet();
+                }
+
+                sqlStat.incrementAndGetExecuteCount();
+                recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
+
+                return new WallCheckResult(sqlStat);
+            }
+        }
+        
         if (whiteListEnable) {
             WallSqlStat sqlStat = getWhiteSql(sql);
             if (sqlStat != null) {
@@ -733,23 +751,6 @@ public abstract class WallProvider {
                 if (context != null) {
                     context.setSqlStat(sqlStat);
                 }
-                return new WallCheckResult(sqlStat);
-            }
-        }
-        // check black list
-        if (blackListEnable) {
-            WallSqlStat sqlStat = getBlackSql(sql);
-            if (sqlStat != null) {
-                blackListHitCount.incrementAndGet();
-                violationCount.incrementAndGet();
-
-                if (sqlStat.isSyntaxError()) {
-                    syntaxErrrorCount.incrementAndGet();
-                }
-
-                sqlStat.incrementAndGetExecuteCount();
-                recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
-
                 return new WallCheckResult(sqlStat);
             }
         }

@@ -61,7 +61,7 @@ public class MySqlSelectTest_13 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT *" //
-                            + "\nFROM test", //
+                            + "\nFROM test/*!40101fff*/", //
                             output);
     }
 }

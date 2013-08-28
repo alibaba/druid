@@ -642,6 +642,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             println();
             x.getOrderBy().accept(this);
         }
+        
+        if (x.getHintsSize() > 0) {
+            printAndAccept(x.getHints(), "");
+        }
 
         return false;
     }
