@@ -300,6 +300,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             varName = varName.substring(2);
         }
 
+        varName = varName.toLowerCase();
         return config.getDenyVariants().contains(varName);
     }
 
@@ -456,7 +457,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             || text.indexOf("or") != -1 //
             || text.indexOf("and") != -1 //
             || text.indexOf("union") != -1 //
-            
+
             || text.indexOf("select") != -1 //
             || text.indexOf("delete") != -1 //
             || text.indexOf("insert") != -1 //
