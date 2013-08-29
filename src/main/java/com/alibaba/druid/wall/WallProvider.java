@@ -616,7 +616,6 @@ public abstract class WallProvider {
         final List<Violation> violations = new ArrayList<Violation>();
         List<SQLStatement> statementList = new ArrayList<SQLStatement>();
         boolean syntaxError = false;
-        boolean illegal = false;
         try {
             SQLStatementParser parser = createParser(sql);
             parser.getLexer().setCommentHandler(WallCommentHandler.instance);
@@ -631,19 +630,17 @@ public abstract class WallProvider {
             if (lastToken != Token.EOF) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.SYNTAX_ERROR, "not terminal sql, token "
                                                                                      + lastToken, sql));
-                illegal = true;
             }
         } catch (NotAllowCommentException e) {
             violations.add(new SyntaxErrorViolation(e, sql));
             incrementCommentDeniedCount();
         } catch (ParserException e) {
             syntaxErrrorCount.incrementAndGet();
-            illegal = syntaxError = true;
+            syntaxError = true;
             if (config.isStrictSyntaxCheck()) {
                 violations.add(new SyntaxErrorViolation(e, sql));
             }
         } catch (Exception e) {
-            illegal = true;
             violations.add(new SyntaxErrorViolation(e, sql));
         }
 
@@ -658,7 +655,6 @@ public abstract class WallProvider {
             try {
                 stmt.accept(visitor);
             } catch (ParserException e) {
-                illegal = true;
                 violations.add(new SyntaxErrorViolation(e, sql));
             }
         }
@@ -739,7 +735,7 @@ public abstract class WallProvider {
                 return new WallCheckResult(sqlStat);
             }
         }
-        
+
         if (whiteListEnable) {
             WallSqlStat sqlStat = getWhiteSql(sql);
             if (sqlStat != null) {
