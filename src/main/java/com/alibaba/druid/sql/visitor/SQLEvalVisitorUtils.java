@@ -1117,9 +1117,7 @@ public class SQLEvalVisitorUtils {
                 return true;
             }
 
-            if ("0".equals(val) || "false".equalsIgnoreCase((String) val)) {
-                return false;
-            }
+            return false;
         }
 
         throw new IllegalArgumentException(val.getClass() + " not supported.");
@@ -1378,7 +1376,11 @@ public class SQLEvalVisitorUtils {
             if (decimalB.scale() < decimalA.scale()) {
                 decimalB = decimalB.setScale(decimalA.scale());
             }
-            return decimalA.divide(decimalB, BigDecimal.ROUND_HALF_UP);
+            try {
+                return decimalA.divide(decimalB);
+            } catch (ArithmeticException ex) {
+                return decimalA.divide(decimalB, BigDecimal.ROUND_HALF_UP);
+            }
         }
 
         if (a instanceof Double || b instanceof Double) {

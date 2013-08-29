@@ -228,11 +228,11 @@ public class WallVisitorUtils {
 
                 Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
 
-                if (queryBlockFromIsNull(visitor, x, false) && whereValue != null) {
-                    addViolation(visitor, ErrorCode.EMPTY_QUERY_HAS_CONDITION, "empty select has condition", x);
-                }
-
                 if (Boolean.TRUE == whereValue) {
+                    if (queryBlockFromIsNull(visitor, x, false)) {
+                        addViolation(visitor, ErrorCode.EMPTY_QUERY_HAS_CONDITION, "empty select has condition", x);
+                    }
+                    
                     boolean isSimpleConstExpr = false;
                     SQLExpr first = getFirst(where);
 

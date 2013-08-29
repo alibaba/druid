@@ -96,17 +96,6 @@ public class DMLInsertParserTest extends TestCase {
         		"\n\t('12''34')", output);
     }
 
-    public void testInsert_7() throws Exception {
-        String sql = "insErt LOW_PRIORITY t1 (col1, t1.col2) VALUE (123,'123\\'4') oN dupLicatE key UPDATE ex.col1=?";
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        SQLStatement stmt = parser.parseStatementList().get(0);
-        parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("INSERT LOW_PRIORITY INTO t1 (col1, t1.col2)\nVALUES (123, '123''4')" + //
-        		"\nON DUPLICATE KEY UPDATE ex.col1 = ?",
-                            output);
-    }
-
     public void testInsert_8() throws Exception {
         String sql = "insErt LOW_PRIORITY t1 (col1, t1.col2) select id from t3 oN dupLicatE key UPDATE ex.col1=?";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
