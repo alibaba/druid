@@ -22,12 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
@@ -121,7 +122,27 @@ public class WallVisitorUtils {
     }
 
     public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
-
+        if (x.getOperator() == SQLBinaryOperator.Add || x.getOperator() == SQLBinaryOperator.Concat) {
+            List<SQLExpr> groupList = SQLUtils.split(x);
+            if (groupList.size() >= 4) {
+                int chrCount = 0;
+                for (int i = 0; i < groupList.size(); ++i) {
+                    SQLExpr item = groupList.get(i);
+                    if (item instanceof SQLMethodInvokeExpr) {
+                        SQLMethodInvokeExpr methodExpr = (SQLMethodInvokeExpr) item;
+                        String methodName = methodExpr.getMethodName().toLowerCase();
+                        if ("chr".equals(methodName) || "char".equals(methodName)) {
+                            if (methodExpr.getParameters().get(0) instanceof SQLLiteralExpr) {
+                                chrCount++;
+                            }
+                        }
+                    }
+                }
+                if (chrCount >= 4) {
+                    addViolation(visitor, ErrorCode.EVIL_CONCAT, "evil concat", x);
+                }
+            }
+        }
     }
 
     public static void check(WallVisitor visitor, SQLCreateTableStatement x) {
@@ -232,7 +253,7 @@ public class WallVisitorUtils {
                     if (queryBlockFromIsNull(visitor, x, false)) {
                         addViolation(visitor, ErrorCode.EMPTY_QUERY_HAS_CONDITION, "empty select has condition", x);
                     }
-                    
+
                     boolean isSimpleConstExpr = false;
                     SQLExpr first = getFirst(where);
 
@@ -616,19 +637,7 @@ public class WallVisitorUtils {
         }
 
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            List<SQLExpr> groupList = new ArrayList<SQLExpr>();
-            SQLExpr left = x.getLeft();
-            for (;;) {
-                if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
-                    SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
-                    groupList.add(binaryLeft.getRight());
-                    left = binaryLeft.getLeft();
-                } else {
-                    groupList.add(left);
-                    break;
-                }
-            }
-            groupList.add(x.getRight());
+            List<SQLExpr> groupList = SQLUtils.split(x);
 
             boolean allFalse = true;
             for (int i = groupList.size() - 1; i >= 0; --i) {
@@ -1108,7 +1117,7 @@ public class WallVisitorUtils {
 
         checkSchema(visitor, x.getOwner());
 
-        String methodName = x.getMethodName();
+        String methodName = x.getMethodName().toLowerCase();
         if (!visitor.getProvider().checkDenyTable(methodName)) {
             if (isTopUpdateStatement(x) || isFirstSelectTableSource(x)) {
                 if (topStatementContext != null) {
@@ -1132,7 +1141,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        String methodName = x.getMethodName();
+        String methodName = x.getMethodName().toLowerCase();
 
         WallContext context = WallContext.current();
         if (context != null) {
