@@ -173,7 +173,7 @@ public class Lexer {
     protected final void scanChar() {
         ch = charAt(++pos);
     }
-
+    
     protected void unscan() {
         ch = charAt(--pos);
     }
