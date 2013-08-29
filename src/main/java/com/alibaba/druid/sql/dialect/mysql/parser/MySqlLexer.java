@@ -384,8 +384,15 @@ public class MySqlLexer extends Lexer {
 
     public void scanComment() {
         Token lastToken = this.token;
-
-        if (ch != '/' && ch != '-') {
+        
+        if (ch == '-') {
+            char next_2 = charAt(pos + 2);
+            if (isDigit(next_2)) {
+                scanChar();
+                token = Token.SUB;
+                return;
+            }
+        } else if (ch != '/') {
             throw new IllegalStateException();
         }
 
