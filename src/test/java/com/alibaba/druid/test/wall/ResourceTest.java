@@ -16,12 +16,12 @@ public class ResourceTest extends TestCase {
     private String[] items;
 
     protected void setUp() throws Exception {
-        File file = new File("D:\\error_sql");
+        File file = new File("D:\\scan_error.txt");
         FileInputStream is = new FileInputStream(file);
         String all = Utils.read(is);
         is.close();
 
-        items = all.split("\\|\\n\\|");
+        items = all.split("\\|\\r\\n\\|");
     }
 
     public void test_xx() throws Exception {

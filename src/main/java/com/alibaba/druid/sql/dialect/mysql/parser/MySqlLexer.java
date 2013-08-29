@@ -345,19 +345,20 @@ public class MySqlLexer extends Lexer {
                         putChar(ch);
                         break;
                 }
-            } else {
-                if (ch == '\'') {
-                    scanChar();
-                    if (ch != '\'') {
-                        token = LITERAL_CHARS;
-                        break;
-                    } else {
-                        initBuff(bufPos);
-                        arraycopy(mark + 1, buf, 0, bufPos);
-                        hasSpecial = true;
-                        putChar('\'');
-                        continue;
-                    }
+
+                continue;
+            }
+            if (ch == '\'') {
+                scanChar();
+                if (ch != '\'') {
+                    token = LITERAL_CHARS;
+                    break;
+                } else {
+                    initBuff(bufPos);
+                    arraycopy(mark + 1, buf, 0, bufPos);
+                    hasSpecial = true;
+                    putChar('\'');
+                    continue;
                 }
             }
 
