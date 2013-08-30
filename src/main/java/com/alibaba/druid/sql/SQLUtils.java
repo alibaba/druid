@@ -15,12 +15,14 @@
  */
 package com.alibaba.druid.sql;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -44,7 +46,6 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
-
 public class SQLUtils {
 
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
@@ -63,7 +64,7 @@ public class SQLUtils {
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return toPGString(sqlObject);
         }
-        
+
         if (JdbcUtils.DB2.equals(dbType)) {
             return toDB2String(sqlObject);
         }
@@ -114,7 +115,7 @@ public class SQLUtils {
         String sql = out.toString();
         return sql;
     }
-    
+
     public static String toDB2String(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         sqlObject.accept(new DB2OutputVisitor(out));
@@ -211,7 +212,7 @@ public class SQLUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
-        
+
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2OutputVisitor(out);
         }
@@ -257,37 +258,53 @@ public class SQLUtils {
         }
         return stmtList;
     }
-	
-	 /**
+
+    /**
      * @author owenludong.lud
-     * @param  columnName
-     * @param  tableAlias 
-     * @param  pattern if pattern is null,it will be set {%Y-%m-%d %H:%i:%s} as mysql default value and set {yyyy-mm-dd hh24:mi:ss} as oracle default value
-     * @param  dbType  {@link JdbcConstants} if dbType is null ,it will be set the mysql as a default value
+     * @param columnName
+     * @param tableAlias
+     * @param pattern if pattern is null,it will be set {%Y-%m-%d %H:%i:%s} as mysql default value and set {yyyy-mm-dd
+     * hh24:mi:ss} as oracle default value
+     * @param dbType {@link JdbcConstants} if dbType is null ,it will be set the mysql as a default value
      */
-    public static String buildToDate(String columnName,String tableAlias,String pattern,String dbType){    	
-     	StringBuilder sql = new StringBuilder();    	
-     	if(StringUtils.isEmpty(columnName))
-     		return "";  			
-     	if(StringUtils.isEmpty(dbType))    dbType = JdbcConstants.MYSQL;   
-     	String formatMethod = "";
-     	if(JdbcConstants.MYSQL.equalsIgnoreCase(dbType)){
-     		formatMethod = "STR_TO_DATE";
-     		if(StringUtils.isEmpty(pattern)) pattern = "%Y-%m-%d %H:%i:%s";
-     	}else if(JdbcConstants.ORACLE.equalsIgnoreCase(dbType)){
-     		formatMethod = "TO_DATE";
-     		if(StringUtils.isEmpty(pattern)) pattern = "yyyy-mm-dd hh24:mi:ss";
-     	}else{     		
-     		return "";
-     		//expand date's handle method for other database 
-     	}
-     	sql.append(formatMethod).append("(");        	
- 		if(!StringUtils.isEmpty(tableAlias))
- 			sql.append(tableAlias).append("."); 
- 		sql.append(columnName).append(",");
- 		sql.append("'");
- 		sql.append(pattern);
- 		sql.append("')");     	   	
-     	return sql.toString();
-     }
+    public static String buildToDate(String columnName, String tableAlias, String pattern, String dbType) {
+        StringBuilder sql = new StringBuilder();
+        if (StringUtils.isEmpty(columnName)) return "";
+        if (StringUtils.isEmpty(dbType)) dbType = JdbcConstants.MYSQL;
+        String formatMethod = "";
+        if (JdbcConstants.MYSQL.equalsIgnoreCase(dbType)) {
+            formatMethod = "STR_TO_DATE";
+            if (StringUtils.isEmpty(pattern)) pattern = "%Y-%m-%d %H:%i:%s";
+        } else if (JdbcConstants.ORACLE.equalsIgnoreCase(dbType)) {
+            formatMethod = "TO_DATE";
+            if (StringUtils.isEmpty(pattern)) pattern = "yyyy-mm-dd hh24:mi:ss";
+        } else {
+            return "";
+            // expand date's handle method for other database
+        }
+        sql.append(formatMethod).append("(");
+        if (!StringUtils.isEmpty(tableAlias)) sql.append(tableAlias).append(".");
+        sql.append(columnName).append(",");
+        sql.append("'");
+        sql.append(pattern);
+        sql.append("')");
+        return sql.toString();
+    }
+
+    public static List<SQLExpr> split(SQLBinaryOpExpr x) {
+        List<SQLExpr> groupList = new ArrayList<SQLExpr>();
+        SQLExpr left = x.getLeft();
+        for (;;) {
+            if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
+                SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
+                groupList.add(binaryLeft.getRight());
+                left = binaryLeft.getLeft();
+            } else {
+                groupList.add(left);
+                break;
+            }
+        }
+        groupList.add(x.getRight());
+        return groupList;
+    }
 }

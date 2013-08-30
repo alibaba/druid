@@ -229,10 +229,10 @@ public class MySqlExprParser extends SQLExprParser {
                 }
             } else if (expr instanceof SQLCharExpr) {
                 SQLMethodInvokeExpr concat = new SQLMethodInvokeExpr("CONCAT");
-                concat.getParameters().add(expr);
+                concat.addParameter(expr);
                 do {
                     String chars = lexer.stringVal();
-                    concat.getParameters().add(new SQLCharExpr(chars));
+                    concat.addParameter(new SQLCharExpr(chars));
                     lexer.nextToken();
                 } while (lexer.token() == Token.LITERAL_CHARS);
                 expr = concat;
@@ -325,7 +325,7 @@ public class MySqlExprParser extends SQLExprParser {
                 SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(ident);
                 for (;;) {
                     SQLExpr param = expr();
-                    methodInvokeExpr.getParameters().add(param);
+                    methodInvokeExpr.addParameter(param);
 
                     if (lexer.token() == Token.COMMA) {
                         lexer.nextToken();
@@ -333,12 +333,12 @@ public class MySqlExprParser extends SQLExprParser {
                     } else if (lexer.token() == Token.FROM) {
                         lexer.nextToken();
                         SQLExpr from = expr();
-                        methodInvokeExpr.getParameters().add(from);
+                        methodInvokeExpr.addParameter(from);
 
                         if (lexer.token() == Token.FOR) {
                             lexer.nextToken();
                             SQLExpr forExpr = expr();
-                            methodInvokeExpr.getParameters().add(forExpr);
+                            methodInvokeExpr.addParameter(forExpr);
                         }
                         break;
                     } else if (lexer.token() == Token.RPAREN) {
@@ -371,7 +371,7 @@ public class MySqlExprParser extends SQLExprParser {
                 }
 
                 SQLExpr param = expr();
-                methodInvokeExpr.getParameters().add(param);
+                methodInvokeExpr.addParameter(param);
 
                 if (lexer.token() == Token.FROM) {
                     lexer.nextToken();
@@ -461,8 +461,8 @@ public class MySqlExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
 
                 SQLMethodInvokeExpr locate = new SQLMethodInvokeExpr("LOCATE");
-                locate.getParameters().add(subStr);
-                locate.getParameters().add(str);
+                locate.addParameter(subStr);
+                locate.addParameter(str);
 
                 expr = locate;
                 return primaryRest(expr);
@@ -502,7 +502,7 @@ public class MySqlExprParser extends SQLExprParser {
 
             SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr("INTERVAL");
             if (lexer.token() != Token.RPAREN) {
-                exprList(methodInvokeExpr.getParameters());
+                exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
             }
 
             accept(Token.RPAREN);

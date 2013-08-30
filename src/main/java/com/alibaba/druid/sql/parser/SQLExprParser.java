@@ -667,7 +667,7 @@ public class SQLExprParser extends SQLParser {
                     lexer.nextToken();
                 } else {
                     if (lexer.token() == Token.PLUS) {
-                        methodInvokeExpr.getParameters().add(new SQLIdentifierExpr("+"));
+                        methodInvokeExpr.addParameter(new SQLIdentifierExpr("+"));
                         lexer.nextToken();
                     } else {
                         exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
