@@ -83,6 +83,8 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
 
+
+
     public boolean                allowStringAdditive = false;
 
     /**
@@ -480,12 +482,37 @@ public class OracleExprParser extends SQLExprParser {
     protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
         if (acceptLPAREN) {
             accept(Token.LPAREN);
-            if (lexer.token() == Token.PLUS) {
-                lexer.nextToken();
+        }
+        
+        if (lexer.token() == Token.PLUS) {
+            lexer.nextToken();
+            accept(Token.RPAREN);
+            return new OracleOuterExpr(expr);
+        }
+        
+        if (expr instanceof SQLIdentifierExpr) {
+            String methodName = ((SQLIdentifierExpr) expr).getName();
+            SQLMethodInvokeExpr methodExpr = new SQLMethodInvokeExpr(methodName);
+            if ("trim".equalsIgnoreCase(methodName)) {
+                if (identifierEquals("LEADING") //
+                        || identifierEquals("TRAILING") //
+                        || identifierEquals("BOTH")
+                        ) {
+                    methodExpr.putAttribute("trim_option", lexer.stringVal());
+                    lexer.nextToken();
+                }
+                SQLExpr trim_character = this.primary();
+                trim_character.setParent(methodExpr);
+                methodExpr.putAttribute("trim_character", trim_character);
+                accept(Token.FROM);
+                SQLExpr trim_source = this.expr();
+                methodExpr.addParameter(trim_source);
+                
                 accept(Token.RPAREN);
-                return new OracleOuterExpr(expr);
+                return primaryRest(methodExpr);
             }
         }
+        
         return super.methodRest(expr, false);
     }
 

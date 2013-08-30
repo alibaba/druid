@@ -257,7 +257,7 @@ public class WallVisitorUtils {
                     boolean isSimpleConstExpr = false;
                     SQLExpr first = getFirst(where);
 
-                    if (first == where) {
+                    if (first == where || first instanceof SQLLiteralExpr) {
                         isSimpleConstExpr = true;
                     } else if (first instanceof SQLBinaryOpExpr) {
                         SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) first;
@@ -278,7 +278,6 @@ public class WallVisitorUtils {
                         addViolation(visitor, ErrorCode.ALWAY_TRUE, "select alway true condition not allow", x);
                     }
                 }
-
             }
             checkConditionForMultiTenant(visitor, x.getWhere(), x);
         } finally {
@@ -1046,9 +1045,18 @@ public class WallVisitorUtils {
             return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
         }
 
-        if (x instanceof SQLCaseExpr) {
+        if (visitor != null && (!visitor.getConfig().isCaseConditionAllow()) && x instanceof SQLCaseExpr) {
             SQLCaseExpr caseExpr = (SQLCaseExpr) x;
-            if (caseExpr.getItems().size() > 0) {
+
+            boolean leftIsName = false;
+            if (caseExpr.getParent() instanceof SQLBinaryOpExpr) {
+                SQLExpr left = ((SQLBinaryOpExpr) caseExpr.getParent()).getLeft();
+                if (left instanceof SQLName) {
+                    leftIsName = true;
+                }
+            }
+            
+            if ((!leftIsName) && caseExpr.getItems().size() > 0) {
                 SQLCaseExpr.Item item = caseExpr.getItems().get(0);
                 Object conditionVal = getValue(visitor, item.getConditionExpr());
                 Object itemVal = getValue(visitor, item.getValueExpr());
