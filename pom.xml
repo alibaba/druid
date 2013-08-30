@@ -11,7 +11,7 @@
   
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.26</version>
+	<version>0.2.26-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -23,7 +23,7 @@
 		<spring.version>3.2.3.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 
-		<gpg.skip>false</gpg.skip>
+		<gpg.skip>true</gpg.skip>
 		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,6 +48,7 @@
 			<url>dav:http://code.alibabatech.com/mvn/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+
 	<developers>
 		<developer>
 			<id>wenshao</id>
