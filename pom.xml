@@ -24,7 +24,7 @@
 		<junit.version>4.11</junit.version>
 
 		<gpg.skip>true</gpg.skip>
-		<javadoc.skip>true</javadoc.skip>
+		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
@@ -48,6 +48,7 @@
 			<url>dav:http://code.alibabatech.com/mvn/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+
 	<developers>
 		<developer>
 			<id>wenshao</id>
