@@ -365,7 +365,7 @@ public class SQLExprParser extends SQLParser {
 
                     return primaryRest(sqlExpr);
                 } else {
-                    SQLExpr restExpr = equality();
+                    SQLExpr restExpr = relational();
                     sqlExpr = new SQLNotExpr(restExpr);
                 }
                 break;
