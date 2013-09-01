@@ -218,7 +218,11 @@ public abstract class ResourceSerlvet extends HttpServlet {
             if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/druid/login.html");
             } else {
-                response.sendRedirect("druid/login.html");
+                if("".equals(path)){
+                    response.sendRedirect("druid/login.html");
+                } else {
+                    response.sendRedirect("login.html");
+                }
             }
             return;
         }
