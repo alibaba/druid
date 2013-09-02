@@ -21,13 +21,26 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCallStatement extends SQLStatementImpl {
 
+    private boolean             brace      = false;
+
+    private SQLVariantRefExpr   outParameter;
+
     private SQLName             procedureName;
 
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
+
+    public SQLVariantRefExpr getOutParameter() {
+        return outParameter;
+    }
+
+    public void setOutParameter(SQLVariantRefExpr outParameter) {
+        this.outParameter = outParameter;
+    }
 
     public SQLName getProcedureName() {
         return procedureName;
@@ -41,11 +54,21 @@ public class SQLCallStatement extends SQLStatementImpl {
         return parameters;
     }
 
+    public boolean isBrace() {
+        return brace;
+    }
+
+    public void setBrace(boolean brace) {
+        this.brace = brace;
+    }
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.outParameter);
             acceptChild(visitor, this.procedureName);
             acceptChild(visitor, this.parameters);
         }
         visitor.endVisit(this);
     }
+
 }

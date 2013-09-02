@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
@@ -1115,10 +1116,18 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             brace = true;
         }
+        
+        SQLCallStatement stmt = new SQLCallStatement();
+        
+        if (lexer.token() == Token.QUES) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            stmt.setOutParameter(new SQLVariantRefExpr("?"));
+        }
 
         acceptIdentifier("CALL");
 
-        SQLCallStatement stmt = new SQLCallStatement();
+       
         stmt.setProcedureName(exprParser.name());
 
         if (lexer.token() == Token.LPAREN) {
@@ -1129,6 +1138,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (brace) {
             accept(Token.RBRACE);
+            stmt.setBrace(true);
         }
 
         return stmt;

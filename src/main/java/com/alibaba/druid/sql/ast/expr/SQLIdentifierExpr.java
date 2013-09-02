@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -58,8 +57,8 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         this.lowerName = lowerName;
     }
 
-    public String toString() {
-        return SQLUtils.toSQLString(this);
+    public void output(StringBuffer buf) {
+        buf.append(this.name);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
