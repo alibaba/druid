@@ -42,6 +42,7 @@ public abstract class ResourceSerlvet extends HttpServlet {
     public static final String PARAM_NAME_PASSWORD = "loginPassword";
     public static final String PARAM_NAME_ALLOW    = "allow";
     public static final String PARAM_NAME_DENY     = "deny";
+    public static final String PARAM_REMOTE_ADDR   = "remoteAddress";
 
     protected String           username            = null;
     protected String           password            = null;
@@ -50,6 +51,8 @@ public abstract class ResourceSerlvet extends HttpServlet {
     protected List<IPRange>    denyList            = new ArrayList<IPRange>();
 
     protected final String     resourcePath;
+
+    protected String           remoteAddressHeader = null;
 
     public ResourceSerlvet(String resourcePath){
         this.resourcePath = resourcePath;
@@ -68,6 +71,11 @@ public abstract class ResourceSerlvet extends HttpServlet {
         String paramPassword = getInitParameter(PARAM_NAME_PASSWORD);
         if (!StringUtils.isEmpty(paramPassword)) {
             this.password = paramPassword;
+        }
+
+        String paramRemoteAddressHeader = getInitParameter(PARAM_REMOTE_ADDR);
+        if (!StringUtils.isEmpty(paramRemoteAddressHeader)) {
+            this.remoteAddressHeader = paramRemoteAddressHeader;
         }
 
         try {
@@ -218,7 +226,7 @@ public abstract class ResourceSerlvet extends HttpServlet {
             if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/druid/login.html");
             } else {
-                if("".equals(path)){
+                if ("".equals(path)) {
                     response.sendRedirect("druid/login.html");
                 } else {
                     response.sendRedirect("login.html");
@@ -267,8 +275,22 @@ public abstract class ResourceSerlvet extends HttpServlet {
     }
 
     public boolean isPermittedRequest(HttpServletRequest request) {
-        String remoteAddress = request.getRemoteAddr();
+        String remoteAddress = getRemoteAddress(request);
         return isPermittedRequest(remoteAddress);
+    }
+
+    protected String getRemoteAddress(HttpServletRequest request) {
+        String remoteAddr = null;
+        
+        if (remoteAddressHeader != null) {
+            remoteAddr = request.getHeader(remoteAddressHeader);
+        }
+        
+        if (remoteAddr == null) {
+            remoteAddr = request.getRemoteAddr();
+        }
+        
+        return remoteAddr;
     }
 
     protected abstract String process(String url);
