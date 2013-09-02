@@ -108,8 +108,18 @@ public class WallConfig implements WallConfigMBean {
     private boolean             conditionOpXorAllow        = false;
     private boolean             conditionOpBitwseAllow     = true;
 
+    private boolean             caseConditionAllow         = false;
+
     public WallConfig(){
 
+    }
+
+    public boolean isCaseConditionAllow() {
+        return caseConditionAllow;
+    }
+
+    public void setCaseConditionAllow(boolean caseConditionAllow) {
+        this.caseConditionAllow = caseConditionAllow;
     }
 
     public boolean isConditionDoubleConstAllow() {

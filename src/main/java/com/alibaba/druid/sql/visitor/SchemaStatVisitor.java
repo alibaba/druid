@@ -1032,7 +1032,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-
+    
     public boolean visit(SQLInListExpr x) {
         if (x.isNot()) {
             handleCondition(x.getExpr(), "NOT IN", x.getTargetList());

@@ -28,13 +28,13 @@
 			{{~ it.Content :datasourceNow:i  }}
 			<ul class="nav nav-tabs" id="datasourceTab">
 					<li class="active">
-						<a href="datasource.html#dstab{{=datasourceNow.Identity}}">DataSource-{{=datasourceNow.Identity}}</a>
+						<a href="datasource.html#dstab{{=datasourceNow.Identity}}">{{=datasourceNow.Name}}</a>
 					</li>
 			</ul>
 			<div class="tab-content">
 				<div class="tab-pane active" id="dstab{{=datasourceNow.Identity}}">
 					<h4>
-						Basic Info For DataSource-{{=datasourceNow.Identity}}<a href="datasource-{{=datasourceNow.Identity}}.json" target="_blank"  >View JSON API</a>
+						Basic Info For {{=datasourceNow.Name}}<a href="datasource-{{=datasourceNow.Identity}}.json" target="_blank"  >View JSON API</a>
 					</h4>
 					<table class="table table-bordered" style="background-color: #fff">
 						<tbody>
