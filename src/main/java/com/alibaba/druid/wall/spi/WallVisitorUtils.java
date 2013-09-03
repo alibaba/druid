@@ -189,7 +189,7 @@ public class WallVisitorUtils {
         SQLExpr expr = x.getExpr();
 
         if (expr instanceof SQLVariantRefExpr) {
-            if ("@".equals(((SQLVariantRefExpr) expr).getName())) {
+            if (!isTopSelectStatement(expr) && "@".equals(((SQLVariantRefExpr) expr).getName())) {
                 addViolation(visitor, ErrorCode.EVIL_NAME, "@ not allow", x);
             }
         }
@@ -1057,7 +1057,7 @@ public class WallVisitorUtils {
                     leftIsName = true;
                 }
             }
-            
+
             if ((!leftIsName) && caseExpr.getItems().size() > 0) {
                 SQLCaseExpr.Item item = caseExpr.getItems().get(0);
                 Object conditionVal = getValue(visitor, item.getConditionExpr());
@@ -1072,7 +1072,7 @@ public class WallVisitorUtils {
 
         return null;
     }
-    
+
     public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters) {
         SQLEvalVisitor visitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
         visitor.setParameters(parameters);
@@ -1453,6 +1453,38 @@ public class WallVisitorUtils {
             }
         }
         return false;
+    }
+
+    private static boolean isTopSelectStatement(SQLObject x) {
+
+        for (;;) {
+            if ((x.getParent() instanceof SQLExpr) || (x.getParent() instanceof Item)) {
+                x = x.getParent();
+            } else {
+                break;
+            }
+        }
+
+        if (!(x.getParent() instanceof SQLSelectItem)) {
+            return false;
+        }
+        SQLSelectItem item = (SQLSelectItem) x.getParent();
+        if (!(item.getParent() instanceof SQLSelectQueryBlock)) {
+            return false;
+        }
+
+        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) item.getParent();
+        if (!(queryBlock.getParent() instanceof SQLSelect)) {
+            return false;
+        }
+
+        SQLSelect select = (SQLSelect) queryBlock.getParent();
+        if (!(select.getParent() instanceof SQLSelectStatement)) {
+            return false;
+        }
+
+        SQLSelectStatement stmt = (SQLSelectStatement) select.getParent();
+        return stmt.getParent() == null;
     }
 
     public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
