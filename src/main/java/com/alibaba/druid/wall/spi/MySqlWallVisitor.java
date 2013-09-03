@@ -452,7 +452,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         text = text.toLowerCase();
-        
+
         for (int i = 0; i < text.length(); ++i) {
             char ch = text.charAt(i);
             switch (ch) {
@@ -464,7 +464,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 case '|':
                 case '^':
                 case '\n':
-                    addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints", SQLUtils.toMySqlString(x)));
+                    addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints",
+                                                               SQLUtils.toMySqlString(x)));
                 default:
                     break;
             }

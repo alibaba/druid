@@ -43,6 +43,7 @@ public class MySqlWallTest91 extends TestCase {
         provider.getConfig().setSchemaCheck(true);
         provider.getConfig().setLimitZeroAllow(true);
         provider.getConfig().setCommentAllow(true);
+        provider.getConfig().setConditionDoubleConstAllow(true);
 
         return provider;
     }
@@ -147,6 +148,14 @@ public class MySqlWallTest91 extends TestCase {
         }
         {
             String sql = "select  PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, CURRENT_TIMESTAMP() start_time, case when type=1 then ' where day_id = 20130101 '  when type=2 and substr('20130101','7,2')='01' then 'where month_id=201301 ' else 'where 3=5 ' end export_where_data from (SELECT PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, type, @rank := @rank + 1 AS rank FROM (  SELECT  PROJECT_NAME,  TABLE_NAME,  type,  (   SELECT   CASE   WHEN GROUP_CONCAT(COLUMN_name) LIKE 'ID,%' THEN   SUBSTR(    GROUP_CONCAT(COLUMN_name),    4   )   ELSE   GROUP_CONCAT(COLUMN_name)   END   FROM   Information_schema.`COLUMNS` A   WHERE   A.table_name = concat(B.TABLE_NAME,'_','201301')   ORDER BY   ORDINAL_POSITION  ) EXPORT_COLUMNS  FROM  ETL_EXPORT b  where project_name in ('acc')  ORDER BY  PROJECT_NAME,  TABLE_NAME ) tmp, (SELECT @rank := 0) a) b WHERE rank='3';";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+    }
+
+    public void test_true4() {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "SELECT 10006,@";
             Assert.assertTrue(provider.checkValid(sql));
         }
     }
