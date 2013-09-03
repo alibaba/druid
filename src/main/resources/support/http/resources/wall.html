@@ -77,34 +77,58 @@
 						<tr>
 							<th class="td_lable"><a id="th-TableNumber" class="lang"
 								langKey="TableNumber">TableNumber</a></th>
-							<th class="td_lable"><a id="th-TableName" class="lang"
+							<th class="td_lable"><a id="th-tableName" class="lang"
 								langKey="TableName">TableName</a></th>
-							<th class="td_lable"><a id="th-SelectCount" class="lang"
+							<th class="td_lable"><a id="th-selectCount" class="lang"
 								langKey="SelectCount">SelectCount</a></th>
-							<th class="td_lable"><a id="th-SelectIntoCount" class="lang"
+							<th class="td_lable"><a id="th-selectIntoCount" class="lang"
 								langKey="SelectIntoCount">SelectCount</a></th>
-							<th class="td_lable"><a id="th-InsertCount" class="lang"
+							<th class="td_lable"><a id="th-insertCount" class="lang"
 								langKey="InsertCount">InsertCount</a></th>
-							<th class="td_lable"><a id="th-UpdateCount" class="lang"
+							<th class="td_lable"><a id="th-updateCount" class="lang"
 								langKey="UpdateCount">UpdateCount</a></th>
-							<th class="td_lable"><a id="th-DeleteCount" class="lang"
+							<th class="td_lable"><a id="th-deleteCount" class="lang"
 								langKey="DeleteCount">DeleteCount</a></th>
-							<th class="td_lable"><a id="th-TruncateCount" class="lang"
+							<th class="td_lable"><a id="th-truncateCount" class="lang"
 								langKey="TruncateCount">TruncateCount</a></th>
-							<th class="td_lable"><a id="th-CreateCount" class="lang"
+							<th class="td_lable"><a id="th-createCount" class="lang"
 								langKey="CreateCount">CreateCount</a></th>
-							<th class="td_lable"><a id="th-AlterCount" class="lang"
+							<th class="td_lable"><a id="th-alterCount" class="lang"
 								langKey="AlterCount">AlterCount</a></th>
-							<th class="td_lable"><a id="th-DropCount" class="lang"
+							<th class="td_lable"><a id="th-dropCount" class="lang"
 								langKey="DropCount">DropCount</a></th>
-							<th class="td_lable"><a id="th-ReplaceCount" class="lang"
+							<th class="td_lable"><a id="th-replaceCount" class="lang"
 								langKey="ReplaceCount">ReplaceCount</a></th>
-							<th class="td_lable"><a id="th-DeleteDataCount" class="lang"
+							<th class="td_lable"><a id="th-deleteDataCount" class="lang"
 								langKey="DeleteDataCount">DeleteDataCount</a></th>
+							<th align="left" width="100"><span class="lang" langKey="UpdateHisto">DeleteDataHisto</span> <br />[ 
+								<a id="th-deleteDataCountHistogram[0]" class="langTitle" langKey="delete0" title="count of '0 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[1]" class="langTitle" langKey="delete9" title="count of '1-9 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[2]" class="langTitle" langKey="delete99" title="count of '10-99 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[3]" class="langTitle" langKey="delete999" title="count of '100-999 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[4]" class="langTitle" langKey="delete9999" title="count of '1000-9999 DeleteCount'" >-</a>
+								<a id="th-deleteDataCountHistogram[5]" class="langTitle" langKey="delete99999" title="count of '> 9999 DeleteCount'" >-</a> ]
+							</th>
 							<th class="td_lable"><a id="th-UpdateDataCount" class="lang"
 								langKey="UpdateDataCount">UpdateDataCount</a></th>
+							<th align="left" width="100"><span class="lang" langKey="UpdateHisto">UpdateDataHisto</span> <br />[ 
+								<a id="th-updateDataCountHistogram[0]" class="langTitle" langKey="update0" title="count of '0 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[1]" class="langTitle" langKey="update9" title="count of '1-9 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[2]" class="langTitle" langKey="update99" title="count of '10-99 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[3]" class="langTitle" langKey="update999" title="count of '100-999 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[4]" class="langTitle" langKey="update9999" title="count of '1000-9999 UpdateCount'" >-</a>
+								<a id="th-updateDataCountHistogram[5]" class="langTitle" langKey="update99999" title="count of '> 9999 UpdateCount'" >-</a> ]
+							</th>
 							<th class="td_lable"><a id="th-FetchRowCount" class="lang"
 								langKey="FetchRowCount">FetchRowCount</a></th>
+							<th align="left" width="100"><span class="lang" langKey="FetchRowHisto">FetchRowHisto</span> <br />[ 
+								<a id="th-fetchRowCountHistogram[0]" class="langTitle" langKey="fetch0" title="count of '0 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[1]" class="langTitle" langKey="fetch9" title="count of '1-9 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[2]" class="langTitle" langKey="fetch99" title="count of '10-99 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[3]" class="langTitle" langKey="fetch999" title="count of '100-999 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[4]" class="langTitle" langKey="fetch9999" title="count of '1000-9999 FetchRow'" >-</a>
+								<a id="th-fetchRowCountHistogram[5]" class="langTitle" langKey="fetch99999" title="count of '> 9999 FetchRow'" >-</a> ]
+							</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -221,12 +245,25 @@
 									+ "</td>";
 							html += "<td>"
 									+ replace(table.replaceCount) + "</td>";
-							html += "<td>"
-									+ replace(table.deleteDataCount) + "</td>";
-							html += "<td>"
-									+ replace(table.updateDataCount) + "</td>";
-							html += "<td>"
-									+ replace(table.fetchRowCount)+ "</td>";
+							html += "<td>" + replace(table.deleteDataCount) + "</td>";
+							if (table.deleteDataCountHistogram === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + '[' + table.deleteDataCountHistogram + ']' + "</td>";
+							}
+							html += "<td>" + replace(table.updateDataCount) + "</td>";
+							if (table.updateDataCountHistogram === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + '[' + table.updateDataCountHistogram + ']' + "</td>";
+							}
+							html += "<td>" + replace(table.fetchRowCount)+ "</td>";
+							if (table.fetchRowCountHistogram === undefined) {
+								html += "<td></td>";
+							} else {
+								html += "<td>" + '[' + table.fetchRowCountHistogram + ']' + "</td>";
+							}
+		   				
 							html += "</tr>";
 						}
 						$("#dataTable1 tbody").html(html);

@@ -70,12 +70,86 @@ public class WallTableStatValue {
     @MField(aggregate = AggregateType.Sum)
     private long   fetchRowCount;
 
+    @MField(name = "f1", aggregate = AggregateType.Sum)
+    protected long fetchRowCount_0_1;
+
+    @MField(name = "f10", aggregate = AggregateType.Sum)
+    protected long fetchRowCount_1_10;
+
+    @MField(name = "f100", aggregate = AggregateType.Sum)
+    protected long fetchRowCount_10_100;
+
+    @MField(name = "f1000", aggregate = AggregateType.Sum)
+    protected int  fetchRowCount_100_1000;
+
+    @MField(name = "f10000", aggregate = AggregateType.Sum)
+    protected int  fetchRowCount_1000_10000;
+
+    @MField(name = "fmore", aggregate = AggregateType.Sum)
+    protected int  fetchRowCount_10000_more;
+    
+    @MField(name = "u1", aggregate = AggregateType.Sum)
+    protected long updateDataCount_0_1;
+
+    @MField(name = "u10", aggregate = AggregateType.Sum)
+    protected long updateDataCount_1_10;
+
+    @MField(name = "u100", aggregate = AggregateType.Sum)
+    protected long updateDataCount_10_100;
+
+    @MField(name = "u1000", aggregate = AggregateType.Sum)
+    protected int  updateDataCount_100_1000;
+
+    @MField(name = "u10000", aggregate = AggregateType.Sum)
+    protected int  updateDataCount_1000_10000;
+
+    @MField(name = "umore", aggregate = AggregateType.Sum)
+    protected int  updateDataCount_10000_more;
+    
+    @MField(name = "del_1", aggregate = AggregateType.Sum)
+    protected long deleteDataCount_0_1;
+
+    @MField(name = "del_10", aggregate = AggregateType.Sum)
+    protected long deleteDataCount_1_10;
+
+    @MField(name = "del_100", aggregate = AggregateType.Sum)
+    protected long deleteDataCount_10_100;
+
+    @MField(name = "del_1000", aggregate = AggregateType.Sum)
+    protected int  deleteDataCount_100_1000;
+
+    @MField(name = "del_10000", aggregate = AggregateType.Sum)
+    protected int  deleteDataCount_1000_10000;
+
+    @MField(name = "del_more", aggregate = AggregateType.Sum)
+    protected int  deleteDataCount_10000_more;
+
+    public long[] getDeleteDataHistogram() {
+        return new long[] { deleteDataCount_0_1, //
+                deleteDataCount_1_10, //
+                deleteDataCount_10_100, //
+                deleteDataCount_100_1000, //
+                deleteDataCount_1000_10000, //
+                deleteDataCount_10000_more, //
+        };
+    }
+
     public WallTableStatValue(){
         this(null);
     }
 
     public WallTableStatValue(String name){
         this.name = name;
+    }
+
+    public long[] getFetchRowHistogram() {
+        return new long[] { fetchRowCount_0_1, //
+                fetchRowCount_1_10, //
+                fetchRowCount_10_100, //
+                fetchRowCount_100_1000, //
+                fetchRowCount_1000_10000, //
+                fetchRowCount_10000_more, //
+        };
     }
 
     public long getTotalExecuteCount() {
@@ -190,6 +264,16 @@ public class WallTableStatValue {
     public long getUpdateDataCount() {
         return updateDataCount;
     }
+    
+    public long[] getUpdateDataHistogram() {
+        return new long[] { updateDataCount_0_1, //
+                updateDataCount_1_10, //
+                updateDataCount_10_100, //
+                updateDataCount_100_1000, //
+                updateDataCount_1000_10000, //
+                updateDataCount_10000_more, //
+        };
+    }
 
     public void setUpdateDataCount(long updateDataCount) {
         this.updateDataCount = updateDataCount;
@@ -249,12 +333,15 @@ public class WallTableStatValue {
         }
         if (deleteDataCount > 0) {
             map.put("deleteDataCount", deleteDataCount);
+            map.put("deleteDataCountHistogram", getDeleteDataHistogram());
         }
         if (fetchRowCount > 0) {
             map.put("fetchRowCount", fetchRowCount);
+            map.put("fetchRowCountHistogram", getFetchRowHistogram());
         }
         if (updateDataCount > 0) {
             map.put("updateDataCount", updateDataCount);
+            map.put("updateDataCountHistogram", getUpdateDataHistogram());
         }
         return map;
     }
