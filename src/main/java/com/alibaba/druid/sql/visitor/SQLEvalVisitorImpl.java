@@ -138,4 +138,9 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     public boolean visit(SQLIdentifierExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
+
+    @Override
+    public void unregisterFunction(String funcName) {
+        functions.remove(funcName);
+    }
 }

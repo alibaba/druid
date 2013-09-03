@@ -228,7 +228,11 @@ public class SQLEvalVisitorUtils {
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         String methodName = x.getMethodName().toLowerCase();
 
-        Function function = functions.get(methodName);
+        Function function = visitor.getFunction(methodName);
+
+        if (function == null) {
+            function = functions.get(methodName);
+        }
 
         if (function != null) {
             Object result = function.eval(visitor, x);

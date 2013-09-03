@@ -100,7 +100,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import com.alibaba.druid.sql.visitor.functions.Nil;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
@@ -739,7 +741,7 @@ public class WallVisitorUtils {
             dbType = wallContext.getDbType();
         }
 
-        return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
+        return eval(dbType, x, Collections.emptyList());
     }
 
     public static SQLExpr getFirst(SQLExpr x) {
@@ -1042,7 +1044,7 @@ public class WallVisitorUtils {
             || x instanceof SQLInListExpr //
             || x instanceof SQLUnaryExpr //
         ) {
-            return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
+            return eval(dbType, x, Collections.emptyList());
         }
 
         if (visitor != null && (!visitor.getConfig().isCaseConditionAllow()) && x instanceof SQLCaseExpr) {
@@ -1065,10 +1067,20 @@ public class WallVisitorUtils {
                 }
             }
 
-            return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
+            return eval(dbType, x, Collections.emptyList());
         }
 
         return null;
+    }
+    
+    public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters) {
+        SQLEvalVisitor visitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
+        visitor.setParameters(parameters);
+        visitor.registerFunction("rand", Nil.instance);
+        sqlObject.accept(visitor);
+
+        Object value = SQLEvalVisitorUtils.getValue(sqlObject);
+        return value;
     }
 
     public static boolean isSimpleCountTableSource(WallVisitor visitor, SQLTableSource tableSource) {

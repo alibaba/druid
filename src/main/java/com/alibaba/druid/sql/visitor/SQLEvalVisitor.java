@@ -30,6 +30,8 @@ public interface SQLEvalVisitor extends SQLASTVisitor {
     Function getFunction(String funcName);
 
     void registerFunction(String funcName, Function function);
+    
+    void unregisterFunction(String funcName);
 
     List<Object> getParameters();
 

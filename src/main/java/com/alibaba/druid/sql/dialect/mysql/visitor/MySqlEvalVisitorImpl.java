@@ -162,4 +162,9 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     public boolean visit(SQLIdentifierExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
+
+    @Override
+    public void unregisterFunction(String funcName) {
+        functions.remove(funcName);
+    }
 }

@@ -1141,11 +1141,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     @Override
     public boolean visit(SQLCallStatement x) {
+        if (x.isBrace()) {
+            print("{");
+        }
+        if (x.getOutParameter() != null) {
+            x.getOutParameter().accept(this);
+            print(" = ");
+        }
+        
         print("CALL ");
         x.getProcedureName().accept(this);
         print('(');
+        
         printAndAccept(x.getParameters(), ", ");
         print(')');
+        if (x.isBrace()) {
+            print("}");
+        }
         return false;
     }
 
