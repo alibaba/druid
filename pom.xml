@@ -11,7 +11,7 @@
   
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.26-SNAPSHOT</version>
+	<version>0.2.26</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -23,8 +23,8 @@
 		<spring.version>3.2.3.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 
-		<gpg.skip>true</gpg.skip>
-		<javadoc.skip>true</javadoc.skip>
+		<gpg.skip>false</gpg.skip>
+		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
@@ -54,6 +54,11 @@
 			<id>wenshao</id>
 			<name>wenshao</name>
 			<email>szujobs@hotmail.com</email>
+		</developer>
+		<developer>
+			<id>kiki</id>
+			<name>kiki</name>
+			<email>little.fierydragon@gmail.com</email>
 		</developer>
 	</developers>
 
