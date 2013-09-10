@@ -39,6 +39,7 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             conditionAndAlwayTrueAllow = false;
     private boolean             conditionDoubleConstAllow  = false;
+    private boolean             conditionLikeTrueAllow     = false;
 
     private boolean             selectAllColumnAllow       = true;
 
@@ -58,7 +59,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             setAllow                   = true;
     private boolean             commitAllow                = true;
     private boolean             rollbackAllow              = true;
-    private boolean             useAllow                   = false;
+    private boolean             useAllow                   = true;
 
     private boolean             multiStatementAllow        = false;
 
@@ -128,6 +129,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setConditionDoubleConstAllow(boolean conditionDoubleConstAllow) {
         this.conditionDoubleConstAllow = conditionDoubleConstAllow;
+    }
+
+    public boolean isConditionLikeTrueAllow() {
+        return conditionLikeTrueAllow;
+    }
+
+    public void setConditionLikeTrueAllow(boolean conditionLikeTrueAllow) {
+        this.conditionLikeTrueAllow = conditionLikeTrueAllow;
     }
 
     public boolean isLimitZeroAllow() {

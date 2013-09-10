@@ -34,9 +34,9 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.DruidDataSourceUtils;
-import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcSqlStatUtils;
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.util.Utils;
 
 /**
  * 监控相关的对外数据暴露
@@ -245,7 +245,7 @@ public final class DruidStatManagerFacade {
                 } else if (valueA instanceof List && valueB instanceof List) {
                     List<Map<String, Object>> mergedList = mergeNamedList((List) valueA, (List) valueB);
                     newMap.put(key, mergedList);
-                } else if (valueA instanceof String && valueB instanceof String && valueA.equals(valueB)) {
+                } else if (valueA instanceof String && valueB instanceof String) {
                     newMap.put(key, valueA);
                 } else {
                     Object sum = SQLEvalVisitorUtils.add(valueA, valueB);
