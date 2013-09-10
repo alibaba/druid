@@ -33,20 +33,20 @@ public class MySqlWallTest40 extends TestCase {
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setUseAllow(false);
 
         Assert.assertFalse(provider.checkValid(//
         "use huaianapp")); //
 
         Assert.assertEquals(0, provider.getTableStats().size());
     }
-    
+
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        provider.getConfig().setUseAllow(true);
-        
+
         Assert.assertTrue(provider.checkValid(//
-                "use huaianapp")); //
-        
+        "use huaianapp")); //
+
         Assert.assertEquals(0, provider.getTableStats().size());
     }
 }

@@ -44,6 +44,7 @@ public class MySqlWallTest91 extends TestCase {
         provider.getConfig().setLimitZeroAllow(true);
         provider.getConfig().setCommentAllow(true);
         provider.getConfig().setConditionDoubleConstAllow(true);
+        provider.getConfig().setConditionLikeTrueAllow(true);
 
         return provider;
     }
@@ -156,6 +157,14 @@ public class MySqlWallTest91 extends TestCase {
         WallProvider provider = initWallProvider();
         {
             String sql = "SELECT 10006,@";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+    }
+
+    public void test_true5() {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select * from view_featureWarm where 1 = 1 and MaterialID in (select Materialid from material where Code like '%%' and name like '%%' and specs like '%%') and sumbalcqty <> 0";
             Assert.assertTrue(provider.checkValid(sql));
         }
     }

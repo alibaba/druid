@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import java.security.AccessControlException;
 import java.util.List;
 import java.util.Properties;
 
@@ -46,7 +47,10 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
     public MySqlParameterizedOutputVisitor(Appendable appender){
         super(appender);
 
-        configFromPropety(System.getProperties());
+        try {
+            configFromPropety(System.getProperties());
+        } catch (AccessControlException e) {
+        }
     }
 
     public void configFromPropety(Properties properties) {
@@ -87,7 +91,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
             SQLObject parent = x.getParent();
             computeSharding = parent instanceof SQLExprTableSource || parent instanceof SQLPropertyExpr;
         }
-        
+
         if (computeSharding) {
             int pos = name.lastIndexOf('_');
             if (pos != -1 && pos != name.length() - 1) {

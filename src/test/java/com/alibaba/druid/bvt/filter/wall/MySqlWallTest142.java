@@ -27,7 +27,7 @@ public class MySqlWallTest142 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        String sql = "SELECT * FROM `my_crons` WHERE 1 OR nextrun = '0' ";
+        String sql = "SELECT * FROM `my_crons` WHERE 1 AND nextrun = '0' ";
         Assert.assertTrue(provider.checkValid(sql));
     }
 }

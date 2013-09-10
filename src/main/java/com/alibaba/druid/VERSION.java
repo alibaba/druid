@@ -19,8 +19,8 @@ public final class VERSION {
 
     public final static int MajorVersion    = 0;
     public final static int MinorVersion    = 2;
-    public final static int RevisionVersion = 26;
-    
+    public final static int RevisionVersion = 27;
+
     public static String getVersionNumber() {
         return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
     }

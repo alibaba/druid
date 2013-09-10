@@ -44,6 +44,7 @@ public class SQLServerWallTest_0 extends TestCase {
         provider.getConfig().setLimitZeroAllow(true);
         provider.getConfig().setCommentAllow(true);
         provider.getConfig().setConditionDoubleConstAllow(true);
+        provider.getConfig().setConditionLikeTrueAllow(true);
 
         return provider;
     }
@@ -132,6 +133,22 @@ public class SQLServerWallTest_0 extends TestCase {
         WallProvider provider = initWallProvider();
         {
             String sql = "SELECT ROW_NUMBER() OVER (ORDER BY a.Account) rowno,  a.Account, a.TrueName, a.UserType, a.RegisterDate, SUM(ISNULL(b.O_PVCreditTotal,0)) pvvalue FROM (                                      SELECT M.Account, Mi.TrueName,M.PVCredits, M.RegisterDate, M.UserType FROM dbo.Members M                                      LEFT JOIN dbo.MembersInfo MI ON M.UID = MI.UID                                      WHERE Spreader='JWJ6789') a LEFT JOIN                                      (                                      SELECT SYS_Order.*, dbo.Members.Account FROM dbo.SYS_Order                                       LEFT JOIN dbo.Members ON dbo.SYS_Order.O_UserID = dbo.Members.UID                                      WHERE O_Status <> 0 AND O_Opratedatetime BETWEEN '2013-7-01' AND '2013-8-01'                                       UNION                                      SELECT SYS_Order_BusinessCenter.*, dbo.Members.Account FROM dbo.SYS_Order_BusinessCenter                                       LEFT JOIN dbo.Members ON dbo.SYS_Order_BusinessCenter.O_UserID = dbo.Members.UID                                      WHERE O_Status <> 0 AND O_Opratedatetime BETWEEN '2013-7-01' AND '2013-8-01'                                       ) b ON a.Account = b.principal GROUP BY a.Account, a.TrueName, a.UserType, a.RegisterDate HAVING a.Account LIKE '%%' OR (a.TrueName LIKE '%%' OR ISNULL(a.TrueName,'') LIKE '%%')";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+    }
+
+    public void test_true6() throws Exception {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select count(1) from [Tiger_Help] where 1 = 1 and id = 1";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+    }
+
+    public void test_true7() throws Exception {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select objjc,objname,pwd,servadd from wfp..wfpsys_user where objname in(select name from master..sysdatabases) ";
             Assert.assertTrue(provider.checkValid(sql));
         }
     }
