@@ -23,24 +23,24 @@ import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，检测可疑的Having条件
+ * 
  * @author wenshao
- *
  */
 public class WallSelectWhereTest1 extends TestCase {
 
     public void testMySql_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 OR FID = ?"));
+        Assert.assertTrue(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ?"));
     }
-    
+
     public void testORACLE_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 OR FID = ?"));
+        Assert.assertTrue(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ?"));
     }
-    
+
     public void testMySql_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE FID = ? OR 1 = 1"));
+        Assert.assertFalse(WallUtils.isValidateMySql("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ? OR 1 = 1"));
     }
-    
+
     public void testORACLE_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE FID = ? OR 1 = 1"));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT F1, F2 from t WHERE 1 = 1 AND FID = ? OR 1 = 1"));
     }
 }
