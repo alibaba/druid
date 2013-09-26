@@ -73,6 +73,7 @@ public enum Token {
    
     ALL("ALL"), 
     UNION("UNION"), 
+    EXCEPT("EXCEPT"), 
     INTERSECT("INTERSECT"), 
     MINUS("MINUS"),
     INNER("INNER"), 

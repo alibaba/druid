@@ -9,3 +9,4 @@ openrowset
 openquery
 has_dbaccess
 sp_executesql
+pg_sleep

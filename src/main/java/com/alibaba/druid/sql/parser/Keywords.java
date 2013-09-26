@@ -35,9 +35,9 @@ public class Keywords {
         map.put("AND", Token.AND);
         map.put("ANY", Token.ANY);
         map.put("AS", Token.AS);
-        
+
         map.put("ENABLE", Token.ENABLE);
-        map.put("DISABLE", Token. DISABLE);
+        map.put("DISABLE", Token.DISABLE);
 
         map.put("ASC", Token.ASC);
         map.put("BETWEEN", Token.BETWEEN);
@@ -61,6 +61,7 @@ public class Keywords {
         map.put("DROP", Token.DROP);
         map.put("ELSE", Token.ELSE);
         map.put("EXPLAIN", Token.EXPLAIN);
+        map.put("EXCEPT", Token.EXCEPT);
 
         map.put("END", Token.END);
         map.put("ESCAPE", Token.ESCAPE);
@@ -121,18 +122,18 @@ public class Keywords {
         map.put("WHEN", Token.WHEN);
         map.put("WHERE", Token.WHERE);
         map.put("XOR", Token.XOR);
-        
+
         map.put("OVER", Token.OVER);
         map.put("TO", Token.TO);
         map.put("USE", Token.USE);
-        
+
         map.put("REPLACE", Token.REPLACE);
-        
+
         map.put("COMMENT", Token.COMMENT);
         map.put("COMPUTE", Token.COMPUTE);
         map.put("WITH", Token.WITH);
         map.put("GRANT", Token.GRANT);
-        
+
         DEFAULT_KEYWORDS = new Keywords(map);
     }
 

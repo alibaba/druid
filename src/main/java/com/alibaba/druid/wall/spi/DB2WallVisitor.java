@@ -118,8 +118,7 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
+        return WallVisitorUtils.check(this, x);
     }
 
     @Override
