@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 
 public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements ParameterizedVisitor {
@@ -83,4 +84,13 @@ public class ParameterizedOutputVisitor extends SQLASTOutputVisitor implements P
 
         return ParameterizedOutputVisitorUtils.visit(this, x);
     }
+
+    public boolean visit(SQLNullExpr x) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return super.visit(x);
+        }
+
+        return ParameterizedOutputVisitorUtils.visit(this, x);
+    }
+
 }
