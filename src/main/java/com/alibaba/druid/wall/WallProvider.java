@@ -315,7 +315,7 @@ public abstract class WallProvider {
                                    Map<String, WallSqlFunctionStat> functionStats, List<Violation> violations,
                                    boolean syntaxError) {
         if (!blackListEnable) {
-            WallSqlStat stat = new WallSqlStat(tableStats, functionStats, syntaxError);
+            WallSqlStat stat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
             return stat;
         }
 

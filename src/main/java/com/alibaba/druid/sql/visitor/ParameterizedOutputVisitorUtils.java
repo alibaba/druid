@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
@@ -152,7 +153,7 @@ public class ParameterizedOutputVisitorUtils {
         if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
             return false;
         }
-        
+
         SQLObject parent = x.getParent();
 
         if (parent instanceof SQLDataType //
@@ -168,6 +169,12 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLNCharExpr x) {
+        v.print('?');
+        v.incrementReplaceCunt();
+        return false;
+    }
+
+    public static boolean visit(ParameterizedVisitor v, SQLNullExpr x) {
         v.print('?');
         v.incrementReplaceCunt();
         return false;
