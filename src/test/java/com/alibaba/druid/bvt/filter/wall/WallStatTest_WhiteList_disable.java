@@ -31,7 +31,7 @@ public class WallStatTest_WhiteList_disable extends TestCase {
 
         for (int i = 0; i < 301; ++i) {
             String sql = "select * from t where id = " + i + " OR 1 = 1";
-            Assert.assertTrue(provider.checkValid(sql));
+            Assert.assertFalse(provider.checkValid(sql));
         }
 
         WallTableStat tableStat = provider.getTableStat("t");
