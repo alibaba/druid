@@ -34,17 +34,15 @@ public class SQLServerWallTest_0 extends TestCase {
     private WallProvider initWallProvider() {
         WallProvider provider = new SQLServerWallProvider();
 
-        provider.getConfig().setUseAllow(true);
         provider.getConfig().setStrictSyntaxCheck(false);
         provider.getConfig().setMultiStatementAllow(true);
         provider.getConfig().setConditionAndAlwayTrueAllow(true);
         provider.getConfig().setNoneBaseStatementAllow(true);
-        provider.getConfig().setSelectUnionCheck(false);
-        provider.getConfig().setSchemaCheck(true);
         provider.getConfig().setLimitZeroAllow(true);
-        provider.getConfig().setCommentAllow(true);
         provider.getConfig().setConditionDoubleConstAllow(true);
-        provider.getConfig().setConditionLikeTrueAllow(true);
+
+        provider.getConfig().setCommentAllow(true);
+        provider.getConfig().setSelectUnionCheck(false);
 
         return provider;
     }
@@ -149,6 +147,14 @@ public class SQLServerWallTest_0 extends TestCase {
         WallProvider provider = initWallProvider();
         {
             String sql = "select objjc,objname,pwd,servadd from wfp..wfpsys_user where objname in(select name from master..sysdatabases) ";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+    }
+
+    public void test_true8() throws Exception {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select last_batch,spid=cast(spid as varchar(20)),(SELECT text FROM sys.dm_exec_sql_text(sql_handle)) AS query_text,(SELECT text FROM sys.dm_exec_sql_text(context_info)) AS query_text1,* from master..sysprocesses where dbid=db_id('heecerp') order by master..sysprocesses.last_batch desc";
             Assert.assertTrue(provider.checkValid(sql));
         }
     }

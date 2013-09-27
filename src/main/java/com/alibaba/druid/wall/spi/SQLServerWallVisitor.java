@@ -67,7 +67,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         this.config = provider.getConfig();
         this.provider = provider;
     }
-    
+
     @Override
     public String getDbType() {
         return JdbcConstants.SQL_SERVER;
@@ -138,8 +138,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
+        return WallVisitorUtils.check(this, x);
     }
 
     @Override
@@ -153,6 +152,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
         return true;
     }
+
     @Override
     public boolean visit(SQLServerExecStatement x) {
         return false;
@@ -278,17 +278,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
-        if (x.getSchema() != null && !provider.checkDenySchema(x.getSchema())) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SCHEMA_DENY, "schema not allow : "
-                                                                                          + x.getSchema(),
-                                                                   this.toSQL(x)));
-        }
-        if (x.getDatabase() != null && !provider.checkDenySchema(x.getDatabase())) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SCHEMA_DENY, "schema not allow : "
-                                                                                          + x.getDatabase(),
-                                                                   this.toSQL(x)));
-        }
-        return true;
+        return false;
     }
 
     @Override

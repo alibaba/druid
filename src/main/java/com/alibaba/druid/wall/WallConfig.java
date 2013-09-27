@@ -33,13 +33,16 @@ public class WallConfig implements WallConfigMBean {
     private boolean             selectWhereAlwayTrueCheck  = true;
     private boolean             selectHavingAlwayTrueCheck = true;
     private boolean             selectUnionCheck           = true;
+    private boolean             selectMinusCheck           = true;
+    private boolean             selectExceptCheck          = true;
+    private boolean             selectIntersectCheck       = true;
     private boolean             createTableAllow           = true;
     private boolean             dropTableAllow             = true;
     private boolean             alterTableAllow            = true;
 
     private boolean             conditionAndAlwayTrueAllow = false;
     private boolean             conditionDoubleConstAllow  = false;
-    private boolean             conditionLikeTrueAllow     = false;
+    private boolean             conditionLikeTrueAllow     = true;
 
     private boolean             selectAllColumnAllow       = true;
 
@@ -53,8 +56,8 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
-    private boolean             minusAllow                 = false;
-    private boolean             intersectAllow             = false;
+    private boolean             minusAllow                 = true;
+    private boolean             intersectAllow             = true;
     private boolean             replaceAllow               = true;
     private boolean             setAllow                   = true;
     private boolean             commitAllow                = true;
@@ -396,6 +399,30 @@ public class WallConfig implements WallConfigMBean {
 
     public void setSelectUnionCheck(boolean selectUnionCheck) {
         this.selectUnionCheck = selectUnionCheck;
+    }
+
+    public boolean isSelectMinusCheck() {
+        return selectMinusCheck;
+    }
+
+    public void setSelectMinusCheck(boolean selectMinusCheck) {
+        this.selectMinusCheck = selectMinusCheck;
+    }
+
+    public boolean isSelectExceptCheck() {
+        return selectExceptCheck;
+    }
+
+    public void setSelectExceptCheck(boolean selectExceptCheck) {
+        this.selectExceptCheck = selectExceptCheck;
+    }
+
+    public boolean isSelectIntersectCheck() {
+        return selectIntersectCheck;
+    }
+
+    public void setSelectIntersectCheck(boolean selectIntersectCheck) {
+        this.selectIntersectCheck = selectIntersectCheck;
     }
 
     public boolean isSelectWhereAlwayTrueCheck() {

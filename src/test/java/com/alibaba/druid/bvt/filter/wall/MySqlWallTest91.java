@@ -34,17 +34,15 @@ public class MySqlWallTest91 extends TestCase {
     private WallProvider initWallProvider() {
         WallProvider provider = new MySqlWallProvider();
 
-        provider.getConfig().setUseAllow(true);
         provider.getConfig().setStrictSyntaxCheck(false);
         provider.getConfig().setMultiStatementAllow(true);
         provider.getConfig().setConditionAndAlwayTrueAllow(true);
         provider.getConfig().setNoneBaseStatementAllow(true);
-        provider.getConfig().setSelectUnionCheck(false);
-        provider.getConfig().setSchemaCheck(true);
         provider.getConfig().setLimitZeroAllow(true);
-        provider.getConfig().setCommentAllow(true);
         provider.getConfig().setConditionDoubleConstAllow(true);
-        provider.getConfig().setConditionLikeTrueAllow(true);
+
+        provider.getConfig().setCommentAllow(true);
+        provider.getConfig().setSelectUnionCheck(false);
 
         return provider;
     }
@@ -52,7 +50,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = "SELECT count(*) FROM i_user_commentary WHERE item_type = 7 AND item_id = 30 AND SLEEP(5) AND is_del=0";
+            String sql = "SELECT t.session_id,t.voip_send,t.voip_rece,t.appid,t.begin_time,substring_index(t1.callbackUrl,':',1) AS servicetype, SUBSTRING_INDEX(substring_index(t1.callbackUrl,'/',3),'/',-1) AS hostname, CASE WHEN SUBSTR(t1.callbackUrl,-2)='**' THEN REPLACE(t1.callbackUrl,'**','OfflineMsgNotify') ELSE t1.callbackUrl END AS url FROM `im_session_info` t INNER JOIN ccp_application t1 ON t.appid=t1.appId WHERE t.end_time IS NULL AND ((DATABASE()='openser' AND t1.`status`=2) OR ((DATABASE()<>'openser') AND t1.`status` IN (1,2,3))) AND INSTR(t1.funInfo,'1004')>0 AND (0=0 OR (0>0 AND t.id<0)) ORDER BY t.id DESC LIMIT 100; ";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -116,7 +114,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false8() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = "select * from A where id = 1 or EXTRACTVALUE(4484,CONCAT(0x5c,0x7163646371,(SELECT (CASE WHEN (4484=4484) THEN 1 ELSE 0 END)),0x7165767271))";
+            String sql = "select sum(payment_ft) from order_goods where order_id=72353 AND (SELECT 3791 FROM(SELECT COUNT(*),CONCAT(CHAR(58,110,106,120,58),(SELECT (CASE WHEN (3791=3791) THEN 1 ELSE 0 END)),CHAR(58,116,116,113,58),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }

@@ -62,7 +62,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
         this.config = provider.getConfig();
         this.provider = provider;
     }
-    
+
     @Override
     public String getDbType() {
         return JdbcConstants.POSTGRESQL;
@@ -119,8 +119,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
+        return WallVisitorUtils.check(this, x);
     }
 
     @Override

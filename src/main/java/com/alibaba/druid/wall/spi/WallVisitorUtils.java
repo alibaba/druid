@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
@@ -41,6 +42,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr.Item;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
@@ -126,7 +128,16 @@ public class WallVisitorUtils {
 
     }
 
-    public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
+    public static boolean check(WallVisitor visitor, SQLBinaryOpExpr x) {
+
+        if (x.getOperator() == SQLBinaryOperator.BooleanOr || x.getOperator() == SQLBinaryOperator.BooleanAnd) {
+            List<SQLExpr> groupList = SQLUtils.split(x);
+            for (SQLExpr item : groupList) {
+                item.accept(visitor);
+            }
+            return false;
+        }
+
         if (x.getOperator() == SQLBinaryOperator.Add || x.getOperator() == SQLBinaryOperator.Concat) {
             List<SQLExpr> groupList = SQLUtils.split(x);
             if (groupList.size() >= 4) {
@@ -148,6 +159,8 @@ public class WallVisitorUtils {
                 }
             }
         }
+
+        return true;
     }
 
     public static void check(WallVisitor visitor, SQLCreateTableStatement x) {
@@ -600,7 +613,7 @@ public class WallVisitorUtils {
                 Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
                 if (Boolean.TRUE == booleanVal) {
                     final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
-                    if (wallContext != null && i != 0) {
+                    if (wallContext != null && !isFirst(item)) {
                         wallContext.setPartAlwayTrue(true);
                     }
                     return true;
@@ -615,6 +628,47 @@ public class WallVisitorUtils {
                 return false;
             }
 
+            return null;
+        }
+
+        if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
+
+            List<SQLExpr> groupList = SQLUtils.split(x);
+
+            int dalConst = 0;
+            Boolean allTrue = Boolean.TRUE;
+            for (int i = groupList.size() - 1; i >= 0; --i) {
+
+                SQLExpr item = groupList.get(i);
+                Object result = getValue(visitor, item);
+                Boolean booleanVal = SQLEvalVisitorUtils.castToBoolean(result);
+
+                if (Boolean.TRUE == booleanVal) {
+                    final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
+                    if (wallContext != null && !isFirst(item)) {
+                        wallContext.setPartAlwayTrue(true);
+                    }
+                    dalConst++;
+                } else if (Boolean.FALSE == booleanVal) {
+                    allTrue = Boolean.FALSE;
+                    dalConst++;
+                } else {
+                    if (allTrue != Boolean.FALSE) {
+                        allTrue = null;
+                    }
+                    dalConst = 0;
+                }
+
+                if (dalConst == 2 && visitor != null && !visitor.getConfig().isConditionDoubleConstAllow()) {
+                    addViolation(visitor, ErrorCode.DOUBLE_CONST_CONDITION, "double const condition", x);
+                }
+            }
+
+            if (Boolean.TRUE == allTrue) {
+                return true;
+            } else if (Boolean.FALSE == allTrue) {
+                return false;
+            }
             return null;
         }
 
@@ -633,58 +687,6 @@ public class WallVisitorUtils {
                 if (rightResult instanceof Number || leftResult instanceof Number) {
                     context.incrementLikeNumberWarnnings();
                 }
-            }
-        }
-
-        if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
-            if (visitor != null && !visitor.getConfig().isConditionDoubleConstAllow()) {
-                if (rightResult != null && x.getLeft() instanceof SQLBinaryOpExpr) {
-                    SQLBinaryOpExpr leftBinaryOpExpr = (SQLBinaryOpExpr) x.getLeft();
-
-                    if (leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanAnd //
-                        && leftBinaryOpExpr.getOperator() != SQLBinaryOperator.BooleanOr //
-                        && leftResult != null //
-                        && visitor != null) {
-                        addViolation(visitor, ErrorCode.DOUBLE_CONST_CONDITION, "double const condition", x);
-                    }
-
-                    if (leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanAnd //
-                        || leftBinaryOpExpr.getOperator() == SQLBinaryOperator.BooleanOr) {
-                        Object leftRightVal = getValue(leftBinaryOpExpr.getRight());
-                        if (leftRightVal != null) {
-                            addViolation(visitor, ErrorCode.DOUBLE_CONST_CONDITION, "double const condition", x);
-                        }
-                    }
-                }
-            }
-
-            if (leftResult == Boolean.TRUE) {
-                if (!isFirst(x.getLeft())) {
-                    final WallConditionContext current = wallConditionContextLocal.get();
-                    if (current != null) {
-                        current.setPartAlwayTrue(true);
-                    }
-                }
-            } else if (rightResult == Boolean.TRUE) {
-                final WallConditionContext current = wallConditionContextLocal.get();
-
-                boolean isLikeAlwayTrue = false;
-                if (right instanceof SQLBinaryOpExpr
-                    && ((SQLBinaryOpExpr) right).getOperator() == SQLBinaryOperator.Like) {
-                    isLikeAlwayTrue = true;
-                }
-
-                if (current != null && !isLikeAlwayTrue) {
-                    current.setPartAlwayTrue(true);
-                }
-            }
-
-            if (Boolean.TRUE == leftResult && Boolean.TRUE == rightResult) {
-                return true;
-            }
-
-            if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
-                return false;
             }
         }
 
@@ -711,19 +713,37 @@ public class WallVisitorUtils {
 
     public static List<SQLExpr> getParts(SQLExpr x) {
         List<SQLExpr> exprs = new ArrayList<SQLExpr>();
+        exprs.add(x);
 
-        if (x instanceof SQLBinaryOpExpr) {
-            SQLBinaryOpExpr binary = (SQLBinaryOpExpr) x;
-            if (binary.getOperator() == SQLBinaryOperator.BooleanAnd
-                || binary.getOperator() == SQLBinaryOperator.BooleanOr) {
-                exprs.addAll(getParts(((SQLBinaryOpExpr) x).getLeft()));
-                exprs.addAll(getParts(((SQLBinaryOpExpr) x).getRight()));
-                return exprs;
+        while (true) {
+            List<SQLExpr> tmp = partExpr(exprs);
+
+            if (tmp.size() == exprs.size()) {
+                break;
             }
+            exprs = tmp;
         }
 
-        exprs.add(x);
         return exprs;
+    }
+
+    public static List<SQLExpr> partExpr(List<SQLExpr> exprs) {
+        List<SQLExpr> partList = new ArrayList<SQLExpr>();
+
+        for (SQLExpr x : exprs) {
+            if (x instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binary = (SQLBinaryOpExpr) x;
+                if (binary.getOperator() == SQLBinaryOperator.BooleanAnd
+                    || binary.getOperator() == SQLBinaryOperator.BooleanOr) {
+                    partList.add(((SQLBinaryOpExpr) x).getLeft());
+                    partList.add(((SQLBinaryOpExpr) x).getRight());
+
+                    continue;
+                }
+            }
+            partList.add(x);
+        }
+        return partList;
     }
 
     public static boolean isFirst(SQLObject x) {
@@ -731,19 +751,20 @@ public class WallVisitorUtils {
             return true;
         }
 
-        SQLObject parent = x.getParent();
-        if (!(parent instanceof SQLExpr)) {
-            return true;
-        }
-
-        if (parent instanceof SQLBinaryOpExpr) {
-            SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) parent;
-            if (isFirst(binaryExpr) && x == binaryExpr.getLeft()) {
+        for (;;) {
+            SQLObject parent = x.getParent();
+            if (!(parent instanceof SQLExpr)) {
                 return true;
             }
-        }
 
-        return false;
+            if (parent instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) parent;
+                if (x == binaryExpr.getRight()) {
+                    return false;
+                }
+            }
+            x = parent;
+        }
     }
 
     private static boolean hasWhere(SQLSelectQuery selectQuery) {
@@ -993,8 +1014,32 @@ public class WallVisitorUtils {
         }
 
         if (x instanceof SQLQueryExpr) {
+
             if (isSimpleCountTableSource(visitor, ((SQLQueryExpr) x).getSubQuery())) {
                 return Integer.valueOf(1);
+            }
+
+            if (isSimpleCaseTableSource(visitor, ((SQLQueryExpr) x).getSubQuery())) {
+                SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) ((SQLQueryExpr) x).getSubQuery().getQuery();
+                SQLCaseExpr caseExpr = (SQLCaseExpr) queryBlock.getSelectList().get(0).getExpr();
+
+                Object result = getValue(caseExpr);
+
+                if (visitor != null && !visitor.getConfig().isCaseConditionAllow()) {
+                    boolean leftIsName = false;
+                    if (x.getParent() instanceof SQLBinaryOpExpr) {
+                        SQLExpr left = ((SQLBinaryOpExpr) x.getParent()).getLeft();
+                        if (left instanceof SQLName) {
+                            leftIsName = true;
+                        }
+                    }
+
+                    if (!leftIsName && result != null) {
+                        addViolation(visitor, ErrorCode.CONST_CASE_CONDITION, "const case condition", caseExpr);
+                    }
+                }
+
+                return result;
             }
         }
 
@@ -1011,23 +1056,26 @@ public class WallVisitorUtils {
             return eval(visitor, dbType, x, Collections.emptyList());
         }
 
-        if (visitor != null && (!visitor.getConfig().isCaseConditionAllow()) && x instanceof SQLCaseExpr) {
-            SQLCaseExpr caseExpr = (SQLCaseExpr) x;
+        if (x instanceof SQLCaseExpr) {
 
-            boolean leftIsName = false;
-            if (caseExpr.getParent() instanceof SQLBinaryOpExpr) {
-                SQLExpr left = ((SQLBinaryOpExpr) caseExpr.getParent()).getLeft();
-                if (left instanceof SQLName) {
-                    leftIsName = true;
+            if (visitor != null && !visitor.getConfig().isCaseConditionAllow()) {
+                SQLCaseExpr caseExpr = (SQLCaseExpr) x;
+
+                boolean leftIsName = false;
+                if (caseExpr.getParent() instanceof SQLBinaryOpExpr) {
+                    SQLExpr left = ((SQLBinaryOpExpr) caseExpr.getParent()).getLeft();
+                    if (left instanceof SQLName) {
+                        leftIsName = true;
+                    }
                 }
-            }
 
-            if ((!leftIsName) && caseExpr.getItems().size() > 0) {
-                SQLCaseExpr.Item item = caseExpr.getItems().get(0);
-                Object conditionVal = getValue(visitor, item.getConditionExpr());
-                Object itemVal = getValue(visitor, item.getValueExpr());
-                if (conditionVal instanceof Boolean && itemVal != null) {
-                    addViolation(visitor, ErrorCode.CONST_CASE_CONDITION, "const case condition", caseExpr);
+                if (!leftIsName && caseExpr.getValueExpr() == null && caseExpr.getItems().size() > 0) {
+                    SQLCaseExpr.Item item = caseExpr.getItems().get(0);
+                    Object conditionVal = getValue(visitor, item.getConditionExpr());
+                    Object itemVal = getValue(visitor, item.getValueExpr());
+                    if (conditionVal instanceof Boolean && itemVal != null) {
+                        addViolation(visitor, ErrorCode.CONST_CASE_CONDITION, "const case condition", caseExpr);
+                    }
                 }
             }
 
@@ -1095,6 +1143,40 @@ public class WallVisitorUtils {
         return false;
     }
 
+    public static boolean isSimpleCaseTableSource(WallVisitor visitor, SQLSelect select) {
+        SQLSelectQuery query = select.getQuery();
+
+        if (query instanceof SQLSelectQueryBlock) {
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+
+            boolean allawTrueWhere = false;
+
+            if (queryBlock.getWhere() == null) {
+                allawTrueWhere = true;
+            } else {
+                Object whereValue = getValue(visitor, queryBlock.getWhere());
+                if (whereValue == Boolean.TRUE) {
+                    allawTrueWhere = true;
+                } else if (whereValue == Boolean.FALSE) {
+                    return false;
+                }
+            }
+            boolean simpleCase = false;
+            if (queryBlock.getSelectList().size() == 1) {
+                SQLExpr selectItemExpr = queryBlock.getSelectList().get(0).getExpr();
+                if (selectItemExpr instanceof SQLCaseExpr) {
+                    simpleCase = true;
+                }
+            }
+
+            if (allawTrueWhere && simpleCase) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static void checkFunctionInTableSource(WallVisitor visitor, SQLMethodInvokeExpr x) {
         final WallTopStatementContext topStatementContext = wallTopStatementContextLocal.get();
         if (topStatementContext != null && (topStatementContext.fromSysSchema || topStatementContext.fromSysTable)) {
@@ -1105,7 +1187,7 @@ public class WallVisitorUtils {
 
         String methodName = x.getMethodName().toLowerCase();
         if (!visitor.getProvider().checkDenyTable(methodName)) {
-            if (isTopUpdateStatement(x) || isFirstSelectTableSource(x)) {
+            if (isTopStatementWithTableSource(x) || isFirstSelectTableSource(x)) {
                 if (topStatementContext != null) {
                     topStatementContext.setFromSysSchema(Boolean.TRUE);
                     clearViolation(visitor);
@@ -1226,7 +1308,7 @@ public class WallVisitorUtils {
             owner = WallVisitorUtils.form(owner);
             if (isInTableSource(x) && !visitor.getProvider().checkDenySchema(owner)) {
 
-                if (!isTopUpdateStatement(x) && !isFirstSelectTableSource(x) && !isFirstInSubQuery(x)) {
+                if (!isTopStatementWithTableSource(x) && !isFirstSelectTableSource(x) && !isFirstInSubQuery(x)) {
                     SQLObject parent = x.getParent();
                     while (parent != null && !(parent instanceof SQLStatement)) {
                         parent = parent.getParent();
@@ -1402,7 +1484,8 @@ public class WallVisitorUtils {
                 if (union.getRight() == x && hasTableSource(union.getLeft())) {
                     return false;
                 }
-            } else if (parent instanceof SQLQueryExpr || parent instanceof SQLInSubQueryExpr) {
+            } else if (parent instanceof SQLQueryExpr || parent instanceof SQLInSubQueryExpr
+                       || parent instanceof SQLExistsExpr) {
                 isWhereQueryExpr = isWhereOrHaving(parent);
             } else if (isWhereQueryExpr && parent instanceof SQLSelectQueryBlock) {
                 if (hasTableSource((SQLSelectQueryBlock) parent)) {
@@ -1452,7 +1535,7 @@ public class WallVisitorUtils {
         return false;
     }
 
-    private static boolean isTopUpdateStatement(SQLObject x) {
+    private static boolean isTopStatementWithTableSource(SQLObject x) {
 
         for (;;) {
             if (x instanceof SQLExpr) {
@@ -1465,7 +1548,7 @@ public class WallVisitorUtils {
         if (x instanceof SQLExprTableSource) {
             x = x.getParent();
 
-            if (x instanceof SQLUpdateStatement) {
+            if (x instanceof SQLStatementImpl) {
                 x = x.getParent();
                 if (x == null) {
                     return true;
@@ -1559,7 +1642,7 @@ public class WallVisitorUtils {
             if (visitor.isDenyTable(tableName)
                 && !(topStatementContext != null && topStatementContext.fromPermitTable())) {
 
-                if (isTopUpdateStatement(x) || isFirstSelectTableSource(x)) {
+                if (isTopStatementWithTableSource(x) || isFirstSelectTableSource(x)) {
                     if (topStatementContext != null) {
                         topStatementContext.setFromSysTable(Boolean.TRUE);
                         clearViolation(visitor);
@@ -1598,6 +1681,7 @@ public class WallVisitorUtils {
     }
 
     public static void checkUnion(WallVisitor visitor, SQLUnionQuery x) {
+
         if (x.getOperator() == SQLUnionOperator.MINUS && !visitor.getConfig().isMinusAllow()) {
             addViolation(visitor, ErrorCode.INTERSET_NOT_ALLOW, "minus not allow", x);
             return;
@@ -1610,6 +1694,7 @@ public class WallVisitorUtils {
 
         if (WallVisitorUtils.queryBlockFromIsNull(visitor, x.getRight())) {
             boolean isTopUpdateStatement = false;
+            boolean isTopInsertStatement = false;
             SQLObject selectParent = x.getParent();
             while (selectParent instanceof SQLUnionQuery //
                    || selectParent instanceof SQLJoinTableSource //
@@ -1622,7 +1707,11 @@ public class WallVisitorUtils {
                 isTopUpdateStatement = true;
             }
 
-            if (isTopUpdateStatement) {
+            if (selectParent instanceof SQLInsertStatement) {
+                isTopInsertStatement = true;
+            }
+
+            if (isTopUpdateStatement || isTopInsertStatement) {
                 return;
             }
 
@@ -1631,8 +1720,12 @@ public class WallVisitorUtils {
                 context.incrementUnionWarnnings();
             }
 
-            if (visitor.getConfig().isSelectUnionCheck()) {
-                addViolation(visitor, ErrorCode.UNION, "union query not contains 'from clause'", x);
+            if (((x.getOperator() == SQLUnionOperator.UNION || x.getOperator() == SQLUnionOperator.UNION_ALL || x.getOperator() == SQLUnionOperator.DISTINCT) && visitor.getConfig().isSelectUnionCheck())
+                || (x.getOperator() == SQLUnionOperator.MINUS && visitor.getConfig().isSelectMinusCheck())
+                || (x.getOperator() == SQLUnionOperator.INTERSECT && visitor.getConfig().isSelectIntersectCheck())
+                || (x.getOperator() == SQLUnionOperator.EXCEPT && visitor.getConfig().isSelectExceptCheck())) {
+                addViolation(visitor, ErrorCode.UNION,
+                             x.getOperator().toString() + " query not contains 'from clause'", x);
             }
         }
     }
@@ -1674,15 +1767,21 @@ public class WallVisitorUtils {
             }
 
             if (checkSelectConst) {
-                boolean allIsConst = true;
-                for (SQLSelectItem item : queryBlock.getSelectList()) {
-                    if (getValue(visitor, item.getExpr()) == null) {
-                        allIsConst = false;
-                        break;
+                SQLExpr where = queryBlock.getWhere();
+                if (where != null) {
+                    Object whereValue = getValue(visitor, where);
+                    if (Boolean.TRUE == whereValue) {
+                        boolean allIsConst = true;
+                        for (SQLSelectItem item : queryBlock.getSelectList()) {
+                            if (getValue(visitor, item.getExpr()) == null) {
+                                allIsConst = false;
+                                break;
+                            }
+                        }
+                        if (allIsConst) {
+                            return true;
+                        }
                     }
-                }
-                if (allIsConst) {
-                    return true;
                 }
             }
         }
@@ -1710,17 +1809,20 @@ public class WallVisitorUtils {
     public static void loadResource(Set<String> names, String resource) {
         try {
             boolean hasResource = false;
-            Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources(resource);
-            while (e.hasMoreElements()) {
-                URL url = e.nextElement();
-                InputStream in = null;
-                try {
-                    in = url.openStream();
-                    readFromInputStream(names, in);
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            if (classLoader != null) {
+                Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources(resource);
+                while (e.hasMoreElements()) {
+                    URL url = e.nextElement();
+                    InputStream in = null;
+                    try {
+                        in = url.openStream();
+                        readFromInputStream(names, in);
 
-                    hasResource = true;
-                } finally {
-                    JdbcUtils.close(in);
+                        hasResource = true;
+                    } finally {
+                        JdbcUtils.close(in);
+                    }
                 }
             }
 
