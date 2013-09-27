@@ -175,6 +175,16 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLNullExpr x) {
+        SQLObject parent = x.getParent();
+        if (parent instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
+            if (binaryOpExpr.getOperator() == SQLBinaryOperator.IsNot
+                || binaryOpExpr.getOperator() == SQLBinaryOperator.Is) {
+                v.print("NULL");
+                return false;
+            }
+        }
+
         v.print('?');
         v.incrementReplaceCunt();
         return false;
