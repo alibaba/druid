@@ -62,7 +62,7 @@ public class SQLSelectParser extends SQLParser {
         if (select.getOrderBy() == null) {
             select.setOrderBy(parseOrderBy());
         }
-        
+
         if (lexer.token() == Token.HINT) {
             this.exprParser.parseHints(select.getHints());
         }
@@ -101,6 +101,20 @@ public class SQLSelectParser extends SQLParser {
             union.setRight(right);
 
             return unionRest(union);
+        }
+
+        if (lexer.token() == Token.EXCEPT) {
+            lexer.nextToken();
+
+            SQLUnionQuery union = new SQLUnionQuery();
+            union.setLeft(selectQuery);
+
+            union.setOperator(SQLUnionOperator.EXCEPT);
+
+            SQLSelectQuery right = this.query();
+            union.setRight(right);
+
+            return union;
         }
 
         if (lexer.token() == Token.INTERSECT) {
@@ -145,7 +159,7 @@ public class SQLSelectParser extends SQLParser {
         }
 
         accept(Token.SELECT);
-        
+
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
         }

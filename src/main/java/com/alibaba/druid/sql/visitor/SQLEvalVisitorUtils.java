@@ -704,7 +704,8 @@ public class SQLEvalVisitorUtils {
 
             Object conditionValue = item.getConditionExpr().getAttribute(EVAL_VALUE);
 
-            if (eq(value, conditionValue)) {
+            if ((x.getValueExpr() != null && eq(value, conditionValue))
+                || (x.getValueExpr() == null && conditionValue instanceof Boolean && (Boolean) conditionValue == Boolean.TRUE)) {
                 item.getValueExpr().accept(visitor);
 
                 if (item.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
@@ -1051,6 +1052,8 @@ public class SQLEvalVisitorUtils {
             if (list.size() == 1) {
                 return processValue(list.get(0));
             }
+        } else if (value instanceof Date) {
+            return ((Date) value).getTime();
         }
         return value;
     }
@@ -1700,6 +1703,10 @@ public class SQLEvalVisitorUtils {
 
         if (b == null) {
             return a;
+        }
+
+        if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return EVAL_VALUE_NULL;
         }
 
         if (a instanceof Date || b instanceof Date) {

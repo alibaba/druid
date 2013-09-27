@@ -30,11 +30,14 @@ public class MySqlLockTableStatement extends MySqlStatementImpl {
     }
 
     public void setTableSource(SQLExprTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
         this.tableSource = tableSource;
     }
 
     public void setTableSource(SQLName name) {
-        this.tableSource = new SQLExprTableSource(name);
+        setTableSource(new SQLExprTableSource(name));
     }
 
     public LockType getLockType() {

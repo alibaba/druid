@@ -70,7 +70,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         this.config = provider.getConfig();
         this.provider = provider;
     }
-    
+
     @Override
     public String getDbType() {
         return JdbcConstants.ORACLE;
@@ -127,8 +127,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
+        return WallVisitorUtils.check(this, x);
     }
 
     @Override
@@ -211,7 +210,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLSelectStatement x) {
         WallVisitorUtils.clearWallTopStatementContext();
@@ -274,7 +273,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         WallVisitorUtils.checkDelete(this, x);
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleDeleteStatement x) {
         endVisit((SQLDeleteStatement) x);
@@ -343,7 +342,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     public boolean visit(SQLCallStatement x) {
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLCreateTriggerStatement x) {
         return false;

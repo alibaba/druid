@@ -1380,8 +1380,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("USING ");
         x.getUsing().accept(this);
 
-        print(" ON ");
+        print(" ON (");
         x.getOn().accept(this);
+        print(") ");
 
         if (x.getUpdateClause() != null) {
             println();
@@ -3383,7 +3384,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     protected void printCascade() {
         print(" CASCADE CONSTRAINTS");
     }
-    
+
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
         if ("trim".equalsIgnoreCase(x.getMethodName())) {
@@ -3403,7 +3404,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 return false;
             }
         }
-        
+
         return super.visit(x);
     }
 }
