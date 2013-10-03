@@ -895,21 +895,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public DruidPooledConnection getConnectionDirect(long maxWaitMillis) throws SQLException {
         for (;;) {
-            DruidPooledConnection poolalbeConnection = getConnectionInternal(maxWaitMillis);
+            DruidPooledConnection poolableConnection = getConnectionInternal(maxWaitMillis);
 
             if (isTestOnBorrow()) {
-                boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
+                boolean validate = testConnectionInternal(poolableConnection.getConnection());
                 if (!validate) {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("skip not validate connection.");
                     }
 
-                    Connection realConnection = poolalbeConnection.getConnection();
+                    Connection realConnection = poolableConnection.getConnection();
                     discardConnection(realConnection);
                     continue;
                 }
             } else {
-                Connection realConnection = poolalbeConnection.getConnection();
+                Connection realConnection = poolableConnection.getConnection();
                 if (realConnection.isClosed()) {
                     discardConnection(null); // 传入null，避免重复关闭
                     continue;
@@ -917,7 +917,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 if (isTestWhileIdle()) {
                     final long currentTimeMillis = System.currentTimeMillis();
-                    final long lastActiveTimeMillis = poolalbeConnection.getConnectionHolder().getLastActiveTimeMillis();
+                    final long lastActiveTimeMillis = poolableConnection.getConnectionHolder().getLastActiveTimeMillis();
                     final long idleMillis = currentTimeMillis - lastActiveTimeMillis;
                     long timeBetweenEvictionRunsMillis = this.getTimeBetweenEvictionRunsMillis();
                     if (timeBetweenEvictionRunsMillis <= 0) {
@@ -925,7 +925,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
 
                     if (idleMillis >= timeBetweenEvictionRunsMillis) {
-                        boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
+                        boolean validate = testConnectionInternal(poolableConnection.getConnection());
                         if (!validate) {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("skip not validate connection.");
@@ -940,20 +940,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (isRemoveAbandoned()) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                poolalbeConnection.setConnectStackTrace(stackTrace);
-                poolalbeConnection.setConnectedTimeNano();
-                poolalbeConnection.setTraceEnable(true);
+                poolableConnection.setConnectStackTrace(stackTrace);
+                poolableConnection.setConnectedTimeNano();
+                poolableConnection.setTraceEnable(true);
 
                 synchronized (activeConnections) {
-                    activeConnections.put(poolalbeConnection, PRESENT);
+                    activeConnections.put(poolableConnection, PRESENT);
                 }
             }
 
             if (!this.isDefaultAutoCommit()) {
-                poolalbeConnection.setAutoCommit(false);
+                poolableConnection.setAutoCommit(false);
             }
 
-            return poolalbeConnection;
+            return poolableConnection;
         }
     }
 
