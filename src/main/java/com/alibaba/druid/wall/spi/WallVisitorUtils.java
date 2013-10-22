@@ -33,7 +33,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
@@ -650,6 +649,10 @@ public class WallVisitorUtils {
                     }
                     dalConst++;
                 } else if (Boolean.FALSE == booleanVal) {
+                    final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
+                    if (wallContext != null && !isFirst(item)) {
+                        wallContext.setPartAlwayFalse(true);
+                    }
                     allTrue = Boolean.FALSE;
                     dalConst++;
                 } else {
@@ -869,17 +872,26 @@ public class WallVisitorUtils {
 
     public static class WallConditionContext {
 
-        private boolean partAlwayrue;
+        private boolean partAlwayTrue   = false;
+        private boolean partAlwayFalse  = false;
         private boolean constArithmetic = false;
         private boolean xor             = false;
         private boolean bitwise         = false;
 
         public boolean hasPartAlwayTrue() {
-            return partAlwayrue;
+            return partAlwayTrue;
         }
 
         public void setPartAlwayTrue(boolean partAllowTrue) {
-            this.partAlwayrue = partAllowTrue;
+            this.partAlwayTrue = partAllowTrue;
+        }
+
+        public boolean hasPartAlwayFalse() {
+            return partAlwayFalse;
+        }
+
+        public void setPartAlwayFalse(boolean partAlwayFalse) {
+            this.partAlwayFalse = partAlwayFalse;
         }
 
         public boolean hasConstArithmetic() {
@@ -945,6 +957,10 @@ public class WallVisitorUtils {
 
             if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
                 addViolation(visitor, ErrorCode.ALWAY_TRUE, "part alway true condition not allow", x);
+            }
+
+            if (current.hasPartAlwayFalse() && !visitor.getConfig().isConditionAndAlwayFalseAllow()) {
+                addViolation(visitor, ErrorCode.ALWAY_FALSE, "part alway false condition not allow", x);
             }
 
             if (current.hasConstArithmetic() && !visitor.getConfig().isConstArithmeticAllow()) {
@@ -1548,7 +1564,7 @@ public class WallVisitorUtils {
         if (x instanceof SQLExprTableSource) {
             x = x.getParent();
 
-            if (x instanceof SQLStatementImpl) {
+            if (x instanceof SQLStatement) {
                 x = x.getParent();
                 if (x == null) {
                     return true;
