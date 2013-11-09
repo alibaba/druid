@@ -65,6 +65,7 @@ import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallSqlTableStat;
 import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
@@ -310,6 +311,13 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
+
+            final WallTopStatementContext topStatementContext = WallVisitorUtils.getWallTopStatementContext();
+            if (topStatementContext != null
+                && (topStatementContext.fromSysSchema() || topStatementContext.fromSysTable())) {
+                return false;
+            }
+
             boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
             if (!isTop) {
                 boolean allow = true;
@@ -346,7 +354,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(MySqlOutFileExpr x) {
-        if (!config.isSelectIntoOutfileAllow()) {
+        if (!config.isSelectIntoOutfileAllow() && !WallVisitorUtils.isTopSelectOutFile(x)) {
             violations.add(new IllegalSQLObjectViolation(ErrorCode.INTO_OUTFILE, "into out file not allow", toSQL(x)));
         }
 

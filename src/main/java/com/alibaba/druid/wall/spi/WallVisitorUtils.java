@@ -88,6 +88,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
@@ -204,7 +205,7 @@ public class WallVisitorUtils {
         SQLExpr expr = x.getExpr();
 
         if (expr instanceof SQLVariantRefExpr) {
-            if (!isTopSelectStatement(expr) && "@".equals(((SQLVariantRefExpr) expr).getName())) {
+            if (!isTopSelectItem(expr) && "@".equals(((SQLVariantRefExpr) expr).getName())) {
                 addViolation(visitor, ErrorCode.EVIL_NAME, "@ not allow", x);
             }
         }
@@ -1492,6 +1493,7 @@ public class WallVisitorUtils {
         }
 
         boolean isWhereQueryExpr = false;
+        boolean isSelectItem = false;
         do {
             x = parent;
             parent = parent.getParent();
@@ -1503,7 +1505,9 @@ public class WallVisitorUtils {
             } else if (parent instanceof SQLQueryExpr || parent instanceof SQLInSubQueryExpr
                        || parent instanceof SQLExistsExpr) {
                 isWhereQueryExpr = isWhereOrHaving(parent);
-            } else if (isWhereQueryExpr && parent instanceof SQLSelectQueryBlock) {
+            } else if (parent instanceof SQLSelectItem) {
+                isSelectItem = true;
+            } else if ((isWhereQueryExpr || isSelectItem) && parent instanceof SQLSelectQueryBlock) {
                 if (hasTableSource((SQLSelectQueryBlock) parent)) {
                     return false;
                 }
@@ -1574,8 +1578,7 @@ public class WallVisitorUtils {
         return false;
     }
 
-    private static boolean isTopSelectStatement(SQLObject x) {
-
+    private static boolean isTopSelectItem(SQLObject x) {
         for (;;) {
             if ((x.getParent() instanceof SQLExpr) || (x.getParent() instanceof Item)) {
                 x = x.getParent();
@@ -1587,12 +1590,18 @@ public class WallVisitorUtils {
         if (!(x.getParent() instanceof SQLSelectItem)) {
             return false;
         }
+
         SQLSelectItem item = (SQLSelectItem) x.getParent();
-        if (!(item.getParent() instanceof SQLSelectQueryBlock)) {
+        return isTopSelectStatement(item.getParent());
+    }
+
+    private static boolean isTopSelectStatement(SQLObject x) {
+
+        if (!(x instanceof SQLSelectQueryBlock)) {
             return false;
         }
 
-        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) item.getParent();
+        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x;
         if (!(queryBlock.getParent() instanceof SQLSelect)) {
             return false;
         }
@@ -1604,6 +1613,14 @@ public class WallVisitorUtils {
 
         SQLSelectStatement stmt = (SQLSelectStatement) select.getParent();
         return stmt.getParent() == null;
+    }
+
+    public static boolean isTopSelectOutFile(MySqlOutFileExpr x) {
+        if (!(x.getParent() instanceof SQLExprTableSource)) {
+            return false;
+        }
+        SQLExprTableSource tableSource = (SQLExprTableSource) x.getParent();
+        return isTopSelectStatement(tableSource.getParent());
     }
 
     public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
