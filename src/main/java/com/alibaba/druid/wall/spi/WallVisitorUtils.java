@@ -33,7 +33,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
@@ -89,6 +88,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
@@ -205,7 +205,7 @@ public class WallVisitorUtils {
         SQLExpr expr = x.getExpr();
 
         if (expr instanceof SQLVariantRefExpr) {
-            if (!isTopSelectStatement(expr) && "@".equals(((SQLVariantRefExpr) expr).getName())) {
+            if (!isTopSelectItem(expr) && "@".equals(((SQLVariantRefExpr) expr).getName())) {
                 addViolation(visitor, ErrorCode.EVIL_NAME, "@ not allow", x);
             }
         }
@@ -650,6 +650,10 @@ public class WallVisitorUtils {
                     }
                     dalConst++;
                 } else if (Boolean.FALSE == booleanVal) {
+                    final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
+                    if (wallContext != null && !isFirst(item)) {
+                        wallContext.setPartAlwayFalse(true);
+                    }
                     allTrue = Boolean.FALSE;
                     dalConst++;
                 } else {
@@ -869,17 +873,26 @@ public class WallVisitorUtils {
 
     public static class WallConditionContext {
 
-        private boolean partAlwayrue;
+        private boolean partAlwayTrue   = false;
+        private boolean partAlwayFalse  = false;
         private boolean constArithmetic = false;
         private boolean xor             = false;
         private boolean bitwise         = false;
 
         public boolean hasPartAlwayTrue() {
-            return partAlwayrue;
+            return partAlwayTrue;
         }
 
         public void setPartAlwayTrue(boolean partAllowTrue) {
-            this.partAlwayrue = partAllowTrue;
+            this.partAlwayTrue = partAllowTrue;
+        }
+
+        public boolean hasPartAlwayFalse() {
+            return partAlwayFalse;
+        }
+
+        public void setPartAlwayFalse(boolean partAlwayFalse) {
+            this.partAlwayFalse = partAlwayFalse;
         }
 
         public boolean hasConstArithmetic() {
@@ -945,6 +958,10 @@ public class WallVisitorUtils {
 
             if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
                 addViolation(visitor, ErrorCode.ALWAY_TRUE, "part alway true condition not allow", x);
+            }
+
+            if (current.hasPartAlwayFalse() && !visitor.getConfig().isConditionAndAlwayFalseAllow()) {
+                addViolation(visitor, ErrorCode.ALWAY_FALSE, "part alway false condition not allow", x);
             }
 
             if (current.hasConstArithmetic() && !visitor.getConfig().isConstArithmeticAllow()) {
@@ -1476,6 +1493,7 @@ public class WallVisitorUtils {
         }
 
         boolean isWhereQueryExpr = false;
+        boolean isSelectItem = false;
         do {
             x = parent;
             parent = parent.getParent();
@@ -1487,7 +1505,9 @@ public class WallVisitorUtils {
             } else if (parent instanceof SQLQueryExpr || parent instanceof SQLInSubQueryExpr
                        || parent instanceof SQLExistsExpr) {
                 isWhereQueryExpr = isWhereOrHaving(parent);
-            } else if (isWhereQueryExpr && parent instanceof SQLSelectQueryBlock) {
+            } else if (parent instanceof SQLSelectItem) {
+                isSelectItem = true;
+            } else if ((isWhereQueryExpr || isSelectItem) && parent instanceof SQLSelectQueryBlock) {
                 if (hasTableSource((SQLSelectQueryBlock) parent)) {
                     return false;
                 }
@@ -1548,7 +1568,7 @@ public class WallVisitorUtils {
         if (x instanceof SQLExprTableSource) {
             x = x.getParent();
 
-            if (x instanceof SQLStatementImpl) {
+            if (x instanceof SQLStatement) {
                 x = x.getParent();
                 if (x == null) {
                     return true;
@@ -1558,8 +1578,7 @@ public class WallVisitorUtils {
         return false;
     }
 
-    private static boolean isTopSelectStatement(SQLObject x) {
-
+    private static boolean isTopSelectItem(SQLObject x) {
         for (;;) {
             if ((x.getParent() instanceof SQLExpr) || (x.getParent() instanceof Item)) {
                 x = x.getParent();
@@ -1571,12 +1590,18 @@ public class WallVisitorUtils {
         if (!(x.getParent() instanceof SQLSelectItem)) {
             return false;
         }
+
         SQLSelectItem item = (SQLSelectItem) x.getParent();
-        if (!(item.getParent() instanceof SQLSelectQueryBlock)) {
+        return isTopSelectStatement(item.getParent());
+    }
+
+    private static boolean isTopSelectStatement(SQLObject x) {
+
+        if (!(x instanceof SQLSelectQueryBlock)) {
             return false;
         }
 
-        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) item.getParent();
+        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x;
         if (!(queryBlock.getParent() instanceof SQLSelect)) {
             return false;
         }
@@ -1588,6 +1613,14 @@ public class WallVisitorUtils {
 
         SQLSelectStatement stmt = (SQLSelectStatement) select.getParent();
         return stmt.getParent() == null;
+    }
+
+    public static boolean isTopSelectOutFile(MySqlOutFileExpr x) {
+        if (!(x.getParent() instanceof SQLExprTableSource)) {
+            return false;
+        }
+        SQLExprTableSource tableSource = (SQLExprTableSource) x.getParent();
+        return isTopSelectStatement(tableSource.getParent());
     }
 
     public static boolean check(WallVisitor visitor, SQLExprTableSource x) {

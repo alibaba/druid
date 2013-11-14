@@ -67,6 +67,7 @@ public interface ErrorCode {
     public final static int EVIL_HINTS                    = 2110;
     public final static int EVIL_NAME                     = 2111;
     public final static int EVIL_CONCAT                   = 2112;
+    public final static int ALWAY_FALSE                   = 2113;
 
     public final static int NOT_PARAMETERIZED             = 2200;
     public final static int MULTI_TENANT                  = 2201;
