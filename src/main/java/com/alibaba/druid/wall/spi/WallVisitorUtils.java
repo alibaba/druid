@@ -794,6 +794,14 @@ public class WallVisitorUtils {
                 return false;
             }
 
+            if (parent instanceof SQLJoinTableSource) {
+                SQLJoinTableSource joinTableSource = (SQLJoinTableSource) parent;
+                if (joinTableSource.getCondition() == x) {
+                    return true;
+                }
+
+            }
+
             if (parent instanceof SQLUnionQuery) {
                 SQLUnionQuery union = (SQLUnionQuery) parent;
                 if (union.getRight() == x && hasWhere(union.getLeft())) {
