@@ -293,6 +293,8 @@ public class SQLUtils {
 
     public static List<SQLExpr> split(SQLBinaryOpExpr x) {
         List<SQLExpr> groupList = new ArrayList<SQLExpr>();
+        groupList.add(x.getRight());
+
         SQLExpr left = x.getLeft();
         for (;;) {
             if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
@@ -304,7 +306,6 @@ public class SQLUtils {
                 break;
             }
         }
-        groupList.add(x.getRight());
         return groupList;
     }
 }

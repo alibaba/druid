@@ -1050,7 +1050,7 @@ public class WallVisitorUtils {
 
                 Object result = getValue(caseExpr);
 
-                if (visitor != null && !visitor.getConfig().isCaseConditionAllow()) {
+                if (visitor != null && !visitor.getConfig().isCaseConditionConstAllow()) {
                     boolean leftIsName = false;
                     if (x.getParent() instanceof SQLBinaryOpExpr) {
                         SQLExpr left = ((SQLBinaryOpExpr) x.getParent()).getLeft();
@@ -1083,7 +1083,7 @@ public class WallVisitorUtils {
 
         if (x instanceof SQLCaseExpr) {
 
-            if (visitor != null && !visitor.getConfig().isCaseConditionAllow()) {
+            if (visitor != null && !visitor.getConfig().isCaseConditionConstAllow()) {
                 SQLCaseExpr caseExpr = (SQLCaseExpr) x;
 
                 boolean leftIsName = false;
