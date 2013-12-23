@@ -54,4 +54,9 @@ public interface JdbcConstants {
     public static final String H2                = "h2";
 
     public static final String H2_DRIVER         = "org.h2.Driver";
+
+    /**
+     * 阿里云odps
+     */
+    public static final String ODPS              = "odps";
 }

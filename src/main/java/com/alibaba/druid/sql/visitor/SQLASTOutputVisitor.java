@@ -144,9 +144,10 @@ import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements PrintableVisitor {
 
     protected final Appendable appender;
-    private String             indent       = "\t";
-    private int                indentCount  = 0;
-    private boolean            prettyFormat = true;
+    private String             indent                 = "\t";
+    private int                indentCount            = 0;
+    private boolean            prettyFormat           = true;
+    protected int              selectListNumberOfLine = 5;
 
     private List<Object>       parameters;
 
@@ -252,7 +253,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         incrementIndent();
         for (int i = 0, size = selectList.size(); i < size; ++i) {
             if (i != 0) {
-                if (i % 5 == 0) {
+                if (i % selectListNumberOfLine == 0) {
                     println();
                 }
 
@@ -642,7 +643,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             println();
             x.getOrderBy().accept(this);
         }
-        
+
         if (x.getHintsSize() > 0) {
             printAndAccept(x.getHints(), "");
         }
@@ -892,6 +893,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             if (x.getEnable().booleanValue()) {
                 print(" ENABLE");
             }
+        }
+
+        if (x.getComment() != null) {
+            print(" COMMENT ");
+            x.getComment().accept(this);
         }
 
         return false;
@@ -1148,11 +1154,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getOutParameter().accept(this);
             print(" = ");
         }
-        
+
         print("CALL ");
         x.getProcedureName().accept(this);
         print('(');
-        
+
         printAndAccept(x.getParameters(), ", ");
         print(')');
         if (x.isBrace()) {
@@ -1417,6 +1423,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLOver x) {
         print("OVER (");
         if (x.getPartitionBy().size() > 0) {
+            print("PARTITION BY ");
             printAndAccept(x.getPartitionBy(), ", ");
             print(' ');
         }
@@ -1790,7 +1797,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
             print(" ADMIN OPTION");
         }
-        
+
         if (x.getIdentifiedBy() != null) {
             print(" IDENTIFIED BY ");
             x.getIdentifiedBy().accept(this);
@@ -1811,43 +1818,43 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLDropFunctionStatement x) {
         print("DROP FUNCTION ");
-        
+
         if (x.isIfExists()) {
             print("IF EXISTS ");
         }
-        
+
         x.getName().accept(this);
-        
+
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLDropTableSpaceStatement x) {
         print("DROP TABLESPACE ");
-        
+
         if (x.isIfExists()) {
             print("IF EXISTS ");
         }
-        
+
         x.getName().accept(this);
-        
+
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLDropProcedureStatement x) {
         print("DROP PROCEDURE ");
-        
+
         if (x.isIfExists()) {
             print("IF EXISTS ");
         }
-        
+
         x.getName().accept(this);
-        
+
         return false;
     }
 
@@ -1891,18 +1898,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         x.getConstraint().accept(this);
         return false;
     }
-    
+
     public boolean visit(SQLCreateTriggerStatement x) {
         print("CREATE ");
-        
+
         if (x.isOrReplace()) {
             print("OR REPLEACE ");
         }
-        
+
         print("TRIGGER ");
-        
+
         x.getName().accept(this);
-        
+
         incrementIndent();
         println();
         if (TriggerType.INSTEAD_OF.equals(x.getTriggerType())) {
@@ -1910,7 +1917,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         } else {
             print(x.getTriggerType().name());
         }
-        
+
         for (TriggerEvent event : x.getTriggerEvents()) {
             print(' ');
             print(event.name());
@@ -1918,7 +1925,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         println();
         print("ON ");
         x.getOn().accept(this);
-        
+
         if (x.isForEachRow()) {
             println();
             print("FOR EACH ROW");
