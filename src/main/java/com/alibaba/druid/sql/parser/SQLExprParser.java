@@ -872,7 +872,7 @@ public class SQLExprParser extends SQLParser {
             SQLOver over = new SQLOver();
             accept(Token.LPAREN);
 
-            if (identifierEquals("PARTITION")) {
+            if (lexer.token() == Token.PARTITION || identifierEquals("PARTITION")) {
                 lexer.nextToken();
                 accept(Token.BY);
 

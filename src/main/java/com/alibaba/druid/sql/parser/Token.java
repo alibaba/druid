@@ -240,6 +240,11 @@ public enum Token {
     // Oracle
     BINARY_FLOAT,
     BINARY_DOUBLE,
+    
+    // odps,hive
+    PARTITION,
+    PARTITIONED,
+    OVERWRITE,
 
     LPAREN("("), 
     RPAREN(")"), 

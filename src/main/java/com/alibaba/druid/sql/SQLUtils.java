@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
@@ -68,6 +69,10 @@ public class SQLUtils {
         if (JdbcUtils.DB2.equals(dbType)) {
             return toDB2String(sqlObject);
         }
+        
+        if (JdbcUtils.ODPS.equals(dbType)) {
+            return toDB2String(sqlObject);
+        }
 
         return toSQLServerString(sqlObject);
     }
@@ -80,10 +85,18 @@ public class SQLUtils {
         return sql;
     }
 
+    public static String toOdpsString(SQLObject sqlObject) {
+        StringBuilder out = new StringBuilder();
+        sqlObject.accept(new OdpsOutputVisitor(out));
+
+        String sql = out.toString();
+        return sql;
+    }
+    
     public static String toMySqlString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         sqlObject.accept(new MySqlOutputVisitor(out));
-
+        
         String sql = out.toString();
         return sql;
     }
