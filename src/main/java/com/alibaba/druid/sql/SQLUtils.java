@@ -112,6 +112,10 @@ public class SQLUtils {
     public static String formatOracle(String sql) {
         return format(sql, JdbcUtils.ORACLE);
     }
+    
+    public static String formatOdps(String sql) {
+        return format(sql, JdbcUtils.ODPS);
+    }
 
     public static String toOracleString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
