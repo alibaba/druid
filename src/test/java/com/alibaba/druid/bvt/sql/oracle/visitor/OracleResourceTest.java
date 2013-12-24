@@ -36,7 +36,7 @@ public class OracleResourceTest extends OracleTest {
     public void test_0() throws Exception {
         // 13
 //        exec_test("bvt/parser/oracle-56.txt");
-        for (int i = 0; i <= 56; ++i) {
+        for (int i = 0; i <= 57; ++i) {
              exec_test("bvt/parser/oracle-" + i + ".txt");
         }
     }
