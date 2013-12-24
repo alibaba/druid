@@ -3398,8 +3398,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                     print(' ');
                 }
                 trim_character.accept(this);
-                print(" FROM ");
-                x.getParameters().get(0).accept(this);
+                if (x.getParameters().size() > 0) {
+                    print(" FROM ");
+                    x.getParameters().get(0).accept(this);
+                }
                 print(")");
                 return false;
             }
