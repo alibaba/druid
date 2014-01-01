@@ -118,9 +118,7 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
             }
         } catch (Exception e) {
             LOG.warn("Unexpected error in pingDatabase", e);
+            return false;
         }
-
-        // OK
-        return true;
     }
 }
