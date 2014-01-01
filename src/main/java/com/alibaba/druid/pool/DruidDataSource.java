@@ -1065,7 +1065,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             String errorMessage = buf.toString();
 
-            if (this.createError == null) {
+            if (this.createError != null) {
                 throw new GetConnectionTimeoutException(errorMessage, createError);
             } else {
                 throw new GetConnectionTimeoutException(errorMessage);

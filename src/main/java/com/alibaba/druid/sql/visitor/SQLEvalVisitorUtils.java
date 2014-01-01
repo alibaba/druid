@@ -854,6 +854,12 @@ public class SQLEvalVisitorUtils {
                     wallConditionContext.setPartAlwayTrue(true);
                 }
             }
+        } else if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
+            if (wallConditionContext != null) {
+                if (left.getAttribute(EVAL_VALUE) == Boolean.FALSE || right.getAttribute(EVAL_VALUE) == Boolean.FALSE) {
+                    wallConditionContext.setPartAlwayFalse(true);
+                }
+            }
         } else if (x.getOperator() == SQLBinaryOperator.BooleanXor) {
             if (wallConditionContext != null) {
                 wallConditionContext.setXor(true);
