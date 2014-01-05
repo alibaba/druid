@@ -79,6 +79,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.sql.dialect.odps.parser.OdpsSelectParser;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -1357,7 +1358,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new SQLSelectParser(this.exprParser);
+        return new OdpsSelectParser(this.exprParser);
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
