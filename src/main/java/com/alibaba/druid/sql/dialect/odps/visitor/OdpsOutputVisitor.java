@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVisitor {
@@ -272,6 +273,29 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print(" AS ");
             print(x.getAlias());
         }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsUDTFSQLSelectItem x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsUDTFSQLSelectItem x) {
+        x.getExpr().accept(this);
+
+        print(" AS (");
+        
+        for (int i = 0; i < x.getAliasList().size(); ++i) {
+            if (i != 0) {
+                print(", ");
+            }
+            print(x.getAliasList().get(i));
+        }
+        
+        print(")");
 
         return false;
     }

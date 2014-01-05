@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface OdpsASTVisitor extends SQLASTVisitor {
@@ -33,4 +34,8 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
     void endVisit(OdpsInsert x);
     
     boolean visit(OdpsInsert x);
+    
+    void endVisit(OdpsUDTFSQLSelectItem x);
+    
+    boolean visit(OdpsUDTFSQLSelectItem x);
 }
