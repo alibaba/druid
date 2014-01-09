@@ -1339,6 +1339,10 @@ public class SQLExprParser extends SQLParser {
                || "varchar".equalsIgnoreCase(dataTypeName)
                || "nchar".equalsIgnoreCase(dataTypeName)
                || "nvarchar".equalsIgnoreCase(dataTypeName)
+               || "tinytext".equalsIgnoreCase(dataTypeName)
+               || "text".equalsIgnoreCase(dataTypeName)
+               || "mediumtext".equalsIgnoreCase(dataTypeName)
+               || "longtext".equalsIgnoreCase(dataTypeName)
         //
         ;
     }
@@ -1494,7 +1498,7 @@ public class SQLExprParser extends SQLParser {
             column.getConstaints().add(check);
             return parseColumnRest(column);
         }
-        
+
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             column.setComment(primary());
