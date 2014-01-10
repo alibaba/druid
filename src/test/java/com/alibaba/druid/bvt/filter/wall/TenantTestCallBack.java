@@ -13,15 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid;
+package com.alibaba.druid.bvt.filter.wall;
 
-public final class VERSION {
+import com.alibaba.druid.wall.WallConfig.TenantCallBack;
 
-    public final static int MajorVersion    = 1;
-    public final static int MinorVersion    = 0;
-    public final static int RevisionVersion = 2;
+public class TenantTestCallBack implements TenantCallBack {
 
-    public static String getVersionNumber() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
+    @Override
+    public Object getTenantValue(StatementType statementType, String tableName) {
+        return 123;
+    }
+
+    @Override
+    public String getTenantColumn(StatementType statementType, String tableName) {
+        return "tenant";
+    }
+
+    @Override
+    public String getHiddenColumn(String tableName) {
+        return "tenant";
+    }
+
+    @Override
+    public void resultset_hiddenColumn(Object value) {
+        System.out.println(value);
     }
 }

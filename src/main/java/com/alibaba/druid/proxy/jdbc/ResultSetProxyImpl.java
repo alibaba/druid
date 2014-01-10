@@ -36,6 +36,7 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.filter.FilterChainImpl;
@@ -46,23 +47,27 @@ import com.alibaba.druid.stat.JdbcSqlStat;
  */
 public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetProxy {
 
-    private final ResultSet      resultSet;
-    private final StatementProxy statement;
-    private final String         sql;
+    private final ResultSet       resultSet;
+    private final StatementProxy  statement;
+    private final String          sql;
 
-    protected int                cursorIndex          = 0;
-    protected int                fetchRowCount        = 0;
-    protected long               constructNano;
-    protected final JdbcSqlStat  sqlStat;
-    private int                  closeCount           = 0;
+    protected int                 cursorIndex          = 0;
+    protected int                 fetchRowCount        = 0;
+    protected long                constructNano;
+    protected final JdbcSqlStat   sqlStat;
+    private int                   closeCount           = 0;
 
-    private long                 readStringLength     = 0;
-    private long                 readBytesLength      = 0;
+    private long                  readStringLength     = 0;
+    private long                  readBytesLength      = 0;
 
-    private int                  openInputStreamCount = 0;
-    private int                  openReaderCount      = 0;
+    private int                   openInputStreamCount = 0;
+    private int                   openReaderCount      = 0;
 
-    private FilterChainImpl      filterChain          = null;
+    private Map<Integer, Integer> logicColumnMap       = null;
+    private Map<Integer, Integer> physicalColumnMap    = null;
+    private List<Integer>         hiddenColumns        = null;
+
+    private FilterChainImpl       filterChain          = null;
 
     public ResultSetProxyImpl(StatementProxy statement, ResultSet resultSet, long id, String sql){
         super(resultSet, id);
@@ -117,10 +122,10 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         } else {
             this.filterChain = null;
         }
-        
+
         return chain;
     }
-    
+
     public void recycleFilterChain(FilterChainImpl chain) {
         chain.reset();
         this.filterChain = chain;
@@ -180,9 +185,10 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public int findColumn(String columnLabel) throws SQLException {
         FilterChainImpl chain = createChain();
-        int value = chain.resultSet_findColumn(this, columnLabel);
+        int physicalColumn = chain.resultSet_findColumn(this, columnLabel);
         recycleFilterChain(chain);
-        return value;
+
+        return getLogicColumn(physicalColumn);
     }
 
     @Override
@@ -196,7 +202,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Array getArray(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Array value = chain.resultSet_getArray(this, columnIndex);
+        Array value = chain.resultSet_getArray(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -212,7 +218,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public InputStream getAsciiStream(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        InputStream value = chain.resultSet_getAsciiStream(this, columnIndex);
+        InputStream value = chain.resultSet_getAsciiStream(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -228,7 +234,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        BigDecimal value = chain.resultSet_getBigDecimal(this, columnIndex);
+        BigDecimal value = chain.resultSet_getBigDecimal(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -244,7 +250,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
         FilterChainImpl chain = createChain();
-        BigDecimal value = chain.resultSet_getBigDecimal(this, columnIndex, scale);
+        BigDecimal value = chain.resultSet_getBigDecimal(this, getPhysicalColumn(columnIndex), scale);
         recycleFilterChain(chain);
         return value;
     }
@@ -260,7 +266,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public InputStream getBinaryStream(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        InputStream value = chain.resultSet_getBinaryStream(this, columnIndex);
+        InputStream value = chain.resultSet_getBinaryStream(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -276,7 +282,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Blob getBlob(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Blob value = chain.resultSet_getBlob(this, columnIndex);
+        Blob value = chain.resultSet_getBlob(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -292,7 +298,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public boolean getBoolean(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        boolean value = chain.resultSet_getBoolean(this, columnIndex);
+        boolean value = chain.resultSet_getBoolean(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -308,7 +314,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public byte getByte(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        byte value = chain.resultSet_getByte(this, columnIndex);
+        byte value = chain.resultSet_getByte(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -324,7 +330,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public byte[] getBytes(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        byte[] value = chain.resultSet_getBytes(this, columnIndex);
+        byte[] value = chain.resultSet_getBytes(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -340,7 +346,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Reader getCharacterStream(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Reader value = chain.resultSet_getCharacterStream(this, columnIndex);
+        Reader value = chain.resultSet_getCharacterStream(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -356,7 +362,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Clob getClob(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Clob value = chain.resultSet_getClob(this, columnIndex);
+        Clob value = chain.resultSet_getClob(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -388,7 +394,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Date getDate(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Date value = chain.resultSet_getDate(this, columnIndex);
+        Date value = chain.resultSet_getDate(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -404,7 +410,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Date getDate(int columnIndex, Calendar cal) throws SQLException {
         FilterChainImpl chain = createChain();
-        Date value = chain.resultSet_getDate(this, columnIndex, cal);
+        Date value = chain.resultSet_getDate(this, getPhysicalColumn(columnIndex), cal);
         recycleFilterChain(chain);
         return value;
     }
@@ -420,7 +426,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public double getDouble(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        double value = chain.resultSet_getDouble(this, columnIndex);
+        double value = chain.resultSet_getDouble(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -444,7 +450,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public int getFetchSize() throws SQLException {
         FilterChainImpl chain = createChain();
-        int value =  chain.resultSet_getFetchSize(this);
+        int value = chain.resultSet_getFetchSize(this);
         recycleFilterChain(chain);
         return value;
     }
@@ -452,7 +458,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public float getFloat(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        float value = chain.resultSet_getFloat(this, columnIndex);
+        float value = chain.resultSet_getFloat(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -476,7 +482,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public int getInt(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        int value = chain.resultSet_getInt(this, columnIndex);
+        int value = chain.resultSet_getInt(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -492,7 +498,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public long getLong(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        long value = chain.resultSet_getLong(this, columnIndex);
+        long value = chain.resultSet_getLong(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -516,7 +522,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Reader getNCharacterStream(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Reader value = chain.resultSet_getNCharacterStream(this, columnIndex);
+        Reader value = chain.resultSet_getNCharacterStream(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -532,7 +538,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public NClob getNClob(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        NClob value = chain.resultSet_getNClob(this, columnIndex);
+        NClob value = chain.resultSet_getNClob(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -548,7 +554,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public String getNString(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        String value = chain.resultSet_getNString(this, columnIndex);
+        String value = chain.resultSet_getNString(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -564,7 +570,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Object getObject(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Object value = chain.resultSet_getObject(this, columnIndex);
+        Object value = chain.resultSet_getObject(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -580,7 +586,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
         FilterChainImpl chain = createChain();
-        Object value = chain.resultSet_getObject(this, columnIndex, map);
+        Object value = chain.resultSet_getObject(this, getPhysicalColumn(columnIndex), map);
         recycleFilterChain(chain);
         return value;
     }
@@ -596,7 +602,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Ref getRef(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Ref value = chain.resultSet_getRef(this, columnIndex);
+        Ref value = chain.resultSet_getRef(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -620,7 +626,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public RowId getRowId(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        RowId value = chain.resultSet_getRowId(this, columnIndex);
+        RowId value = chain.resultSet_getRowId(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -636,7 +642,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public SQLXML getSQLXML(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        SQLXML value = chain.resultSet_getSQLXML(this, columnIndex);
+        SQLXML value = chain.resultSet_getSQLXML(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -652,7 +658,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public short getShort(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        short value = chain.resultSet_getShort(this, columnIndex);
+        short value = chain.resultSet_getShort(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -676,7 +682,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public String getString(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        String value = chain.resultSet_getString(this, columnIndex);
+        String value = chain.resultSet_getString(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -692,7 +698,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Time getTime(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Time value = chain.resultSet_getTime(this, columnIndex);
+        Time value = chain.resultSet_getTime(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -708,7 +714,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Time getTime(int columnIndex, Calendar cal) throws SQLException {
         FilterChainImpl chain = createChain();
-        Time value = chain.resultSet_getTime(this, columnIndex, cal);
+        Time value = chain.resultSet_getTime(this, getPhysicalColumn(columnIndex), cal);
         recycleFilterChain(chain);
         return value;
     }
@@ -724,7 +730,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Timestamp getTimestamp(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        Timestamp value = chain.resultSet_getTimestamp(this, columnIndex);
+        Timestamp value = chain.resultSet_getTimestamp(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -740,7 +746,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
         FilterChainImpl chain = createChain();
-        Timestamp value = chain.resultSet_getTimestamp(this, columnIndex, cal);
+        Timestamp value = chain.resultSet_getTimestamp(this, getPhysicalColumn(columnIndex), cal);
         recycleFilterChain(chain);
         return value;
     }
@@ -764,7 +770,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public URL getURL(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        URL value = chain.resultSet_getURL(this, columnIndex);
+        URL value = chain.resultSet_getURL(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -780,7 +786,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        InputStream value = chain.resultSet_getUnicodeStream(this, columnIndex);
+        InputStream value = chain.resultSet_getUnicodeStream(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
         return value;
     }
@@ -881,7 +887,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
                 fetchRowCount = cursorIndex;
             }
         }
-        
+
         recycleFilterChain(chain);
         return moreRows;
     }
@@ -955,7 +961,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateArray(int columnIndex, Array x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateArray(this, columnIndex, x);
+        chain.resultSet_updateArray(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -969,7 +975,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateAsciiStream(int columnIndex, InputStream x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateAsciiStream(this, columnIndex, x);
+        chain.resultSet_updateAsciiStream(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -983,7 +989,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateAsciiStream(int columnIndex, InputStream x, int length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateAsciiStream(this, columnIndex, x, length);
+        chain.resultSet_updateAsciiStream(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -997,7 +1003,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateAsciiStream(int columnIndex, InputStream x, long length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateAsciiStream(this, columnIndex, x, length);
+        chain.resultSet_updateAsciiStream(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -1011,7 +1017,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateBigDecimal(int columnIndex, BigDecimal x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateBigDecimal(this, columnIndex, x);
+        chain.resultSet_updateBigDecimal(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1025,7 +1031,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateBinaryStream(int columnIndex, InputStream x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateBinaryStream(this, columnIndex, x);
+        chain.resultSet_updateBinaryStream(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1039,7 +1045,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateBinaryStream(int columnIndex, InputStream x, int length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateBinaryStream(this, columnIndex, x, length);
+        chain.resultSet_updateBinaryStream(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -1053,7 +1059,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateBinaryStream(int columnIndex, InputStream x, long length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateBinaryStream(this, columnIndex, x, length);
+        chain.resultSet_updateBinaryStream(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -1081,7 +1087,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateBlob(int columnIndex, InputStream x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateBlob(this, columnIndex, x);
+        chain.resultSet_updateBlob(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1095,7 +1101,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateBlob(int columnIndex, InputStream x, long length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateBlob(this, columnIndex, x, length);
+        chain.resultSet_updateBlob(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -1109,7 +1115,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateBoolean(int columnIndex, boolean x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateBoolean(this, columnIndex, x);
+        chain.resultSet_updateBoolean(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1123,7 +1129,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateByte(int columnIndex, byte x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateByte(this, columnIndex, x);
+        chain.resultSet_updateByte(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1137,7 +1143,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateBytes(int columnIndex, byte[] x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateBytes(this, columnIndex, x);
+        chain.resultSet_updateBytes(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1151,7 +1157,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateCharacterStream(int columnIndex, Reader x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateCharacterStream(this, columnIndex, x);
+        chain.resultSet_updateCharacterStream(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1165,7 +1171,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateCharacterStream(int columnIndex, Reader x, int length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateCharacterStream(this, columnIndex, x, length);
+        chain.resultSet_updateCharacterStream(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -1179,7 +1185,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateCharacterStream(this, columnIndex, x, length);
+        chain.resultSet_updateCharacterStream(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -1193,7 +1199,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateClob(int columnIndex, Clob x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateClob(this, columnIndex, x);
+        chain.resultSet_updateClob(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1207,7 +1213,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateClob(int columnIndex, Reader x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateClob(this, columnIndex, x);
+        chain.resultSet_updateClob(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1221,7 +1227,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateClob(int columnIndex, Reader x, long length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateClob(this, columnIndex, x, length);
+        chain.resultSet_updateClob(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -1235,7 +1241,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateDate(int columnIndex, Date x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateDate(this, columnIndex, x);
+        chain.resultSet_updateDate(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1249,7 +1255,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateDouble(int columnIndex, double x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateDouble(this, columnIndex, x);
+        chain.resultSet_updateDouble(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1263,7 +1269,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateFloat(int columnIndex, float x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateFloat(this, columnIndex, x);
+        chain.resultSet_updateFloat(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1277,7 +1283,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateInt(int columnIndex, int x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateInt(this, columnIndex, x);
+        chain.resultSet_updateInt(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1291,7 +1297,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateLong(int columnIndex, long x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateLong(this, columnIndex, x);
+        chain.resultSet_updateLong(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1305,7 +1311,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateNCharacterStream(int columnIndex, Reader x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateNCharacterStream(this, columnIndex, x);
+        chain.resultSet_updateNCharacterStream(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1319,7 +1325,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateNCharacterStream(int columnIndex, Reader x, long length) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateNCharacterStream(this, columnIndex, x, length);
+        chain.resultSet_updateNCharacterStream(this, getPhysicalColumn(columnIndex), x, length);
         recycleFilterChain(chain);
     }
 
@@ -1333,7 +1339,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateNClob(int columnIndex, NClob x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateNClob(this, columnIndex, x);
+        chain.resultSet_updateNClob(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1347,7 +1353,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateNClob(int columnIndex, Reader x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateNClob(this, columnIndex, x);
+        chain.resultSet_updateNClob(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1389,7 +1395,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateNull(int columnIndex) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateNull(this, columnIndex);
+        chain.resultSet_updateNull(this, getPhysicalColumn(columnIndex));
         recycleFilterChain(chain);
     }
 
@@ -1403,7 +1409,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateObject(int columnIndex, Object x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateObject(this, columnIndex, x);
+        chain.resultSet_updateObject(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1417,7 +1423,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateObject(int columnIndex, Object x, int scaleOrLength) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateObject(this, columnIndex, x, scaleOrLength);
+        chain.resultSet_updateObject(this, getPhysicalColumn(columnIndex), x, scaleOrLength);
         recycleFilterChain(chain);
     }
 
@@ -1431,7 +1437,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateRef(int columnIndex, Ref x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateRef(this, columnIndex, x);
+        chain.resultSet_updateRef(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1452,7 +1458,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateRowId(int columnIndex, RowId x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateRowId(this, columnIndex, x);
+        chain.resultSet_updateRowId(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1466,7 +1472,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateSQLXML(int columnIndex, SQLXML x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateSQLXML(this, columnIndex, x);
+        chain.resultSet_updateSQLXML(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1480,7 +1486,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateShort(int columnIndex, short x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateShort(this, columnIndex, x);
+        chain.resultSet_updateShort(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1494,7 +1500,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateString(int columnIndex, String x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateString(this, columnIndex, x);
+        chain.resultSet_updateString(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1508,7 +1514,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateTime(int columnIndex, Time x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateTime(this, columnIndex, x);
+        chain.resultSet_updateTime(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1522,7 +1528,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void updateTimestamp(int columnIndex, Timestamp x) throws SQLException {
         FilterChainImpl chain = createChain();
-        chain.resultSet_updateTimestamp(this, columnIndex, x);
+        chain.resultSet_updateTimestamp(this, getPhysicalColumn(columnIndex), x);
         recycleFilterChain(chain);
     }
 
@@ -1537,7 +1543,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     public boolean wasNull() throws SQLException {
         FilterChainImpl chain = createChain();
         boolean result = chain.resultSet_wasNull(this);
-        
+
         recycleFilterChain(chain);
         return result;
     }
@@ -1599,15 +1605,59 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         if (iface == ResultSetProxy.class || iface == ResultSetProxyImpl.class) {
             return (T) this;
         }
-        
+
         return super.unwrap(iface);
     }
-    
+
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         if (iface == ResultSetProxy.class || iface == ResultSetProxyImpl.class) {
             return true;
         }
-        
+
         return super.isWrapperFor(iface);
     }
+
+    @Override
+    public int getPhysicalColumn(int logicColumn) {
+        if (logicColumnMap == null) {
+            return logicColumn;
+        }
+        return logicColumnMap.get(logicColumn);
+    }
+
+    private int getLogicColumn(int physicalColumn) {
+        if (physicalColumnMap == null) {
+            return physicalColumn;
+        }
+        return physicalColumnMap.get(physicalColumn);
+    }
+
+    @Override
+    public int getHiddenColumnCount() {
+        if (hiddenColumns == null) {
+            return 0;
+        }
+        return hiddenColumns.size();
+    }
+
+    @Override
+    public List<Integer> getHiddenColumns() {
+        return this.hiddenColumns;
+    }
+
+    @Override
+    public void setLogicColumnMap(Map<Integer, Integer> logicColumnMap) {
+        this.logicColumnMap = logicColumnMap;
+    }
+
+    @Override
+    public void setPhysicalColumnMap(Map<Integer, Integer> physicalColumnMap) {
+        this.physicalColumnMap = physicalColumnMap;
+    }
+
+    @Override
+    public void setHiddenColumns(List<Integer> hiddenColumns) {
+        this.hiddenColumns = hiddenColumns;
+    }
+
 }

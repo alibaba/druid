@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid;
 
-public final class VERSION {
+package com.alibaba.druid.proxy.jdbc;
 
-    public final static int MajorVersion    = 1;
-    public final static int MinorVersion    = 0;
-    public final static int RevisionVersion = 2;
+import java.sql.ResultSetMetaData;
 
-    public static String getVersionNumber() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
-    }
+/**
+ * @author kiki
+ */
+public interface ResultSetMetaDataProxy extends ResultSetMetaData, WrapperProxy {
+
+    ResultSetMetaData getResultSetMetaDataRaw();
+
 }

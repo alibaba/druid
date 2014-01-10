@@ -56,6 +56,11 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
             }
         }
 
+        public void addValue(SQLExpr value) {
+            value.setParent(this);
+            values.add(value);
+        }
+
         public List<SQLExpr> getValues() {
             return values;
         }

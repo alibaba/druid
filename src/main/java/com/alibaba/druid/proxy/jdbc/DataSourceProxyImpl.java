@@ -35,8 +35,8 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -58,6 +58,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
     private final AtomicLong            connectionIdSeed  = new AtomicLong(10000);
     private final AtomicLong            statementIdSeed   = new AtomicLong(20000);
     private final AtomicLong            resultSetIdSeed   = new AtomicLong(50000);
+    private final AtomicLong            metaDataIdSeed    = new AtomicLong(100000);
     private final AtomicLong            transactionIdSeed = new AtomicLong(0);
 
     private final JdbcDataSourceStat    dataSourceStat;
@@ -362,6 +363,10 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
 
     public long createResultSetId() {
         return resultSetIdSeed.getAndIncrement();
+    }
+
+    public long createMetaDataId() {
+        return metaDataIdSeed.getAndIncrement();
     }
 
     @Override

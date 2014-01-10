@@ -47,6 +47,8 @@ public interface DataSourceProxy {
 
     long createResultSetId();
 
+    long createMetaDataId();
+
     long createTransactionId();
 
     Properties getConnectProperties();

@@ -61,9 +61,9 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidPasswordCallback;
 import com.alibaba.druid.util.Histogram;
-import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.util.Utils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -1314,6 +1314,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong statementIdSeed   = new AtomicLong(20000);
     protected final AtomicLong resultSetIdSeed   = new AtomicLong(50000);
     protected final AtomicLong transactionIdSeed = new AtomicLong(60000);
+    protected final AtomicLong metaDataIdSeed    = new AtomicLong(80000);
 
     public long createConnectionId() {
         return connectionIdSeed.incrementAndGet();
@@ -1321,6 +1322,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public long createStatementId() {
         return statementIdSeed.getAndIncrement();
+    }
+
+    public long createMetaDataId() {
+        return metaDataIdSeed.getAndIncrement();
     }
 
     public long createResultSetId() {

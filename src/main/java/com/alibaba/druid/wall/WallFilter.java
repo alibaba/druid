@@ -18,10 +18,14 @@ package com.alibaba.druid.wall;
 import static com.alibaba.druid.util.Utils.getBoolean;
 
 import java.sql.DatabaseMetaData;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Wrapper;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -31,11 +35,15 @@ import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.ServletPathMatcher;
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.wall.WallConfig.TenantCallBack;
 import com.alibaba.druid.wall.spi.DB2WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
@@ -469,7 +477,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         createWallContext(statement);
         try {
             sql = check(sql);
-            return chain.statement_executeQuery(statement, sql);
+            ResultSetProxy resultSetProxy = chain.statement_executeQuery(statement, sql);
+            preprocessResultSet(resultSetProxy);
+            return resultSetProxy;
         } catch (SQLException ex) {
             incrementExecuteErrorCount();
             throw ex;
@@ -579,7 +589,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     public ResultSetProxy preparedStatement_executeQuery(FilterChain chain, PreparedStatementProxy statement)
                                                                                                              throws SQLException {
         try {
-            return chain.preparedStatement_executeQuery(statement);
+            ResultSetProxy resultSetProxy = chain.preparedStatement_executeQuery(statement);
+            preprocessResultSet(resultSetProxy);
+            return resultSetProxy;
         } catch (SQLException ex) {
             incrementExecuteErrorCount(statement);
             throw ex;
@@ -599,6 +611,20 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             incrementExecuteErrorCount(statement);
             throw ex;
         }
+    }
+
+    @Override
+    public ResultSetProxy statement_getResultSet(FilterChain chain, StatementProxy statement) throws SQLException {
+        ResultSetProxy resultSetProxy = chain.statement_getResultSet(statement);
+        preprocessResultSet(resultSetProxy);
+        return resultSetProxy;
+    }
+
+    @Override
+    public ResultSetProxy statement_getGeneratedKeys(FilterChain chain, StatementProxy statement) throws SQLException {
+        ResultSetProxy resultSetProxy = chain.statement_getGeneratedKeys(statement);
+        preprocessResultSet(resultSetProxy);
+        return resultSetProxy;
     }
 
     public void setSqlStatAttribute(StatementProxy stmt) {
@@ -630,7 +656,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             provider.addUpdateCount(sqlStat, updateCount);
         }
     }
-    
+
     public void incrementExecuteErrorCount(PreparedStatementProxy statement) {
         WallSqlStat sqlStat = (WallSqlStat) statement.getAttribute(ATTR_SQL_STAT);
         if (sqlStat != null) {
@@ -736,6 +762,34 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         provider.addFetchRowCount(sqlStat, fetchRowCount);
     }
 
+    // ////////////////
+
+    @Override
+    public boolean resultSet_next(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
+        boolean hasNext = chain.resultSet_next(resultSet);
+        TenantCallBack callback = provider.getConfig().getTenantCallBack();
+        if (callback != null && hasNext) {
+            List<Integer> hiddenColumns = resultSet.getHiddenColumns();
+            if (hiddenColumns != null && hiddenColumns.size() > 0) {
+                for (Integer columnIndex : hiddenColumns) {
+                    Object value = resultSet.getResultSetRaw().getObject(columnIndex);
+                    callback.resultset_hiddenColumn(value);
+                }
+            }
+        }
+        return hasNext;
+    }
+
+    @Override
+    public ResultSetMetaData resultSet_getMetaData(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
+        ResultSetMetaData metaData = chain.resultSet_getMetaData(resultSet);
+        if (metaData == null) {
+            return null;
+        }
+
+        return new ResultSetMetaDataProxyImpl(metaData, chain.getDataSource().createMetaDataId(), resultSet);
+    }
+
     public long getViolationCount() {
         return this.provider.getViolationCount();
     }
@@ -750,5 +804,58 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     public boolean checkValid(String sql) {
         return provider.checkValid(sql);
+    }
+
+    private void preprocessResultSet(ResultSetProxy resultSet) throws SQLException {
+        if (resultSet == null) {
+            return;
+        }
+
+        ResultSetMetaData metaData = resultSet.getResultSetRaw().getMetaData();
+        if (metaData == null) {
+            return;
+        }
+
+        TenantCallBack tenantCallBack = provider.getConfig().getTenantCallBack();
+        String tenantTablePattern = provider.getConfig().getTenantTablePattern();
+        if (tenantCallBack == null && (tenantTablePattern == null || tenantTablePattern.length() == 0)) {
+            return;
+        }
+
+        Map<Integer, Integer> logicColumnMap = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> physicalColumnMap = new HashMap<Integer, Integer>();
+        List<Integer> hiddenColumns = new ArrayList<Integer>();
+        for (int physicalColumn = 1, logicColumn = 1; physicalColumn <= metaData.getColumnCount(); physicalColumn++) {
+            boolean isHidden = false;
+            String tableName = metaData.getTableName(physicalColumn);
+
+            String hiddenColumn = null;
+            if (tenantCallBack != null) {
+                hiddenColumn = tenantCallBack.getHiddenColumn(tableName);
+            }
+            if (StringUtils.isEmpty(hiddenColumn)
+                && (tableName == null || ServletPathMatcher.getInstance().matches(tenantTablePattern, tableName))) {
+                hiddenColumn = provider.getConfig().getTenantColumn();
+            }
+
+            if (!StringUtils.isEmpty(hiddenColumn)) {
+                String columnName = metaData.getColumnName(physicalColumn);
+                if (hiddenColumn.equalsIgnoreCase(columnName)) {
+                    hiddenColumns.add(physicalColumn);
+                    isHidden = true;
+                }
+            }
+            if (!isHidden) {
+                logicColumnMap.put(logicColumn, physicalColumn);
+                physicalColumnMap.put(physicalColumn, logicColumn);
+                logicColumn++;
+            }
+        }
+
+        if (hiddenColumns.size() > 0) {
+            resultSet.setLogicColumnMap(logicColumnMap);
+            resultSet.setPhysicalColumnMap(physicalColumnMap);
+            resultSet.setHiddenColumns(hiddenColumns);
+        }
     }
 }
