@@ -119,6 +119,14 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    public void test_false10() {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select count(*) from messages a where a.id in (2 and 1 AND 9881=IF((ORD(MID((IFNULL(CAST(DATABASE() AS CHAR),0x20)),6,1))>117),SLEEP(5),9881)) and a.message <> 'hello' and a.message like 'Little'";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+    }
+
     public void test_true1() throws Exception {
         WallProvider provider = initWallProvider();
         {

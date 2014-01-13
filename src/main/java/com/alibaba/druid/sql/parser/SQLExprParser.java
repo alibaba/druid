@@ -1005,11 +1005,12 @@ public class SQLExprParser extends SQLParser {
             SQLInListExpr inListExpr = new SQLInListExpr(expr);
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
-                exprList(inListExpr.getTargetList());
+                exprList(inListExpr.getTargetList(), inListExpr);
                 accept(Token.RPAREN);
                 expr = inListExpr;
             } else {
                 SQLExpr itemExpr = primary();
+                itemExpr.setParent(inListExpr);
                 inListExpr.getTargetList().add(itemExpr);
             }
 
@@ -1259,7 +1260,7 @@ public class SQLExprParser extends SQLParser {
             accept(Token.LPAREN);
 
             SQLInListExpr inListExpr = new SQLInListExpr(expr, true);
-            exprList(inListExpr.getTargetList());
+            exprList(inListExpr.getTargetList(), inListExpr);
             expr = inListExpr;
 
             accept(Token.RPAREN);
