@@ -45,7 +45,6 @@ public class TenantDeleteTest extends TestCase {
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
         Assert.assertEquals("DELETE FROM orders" + //
-                            "\nWHERE tenant = 123" + //
-                            "\n\tAND FID = ?", resultSql);
+                            "\nWHERE FID = ?", resultSql);
     }
 }

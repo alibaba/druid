@@ -1057,7 +1057,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     buf.append(", ");
                 }
                 JdbcSqlStatValue sql = sqlList.get(i);
-                buf.append("runningCount ");
+                buf.append("runningSqlCount ");
                 buf.append(sql.getRunningCount());
                 buf.append(" : ");
                 buf.append(sql.getSql());

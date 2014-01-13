@@ -16,6 +16,8 @@
 package com.alibaba.druid.proxy.jdbc;
 
 import java.sql.ResultSet;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.stat.JdbcSqlStat;
 
@@ -29,7 +31,7 @@ public interface ResultSetProxy extends ResultSet, WrapperProxy {
     StatementProxy getStatementProxy();
 
     String getSql();
-    
+
     JdbcSqlStat getSqlStat();
 
     int getCursorIndex();
@@ -41,22 +43,35 @@ public interface ResultSetProxy extends ResultSet, WrapperProxy {
     void setConstructNano(long constructNano);
 
     void setConstructNano();
-    
+
     int getCloseCount();
-    
+
     void addReadStringLength(int length);
-    
+
     long getReadStringLength();
-    
+
     void addReadBytesLength(int length);
-    
+
     long getReadBytesLength();
-    
+
     void incrementOpenInputStreamCount();
-    
+
     int getOpenInputStreamCount();
-    
+
     void incrementOpenReaderCount();
-    
+
     int getOpenReaderCount();
+
+    int getPhysicalColumn(int logicColumn);
+
+    List<Integer> getHiddenColumns();
+
+    int getHiddenColumnCount();
+
+    void setLogicColumnMap(Map<Integer, Integer> logicColumnMap);
+
+    void setPhysicalColumnMap(Map<Integer, Integer> physicalColumnMap);
+
+    void setHiddenColumns(List<Integer> hiddenColumns);
+
 }

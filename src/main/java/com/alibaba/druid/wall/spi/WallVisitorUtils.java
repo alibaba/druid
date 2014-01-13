@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -71,6 +72,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -85,6 +87,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
@@ -92,6 +95,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
@@ -102,6 +106,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStateme
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
@@ -110,7 +115,10 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.ServletPathMatcher;
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallConfig.TenantCallBack;
+import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallSqlTableStat;
@@ -235,6 +243,8 @@ public class WallVisitorUtils {
         if (!visitor.getConfig().isInsertAllow()) {
             addViolation(visitor, ErrorCode.INSERT_NOT_ALLOW, "insert not allow", x);
         }
+
+        checkInsertForMultiTenant(visitor, x);
     }
 
     public static void checkSelelct(WallVisitor visitor, SQLSelectQueryBlock x) {
@@ -273,7 +283,8 @@ public class WallVisitorUtils {
                 }
             }
         }
-        checkConditionForMultiTenant(visitor, x.getWhere(), x);
+        checkSelectForMultiTenant(visitor, x);
+        // checkConditionForMultiTenant(visitor, x.getWhere(), x);
     }
 
     public static void checkHaving(WallVisitor visitor, SQLExpr x) {
@@ -327,7 +338,7 @@ public class WallVisitorUtils {
             }
         }
 
-        checkConditionForMultiTenant(visitor, x.getWhere(), x);
+        // checkConditionForMultiTenant(visitor, x.getWhere(), x);
     }
 
     private static boolean isSimpleConstExpr(SQLExpr sqlExpr) {
@@ -377,6 +388,316 @@ public class WallVisitorUtils {
 
     }
 
+    private static void checkJoinSelectForMultiTenant(WallVisitor visitor, SQLJoinTableSource join,
+                                                      SQLSelectQueryBlock x) {
+        TenantCallBack tenantCallBack = visitor.getConfig().getTenantCallBack();
+        String tenantTablePattern = visitor.getConfig().getTenantTablePattern();
+        if (tenantCallBack == null && (tenantTablePattern == null || tenantTablePattern.length() == 0)) {
+            return;
+        }
+
+        SQLTableSource right = join.getRight();
+        if (right instanceof SQLExprTableSource) {
+            SQLExpr tableExpr = ((SQLExprTableSource) right).getExpr();
+
+            if (tableExpr instanceof SQLIdentifierExpr) {
+                String tableName = ((SQLIdentifierExpr) tableExpr).getName();
+
+                String alias = null;
+                String tenantColumn = null;
+                if (tenantCallBack != null) {
+                    tenantColumn = tenantCallBack.getTenantColumn(StatementType.SELECT, tableName);
+                }
+
+                if (StringUtils.isEmpty(tenantColumn)
+                    && ServletPathMatcher.getInstance().matches(tenantTablePattern, tableName)) {
+                    tenantColumn = visitor.getConfig().getTenantColumn();
+                }
+
+                if (!StringUtils.isEmpty(tenantColumn)) {
+                    alias = right.getAlias();
+                    if (alias == null) {
+                        alias = tableName;
+                    }
+
+                    SQLExpr item = null;
+                    if (alias != null) {
+                        item = new SQLPropertyExpr(new SQLIdentifierExpr(alias), tenantColumn);
+                    } else {
+                        item = new SQLIdentifierExpr(tenantColumn);
+                    }
+                    SQLSelectItem selectItem = new SQLSelectItem(item);
+                    x.getSelectList().add(selectItem);
+                    visitor.setSqlModified(true);
+                }
+            }
+        }
+    }
+
+    private static boolean isSelectStatmentForMultiTenant(SQLSelectQueryBlock queryBlock) {
+
+        SQLObject parent = queryBlock.getParent();
+        while (parent != null) {
+
+            if (parent instanceof SQLUnionQuery) {
+                SQLObject x = parent;
+                parent = x.getParent();
+            } else {
+                break;
+            }
+        }
+
+        if (!(parent instanceof SQLSelect)) {
+            return false;
+        }
+
+        parent = ((SQLSelect) parent).getParent();
+        if (parent instanceof SQLSelectStatement) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void checkSelectForMultiTenant(WallVisitor visitor, SQLSelectQueryBlock x) {
+        TenantCallBack tenantCallBack = visitor.getConfig().getTenantCallBack();
+        String tenantTablePattern = visitor.getConfig().getTenantTablePattern();
+        if (tenantCallBack == null && (tenantTablePattern == null || tenantTablePattern.length() == 0)) {
+            return;
+        }
+
+        if (x == null) {
+            throw new IllegalStateException("x is null");
+        }
+
+        if (!isSelectStatmentForMultiTenant(x)) {
+            return;
+        }
+
+        SQLTableSource tableSource = x.getFrom();
+        String alias = null;
+        String matchTableName = null;
+        String tenantColumn = null;
+        if (tableSource instanceof SQLExprTableSource) {
+            SQLExpr tableExpr = ((SQLExprTableSource) tableSource).getExpr();
+
+            if (tableExpr instanceof SQLIdentifierExpr) {
+                String tableName = ((SQLIdentifierExpr) tableExpr).getName();
+
+                if (tenantCallBack != null) {
+                    tenantColumn = tenantCallBack.getTenantColumn(StatementType.SELECT, tableName);
+                }
+
+                if (StringUtils.isEmpty(tenantColumn)
+                    && ServletPathMatcher.getInstance().matches(tenantTablePattern, tableName)) {
+                    tenantColumn = visitor.getConfig().getTenantColumn();
+                }
+
+                if (!StringUtils.isEmpty(tenantColumn)) {
+                    matchTableName = tableName;
+                    alias = tableSource.getAlias();
+                }
+            }
+        } else if (tableSource instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
+            if (join.getLeft() instanceof SQLExprTableSource) {
+                SQLExpr tableExpr = ((SQLExprTableSource) join.getLeft()).getExpr();
+
+                if (tableExpr instanceof SQLIdentifierExpr) {
+                    String tableName = ((SQLIdentifierExpr) tableExpr).getName();
+
+                    if (tenantCallBack != null) {
+                        tenantColumn = tenantCallBack.getTenantColumn(StatementType.SELECT, tableName);
+                    }
+
+                    if (StringUtils.isEmpty(tenantColumn)
+                        && ServletPathMatcher.getInstance().matches(tenantTablePattern, tableName)) {
+                        tenantColumn = visitor.getConfig().getTenantColumn();
+                    }
+
+                    if (!StringUtils.isEmpty(tenantColumn)) {
+                        matchTableName = tableName;
+                        alias = join.getLeft().getAlias();
+
+                        if (alias == null) {
+                            alias = tableName;
+                        }
+                    }
+                }
+                checkJoinSelectForMultiTenant(visitor, join, x);
+            } else {
+                checkJoinSelectForMultiTenant(visitor, join, x);
+            }
+        }
+
+        if (matchTableName == null) {
+            return;
+        }
+
+        SQLExpr item = null;
+        if (alias != null) {
+            item = new SQLPropertyExpr(new SQLIdentifierExpr(alias), tenantColumn);
+        } else {
+            item = new SQLIdentifierExpr(tenantColumn);
+        }
+        SQLSelectItem selectItem = new SQLSelectItem(item);
+        x.getSelectList().add(selectItem);
+        visitor.setSqlModified(true);
+    }
+
+    private static void checkUpdateForMultiTenant(WallVisitor visitor, SQLUpdateStatement x) {
+        TenantCallBack tenantCallBack = visitor.getConfig().getTenantCallBack();
+        String tenantTablePattern = visitor.getConfig().getTenantTablePattern();
+        if (tenantCallBack == null && (tenantTablePattern == null || tenantTablePattern.length() == 0)) {
+            return;
+        }
+
+        if (x == null) {
+            throw new IllegalStateException("x is null");
+        }
+
+        SQLTableSource tableSource = x.getTableSource();
+        String alias = null;
+        String matchTableName = null;
+        String tenantColumn = null;
+        if (tableSource instanceof SQLExprTableSource) {
+            SQLExpr tableExpr = ((SQLExprTableSource) tableSource).getExpr();
+            if (tableExpr instanceof SQLIdentifierExpr) {
+                String tableName = ((SQLIdentifierExpr) tableExpr).getName();
+
+                if (tenantCallBack != null) {
+                    tenantColumn = tenantCallBack.getTenantColumn(StatementType.UPDATE, tableName);
+                }
+                if (StringUtils.isEmpty(tenantColumn)
+                    && ServletPathMatcher.getInstance().matches(tenantTablePattern, tableName)) {
+                    tenantColumn = visitor.getConfig().getTenantColumn();
+                }
+
+                if (!StringUtils.isEmpty(tenantColumn)) {
+                    matchTableName = tableName;
+                    alias = tableSource.getAlias();
+                }
+            }
+        }
+
+        if (matchTableName == null) {
+            return;
+        }
+
+        SQLExpr item = null;
+        if (alias != null) {
+            item = new SQLPropertyExpr(new SQLIdentifierExpr(alias), tenantColumn);
+        } else {
+            item = new SQLIdentifierExpr(tenantColumn);
+        }
+        SQLExpr value = generateTenantValue(visitor, alias, StatementType.UPDATE, matchTableName);
+
+        SQLUpdateSetItem updateSetItem = new SQLUpdateSetItem();
+        updateSetItem.setColumn(item);
+        updateSetItem.setValue(value);
+
+        x.getItems().add(updateSetItem);
+        visitor.setSqlModified(true);
+    }
+
+    private static void checkInsertForMultiTenant(WallVisitor visitor, SQLInsertInto x) {
+        TenantCallBack tenantCallBack = visitor.getConfig().getTenantCallBack();
+        String tenantTablePattern = visitor.getConfig().getTenantTablePattern();
+        if (tenantCallBack == null && (tenantTablePattern == null || tenantTablePattern.length() == 0)) {
+            return;
+        }
+
+        if (x == null) {
+            throw new IllegalStateException("x is null");
+        }
+
+        SQLExprTableSource tableSource = x.getTableSource();
+        String alias = null;
+        String matchTableName = null;
+        String tenantColumn = null;
+        SQLExpr tableExpr = tableSource.getExpr();
+        if (tableExpr instanceof SQLIdentifierExpr) {
+            String tableName = ((SQLIdentifierExpr) tableExpr).getName();
+
+            if (tenantCallBack != null) {
+                tenantColumn = tenantCallBack.getTenantColumn(StatementType.INSERT, tableName);
+            }
+            if (StringUtils.isEmpty(tenantColumn)
+                && ServletPathMatcher.getInstance().matches(tenantTablePattern, tableName)) {
+                tenantColumn = visitor.getConfig().getTenantColumn();
+            }
+
+            if (!StringUtils.isEmpty(tenantColumn)) {
+                matchTableName = tableName;
+                alias = tableSource.getAlias();
+            }
+        }
+
+        if (matchTableName == null) {
+            return;
+        }
+
+        SQLExpr item = null;
+        if (alias != null) {
+            item = new SQLPropertyExpr(new SQLIdentifierExpr(alias), tenantColumn);
+        } else {
+            item = new SQLIdentifierExpr(tenantColumn);
+        }
+        SQLExpr value = generateTenantValue(visitor, alias, StatementType.INSERT, matchTableName);
+
+        // add insert item and value
+        x.getColumns().add(item);
+
+        List<ValuesClause> valuesClauses = null;
+        ValuesClause valuesClause = null;
+        if (x instanceof MySqlInsertStatement) {
+            valuesClauses = ((MySqlInsertStatement) x).getValuesList();
+        } else if (x instanceof SQLServerInsertStatement) {
+            valuesClauses = ((MySqlInsertStatement) x).getValuesList();
+        } else {
+            valuesClause = x.getValues();
+        }
+
+        if (valuesClauses != null && valuesClauses.size() > 0) {
+            for (ValuesClause clause : valuesClauses) {
+                clause.addValue(value);
+            }
+        }
+        if (valuesClause != null) {
+            valuesClause.addValue(value);
+        }
+
+        // insert .. select
+        SQLSelect select = x.getQuery();
+        if (select != null) {
+            List<SQLSelectQueryBlock> queryBlocks = splitSQLSelectQuery(select.getQuery());
+            for (SQLSelectQueryBlock queryBlock : queryBlocks) {
+                queryBlock.getSelectList().add(new SQLSelectItem(value));
+            }
+        }
+
+        visitor.setSqlModified(true);
+    }
+
+    private static List<SQLSelectQueryBlock> splitSQLSelectQuery(SQLSelectQuery x) {
+        List<SQLSelectQueryBlock> groupList = new ArrayList<SQLSelectQueryBlock>();
+        Stack<SQLSelectQuery> stack = new Stack<SQLSelectQuery>();
+
+        stack.push(x);
+        do {
+            SQLSelectQuery query = stack.pop();
+            if (query instanceof SQLSelectQueryBlock) {
+                groupList.add((SQLSelectQueryBlock) query);
+            } else if (query instanceof SQLUnionQuery) {
+                SQLUnionQuery unionQuery = (SQLUnionQuery) query;
+                stack.push(unionQuery.getLeft());
+                stack.push(unionQuery.getRight());
+            }
+        } while (!stack.empty());
+        return groupList;
+    }
+
+    @Deprecated
     public static void checkConditionForMultiTenant(WallVisitor visitor, SQLExpr x, SQLObject parent) {
         String tenantTablePattern = visitor.getConfig().getTenantTablePattern();
         if (tenantTablePattern == null || tenantTablePattern.length() == 0) {
@@ -389,12 +710,16 @@ public class WallVisitorUtils {
 
         String alias = null;
         SQLTableSource tableSource;
+        StatementType statementType = null;
         if (parent instanceof SQLDeleteStatement) {
             tableSource = ((SQLDeleteStatement) parent).getTableSource();
+            statementType = StatementType.DELETE;
         } else if (parent instanceof SQLUpdateStatement) {
             tableSource = ((SQLUpdateStatement) parent).getTableSource();
+            statementType = StatementType.UPDATE;
         } else if (parent instanceof SQLSelectQueryBlock) {
             tableSource = ((SQLSelectQueryBlock) parent).getFrom();
+            statementType = StatementType.SELECT;
         } else {
             throw new IllegalStateException("not support parent : " + parent.getClass());
         }
@@ -423,9 +748,9 @@ public class WallVisitorUtils {
                     }
                 }
 
-                checkJoinConditionForMultiTenant(visitor, join, false);
+                checkJoinConditionForMultiTenant(visitor, join, false, statementType);
             } else {
-                checkJoinConditionForMultiTenant(visitor, join, true);
+                checkJoinConditionForMultiTenant(visitor, join, true, statementType);
             }
         }
 
@@ -433,7 +758,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        SQLBinaryOpExpr tenantCondition = cretateTenantCondition(visitor, alias);
+        SQLBinaryOpExpr tenantCondition = createTenantCondition(visitor, alias, statementType, matchTableName);
 
         SQLExpr condition;
         if (x == null) {
@@ -457,7 +782,9 @@ public class WallVisitorUtils {
         }
     }
 
-    public static void checkJoinConditionForMultiTenant(WallVisitor visitor, SQLJoinTableSource join, boolean checkLeft) {
+    @Deprecated
+    public static void checkJoinConditionForMultiTenant(WallVisitor visitor, SQLJoinTableSource join,
+                                                        boolean checkLeft, StatementType statementType) {
         String tenantTablePattern = visitor.getConfig().getTenantTablePattern();
         if (tenantTablePattern == null || tenantTablePattern.length() == 0) {
             return;
@@ -476,7 +803,7 @@ public class WallVisitorUtils {
                     if (alias == null) {
                         alias = tableName;
                     }
-                    SQLBinaryOpExpr tenantCondition = cretateTenantCondition(visitor, alias);
+                    SQLBinaryOpExpr tenantCondition = createTenantCondition(visitor, alias, statementType, tableName);
 
                     if (condition == null) {
                         condition = tenantCondition;
@@ -493,25 +820,39 @@ public class WallVisitorUtils {
         }
     }
 
-    private static SQLBinaryOpExpr cretateTenantCondition(WallVisitor visitor, String alias) {
+    @Deprecated
+    private static SQLBinaryOpExpr createTenantCondition(WallVisitor visitor, String alias,
+                                                         StatementType statementType, String tableName) {
         SQLExpr left, right;
         if (alias != null) {
             left = new SQLPropertyExpr(new SQLIdentifierExpr(alias), visitor.getConfig().getTenantColumn());
         } else {
             left = new SQLIdentifierExpr(visitor.getConfig().getTenantColumn());
         }
+        right = generateTenantValue(visitor, alias, statementType, tableName);
+
+        SQLBinaryOpExpr tenantCondition = new SQLBinaryOpExpr(left, SQLBinaryOperator.Equality, right);
+        return tenantCondition;
+    }
+
+    private static SQLExpr generateTenantValue(WallVisitor visitor, String alias, StatementType statementType,
+                                               String tableName) {
+        SQLExpr value;
+        TenantCallBack callBack = visitor.getConfig().getTenantCallBack();
+        if (callBack != null) {
+            WallProvider.setTenantValue(callBack.getTenantValue(statementType, tableName));
+        }
 
         Object tenantValue = WallProvider.getTenantValue();
         if (tenantValue instanceof Number) {
-            right = new SQLNumberExpr((Number) tenantValue);
+            value = new SQLNumberExpr((Number) tenantValue);
         } else if (tenantValue instanceof String) {
-            right = new SQLCharExpr((String) tenantValue);
+            value = new SQLCharExpr((String) tenantValue);
         } else {
             throw new IllegalStateException("tenant value not support type " + tenantValue);
         }
 
-        SQLBinaryOpExpr tenantCondition = new SQLBinaryOpExpr(left, SQLBinaryOperator.Equality, right);
-        return tenantCondition;
+        return value;
     }
 
     public static void checkReadOnly(WallVisitor visitor, SQLTableSource tableSource) {
@@ -573,7 +914,7 @@ public class WallVisitorUtils {
             }
         }
 
-        checkConditionForMultiTenant(visitor, where, x);
+        checkUpdateForMultiTenant(visitor, x);
     }
 
     public static Object getValue(WallVisitor visitor, SQLBinaryOpExpr x) {

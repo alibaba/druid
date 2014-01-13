@@ -119,6 +119,14 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    public void test_false10() {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select count(*) from messages a where a.id in (2 and 1 AND 9881=IF((ORD(MID((IFNULL(CAST(DATABASE() AS CHAR),0x20)),6,1))>117),SLEEP(5),9881)) and a.message <> 'hello' and a.message like 'Little'";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+    }
+
     public void test_true1() throws Exception {
         WallProvider provider = initWallProvider();
         {
@@ -139,22 +147,22 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
-    public void test_true3() throws Exception {
+    public void test_false9() throws Exception {
         WallProvider provider = initWallProvider();
         {
             String sql = "select  PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, CURRENT_TIMESTAMP() start_time from (SELECT PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, @rank := @rank + 1 AS rank FROM (  SELECT  PROJECT_NAME,  TABLE_NAME,  (   SELECT   CASE   WHEN GROUP_CONCAT(COLUMN_name) LIKE 'ID,%' THEN   SUBSTR(    GROUP_CONCAT(COLUMN_name),    4   )   ELSE   GROUP_CONCAT(COLUMN_name)   END   FROM   Information_schema.`COLUMNS` A   WHERE   A.table_name = B.TABLE_NAME   ORDER BY   ORDINAL_POSITION  ) EXPORT_COLUMNS  FROM  ETL_EXPORT b   ORDER BY  PROJECT_NAME,  TABLE_NAME ) tmp, (SELECT @rank := 0) a) b WHERE rank='2';";
-            Assert.assertTrue(provider.checkValid(sql));
+            Assert.assertFalse(provider.checkValid(sql));
         }
         {
             String sql = "select  PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, CURRENT_TIMESTAMP() start_time, case when type=1 then ' where day_id = 20130101 '  when type=2 and substr('20130101','7,2')='01' then 'where month_id=201301 ' else 'where 3=5 ' end export_where_data from (SELECT PROJECT_NAME, TABLE_NAME, EXPORT_COLUMNS, type, @rank := @rank + 1 AS rank FROM (  SELECT  PROJECT_NAME,  TABLE_NAME,  type,  (   SELECT   CASE   WHEN GROUP_CONCAT(COLUMN_name) LIKE 'ID,%' THEN   SUBSTR(    GROUP_CONCAT(COLUMN_name),    4   )   ELSE   GROUP_CONCAT(COLUMN_name)   END   FROM   Information_schema.`COLUMNS` A   WHERE   A.table_name = concat(B.TABLE_NAME,'_','201301')   ORDER BY   ORDINAL_POSITION  ) EXPORT_COLUMNS  FROM  ETL_EXPORT b  where project_name in ('acc')  ORDER BY  PROJECT_NAME,  TABLE_NAME ) tmp, (SELECT @rank := 0) a) b WHERE rank='3';";
-            Assert.assertTrue(provider.checkValid(sql));
+            Assert.assertFalse(provider.checkValid(sql));
         }
     }
 
     public void test_true4() {
         WallProvider provider = initWallProvider();
         {
-            String sql = "SELECT 10006,@";
+            String sql = "SELECT 10006, @";
             Assert.assertTrue(provider.checkValid(sql));
         }
     }

@@ -28,13 +28,20 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class TenantSelectTest2 extends TestCase {
 
-    private String     sql    = "SELECT ID, NAME FROM orders WHERE FID = ? OR FID = ?";
+    private String     sql             = "SELECT ID, NAME FROM orders WHERE FID = ? OR FID = ?";
+    private String     expect_sql      = "SELECT ID, NAME, tenant" + //
+                                         "\nFROM orders" + //
+                                         "\nWHERE FID = ?" + //
+                                         "\n\tOR FID = ?";
 
-    private WallConfig config = new WallConfig();
+    private WallConfig config          = new WallConfig();
+    private WallConfig config_callback = new WallConfig();
 
     protected void setUp() throws Exception {
         config.setTenantTablePattern("*");
         config.setTenantColumn("tenant");
+
+        config_callback.setTenantCallBack(new TenantTestCallBack());
     }
 
     public void testMySql() throws Exception {
@@ -44,10 +51,15 @@ public class TenantSelectTest2 extends TestCase {
         Assert.assertEquals(0, checkResult.getViolations().size());
 
         String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
-        Assert.assertEquals("SELECT ID, NAME" + //
-                            "\nFROM orders" + //
-                            "\nWHERE tenant = 123" + //
-                            "\n\tAND (FID = ?" +
-                            "\n\t\tOR FID = ?)", resultSql);
+        Assert.assertEquals(expect_sql, resultSql);
+    }
+
+    public void testMySql2() throws Exception {
+        MySqlWallProvider provider = new MySqlWallProvider(config_callback);
+        WallCheckResult checkResult = provider.check(sql);
+        Assert.assertEquals(0, checkResult.getViolations().size());
+
+        String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
+        Assert.assertEquals(expect_sql, resultSql);
     }
 }

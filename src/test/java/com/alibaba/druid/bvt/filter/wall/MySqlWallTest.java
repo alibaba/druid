@@ -41,7 +41,7 @@ public class MySqlWallTest extends TestCase {
         Assert.assertFalse(WallUtils.isValidateMySql("SELECT *FROM T UNION select 1 from mysql.user"));
         Assert.assertTrue(WallUtils.isValidateMySql("select 'mysql.user'"));
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select 0x3C3F706870206576616C28245F504F53545B2763275D293F3E into outfile '\\www\\edu\\1.php'"));
+        Assert.assertFalse(WallUtils.isValidateMySql("select * FROM T WHERE id = 1 AND select 0x3C3F706870206576616C28245F504F53545B2763275D293F3E into outfile '\\www\\edu\\1.php'"));
         Assert.assertTrue(WallUtils.isValidateMySql("select 'outfile'"));
 
         Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t union select 1, 2"));

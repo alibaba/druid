@@ -106,6 +106,7 @@ public class WallConfig implements WallConfigMBean {
 
     private String              tenantTablePattern;
     private String              tenantColumn;
+    private TenantCallBack      tenantCallBack;
 
     private boolean             wrapAllow                   = true;
     private boolean             metadataAllow               = true;
@@ -237,6 +238,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setTenantColumn(String tenantColumn) {
         this.tenantColumn = tenantColumn;
+    }
+
+    public TenantCallBack getTenantCallBack() {
+        return tenantCallBack;
+    }
+
+    public void setTenantCallBack(TenantCallBack tenantCallBack) {
+        this.tenantCallBack = tenantCallBack;
     }
 
     public boolean isMetadataAllow() {
@@ -693,6 +702,32 @@ public class WallConfig implements WallConfigMBean {
 
     public void setCallAllow(boolean callAllow) {
         this.callAllow = callAllow;
+    }
+
+    public static abstract interface TenantCallBack {
+
+        public static enum StatementType {
+            SELECT, UPDATE, INSERT, DELETE
+        }
+
+        Object getTenantValue(StatementType statementType, String tableName);
+
+        String getTenantColumn(StatementType statementType, String tableName);
+
+        /**
+         * 返回resultset隐藏列名
+         * 
+         * @param tableName
+         * @return
+         */
+        String getHiddenColumn(String tableName);
+
+        /**
+         * resultset返回值中如果包含hiddenColumn的回调函数
+         * 
+         * @param value hiddenColumn对应的值
+         */
+        void resultset_hiddenColumn(Object value);
     }
 
 }
