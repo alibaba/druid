@@ -270,28 +270,33 @@ public class SQLSelectParser extends SQLParser {
     protected final void parseSelectList(SQLSelectQueryBlock queryBlock) {
         final List<SQLSelectItem> selectList = queryBlock.getSelectList();
         for (;;) {
-            SQLExpr expr;
-            if (lexer.token() == Token.IDENTIFIER) {
-                expr = new SQLIdentifierExpr(lexer.stringVal());
-                lexer.nextTokenComma();
-
-                if (lexer.token() != Token.COMMA) {
-                    expr = this.exprParser.primaryRest(expr);
-                    expr = this.exprParser.exprRest(expr);
-                }
-            } else {
-                expr = expr();
-            }
-            final String alias = as();
-
-            final SQLSelectItem selectItem = new SQLSelectItem(expr, alias);
+            final SQLSelectItem selectItem = parseSelectItem();
             selectList.add(selectItem);
+            
             if (lexer.token() != Token.COMMA) {
                 break;
             }
 
             lexer.nextToken();
         }
+    }
+
+    protected SQLSelectItem parseSelectItem() {
+        SQLExpr expr;
+        if (lexer.token() == Token.IDENTIFIER) {
+            expr = new SQLIdentifierExpr(lexer.stringVal());
+            lexer.nextTokenComma();
+
+            if (lexer.token() != Token.COMMA) {
+                expr = this.exprParser.primaryRest(expr);
+                expr = this.exprParser.exprRest(expr);
+            }
+        } else {
+            expr = expr();
+        }
+        final String alias = as();
+
+        return new SQLSelectItem(expr, alias);
     }
 
     public void parseFrom(SQLSelectQueryBlock queryBlock) {

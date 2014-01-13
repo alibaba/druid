@@ -217,6 +217,12 @@ public class Utils {
         if (className == null) {
             return null;
         }
+        
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            // skip
+        }
 
         ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
         if (ctxClassLoader != null) {
@@ -227,15 +233,7 @@ public class Utils {
             }
         }
 
-        if (clazz != null) {
-            return clazz;
-        }
-
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
+        return clazz;
     }
 
     private static Date startTime;

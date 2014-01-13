@@ -85,6 +85,7 @@ public class OracleExprParser extends SQLExprParser {
 
 
 
+
     public boolean                allowStringAdditive = false;
 
     /**
@@ -504,9 +505,11 @@ public class OracleExprParser extends SQLExprParser {
                 SQLExpr trim_character = this.primary();
                 trim_character.setParent(methodExpr);
                 methodExpr.putAttribute("trim_character", trim_character);
-                accept(Token.FROM);
-                SQLExpr trim_source = this.expr();
-                methodExpr.addParameter(trim_source);
+                if (lexer.token() == Token.FROM) {
+                    lexer.nextToken();
+                    SQLExpr trim_source = this.expr();
+                    methodExpr.addParameter(trim_source);
+                }
                 
                 accept(Token.RPAREN);
                 return primaryRest(methodExpr);

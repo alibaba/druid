@@ -26,7 +26,7 @@ public class MonitorDaoJdbcImplTest extends TestCase {
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:h2:mem:test");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/druid-monitor");
+        //dataSource.setUrl("jdbc:mysql://localhost:3306/druid-monitor");
         dataSource.setUsername("druid");
         dataSource.setPassword("druid");
         dataSource.setInitialSize(1);

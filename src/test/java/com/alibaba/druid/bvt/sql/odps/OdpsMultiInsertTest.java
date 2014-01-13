@@ -13,32 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.oracle.visitor;
+package com.alibaba.druid.bvt.sql.odps;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.junit.Assert;
 
-import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 
-public class OracleResourceTest extends OracleTest {
+public class OdpsMultiInsertTest extends TestCase {
 
     public void test_0() throws Exception {
-        // 13
-//        exec_test("bvt/parser/oracle-56.txt");
-        for (int i = 0; i <= 57; ++i) {
-             exec_test("bvt/parser/oracle-" + i + ".txt");
-        }
+        exec_test("bvt/parser/odps-1.sql");
     }
 
     public void exec_test(String resource) throws Exception {
@@ -53,27 +52,22 @@ public class OracleResourceTest extends OracleTest {
         String sql = items[0].trim();
         String expect = items[1].trim();
 
-        OracleStatementParser parser = new OracleStatementParser(sql);
+        OdpsStatementParser parser = new OdpsStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement stmt = statementList.get(0);
 
-        // Assert.assertEquals(1, statementList.size());
+        Assert.assertEquals(1, statementList.size());
+
+        SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
+        stmt.accept(visitor);
 
         System.out.println(sql);
-
-        print(statementList);
-
-        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-
-        for (int i = 0, size = statementList.size(); i < size; ++i) {
-            SQLStatement statement = statementList.get(i);
-            statement.accept(visitor);
-        }
-
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
         System.out.println();
-        System.out.println();
+        System.out.println("---------------------------");
+        System.out.println(SQLUtils.toOdpsString(stmt));
     }
 
     void mergValidate(String sql, String expect) {
@@ -92,5 +86,6 @@ public class OracleResourceTest extends OracleTest {
 
         Assert.assertEquals(expect, out.toString());
     }
+
 
 }

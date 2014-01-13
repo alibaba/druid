@@ -413,7 +413,7 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLNumberExpr(lexer.decimalValue().negate());
                         lexer.nextToken();
                         break;
-                    case IDENTIFIER: // 当负号后面为字段的情况
+                    case IDENTIFIER: // µ±¸ººÅºóÃæÎª×Ö¶ÎµÄÇé¿ö
                         sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         lexer.nextToken();
@@ -872,7 +872,7 @@ public class SQLExprParser extends SQLParser {
             SQLOver over = new SQLOver();
             accept(Token.LPAREN);
 
-            if (identifierEquals("PARTITION")) {
+            if (lexer.token() == Token.PARTITION || identifierEquals("PARTITION")) {
                 lexer.nextToken();
                 accept(Token.BY);
 

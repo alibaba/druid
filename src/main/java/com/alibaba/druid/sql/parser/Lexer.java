@@ -667,7 +667,6 @@ public class Lexer {
         bufPos = 1;
         char ch;
 
-        boolean mybatisFlag = false;
         if (charAt(pos + 1) == '@') {
             ch = charAt(++pos);
 
@@ -675,7 +674,29 @@ public class Lexer {
         } else if (charAt(pos + 1) == '{') {
             pos++;
             bufPos++;
-            mybatisFlag = true;
+            
+            for (;;) {
+                ch = charAt(++pos);
+
+                if (ch == '}') {
+                    break;
+                }
+
+                bufPos++;
+                continue;
+            }
+            
+            if (ch != '}') {
+                throw new ParserException("syntax error");
+            }
+            ++pos;
+            bufPos++;
+            
+            this.ch = charAt(pos);
+
+            stringVal = addSymbol();
+            token = Token.VARIANT;
+            return;
         }
 
         for (;;) {
@@ -687,14 +708,6 @@ public class Lexer {
 
             bufPos++;
             continue;
-        }
-
-        if (mybatisFlag) {
-            if (ch != '}') {
-                throw new ParserException("syntax error");
-            }
-            ++pos;
-            bufPos++;
         }
 
         this.ch = charAt(pos);
