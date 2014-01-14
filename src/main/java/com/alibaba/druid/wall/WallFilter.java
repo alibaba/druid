@@ -35,7 +35,6 @@ import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
@@ -778,16 +777,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
         }
         return hasNext;
-    }
-
-    @Override
-    public ResultSetMetaData resultSet_getMetaData(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
-        ResultSetMetaData metaData = chain.resultSet_getMetaData(resultSet);
-        if (metaData == null) {
-            return null;
-        }
-
-        return new ResultSetMetaDataProxyImpl(metaData, chain.getDataSource().createMetaDataId(), resultSet);
     }
 
     public long getViolationCount() {

@@ -58,6 +58,8 @@ import com.alibaba.druid.proxy.jdbc.NClobProxy;
 import com.alibaba.druid.proxy.jdbc.NClobProxyImpl;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
@@ -965,7 +967,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().resultSet_getMetaData(this, resultSet);
         }
-        return resultSet.getResultSetRaw().getMetaData();
+        return wrap(resultSet.getResultSetRaw().getMetaData(), resultSet);
     }
 
     @Override
@@ -4472,6 +4474,14 @@ public class FilterChainImpl implements FilterChain {
 
         return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(),
                                       statement.getLastExecuteSql());
+    }
+
+    public ResultSetMetaDataProxy wrap(ResultSetMetaData metaData, ResultSetProxy resultSet) {
+        if (metaData == null) {
+            return null;
+        }
+
+        return new ResultSetMetaDataProxyImpl(metaData, dataSource.createMetaDataId(), resultSet);
     }
 
     public ClobProxy wrap(ConnectionProxy conn, Clob clob) {
