@@ -4550,7 +4550,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getColumnCount(this, metaData);
         }
 
-        return metaData.getColumnCount();
+        return metaData.getResultSetMetaDataRaw().getColumnCount();
     }
 
     @Override
@@ -4559,7 +4559,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isAutoIncrement(this, metaData, column);
         }
 
-        return metaData.isAutoIncrement(column);
+        return metaData.getResultSetMetaDataRaw().isAutoIncrement(column);
     }
 
     @Override
@@ -4568,7 +4568,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isCaseSensitive(this, metaData, column);
         }
 
-        return metaData.isCaseSensitive(column);
+        return metaData.getResultSetMetaDataRaw().isCaseSensitive(column);
     }
 
     @Override
@@ -4577,7 +4577,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isSearchable(this, metaData, column);
         }
 
-        return metaData.isSearchable(column);
+        return metaData.getResultSetMetaDataRaw().isSearchable(column);
     }
 
     @Override
@@ -4586,7 +4586,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isCurrency(this, metaData, column);
         }
 
-        return metaData.isCurrency(column);
+        return metaData.getResultSetMetaDataRaw().isCurrency(column);
     }
 
     @Override
@@ -4595,7 +4595,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isNullable(this, metaData, column);
         }
 
-        return metaData.isNullable(column);
+        return metaData.getResultSetMetaDataRaw().isNullable(column);
     }
 
     @Override
@@ -4604,7 +4604,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isSigned(this, metaData, column);
         }
 
-        return metaData.isSigned(column);
+        return metaData.getResultSetMetaDataRaw().isSigned(column);
     }
 
     @Override
@@ -4613,7 +4613,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getColumnDisplaySize(this, metaData, column);
         }
 
-        return metaData.getColumnDisplaySize(column);
+        return metaData.getResultSetMetaDataRaw().getColumnDisplaySize(column);
     }
 
     @Override
@@ -4622,7 +4622,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getColumnLabel(this, metaData, column);
         }
 
-        return metaData.getColumnLabel(column);
+        return metaData.getResultSetMetaDataRaw().getColumnLabel(column);
     }
 
     @Override
@@ -4631,7 +4631,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getColumnName(this, metaData, column);
         }
 
-        return metaData.getColumnName(column);
+        return metaData.getResultSetMetaDataRaw().getColumnName(column);
     }
 
     @Override
@@ -4640,7 +4640,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getSchemaName(this, metaData, column);
         }
 
-        return metaData.getSchemaName(column);
+        return metaData.getResultSetMetaDataRaw().getSchemaName(column);
     }
 
     @Override
@@ -4649,7 +4649,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getPrecision(this, metaData, column);
         }
 
-        return metaData.getPrecision(column);
+        return metaData.getResultSetMetaDataRaw().getPrecision(column);
     }
 
     @Override
@@ -4658,7 +4658,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getScale(this, metaData, column);
         }
 
-        return metaData.getScale(column);
+        return metaData.getResultSetMetaDataRaw().getScale(column);
     }
 
     @Override
@@ -4667,7 +4667,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getTableName(this, metaData, column);
         }
 
-        return metaData.getTableName(column);
+        return metaData.getResultSetMetaDataRaw().getTableName(column);
     }
 
     @Override
@@ -4676,7 +4676,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getCatalogName(this, metaData, column);
         }
 
-        return metaData.getCatalogName(column);
+        return metaData.getResultSetMetaDataRaw().getCatalogName(column);
     }
 
     @Override
@@ -4685,7 +4685,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getColumnType(this, metaData, column);
         }
 
-        return metaData.getColumnType(column);
+        return metaData.getResultSetMetaDataRaw().getColumnType(column);
     }
 
     @Override
@@ -4694,7 +4694,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getColumnTypeName(this, metaData, column);
         }
 
-        return metaData.getColumnTypeName(column);
+        return metaData.getResultSetMetaDataRaw().getColumnTypeName(column);
     }
 
     @Override
@@ -4703,7 +4703,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isReadOnly(this, metaData, column);
         }
 
-        return metaData.isReadOnly(column);
+        return metaData.getResultSetMetaDataRaw().isReadOnly(column);
     }
 
     @Override
@@ -4712,7 +4712,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isWritable(this, metaData, column);
         }
 
-        return metaData.isWritable(column);
+        return metaData.getResultSetMetaDataRaw().isWritable(column);
     }
 
     @Override
@@ -4722,7 +4722,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_isDefinitelyWritable(this, metaData, column);
         }
 
-        return metaData.isDefinitelyWritable(column);
+        return metaData.getResultSetMetaDataRaw().isDefinitelyWritable(column);
     }
 
     @Override
@@ -4731,7 +4731,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().resultSetMetaData_getColumnClassName(this, metaData, column);
         }
 
-        return metaData.getColumnClassName(column);
+        return metaData.getResultSetMetaDataRaw().getColumnClassName(column);
     }
 
 }
