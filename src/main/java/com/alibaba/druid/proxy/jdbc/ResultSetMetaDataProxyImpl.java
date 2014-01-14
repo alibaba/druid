@@ -19,7 +19,7 @@ package com.alibaba.druid.proxy.jdbc;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.filter.FilterChainImpl;
 
 /**
  * @author kiki
@@ -27,128 +27,209 @@ import com.alibaba.druid.filter.FilterChain;
 public class ResultSetMetaDataProxyImpl extends WrapperProxyImpl implements ResultSetMetaDataProxy {
 
     private final ResultSetMetaData metaData;
+    private final ResultSetProxy    resultSet;
 
-    private final ResultSetProxy    resultSetProxy;
+    private FilterChainImpl         filterChain = null;
 
-    public ResultSetMetaDataProxyImpl(ResultSetMetaData metaData, long id, ResultSetProxy resultSetProxy){
+    public ResultSetMetaDataProxyImpl(ResultSetMetaData metaData, long id, ResultSetProxy resultSet){
         super(metaData, id);
         this.metaData = metaData;
-        this.resultSetProxy = resultSetProxy;
+        this.resultSet = resultSet;
     }
 
     @Override
     public int getColumnCount() throws SQLException {
-        return metaData.getColumnCount() - resultSetProxy.getHiddenColumnCount();
+        FilterChainImpl chain = createChain();
+        int value = chain.resultSetMetaData_getColumnCount(this);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public boolean isAutoIncrement(int column) throws SQLException {
-        return metaData.isAutoIncrement(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        boolean value = chain.resultSetMetaData_isAutoIncrement(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public boolean isCaseSensitive(int column) throws SQLException {
-        return metaData.isCaseSensitive(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        boolean value = chain.resultSetMetaData_isCaseSensitive(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public boolean isSearchable(int column) throws SQLException {
-        return metaData.isSearchable(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        boolean value = chain.resultSetMetaData_isSearchable(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public boolean isCurrency(int column) throws SQLException {
-        return metaData.isCurrency(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        boolean value = chain.resultSetMetaData_isCurrency(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public int isNullable(int column) throws SQLException {
-        return metaData.isNullable(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        int value = chain.resultSetMetaData_isNullable(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public boolean isSigned(int column) throws SQLException {
-        return metaData.isSigned(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        boolean value = chain.resultSetMetaData_isSigned(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public int getColumnDisplaySize(int column) throws SQLException {
-        return metaData.getColumnDisplaySize(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        int value = chain.resultSetMetaData_getColumnDisplaySize(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public String getColumnLabel(int column) throws SQLException {
-        return metaData.getColumnLabel(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        String value = chain.resultSetMetaData_getColumnLabel(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public String getColumnName(int column) throws SQLException {
-        return metaData.getColumnName(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        String value = chain.resultSetMetaData_getColumnName(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public String getSchemaName(int column) throws SQLException {
-        return metaData.getSchemaName(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        String value = chain.resultSetMetaData_getSchemaName(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public int getPrecision(int column) throws SQLException {
-        return metaData.getPrecision(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        int value = chain.resultSetMetaData_getPrecision(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public int getScale(int column) throws SQLException {
-        return metaData.getScale(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        int value = chain.resultSetMetaData_getScale(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public String getTableName(int column) throws SQLException {
-        return metaData.getTableName(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        String value = chain.resultSetMetaData_getTableName(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public String getCatalogName(int column) throws SQLException {
-        return metaData.getCatalogName(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        String value = chain.resultSetMetaData_getCatalogName(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public int getColumnType(int column) throws SQLException {
-        return metaData.getColumnType(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        int value = chain.resultSetMetaData_getColumnType(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public String getColumnTypeName(int column) throws SQLException {
-        return metaData.getColumnTypeName(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        String value = chain.resultSetMetaData_getColumnTypeName(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public boolean isReadOnly(int column) throws SQLException {
-        return metaData.isReadOnly(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        boolean value = chain.resultSetMetaData_isReadOnly(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public boolean isWritable(int column) throws SQLException {
-        return metaData.isWritable(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        boolean value = chain.resultSetMetaData_isWritable(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public boolean isDefinitelyWritable(int column) throws SQLException {
-        return metaData.isDefinitelyWritable(resultSetProxy.getPhysicalColumn(column));
+        FilterChainImpl chain = createChain();
+        boolean value = chain.resultSetMetaData_isDefinitelyWritable(this, column);
+        recycleFilterChain(chain);
+        return value;
     }
 
     @Override
     public String getColumnClassName(int column) throws SQLException {
-        return metaData.getColumnClassName(resultSetProxy.getPhysicalColumn(column));
+
+        FilterChainImpl chain = createChain();
+        String value = chain.resultSetMetaData_getColumnClassName(this, column);
+        recycleFilterChain(chain);
+        return value;
+    }
+
+    public FilterChainImpl createChain() {
+        FilterChainImpl chain = this.filterChain;
+        if (chain == null) {
+            chain = new FilterChainImpl(this.resultSet.getStatementProxy().getConnectionProxy().getDirectDataSource());
+        } else {
+            this.filterChain = null;
+        }
+
+        return chain;
+    }
+
+    public void recycleFilterChain(FilterChainImpl chain) {
+        chain.reset();
+        this.filterChain = chain;
+    }
+
+    @Override
+    public ResultSetProxy getResultSetProxy() {
+        return this.resultSet;
     }
 
     @Override
     public ResultSetMetaData getResultSetMetaDataRaw() {
-        return metaData;
-    }
-
-    @Override
-    public FilterChain createChain() {
-        return null;
+        return this.metaData;
     }
 
 }

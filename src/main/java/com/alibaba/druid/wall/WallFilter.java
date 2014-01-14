@@ -17,11 +17,22 @@ package com.alibaba.druid.wall;
 
 import static com.alibaba.druid.util.Utils.getBoolean;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.sql.Array;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.DatabaseMetaData;
+import java.sql.NClob;
+import java.sql.Ref;
 import java.sql.ResultSetMetaData;
+import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLXML;
 import java.sql.Wrapper;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +46,7 @@ import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
@@ -764,6 +776,440 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     // ////////////////
 
     @Override
+    public int resultSet_findColumn(FilterChain chain, ResultSetProxy resultSet, String columnLabel)
+                                                                                                    throws SQLException {
+        int physicalColumn = chain.resultSet_findColumn(resultSet, columnLabel);
+        return resultSet.getLogicColumn(physicalColumn);
+    }
+
+    @Override
+    public Array resultSet_getArray(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getArray(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                             throws SQLException {
+        return chain.resultSet_getAsciiStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                           throws SQLException {
+        return chain.resultSet_getBigDecimal(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy resultSet, int columnIndex, int scale)
+                                                                                                                      throws SQLException {
+        return chain.resultSet_getBigDecimal(resultSet, resultSet.getPhysicalColumn(columnIndex), scale);
+    }
+
+    @Override
+    public java.io.InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                                      throws SQLException {
+        return chain.resultSet_getBinaryStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public Blob resultSet_getBlob(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getBlob(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public boolean resultSet_getBoolean(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                     throws SQLException {
+        return chain.resultSet_getBoolean(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public byte resultSet_getByte(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getByte(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getBytes(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                                    throws SQLException {
+        return chain.resultSet_getCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public Clob resultSet_getClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getClob(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                        throws SQLException {
+        return chain.resultSet_getDate(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Calendar cal)
+                                                                                                                      throws SQLException {
+        return chain.resultSet_getDate(resultSet, resultSet.getPhysicalColumn(columnIndex), cal);
+    }
+
+    @Override
+    public double resultSet_getDouble(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getDouble(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public float resultSet_getFloat(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getFloat(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public int resultSet_getInt(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getInt(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public long resultSet_getLong(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getLong(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public java.io.Reader resultSet_getNCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                                     throws SQLException {
+        return chain.resultSet_getNCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public NClob resultSet_getNClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getNClob(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public String resultSet_getNString(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                    throws SQLException {
+        return chain.resultSet_getNString(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public Object resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getObject(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public Object resultSet_getObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                      java.util.Map<String, Class<?>> map) throws SQLException {
+        return chain.resultSet_getObject(resultSet, resultSet.getPhysicalColumn(columnIndex), map);
+    }
+
+    @Override
+    public Ref resultSet_getRef(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getRef(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public RowId resultSet_getRowId(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getRowId(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public SQLXML resultSet_getSQLXML(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getSQLXML(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public short resultSet_getShort(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getShort(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public String resultSet_getString(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        return chain.resultSet_getString(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                        throws SQLException {
+        return chain.resultSet_getTime(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Calendar cal)
+                                                                                                                      throws SQLException {
+        return chain.resultSet_getTime(resultSet, resultSet.getPhysicalColumn(columnIndex), cal);
+    }
+
+    @Override
+    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                                  throws SQLException {
+        return chain.resultSet_getTimestamp(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                                     Calendar cal) throws SQLException {
+        return chain.resultSet_getTimestamp(resultSet, resultSet.getPhysicalColumn(columnIndex), cal);
+    }
+
+    @Override
+    public java.net.URL resultSet_getURL(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                      throws SQLException {
+        return chain.resultSet_getURL(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public java.io.InputStream resultSet_getUnicodeStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex)
+                                                                                                                       throws SQLException {
+        return chain.resultSet_getUnicodeStream(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public void resultSet_updateArray(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Array x)
+                                                                                                                     throws SQLException {
+        chain.resultSet_updateArray(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                            java.io.InputStream x) throws SQLException {
+        chain.resultSet_updateAsciiStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                            java.io.InputStream x, int length) throws SQLException {
+        chain.resultSet_updateAsciiStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x, length);
+    }
+
+    @Override
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                            java.io.InputStream x, long length) throws SQLException {
+        chain.resultSet_updateAsciiStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x, length);
+    }
+
+    @Override
+    public void resultSet_updateBigDecimal(FilterChain chain, ResultSetProxy resultSet, int columnIndex, BigDecimal x)
+                                                                                                                      throws SQLException {
+        chain.resultSet_updateBigDecimal(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                             java.io.InputStream x) throws SQLException {
+        chain.resultSet_updateBinaryStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                             java.io.InputStream x, int length) throws SQLException {
+        chain.resultSet_updateBinaryStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x, length);
+    }
+
+    @Override
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                             java.io.InputStream x, long length) throws SQLException {
+        chain.resultSet_updateBinaryStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x, length);
+    }
+
+    @Override
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                     InputStream inputStream) throws SQLException {
+        chain.resultSet_updateBlob(resultSet, resultSet.getPhysicalColumn(columnIndex), inputStream);
+    }
+
+    @Override
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                     InputStream inputStream, long length) throws SQLException {
+        chain.resultSet_updateBlob(resultSet, resultSet.getPhysicalColumn(columnIndex), inputStream, length);
+    }
+
+    @Override
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Blob x)
+                                                                                                                   throws SQLException {
+        chain.resultSet_updateBlob(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateBoolean(FilterChain chain, ResultSetProxy resultSet, int columnIndex, boolean x)
+                                                                                                                throws SQLException {
+        chain.resultSet_updateBoolean(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateByte(FilterChain chain, ResultSetProxy resultSet, int columnIndex, byte x)
+                                                                                                          throws SQLException {
+        chain.resultSet_updateByte(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateBytes(FilterChain chain, ResultSetProxy resultSet, int columnIndex, byte[] x)
+                                                                                                             throws SQLException {
+        chain.resultSet_updateBytes(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                                java.io.Reader x) throws SQLException {
+        chain.resultSet_updateCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                                java.io.Reader x, int length) throws SQLException {
+        chain.resultSet_updateCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x, length);
+    }
+
+    @Override
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                                java.io.Reader x, long length) throws SQLException {
+        chain.resultSet_updateCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x, length);
+    }
+
+    @Override
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Clob x)
+                                                                                                                   throws SQLException {
+        chain.resultSet_updateClob(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Reader reader)
+                                                                                                                 throws SQLException {
+        chain.resultSet_updateClob(resultSet, resultSet.getPhysicalColumn(columnIndex), reader);
+    }
+
+    @Override
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Reader reader,
+                                     long length) throws SQLException {
+        chain.resultSet_updateClob(resultSet, resultSet.getPhysicalColumn(columnIndex), reader, length);
+    }
+
+    @Override
+    public void resultSet_updateDate(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Date x)
+                                                                                                                   throws SQLException {
+        chain.resultSet_updateDate(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateDouble(FilterChain chain, ResultSetProxy resultSet, int columnIndex, double x)
+                                                                                                              throws SQLException {
+        chain.resultSet_updateDouble(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateFloat(FilterChain chain, ResultSetProxy resultSet, int columnIndex, float x)
+                                                                                                            throws SQLException {
+        chain.resultSet_updateFloat(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateInt(FilterChain chain, ResultSetProxy resultSet, int columnIndex, int x)
+                                                                                                        throws SQLException {
+        chain.resultSet_updateInt(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateLong(FilterChain chain, ResultSetProxy resultSet, int columnIndex, long x)
+                                                                                                          throws SQLException {
+        chain.resultSet_updateLong(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                                 java.io.Reader x) throws SQLException {
+        chain.resultSet_updateNCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                                 java.io.Reader x, long length) throws SQLException {
+        chain.resultSet_updateNCharacterStream(resultSet, resultSet.getPhysicalColumn(columnIndex), x, length);
+    }
+
+    @Override
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, NClob nClob)
+                                                                                                                throws SQLException {
+        chain.resultSet_updateNClob(resultSet, resultSet.getPhysicalColumn(columnIndex), nClob);
+    }
+
+    @Override
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Reader reader)
+                                                                                                                  throws SQLException {
+        chain.resultSet_updateNClob(resultSet, resultSet.getPhysicalColumn(columnIndex), reader);
+    }
+
+    @Override
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Reader reader,
+                                      long length) throws SQLException {
+        chain.resultSet_updateNClob(resultSet, resultSet.getPhysicalColumn(columnIndex), reader, length);
+    }
+
+    @Override
+    public void resultSet_updateNString(FilterChain chain, ResultSetProxy resultSet, int columnIndex, String nString)
+                                                                                                                     throws SQLException {
+        chain.resultSet_updateNString(resultSet, resultSet.getPhysicalColumn(columnIndex), nString);
+    }
+
+    @Override
+    public void resultSet_updateNull(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        chain.resultSet_updateNull(resultSet, resultSet.getPhysicalColumn(columnIndex));
+    }
+
+    @Override
+    public void resultSet_updateObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Object x)
+                                                                                                              throws SQLException {
+        chain.resultSet_updateObject(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateObject(FilterChain chain, ResultSetProxy resultSet, int columnIndex, Object x,
+                                       int scaleOrLength) throws SQLException {
+        chain.resultSet_updateObject(resultSet, resultSet.getPhysicalColumn(columnIndex), x, scaleOrLength);
+    }
+
+    @Override
+    public void resultSet_updateRef(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Ref x)
+                                                                                                                 throws SQLException {
+        chain.resultSet_updateRef(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateRowId(FilterChain chain, ResultSetProxy resultSet, int columnIndex, RowId x)
+                                                                                                            throws SQLException {
+        chain.resultSet_updateRowId(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateShort(FilterChain chain, ResultSetProxy resultSet, int columnIndex, short x)
+                                                                                                            throws SQLException {
+        chain.resultSet_updateShort(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateSQLXML(FilterChain chain, ResultSetProxy resultSet, int columnIndex, SQLXML xmlObject)
+                                                                                                                      throws SQLException {
+        chain.resultSet_updateSQLXML(resultSet, resultSet.getPhysicalColumn(columnIndex), xmlObject);
+    }
+
+    @Override
+    public void resultSet_updateString(FilterChain chain, ResultSetProxy resultSet, int columnIndex, String x)
+                                                                                                              throws SQLException {
+        chain.resultSet_updateString(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateTime(FilterChain chain, ResultSetProxy resultSet, int columnIndex, java.sql.Time x)
+                                                                                                                   throws SQLException {
+        chain.resultSet_updateTime(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
+    public void resultSet_updateTimestamp(FilterChain chain, ResultSetProxy resultSet, int columnIndex,
+                                          java.sql.Timestamp x) throws SQLException {
+        chain.resultSet_updateTimestamp(resultSet, resultSet.getPhysicalColumn(columnIndex), x);
+    }
+
+    @Override
     public boolean resultSet_next(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
         boolean hasNext = chain.resultSet_next(resultSet);
         TenantCallBack callback = provider.getConfig().getTenantCallBack();
@@ -777,6 +1223,136 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
         }
         return hasNext;
+    }
+
+    @Override
+    public int resultSetMetaData_getColumnCount(FilterChain chain, ResultSetMetaDataProxy metaData) throws SQLException {
+        int count = chain.resultSetMetaData_getColumnCount(metaData);
+        return count - metaData.getResultSetProxy().getHiddenColumnCount();
+    }
+
+    @Override
+    public boolean resultSetMetaData_isAutoIncrement(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                    throws SQLException {
+        return chain.resultSetMetaData_isAutoIncrement(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public boolean resultSetMetaData_isCaseSensitive(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                    throws SQLException {
+        return chain.resultSetMetaData_isCaseSensitive(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public boolean resultSetMetaData_isSearchable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                 throws SQLException {
+        return chain.resultSetMetaData_isSearchable(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public boolean resultSetMetaData_isCurrency(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                               throws SQLException {
+        return chain.resultSetMetaData_isCurrency(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public int resultSetMetaData_isNullable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                           throws SQLException {
+        return chain.resultSetMetaData_isNullable(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public boolean resultSetMetaData_isSigned(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                             throws SQLException {
+        return chain.resultSetMetaData_isSigned(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public int resultSetMetaData_getColumnDisplaySize(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                     throws SQLException {
+        return chain.resultSetMetaData_getColumnDisplaySize(metaData,
+                                                            metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public String resultSetMetaData_getColumnLabel(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                  throws SQLException {
+        return chain.resultSetMetaData_getColumnLabel(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public String resultSetMetaData_getColumnName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                 throws SQLException {
+        return chain.resultSetMetaData_getColumnName(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public String resultSetMetaData_getSchemaName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                 throws SQLException {
+        return chain.resultSetMetaData_getSchemaName(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public int resultSetMetaData_getPrecision(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                             throws SQLException {
+        return chain.resultSetMetaData_getPrecision(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public int resultSetMetaData_getScale(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                         throws SQLException {
+        return chain.resultSetMetaData_getScale(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public String resultSetMetaData_getTableName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                throws SQLException {
+        return chain.resultSetMetaData_getTableName(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public String resultSetMetaData_getCatalogName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                  throws SQLException {
+        return chain.resultSetMetaData_getCatalogName(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public int resultSetMetaData_getColumnType(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                              throws SQLException {
+        return chain.resultSetMetaData_getColumnType(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public String resultSetMetaData_getColumnTypeName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                     throws SQLException {
+        return chain.resultSetMetaData_getColumnTypeName(metaData,
+                                                         metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public boolean resultSetMetaData_isReadOnly(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                               throws SQLException {
+        return chain.resultSetMetaData_isReadOnly(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public boolean resultSetMetaData_isWritable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                               throws SQLException {
+        return chain.resultSetMetaData_isWritable(metaData, metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public boolean resultSetMetaData_isDefinitelyWritable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                         throws SQLException {
+        return chain.resultSetMetaData_isDefinitelyWritable(metaData,
+                                                            metaData.getResultSetProxy().getPhysicalColumn(column));
+    }
+
+    @Override
+    public String resultSetMetaData_getColumnClassName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                      throws SQLException {
+        return chain.resultSetMetaData_getColumnClassName(metaData,
+                                                          metaData.getResultSetProxy().getPhysicalColumn(column));
     }
 
     public long getViolationCount() {
