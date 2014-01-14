@@ -1260,11 +1260,7 @@ public class SQLExprParser extends SQLParser {
             accept(Token.LPAREN);
 
             SQLInListExpr inListExpr = new SQLInListExpr(expr, true);
-<<<<<<< HEAD
-            exprList(inListExpr.getTargetList());
-=======
             exprList(inListExpr.getTargetList(), inListExpr);
->>>>>>> 9880fb4b85feb38fc1093ea21be5253c1ba9c54a
             expr = inListExpr;
 
             accept(Token.RPAREN);
@@ -1344,13 +1340,10 @@ public class SQLExprParser extends SQLParser {
                || "varchar".equalsIgnoreCase(dataTypeName)
                || "nchar".equalsIgnoreCase(dataTypeName)
                || "nvarchar".equalsIgnoreCase(dataTypeName)
-<<<<<<< HEAD
-=======
                || "tinytext".equalsIgnoreCase(dataTypeName)
                || "text".equalsIgnoreCase(dataTypeName)
                || "mediumtext".equalsIgnoreCase(dataTypeName)
                || "longtext".equalsIgnoreCase(dataTypeName)
->>>>>>> 9880fb4b85feb38fc1093ea21be5253c1ba9c54a
         //
         ;
     }
@@ -1506,11 +1499,7 @@ public class SQLExprParser extends SQLParser {
             column.getConstaints().add(check);
             return parseColumnRest(column);
         }
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> 9880fb4b85feb38fc1093ea21be5253c1ba9c54a
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             column.setComment(primary());
