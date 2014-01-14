@@ -25,4 +25,6 @@ public interface ResultSetMetaDataProxy extends ResultSetMetaData, WrapperProxy 
 
     ResultSetMetaData getResultSetMetaDataRaw();
 
+    ResultSetProxy getResultSetProxy();
+
 }

@@ -51,6 +51,7 @@ import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 
@@ -1286,4 +1287,67 @@ public interface Filter extends Wrapper {
 
     DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis)
                                                                                                                      throws SQLException;
+
+    // /////////////////
+    int resultSetMetaData_getColumnCount(FilterChain chain, ResultSetMetaDataProxy metaData) throws SQLException;
+
+    boolean resultSetMetaData_isAutoIncrement(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                             throws SQLException;
+
+    boolean resultSetMetaData_isCaseSensitive(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                             throws SQLException;
+
+    boolean resultSetMetaData_isSearchable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                          throws SQLException;
+
+    boolean resultSetMetaData_isCurrency(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                        throws SQLException;
+
+    int resultSetMetaData_isNullable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                    throws SQLException;
+
+    boolean resultSetMetaData_isSigned(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                      throws SQLException;
+
+    int resultSetMetaData_getColumnDisplaySize(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                              throws SQLException;
+
+    String resultSetMetaData_getColumnLabel(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                           throws SQLException;
+
+    String resultSetMetaData_getColumnName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                          throws SQLException;
+
+    String resultSetMetaData_getSchemaName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                          throws SQLException;
+
+    int resultSetMetaData_getPrecision(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                      throws SQLException;
+
+    int resultSetMetaData_getScale(FilterChain chain, ResultSetMetaDataProxy metaData, int column) throws SQLException;
+
+    String resultSetMetaData_getTableName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                         throws SQLException;
+
+    String resultSetMetaData_getCatalogName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                           throws SQLException;
+
+    int resultSetMetaData_getColumnType(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                       throws SQLException;
+
+    String resultSetMetaData_getColumnTypeName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                              throws SQLException;
+
+    boolean resultSetMetaData_isReadOnly(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                        throws SQLException;
+
+    boolean resultSetMetaData_isWritable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                        throws SQLException;
+
+    boolean resultSetMetaData_isDefinitelyWritable(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                                  throws SQLException;
+
+    String resultSetMetaData_getColumnClassName(FilterChain chain, ResultSetMetaDataProxy metaData, int column)
+                                                                                                               throws SQLException;
+
 }

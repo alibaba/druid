@@ -64,6 +64,8 @@ public interface ResultSetProxy extends ResultSet, WrapperProxy {
 
     int getPhysicalColumn(int logicColumn);
 
+    int getLogicColumn(int physicalColumn);
+
     List<Integer> getHiddenColumns();
 
     int getHiddenColumnCount();
