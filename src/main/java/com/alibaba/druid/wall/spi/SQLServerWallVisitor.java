@@ -262,7 +262,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
             }
 
             boolean allow = true;
-            if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
+            if (isDeny(varName) && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(x))) {
                 allow = false;
             }
 

@@ -235,7 +235,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             accept(Token.BY);
 
             while (true) {
-                groupBy.getItems().add(this.exprParser.expr());
+                groupBy.addItem(this.exprParser.expr());
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 }
@@ -247,7 +247,9 @@ public class MySqlSelectParser extends SQLSelectParser {
                 acceptIdentifier("ROLLUP");
 
                 MySqlSelectGroupBy mySqlGroupBy = new MySqlSelectGroupBy();
-                mySqlGroupBy.getItems().addAll(groupBy.getItems());
+                for (SQLExpr sqlExpr : groupBy.getItems()) {
+                    mySqlGroupBy.addItem(sqlExpr);
+                }
                 mySqlGroupBy.setRollUp(true);
 
                 groupBy = mySqlGroupBy;

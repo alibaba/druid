@@ -127,6 +127,30 @@ public class MySqlWallTest91 extends TestCase {
         }
     }
 
+    public void test_false11() {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select * from messages where id=1 limit (select count(*) from products group by concat(version(),0x27202020,floor(rand(0)*2-1)));";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+    }
+
+    public void test_false12() {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select * from dede_admin where id=1 order by if((ascii(substr(user(),1,1))>95),1,2);";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+    }
+
+    public void test_false13() {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "select * from dede_admin where id=1 limit if((ascii(substr(user(),1,1))>95),1,0);";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+    }
+
     public void test_true1() throws Exception {
         WallProvider provider = initWallProvider();
         {

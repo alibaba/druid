@@ -50,11 +50,11 @@ public class PGExprParser extends SQLExprParser {
 
             accept(Token.BY);
 
-            orderBy.getItems().add(parseSelectOrderByItem());
+            orderBy.addItem(parseSelectOrderByItem());
 
             while (lexer.token() == (Token.COMMA)) {
                 lexer.nextToken();
-                orderBy.getItems().add(parseSelectOrderByItem());
+                orderBy.addItem(parseSelectOrderByItem());
             }
 
             return orderBy;

@@ -243,7 +243,7 @@ public class SQLSelectParser extends SQLParser {
 
             SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
             while (true) {
-                groupBy.getItems().add(expr());
+                groupBy.addItem(expr());
                 if (lexer.token() != Token.COMMA) {
                     break;
                 }
@@ -272,7 +272,7 @@ public class SQLSelectParser extends SQLParser {
         for (;;) {
             final SQLSelectItem selectItem = parseSelectItem();
             selectList.add(selectItem);
-            
+
             if (lexer.token() != Token.COMMA) {
                 break;
             }

@@ -248,7 +248,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                     boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
                     if (!isTop) {
                         boolean allow = true;
-                        if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
+                        if (isDeny(varName)
+                            && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(varExpr))) {
                             allow = false;
                         }
 
@@ -321,7 +322,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
             if (!isTop) {
                 boolean allow = true;
-                if (WallVisitorUtils.isWhereOrHaving(x) && isDeny(varName)) {
+                if (isDeny(varName) && (WallVisitorUtils.isWhereOrHaving(x) || WallVisitorUtils.checkSqlExpr(x))) {
                     allow = false;
                 }
 
