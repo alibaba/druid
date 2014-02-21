@@ -651,11 +651,12 @@ public abstract class WallProvider {
         WallVisitor visitor = createWallVisitor();
 
         if (statementList.size() > 0) {
-            SQLStatement stmt = statementList.get(0);
-            try {
-                stmt.accept(visitor);
-            } catch (ParserException e) {
-                violations.add(new SyntaxErrorViolation(e, sql));
+            for (SQLStatement stmt : statementList) {
+                try {
+                    stmt.accept(visitor);
+                } catch (ParserException e) {
+                    violations.add(new SyntaxErrorViolation(e, sql));
+                }
             }
         }
 

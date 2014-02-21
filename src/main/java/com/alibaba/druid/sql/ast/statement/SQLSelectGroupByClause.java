@@ -51,4 +51,11 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
     public List<SQLExpr> getItems() {
         return this.items;
     }
+
+    public void addItem(SQLExpr sqlExpr) {
+        if (sqlExpr != null) {
+            sqlExpr.setParent(this);
+            this.items.add(sqlExpr);
+        }
+    }
 }

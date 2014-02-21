@@ -35,6 +35,13 @@ public class SQLOrderBy extends SQLObjectImpl {
         this.items.add(item);
     }
 
+    public void addItem(SQLSelectOrderByItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
+
     public List<SQLSelectOrderByItem> getItems() {
         return this.items;
     }

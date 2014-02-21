@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
@@ -97,6 +98,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
@@ -1123,6 +1125,31 @@ public class WallVisitorUtils {
         return false;
     }
 
+    public static boolean checkSqlExpr(SQLExpr x) { // check groupby, orderby, limit
+        if (x == null) {
+            return false;
+        }
+
+        SQLObject obj = x;
+        for (;;) {
+            SQLObject parent = obj.getParent();
+
+            if (parent == null) {
+                return false;
+            }
+
+            if (parent instanceof SQLSelectGroupByClause) {
+                return true;
+            } else if (parent instanceof SQLOrderBy) {
+                return true;
+            } else if (parent instanceof Limit) {
+                return true;
+            }
+
+            obj = parent;
+        }
+    }
+
     public static boolean isWhereOrHaving(SQLObject x) {
         if (x == null) {
             return false;
@@ -1593,7 +1620,7 @@ public class WallVisitorUtils {
                 return;
             }
 
-            if (isWhereOrHaving(x)) {
+            if (isWhereOrHaving(x) || checkSqlExpr(x)) {
                 addViolation(visitor, ErrorCode.FUNCTION_DENY, "deny function : " + methodName, x);
             }
         }
@@ -2078,7 +2105,7 @@ public class WallVisitorUtils {
             boolean isTopUpdateStatement = false;
             boolean isTopInsertStatement = false;
             SQLObject selectParent = x.getParent();
-            while (selectParent instanceof SQLUnionQuery //
+            while (selectParent instanceof SQLSelectQuery //
                    || selectParent instanceof SQLJoinTableSource //
                    || selectParent instanceof SQLSubqueryTableSource //
                    || selectParent instanceof SQLSelect) {

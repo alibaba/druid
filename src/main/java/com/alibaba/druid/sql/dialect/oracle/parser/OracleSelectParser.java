@@ -244,7 +244,7 @@ public class OracleSelectParser extends SQLSelectParser {
         OracleSelectQueryBlock queryBlock = new OracleSelectQueryBlock();
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
-            
+
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
             }
@@ -575,9 +575,9 @@ public class OracleSelectParser extends SQLSelectParser {
                     accept(Token.LPAREN);
                     exprParser.exprList(groupingSet.getParameters());
                     accept(Token.RPAREN);
-                    groupBy.getItems().add(groupingSet);
+                    groupBy.addItem(groupingSet);
                 } else {
-                    groupBy.getItems().add(this.exprParser.expr());
+                    groupBy.addItem(this.exprParser.expr());
                 }
 
                 if (!(lexer.token() == (Token.COMMA))) {
@@ -612,9 +612,9 @@ public class OracleSelectParser extends SQLSelectParser {
                         accept(Token.LPAREN);
                         exprParser.exprList(groupingSet.getParameters());
                         accept(Token.RPAREN);
-                        groupBy.getItems().add(groupingSet);
+                        groupBy.addItem(groupingSet);
                     } else {
-                        groupBy.getItems().add(this.exprParser.expr());
+                        groupBy.addItem(this.exprParser.expr());
                     }
 
                     if (!(lexer.token() == (Token.COMMA))) {
