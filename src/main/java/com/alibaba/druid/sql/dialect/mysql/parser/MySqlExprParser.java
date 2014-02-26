@@ -728,12 +728,6 @@ public class MySqlExprParser extends SQLExprParser {
 
         MySqlUnique unique = new MySqlUnique();
 
-        if (identifierEquals("USING")) {
-            lexer.nextToken();
-            unique.setIndexType(lexer.stringVal());
-            lexer.nextToken();
-        }
-
         if (lexer.token() != Token.LPAREN) {
             SQLName name = name();
             unique.setName(name);
@@ -749,6 +743,12 @@ public class MySqlExprParser extends SQLExprParser {
             }
         }
         accept(Token.RPAREN);
+
+        if (identifierEquals("USING")) {
+            lexer.nextToken();
+            unique.setIndexType(lexer.stringVal());
+            lexer.nextToken();
+        }
 
         return unique;
     }

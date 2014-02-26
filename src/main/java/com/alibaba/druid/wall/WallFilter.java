@@ -55,6 +55,7 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.ServletPathMatcher;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack;
+import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
 import com.alibaba.druid.wall.spi.DB2WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
@@ -1214,11 +1215,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         boolean hasNext = chain.resultSet_next(resultSet);
         TenantCallBack callback = provider.getConfig().getTenantCallBack();
         if (callback != null && hasNext) {
-            List<Integer> hiddenColumns = resultSet.getHiddenColumns();
-            if (hiddenColumns != null && hiddenColumns.size() > 0) {
-                for (Integer columnIndex : hiddenColumns) {
+            List<Integer> tenantColumns = tenantColumnsLocal.get();
+            if (tenantColumns != null && tenantColumns.size() > 0) {
+                for (Integer columnIndex : tenantColumns) {
                     Object value = resultSet.getResultSetRaw().getObject(columnIndex);
-                    callback.resultset_hiddenColumn(value);
+                    callback.filterResultsetTenantColumn(value);
                 }
             }
         }
@@ -1371,6 +1372,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         return provider.checkValid(sql);
     }
 
+    private static final ThreadLocal<List<Integer>> tenantColumnsLocal = new ThreadLocal<List<Integer>>();
+
     private void preprocessResultSet(ResultSetProxy resultSet) throws SQLException {
         if (resultSet == null) {
             return;
@@ -1390,17 +1393,28 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         Map<Integer, Integer> logicColumnMap = new HashMap<Integer, Integer>();
         Map<Integer, Integer> physicalColumnMap = new HashMap<Integer, Integer>();
         List<Integer> hiddenColumns = new ArrayList<Integer>();
+        List<Integer> tenantColumns = new ArrayList<Integer>();
         for (int physicalColumn = 1, logicColumn = 1; physicalColumn <= metaData.getColumnCount(); physicalColumn++) {
             boolean isHidden = false;
             String tableName = metaData.getTableName(physicalColumn);
 
             String hiddenColumn = null;
+            String tenantColumn = null;
             if (tenantCallBack != null) {
+                tenantColumn = tenantCallBack.getTenantColumn(StatementType.SELECT, tableName);
                 hiddenColumn = tenantCallBack.getHiddenColumn(tableName);
             }
-            if (StringUtils.isEmpty(hiddenColumn)
-                && (tableName == null || ServletPathMatcher.getInstance().matches(tenantTablePattern, tableName))) {
-                hiddenColumn = provider.getConfig().getTenantColumn();
+
+            if (StringUtils.isEmpty(hiddenColumn) || StringUtils.isEmpty(tenantColumn)) {
+                if (tableName == null || ServletPathMatcher.getInstance().matches(tenantTablePattern, tableName)) {
+                    if (StringUtils.isEmpty(hiddenColumn)) {
+                        hiddenColumn = provider.getConfig().getTenantColumn();
+                    }
+
+                    if (StringUtils.isEmpty(tenantColumn)) {
+                        tenantColumn = provider.getConfig().getTenantColumn();
+                    }
+                }
             }
 
             if (!StringUtils.isEmpty(hiddenColumn)) {
@@ -1415,6 +1429,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 physicalColumnMap.put(physicalColumn, logicColumn);
                 logicColumn++;
             }
+
+            if (!StringUtils.isEmpty(tenantColumn)
+                && tenantColumn.equalsIgnoreCase(metaData.getColumnName(physicalColumn))) {
+                tenantColumns.add(physicalColumn);
+            }
         }
 
         if (hiddenColumns.size() > 0) {
@@ -1422,5 +1441,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             resultSet.setPhysicalColumnMap(physicalColumnMap);
             resultSet.setHiddenColumns(hiddenColumns);
         }
+        tenantColumnsLocal.set(tenantColumns);
     }
 }
