@@ -35,7 +35,7 @@ public class TenantTestCallBack implements TenantCallBack {
     }
 
     @Override
-    public void resultset_hiddenColumn(Object value) {
+    public void filterResultsetTenantColumn(Object value) {
         System.out.println(value);
     }
 }

@@ -723,11 +723,11 @@ public class WallConfig implements WallConfigMBean {
         String getHiddenColumn(String tableName);
 
         /**
-         * resultset返回值中如果包含hiddenColumn的回调函数
+         * resultset返回值中如果包含tenantColumn的回调函数
          * 
-         * @param value hiddenColumn对应的值
+         * @param value tenantColumn对应的值
          */
-        void resultset_hiddenColumn(Object value);
+        void filterResultsetTenantColumn(Object value);
     }
 
 }
