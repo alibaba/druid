@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
@@ -146,6 +147,10 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlUnique x);
 
     void endVisit(MySqlUnique x);
+
+    boolean visit(MysqlForeignKey x);
+
+    void endVisit(MysqlForeignKey x);
 
     void endVisit(MySqlIntervalExpr x);
 
@@ -558,8 +563,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlOptimizeStatement x);
 
     void endVisit(MySqlOptimizeStatement x);
-    
+
     boolean visit(MySqlSetPasswordStatement x);
-    
+
     void endVisit(MySqlSetPasswordStatement x);
 } //

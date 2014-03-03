@@ -43,6 +43,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
@@ -300,7 +301,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             if (x.getDefaultExpr() instanceof SQLNullExpr) {
                 print(" NULL");
             } else {
-                print(" DEFAULT");
+                print(" DEFAULT ");
                 x.getDefaultExpr().accept(this);
             }
         }
@@ -324,7 +325,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
             item.accept(this);
         }
-        
+
         if (x.getComment() != null) {
             print(" COMMENT ");
             x.getComment().accept(this);
@@ -511,14 +512,26 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
+    public void endVisit(MysqlForeignKey x) {
+
+    }
+
+    @Override
     public boolean visit(MySqlKey x) {
-        if (x.getName() != null) {
+        if (x.isHasConstaint()) {
             print("CONSTRAINT ");
-            x.getName().accept(this);
-            print(' ');
+            if (x.getName() != null) {
+                x.getName().accept(this);
+                print(' ');
+            }
         }
 
         print("KEY");
+
+        if (x.getIndexName() != null) {
+            print(' ');
+            x.getIndexName().accept(this);
+        }
 
         if (x.getIndexType() != null) {
             print(" USING ");
@@ -2797,13 +2810,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlUnique x) {
-        if (x.getName() != null) {
+        if (x.isHasConstaint()) {
             print("CONSTRAINT ");
-            x.getName().accept(this);
-            print(' ');
+            if (x.getName() != null) {
+                x.getName().accept(this);
+                print(' ');
+            }
         }
 
         print("UNIQUE");
+
+        if (x.getIndexName() != null) {
+            print(' ');
+            x.getIndexName().accept(this);
+        }
 
         if (x.getIndexType() != null) {
             print(" USING ");
@@ -2814,6 +2834,36 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         printAndAccept(x.getColumns(), ", ");
         print(")");
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(MysqlForeignKey x) {
+        if (x.isHasConstaint()) {
+            print("CONSTRAINT ");
+            if (x.getName() != null) {
+                x.getName().accept(this);
+                print(' ');
+            }
+        }
+
+        print("FOREIGN KEY");
+
+        if (x.getIndexName() != null) {
+            print(' ');
+            x.getIndexName().accept(this);
+        }
+
+        print(" (");
+        printAndAccept(x.getReferencingColumns(), ", ");
+        print(")");
+
+        print(" REFERENCES ");
+        x.getReferencedTableName().accept(this);
+
+        print(" (");
+        printAndAccept(x.getReferencedColumns(), ", ");
+        print(")");
         return false;
     }
 
@@ -3008,15 +3058,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlSetPasswordStatement x) {
         print("SET PASSWORD ");
-        
-        if (x.getUser() != null){
+
+        if (x.getUser() != null) {
             print("FOR ");
             x.getUser().accept(this);
             print(' ');
         }
-        
+
         print("= ");
-        
+
         if (x.getPassword() != null) {
             x.getPassword().accept(this);
         }
@@ -3025,7 +3075,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlSetPasswordStatement x) {
-        
+
     }
 
 } //

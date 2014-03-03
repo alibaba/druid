@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
@@ -23,7 +24,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTableConstaint {
 
-    private String indexType;
+    private SQLName indexName;
+
+    private String  indexType;
+
+    private boolean hasConstaint;
 
     public MySqlKey(){
 
@@ -40,6 +45,7 @@ public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTable
         if (visitor.visit(this)) {
             acceptChild(visitor, this.getName());
             acceptChild(visitor, this.getColumns());
+            acceptChild(visitor, indexName);
         }
         visitor.endVisit(this);
     }
@@ -50,6 +56,22 @@ public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTable
 
     public void setIndexType(String indexType) {
         this.indexType = indexType;
+    }
+
+    public SQLName getIndexName() {
+        return indexName;
+    }
+
+    public void setIndexName(SQLName indexName) {
+        this.indexName = indexName;
+    }
+
+    public boolean isHasConstaint() {
+        return hasConstaint;
+    }
+
+    public void setHasConstaint(boolean hasConstaint) {
+        this.hasConstaint = hasConstaint;
     }
 
 }

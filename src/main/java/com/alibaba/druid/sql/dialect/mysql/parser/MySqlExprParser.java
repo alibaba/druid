@@ -32,9 +32,9 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
@@ -689,7 +689,7 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     @Override
-    public SQLPrimaryKey parsePrimaryKey() {
+    public MySqlPrimaryKey parsePrimaryKey() {
         accept(Token.PRIMARY);
         accept(Token.KEY);
 
@@ -729,8 +729,8 @@ public class MySqlExprParser extends SQLExprParser {
         MySqlUnique unique = new MySqlUnique();
 
         if (lexer.token() != Token.LPAREN) {
-            SQLName name = name();
-            unique.setName(name);
+            SQLName indexName = name();
+            unique.setIndexName(indexName);
         }
 
         accept(Token.LPAREN);
@@ -751,6 +751,31 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         return unique;
+    }
+
+    public MysqlForeignKey parseForeignKey() {
+        accept(Token.FOREIGN);
+        accept(Token.KEY);
+
+        MysqlForeignKey fk = new MysqlForeignKey();
+
+        if (lexer.token() != Token.LPAREN) {
+            SQLName indexName = name();
+            fk.setIndexName(indexName);
+        }
+
+        accept(Token.LPAREN);
+        this.names(fk.getReferencingColumns());
+        accept(Token.RPAREN);
+
+        accept(Token.REFERENCES);
+
+        fk.setReferencedTableName(this.name());
+
+        accept(Token.LPAREN);
+        this.names(fk.getReferencedColumns());
+        accept(Token.RPAREN);
+        return fk;
     }
 
     protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {
