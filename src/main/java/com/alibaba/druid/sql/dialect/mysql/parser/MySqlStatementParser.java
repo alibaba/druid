@@ -46,7 +46,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -57,6 +56,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
@@ -1997,14 +1997,14 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (identifierEquals("PASSWORD")) {
             lexer.nextToken();
             MySqlSetPasswordStatement stmt = new MySqlSetPasswordStatement();
-            
+
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
                 stmt.setUser(this.exprParser.name());
             }
-            
+
             accept(Token.EQ);
-            
+
             stmt.setPassword(this.exprParser.expr());
 
             return stmt;
@@ -2193,8 +2193,9 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                             stmt.getItems().add(item);
                         } else if (lexer.token() == Token.FOREIGN) {
-                            SQLForeignKeyConstraint fk = this.getExprParser().parseForeignKey();
+                            MysqlForeignKey fk = this.getExprParser().parseForeignKey();
                             fk.setName(constraintName);
+                            fk.setHasConstaint(true);
 
                             SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
 

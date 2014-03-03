@@ -35,6 +35,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
@@ -1205,6 +1206,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
+    public boolean visit(MysqlForeignKey x) {
+        return super.visit(x);
+    }
+
+    @Override
+    public void endVisit(MysqlForeignKey x) {
+
+    }
+
+    @Override
     public boolean visit(MySqlAlterTableDiscardTablespace x) {
         return false;
     }
@@ -1323,15 +1334,15 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlOptimizeStatement x) {
 
     }
-    
+
     @Override
     public boolean visit(MySqlSetPasswordStatement x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlSetPasswordStatement x) {
-        
+
     }
 
 }

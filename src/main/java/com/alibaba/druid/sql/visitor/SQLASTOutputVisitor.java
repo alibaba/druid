@@ -1681,7 +1681,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         print("FOREIGN KEY (");
-        printAndAccept(x.getReferencedColumns(), ", ");
+        printAndAccept(x.getReferencingColumns(), ", ");
         print(")");
 
         print(" REFERENCES ");

@@ -20,11 +20,12 @@ import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
@@ -592,7 +593,9 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
     protected SQLTableConstaint parseConstraint() {
         SQLName name = null;
+        boolean hasConstaint = false;
         if (lexer.token() == (Token.CONSTRAINT)) {
+            hasConstaint = true;
             lexer.nextToken();
         }
 
@@ -604,6 +607,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
 
             MySqlKey key = new MySqlKey();
+            key.setHasConstaint(hasConstaint);
 
             if (identifierEquals("USING")) {
                 lexer.nextToken();
@@ -612,7 +616,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             }
 
             if (lexer.token() == Token.IDENTIFIER) {
-                name = this.exprParser.name();
+                SQLName indexName = this.exprParser.name();
+                if (indexName != null) {
+                    key.setIndexName(indexName);
+                }
             }
 
             accept(Token.LPAREN);
@@ -640,24 +647,26 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.token() == Token.PRIMARY) {
-            SQLPrimaryKey pk = this.exprParser.parsePrimaryKey();
+            MySqlPrimaryKey pk = this.getExprParser().parsePrimaryKey();
             pk.setName(name);
+            pk.setHasConstaint(hasConstaint);
             return (SQLTableConstaint) pk;
         }
 
         if (lexer.token() == Token.UNIQUE) {
             MySqlUnique uk = this.getExprParser().parseUnique();
             uk.setName(name);
+            uk.setHasConstaint(hasConstaint);
             return (SQLTableConstaint) uk;
         }
-        
+
         if (lexer.token() == Token.FOREIGN) {
-            SQLForeignKeyConstraint fk = this.getExprParser().parseForeignKey();
+            MysqlForeignKey fk = this.getExprParser().parseForeignKey();
             fk.setName(name);
+            fk.setHasConstaint(hasConstaint);
             return (SQLTableConstaint) fk;
         }
 
         throw new ParserException("TODO :" + lexer.token());
     }
-
 }
