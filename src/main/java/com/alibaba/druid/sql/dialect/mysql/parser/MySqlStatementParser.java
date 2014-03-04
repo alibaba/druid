@@ -2296,6 +2296,9 @@ public class MySqlStatementParser extends SQLStatementParser {
                     }
                 } else if (identifierEquals("RENAME")) {
                     lexer.nextToken();
+                    if (lexer.token() == Token.TO || lexer.token() == Token.AS) {
+                        lexer.nextToken();
+                    }
                     MySqlRenameTableStatement renameStmt = new MySqlRenameTableStatement();
                     MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
                     item.setName(stmt.getTableSource().getExpr());
