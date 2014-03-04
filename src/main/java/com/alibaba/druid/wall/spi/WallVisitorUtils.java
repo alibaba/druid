@@ -97,6 +97,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
@@ -2370,6 +2371,10 @@ public class WallVisitorUtils {
             allow = config.isUseAllow();
             denyMessage = "show not allow";
             errorCode = ErrorCode.USE_NOT_ALLOW;
+        } else if (x instanceof MySqlRenameTableStatement) {
+            allow = config.isRenameTableAllow();
+            denyMessage = "rename table not allow";
+            errorCode = ErrorCode.RENAME_TABLE_NOT_ALLOW;
         } else {
             allow = config.isNoneBaseStatementAllow();
             errorCode = ErrorCode.NONE_BASE_STATEMENT_NOT_ALLOW;
