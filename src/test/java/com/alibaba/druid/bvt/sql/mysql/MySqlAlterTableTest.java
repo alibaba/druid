@@ -16,6 +16,7 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
 import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -70,4 +71,13 @@ public class MySqlAlterTableTest extends TestCase {
         Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCOLLATE = utf8_general_ci,\n\tPACK_KEYS = PACK ALL,\n\tENGINE = InnoDB", output);
     }
     
+    public void test_alter_5() throws Exception {
+        String sql = "ALTER TABLE t1 COMMENT '表的注释';";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("ALTER TABLE t1\n\tCOMMENT = '表的注释'", output);
+    }
+
 }
