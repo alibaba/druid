@@ -39,6 +39,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             createTableAllow            = true;
     private boolean             dropTableAllow              = true;
     private boolean             alterTableAllow             = true;
+    private boolean             renameTableAllow            = true;
 
     private boolean             conditionAndAlwayTrueAllow  = false;
     private boolean             conditionAndAlwayFalseAllow = false;
@@ -409,6 +410,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setAlterTableAllow(boolean alterTableAllow) {
         this.alterTableAllow = alterTableAllow;
+    }
+
+    public boolean isRenameTableAllow() {
+        return renameTableAllow;
+    }
+
+    public void setRenameTableAllow(boolean renameTableAllow) {
+        this.renameTableAllow = renameTableAllow;
     }
 
     public boolean isSelectUnionCheck() {

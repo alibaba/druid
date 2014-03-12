@@ -2383,7 +2383,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                         item.setCollate(this.exprParser.primary());
                     }
                     stmt.getItems().add(item);
-                } else {
+                } else if (lexer.token() == Token.COMMENT) {
+                    lexer.nextToken();
+                    if(lexer.token() == Token.EQ) {
+                        accept(Token.EQ);
+                    }
+                    stmt.getItems().add(new MySqlAlterTableOption("COMMENT", '\'' + lexer.stringVal() + '\''));
+                    lexer.nextToken();
+                }else {
                     break;
                 }
 
