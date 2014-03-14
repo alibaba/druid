@@ -34,7 +34,7 @@ public class MySqlWallTest49 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertFalse(provider.checkValid(//
+        Assert.assertTrue(provider.checkValid(//
         "select temp.*, u.CanComment, u.CanBeShared, " + //
                 "   u.CanForward, COALESCE(b.UserID,0) as isBlocked, " + //
                 "   COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed, " + //

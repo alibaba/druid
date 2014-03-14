@@ -43,10 +43,10 @@ public class SyntaxErrorViolation implements Violation {
 
     public String getMessage() {
         if (exception == null) {
-            return null;
+            return "syntax error";
         }
 
-        return exception.getMessage();
+        return "syntax error: " + exception.getMessage();
     }
 
     @Override

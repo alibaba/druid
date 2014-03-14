@@ -169,9 +169,9 @@ public class WallContext {
     }
 
     public void incrementUpdateNoneConditionWarnnings() {
-        if (this.updateNoneConditionWarnnings == 0) {
-            this.incrementWarnnings();
-        }
+        // if (this.updateNoneConditionWarnnings == 0) {
+        // this.incrementWarnnings();
+        // }
         this.updateNoneConditionWarnnings++;
     }
 
@@ -180,9 +180,9 @@ public class WallContext {
     }
 
     public void incrementDeleteNoneConditionWarnnings() {
-        if (this.deleteNoneConditionWarnnings == 0) {
-            this.incrementWarnnings();
-        }
+        // if (this.deleteNoneConditionWarnnings == 0) {
+        // this.incrementWarnnings();
+        // }
         this.deleteNoneConditionWarnnings++;
     }
 

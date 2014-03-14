@@ -277,10 +277,6 @@ public class WallVisitorUtils {
             Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
 
             if (Boolean.TRUE == whereValue) {
-                if (queryBlockFromIsNull(visitor, x, false)) {
-                    addViolation(visitor, ErrorCode.EMPTY_QUERY_HAS_CONDITION, "empty select has condition", x);
-                }
-
                 if (!isSimpleConstExpr(where)) {// 简单表达式
                     addViolation(visitor, ErrorCode.ALWAY_TRUE, "select alway true condition not allow", x);
                 }
@@ -2102,7 +2098,8 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (WallVisitorUtils.queryBlockFromIsNull(visitor, x.getRight())) {
+        if (!WallVisitorUtils.queryBlockFromIsNull(visitor, x.getLeft())
+            && WallVisitorUtils.queryBlockFromIsNull(visitor, x.getRight())) {
             boolean isTopUpdateStatement = false;
             boolean isTopInsertStatement = false;
             SQLObject selectParent = x.getParent();

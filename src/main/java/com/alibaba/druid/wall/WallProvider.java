@@ -665,11 +665,7 @@ public abstract class WallProvider {
         }
 
         if (visitor.getViolations().size() == 0 && context != null && context.getWarnnings() >= 2) {
-            if (context.getDeleteNoneConditionWarnnings() > 0) {
-                violations.add(new IllegalSQLObjectViolation(ErrorCode.NONE_CONDITION, "delete none condition", sql));
-            } else if (context.getUpdateNoneConditionWarnnings() > 0) {
-                violations.add(new IllegalSQLObjectViolation(ErrorCode.NONE_CONDITION, "update none condition", sql));
-            } else if (context.getCommentCount() > 0) {
+            if (context.getCommentCount() > 0) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "comment not allow", sql));
             } else if (context.getLikeNumberWarnnings() > 0) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "like number", sql));

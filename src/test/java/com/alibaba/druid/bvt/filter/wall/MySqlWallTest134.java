@@ -27,7 +27,8 @@ public class MySqlWallTest134 extends TestCase {
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        Assert.assertFalse(provider.checkValid("SELECT 1 FROM dual WHERE 1 = '1'''''''''''''UNION SELECT '2';"));
+        Assert.assertTrue(provider.checkValid("SELECT 1 FROM dual WHERE 1 = '1'''''''''''''UNION SELECT '2';"));
+        Assert.assertFalse(provider.checkValid("SELECT 1 FROM t WHERE 1 = '1'''''''''''''UNION SELECT '2';"));
     }
 
 }
