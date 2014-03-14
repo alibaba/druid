@@ -35,7 +35,7 @@ public class MySqlWallTest62 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertFalse(provider.checkValid(//
+        Assert.assertTrue(provider.checkValid(//
         "select temp.*, u.CanComment, u.CanBeShared, u.CanForward, COALESCE(b.UserID,0) as isBlocked" + //
                 "   , COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed" + //
                 "   , COALESCE(ul.UserID,0) as liked, COALESCE(fff.UserID,0) as RIsFollowed " + //
@@ -50,6 +50,19 @@ public class MySqlWallTest62 extends TestCase {
 
         Assert.assertEquals(4, provider.getTableStats().size());
     }
+    
+    public void test_false() throws Exception {
+        WallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setSchemaCheck(true);
+        String sql = "SELECT 1, 2, 3" + //
+                     " UNION ALL SELECT  a  from tt " + //
+                     " UNION ALL SELECT 2 FROM dual ";
+        Assert.assertFalse(provider.checkValid(sql));
+        
+        sql = "SELECT a from t UNION ALL SELECT 2 FROM dual ";
+        Assert.assertFalse(provider.checkValid(sql));
+    }
+
 
 
 }
