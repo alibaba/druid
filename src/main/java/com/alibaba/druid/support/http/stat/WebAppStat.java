@@ -505,7 +505,6 @@ public class WebAppStat {
 
     public List<Map<String, Object>> getSessionStatDataList() {
         List<Map<String, Object>> sessionStatDataList = new ArrayList<Map<String, Object>>(this.sessionStatMap.size());
-        //去除ConcurrentModificationException的异常
         for (WebSessionStat sessionStat : Collections.unmodifiableCollection(this.sessionStatMap.values())) {
             Map<String, Object> sessionStatData = sessionStat.getStatData();
 
