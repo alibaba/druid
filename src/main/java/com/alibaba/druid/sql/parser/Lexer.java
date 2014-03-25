@@ -1038,7 +1038,7 @@ public class Lexer {
     }
 
     public BigDecimal decimalValue() {
-        return new BigDecimal(text.toCharArray(), mark, bufPos);
+        return new BigDecimal(subString(mark, bufPos).toCharArray());
     }
 
     public static interface CommentHandler {
