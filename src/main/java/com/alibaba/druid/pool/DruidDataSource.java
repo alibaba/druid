@@ -1569,7 +1569,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         value.setTestWhileIdle(this.isTestWhileIdle());
 
         value.setDefaultAutoCommit(this.isDefaultAutoCommit());
-        value.setDefaultReadOnly(this.isDefaultAutoCommit());
+        value.setDefaultReadOnly(this.getDefaultReadOnly());
         value.setDefaultTransactionIsolation(this.getDefaultTransactionIsolation());
 
         value.setLogicConnectErrorCount(connectErrorCount.getAndSet(0));
@@ -2294,7 +2294,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("TestWhileIdle", this.isTestWhileIdle());
 
         dataMap.put("DefaultAutoCommit", this.isDefaultAutoCommit());
-        dataMap.put("DefaultReadOnly", this.isDefaultAutoCommit());
+        dataMap.put("DefaultReadOnly", this.getDefaultReadOnly());
         dataMap.put("DefaultTransactionIsolation", this.getDefaultTransactionIsolation());
 
         dataMap.put("LogicConnectCount", connectCount);
