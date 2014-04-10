@@ -632,7 +632,7 @@ public abstract class WallProvider {
                                                                                      + lastToken, sql));
             }
         } catch (NotAllowCommentException e) {
-            violations.add(new SyntaxErrorViolation(e, sql));
+            violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMENT_STATEMENT_NOT_ALLOW, "comment not allow", sql));
             incrementCommentDeniedCount();
         } catch (ParserException e) {
             syntaxErrrorCount.incrementAndGet();
