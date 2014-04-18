@@ -352,7 +352,8 @@ public class SQLSelectParser extends SQLParser {
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
-            if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
+            if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL
+                    && !identifierEquals("STRAIGHT_JOIN") && !identifierEquals("CROSS")) {
                 String alias = as();
                 if (alias != null) {
                     tableSource.setAlias(alias);
