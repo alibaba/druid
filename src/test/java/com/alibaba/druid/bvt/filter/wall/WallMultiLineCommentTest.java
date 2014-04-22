@@ -22,7 +22,7 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 public class WallMultiLineCommentTest extends TestCase {
-    private String sql = "select f1 from t /* xx */ ";
+    private String sql = "select f1 from t /* xx */";
     
     public void testOracle() throws Exception {
         Assert.assertFalse(WallUtils.isValidateOracle(sql));

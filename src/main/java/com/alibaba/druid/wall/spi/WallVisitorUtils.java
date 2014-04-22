@@ -347,6 +347,12 @@ public class WallVisitorUtils {
         }
 
         for (SQLExpr part : parts) {
+            if(isFirst(part)) {
+                Object evalValue = part.getAttribute(EVAL_VALUE);
+                if(evalValue != null && evalValue instanceof Boolean && (Boolean)evalValue) {
+                    return true;
+                }
+            }
             boolean isSimpleConstExpr = false;
             if (part == sqlExpr || part instanceof SQLLiteralExpr) {
                 isSimpleConstExpr = true;
@@ -2358,11 +2364,11 @@ public class WallVisitorUtils {
             errorCode = ErrorCode.SHOW_NOT_ALLOW;
         } else if (x instanceof MySqlCommitStatement) {
             allow = config.isCommitAllow();
-            denyMessage = "show not allow";
+            denyMessage = "commit not allow";
             errorCode = ErrorCode.COMMIT_NOT_ALLOW;
         } else if (x instanceof SQLRollbackStatement) {
             allow = config.isRollbackAllow();
-            denyMessage = "show not allow";
+            denyMessage = "rollback not allow";
             errorCode = ErrorCode.ROLLBACK_NOT_ALLOW;
         } else if (x instanceof SQLUseStatement) {
             allow = config.isUseAllow();

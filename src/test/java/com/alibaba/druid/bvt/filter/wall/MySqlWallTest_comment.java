@@ -33,13 +33,37 @@ public class MySqlWallTest_comment extends TestCase {
 
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        
+
         provider.getConfig().setCommentAllow(true);
-        
+
         Assert.assertTrue(provider.checkValid(//
         "SELECT * FROM T WHERE FID = ? #AND 1"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
+    }
+
+    public void test_false() throws Exception {
+        WallProvider provider = new MySqlWallProvider();
+
+        provider.getConfig().setCommentAllow(false);
+
+        Assert.assertTrue(provider.checkValid("/* this is comment */ SELECT id FROM t "));
+        Assert.assertTrue(provider.checkValid("-- this is comment \n SELECT * FROM t"));
+        Assert.assertTrue(provider.checkValid("#this is comment \n SELECT * FROM t"));
+        
+        Assert.assertFalse(provider.checkValid("/*!40101fff*/ select * from t"));
+
+        Assert.assertTrue(provider.checkValid("SELECT * FROM t where a=1 #this is comment \n and b=1"));
+        Assert.assertTrue(provider.checkValid("SELECT * FROM t where a=1 -- this is comment \n and c=1"));
+        Assert.assertTrue(provider.checkValid("SELECT * FROM t where a=1 /* this is comment */ and d=1"));
+
+        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 #and c=1 \n and e=1"));
+        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 -- AND c=1 \n and f=1"));
+        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 /* and c=1 */ and g=1"));
+
+        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 #and c=1 "));
+        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 -- and c=1"));
+        Assert.assertFalse(provider.checkValid("SELECT * FROM t where a=1 /* and c=1 */"));
     }
 
 }
