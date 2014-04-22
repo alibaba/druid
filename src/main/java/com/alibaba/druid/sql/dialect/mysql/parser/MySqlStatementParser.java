@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
@@ -1940,8 +1941,8 @@ public class MySqlStatementParser extends SQLStatementParser {
                     } else if (lexer.token() == Token.LITERAL_CHARS) {
                         expr = new SQLCharExpr(lexer.stringVal());
                         lexer.nextTokenComma();
-                    } else if (lexer.token() == Token.LITERAL_CHARS) {
-                        expr = new SQLCharExpr(lexer.stringVal());
+                    } else if (lexer.token() == Token.LITERAL_NCHARS) {
+                        expr = new SQLNCharExpr(lexer.stringVal());
                         lexer.nextTokenComma();
                     } else {
                         expr = exprParser.expr();
