@@ -321,7 +321,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
             map.put("parsedOrderbycolumns", visitor.getOrderByColumns().toString());
         }
 
-        DateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS");
+        DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
         Date maxTimespanOccurTime = (Date) map.get("MaxTimespanOccurTime");
         if (maxTimespanOccurTime != null) {
             map.put("MaxTimespanOccurTime", format.format(maxTimespanOccurTime));
