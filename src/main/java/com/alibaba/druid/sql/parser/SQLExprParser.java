@@ -1359,17 +1359,17 @@ public class SQLExprParser extends SQLParser {
             }
             charType.setCharSetName(lexer.stringVal());
             lexer.nextToken();
+        }
+        
+        if (lexer.token() == Token.IDENTIFIER) {
+            if (lexer.stringVal().equalsIgnoreCase("COLLATE")) {
+                lexer.nextToken();
 
-            if (lexer.token() == Token.IDENTIFIER) {
-                if (lexer.stringVal().equalsIgnoreCase("COLLATE")) {
-                    lexer.nextToken();
-
-                    if (lexer.token() != Token.IDENTIFIER) {
-                        throw new ParserException();
-                    }
-                    charType.setCollate(lexer.stringVal());
-                    lexer.nextToken();
+                if (lexer.token() != Token.IDENTIFIER) {
+                    throw new ParserException();
                 }
+                charType.setCollate(lexer.stringVal());
+                lexer.nextToken();
             }
         }
         return charType;

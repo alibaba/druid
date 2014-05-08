@@ -383,11 +383,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getCharSetName() != null) {
             print(" CHARACTER SET ");
             print(x.getCharSetName());
-
-            if (x.getCollate() != null) {
-                print(" COLLATE ");
-                print(x.getCollate());
-            }
+        }
+        if (x.getCollate() != null) {
+            print(" COLLATE ");
+            print(x.getCollate());
         }
         return false;
     }
