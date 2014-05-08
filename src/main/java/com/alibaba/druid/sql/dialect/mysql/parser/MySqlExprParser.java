@@ -250,7 +250,7 @@ public class MySqlExprParser extends SQLExprParser {
 
                     return primaryRest(expr);
                 }
-            } else if ("COLLATE".equalsIgnoreCase(lexer.stringVal())) {
+            } else if ("COLLATE".equalsIgnoreCase(lexer.stringVal()) && !(expr instanceof SQLIdentifierExpr)) {
                 lexer.nextToken();
 
                 if (lexer.token() != Token.IDENTIFIER) {

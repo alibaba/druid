@@ -65,7 +65,7 @@ public class MySqlCreateTableTest extends MysqlTest {
                 + " `create_time` datetime NOT NULL COMMENT '授权时间', "
                 + " `invalid_time` datetime NOT NULL COMMENT '授权失效时间',"
                 + " PRIMARY KEY (`auth_id`)"
-                + " ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='INS_EBAY_AUTH';";
+                + " ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='INS_EBAY_AUTH'";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
