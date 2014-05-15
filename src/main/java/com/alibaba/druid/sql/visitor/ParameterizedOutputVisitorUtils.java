@@ -189,6 +189,12 @@ public class ParameterizedOutputVisitorUtils {
         v.incrementReplaceCunt();
         return false;
     }
+    
+    public static boolean visit(ParameterizedVisitor v, SQLVariantRefExpr x) {
+        v.print('?');
+        v.incrementReplaceCunt();
+        return false;
+    }
 
     public static SQLBinaryOpExpr merge(ParameterizedVisitor v, SQLBinaryOpExpr x) {
         SQLExpr left = x.getLeft();

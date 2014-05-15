@@ -601,7 +601,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             decrementIndent();
         } else if (parent instanceof ValuesClause) {
             println();
+            print("(");
             x.getSubQuery().accept(this);
+            print(")");
             println();
         } else {
             print("(");
