@@ -149,6 +149,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public static ThreadLocal<Long>          waitNanosLocal          = new ThreadLocal<Long>();
 
+    private boolean                          logDiffrentThread       = true;
+
     public DruidDataSource(){
         this(false);
     }
@@ -1128,7 +1130,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
-        if (pooledConnection.getOwnerThread() != Thread.currentThread()) {
+        if (logDiffrentThread && pooledConnection.getOwnerThread() != Thread.currentThread()) {
             LOG.warn("get/close not same thread");
         }
 
@@ -2392,5 +2394,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         return super.unwrap(iface);
+    }
+
+    public boolean isLogDiffrentThread() {
+        return logDiffrentThread;
+    }
+
+    public void setLogDiffrentThread(boolean logDiffrentThread) {
+        this.logDiffrentThread = logDiffrentThread;
     }
 }
