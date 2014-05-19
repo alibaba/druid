@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
@@ -173,6 +174,14 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
     }
 
     public boolean visit(SQLNullExpr x) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return super.visit(x);
+        }
+
+        return ParameterizedOutputVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(MySqlCharExpr x) {
         if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
