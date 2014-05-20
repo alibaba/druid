@@ -22,6 +22,7 @@ import java.util.Properties;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -174,6 +175,14 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
     }
 
     public boolean visit(SQLNullExpr x) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return super.visit(x);
+        }
+
+        return ParameterizedOutputVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(SQLHexExpr x) {
         if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             return super.visit(x);
         }
