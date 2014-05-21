@@ -46,6 +46,11 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
 
         sql = "select TID,POSTFEE,RECEIVERADDRESS from tradegroup003 where (0 = 650954981082695 or tid=650954981082695) And SELLERNICK='______________' And BUYERNICK='yingge7' and CREATED > date_sub(now(), interval 48 hour) and STATUS = 'WAIT_BUYER_PAY' and func_isNotFollowgroup003(tradegroup003.tid,'______________') = 0";
         System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, "mysql"));
+        System.out.println("-----------------------");
+        
+        sql ="SHOW COLUMNS FROM `pms_purchase_ops`/*20140512152820##%2Fbase.php%3Fshopid%3D%26module%3Dpms%26action%3DqualityItem%26op_id%3D756%26params%3Dcase%253Aupdate%252Ctable%253Aquality%252Corder_id%253A201405090006DL%252Creceive_no%253AQCI01201405090006DL%252Creceive_treat%253AALL_DONE%260.5652460628381133*/;";
+        System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, "mysql"));
+        System.out.println("-----------------------");
     }
 
 }

@@ -67,7 +67,7 @@ public class ParameterizedOutputVisitorUtils {
             stmt.accept(visitor);
         }
 
-        if (visitor.getReplaceCount() == 0) {
+        if (visitor.getReplaceCount() == 0 && !parser.getLexer().isHasComment()) {
             return sql;
         }
 
