@@ -18,6 +18,7 @@ package com.alibaba.druid.bvt.sql.mysql.visitor;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlParameterizedOutputVisitorTest extends TestCase {
 
@@ -47,9 +48,23 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
         sql = "select TID,POSTFEE,RECEIVERADDRESS from tradegroup003 where (0 = 650954981082695 or tid=650954981082695) And SELLERNICK='______________' And BUYERNICK='yingge7' and CREATED > date_sub(now(), interval 48 hour) and STATUS = 'WAIT_BUYER_PAY' and func_isNotFollowgroup003(tradegroup003.tid,'______________') = 0";
         System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, "mysql"));
         System.out.println("-----------------------");
-        
-        sql ="SHOW COLUMNS FROM `pms_purchase_ops`/*20140512152820##%2Fbase.php%3Fshopid%3D%26module%3Dpms%26action%3DqualityItem%26op_id%3D756%26params%3Dcase%253Aupdate%252Ctable%253Aquality%252Corder_id%253A201405090006DL%252Creceive_no%253AQCI01201405090006DL%252Creceive_treat%253AALL_DONE%260.5652460628381133*/;";
+
+        sql = "SHOW COLUMNS FROM `pms_purchase_ops`/*20140512152820##%2Fbase.php%3Fshopid%3D%26module%3Dpms%26action%3DqualityItem%26op_id%3D756%26params%3Dcase%253Aupdate%252Ctable%253Aquality%252Corder_id%253A201405090006DL%252Creceive_no%253AQCI01201405090006DL%252Creceive_treat%253AALL_DONE%260.5652460628381133*/;";
         System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, "mysql"));
+        System.out.println("-----------------------");
+    }
+
+    public void test_1() throws Exception {
+        String sql = "create  or replace  view  vtmp_log_node_204180 as select `twf_log_group_user`.`uni_id` as `user_id`, `twf_log_group_user`.`control_group_type` from `twf_log_group_user` where `twf_log_group_user`.`subjob_id` = 204180";
+        System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL));
+        System.out.println("-----------------------");
+
+        sql = " create view V_CustomerGoodsNf as select a.*,b.GoodsNO,b.GoodsName,b.SpecName,c.CustomerName,c.NickName,c.Tel,c.Email,  StatusExt = (CASE a.curStatus WHEN (0) THEN ('待通知')        WHEN (1) THEN ('已通知') WHEN (2) THEN ('已过期') WHEN (3) THEN ('被取消')END)  from G_Customer_GoodsNotify a  left outer join  V_GoodsListBySpec b on a.GoodsID=b.GoodsID and a.SpecID=b.SpecID left outer join G_Customer_CustomerList c on a.CustomerID=c.CustomerID";
+        System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER));
+        System.out.println("-----------------------");
+
+        sql = "CREATE view V_API_GoodsMatch as SELECT a.SpecName, a.GoodsNO, a.GoodsName, bMatch = CONVERT(bit, (CASE isnull(b.Numiid, '') WHEN ('') THEN (0) ELSE (1) END)), issys1 = (CASE isnull(b.issys, '') WHEN ('') THEN ('无') WHEN (0) THEN ('未同步') WHEN (1) THEN ('待同步') WHEN (2) THEN ('同步失败') WHEN (3) THEN ('同步成功') END), bFixNum = isnull(b.bFixNum, 0), bVirNum = isnull(b.bVirNum, 0), issys = isnull(b.issys, 0), FixNum = isnull(b.FixNum, 0), VirNumBase = isnull(b.VirNumBase, 0), VirNumInc = isnull(b.VirNumInc, 0), b.TBName, b.TBSku, b.UpdateTime, b.syscount, b.sysLog, c.ShopName, b.TBOuterID, b.SKUOuterID, d .FlagName, b.GoodsID, b.SpecID, b.Numiid, b.Skuid, b.BTBGoods, b.sysGoodsType, b.ID, bstop = CONVERT(bit, isnull(b.bstop, 0)), b.bSingletb, b.SingleNumPer, b.VirNumTop, isnull(b.goodstype, '0') AS goodstype, CASE b.SpecID WHEN - 2 THEN 1 ELSE 0 END AS pcbs FROM V_GoodsSpec a LEFT OUTER JOIN G_API_SysMatch b ON a.GoodsID = b.GoodsID AND CASE b.SpecID WHEN - 2 THEN 1 ELSE a.specid END = CASE b.SpecID WHEN - 2 THEN 1 ELSE b.SpecID END AND b.GoodsType = 0 LEFT OUTER JOIN G_Cfg_ShopList c ON b.ShopID = c.ShopID LEFT OUTER JOIN dbo.G_Cfg_RecordFlag d ON a.FlagID = d .FlagID UNION ALL SELECT '' AS SpecName, a.GoodsNO, a.GoodsName, bMatch = CONVERT(bit, (CASE isnull(b.Numiid, '') WHEN ('') THEN (0) ELSE (1) END)), issys1 = (CASE isnull(b.issys, '') WHEN ('') THEN ('无') WHEN (0) THEN ('未同步') WHEN (1) THEN ('待同步') WHEN (2) THEN ('同步失败') WHEN (3) THEN ('同步成功') END), bFixNum = isnull(b.bFixNum, 0), bVirNum = isnull(b.bVirNum, 0), issys = isnull(b.issys, 0), FixNum = isnull(b.FixNum, 0), VirNumBase = isnull(b.VirNumBase, 0), VirNumInc = isnull(b.VirNumInc, 0), b.TBName, b.TBSku, b.UpdateTime, b.syscount, b.sysLog, c.ShopName, b.TBOuterID, b.SKUOuterID, '' AS FlagName, b.GoodsID, b.SpecID, b.Numiid, b.Skuid, b.BTBGoods, b.sysGoodsType, b.ID, bstop = CONVERT(bit, isnull(b.bstop, 0)), b.bSingletb, b.SingleNumPer, b.VirNumTop, b.goodstype, 0 AS pcbs FROM g_goods_goodslistfit a LEFT OUTER JOIN g_api_sysma";
+        System.out.println(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.SQL_SERVER));
         System.out.println("-----------------------");
     }
 

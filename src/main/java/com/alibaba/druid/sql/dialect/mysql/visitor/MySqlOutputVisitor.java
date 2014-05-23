@@ -171,7 +171,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             return visit((MySqlSelectQueryBlock) select);
         }
 
-        return false;
+        return super.visit(select);
     }
 
     public boolean visit(MySqlSelectQueryBlock x) {

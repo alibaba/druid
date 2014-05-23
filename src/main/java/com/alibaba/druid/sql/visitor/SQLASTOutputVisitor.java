@@ -97,6 +97,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
+import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
@@ -1411,6 +1412,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLCreateDatabaseStatement x) {
         print("CREATE DATABASE ");
         x.getName().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLCreateViewStatement x) {
+        print("CREATE ");
+        if(x.isOrReplace()) {
+            print("OR REPLACE ");
+        }
+        print("VIEW ");
+        x.getName().accept(this);
+        
+        if (x.getColumns().size() > 0) {
+            print(" (");
+            printAndAccept(x.getColumns(), ", ");
+            print(")");
+        }
+        
+        print(" AS ");
+        
+        x.getSubQuery().accept(this);
         return false;
     }
 
