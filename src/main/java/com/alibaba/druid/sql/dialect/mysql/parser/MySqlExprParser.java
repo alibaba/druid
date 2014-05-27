@@ -234,7 +234,7 @@ public class MySqlExprParser extends SQLExprParser {
                     String chars = lexer.stringVal();
                     concat.addParameter(new SQLCharExpr(chars));
                     lexer.nextToken();
-                } while (lexer.token() == Token.LITERAL_CHARS);
+                } while (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS);
                 expr = concat;
             }
         } else if (lexer.token() == Token.IDENTIFIER) {
