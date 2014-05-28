@@ -1571,7 +1571,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         value.setTestWhileIdle(this.isTestWhileIdle());
 
         value.setDefaultAutoCommit(this.isDefaultAutoCommit());
-        value.setDefaultReadOnly(this.getDefaultReadOnly());
+        if (getDefaultReadOnly() != null) {
+            value.setDefaultReadOnly(this.getDefaultReadOnly());
+        }
         value.setDefaultTransactionIsolation(this.getDefaultTransactionIsolation());
 
         value.setLogicConnectErrorCount(connectErrorCount.getAndSet(0));
