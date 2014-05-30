@@ -1371,17 +1371,7 @@ public class SQLExprParser extends SQLParser {
                 charType.setCollate(lexer.stringVal());
                 lexer.nextToken();
             }
-        }else if(identifierEquals("COLLATE")){
-            lexer.nextToken();
-            
-            if (lexer.token() != Token.IDENTIFIER) {
-                throw new ParserException();
-            }
-            
-            charType.setCollate(lexer.stringVal());
-            lexer.nextToken();
         }
-        
         return charType;
     }
 
