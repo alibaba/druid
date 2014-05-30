@@ -389,6 +389,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print(x.getCollate());
             }
         }
+        
+        if (x.getCollate() != null) {
+            print(" COLLATE ");
+            print(x.getCollate());
+        }
         return false;
     }
 
