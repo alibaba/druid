@@ -253,6 +253,10 @@ public class MySqlExprParser extends SQLExprParser {
             } else if ("COLLATE".equalsIgnoreCase(lexer.stringVal())) {
                 lexer.nextToken();
 
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                
                 if (lexer.token() != Token.IDENTIFIER) {
                     throw new ParserException("syntax error");
                 }

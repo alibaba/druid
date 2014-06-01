@@ -31,6 +31,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.LRUCache;
+import java.util.Collections;
 
 public class WebAppStat {
 
@@ -504,7 +505,7 @@ public class WebAppStat {
 
     public List<Map<String, Object>> getSessionStatDataList() {
         List<Map<String, Object>> sessionStatDataList = new ArrayList<Map<String, Object>>(this.sessionStatMap.size());
-        for (WebSessionStat sessionStat : this.sessionStatMap.values()) {
+        for (WebSessionStat sessionStat : Collections.unmodifiableCollection(this.sessionStatMap.values())) {
             Map<String, Object> sessionStatData = sessionStat.getStatData();
 
             int runningCount = ((Number) sessionStatData.get("RunningCount")).intValue();
@@ -642,7 +643,6 @@ public class WebAppStat {
             }
         } else if (isLinux) {
             osLinuxCount.incrementAndGet();
-
             isAndroid = computeUserAgentAndroid(userAgent);
         } else if (userAgent.indexOf("Symbian") != -1) {
             osSymbianCount.incrementAndGet();
