@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr.Item;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -91,7 +92,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
@@ -1386,8 +1386,8 @@ public class WallVisitorUtils {
             return getValue(visitor, (SQLBinaryOpExpr) x);
         }
 
-        if (x instanceof MySqlBooleanExpr) {
-            return ((MySqlBooleanExpr) x).getValue();
+        if (x instanceof SQLBooleanExpr) {
+            return ((SQLBooleanExpr) x).getValue();
         }
 
         if (x instanceof SQLNumericLiteralExpr) {

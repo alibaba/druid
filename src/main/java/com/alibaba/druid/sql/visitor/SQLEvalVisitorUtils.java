@@ -1117,11 +1117,15 @@ public class SQLEvalVisitorUtils {
         if (val == null) {
             return null;
         }
+        
+        if (val == EVAL_VALUE_NULL) {
+            return null;
+        }
 
         if (val instanceof Boolean) {
             return (Boolean) val;
         }
-
+        
         if (val instanceof Number) {
             return ((Number) val).intValue() > 0;
         }

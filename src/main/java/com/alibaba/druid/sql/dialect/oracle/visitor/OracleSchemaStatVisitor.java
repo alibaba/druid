@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -68,7 +67,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
@@ -262,17 +260,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         return false;
     }
 
-    public boolean visit(SQLAggregateExpr x) {
-        accept(x.getArguments());
-        return false;
-    }
-
-    public boolean visit(OracleAggregateExpr x) {
-        accept(x.getArguments());
-        accept(x.getOver());
-        return false;
-    }
-
     public void endVisit(OracleSelect x) {
         endVisit((SQLSelect) x);
     }
@@ -398,11 +385,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         }
 
         return super.visit(x);
-    }
-
-    @Override
-    public void endVisit(OracleAggregateExpr astNode) {
-
     }
 
     @Override

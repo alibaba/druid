@@ -41,6 +41,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -537,6 +538,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         visitAggreateRest(x);
 
         print(")");
+        
+        if (x.getWithinGroup() != null) {
+            print(" WITHIN GROUP (");
+            x.getWithinGroup().accept(this);
+            print(")");
+        }
 
         if (x.getOver() != null) {
             print(" ");
@@ -1958,5 +1965,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         println();
         x.getBody().accept(this);
         return false;
+    }
+    
+    public boolean visit(SQLBooleanExpr x) {
+        print(x.getValue() ? "true" : "false");
+
+        return false;
+    }
+
+    public void endVisit(SQLBooleanExpr x) {
     }
 }

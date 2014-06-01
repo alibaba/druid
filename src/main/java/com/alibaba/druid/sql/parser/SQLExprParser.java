@@ -36,6 +36,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -554,6 +555,14 @@ public class SQLExprParser extends SQLParser {
                 break;
             case EOF:
                 throw new EOFParserException();
+            case TRUE:
+                lexer.nextToken();
+                sqlExpr = new SQLBooleanExpr(true);
+                break;
+            case FALSE:
+                lexer.nextToken();
+                sqlExpr = new SQLBooleanExpr(false);
+                break;
             default:
                 throw new ParserException("ERROR. token : " + tok + ", pos : " + lexer.pos());
         }

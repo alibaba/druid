@@ -20,11 +20,11 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 
 public class ExportParameterVisitorUtils {
 
@@ -48,8 +48,8 @@ public class ExportParameterVisitorUtils {
             return new SQLVariantRefExpr("?");
         }
 
-        if (param instanceof MySqlBooleanExpr) {
-            Object value = ((MySqlBooleanExpr) param).getValue();
+        if (param instanceof SQLBooleanExpr) {
+            Object value = ((SQLBooleanExpr) param).getValue();
             parameters.add(value);
             return new SQLVariantRefExpr("?");
         }

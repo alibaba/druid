@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -534,4 +535,9 @@ public interface SQLASTVisitor {
     void endVisit(SQLDropProcedureStatement x);
     
     boolean visit(SQLDropProcedureStatement x);
+    
+    void endVisit(SQLBooleanExpr x);
+    
+    boolean visit(SQLBooleanExpr x);
+    
 }
