@@ -808,6 +808,11 @@ public class SQLEvalVisitorUtils {
             x.putAttribute(EVAL_VALUE, EVAL_ERROR);
             return false;
         }
+        
+        if (val == null) {
+            x.putAttribute(EVAL_VALUE, EVAL_VALUE_NULL);
+            return false;
+        }
 
         switch (x.getOperator()) {
             case BINARY:
