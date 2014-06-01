@@ -69,6 +69,8 @@ public class Lexer {
     private int            varIndex     = -1;
 
     protected CommentHandler commentHandler;
+    
+    protected boolean        hasComment = false;
 
     public Lexer(String input){
         this(input, true);
@@ -747,6 +749,7 @@ public class Lexer {
 
             stringVal = subString(mark, bufPos);
             token = Token.MULTI_LINE_COMMENT;
+            hasComment = true;
             return;
         }
 
@@ -777,6 +780,7 @@ public class Lexer {
 
             stringVal = subString(mark + 1, bufPos);
             token = Token.LINE_COMMENT;
+            hasComment = true;
             return;
         }
     }
@@ -1044,5 +1048,9 @@ public class Lexer {
     public static interface CommentHandler {
 
         boolean handle(Token lastToken, String comment);
+    }
+
+    public boolean isHasComment() {
+        return hasComment;
     }
 }

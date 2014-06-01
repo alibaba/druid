@@ -29,6 +29,13 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
         Assert.assertEquals(-1, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", Arrays.<Object> asList(2, 3)));
         Assert.assertEquals(2, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? / ?", Arrays.<Object> asList(6, 3)));
     }
+    
+    public void test_evalExpr_3() throws Exception {
+        Assert.assertEquals(5.0f, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", "2.0", 3));
+        Assert.assertEquals(6.0f, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? * ?", "2.0", 3));
+        Assert.assertEquals(-1.0f, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? - ?", "2.0", 3));
+        Assert.assertEquals(2.0f, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? / ?", "6.0", 3));
+    }
 
     public void test_add() throws Exception {
         Assert.assertEquals(5, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? + ?", Arrays.<Object> asList(2, 3)));

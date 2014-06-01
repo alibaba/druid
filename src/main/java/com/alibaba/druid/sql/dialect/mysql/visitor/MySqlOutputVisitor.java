@@ -161,7 +161,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             return visit((MySqlSelectQueryBlock) select);
         }
 
-        return false;
+        return super.visit(select);
     }
 
     public boolean visit(MySqlSelectQueryBlock x) {
@@ -374,7 +374,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(" CHARACTER SET ");
             print(x.getCharSetName());
         }
-        
         if (x.getCollate() != null) {
             print(" COLLATE ");
             print(x.getCollate());
