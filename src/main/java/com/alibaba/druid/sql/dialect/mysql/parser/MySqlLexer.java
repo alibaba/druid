@@ -105,6 +105,7 @@ public class MySqlLexer extends Lexer {
 
         stringVal = subString(mark, bufPos);
         token = Token.LINE_COMMENT;
+        hasComment = true;
 
         if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
             return;
@@ -440,6 +441,7 @@ public class MySqlLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
+                hasComment = true;
             }
 
             if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
@@ -481,6 +483,7 @@ public class MySqlLexer extends Lexer {
 
             stringVal = subString(mark, bufPos + 1);
             token = Token.LINE_COMMENT;
+            hasComment = true;
 
             if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
                 return;

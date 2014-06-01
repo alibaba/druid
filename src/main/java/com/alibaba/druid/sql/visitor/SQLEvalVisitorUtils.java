@@ -1278,6 +1278,49 @@ public class SQLEvalVisitorUtils {
 
         return BigInteger.valueOf(((Number) val).longValue());
     }
+    
+    public static Number castToNumber(String val) {
+        if (val == null) {
+            return null;
+        }
+
+        try {
+            return Byte.parseByte(val);
+        } catch (NumberFormatException e) {
+        }
+
+        try {
+            return Short.parseShort(val);
+        } catch (NumberFormatException e) {
+        }
+
+        try {
+            return Integer.parseInt(val);
+        } catch (NumberFormatException e) {
+        }
+
+        try {
+            return Long.parseLong(val);
+        } catch (NumberFormatException e) {
+        }
+        
+        try {
+            return Float.parseFloat(val);
+        } catch (NumberFormatException e) {
+        }
+        
+        try {
+            return Double.parseDouble(val);
+        } catch (NumberFormatException e) {
+        }
+        
+        try {
+            return new BigInteger(val);
+        } catch (NumberFormatException e) {
+        }
+
+        return new BigDecimal(val);
+    }
 
     public static Date castToDate(Object val) {
         if (val == null) {
@@ -1382,6 +1425,14 @@ public class SQLEvalVisitorUtils {
     public static Object div(Object a, Object b) {
         if (a == null || b == null) {
             return null;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1660,6 +1711,14 @@ public class SQLEvalVisitorUtils {
         if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return EVAL_VALUE_NULL;
         }
+        
+        if (a instanceof String && !(b instanceof String)) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String && !(a instanceof String)) {
+            b = castToNumber((String) b);
+        }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
             return castToDecimal(a).add(castToDecimal(b));
@@ -1700,7 +1759,7 @@ public class SQLEvalVisitorUtils {
             return castToByte(a) + castToByte(b);
         }
 
-        if (a instanceof String || b instanceof String) {
+        if (a instanceof String && b instanceof String) {
             return castToString(a) + castToString(b);
         }
 
@@ -1722,6 +1781,14 @@ public class SQLEvalVisitorUtils {
 
         if (a instanceof Date || b instanceof Date) {
             return SQLEvalVisitor.EVAL_ERROR;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1763,10 +1830,6 @@ public class SQLEvalVisitorUtils {
             return castToByte(a) - castToByte(b);
         }
 
-        if (a instanceof String && b instanceof String) {
-            return castToLong(a) - castToLong(b);
-        }
-
         // return SQLEvalVisitor.EVAL_ERROR;
         throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
@@ -1776,12 +1839,28 @@ public class SQLEvalVisitorUtils {
             return null;
         }
 
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
+        }
+
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
             return castToDecimal(a).multiply(castToDecimal(b));
         }
 
         if (a instanceof BigInteger || b instanceof BigInteger) {
             return castToBigInteger(a).multiply(castToBigInteger(b));
+        }
+        
+        if (a instanceof Double || b instanceof Double) {
+            return castToDouble(a) * castToDouble(b);
+        }
+        
+        if (a instanceof Float || b instanceof Float) {
+            return castToFloat(a) * castToFloat(b);
         }
 
         if (a instanceof Long || b instanceof Long) {

@@ -2205,6 +2205,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             item.setParent(x);
             item.accept(this);
         }
+        print(";");
 
         decrementIndent();
         return false;
@@ -2226,6 +2227,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             item.setParent(x);
             item.accept(this);
         }
+        print(";");
 
         decrementIndent();
         return false;
@@ -2256,6 +2258,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 println();
             }
         }
+        print(";");
         decrementIndent();
 
         for (ElseIf elseIf : x.getElseIfList()) {
