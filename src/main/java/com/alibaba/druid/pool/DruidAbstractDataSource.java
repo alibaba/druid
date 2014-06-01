@@ -1177,7 +1177,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         String[] filterArray = filters.split("\\,");
 
         for (String item : filterArray) {
-            FilterManager.loadFilter(this.filters, item);
+            FilterManager.loadFilter(this.filters, item.trim());
         }
     }
 
