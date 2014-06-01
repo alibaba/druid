@@ -418,7 +418,7 @@ public class SQLSelectParser extends SQLParser {
                 lexer.nextToken();
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
-                    this.exprParser.exprList(join.getUsing());
+                    this.exprParser.exprList(join.getUsing(), join);
                     accept(Token.RPAREN);
                 } else {
                     join.getUsing().add(this.expr());

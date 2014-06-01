@@ -25,6 +25,7 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
     protected SQLExpr                  expr;
     protected String                   collate;
     protected SQLOrderingSpecification type;
+    protected NullsOrderType             nullsOrderType;
 
     public SQLSelectOrderByItem(){
 
@@ -59,6 +60,14 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
 
     public void setType(SQLOrderingSpecification type) {
         this.type = type;
+    }
+    
+    public NullsOrderType getNullsOrderType() {
+        return this.nullsOrderType;
+    }
+
+    public void setNullsOrderType(NullsOrderType nullsOrderType) {
+        this.nullsOrderType = nullsOrderType;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -95,4 +104,19 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
         return true;
     }
 
+    public static enum NullsOrderType {
+        NullsFirst, NullsLast;
+
+        public String toFormalString() {
+            if (NullsFirst.equals(this)) {
+                return "NULLS FIRST";
+            }
+
+            if (NullsLast.equals(this)) {
+                return "NULLS LAST";
+            }
+
+            throw new IllegalArgumentException();
+        }
+    }
 }
