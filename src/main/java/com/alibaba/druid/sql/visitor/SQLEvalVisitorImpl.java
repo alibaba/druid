@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
@@ -143,4 +144,11 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     public void unregisterFunction(String funcName) {
         functions.remove(funcName);
     }
+    
+    @Override
+    public boolean visit(SQLBooleanExpr x) {
+        x.getAttributes().put(EVAL_VALUE, x.getValue());
+        return false;
+    }
+
 }

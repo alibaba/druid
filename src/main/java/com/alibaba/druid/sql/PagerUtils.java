@@ -38,7 +38,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -367,13 +366,8 @@ public class PagerUtils {
     }
 
     private static SQLSelectItem createCountItem(String dbType) {
-        SQLAggregateExpr countExpr;
+        SQLAggregateExpr countExpr = new SQLAggregateExpr("COUNT");
 
-        if (JdbcConstants.ORACLE.equals(dbType)) {
-            countExpr = new OracleAggregateExpr("COUNT");
-        } else {
-            countExpr = new SQLAggregateExpr("COUNT");
-        }
         countExpr.getArguments().add(new SQLAllColumnExpr());
 
         SQLSelectItem countItem = new SQLSelectItem(countExpr);

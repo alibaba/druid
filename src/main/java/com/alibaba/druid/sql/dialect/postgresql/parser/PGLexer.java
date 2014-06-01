@@ -58,6 +58,9 @@ public class PGLexer extends Lexer {
 
         map.put("USING", Token.USING);
         map.put("WINDOW", Token.WINDOW);
+        
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
 
         DEFAULT_PG_KEYWORDS = new Keywords(map);
     }

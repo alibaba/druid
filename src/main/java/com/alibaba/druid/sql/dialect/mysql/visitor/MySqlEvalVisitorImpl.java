@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
@@ -35,7 +36,6 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.sql.visitor.functions.Function;
@@ -135,12 +135,6 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
         return SQLEvalVisitorUtils.visit(this, x);
     }
 
-    @Override
-    public boolean visit(MySqlBooleanExpr x) {
-        x.getAttributes().put(EVAL_VALUE, x.getValue());
-        return false;
-    }
-
     public boolean isMarkVariantIndex() {
         return markVariantIndex;
     }
@@ -166,5 +160,11 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     @Override
     public void unregisterFunction(String funcName) {
         functions.remove(funcName);
+    }
+    
+    @Override
+    public boolean visit(SQLBooleanExpr x) {
+        x.getAttributes().put(EVAL_VALUE, x.getValue());
+        return false;
     }
 }

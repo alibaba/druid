@@ -44,7 +44,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
@@ -140,11 +139,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     public void endVisit(OracleSelect x) {
-    }
-
-    @Override
-    public void endVisit(OracleAggregateExpr astNode) {
-
     }
 
     @Override
@@ -255,12 +249,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     @Override
     public void endVisit(OracleUpdateStatement x) {
 
-    }
-
-    @Override
-    public boolean visit(OracleAggregateExpr astNode) {
-
-        return true;
     }
 
     @Override

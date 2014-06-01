@@ -33,6 +33,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
     protected SQLOver             over;
     protected SQLOrderBy          withinGroup;
+    protected boolean             ignoreNulls      = false;
 
     public SQLAggregateExpr(String methodName){
         this.methodName = methodName;
@@ -59,7 +60,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         if (withinGroup != null) {
             withinGroup.setParent(this);
         }
-        
+
         this.withinGroup = withinGroup;
     }
 
@@ -82,6 +83,15 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     public void setOver(SQLOver over) {
         this.over = over;
     }
+    
+    public boolean isIgnoreNulls() {
+        return this.ignoreNulls;
+    }
+
+    public void setIgnoreNulls(boolean ignoreNulls) {
+        this.ignoreNulls = ignoreNulls;
+    }
+
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

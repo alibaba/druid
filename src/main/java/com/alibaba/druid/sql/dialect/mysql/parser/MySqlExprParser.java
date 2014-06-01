@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -36,7 +37,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -138,12 +138,6 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         switch (tok) {
-            case TRUE:
-                lexer.nextToken();
-                return primaryRest(new MySqlBooleanExpr(true));
-            case FALSE:
-                lexer.nextToken();
-                return primaryRest(new MySqlBooleanExpr(false));
             case LITERAL_ALIAS:
                 String aliasValue = lexer.stringVal();
                 lexer.nextToken();
