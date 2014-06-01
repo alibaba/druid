@@ -965,7 +965,7 @@ public class OracleStatementParser extends SQLStatementParser {
             if (identifierEquals("AT")) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
-                this.exprParser.exprList(item.getAt());
+                this.exprParser.exprList(item.getAt(), item);
                 accept(Token.RPAREN);
             } else {
                 throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
@@ -1206,12 +1206,12 @@ public class OracleStatementParser extends SQLStatementParser {
 
             if (lexer.token() == Token.LPAREN) {
                 accept(Token.LPAREN);
-                exprParser.exprList(insertClause.getColumns());
+                exprParser.exprList(insertClause.getColumns(), insertClause);
                 accept(Token.RPAREN);
             }
             accept(Token.VALUES);
             accept(Token.LPAREN);
-            exprParser.exprList(insertClause.getValues());
+            exprParser.exprList(insertClause.getValues(), insertClause);
             accept(Token.RPAREN);
 
             if (lexer.token() == Token.WHERE) {

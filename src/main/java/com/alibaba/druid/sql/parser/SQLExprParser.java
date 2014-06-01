@@ -714,6 +714,7 @@ public class SQLExprParser extends SQLParser {
         }
     }
 
+    @Deprecated
     public final void exprList(Collection<SQLExpr> exprCol) {
         exprList(exprCol, null);
     }
@@ -878,10 +879,10 @@ public class SQLExprParser extends SQLParser {
 
                 if (lexer.token() == (Token.LPAREN)) {
                     lexer.nextToken();
-                    exprList(over.getPartitionBy());
+                    exprList(over.getPartitionBy(), over);
                     accept(Token.RPAREN);
                 } else {
-                    exprList(over.getPartitionBy());
+                    exprList(over.getPartitionBy(), over);
                 }
             }
 
@@ -1539,7 +1540,7 @@ public class SQLExprParser extends SQLParser {
 
         SQLPrimaryKeyImpl pk = new SQLPrimaryKeyImpl();
         accept(Token.LPAREN);
-        exprList(pk.getColumns());
+        exprList(pk.getColumns(), pk);
         accept(Token.RPAREN);
 
         return pk;
@@ -1550,7 +1551,7 @@ public class SQLExprParser extends SQLParser {
 
         SQLUnique unique = new SQLUnique();
         accept(Token.LPAREN);
-        exprList(unique.getColumns());
+        exprList(unique.getColumns(), unique);
         accept(Token.RPAREN);
 
         return unique;

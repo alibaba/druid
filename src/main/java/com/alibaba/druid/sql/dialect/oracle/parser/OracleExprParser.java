@@ -760,7 +760,7 @@ public class OracleExprParser extends SQLExprParser {
         } else {
             aggregateExpr = new OracleAggregateExpr(methodName);
         }
-        exprList(aggregateExpr.getArguments());
+        exprList(aggregateExpr.getArguments(), aggregateExpr);
 
         if (lexer.stringVal().equalsIgnoreCase("IGNORE")) {
             lexer.nextToken();
@@ -782,10 +782,10 @@ public class OracleExprParser extends SQLExprParser {
 
                 if (lexer.token() == (Token.LPAREN)) {
                     lexer.nextToken();
-                    exprList(over.getPartitionBy());
+                    exprList(over.getPartitionBy(), over);
                     accept(Token.RPAREN);
                 } else {
-                    exprList(over.getPartitionBy());
+                    exprList(over.getPartitionBy(), over);
                 }
             }
 
@@ -1024,7 +1024,7 @@ public class OracleExprParser extends SQLExprParser {
 
         OraclePrimaryKey primaryKey = new OraclePrimaryKey();
         accept(Token.LPAREN);
-        exprList(primaryKey.getColumns());
+        exprList(primaryKey.getColumns(), primaryKey);
         accept(Token.RPAREN);
 
         

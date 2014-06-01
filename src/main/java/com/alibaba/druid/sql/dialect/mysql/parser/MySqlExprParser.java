@@ -394,7 +394,7 @@ public class MySqlExprParser extends SQLExprParser {
                 if (lexer.token() == Token.RPAREN) {
                     lexer.nextToken();
                 } else {
-                    exprList(matchAgainstExpr.getColumns());
+                    exprList(matchAgainstExpr.getColumns(), matchAgainstExpr);
                     accept(Token.RPAREN);
                 }
 
