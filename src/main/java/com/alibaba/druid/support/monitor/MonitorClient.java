@@ -230,7 +230,6 @@ public class MonitorClient {
         }
     }
 
-    @SuppressWarnings("resource")
     public void collectSql() {
         if ((!collectSqlEnable) && !collectSqlWallEnable) {
             return;
