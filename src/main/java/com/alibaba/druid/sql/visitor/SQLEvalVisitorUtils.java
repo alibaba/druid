@@ -1239,6 +1239,14 @@ public class SQLEvalVisitorUtils {
                 return castToLong(list.get(0));
             }
         }
+        
+        if (val instanceof Boolean) {
+            if (((Boolean) val).booleanValue()) {
+                return 1l;
+            } else {
+                return 0l;
+            }
+        }
 
         return ((Number) val).longValue();
     }
@@ -1428,6 +1436,10 @@ public class SQLEvalVisitorUtils {
 
     public static Object div(Object a, Object b) {
         if (a == null || b == null) {
+            return null;
+        }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return null;
         }
         
