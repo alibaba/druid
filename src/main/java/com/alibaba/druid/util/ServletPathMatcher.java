@@ -53,7 +53,7 @@ public class ServletPathMatcher implements PatternMatcher {
 				return true;
 			}
 		} else if (pattern.contains("*")) {
-			// pattern: /druid/*/index.html source:/druid/admin/index.html
+			// pattern:  /druid/*/index.html source:/druid/admin/index.html
 			int start = pattern.indexOf("*");
 			int end = pattern.lastIndexOf("*");
 			if (source.startsWith(pattern.substring(0, start))
