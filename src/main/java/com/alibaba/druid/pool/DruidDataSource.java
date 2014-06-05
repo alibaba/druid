@@ -505,6 +505,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.transactionIdSeed.addAndGet(delta);
             }
 
+            if (this.jdbcUrl != null) {
+                this.jdbcUrl = this.jdbcUrl.trim();
+                initFromWrapDriverUrl();
+            }
+            
             if (this.dbType == null || this.dbType.length() == 0) {
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
             }
@@ -547,11 +552,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.driverClass = driverClass.trim();
             }
 
-            if (this.jdbcUrl != null) {
-                this.jdbcUrl = this.jdbcUrl.trim();
-                initFromWrapDriverUrl();
-            }
-
             initFromSPIServiceLoader();
 
             if (this.driver == null) {
@@ -568,10 +568,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (this.driverClass == null) {
                     this.driverClass = driver.getClass().getName();
                 }
-            }
-
-            if (this.dbType == null || this.dbType.length() == 0) {
-                this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
             }
 
             initCheck();
