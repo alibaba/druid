@@ -1330,8 +1330,12 @@ public class SQLEvalVisitorUtils {
             return new BigInteger(val);
         } catch (NumberFormatException e) {
         }
-
-        return new BigDecimal(val);
+        
+        try {
+            return new BigDecimal(val);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     public static Date castToDate(Object val) {
@@ -1425,6 +1429,18 @@ public class SQLEvalVisitorUtils {
     public static Object bitOr(Object a, Object b) {
         if (a == null || b == null) {
             return null;
+        }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return null;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
         }
 
         if (a instanceof Long || b instanceof Long) {
@@ -1658,6 +1674,10 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a == null || b == null) {
+            return false;
+        }
+        
+        if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return false;
         }
 
