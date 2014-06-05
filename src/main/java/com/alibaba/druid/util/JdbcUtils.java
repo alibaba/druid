@@ -15,32 +15,17 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
+import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.Date;
-import java.sql.Driver;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
+import java.util.*;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -351,6 +336,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
             return MYSQL_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
+            return LOG4JDBC_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return MARIADB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:oracle:") //
@@ -421,6 +408,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DERBY;
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
             return MYSQL;
+        } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
+            return LOG4JDBC;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return MARIADB;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
