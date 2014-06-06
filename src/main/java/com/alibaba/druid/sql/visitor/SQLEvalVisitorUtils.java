@@ -1418,6 +1418,18 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return null;
         }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return null;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
+        }
 
         if (a instanceof Long || b instanceof Long) {
             return castToLong(a).longValue() & castToLong(b).longValue();
@@ -1503,7 +1515,18 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Long || b instanceof Long) {
-            return castToLong(a) / castToLong(b);
+            Long longA = castToLong(a);
+            Long longB = castToLong(b);
+            if (longB == 0) {
+                if (longA > 0) {
+                    return Double.POSITIVE_INFINITY;
+                } else if (longA < 0) {
+                    return Double.NEGATIVE_INFINITY;
+                } else {
+                    return Double.NaN;
+                }
+            }
+            return longA / longB;
         }
 
         if (a instanceof Integer || b instanceof Integer) {
