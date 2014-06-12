@@ -1239,6 +1239,14 @@ public class SQLEvalVisitorUtils {
                 return castToLong(list.get(0));
             }
         }
+        
+        if (val instanceof Boolean) {
+            if (((Boolean) val).booleanValue()) {
+                return 1l;
+            } else {
+                return 0l;
+            }
+        }
 
         return ((Number) val).longValue();
     }
@@ -1322,8 +1330,12 @@ public class SQLEvalVisitorUtils {
             return new BigInteger(val);
         } catch (NumberFormatException e) {
         }
-
-        return new BigDecimal(val);
+        
+        try {
+            return new BigDecimal(val);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     public static Date castToDate(Object val) {
@@ -1406,6 +1418,18 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return null;
         }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return null;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
+        }
 
         if (a instanceof Long || b instanceof Long) {
             return castToLong(a).longValue() & castToLong(b).longValue();
@@ -1418,6 +1442,18 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return null;
         }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return null;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
+        }
 
         if (a instanceof Long || b instanceof Long) {
             return castToLong(a).longValue() | castToLong(b).longValue();
@@ -1428,6 +1464,10 @@ public class SQLEvalVisitorUtils {
 
     public static Object div(Object a, Object b) {
         if (a == null || b == null) {
+            return null;
+        }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return null;
         }
         
@@ -1475,7 +1515,18 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Long || b instanceof Long) {
-            return castToLong(a) / castToLong(b);
+            Long longA = castToLong(a);
+            Long longB = castToLong(b);
+            if (longB == 0) {
+                if (longA > 0) {
+                    return Double.POSITIVE_INFINITY;
+                } else if (longA < 0) {
+                    return Double.NEGATIVE_INFINITY;
+                } else {
+                    return Double.NaN;
+                }
+            }
+            return longA / longB;
         }
 
         if (a instanceof Integer || b instanceof Integer) {
@@ -1646,6 +1697,10 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a == null || b == null) {
+            return false;
+        }
+        
+        if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return false;
         }
 
