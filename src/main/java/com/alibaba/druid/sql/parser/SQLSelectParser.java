@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 
 public class SQLSelectParser extends SQLParser {
@@ -316,8 +317,12 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
                 SQLSelect select = select();
                 accept(Token.RPAREN);
-                queryRest(select.getQuery());
-                tableSource = new SQLSubqueryTableSource(select);
+                SQLSelectQuery query = queryRest(select.getQuery());
+                if (query instanceof SQLUnionQuery) {
+                    tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
+                } else {
+                    tableSource = new SQLSubqueryTableSource(select);
+                }
             } else if (lexer.token() == Token.LPAREN) {
                 tableSource = parseTableSource();
                 accept(Token.RPAREN);

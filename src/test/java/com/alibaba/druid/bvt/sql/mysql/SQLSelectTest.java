@@ -88,6 +88,15 @@ public class SQLSelectTest extends TestCase {
 
         output(stmtList);
     }
+    
+    public void test_select_7() throws Exception {
+        String sql = "select * from ((select * from test1) UNION (select * from test2) UNION (select * from test3)) where t1='温高铁';";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        output(stmtList);
+    }
 
     private void output(List<SQLStatement> stmtList) {
         for (SQLStatement stmt : stmtList) {
