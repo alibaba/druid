@@ -6,7 +6,7 @@
 	"use strict";
 
 	var doT = {
-		version: '1.0.6',
+		version: '1.0.7',
 		templateSettings: {
 			evaluate:    /\{\{([\s\S]+?\}?)\}\}/g,
 			interpolate: /\{\{=([\s\S]+?)\}\}/g,
