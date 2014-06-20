@@ -15,7 +15,28 @@
  */
 package com.alibaba.druid.wall;
 
-import static com.alibaba.druid.util.Utils.getBoolean;
+import com.alibaba.druid.filter.FilterAdapter;
+import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
+import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.ServletPathMatcher;
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.wall.WallConfig.TenantCallBack;
+import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
+import com.alibaba.druid.wall.spi.DB2WallProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
+import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -40,28 +61,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import com.alibaba.druid.filter.FilterAdapter;
-import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetMetaDataProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
-import com.alibaba.druid.proxy.jdbc.StatementProxy;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.ServletPathMatcher;
-import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.wall.WallConfig.TenantCallBack;
-import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
-import com.alibaba.druid.wall.spi.DB2WallProvider;
-import com.alibaba.druid.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.wall.spi.OracleWallProvider;
-import com.alibaba.druid.wall.spi.PGWallProvider;
-import com.alibaba.druid.wall.spi.SQLServerWallProvider;
-import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
+import static com.alibaba.druid.util.Utils.getBoolean;
 
 public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
@@ -466,8 +466,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         try {
             int[] updateCounts = chain.statement_executeBatch(statement);
             int updateCount = 0;
-            for (int i = 0; i < updateCounts.length; ++i) {
-                updateCount += updateCounts[i];
+            for (int count : updateCounts) {
+                updateCount += count;
             }
 
             if (sqlStat != null) {
@@ -555,9 +555,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     private WallContext createWallContext(StatementProxy statement) {
-        String dbType = getDbType(statement);
-        WallContext context = WallContext.create(dbType);
-        return context;
+        return WallContext.create(getDbType(statement));
     }
 
     @Override
@@ -664,7 +662,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             return;
         }
 
-        if (updateCount > 0 && sqlStat != null) {
+        if (updateCount > 0) {
             provider.addUpdateCount(sqlStat, updateCount);
         }
     }
@@ -711,8 +709,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
         }
 
-        String resultSql = checkResult.getSql();
-        return resultSql;
+        return checkResult.getSql();
     }
 
     @Override
@@ -748,13 +745,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
         if (!this.provider.getConfig().isMetadataAllow()) {
             if (isLogViolation()) {
-                LOG.error("not support method : Connection.getMetdataData");
+                LOG.error("not support method : Connection.getMetadataData");
             }
 
             if (throwException) {
-                throw new WallSQLException("not support method : Connection.getMetdataData");
-            } else {
-
+                throw new WallSQLException("not support method : Connection.getMetadataData");
             }
         }
 

@@ -15,15 +15,6 @@
  */
 package com.alibaba.druid.filter.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.PublicKey;
-import java.sql.SQLException;
-import java.util.Properties;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
@@ -32,6 +23,15 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URL;
+import java.security.PublicKey;
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * <pre>
@@ -157,8 +157,8 @@ public class ConfigFilter extends FilterAdapter {
         return decrypt;
     }
 
-    Properties loadPropertyFromConfigFile(Properties connectinProperties) {
-        String configFile = connectinProperties.getProperty(CONFIG_FILE);
+    Properties loadPropertyFromConfigFile(Properties connectionProperties) {
+        String configFile = connectionProperties.getProperty(CONFIG_FILE);
 
         if (configFile == null) {
             configFile = System.getProperty(SYS_PROP_CONFIG_FILE);
@@ -212,14 +212,14 @@ public class ConfigFilter extends FilterAdapter {
         }
     }
 
-    public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
+    public PublicKey getPublicKey(Properties connectionProperties, Properties configFileProperties) {
         String key = null;
         if (configFileProperties != null) {
             configFileProperties.getProperty(CONFIG_KEY);
         }
 
-        if (StringUtils.isEmpty(key) && connectinProperties != null) {
-            key = connectinProperties.getProperty(CONFIG_KEY);
+        if (connectionProperties != null) {
+            key = connectionProperties.getProperty(CONFIG_KEY);
         }
 
         if (StringUtils.isEmpty(key)) {

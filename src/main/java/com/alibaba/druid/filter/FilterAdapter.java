@@ -65,7 +65,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void destory() {
+    public void destroy() {
 
     }
 

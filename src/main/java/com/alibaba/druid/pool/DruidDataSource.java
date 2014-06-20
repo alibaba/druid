@@ -1280,7 +1280,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.closeTimeMillis = System.currentTimeMillis();
 
             for (Filter filter : filters) {
-                filter.destory();
+                filter.destroy();
             }
         } finally {
             lock.unlock();

@@ -45,27 +45,27 @@ public class SavepointTest extends TestCase {
             stmt.close();
             savepoints[i] = conn.setSavepoint();
             
-            Assert.assertEquals(i + 1, physicalConn.getSavepoints().size());
+            Assert.assertEquals(i + 1, physicalConn.getSavePoints().size());
             for (int j = 0; j <= i; ++j) {
-                Assert.assertTrue(physicalConn.getSavepoints().contains(savepoints[j]));
+                Assert.assertTrue(physicalConn.getSavePoints().contains(savepoints[j]));
             }
         }
         
         // rollback single
         conn.rollback(savepoints[99]);
-        Assert.assertEquals(99, physicalConn.getSavepoints().size());
+        Assert.assertEquals(99, physicalConn.getSavePoints().size());
         
         // release single
         conn.releaseSavepoint(savepoints[97]);
-        Assert.assertEquals(98, physicalConn.getSavepoints().size());
+        Assert.assertEquals(98, physicalConn.getSavePoints().size());
         
         // rollback multi
         conn.rollback(savepoints[90]);
-        Assert.assertEquals(90, physicalConn.getSavepoints().size());
+        Assert.assertEquals(90, physicalConn.getSavePoints().size());
         
         // rollback all
         conn.rollback();
-        Assert.assertEquals(0, physicalConn.getSavepoints().size());
+        Assert.assertEquals(0, physicalConn.getSavePoints().size());
         
         conn.close();
     }
