@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.filter.config;
 
+import com.alibaba.druid.util.Base64;
+import com.alibaba.druid.util.JdbcUtils;
+
+import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.security.InvalidKeyException;
@@ -34,11 +38,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
-import javax.crypto.Cipher;
-
-import com.alibaba.druid.util.Base64;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class ConfigTools {
 
@@ -173,16 +172,16 @@ public class ConfigTools {
         } catch (InvalidKeyException e) {
             //For IBM JDK, 原因请看解密方法中的说明
             RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) privateKey;
-            RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(rsaPrivateKey.getModulus(), rsaPrivateKey.getPrivateExponent());
+            RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(rsaPrivateKey.getModulus(),
+                    rsaPrivateKey.getPrivateExponent());
             Key fakePublicKey = KeyFactory.getInstance("RSA").generatePublic(publicKeySpec);
             cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, fakePublicKey);
         }
 
 		byte[] encryptedBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
-		String encryptedString = Base64.byteArrayToBase64(encryptedBytes);
 
-		return encryptedString;
+        return Base64.byteArrayToBase64(encryptedBytes);
 	}
 
 	public static byte[][] genKeyPairBytes(int keySize)

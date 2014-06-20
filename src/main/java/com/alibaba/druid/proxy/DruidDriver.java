@@ -15,6 +15,21 @@
  */
 package com.alibaba.druid.proxy;
 
+import com.alibaba.druid.VERSION;
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterManager;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JMXUtils;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -30,22 +45,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import com.alibaba.druid.VERSION;
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.filter.FilterManager;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.util.JMXUtils;
-import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -135,15 +134,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        if (url == null) {
-            return false;
-        }
-
-        if (url.startsWith(acceptPrefix)) {
-            return true;
-        }
-
-        return false;
+        return url != null && url.startsWith(acceptPrefix);
     }
 
     @Override
@@ -164,6 +155,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
      * com.alibaba.druid.log.LogFilter.p2=prop-value
      * 
      * @param url
+     * @param info
      * @return
      * @throws SQLException
      */

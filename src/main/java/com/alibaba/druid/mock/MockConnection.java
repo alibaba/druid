@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.mock;
 
+import com.alibaba.druid.util.jdbc.ConnectionBase;
+
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -36,8 +38,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import com.alibaba.druid.util.jdbc.ConnectionBase;
-
 public class MockConnection extends ConnectionBase implements Connection {
 
     // private final static Log LOG = LogFactory.getLog(MockConnection.class);
@@ -46,7 +46,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     private MockDriver      driver;
     private int             savepointIdSeed      = 0;
-    private List<Savepoint> savepoints           = new ArrayList<Savepoint>();
+    private List<Savepoint> savePoints = new ArrayList<Savepoint>();
 
     private long            id;
 
@@ -87,8 +87,8 @@ public class MockConnection extends ConnectionBase implements Connection {
         this.error = error;
     }
 
-    public List<Savepoint> getSavepoints() {
-        return savepoints;
+    public List<Savepoint> getSavePoints() {
+        return savePoints;
     }
 
     public long getLastActiveTimeMillis() {
@@ -181,7 +181,7 @@ public class MockConnection extends ConnectionBase implements Connection {
     public void rollback() throws SQLException {
         checkState();
 
-        this.savepoints.clear();
+        this.savePoints.clear();
     }
 
     @Override
@@ -257,7 +257,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
         MockSavepoint savepoint = new MockSavepoint();
         savepoint.setSavepointId(this.savepointIdSeed++);
-        this.savepoints.add(savepoint);
+        this.savePoints.add(savepoint);
 
         return savepoint;
     }
@@ -269,7 +269,7 @@ public class MockConnection extends ConnectionBase implements Connection {
         MockSavepoint savepoint = new MockSavepoint();
         savepoint.setSavepointId(this.savepointIdSeed++);
         savepoint.setSavepointName(name);
-        this.savepoints.add(savepoint);
+        this.savePoints.add(savepoint);
 
         return savepoint;
     }
@@ -288,12 +288,12 @@ public class MockConnection extends ConnectionBase implements Connection {
     public void rollback(Savepoint savepoint) throws SQLException {
         checkState();
 
-        int index = this.savepoints.indexOf(savepoint);
+        int index = this.savePoints.indexOf(savepoint);
         if (index == -1) {
             throw new SQLException("savepoint not contained");
         }
-        for (int i = savepoints.size() - 1; i >= index; --i) {
-            savepoints.remove(i);
+        for (int i = savePoints.size() - 1; i >= index; --i) {
+            savePoints.remove(i);
         }
     }
 
@@ -305,11 +305,11 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new SQLException("argument is null");
         }
 
-        int index = this.savepoints.indexOf(savepoint);
+        int index = this.savePoints.indexOf(savepoint);
         if (index == -1) {
             throw new SQLException("savepoint not contained");
         }
-        savepoints.remove(savepoint);
+        savePoints.remove(savepoint);
     }
 
     @Override

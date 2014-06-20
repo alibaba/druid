@@ -34,7 +34,7 @@ public class MySqlWallTest90 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        provider.getConfig().setSelectHavingAlwayTrueCheck(true);
+        provider.getConfig().setSelectHavingAlwaysTrueCheck(true);
 
         Assert.assertTrue(provider.checkValid(//
         "select * from (select t10006_men_xing_jia_ge_fen_lei.bian_hao as \"bian_hao\", " + //
