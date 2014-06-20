@@ -19,7 +19,7 @@ import java.util.Set;
 
 public interface WallConfigMBean {
 
-    boolean isInited();
+    boolean isInitialized();
 
     String getDir();
 
@@ -37,9 +37,9 @@ public interface WallConfigMBean {
 
     void setTruncateAllow(boolean truncateAllow);
 
-    boolean isSelelctAllow();
+    boolean isSelectAllow();
 
-    void setSelelctAllow(boolean selelctAllow);
+    void setSelectAllow(boolean selelctAllow);
 
     boolean isSelectIntoAllow();
 
@@ -53,29 +53,29 @@ public interface WallConfigMBean {
 
     void setSelectUnionCheck(boolean selectUnionCheck);
 
-    boolean isSelectWhereAlwayTrueCheck();
+    boolean isSelectWhereAlwaysTrueCheck();
 
-    void setSelectWhereAlwayTrueCheck(boolean selectWhereAlwayTrueCheck);
+    void setSelectWhereAlwaysTrueCheck(boolean selectWhereAlwayTrueCheck);
 
-    boolean isSelectHavingAlwayTrueCheck();
+    boolean isSelectHavingAlwaysTrueCheck();
 
-    void setSelectHavingAlwayTrueCheck(boolean selectHavingAlwayTrueCheck);
+    void setSelectHavingAlwaysTrueCheck(boolean selectHavingAlwayTrueCheck);
 
     boolean isDeleteAllow();
 
     void setDeleteAllow(boolean deleteAllow);
 
-    boolean isDeleteWhereAlwayTrueCheck();
+    boolean isDeleteWhereAlwaysTrueCheck();
 
-    void setDeleteWhereAlwayTrueCheck(boolean deleteWhereAlwayTrueCheck);
+    void setDeleteWhereAlwaysTrueCheck(boolean deleteWhereAlwayTrueCheck);
 
     boolean isUpdateAllow();
 
     void setUpdateAllow(boolean updateAllow);
 
-    boolean isUpdateWhereAlayTrueCheck();
+    boolean isUpdateWhereAlwaysTrueCheck();
 
-    void setUpdateWhereAlayTrueCheck(boolean updateWhereAlayTrueCheck);
+    void setUpdateWhereAlwaysTrueCheck(boolean updateWhereAlayTrueCheck);
 
     boolean isInsertAllow();
 

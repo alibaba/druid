@@ -197,7 +197,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelelctAllow()) {
+        if (!config.isSelectAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
                                                                    this.toSQL(x)));
             return false;
