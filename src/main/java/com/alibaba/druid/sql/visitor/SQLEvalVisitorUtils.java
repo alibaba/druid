@@ -209,7 +209,7 @@ public class SQLEvalVisitorUtils {
         functions.put("trim", Trim.instance);
         functions.put("ucase", Ucase.instance);
         functions.put("upper", Ucase.instance);
-        functions.put("ucase", Lcase.instance);
+        functions.put("lcase", Lcase.instance);
         functions.put("lower", Lcase.instance);
         functions.put("hex", Hex.instance);
         functions.put("unhex", Unhex.instance);
