@@ -1725,7 +1725,12 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Integer || b instanceof Integer) {
-            return castToInteger(a).equals(castToInteger(b));
+            Integer inta = castToInteger(a);
+            Integer intb = castToInteger(b);
+            if (inta == null || intb == null) {
+                return false;
+            }
+            return inta.equals(intb);
         }
 
         if (a instanceof Short || b instanceof Short) {
