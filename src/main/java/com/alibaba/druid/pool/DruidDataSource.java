@@ -2406,4 +2406,46 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void setLogDiffrentThread(boolean logDiffrentThread) {
         this.logDiffrentThread = logDiffrentThread;
     }
+
+    public DruidPooledConnection tryGetConnection() throws SQLException {
+        if (poolingCount == 0) {
+            return null;
+        }
+        return getConnection();
+    }
+
+    public void fillConnection() throws SQLException {
+        if (closed) {
+            throw new DataSourceClosedException("dataSource already closed at " + new Date(closeTimeMillis));
+        }
+
+        if (!enable) {
+            throw new DataSourceDisableException();
+        }
+
+        if (this.poolingCount + this.activeCount >= this.maxActive) {
+            return;
+        }
+        
+        int fillConnetionCount = 0;
+        try {
+            for (; this.poolingCount + this.activeCount < this.maxActive; fillConnetionCount++) {
+                Connection conn = createPhysicalConnection();
+                DruidConnectionHolder holder = new DruidConnectionHolder(this, conn);
+                connections[poolingCount++] = holder;
+                if (poolingCount > poolingPeak) {
+                    poolingPeak = poolingCount;
+                    poolingPeakTime = System.currentTimeMillis();
+                }
+            }
+        } catch (SQLException ex) {
+            LOG.error("fill connection error", ex);
+        }
+        
+        if (LOG.isInfoEnabled()) {
+            LOG.info("fill " + fillConnetionCount + " connections");
+        }
+    }
+    
+    
 }
