@@ -2402,4 +2402,94 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void setLogDiffrentThread(boolean logDiffrentThread) {
         this.logDiffrentThread = logDiffrentThread;
     }
+    
+    public DruidPooledConnection tryGetConnection() throws SQLException {
+        if (poolingCount == 0) {
+            return null;
+        }
+        return getConnection();
+    }
+
+    @Override
+    public int fill() throws SQLException {
+        return this.fill(this.maxActive);
+    }
+
+    @Override
+    public int fill(int toCount) throws SQLException {
+        if (closed) {
+            throw new DataSourceClosedException("dataSource already closed at " + new Date(closeTimeMillis));
+        }
+
+        if (toCount < 0) {
+            throw new IllegalArgumentException("toCount can't not be less than zero");
+        }
+
+        init();
+
+        if (toCount > this.maxActive) {
+            toCount = this.maxActive;
+        }
+
+        int fillCount = 0;
+        for (;;) {
+            try {
+                lock.lockInterruptibly();
+            } catch (InterruptedException e) {
+                connectErrorCount.incrementAndGet();
+                throw new SQLException("interrupt", e);
+            }
+
+            boolean fillable = this.isFillable(toCount);
+
+            lock.unlock();
+
+            if (!fillable) {
+                break;
+            }
+
+            DruidConnectionHolder holder;
+            try {
+                Connection conn = createPhysicalConnection();
+                holder = new DruidConnectionHolder(this, conn);
+            } catch (SQLException e) {
+                LOG.error("fill connection error", e);
+                connectErrorCount.incrementAndGet();
+                throw e;
+            }
+
+            try {
+                lock.lockInterruptibly();
+            } catch (InterruptedException e) {
+                connectErrorCount.incrementAndGet();
+                throw new SQLException("interrupt", e);
+            }
+
+            try {
+                if (!this.isFillable(toCount)) {
+                    JdbcUtils.close(holder.getConnection());
+                    break;
+                }
+                this.putLast(holder, System.currentTimeMillis());
+                fillCount++;
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info("fill " + fillCount + " connections");
+        }
+
+        return fillCount;
+    }
+
+    private boolean isFillable(int toCount) {
+        int currentCount = this.poolingCount + this.activeCount;
+        if (currentCount >= toCount || currentCount >= this.maxActive) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
