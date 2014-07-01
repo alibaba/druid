@@ -59,4 +59,10 @@ public interface JdbcConstants {
      * 阿里云odps
      */
     public static final String ODPS              = "odps";
+
+    /**
+     * Log4JDBC
+     */
+    public static final String LOG4JDBC          = "log4jdbc";
+    public static final String LOG4JDBC_DRIVER   = "net.sf.log4jdbc.DriverSpy";
 }
