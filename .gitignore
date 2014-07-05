@@ -12,4 +12,3 @@ out/
 *.iws
 *.iml
 /bin
-/target

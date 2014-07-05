@@ -8,23 +8,23 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 
-public class PropertyTest_useGloalDataSourceStat extends TestCase {
+public class PropertyTest_useGlobalDataSourceStat extends TestCase {
     private DruidDataSource dataSource;
 
     public void test_true() {
-        System.setProperty("druid.useGloalDataSourceStat", "true");
+        System.setProperty("druid.useGlobalDataSourceStat", "true");
         dataSource = new DruidDataSource();
-        Assert.assertTrue(dataSource.isUseGloalDataSourceStat());
+        Assert.assertTrue(dataSource.isUseGlobalDataSourceStat());
     }
     
     public void test_false() {
-        System.setProperty("druid.useGloalDataSourceStat", "false");
+        System.setProperty("druid.useGlobalDataSourceStat", "false");
         dataSource = new DruidDataSource();
-        Assert.assertFalse(dataSource.isUseGloalDataSourceStat());
+        Assert.assertFalse(dataSource.isUseGlobalDataSourceStat());
     }
     
     protected void tearDown() throws Exception {
-        System.clearProperty("druid.useGloalDataSourceStat");
+        System.clearProperty("druid.useGlobalDataSourceStat");
         JdbcUtils.close(dataSource);
     }
 }

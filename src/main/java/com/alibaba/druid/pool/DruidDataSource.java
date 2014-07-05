@@ -15,41 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import static com.alibaba.druid.util.Utils.getBoolean;
-
-import java.io.Closeable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ServiceLoader;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.management.JMException;
-import javax.management.ObjectName;
-import javax.naming.NamingException;
-import javax.naming.Reference;
-import javax.naming.Referenceable;
-import javax.naming.StringRefAddr;
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.PooledConnection;
-
 import com.alibaba.druid.Constants;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
@@ -90,6 +55,40 @@ import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.WallFilter;
 import com.alibaba.druid.wall.WallProviderStatValue;
 
+import javax.management.JMException;
+import javax.management.ObjectName;
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import javax.naming.Referenceable;
+import javax.naming.StringRefAddr;
+import javax.sql.ConnectionEvent;
+import javax.sql.ConnectionEventListener;
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.PooledConnection;
+import java.io.Closeable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static com.alibaba.druid.util.Utils.getBoolean;
+
 /**
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
@@ -126,7 +125,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     // threads
     private CreateConnectionThread           createConnectionThread;
-    private DestroyConnectionThread          destoryConnectionThread;
+    private DestroyConnectionThread          destroyConnectionThread;
     private LogStatsThread                   logStatsThread;
 
     private final CountDownLatch             initedLatch             = new CountDownLatch(2);
@@ -143,13 +142,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     protected JdbcDataSourceStat             dataSourceStat;
 
-    private boolean                          useGloalDataSourceStat  = false;
+    private boolean                          useGlobalDataSourceStat = false;
 
     private boolean                          mbeanRegistered         = false;
 
     public static ThreadLocal<Long>          waitNanosLocal          = new ThreadLocal<Long>();
 
-    private boolean                          logDiffrentThread       = true;
+    private boolean                          logDifferentThread      = true;
 
     public DruidDataSource(){
         this(false);
@@ -181,9 +180,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
-            Boolean value = getBoolean(properties, "druid.useGloalDataSourceStat");
+            Boolean value = getBoolean(properties, "druid.useGlobalDataSourceStat");
             if (value != null) {
-                this.setUseGloalDataSourceStat(value);
+                this.setUseGlobalDataSourceStat(value);
             }
         }
         {
@@ -235,12 +234,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    public boolean isUseGloalDataSourceStat() {
-        return useGloalDataSourceStat;
+    public boolean isUseGlobalDataSourceStat() {
+        return useGlobalDataSourceStat;
     }
 
-    public void setUseGloalDataSourceStat(boolean useGloalDataSourceStat) {
-        this.useGloalDataSourceStat = useGloalDataSourceStat;
+    public void setUseGlobalDataSourceStat(boolean useGlobalDataSourceStat) {
+        this.useGlobalDataSourceStat = useGlobalDataSourceStat;
     }
 
     public String getInitStackTrace() {
@@ -544,8 +543,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                                    + maxActive);
             }
 
-            if (timeBetweenLogStatsMillis > 0 && useGloalDataSourceStat) {
-                throw new IllegalArgumentException("timeBetweenLogStatsMillis not support useGloalDataSourceStat=true");
+            if (timeBetweenLogStatsMillis > 0 && useGlobalDataSourceStat) {
+                throw new IllegalArgumentException("timeBetweenLogStatsMillis not support useGlobalDataSourceStat=true");
             }
 
             if (this.driverClass != null) {
@@ -576,7 +575,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initValidConnectionChecker();
             validationQueryCheck();
 
-            if (isUseGloalDataSourceStat()) {
+            if (isUseGlobalDataSourceStat()) {
                 dataSourceStat = JdbcDataSourceStat.getGlobal();
                 if (dataSourceStat == null) {
                     dataSourceStat = new JdbcDataSourceStat("Global", "Global", this.dbType);
@@ -651,9 +650,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     private void createAndStartDestroyThread() {
-        String threadName = "Druid-ConnectionPool-Destory-" + System.identityHashCode(this);
-        destoryConnectionThread = new DestroyConnectionThread(threadName);
-        destoryConnectionThread.start();
+        String threadName = "Druid-ConnectionPool-Destroy-" + System.identityHashCode(this);
+        destroyConnectionThread = new DestroyConnectionThread(threadName);
+        destroyConnectionThread.start();
     }
 
     protected void createAndStartCreatorThread() {
@@ -1126,7 +1125,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
-        if (logDiffrentThread && pooledConnection.getOwnerThread() != Thread.currentThread()) {
+        if (logDifferentThread && pooledConnection.getOwnerThread() != Thread.currentThread()) {
             LOG.warn("get/close not same thread");
         }
 
@@ -1244,8 +1243,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 createConnectionThread.interrupt();
             }
 
-            if (destoryConnectionThread != null) {
-                destoryConnectionThread.interrupt();
+            if (destroyConnectionThread != null) {
+                destroyConnectionThread.interrupt();
             }
 
             for (int i = 0; i < poolingCount; ++i) {
@@ -1276,7 +1275,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.closeTimeMillis = System.currentTimeMillis();
 
             for (Filter filter : filters) {
-                filter.destory();
+                filter.destroy();
             }
         } finally {
             lock.unlock();
@@ -2395,12 +2394,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return super.unwrap(iface);
     }
 
-    public boolean isLogDiffrentThread() {
-        return logDiffrentThread;
+    public boolean isLogDifferentThread() {
+        return logDifferentThread;
     }
 
-    public void setLogDiffrentThread(boolean logDiffrentThread) {
-        this.logDiffrentThread = logDiffrentThread;
+    public void setLogDifferentThread(boolean logDifferentThread) {
+        this.logDifferentThread = logDifferentThread;
     }
     
     public DruidPooledConnection tryGetConnection() throws SQLException {
