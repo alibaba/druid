@@ -186,6 +186,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
         {
+            Boolean value = getBoolean(properties, "druid.useGloalDataSourceStat"); // compatible for early versions
+            if (value != null) {
+                this.setUseGlobalDataSourceStat(value);
+            }
+        }
+        {
             String property = properties.getProperty("druid.filters");
 
             if (property != null && property.length() > 0) {
