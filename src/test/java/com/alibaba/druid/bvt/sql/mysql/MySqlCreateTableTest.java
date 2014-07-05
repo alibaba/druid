@@ -86,4 +86,24 @@ public class MySqlCreateTableTest extends MysqlTest {
         Assert.assertEquals(7, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
     }
+    
+    
+    public void test_2() throws Exception {
+        String sql = "create table t2 as select * from t1";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
+        print(statementList);
+
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+    }
 }

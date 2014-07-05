@@ -483,6 +483,11 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
             return userName;
         }
+        
+        if(lexer.token() == Token.ERROR) {
+            throw new ParserException("syntax error, token: " + lexer.token() + " " + lexer.stringVal() + ", pos : "
+                                      + lexer.pos());
+        }
 
         return super.primaryRest(expr);
     }

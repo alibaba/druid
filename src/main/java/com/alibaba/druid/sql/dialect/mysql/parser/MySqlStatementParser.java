@@ -1957,6 +1957,10 @@ public class MySqlStatementParser extends SQLStatementParser {
                         break;
                     } else {
                         expr = this.exprParser.primaryRest(expr);
+                        if(lexer.token() != Token.COMMA && lexer.token() != Token.RPAREN) {
+                            expr = this.exprParser.exprRest(expr);
+                        }
+                        
                         valueExprList.add(expr);
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();

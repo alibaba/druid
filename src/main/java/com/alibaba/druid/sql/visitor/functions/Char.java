@@ -42,8 +42,11 @@ public class Char implements Function {
                 int charCode = ((Number) paramValue).intValue();
                 buf.append((char) charCode);
             } else if (paramValue instanceof String) {
-                int charCode = new BigDecimal((String)paramValue).intValue();
-                buf.append((char) charCode);
+                try {
+                    int charCode = new BigDecimal((String) paramValue).intValue();
+                    buf.append((char) charCode);
+                } catch (NumberFormatException e) {
+                }
             } else {
                 return SQLEvalVisitor.EVAL_ERROR;
             }
