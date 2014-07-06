@@ -238,6 +238,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.setResetStatEnable(value);
             }
         }
+        {
+            String property = properties.getProperty("druid.notFullTimeoutRetryCount");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setNotFullTimeoutRetryCount(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.notFullTimeoutRetryCount'", e);
+                }
+            }
+        }
     }
 
     public boolean isUseGlobalDataSourceStat() {
@@ -897,8 +908,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public DruidPooledConnection getConnectionDirect(long maxWaitMillis) throws SQLException {
+        int notFullTimeoutRetryCnt = 0;
         for (;;) {
-            DruidPooledConnection poolableConnection = getConnectionInternal(maxWaitMillis);
+            // handle notFullTimeoutRetry
+            DruidPooledConnection poolableConnection;
+            try {
+                poolableConnection = getConnectionInternal(maxWaitMillis);
+            } catch (GetConnectionTimeoutException ex) {
+                if (notFullTimeoutRetryCnt <= this.notFullTimeoutRetryCount && !isFull()) {
+                    notFullTimeoutRetryCnt++;
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn("not full timeout retry : " + notFullTimeoutRetryCnt);
+                    }
+                    continue;
+                }
+                throw ex;
+            }
 
             if (isTestOnBorrow()) {
                 boolean validate = testConnectionInternal(poolableConnection.getConnection());
@@ -2495,6 +2520,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return false;
         } else {
             return true;
+        }
+    }
+    
+    public boolean isFull() {
+        lock.lock();
+        try {
+            return this.poolingCount + this.activeCount >= this.maxActive;
+        } finally {
+            lock.unlock();
         }
     }
 }

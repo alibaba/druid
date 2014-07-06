@@ -118,6 +118,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                             minIdle                                   = DEFAULT_MIN_IDLE;
     protected volatile int                             maxIdle                                   = DEFAULT_MAX_IDLE;
     protected volatile long                            maxWait                                   = DEFAULT_MAX_WAIT;
+    protected int                                      notFullTimeoutRetryCount                  = 0;
 
     protected volatile String                          validationQuery                           = DEFAULT_VALIDATION_QUERY;
     protected volatile int                             validationQueryTimeout                    = -1;
@@ -891,6 +892,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         this.maxWait = maxWaitMillis;
+    }
+    
+    public int getNotFullTimeoutRetryCount() {
+        return notFullTimeoutRetryCount;
+    }
+
+    
+    public void setNotFullTimeoutRetryCount(int notFullTimeoutRetryCount) {
+        this.notFullTimeoutRetryCount = notFullTimeoutRetryCount;
     }
 
     public int getMinIdle() {
