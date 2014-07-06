@@ -433,6 +433,8 @@ public final class JdbcUtils implements JdbcConstants {
             return ALI_ORACLE;
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return SQL_SERVER;
+        } else if (rawUrl.startsWith("jdbc:sqlserver:")) {
+            return SQL_SERVER;
         } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {
             return SYBASE;
         } else if (rawUrl.startsWith("jdbc:jtds:")) {
