@@ -641,7 +641,9 @@ public abstract class WallProvider {
                 violations.add(new SyntaxErrorViolation(e, sql));
             }
         } catch (Exception e) {
-            violations.add(new SyntaxErrorViolation(e, sql));
+            if (config.isStrictSyntaxCheck()) {
+                violations.add(new SyntaxErrorViolation(e, sql));
+            }
         }
 
         if (statementList.size() > 1 && !config.isMultiStatementAllow()) {
@@ -664,15 +666,15 @@ public abstract class WallProvider {
             violations.addAll(visitor.getViolations());
         }
 
-        if (visitor.getViolations().size() == 0 && context != null && context.getWarnnings() >= 2) {
-            if (context.getCommentCount() > 0) {
-                violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "comment not allow", sql));
-            } else if (context.getLikeNumberWarnnings() > 0) {
-                violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "like number", sql));
-            } else {
-                violations.add(new IllegalSQLObjectViolation(ErrorCode.COMPOUND, "multi-warnnings", sql));
-            }
-        }
+        // if (visitor.getViolations().size() == 0 && context != null && context.getWarnnings() >= 2) {
+        // if (context.getCommentCount() > 0) {
+        // violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "comment not allow", sql));
+        // } else if (context.getLikeNumberWarnnings() > 0) {
+        // violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "like number", sql));
+        // } else {
+        // violations.add(new IllegalSQLObjectViolation(ErrorCode.COMPOUND, "multi-warnnings", sql));
+        // }
+        // }
 
         WallSqlStat sqlStat = null;
         if (violations.size() > 0) {
