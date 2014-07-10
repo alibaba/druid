@@ -609,17 +609,24 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             MySqlKey key = new MySqlKey();
             key.setHasConstaint(hasConstaint);
 
-            if (identifierEquals("USING")) {
-                lexer.nextToken();
-                key.setIndexType(lexer.stringVal());
-                lexer.nextToken();
-            }
+//            if (identifierEquals("USING")) {
+//                lexer.nextToken();
+//                key.setIndexType(lexer.stringVal());
+//                lexer.nextToken();
+//            }
 
             if (lexer.token() == Token.IDENTIFIER) {
                 SQLName indexName = this.exprParser.name();
                 if (indexName != null) {
                     key.setIndexName(indexName);
                 }
+            }
+            
+            //5.5语法 USING BTREE 放在index 名字后
+            if (identifierEquals("USING")) {
+                lexer.nextToken();
+                key.setIndexType(lexer.stringVal());
+                lexer.nextToken();
             }
 
             accept(Token.LPAREN);

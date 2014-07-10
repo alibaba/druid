@@ -181,13 +181,39 @@ public class SQLParser {
         return alias;
     }
 
+    protected void printError(Token token){
+        String arround;
+        if (lexer.mark >= 0 && (lexer.text.length() > lexer.mark + 30)) {
+            if (lexer.mark - 5 > 0) {
+                arround = lexer.text.substring(lexer.mark - 5, lexer.mark + 30);
+            } else {
+                arround = lexer.text.substring(lexer.mark, lexer.mark + 30);
+            }
+
+        } else if (lexer.mark >= 0) {
+            if (lexer.mark - 5 > 0) {
+                arround = lexer.text.substring(lexer.mark - 5);
+            } else {
+                arround = lexer.text.substring(lexer.mark);
+            }
+        } else {
+            arround = lexer.text;
+        }
+        
+        // throw new
+        // ParserException("syntax error, error arround:'"+arround+"',expect "
+        // + token + ", actual " + lexer.token() + " "
+        // + lexer.stringVal() + ", pos " + this.lexer.pos());
+        throw new ParserException("syntax error, error in :'" + arround + "',expect " + token + ", actual "
+                                  + lexer.token() + " " + lexer.stringVal());
+    }
+    
     public void accept(Token token) {
         if (lexer.token() == token) {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token() + " "
-                                        + lexer.stringVal() + ", pos " + this.lexer.pos());
+            printError(token);
         }
     }
 

@@ -297,8 +297,10 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            throw new ParserException("syntax error, " + lexer.token() + " " + lexer.stringVal() + ", pos "
-                                      + lexer.pos());
+            // throw new ParserException("syntax error, " + lexer.token() + " "
+            // + lexer.stringVal() + ", pos "
+            // + lexer.pos());
+            printError(lexer.token());
         }
     }
 
