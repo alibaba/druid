@@ -697,6 +697,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLSelectItem x) {
+        if(x.isConnectByRoot()) {
+            print("CONNECT_BY_ROOT ");
+        }
         x.getExpr().accept(this);
 
         if ((x.getAlias() != null) && (x.getAlias().length() > 0)) {

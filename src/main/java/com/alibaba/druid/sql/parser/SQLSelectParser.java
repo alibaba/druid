@@ -284,7 +284,12 @@ public class SQLSelectParser extends SQLParser {
 
     protected SQLSelectItem parseSelectItem() {
         SQLExpr expr;
+        boolean connectByRoot = false;
         if (lexer.token() == Token.IDENTIFIER) {
+            if (identifierEquals("CONNECT_BY_ROOT")) {
+                connectByRoot = true;
+                lexer.nextToken();
+            }
             expr = new SQLIdentifierExpr(lexer.stringVal());
             lexer.nextTokenComma();
 
@@ -297,7 +302,7 @@ public class SQLSelectParser extends SQLParser {
         }
         final String alias = as();
 
-        return new SQLSelectItem(expr, alias);
+        return new SQLSelectItem(expr, alias, connectByRoot);
     }
 
     public void parseFrom(SQLSelectQueryBlock queryBlock) {
