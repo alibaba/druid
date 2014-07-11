@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
@@ -88,6 +89,14 @@ public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor 
             return super.visit(x);
         }
 
+        return ParameterizedOutputVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(SQLVariantRefExpr x) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x) || x.getName().equalsIgnoreCase("?")) {
+            return super.visit(x);
+        }
+        
         return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 

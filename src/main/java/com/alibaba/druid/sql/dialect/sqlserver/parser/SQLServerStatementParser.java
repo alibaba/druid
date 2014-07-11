@@ -109,7 +109,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
-            this.exprParser.exprList(insertStatement.getColumns());
+            this.exprParser.exprList(insertStatement.getColumns(), insertStatement);
             accept(Token.RPAREN);
         }
 

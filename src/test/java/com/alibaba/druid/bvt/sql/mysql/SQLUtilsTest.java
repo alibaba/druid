@@ -18,4 +18,15 @@ public class SQLUtilsTest extends TestCase {
                             "\nFROM t" + //
                             "\nWHERE id = 'abc'", formattedSql);
     }
+    
+    public void test_format_1() throws Exception {
+        String sql = "select * from t where tname LIKE \"%\"'温'\"%\"";
+        String formattedSql = SQLUtils.formatMySql(sql);
+        Assert.assertEquals("SELECT *\nFROM t\nWHERE tname LIKE CONCAT('%', '温', '%')", formattedSql);
+    }
+    
+    public void test_format_2() throws Exception {
+        String sql = "begin\n" + " if (a=10) then\n" + " null;\n" + " else\n" + " null;\n" + " end if;\n" + "end;";
+        System.out.println(SQLUtils.formatOracle(sql));
+    }
 }

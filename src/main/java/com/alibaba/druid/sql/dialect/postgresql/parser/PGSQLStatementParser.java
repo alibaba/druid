@@ -100,7 +100,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
-            this.exprParser.exprList(stmt.getColumns());
+            this.exprParser.exprList(stmt.getColumns(), stmt);
             accept(Token.RPAREN);
         }
 
@@ -110,7 +110,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             for (;;) {
                 accept(Token.LPAREN);
                 SQLInsertStatement.ValuesClause valuesCaluse = new SQLInsertStatement.ValuesClause();
-                this.exprParser.exprList(valuesCaluse.getValues());
+                this.exprParser.exprList(valuesCaluse.getValues(), valuesCaluse);
                 stmt.addValueCause(valuesCaluse);
 
                 accept(Token.RPAREN);

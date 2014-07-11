@@ -493,7 +493,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                                 MySqlPartitioningDef.InValues values = new MySqlPartitioningDef.InValues();
 
                                 accept(Token.LPAREN);
-                                this.exprParser.exprList(values.getItems());
+                                this.exprParser.exprList(values.getItems(), values);
                                 accept(Token.RPAREN);
                                 partitionDef.setValues(values);
                             } else {
@@ -503,7 +503,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                                 MySqlPartitioningDef.LessThanValues values = new MySqlPartitioningDef.LessThanValues();
 
                                 accept(Token.LPAREN);
-                                this.exprParser.exprList(values.getItems());
+                                this.exprParser.exprList(values.getItems(), values);
                                 accept(Token.RPAREN);
                                 partitionDef.setValues(values);
                             }
@@ -549,6 +549,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.token() == (Token.ON)) {
             throw new ParserException("TODO");
+        }
+        
+        if (lexer.token() == (Token.AS)) {
+            lexer.nextToken();
         }
 
         if (lexer.token() == (Token.SELECT)) {

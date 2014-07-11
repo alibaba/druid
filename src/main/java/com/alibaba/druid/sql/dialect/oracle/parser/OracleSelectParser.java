@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -52,7 +53,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
@@ -96,7 +96,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (lexer.token() == Token.OF) {
                 lexer.nextToken();
-                this.exprParser.exprList(forUpdate.getOf());
+                this.exprParser.exprList(forUpdate.getOf(), forUpdate);
             }
 
             if (lexer.token() == Token.NOWAIT) {
@@ -207,7 +207,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 if (identifierEquals("CYCLE")) {
                     lexer.nextToken();
                     CycleClause cycleClause = new CycleClause();
-                    exprParser.exprList(cycleClause.getAliases());
+                    exprParser.exprList(cycleClause.getAliases(), cycleClause);
                     accept(Token.SET);
                     cycleClause.setMark(exprParser.expr());
                     accept(Token.TO);
@@ -510,7 +510,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
         cellAssignment.setMeasureColumn(expr());
         accept(Token.LBRACKET);
-        this.exprParser.exprList(cellAssignment.getConditions());
+        this.exprParser.exprList(cellAssignment.getConditions(), cellAssignment);
         accept(Token.RBRACKET);
 
         return cellAssignment;
@@ -524,10 +524,10 @@ public class OracleSelectParser extends SQLSelectParser {
             accept(Token.BY);
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
-                exprParser.exprList(queryPartitionClause.getExprList());
+                exprParser.exprList(queryPartitionClause.getExprList(), queryPartitionClause);
                 accept(Token.RPAREN);
             } else {
-                exprParser.exprList(queryPartitionClause.getExprList());
+                exprParser.exprList(queryPartitionClause.getExprList(), queryPartitionClause);
             }
             modelColumnClause.setQueryPartitionClause(queryPartitionClause);
         }
@@ -573,7 +573,7 @@ public class OracleSelectParser extends SQLSelectParser {
                     lexer.nextToken();
                     acceptIdentifier("SETS");
                     accept(Token.LPAREN);
-                    exprParser.exprList(groupingSet.getParameters());
+                    exprParser.exprList(groupingSet.getParameters(), groupingSet);
                     accept(Token.RPAREN);
                     groupBy.addItem(groupingSet);
                 } else {
@@ -610,7 +610,7 @@ public class OracleSelectParser extends SQLSelectParser {
                         lexer.nextToken();
                         acceptIdentifier("SETS");
                         accept(Token.LPAREN);
-                        exprParser.exprList(groupingSet.getParameters());
+                        exprParser.exprList(groupingSet.getParameters(), groupingSet);
                         accept(Token.RPAREN);
                         groupBy.addItem(groupingSet);
                     } else {
@@ -760,7 +760,7 @@ public class OracleSelectParser extends SQLSelectParser {
             }
 
             accept(Token.LPAREN);
-            this.exprParser.exprList(sample.getPercent());
+            this.exprParser.exprList(sample.getPercent(), sample);
             accept(Token.RPAREN);
 
             if (identifierEquals("SEED")) {
@@ -959,7 +959,7 @@ public class OracleSelectParser extends SQLSelectParser {
             } else if (lexer.token() == Token.USING) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
-                this.exprParser.exprList(join.getUsing());
+                this.exprParser.exprList(join.getUsing(), join);
                 accept(Token.RPAREN);
             }
 
@@ -984,7 +984,7 @@ public class OracleSelectParser extends SQLSelectParser {
             accept(Token.LPAREN);
             while (true) {
                 item = new OracleSelectPivot.Item();
-                item.setExpr((OracleAggregateExpr) this.exprParser.expr());
+                item.setExpr((SQLAggregateExpr) this.exprParser.expr());
                 item.setAlias(as());
                 pivot.getItems().add(item);
 
@@ -1060,7 +1060,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
-                this.exprParser.exprList(unPivot.getItems());
+                this.exprParser.exprList(unPivot.getItems(), unPivot);
                 accept(Token.RPAREN);
             } else {
                 unPivot.getItems().add(this.exprParser.expr());

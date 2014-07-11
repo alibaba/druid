@@ -27,6 +27,7 @@ import com.alibaba.druid.mock.MockResultSetMetaData;
 import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -142,8 +143,8 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
             } else if (expr instanceof SQLNCharExpr) {
                 row[i] = ((SQLNCharExpr) expr).getText();
                 column.setColumnType(Types.NVARCHAR);
-            } else if (expr instanceof MySqlBooleanExpr) {
-                row[i] = ((MySqlBooleanExpr) expr).getValue();
+            } else if (expr instanceof SQLBooleanExpr) {
+                row[i] = ((SQLBooleanExpr) expr).getValue();
                 column.setColumnType(Types.NVARCHAR);
             } else if (expr instanceof SQLNullExpr) {
                 row[i] = null;

@@ -1062,7 +1062,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
-            this.exprParser.exprList(insertStatement.getColumns());
+            this.exprParser.exprList(insertStatement.getColumns(), insertStatement);
             accept(Token.RPAREN);
         }
 
@@ -1070,7 +1070,7 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             accept(Token.LPAREN);
             SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-            this.exprParser.exprList(values.getValues());
+            this.exprParser.exprList(values.getValues(), values);
             insertStatement.setValues(values);
             accept(Token.RPAREN);
         } else if (acceptSubQuery && (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN)) {
@@ -1135,7 +1135,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
-            exprParser.exprList(stmt.getParameters());
+            exprParser.exprList(stmt.getParameters(), stmt);
             accept(Token.RPAREN);
         }
 
@@ -1392,7 +1392,7 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
                 SQLListExpr list = new SQLListExpr();
-                this.exprParser.exprList(list.getItems());
+                this.exprParser.exprList(list.getItems(), list);
                 accept(Token.RPAREN);
                 item.setColumn(list);
             } else {
@@ -1466,7 +1466,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
-            this.exprParser.exprList(createView.getColumns());
+            this.exprParser.exprList(createView.getColumns(), createView);
             accept(Token.RPAREN);
         }
 

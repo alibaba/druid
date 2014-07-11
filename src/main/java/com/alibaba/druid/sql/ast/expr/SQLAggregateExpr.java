@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -31,9 +32,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     protected Option              option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
     protected SQLOver             over;
+    protected SQLOrderBy          withinGroup;
+    protected boolean             ignoreNulls      = false;
 
     public SQLAggregateExpr(String methodName){
-
         this.methodName = methodName;
     }
 
@@ -48,6 +50,18 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+    }
+
+    public SQLOrderBy getWithinGroup() {
+        return withinGroup;
+    }
+
+    public void setWithinGroup(SQLOrderBy withinGroup) {
+        if (withinGroup != null) {
+            withinGroup.setParent(this);
+        }
+
+        this.withinGroup = withinGroup;
     }
 
     public Option getOption() {
@@ -69,6 +83,15 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     public void setOver(SQLOver over) {
         this.over = over;
     }
+    
+    public boolean isIgnoreNulls() {
+        return this.ignoreNulls;
+    }
+
+    public void setIgnoreNulls(boolean ignoreNulls) {
+        this.ignoreNulls = ignoreNulls;
+    }
+
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

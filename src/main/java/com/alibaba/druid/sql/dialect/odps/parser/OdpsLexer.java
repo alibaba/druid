@@ -92,6 +92,7 @@ public class OdpsLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
+                hasComment = true;
             }
 
             if (token != Token.HINT && !isAllowComment()) {
@@ -134,6 +135,7 @@ public class OdpsLexer extends Lexer {
 
             stringVal = subString(mark + 1, bufPos);
             token = Token.LINE_COMMENT;
+            hasComment = true;
             return;
         }
     }

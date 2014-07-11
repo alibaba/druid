@@ -1582,7 +1582,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
                 stmt.setQuery(queryExpr);
             } else {
-                this.exprParser.exprList(stmt.getColumns());
+                this.exprParser.exprList(stmt.getColumns(), stmt);
             }
             accept(Token.RPAREN);
         }
@@ -1807,7 +1807,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals("USING")) {
             lexer.nextToken();
-            exprParser.exprList(stmt.getParameters());
+            exprParser.exprList(stmt.getParameters(), stmt);
         }
 
         return stmt;
@@ -1861,7 +1861,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 select.setParent(insertStatement);
                 insertStatement.setQuery(select);
             } else {
-                this.exprParser.exprList(insertStatement.getColumns());
+                this.exprParser.exprList(insertStatement.getColumns(), insertStatement);
                 columnSize = insertStatement.getColumns().size();
             }
             accept(Token.RPAREN);
@@ -1912,7 +1912,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.KEY);
             accept(Token.UPDATE);
 
-            exprParser.exprList(insertStatement.getDuplicateKeyUpdate());
+            exprParser.exprList(insertStatement.getDuplicateKeyUpdate(), insertStatement);
         }
 
         return insertStatement;
@@ -1957,6 +1957,10 @@ public class MySqlStatementParser extends SQLStatementParser {
                         break;
                     } else {
                         expr = this.exprParser.primaryRest(expr);
+                        if(lexer.token() != Token.COMMA && lexer.token() != Token.RPAREN) {
+                            expr = this.exprParser.exprRest(expr);
+                        }
+                        
                         valueExprList.add(expr);
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();
@@ -2520,7 +2524,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
                 SQLListExpr list = new SQLListExpr();
-                this.exprParser.exprList(list.getItems());
+                this.exprParser.exprList(list.getItems(), list);
                 accept(Token.RPAREN);
                 item.setColumn(list);
             } else {

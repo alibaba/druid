@@ -72,7 +72,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
@@ -218,32 +217,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
     }
 
-    public boolean visit(OracleAggregateExpr expr) {
-        print(expr.getMethodName());
-        print("(");
-
-        if (expr.getOption() != null) {
-            print(expr.getOption().toString());
-            print(' ');
-        }
-
-        printAndAccept(expr.getArguments(), ", ");
-        print(")");
-
-        if (expr.getOver() != null) {
-            print(" OVER (");
-            expr.getOver().accept(this);
-            print(")");
-        }
-        return false;
-    }
-
     public boolean visit(SQLAllColumnExpr x) {
         print("*");
         return false;
     }
 
     public boolean visit(OracleAnalytic x) {
+        print("OVER (");
+        
         boolean space = false;
         if (x.getPartitionBy().size() > 0) {
             print("PARTITION BY ");
@@ -267,6 +248,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getWindowing().accept(this);
         }
 
+        print(")");
+        
         return false;
     }
 
@@ -808,13 +791,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         return false;
-    }
-
-    // ///////////////////
-
-    @Override
-    public void endVisit(OracleAggregateExpr astNode) {
-
     }
 
     @Override
@@ -2205,6 +2181,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             item.setParent(x);
             item.accept(this);
         }
+        print(";");
 
         decrementIndent();
         return false;
@@ -2226,6 +2203,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             item.setParent(x);
             item.accept(this);
         }
+        print(";");
 
         decrementIndent();
         return false;
@@ -2256,6 +2234,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 println();
             }
         }
+        print(";");
         decrementIndent();
 
         for (ElseIf elseIf : x.getElseIfList()) {

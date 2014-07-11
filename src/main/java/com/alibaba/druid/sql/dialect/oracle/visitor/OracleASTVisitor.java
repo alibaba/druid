@@ -36,7 +36,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
@@ -123,8 +122,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface OracleASTVisitor extends SQLASTVisitor {
 
-    void endVisit(OracleAggregateExpr astNode);
-
     void endVisit(OraclePLSQLCommitStatement astNode);
 
     void endVisit(OracleAnalytic x);
@@ -168,8 +165,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleTimestampExpr x);
 
     void endVisit(OracleUpdateStatement x);
-
-    boolean visit(OracleAggregateExpr astNode);
 
     boolean visit(OraclePLSQLCommitStatement astNode);
 

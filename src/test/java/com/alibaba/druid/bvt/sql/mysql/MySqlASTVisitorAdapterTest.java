@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -9,7 +10,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
@@ -101,7 +101,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
 
     public void test_adapter() throws Exception {
         MySqlASTVisitorAdapter adapter = new MySqlASTVisitorAdapter();
-        new MySqlBooleanExpr().accept(adapter);
+        new SQLBooleanExpr().accept(adapter);
         new Limit().accept(adapter);
         new MySqlTableIndex().accept(adapter);
         new MySqlKey().accept(adapter);

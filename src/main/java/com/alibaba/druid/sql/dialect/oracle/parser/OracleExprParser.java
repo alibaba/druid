@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -47,7 +48,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause.FlashCacheType;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
@@ -106,6 +106,7 @@ public class OracleExprParser extends SQLExprParser {
                                                           "LAG", // 
                                                           "LAST", // 
                                                           "LAST_VALUE", // 
+                                                          "LISTAGG",
                                                           "LEAD", // 
                                                           "MAX",  // 
                                                           "MIN", // 
@@ -744,23 +745,23 @@ public class OracleExprParser extends SQLExprParser {
         return null;
     }
 
-    protected OracleAggregateExpr parseAggregateExpr(String methodName) {
+    protected SQLAggregateExpr parseAggregateExpr(String methodName) {
         methodName = methodName.toUpperCase();
         
-        OracleAggregateExpr aggregateExpr;
+        SQLAggregateExpr aggregateExpr;
         if (lexer.token() == Token.UNIQUE) {
-            aggregateExpr = new OracleAggregateExpr(methodName, SQLAggregateExpr.Option.UNIQUE);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.UNIQUE);
             lexer.nextToken();
         } else if (lexer.token() == (Token.ALL)) {
-            aggregateExpr = new OracleAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
             lexer.nextToken();
         } else if (lexer.token() == (Token.DISTINCT)) {
-            aggregateExpr = new OracleAggregateExpr(methodName, SQLAggregateExpr.Option.DISTINCT);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.DISTINCT);
             lexer.nextToken();
         } else {
-            aggregateExpr = new OracleAggregateExpr(methodName);
+            aggregateExpr = new SQLAggregateExpr(methodName);
         }
-        exprList(aggregateExpr.getArguments());
+        exprList(aggregateExpr.getArguments(), aggregateExpr);
 
         if (lexer.stringVal().equalsIgnoreCase("IGNORE")) {
             lexer.nextToken();
@@ -769,6 +770,15 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         accept(Token.RPAREN);
+        
+        if (identifierEquals("WITHIN")) {
+            lexer.nextToken();
+            accept(Token.GROUP);
+            accept(Token.LPAREN);
+            SQLOrderBy withinGroup = this.parseOrderBy();
+            aggregateExpr.setWithinGroup(withinGroup);
+            accept(Token.RPAREN);
+        }
 
         if (lexer.token() == Token.OVER) {
             OracleAnalytic over = new OracleAnalytic();
@@ -782,10 +792,10 @@ public class OracleExprParser extends SQLExprParser {
 
                 if (lexer.token() == (Token.LPAREN)) {
                     lexer.nextToken();
-                    exprList(over.getPartitionBy());
+                    exprList(over.getPartitionBy(), over);
                     accept(Token.RPAREN);
                 } else {
-                    exprList(over.getPartitionBy());
+                    exprList(over.getPartitionBy(), over);
                 }
             }
 
@@ -1024,7 +1034,7 @@ public class OracleExprParser extends SQLExprParser {
 
         OraclePrimaryKey primaryKey = new OraclePrimaryKey();
         accept(Token.LPAREN);
-        exprList(primaryKey.getColumns());
+        exprList(primaryKey.getColumns(), primaryKey);
         accept(Token.RPAREN);
 
         

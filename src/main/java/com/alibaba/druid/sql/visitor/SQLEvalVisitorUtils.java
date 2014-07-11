@@ -15,23 +15,6 @@
  */
 package com.alibaba.druid.sql.visitor;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -94,6 +77,23 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class SQLEvalVisitorUtils {
 
@@ -209,7 +209,7 @@ public class SQLEvalVisitorUtils {
         functions.put("trim", Trim.instance);
         functions.put("ucase", Ucase.instance);
         functions.put("upper", Ucase.instance);
-        functions.put("ucase", Lcase.instance);
+        functions.put("lcase", Lcase.instance);
         functions.put("lower", Lcase.instance);
         functions.put("hex", Hex.instance);
         functions.put("unhex", Unhex.instance);
@@ -808,6 +808,11 @@ public class SQLEvalVisitorUtils {
             x.putAttribute(EVAL_VALUE, EVAL_ERROR);
             return false;
         }
+        
+        if (val == null) {
+            x.putAttribute(EVAL_VALUE, EVAL_VALUE_NULL);
+            return false;
+        }
 
         switch (x.getOperator()) {
             case BINARY:
@@ -1112,11 +1117,15 @@ public class SQLEvalVisitorUtils {
         if (val == null) {
             return null;
         }
+        
+        if (val == EVAL_VALUE_NULL) {
+            return null;
+        }
 
         if (val instanceof Boolean) {
             return (Boolean) val;
         }
-
+        
         if (val instanceof Number) {
             return ((Number) val).intValue() > 0;
         }
@@ -1230,6 +1239,14 @@ public class SQLEvalVisitorUtils {
                 return castToLong(list.get(0));
             }
         }
+        
+        if (val instanceof Boolean) {
+            if (((Boolean) val).booleanValue()) {
+                return 1l;
+            } else {
+                return 0l;
+            }
+        }
 
         return ((Number) val).longValue();
     }
@@ -1272,6 +1289,53 @@ public class SQLEvalVisitorUtils {
         }
 
         return BigInteger.valueOf(((Number) val).longValue());
+    }
+    
+    public static Number castToNumber(String val) {
+        if (val == null) {
+            return null;
+        }
+
+        try {
+            return Byte.parseByte(val);
+        } catch (NumberFormatException e) {
+        }
+
+        try {
+            return Short.parseShort(val);
+        } catch (NumberFormatException e) {
+        }
+
+        try {
+            return Integer.parseInt(val);
+        } catch (NumberFormatException e) {
+        }
+
+        try {
+            return Long.parseLong(val);
+        } catch (NumberFormatException e) {
+        }
+        
+        try {
+            return Float.parseFloat(val);
+        } catch (NumberFormatException e) {
+        }
+        
+        try {
+            return Double.parseDouble(val);
+        } catch (NumberFormatException e) {
+        }
+        
+        try {
+            return new BigInteger(val);
+        } catch (NumberFormatException e) {
+        }
+        
+        try {
+            return new BigDecimal(val);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     public static Date castToDate(Object val) {
@@ -1354,6 +1418,18 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return null;
         }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return null;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
+        }
 
         if (a instanceof Long || b instanceof Long) {
             return castToLong(a).longValue() & castToLong(b).longValue();
@@ -1366,6 +1442,18 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return null;
         }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return null;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
+        }
 
         if (a instanceof Long || b instanceof Long) {
             return castToLong(a).longValue() | castToLong(b).longValue();
@@ -1377,6 +1465,18 @@ public class SQLEvalVisitorUtils {
     public static Object div(Object a, Object b) {
         if (a == null || b == null) {
             return null;
+        }
+        
+        if(a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return null;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1415,7 +1515,18 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Long || b instanceof Long) {
-            return castToLong(a) / castToLong(b);
+            Long longA = castToLong(a);
+            Long longB = castToLong(b);
+            if (longB == 0) {
+                if (longA > 0) {
+                    return Double.POSITIVE_INFINITY;
+                } else if (longA < 0) {
+                    return Double.NEGATIVE_INFINITY;
+                } else {
+                    return Double.NaN;
+                }
+            }
+            return longA / longB;
         }
 
         if (a instanceof Integer || b instanceof Integer) {
@@ -1588,6 +1699,10 @@ public class SQLEvalVisitorUtils {
         if (a == null || b == null) {
             return false;
         }
+        
+        if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
+            return false;
+        }
 
         if (a.equals(b)) {
             return true;
@@ -1610,7 +1725,12 @@ public class SQLEvalVisitorUtils {
         }
 
         if (a instanceof Integer || b instanceof Integer) {
-            return castToInteger(a).equals(castToInteger(b));
+            Integer inta = castToInteger(a);
+            Integer intb = castToInteger(b);
+            if (inta == null || intb == null) {
+                return false;
+            }
+            return inta.equals(intb);
         }
 
         if (a instanceof Short || b instanceof Short) {
@@ -1655,6 +1775,14 @@ public class SQLEvalVisitorUtils {
         if (a == EVAL_VALUE_NULL || b == EVAL_VALUE_NULL) {
             return EVAL_VALUE_NULL;
         }
+        
+        if (a instanceof String && !(b instanceof String)) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String && !(a instanceof String)) {
+            b = castToNumber((String) b);
+        }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
             return castToDecimal(a).add(castToDecimal(b));
@@ -1695,7 +1823,7 @@ public class SQLEvalVisitorUtils {
             return castToByte(a) + castToByte(b);
         }
 
-        if (a instanceof String || b instanceof String) {
+        if (a instanceof String && b instanceof String) {
             return castToString(a) + castToString(b);
         }
 
@@ -1717,6 +1845,14 @@ public class SQLEvalVisitorUtils {
 
         if (a instanceof Date || b instanceof Date) {
             return SQLEvalVisitor.EVAL_ERROR;
+        }
+        
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
         }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
@@ -1758,10 +1894,6 @@ public class SQLEvalVisitorUtils {
             return castToByte(a) - castToByte(b);
         }
 
-        if (a instanceof String && b instanceof String) {
-            return castToLong(a) - castToLong(b);
-        }
-
         // return SQLEvalVisitor.EVAL_ERROR;
         throw new IllegalArgumentException(a.getClass() + " and " + b.getClass() + " not supported.");
     }
@@ -1771,12 +1903,28 @@ public class SQLEvalVisitorUtils {
             return null;
         }
 
+        if (a instanceof String) {
+            a = castToNumber((String) a);
+        }
+
+        if (b instanceof String) {
+            b = castToNumber((String) b);
+        }
+
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
             return castToDecimal(a).multiply(castToDecimal(b));
         }
 
         if (a instanceof BigInteger || b instanceof BigInteger) {
             return castToBigInteger(a).multiply(castToBigInteger(b));
+        }
+        
+        if (a instanceof Double || b instanceof Double) {
+            return castToDouble(a) * castToDouble(b);
+        }
+        
+        if (a instanceof Float || b instanceof Float) {
+            return castToFloat(a) * castToFloat(b);
         }
 
         if (a instanceof Long || b instanceof Long) {

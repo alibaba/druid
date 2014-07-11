@@ -41,6 +41,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -97,6 +98,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
+import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
@@ -134,6 +136,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
@@ -536,6 +539,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         visitAggreateRest(x);
 
         print(")");
+        
+        if (x.getWithinGroup() != null) {
+            print(" WITHIN GROUP (");
+            x.getWithinGroup().accept(this);
+            print(")");
+        }
 
         if (x.getOver() != null) {
             print(" ");
@@ -601,7 +610,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             decrementIndent();
         } else if (parent instanceof ValuesClause) {
             println();
+            print("(");
             x.getSubQuery().accept(this);
+            print(")");
             println();
         } else {
             print("(");
@@ -1411,6 +1422,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         x.getName().accept(this);
         return false;
     }
+    
+    @Override
+    public boolean visit(SQLCreateViewStatement x) {
+        print("CREATE ");
+        if(x.isOrReplace()) {
+            print("OR REPLACE ");
+        }
+        print("VIEW ");
+        x.getName().accept(this);
+        
+        if (x.getColumns().size() > 0) {
+            print(" (");
+            printAndAccept(x.getColumns(), ", ");
+            print(")");
+        }
+        
+        print(" AS ");
+        
+        x.getSubQuery().accept(this);
+        return false;
+    }
 
     @Override
     public boolean visit(SQLAlterTableDropIndex x) {
@@ -1933,6 +1965,32 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         decrementIndent();
         println();
         x.getBody().accept(this);
+        return false;
+    }
+    
+    public boolean visit(SQLBooleanExpr x) {
+        print(x.getValue() ? "true" : "false");
+
+        return false;
+    }
+
+    public void endVisit(SQLBooleanExpr x) {
+    }
+    
+    @Override
+    public boolean visit(SQLUnionQueryTableSource x) {
+        print("(");
+        incrementIndent();
+        x.getUnion().accept(this);
+        println();
+        decrementIndent();
+        print(")");
+
+        if (x.getAlias() != null) {
+            print(' ');
+            print(x.getAlias());
+        }
+
         return false;
     }
 }

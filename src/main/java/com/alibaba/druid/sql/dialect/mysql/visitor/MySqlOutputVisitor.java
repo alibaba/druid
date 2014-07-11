@@ -45,7 +45,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -156,22 +155,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         super(appender);
     }
 
-    public boolean visit(MySqlBooleanExpr x) {
-        print(x.getValue() ? "true" : "false");
-
-        return false;
-    }
-
-    public void endVisit(MySqlBooleanExpr x) {
-    }
-
     @Override
     public boolean visit(SQLSelectQueryBlock select) {
         if (select instanceof MySqlSelectQueryBlock) {
             return visit((MySqlSelectQueryBlock) select);
         }
 
-        return false;
+        return super.visit(select);
     }
 
     public boolean visit(MySqlSelectQueryBlock x) {
@@ -383,7 +373,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getCharSetName() != null) {
             print(" CHARACTER SET ");
             print(x.getCharSetName());
-
             if (x.getCollate() != null) {
                 print(" COLLATE ");
                 print(x.getCollate());
@@ -419,7 +408,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(x.getIndexType());
         }
 
-        print("(");
+        print(" (");
         for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
             if (i != 0) {
                 print(", ");

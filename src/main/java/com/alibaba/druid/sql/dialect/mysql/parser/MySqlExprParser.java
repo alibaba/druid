@@ -36,7 +36,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -138,12 +137,6 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         switch (tok) {
-            case TRUE:
-                lexer.nextToken();
-                return primaryRest(new MySqlBooleanExpr(true));
-            case FALSE:
-                lexer.nextToken();
-                return primaryRest(new MySqlBooleanExpr(false));
             case LITERAL_ALIAS:
                 String aliasValue = lexer.stringVal();
                 lexer.nextToken();
@@ -234,7 +227,7 @@ public class MySqlExprParser extends SQLExprParser {
                     String chars = lexer.stringVal();
                     concat.addParameter(new SQLCharExpr(chars));
                     lexer.nextToken();
-                } while (lexer.token() == Token.LITERAL_CHARS);
+                } while (lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS);
                 expr = concat;
             }
         } else if (lexer.token() == Token.IDENTIFIER) {
@@ -394,7 +387,7 @@ public class MySqlExprParser extends SQLExprParser {
                 if (lexer.token() == Token.RPAREN) {
                     lexer.nextToken();
                 } else {
-                    exprList(matchAgainstExpr.getColumns());
+                    exprList(matchAgainstExpr.getColumns(), matchAgainstExpr);
                     accept(Token.RPAREN);
                 }
 
@@ -489,6 +482,11 @@ public class MySqlExprParser extends SQLExprParser {
             }
             lexer.nextToken();
             return userName;
+        }
+        
+        if(lexer.token() == Token.ERROR) {
+            throw new ParserException("syntax error, token: " + lexer.token() + " " + lexer.stringVal() + ", pos : "
+                                      + lexer.pos());
         }
 
         return super.primaryRest(expr);

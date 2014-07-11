@@ -1,11 +1,9 @@
 package com.alibaba.druid;
 
-import java.beans.PropertyVetoException;
-import java.sql.SQLException;
-
-import org.junit.Assert;
-
+import com.alibaba.druid.pool.DruidDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,8 +15,8 @@ import org.nutz.dao.impl.NutDao;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import java.beans.PropertyVetoException;
+import java.sql.SQLException;
 
 /*
  * Copyright 1999-2011 Alibaba Group Holding Ltd.
@@ -79,7 +77,7 @@ public class TestRollBack {
 	}
 
 	@AfterClass
-	public static void destory() {
+	public static void destroy() {
 		c3p0.close();
 		druid.close();
 	}

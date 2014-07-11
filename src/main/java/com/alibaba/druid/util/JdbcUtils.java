@@ -351,6 +351,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
             return MYSQL_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
+            return LOG4JDBC_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return MARIADB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:oracle:") //
@@ -421,6 +423,8 @@ public final class JdbcUtils implements JdbcConstants {
             return DERBY;
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
             return MYSQL;
+        } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
+            return LOG4JDBC;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
             return MARIADB;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
@@ -428,6 +432,8 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
             return ALI_ORACLE;
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
+            return SQL_SERVER;
+        } else if (rawUrl.startsWith("jdbc:sqlserver:")) {
             return SQL_SERVER;
         } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {
             return SYBASE;

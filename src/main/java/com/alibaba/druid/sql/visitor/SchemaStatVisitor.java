@@ -980,6 +980,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLAggregateExpr x) {
         accept(x.getArguments());
+        accept(x.getWithinGroup());
+        accept(x.getOver());
         return false;
     }
 

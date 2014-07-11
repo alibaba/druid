@@ -28,26 +28,27 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 public class TenantSelectTest3 extends TestCase {
 
-    private String     sql             = "SELECT ID, NAME " + //
-                                         "FROM orders o inner join users u ON o.userid = u.id " + //
-                                         "WHERE FID = ? OR FID = ?";
-    private String     expect_sql      = "SELECT ID, NAME, u.tenant, o.tenant" + //
-                                         "\nFROM orders o" + //
-                                         "\n\tINNER JOIN users u ON o.userid = u.id" + //
-                                         "\nWHERE FID = ?" + //
-                                         "\n\tOR FID = ?";
-
-    private WallConfig config          = new WallConfig();
-    private WallConfig config_callback = new WallConfig();
+    private String sql        = "SELECT ID, NAME " + //
+                                "FROM orders o inner join users u ON o.userid = u.id " + //
+                                "WHERE FID = ? OR FID = ?";
+    private String expect_sql = "SELECT ID, NAME, u.tenant, o.tenant" + //
+                                "\nFROM orders o" + //
+                                "\n\tINNER JOIN users u ON o.userid = u.id" + //
+                                "\nWHERE FID = ?" + //
+                                "\n\tOR FID = ?";
 
     protected void setUp() throws Exception {
+
+    }
+
+    public void testMySql() throws Exception {
+        WallConfig config = new WallConfig();
+        WallConfig config_callback = new WallConfig();
         config.setTenantTablePattern("*");
         config.setTenantColumn("tenant");
 
         config_callback.setTenantCallBack(new TenantTestCallBack());
-    }
-
-    public void testMySql() throws Exception {
+        
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
         WallCheckResult checkResult = provider.check(sql);
@@ -58,6 +59,13 @@ public class TenantSelectTest3 extends TestCase {
     }
 
     public void testMySql2() throws Exception {
+        WallConfig config = new WallConfig();
+        WallConfig config_callback = new WallConfig();
+        config.setTenantTablePattern("*");
+        config.setTenantColumn("tenant");
+
+        config_callback.setTenantCallBack(new TenantTestCallBack());
+
         MySqlWallProvider provider = new MySqlWallProvider(config_callback);
         WallCheckResult checkResult = provider.check(sql);
         Assert.assertEquals(0, checkResult.getViolations().size());
