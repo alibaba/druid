@@ -373,11 +373,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getCharSetName() != null) {
             print(" CHARACTER SET ");
             print(x.getCharSetName());
-        }
-        if (x.getCollate() != null) {
+            if (x.getCollate() != null) {
+                print(" COLLATE ");
+                print(x.getCollate());
+            }
+        }else if (x.getCollate() != null) {
             print(" COLLATE ");
             print(x.getCollate());
         }
+        
         return false;
     }
 
@@ -404,7 +408,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(x.getIndexType());
         }
 
-        print("(");
+        print(" (");
         for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
             if (i != 0) {
                 print(", ");

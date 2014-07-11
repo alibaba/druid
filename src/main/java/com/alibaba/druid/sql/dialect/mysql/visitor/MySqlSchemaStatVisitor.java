@@ -237,7 +237,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public boolean visit(MySqlTableIndex x) {
 
-        return true;
+        return false;
     }
 
     @Override
