@@ -35,6 +35,6 @@ public class MySqlError_test_2 extends MysqlTest {
 
         Assert.assertNotNull(error);
 //        error.printStackTrace();
-        Assert.assertEquals("syntax error, IDENTIFIER free_postage, pos 31", error.getMessage());
+        Assert.assertEquals("syntax error, error in :'oods free_postage',expect IDENTIFIER, actual IDENTIFIER free_postage", error.getMessage());
     }
 }

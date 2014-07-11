@@ -78,7 +78,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
                                  + "`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码',"//
                                  + "`ebay_name` varchar(50)  NOT NULL COMMENT 'eBay唯一名',"//
                                  + "`create_time` datetime NOT NULL COMMENT '授权时间',"//
-                                 + "`invalid_time` datetime NOT NULL COMMENT '授权失效时间'," + "PRIMARY KEY USING BTREE (`auth_id`), INDEX `ind_usr_id` USING BTREE (`usr_id`)"//
+                                 + "`invalid_time` datetime NOT NULL COMMENT '授权失效时间'," + "PRIMARY KEY USING BTREE (`auth_id`), INDEX `ind_usr_id` USING BTREE(`usr_id`)"//
                                  + ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='INS_EBAY_AUTH';";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -108,7 +108,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
     +"\n\t`create_time` datetime NOT NULL COMMENT '授权时间', "// 
     +"\n\t`invalid_time` datetime NOT NULL COMMENT '授权失效时间', "// 
     +"\n\tPRIMARY KEY USING BTREE (`auth_id`), "
-    +"\n\tINDEX `ind_usr_id` USING BTREE (`usr_id`)"
+    +"\n\tINDEX `ind_usr_id` USING BTREE(`usr_id`)"
     +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT = 'INS_EBAY_AUTH'", output);
     }
     

@@ -408,7 +408,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(x.getIndexType());
         }
 
-        print(" (");
+        print("(");
         for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
             if (i != 0) {
                 print(", ");
