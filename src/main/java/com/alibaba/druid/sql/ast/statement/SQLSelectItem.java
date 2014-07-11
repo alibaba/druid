@@ -23,6 +23,7 @@ public class SQLSelectItem extends SQLObjectImpl {
 
     private SQLExpr expr;
     private String  alias;
+    private boolean connectByRoot = false;
 
     public SQLSelectItem(){
 
@@ -36,6 +37,16 @@ public class SQLSelectItem extends SQLObjectImpl {
         this.expr = expr;
         this.alias = alias;
 
+        if (expr != null) {
+            expr.setParent(this);
+        }
+    }
+    
+    public SQLSelectItem(SQLExpr expr, String alias, boolean connectByRoot){
+        this.connectByRoot = connectByRoot;
+        this.expr = expr;
+        this.alias = alias;
+        
         if (expr != null) {
             expr.setParent(this);
         }
@@ -61,6 +72,9 @@ public class SQLSelectItem extends SQLObjectImpl {
     }
 
     public void output(StringBuffer buf) {
+        if(this.connectByRoot) {
+            buf.append(" CONNECT_BY_ROOT ");
+        }
         this.expr.output(buf);
         if ((this.alias != null) && (this.alias.length() != 0)) {
             buf.append(" AS ");
@@ -97,6 +111,14 @@ public class SQLSelectItem extends SQLObjectImpl {
             if (other.expr != null) return false;
         } else if (!expr.equals(other.expr)) return false;
         return true;
+    }
+
+    public boolean isConnectByRoot() {
+        return connectByRoot;
+    }
+
+    public void setConnectByRoot(boolean connectByRoot) {
+        this.connectByRoot = connectByRoot;
     }
 
 }
