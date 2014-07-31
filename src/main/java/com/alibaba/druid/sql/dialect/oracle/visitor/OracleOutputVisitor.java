@@ -277,7 +277,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleDeleteStatement x) {
         if (x.getTableName() != null) {
             print("DELETE ");
-            printHints(x.getHints());
+            
+            if (x.getHints().size() > 0) {
+                printAndAccept(x.getHints(), ", ");
+                print(' ');
+            }
 
             print("FROM ");
             if (x.isOnly()) {
@@ -753,7 +757,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleUpdateStatement x) {
         print("UPDATE ");
-        printHints(x.getHints());
+        
+        if (x.getHints().size() > 0) {
+            printAndAccept(x.getHints(), ", ");
+            print(' ');
+        }
 
         if (x.isOnly()) {
             print("ONLY (");
@@ -1485,7 +1493,48 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleInsertStatement x) {
-        visit((SQLInsertStatement) x);
+        //visit((SQLInsertStatement) x);
+        
+        print("INSERT ");
+        
+        if (x.getHints().size() > 0) {
+            printAndAccept(x.getHints(), ", ");
+            print(' ');
+        }
+
+        print("INTO ");
+        
+        x.getTableSource().accept(this);
+
+        if (x.getColumns().size() > 0) {
+            incrementIndent();
+            println();
+            print("(");
+            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
+                    print(", ");
+                }
+                x.getColumns().get(i).accept(this);
+            }
+            print(")");
+            decrementIndent();
+        }
+
+        if (x.getValues() != null) {
+            println();
+            print("VALUES");
+            println();
+            x.getValues().accept(this);
+        } else {
+            if (x.getQuery() != null) {
+                println();
+                x.getQuery().setParent(x);
+                x.getQuery().accept(this);
+            }
+        }
 
         if (x.getReturning() != null) {
             println();
