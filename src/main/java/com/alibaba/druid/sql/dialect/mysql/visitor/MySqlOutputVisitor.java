@@ -343,9 +343,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(")");
         }
 
-        if (Boolean.TRUE == x.getAttribute("unsigned")) {
-            print(" unsigned");
+        if (Boolean.TRUE == x.getAttribute("UNSIGNED")) {
+            print(" UNSIGNED");
         }
+        
+        if (Boolean.TRUE == x.getAttribute("ZEROFILL")) {
+            print(" ZEROFILL");
+        }
+
 
         if (x instanceof SQLCharactorDataType) {
             SQLCharactorDataType charType = (SQLCharactorDataType) x;
