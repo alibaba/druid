@@ -504,6 +504,7 @@ public class DruidDataSourceStatValue {
 
     public long[] getTransactionHistogram() {
         return new long[] { txn_0_1,// txn_0_1
+                txn_1_10,
                 txn_10_100, //
                 txn_100_1000, //
                 txn_1000_10000, //
@@ -514,11 +515,12 @@ public class DruidDataSourceStatValue {
 
     public void setTransactionHistogram(long[] values) {
         txn_0_1 = values[0];
-        txn_10_100 = values[1];
-        txn_100_1000 = values[2];
-        txn_1000_10000 = values[3];
-        txn_10000_100000 = values[4];
-        txn_more = values[5];
+        txn_1_10 = values[1]
+        txn_10_100 = values[2];
+        txn_100_1000 = values[3];
+        txn_1000_10000 = values[4];
+        txn_10000_100000 = values[5];
+        txn_more = values[6];
     }
 
     public long[] getConnectionHoldTimeHistogram() {
