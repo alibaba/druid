@@ -578,7 +578,12 @@ public class MySqlExprParser extends SQLExprParser {
 
         if (identifierEquals("UNSIGNED")) {
             lexer.nextToken();
-            dataType.getAttributes().put("unsigned", true);
+            dataType.getAttributes().put("UNSIGNED", true);
+        }
+        
+        if (identifierEquals("ZEROFILL")) {
+            lexer.nextToken();
+            dataType.getAttributes().put("ZEROFILL", true);
         }
 
         return dataType;
