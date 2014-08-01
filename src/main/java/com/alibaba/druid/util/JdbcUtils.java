@@ -77,42 +77,47 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public final static void close(Connection x) {
-        if (x != null) {
-            try {
-                x.close();
-            } catch (Exception e) {
-                LOG.error("close connection error", e);
-            }
+        if (x == null) {
+            return;
+        }
+        try {
+            x.close();
+        } catch (Exception e) {
+            LOG.debug("close connection error", e);
         }
     }
 
     public final static void close(Statement x) {
-        if (x != null) {
-            try {
-                x.close();
-            } catch (Exception e) {
-                LOG.error("close statement error", e);
-            }
+        if (x == null) {
+            return;
+        }
+        try {
+            x.close();
+        } catch (Exception e) {
+            LOG.debug("close statement error", e);
         }
     }
 
     public final static void close(ResultSet x) {
-        if (x != null) {
-            try {
-                x.close();
-            } catch (Exception e) {
-                LOG.error("close resultset error", e);
-            }
+        if (x == null) {
+            return;
+        }
+        try {
+            x.close();
+        } catch (Exception e) {
+            LOG.debug("close resultset error", e);
         }
     }
 
     public final static void close(Closeable x) {
-        if (x != null) {
-            try {
-                x.close();
-            } catch (Exception e) {
-                LOG.error("close error", e);
-            }
+        if (x == null) {
+            return;
+        }
+
+        try {
+            x.close();
+        } catch (Exception e) {
+            LOG.debug("close error", e);
         }
     }
 
