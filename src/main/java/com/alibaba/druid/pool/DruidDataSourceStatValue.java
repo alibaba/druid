@@ -515,7 +515,7 @@ public class DruidDataSourceStatValue {
 
     public void setTransactionHistogram(long[] values) {
         txn_0_1 = values[0];
-        txn_1_10 = values[1]
+        txn_1_10 = values[1];
         txn_10_100 = values[2];
         txn_100_1000 = values[3];
         txn_1000_10000 = values[4];

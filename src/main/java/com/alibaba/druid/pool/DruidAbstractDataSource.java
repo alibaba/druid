@@ -200,7 +200,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong                         cachedPreparedStatementDeleteCount        = new AtomicLong();
     protected final AtomicLong                         cachedPreparedStatementMissCount          = new AtomicLong();
 
-    protected final Histogram                          transactionHistogram                      = new Histogram(
+    protected final Histogram                          transactionHistogram                      = new Histogram(1,
                                                                                                                  10,
                                                                                                                  100,
                                                                                                                  1000,
