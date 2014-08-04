@@ -2862,6 +2862,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print(" (");
         printAndAccept(x.getReferencedColumns(), ", ");
         print(")");
+        
+        if(x.getReferenceMatch() != null) {
+            print(" MATCH ");
+            print(x.getReferenceMatch().name());
+        }
+        
+        if(x.getReferenceOn()!= null) {
+            print(" ON ");
+            print(x.getReferenceOn().name());
+            print(" ");
+            if(x.getReferenceOption() != null) {
+                print(x.getReferenceOption().getText());
+            }
+        }
         return false;
     }
 
