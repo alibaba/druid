@@ -35,6 +35,9 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Match;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.On;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Option;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
@@ -249,7 +252,7 @@ public class MySqlExprParser extends SQLExprParser {
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();
                 }
-                
+
                 if (lexer.token() != Token.IDENTIFIER) {
                     throw new ParserException("syntax error");
                 }
@@ -484,7 +487,7 @@ public class MySqlExprParser extends SQLExprParser {
             return userName;
         }
         
-        if(lexer.token() == Token.ERROR) {
+        if (lexer.token() == Token.ERROR) {
             throw new ParserException("syntax error, token: " + lexer.token() + " " + lexer.stringVal() + ", pos : "
                                       + lexer.pos());
         }
@@ -580,7 +583,7 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
             dataType.getAttributes().put("UNSIGNED", true);
         }
-        
+
         if (identifierEquals("ZEROFILL")) {
             lexer.nextToken();
             dataType.getAttributes().put("ZEROFILL", true);
@@ -782,6 +785,47 @@ public class MySqlExprParser extends SQLExprParser {
         accept(Token.LPAREN);
         this.names(fk.getReferencedColumns());
         accept(Token.RPAREN);
+
+        if (identifierEquals("MATCH")) {
+            if (identifierEquals("FULL")) {
+                fk.setReferenceMatch(Match.FULL);
+            } else if (identifierEquals("PARTIAL")) {
+                fk.setReferenceMatch(Match.PARTIAL);
+            } else if (identifierEquals("SIMPLE")) {
+                fk.setReferenceMatch(Match.SIMPLE);
+            }
+        }
+
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            if (lexer.token() == Token.DELETE) {
+                fk.setReferenceOn(On.DELETE);
+            } else if (lexer.token() == Token.UPDATE) {
+                fk.setReferenceOn(On.UPDATE);
+            } else {
+                throw new ParserException("syntax error, expect DELETE or UPDATE, actual " + lexer.token() + " "
+                                          + lexer.stringVal());
+            }
+            lexer.nextToken();
+
+            if (lexer.token() == Token.RESTRICT) {
+                fk.setReferenceOption(Option.RESTRICT);
+            } else if (identifierEquals("CASCADE")) {
+                fk.setReferenceOption(Option.CASCADE);
+            } else if (lexer.token() == Token.SET) {
+                accept(Token.NULL);
+                fk.setReferenceOption(Option.SET_NULL);
+            } else if (identifierEquals("ON")) {
+                lexer.nextToken();
+                if (identifierEquals("ACTION")) {
+                    fk.setReferenceOption(Option.NO_ACTION);
+                } else {
+                    throw new ParserException("syntax error, expect ACTION, actual " + lexer.token() + " "
+                                              + lexer.stringVal());
+                }
+            }
+            lexer.nextToken();
+        }
         return fk;
     }
 
