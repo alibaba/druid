@@ -206,11 +206,6 @@ public class SQLUtils {
             statementList.get(i).accept(visitor);
         }
 
-//        for (SQLStatement stmt : statementList) {
-//            stmt.accept(visitor);
-//            out.append(";\n");
-//        }
-
         return out.toString();
     }
 
