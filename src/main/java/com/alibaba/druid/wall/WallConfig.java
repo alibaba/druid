@@ -40,6 +40,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             dropTableAllow              = true;
     private boolean             alterTableAllow             = true;
     private boolean             renameTableAllow            = true;
+    private boolean             hintAllow                   = true;
 
     private boolean             conditionAndAlwayTrueAllow  = false;
     private boolean             conditionAndAlwayFalseAllow = false;
@@ -711,6 +712,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setCallAllow(boolean callAllow) {
         this.callAllow = callAllow;
+    }
+    
+    public boolean isHintAllow() {
+        return hintAllow;
+    }
+
+    public void setHintAllow(boolean hintAllow) {
+        this.hintAllow = hintAllow;
     }
 
     public static abstract interface TenantCallBack {

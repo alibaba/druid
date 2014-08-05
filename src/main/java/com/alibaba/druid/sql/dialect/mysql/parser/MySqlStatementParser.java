@@ -24,10 +24,10 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
@@ -78,6 +78,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
@@ -661,6 +662,11 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
             acceptIdentifier(TABLES);
             statementList.add(new MySqlUnlockTablesStatement());
+            return true;
+        }
+        
+        if(lexer.token() == Token.HINT) {
+            statementList.add(this.parseHint());
             return true;
         }
 
@@ -2568,5 +2574,13 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public MySqlExprParser getExprParser() {
         return (MySqlExprParser) exprParser;
+    }
+    
+    public MySqlHintStatement parseHint() {
+        //accept(Token.HINT);
+        MySqlHintStatement stmt = new MySqlHintStatement();
+        stmt.setHints(this.exprParser.parseHints());
+
+        return stmt;
     }
 }

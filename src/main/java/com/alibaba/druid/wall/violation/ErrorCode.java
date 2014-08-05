@@ -27,6 +27,8 @@ public interface ErrorCode {
     public final static int INTERSET_NOT_ALLOW            = 1008;
     public final static int MERGE_NOT_ALLOW               = 1009;
     public final static int REPLACE_NOT_ALLOW             = 1010;
+    
+    public final static int HINT_NOT_ALLOW                = 1400;
 
     public final static int CALL_NOT_ALLOW                = 1300;
     public final static int COMMIT_NOT_ALLOW              = 1301;

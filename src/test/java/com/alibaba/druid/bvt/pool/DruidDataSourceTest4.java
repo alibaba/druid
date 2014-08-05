@@ -40,7 +40,7 @@ public class DruidDataSourceTest4 extends TestCase {
     }
 
     public void test_getTransactionHistogramRanges_1() {
-        Assert.assertEquals(5, dataSource.getTransactionHistogramRanges().length);
+        Assert.assertEquals(6, dataSource.getTransactionHistogramRanges().length);
     }
 
     public void test_setValidConnectionCheckerClassName() throws Exception {
