@@ -96,6 +96,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
@@ -2372,12 +2373,16 @@ public class WallVisitorUtils {
             errorCode = ErrorCode.ROLLBACK_NOT_ALLOW;
         } else if (x instanceof SQLUseStatement) {
             allow = config.isUseAllow();
-            denyMessage = "show not allow";
+            denyMessage = "use not allow";
             errorCode = ErrorCode.USE_NOT_ALLOW;
         } else if (x instanceof MySqlRenameTableStatement) {
             allow = config.isRenameTableAllow();
             denyMessage = "rename table not allow";
             errorCode = ErrorCode.RENAME_TABLE_NOT_ALLOW;
+        } else if (x instanceof MySqlHintStatement) {
+            allow = config.isHintAllow();
+            denyMessage = "hint not allow";
+            errorCode = ErrorCode.HINT_NOT_ALLOW;
         } else {
             allow = config.isNoneBaseStatementAllow();
             errorCode = ErrorCode.NONE_BASE_STATEMENT_NOT_ALLOW;

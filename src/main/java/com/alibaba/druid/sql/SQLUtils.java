@@ -198,10 +198,18 @@ public class SQLUtils {
         if (parameters != null) {
             visitor.setParameters(parameters);
         }
-
-        for (SQLStatement stmt : statementList) {
-            stmt.accept(visitor);
+        
+        for(int i =0; i<statementList.size(); i++) {
+            if(i>0) {
+                out.append(";\n");
+            }
+            statementList.get(i).accept(visitor);
         }
+
+//        for (SQLStatement stmt : statementList) {
+//            stmt.accept(visitor);
+//            out.append(";\n");
+//        }
 
         return out.toString();
     }
