@@ -15,20 +15,6 @@
  */
 package com.alibaba.druid.wall.spi;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -130,6 +116,20 @@ import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+
 public class WallVisitorUtils {
 
     private final static Log   LOG           = LogFactory.getLog(WallVisitorUtils.class);
@@ -176,7 +176,7 @@ public class WallVisitorUtils {
     }
 
     public static void check(WallVisitor visitor, SQLCreateTableStatement x) {
-        String tableName = ((SQLName) x.getName()).getSimleName();
+        String tableName = ((SQLName) x.getName()).getSimpleName();
         WallContext context = WallContext.current();
         if (context != null) {
             WallSqlTableStat tableStat = context.getTableStat(tableName);
@@ -187,7 +187,7 @@ public class WallVisitorUtils {
     }
 
     public static void check(WallVisitor visitor, SQLAlterTableStatement x) {
-        String tableName = ((SQLName) x.getName()).getSimleName();
+        String tableName = ((SQLName) x.getName()).getSimpleName();
         WallContext context = WallContext.current();
         if (context != null) {
             WallSqlTableStat tableStat = context.getTableStat(tableName);
@@ -201,7 +201,7 @@ public class WallVisitorUtils {
         for (SQLTableSource item : x.getTableSources()) {
             if (item instanceof SQLExprTableSource) {
                 SQLExpr expr = ((SQLExprTableSource) item).getExpr();
-                String tableName = ((SQLName) expr).getSimleName();
+                String tableName = ((SQLName) expr).getSimpleName();
                 WallContext context = WallContext.current();
                 if (context != null) {
                     WallSqlTableStat tableStat = context.getTableStat(tableName);
@@ -275,11 +275,11 @@ public class WallVisitorUtils {
             where.setParent(x);
             checkCondition(visitor, x.getWhere());
 
-            Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
+            Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwaysTrueCheck());
 
             if (Boolean.TRUE == whereValue) {
                 if (!isSimpleConstExpr(where)) {// 简单表达式
-                    addViolation(visitor, ErrorCode.ALWAY_TRUE, "select alway true condition not allow", x);
+                    addViolation(visitor, ErrorCode.ALWAYS_TRUE, "select alway true condition not allow", x);
                 }
             }
         }
@@ -292,9 +292,9 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck())) {
+        if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwaysTrueCheck())) {
             if (!isSimpleConstExpr(x)) {
-                addViolation(visitor, ErrorCode.ALWAY_TRUE, "having alway true condition not allow", x);
+                addViolation(visitor, ErrorCode.ALWAYS_TRUE, "having alway true condition not allow", x);
             }
         }
     }
@@ -318,7 +318,7 @@ public class WallVisitorUtils {
         if (x.getWhere() == null && (!hasUsing) && !isJoinTableSource) {
             WallContext context = WallContext.current();
             if (context != null) {
-                context.incrementDeleteNoneConditionWarnnings();
+                context.incrementDeleteNoneConditionWarnings();
             }
 
             if (config.isDeleteWhereNoneCheck()) {
@@ -331,9 +331,9 @@ public class WallVisitorUtils {
         if (where != null) {
             checkCondition(visitor, where);
 
-            if (Boolean.TRUE == getConditionValue(visitor, where, config.isDeleteWhereAlwayTrueCheck())) {
+            if (Boolean.TRUE == getConditionValue(visitor, where, config.isDeleteWhereAlwaysTrueCheck())) {
                 if (!isSimpleConstExpr(where)) {
-                    addViolation(visitor, ErrorCode.ALWAY_TRUE, "delete alway true condition not allow", x);
+                    addViolation(visitor, ErrorCode.ALWAYS_TRUE, "delete alway true condition not allow", x);
                 }
             }
         }
@@ -388,7 +388,6 @@ public class WallVisitorUtils {
 
             if (exportParameterVisitor.getParameters().size() > 0) {
                 addViolation(visitor, ErrorCode.NOT_PARAMETERIZED, "sql must parameterized", x);
-                return;
             }
         }
 
@@ -866,7 +865,7 @@ public class WallVisitorUtils {
             String tableName = null;
             SQLExpr tableNameExpr = ((SQLExprTableSource) tableSource).getExpr();
             if (tableNameExpr instanceof SQLName) {
-                tableName = ((SQLName) tableNameExpr).getSimleName();
+                tableName = ((SQLName) tableNameExpr).getSimpleName();
             }
 
             boolean readOnlyValid = visitor.getProvider().checkReadOnlyTable(tableName);
@@ -894,7 +893,7 @@ public class WallVisitorUtils {
         if (where == null) {
             WallContext context = WallContext.current();
             if (context != null) {
-                context.incrementUpdateNoneConditionWarnnings();
+                context.incrementUpdateNoneConditionWarnings();
             }
 
             if (config.isUpdateWhereNoneCheck()) {
@@ -913,9 +912,9 @@ public class WallVisitorUtils {
             where.setParent(x);
             checkCondition(visitor, where);
 
-            if (Boolean.TRUE == getConditionValue(visitor, where, config.isUpdateWhereAlayTrueCheck())) {
+            if (Boolean.TRUE == getConditionValue(visitor, where, config.isUpdateWhereAlwaysTrueCheck())) {
                 if (!isSimpleConstExpr(where)) {
-                    addViolation(visitor, ErrorCode.ALWAY_TRUE, "update alway true condition not allow", x);
+                    addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
                 }
             }
         }
@@ -1036,7 +1035,7 @@ public class WallVisitorUtils {
             WallContext context = WallContext.current();
             if (context != null) {
                 if (rightResult instanceof Number || leftResult instanceof Number) {
-                    context.incrementLikeNumberWarnnings();
+                    context.incrementLikeNumberWarnings();
                 }
             }
         }
@@ -1331,17 +1330,17 @@ public class WallVisitorUtils {
             if (context != null) {
                 if (current.hasPartAlwayTrue() || Boolean.TRUE == value) {
                     if (!isFirst(x)) {
-                        context.incrementWarnnings();
+                        context.incrementWarnings();
                     }
                 }
             }
 
-            if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
-                addViolation(visitor, ErrorCode.ALWAY_TRUE, "part alway true condition not allow", x);
+            if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwaysTrueAllow()) {
+                addViolation(visitor, ErrorCode.ALWAYS_TRUE, "part alway true condition not allow", x);
             }
 
-            if (current.hasPartAlwayFalse() && !visitor.getConfig().isConditionAndAlwayFalseAllow()) {
-                addViolation(visitor, ErrorCode.ALWAY_FALSE, "part alway false condition not allow", x);
+            if (current.hasPartAlwayFalse() && !visitor.getConfig().isConditionAndAlwaysFalseAllow()) {
+                addViolation(visitor, ErrorCode.ALWAYS_FALSE, "part alway false condition not allow", x);
             }
 
             if (current.hasConstArithmetic() && !visitor.getConfig().isConstArithmeticAllow()) {
@@ -1352,7 +1351,7 @@ public class WallVisitorUtils {
                 addViolation(visitor, ErrorCode.XOR, "xor not allow", x);
             }
 
-            if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
+            if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwiseAllow()) {
                 addViolation(visitor, ErrorCode.BITWISE, "bitwise operator not allow", x);
             }
 
@@ -1701,7 +1700,7 @@ public class WallVisitorUtils {
         }
 
         if (x instanceof SQLName) {
-            String owner = ((SQLName) x).getSimleName();
+            String owner = ((SQLName) x).getSimpleName();
             owner = WallVisitorUtils.form(owner);
             if (isInTableSource(x) && !visitor.getProvider().checkDenySchema(owner)) {
 
@@ -2015,7 +2014,7 @@ public class WallVisitorUtils {
         }
 
         if (expr instanceof SQLName) {
-            String tableName = ((SQLName) expr).getSimleName();
+            String tableName = ((SQLName) expr).getSimpleName();
 
             WallContext context = WallContext.current();
             if (context != null) {
@@ -2131,7 +2130,7 @@ public class WallVisitorUtils {
 
             WallContext context = WallContext.current();
             if (context != null) {
-                context.incrementUnionWarnnings();
+                context.incrementUnionWarnings();
             }
 
             if (((x.getOperator() == SQLUnionOperator.UNION || x.getOperator() == SQLUnionOperator.UNION_ALL || x.getOperator() == SQLUnionOperator.DISTINCT) && visitor.getConfig().isSelectUnionCheck())

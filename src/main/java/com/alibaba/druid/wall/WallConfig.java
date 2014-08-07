@@ -15,23 +15,23 @@
  */
 package com.alibaba.druid.wall;
 
-import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.alibaba.druid.wall.spi.WallVisitorUtils;
+import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
 public class WallConfig implements WallConfigMBean {
 
     private boolean             noneBaseStatementAllow      = false;
 
     private boolean             callAllow                   = true;
-    private boolean             selelctAllow                = true;
+    private boolean             selectAllow                 = true;
     private boolean             selectIntoAllow             = true;
     private boolean             selectIntoOutfileAllow      = false;
-    private boolean             selectWhereAlwayTrueCheck   = true;
-    private boolean             selectHavingAlwayTrueCheck  = true;
+    private boolean             selectWhereAlwaysTrueCheck  = true;
+    private boolean             selectHavingAlwaysTrueCheck = true;
     private boolean             selectUnionCheck            = true;
     private boolean             selectMinusCheck            = true;
     private boolean             selectExceptCheck           = true;
@@ -42,19 +42,19 @@ public class WallConfig implements WallConfigMBean {
     private boolean             renameTableAllow            = true;
     private boolean             hintAllow                   = true;
 
-    private boolean             conditionAndAlwayTrueAllow  = false;
-    private boolean             conditionAndAlwayFalseAllow = false;
+    private boolean             conditionAndAlwaysTrueAllow = false;
+    private boolean             conditionAndAlwaysFalseAllow = false;
     private boolean             conditionDoubleConstAllow   = false;
     private boolean             conditionLikeTrueAllow      = true;
 
     private boolean             selectAllColumnAllow        = true;
 
     private boolean             deleteAllow                 = true;
-    private boolean             deleteWhereAlwayTrueCheck   = true;
+    private boolean             deleteWhereAlwaysTrueCheck  = true;
     private boolean             deleteWhereNoneCheck        = false;
 
     private boolean             updateAllow                 = true;
-    private boolean             updateWhereAlayTrueCheck    = true;
+    private boolean             updateWhereAlwaysTrueCheck  = true;
     private boolean             updateWhereNoneCheck        = false;
 
     private boolean             insertAllow                 = true;
@@ -114,7 +114,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             metadataAllow               = true;
 
     private boolean             conditionOpXorAllow         = false;
-    private boolean             conditionOpBitwseAllow      = true;
+    private boolean             conditionOpBitwiseAllow     = true;
 
     private boolean             caseConditionConstAllow     = false;
 
@@ -154,20 +154,20 @@ public class WallConfig implements WallConfigMBean {
         this.limitZeroAllow = limitZero;
     }
 
-    public boolean isConditionAndAlwayTrueAllow() {
-        return conditionAndAlwayTrueAllow;
+    public boolean isConditionAndAlwaysTrueAllow() {
+        return conditionAndAlwaysTrueAllow;
     }
 
-    public void setConditionAndAlwayTrueAllow(boolean conditionAndAlwayTrueAllow) {
-        this.conditionAndAlwayTrueAllow = conditionAndAlwayTrueAllow;
+    public void setConditionAndAlwaysTrueAllow(boolean conditionAndAlwaysTrueAllow) {
+        this.conditionAndAlwaysTrueAllow = conditionAndAlwaysTrueAllow;
     }
 
-    public boolean isConditionAndAlwayFalseAllow() {
-        return conditionAndAlwayFalseAllow;
+    public boolean isConditionAndAlwaysFalseAllow() {
+        return conditionAndAlwaysFalseAllow;
     }
 
-    public void setConditionAndAlwayFalseAllow(boolean conditionAndAlwayFalseAllow) {
-        this.conditionAndAlwayFalseAllow = conditionAndAlwayFalseAllow;
+    public void setConditionAndAlwaysFalseAllow(boolean conditionAndAlwaysFalseAllow) {
+        this.conditionAndAlwaysFalseAllow = conditionAndAlwaysFalseAllow;
     }
 
     public boolean isUseAllow() {
@@ -218,12 +218,12 @@ public class WallConfig implements WallConfigMBean {
         this.conditionOpXorAllow = conditionOpXorAllow;
     }
 
-    public boolean isConditionOpBitwseAllow() {
-        return conditionOpBitwseAllow;
+    public boolean isConditionOpBitwiseAllow() {
+        return conditionOpBitwiseAllow;
     }
 
-    public void setConditionOpBitwseAllow(boolean conditionOpBitwseAllow) {
-        this.conditionOpBitwseAllow = conditionOpBitwseAllow;
+    public void setConditionOpBitwiseAllow(boolean conditionOpBitwiseAllow) {
+        this.conditionOpBitwiseAllow = conditionOpBitwiseAllow;
     }
 
     public String getTenantTablePattern() {
@@ -365,12 +365,12 @@ public class WallConfig implements WallConfigMBean {
         this.truncateAllow = truncateAllow;
     }
 
-    public boolean isSelelctAllow() {
-        return selelctAllow;
+    public boolean isSelectAllow() {
+        return selectAllow;
     }
 
-    public void setSelelctAllow(boolean selelctAllow) {
-        this.selelctAllow = selelctAllow;
+    public void setSelectAllow(boolean selelctAllow) {
+        this.selectAllow = selelctAllow;
     }
 
     public boolean isSelectIntoAllow() {
@@ -453,20 +453,20 @@ public class WallConfig implements WallConfigMBean {
         this.selectIntersectCheck = selectIntersectCheck;
     }
 
-    public boolean isSelectWhereAlwayTrueCheck() {
-        return selectWhereAlwayTrueCheck;
+    public boolean isSelectWhereAlwaysTrueCheck() {
+        return selectWhereAlwaysTrueCheck;
     }
 
-    public void setSelectWhereAlwayTrueCheck(boolean selectWhereAlwayTrueCheck) {
-        this.selectWhereAlwayTrueCheck = selectWhereAlwayTrueCheck;
+    public void setSelectWhereAlwaysTrueCheck(boolean selectWhereAlwayTrueCheck) {
+        this.selectWhereAlwaysTrueCheck = selectWhereAlwayTrueCheck;
     }
 
-    public boolean isSelectHavingAlwayTrueCheck() {
-        return selectHavingAlwayTrueCheck;
+    public boolean isSelectHavingAlwaysTrueCheck() {
+        return selectHavingAlwaysTrueCheck;
     }
 
-    public void setSelectHavingAlwayTrueCheck(boolean selectHavingAlwayTrueCheck) {
-        this.selectHavingAlwayTrueCheck = selectHavingAlwayTrueCheck;
+    public void setSelectHavingAlwaysTrueCheck(boolean selectHavingAlwayTrueCheck) {
+        this.selectHavingAlwaysTrueCheck = selectHavingAlwayTrueCheck;
     }
 
     public boolean isDeleteAllow() {
@@ -477,12 +477,12 @@ public class WallConfig implements WallConfigMBean {
         this.deleteAllow = deleteAllow;
     }
 
-    public boolean isDeleteWhereAlwayTrueCheck() {
-        return deleteWhereAlwayTrueCheck;
+    public boolean isDeleteWhereAlwaysTrueCheck() {
+        return deleteWhereAlwaysTrueCheck;
     }
 
-    public void setDeleteWhereAlwayTrueCheck(boolean deleteWhereAlwayTrueCheck) {
-        this.deleteWhereAlwayTrueCheck = deleteWhereAlwayTrueCheck;
+    public void setDeleteWhereAlwaysTrueCheck(boolean deleteWhereAlwayTrueCheck) {
+        this.deleteWhereAlwaysTrueCheck = deleteWhereAlwayTrueCheck;
     }
 
     public boolean isDeleteWhereNoneCheck() {
@@ -501,12 +501,12 @@ public class WallConfig implements WallConfigMBean {
         this.updateAllow = updateAllow;
     }
 
-    public boolean isUpdateWhereAlayTrueCheck() {
-        return updateWhereAlayTrueCheck;
+    public boolean isUpdateWhereAlwaysTrueCheck() {
+        return updateWhereAlwaysTrueCheck;
     }
 
-    public void setUpdateWhereAlayTrueCheck(boolean updateWhereAlayTrueCheck) {
-        this.updateWhereAlayTrueCheck = updateWhereAlayTrueCheck;
+    public void setUpdateWhereAlwaysTrueCheck(boolean updateWhereAlayTrueCheck) {
+        this.updateWhereAlwaysTrueCheck = updateWhereAlayTrueCheck;
     }
 
     public boolean isUpdateWhereNoneCheck() {

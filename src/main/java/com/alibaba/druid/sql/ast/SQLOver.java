@@ -1,9 +1,9 @@
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /*
  * Copyright 1999-2011 Alibaba Group Holding Ltd.
@@ -62,7 +62,7 @@ public class SQLOver extends SQLObjectImpl {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
-        result = prime * result + ((partitionBy == null) ? 0 : partitionBy.hashCode());
+        result = prime * result + partitionBy.hashCode();
         return result;
     }
 
@@ -85,14 +85,7 @@ public class SQLOver extends SQLObjectImpl {
         } else if (!orderBy.equals(other.orderBy)) {
             return false;
         }
-        if (partitionBy == null) {
-            if (other.partitionBy != null) {
-                return false;
-            }
-        } else if (!partitionBy.equals(other.partitionBy)) {
-            return false;
-        }
-        return true;
+        return partitionBy.equals(other.partitionBy);
     }
 
 }

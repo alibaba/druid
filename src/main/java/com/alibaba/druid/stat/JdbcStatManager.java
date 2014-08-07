@@ -15,10 +15,9 @@
  */
 package com.alibaba.druid.stat;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.proxy.DruidDriver;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 
 import javax.management.JMException;
 import javax.management.openmbean.ArrayType;
@@ -29,10 +28,10 @@ import javax.management.openmbean.SimpleType;
 import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public final class JdbcStatManager implements JdbcStatManagerMBean {
 
@@ -61,16 +60,14 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
     }
 
     public JdbcStatContext createStatContext() {
-        JdbcStatContext context = new JdbcStatContext();
-
-        return context;
+        return new JdbcStatContext();
     }
 
     public long generateSqlId() {
         return sqlIdSeed.incrementAndGet();
     }
 
-    public static final JdbcStatManager getInstance() {
+    public static JdbcStatManager getInstance() {
         return instance;
     }
 
@@ -82,7 +79,7 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
         return resultSetStat;
     }
 
-    public JdbcConnectionStat getConnectionstat() {
+    public JdbcConnectionStat getConnectionStat() {
         return connectionStat;
     }
 
@@ -258,9 +255,8 @@ public final class JdbcStatManager implements JdbcStatManagerMBean {
         //
         };
 
-        String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("DataSourceStatistic", "DataSource Statistic", indexNames,
-                                           indexDescriptions, indexTypes);
+                indexNames, indexTypes);
 
         return COMPOSITE_TYPE;
     }

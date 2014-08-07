@@ -42,7 +42,7 @@ import com.alibaba.druid.support.json.JSONUtils;
 public class SpringIbatisFilterTest extends TestCase {
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
     }
 
     protected void tearDown() throws Exception {

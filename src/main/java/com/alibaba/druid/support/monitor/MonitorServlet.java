@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.support.monitor;
 
+import com.alibaba.druid.support.http.ResourceServlet;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import com.alibaba.druid.support.http.ResourceSerlvet;
-
 @SuppressWarnings("serial")
-public class MonitorServlet extends ResourceSerlvet {
+public class MonitorServlet extends ResourceServlet {
 
     private String      mappingPath = "support/http/resources";
     private Set<String> mapping     = new HashSet<String>();

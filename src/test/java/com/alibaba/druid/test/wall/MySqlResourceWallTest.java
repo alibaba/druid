@@ -47,7 +47,7 @@ public class MySqlResourceWallTest extends TestCase {
         provider.getConfig().setUseAllow(true);
         provider.getConfig().setStrictSyntaxCheck(false);
         provider.getConfig().setMultiStatementAllow(true);
-        provider.getConfig().setConditionAndAlwayTrueAllow(true);
+        provider.getConfig().setConditionAndAlwaysTrueAllow(true);
         provider.getConfig().setNoneBaseStatementAllow(true);
         provider.getConfig().setSelectUnionCheck(false);
         provider.getConfig().setSchemaCheck(true);

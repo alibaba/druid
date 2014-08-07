@@ -57,12 +57,9 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
         if (iface == null) {
             return false;
         }
-        
-        if (iface.isAssignableFrom(this.getClass())) {
-            return true;
-        }
 
-        return false;
+        return iface.isAssignableFrom(this.getClass());
+
     }
 
     @Override

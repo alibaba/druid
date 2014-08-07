@@ -36,11 +36,11 @@ public final class JdbcParameterDecimal implements JdbcParameter {
             return NULL;
         }
         
-        if (x == BigDecimal.ZERO) {
+        if (0 == (x.compareTo(BigDecimal.ZERO))) {
             return ZERO;
         }
         
-        if (x == BigDecimal.TEN) {
+        if (0 == (x.compareTo(BigDecimal.TEN))) {
             return TEN;
         }
         

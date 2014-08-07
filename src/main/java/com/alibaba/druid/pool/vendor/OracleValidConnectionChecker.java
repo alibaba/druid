@@ -15,14 +15,6 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
@@ -31,6 +23,14 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
 
 public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
@@ -70,7 +70,7 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
         params[0] = timeout;
     }
 
-    public boolean isValidConnection(Connection conn, String valiateQuery, int validationQueryTimeout) {
+    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) {
         try {
             if (conn.isClosed()) {
                 return false;
@@ -94,18 +94,14 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
                 Integer status = (Integer) ping.invoke(conn, params);
 
                 // Error
-                if (status.intValue() < 0) {
-                    return false;
-                }
-
-                return true;
+                return status >= 0;
             }
 
             Statement stmt = null;
             ResultSet rs = null;
             try {
                 stmt = conn.createStatement();
-                rs = stmt.executeQuery(valiateQuery);
+                rs = stmt.executeQuery(validateQuery);
                 return true;
             } catch (SQLException e) {
                 return false;

@@ -30,7 +30,7 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
 
     }
 
-    public String getSimleName() {
+    public String getSimpleName() {
         return dbLink;
     }
 

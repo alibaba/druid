@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.stat;
 
+import com.alibaba.druid.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.druid.util.StringUtils;
 
 public class TableStat {
 
@@ -360,26 +360,26 @@ public class TableStat {
         }
 
         public String toString() {
-            StringBuffer buf = new StringBuffer();
-            buf.append(this.column.toString());
-            buf.append(' ');
-            buf.append(this.operator);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(this.column.toString());
+            stringBuilder.append(' ');
+            stringBuilder.append(this.operator);
 
             if (values.size() == 1) {
-                buf.append(' ');
-                buf.append(String.valueOf(this.values.get(0)));
+                stringBuilder.append(' ');
+                stringBuilder.append(String.valueOf(this.values.get(0)));
             } else if (values.size() > 0) {
-                buf.append(" (");
+                stringBuilder.append(" (");
                 for (int i = 0; i < values.size(); ++i) {
                     if (i != 0) {
-                        buf.append(", ");
+                        stringBuilder.append(", ");
                     }
-                    buf.append(String.valueOf(values.get(i)));
+                    stringBuilder.append(String.valueOf(values.get(i)));
                 }
-                buf.append(")");
+                stringBuilder.append(")");
             }
 
-            return buf.toString();
+            return stringBuilder.toString();
         }
     }
 
@@ -484,6 +484,11 @@ public class TableStat {
         }
 
         public boolean equals(Object obj) {
+
+            if (!(obj instanceof  Column)) {
+                return false;
+            }
+
             Column column = (Column) obj;
 
             if (table == null) {

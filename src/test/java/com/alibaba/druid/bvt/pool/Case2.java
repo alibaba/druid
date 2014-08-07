@@ -34,7 +34,7 @@ import com.alibaba.druid.util.JMXUtils;
 public class Case2 extends TestCase {
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
     }
 
     protected void tearDown() throws Exception {

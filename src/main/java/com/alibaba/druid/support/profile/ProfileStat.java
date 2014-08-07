@@ -80,8 +80,8 @@ public class ProfileStat {
         
         int size = statValueList.size();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(size);
-        for (int i = 0; i < size; ++i) {
-            list.add(statValueList.get(i).getData());
+        for (ProfileEntryStatValue profileEntryStatValue : statValueList) {
+            list.add(profileEntryStatValue.getData());
         }
 
         return list;

@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.wall;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.alibaba.druid.support.monitor.annotation.AggregateType;
 import com.alibaba.druid.support.monitor.annotation.MField;
 import com.alibaba.druid.support.monitor.annotation.MTable;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @MTable(name = "druid_wall_sql")
 public class WallSqlStatValue {
@@ -132,7 +132,7 @@ public class WallSqlStatValue {
     public Map<String, Object> toMap() {
         Map<String, Object> sqlStatMap = new LinkedHashMap<String, Object>();
         sqlStatMap.put("sql", sql);
-        if (sql != sqlSample) {
+        if (!sql.equals(sqlSample)) {
             sqlStatMap.put("sample", sqlSample);
         }
         sqlStatMap.put("executeCount", getExecuteCount());

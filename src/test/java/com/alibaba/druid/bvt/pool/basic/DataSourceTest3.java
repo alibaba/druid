@@ -40,7 +40,7 @@ public class DataSourceTest3 extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
 
         driver = new MockDriver();
 

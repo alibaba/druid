@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.support.http.stat;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.LRUCache;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.LRUCache;
-import java.util.Collections;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
 public class WebAppStat {
 
@@ -246,8 +246,6 @@ public class WebAppStat {
             if (running > max) {
                 if (concurrentMax.compareAndSet(max, running)) {
                     break;
-                } else {
-                    continue;
                 }
             } else {
                 break;
@@ -282,10 +280,8 @@ public class WebAppStat {
             return null;
         }
 
-        if (uriStat == null) {
-            uriStatMap.putIfAbsent(uri, new WebURIStat(uri));
-            uriStat = uriStatMap.get(uri);
-        }
+        uriStatMap.putIfAbsent(uri, new WebURIStat(uri));
+        uriStat = uriStatMap.get(uri);
 
         return uriStat;
     }
@@ -592,7 +588,7 @@ public class WebAppStat {
 
             computeUserAgentIEWindowsVersion(userAgent);
 
-            if (userAgent.indexOf("Windows Phone") != -1) {
+            if (userAgent.contains("Windows Phone")) {
                 deviceWindowsPhoneCount.incrementAndGet();
             }
 
@@ -630,36 +626,36 @@ public class WebAppStat {
 
             osWindowsCount.incrementAndGet();
 
-            if (userAgent.indexOf("Windows Phone") != -1) {
+            if (userAgent.contains("Windows Phone")) {
                 deviceWindowsPhoneCount.incrementAndGet();
             }
         } else if (isMac) {
             isMac = true;
             osMacOSXCount.incrementAndGet();
-            if (isIpad && userAgent.indexOf("iPad") != -1) {
+            if (isIpad && userAgent.contains("iPad")) {
                 deviceIpadCount.incrementAndGet();
-            } else if (isIPhone || userAgent.indexOf("iPhone") != -1) {
+            } else if (isIPhone || userAgent.contains("iPhone")) {
                 deviceIphoneCount.incrementAndGet();
             }
         } else if (isLinux) {
             osLinuxCount.incrementAndGet();
             isAndroid = computeUserAgentAndroid(userAgent);
-        } else if (userAgent.indexOf("Symbian") != -1) {
+        } else if (userAgent.contains("Symbian")) {
             osSymbianCount.incrementAndGet();
-        } else if (userAgent.indexOf("Ubuntu") != -1) {
+        } else if (userAgent.contains("Ubuntu")) {
             osLinuxCount.incrementAndGet();
             osLinuxUbuntuCount.incrementAndGet();
             isLinux = true;
         }
 
         if (isX11) {
-            if (userAgent.indexOf("OpenBSD") != -1) {
+            if (userAgent.contains("OpenBSD")) {
                 osOpenBSDCount.incrementAndGet();
                 isBSD = true;
-            } else if (userAgent.indexOf("FreeBSD") != -1) {
+            } else if (userAgent.contains("FreeBSD")) {
                 osFreeBSDCount.incrementAndGet();
                 isBSD = true;
-            } else if ((!isLinux) && userAgent.indexOf("Linux") != -1) {
+            } else if ((!isLinux) && userAgent.contains("Linux")) {
                 osLinuxCount.incrementAndGet();
                 isLinux = true;
             }
@@ -668,11 +664,11 @@ public class WebAppStat {
         boolean isOpera = userAgent.startsWith("Opera");
 
         if (isOpera) {
-            if (userAgent.indexOf("Windows") != -1) {
+            if (userAgent.contains("Windows")) {
                 osWindowsCount.incrementAndGet();
-            } else if (userAgent.indexOf("Linux") != -1) {
+            } else if (userAgent.contains("Linux")) {
                 osWindowsCount.incrementAndGet();
-            } else if (userAgent.indexOf("Macintosh") != -1) {
+            } else if (userAgent.contains("Macintosh")) {
                 osMacOSXCount.incrementAndGet();
             }
             browserOperaCount.incrementAndGet();
@@ -684,17 +680,17 @@ public class WebAppStat {
         }
 
         if (isWindows || isMac || isLinux || isBSD) {
-            if (userAgent.indexOf("Chrome") != -1) {
+            if (userAgent.contains("Chrome")) {
                 browserChromeCount.incrementAndGet();
                 return;
             }
 
-            if ((!isAndroid) && userAgent.indexOf("Safari") != -1) {
+            if ((!isAndroid) && userAgent.contains("Safari")) {
                 browserSafariCount.incrementAndGet();
                 return;
             }
 
-            if (userAgent.indexOf("Firefox") != -1) {
+            if (userAgent.contains("Firefox")) {
                 browserFirefoxCount.incrementAndGet();
                 return;
             }
@@ -786,11 +782,11 @@ public class WebAppStat {
             botCount.incrementAndGet();
         } else if (userAgent.equals("-")) {
             botCount.incrementAndGet();
-        } else if (userAgent.indexOf("Spider") != -1 || userAgent.indexOf("spider") != -1) {
+        } else if (userAgent.contains("Spider") || userAgent.contains("spider")) {
             botCount.incrementAndGet();
-        } else if (userAgent.indexOf("crawl") != -1 || userAgent.indexOf("Crawl") != -1) {
+        } else if (userAgent.contains("crawl") || userAgent.contains("Crawl")) {
             botCount.incrementAndGet();
-        } else if (userAgent.indexOf("Bot") != -1 || userAgent.indexOf("bot") != -1) {
+        } else if (userAgent.contains("Bot") || userAgent.contains("bot")) {
             botCount.incrementAndGet();
         }
 

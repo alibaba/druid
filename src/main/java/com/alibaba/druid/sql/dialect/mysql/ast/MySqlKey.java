@@ -16,13 +16,13 @@
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTableConstaint {
+public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTableConstraint {
 
     private SQLName indexName;
 

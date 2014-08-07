@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.proxy.jdbc.WrapperProxy;
+
 import java.sql.SQLException;
 import java.sql.Wrapper;
-
-import com.alibaba.druid.proxy.jdbc.WrapperProxy;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -33,11 +33,17 @@ public class PoolableWrapper implements Wrapper {
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
+
+        if (null == wrapper) {
+            //Best to log error.
+            return false;
+        }
+
         if (iface == null) {
             return false;
         }
 
-        if (wrapper != null && iface == wrapper.getClass()) {
+        if (iface == wrapper.getClass()) {
             return true;
         }
 
@@ -57,11 +63,17 @@ public class PoolableWrapper implements Wrapper {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
+
+        if (null == wrapper) {
+            //Best to log error.
+            return null;
+        }
+
         if (iface == null) {
             return null;
         }
 
-        if (wrapper != null && iface == wrapper.getClass()) {
+        if (iface == wrapper.getClass()) {
             return (T) wrapper;
         }
 

@@ -84,8 +84,7 @@ public class Option {
 
 	private static int parsePositiveInt(String v) {
 		try {
-			int pid = Integer.parseInt(v);
-			return pid;
+            return Integer.parseInt(v);
 		} catch (NumberFormatException e) {
 			return -1;
 		}

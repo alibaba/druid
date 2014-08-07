@@ -298,11 +298,7 @@ public abstract class ResultSetBase implements ResultSet {
             return false;
         }
 
-        if (iface.isInstance(this)) {
-            return true;
-        }
-
-        return false;
+        return iface.isInstance(this);
     }
 
     @Override
@@ -321,8 +317,8 @@ public abstract class ResultSetBase implements ResultSet {
 
     public Object getObjectInternal(int columnIndex) throws SQLException {
         if (this.getMetaData() != null) {
-            String columName = this.getMetaData().getColumnName(columnIndex);
-            return getObject(columName);
+            String columnName = this.getMetaData().getColumnName(columnIndex);
+            return getObject(columnName);
         }
 
         return null;
@@ -879,7 +875,7 @@ public abstract class ResultSetBase implements ResultSet {
             return false;
         }
 
-        return ((Boolean) obj).booleanValue();
+        return (Boolean) obj;
     }
 
     @Override

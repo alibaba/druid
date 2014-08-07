@@ -27,7 +27,7 @@ public class MySqlWallTest_concat extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        provider.getConfig().setSelectHavingAlwayTrueCheck(true);
+        provider.getConfig().setSelectHavingAlwaysTrueCheck(true);
 
         Assert.assertTrue(provider.checkValid(//
         "select * from tb_product_word where name='' or CONCAT(name,style)='' or CONCAT(shop,style)=''  or CONCAT(ename,style)=''"));

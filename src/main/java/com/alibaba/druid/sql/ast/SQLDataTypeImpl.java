@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
@@ -59,7 +59,7 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((arguments == null) ? 0 : arguments.hashCode());
+        result = prime * result + arguments.hashCode();
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
@@ -70,9 +70,7 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         SQLDataTypeImpl other = (SQLDataTypeImpl) obj;
-        if (arguments == null) {
-            if (other.arguments != null) return false;
-        } else if (!arguments.equals(other.arguments)) return false;
+        if (!arguments.equals(other.arguments)) return false;
         if (name == null) {
             if (other.name != null) return false;
         } else if (!name.equals(other.name)) return false;

@@ -24,33 +24,33 @@ package com.alibaba.druid.util;
  */
 public final class HexBin {
 
-    static private final int    BASELENGTH         = 128;
-    static private final int    LOOKUPLENGTH       = 16;
-    static final private byte[] hexNumberTable     = new byte[BASELENGTH];
-    static final private char[] upperChars  = new char[LOOKUPLENGTH];
-    static final private char[] lowerChars = new char[LOOKUPLENGTH];
+    static private final int    BASE_LENGTH        = 128;
+    static private final int    LOOKUP_LENGTH      = 16;
+    static final private byte[] HEX_NUMBER_TABLE   = new byte[BASE_LENGTH];
+    static final private char[] UPPER_CHARS        = new char[LOOKUP_LENGTH];
+    static final private char[] LOWER_CHARS        = new char[LOOKUP_LENGTH];
 
     static {
-        for (int i = 0; i < BASELENGTH; i++) {
-            hexNumberTable[i] = -1;
+        for (int i = 0; i < BASE_LENGTH; i++) {
+            HEX_NUMBER_TABLE[i] = -1;
         }
         for (int i = '9'; i >= '0'; i--) {
-            hexNumberTable[i] = (byte) (i - '0');
+            HEX_NUMBER_TABLE[i] = (byte) (i - '0');
         }
         for (int i = 'F'; i >= 'A'; i--) {
-            hexNumberTable[i] = (byte) (i - 'A' + 10);
+            HEX_NUMBER_TABLE[i] = (byte) (i - 'A' + 10);
         }
         for (int i = 'f'; i >= 'a'; i--) {
-            hexNumberTable[i] = (byte) (i - 'a' + 10);
+            HEX_NUMBER_TABLE[i] = (byte) (i - 'a' + 10);
         }
 
         for (int i = 0; i < 10; i++) {
-            upperChars[i] = (char) ('0' + i);
-            lowerChars[i] = (char) ('0' + i);
+            UPPER_CHARS[i] = (char) ('0' + i);
+            LOWER_CHARS[i] = (char) ('0' + i);
         }
         for (int i = 10; i <= 15; i++) {
-            upperChars[i] = (char) ('A' + i - 10);
-            lowerChars[i] = (char) ('a' + i - 10);
+            UPPER_CHARS[i] = (char) ('A' + i - 10);
+            LOWER_CHARS[i] = (char) ('a' + i - 10);
         }
     }
     
@@ -63,7 +63,7 @@ public final class HexBin {
             return null;
         }
 
-        final char[] chars = upperCase ? upperChars : lowerChars;
+        final char[] chars = upperCase ? UPPER_CHARS : LOWER_CHARS;
 
         char[] hex = new char[bytes.length * 2];
         for (int i = 0; i < bytes.length; i++) {
@@ -97,12 +97,12 @@ public final class HexBin {
         char tempChar;
         for (int i = 0; i < lengthDecode; i++) {
             tempChar = binaryData[i * 2];
-            temp1 = (tempChar < BASELENGTH) ? hexNumberTable[tempChar] : -1;
+            temp1 = (tempChar < BASE_LENGTH) ? HEX_NUMBER_TABLE[tempChar] : -1;
             if (temp1 == -1) {
                 return null;
             }
             tempChar = binaryData[i * 2 + 1];
-            temp2 = (tempChar < BASELENGTH) ? hexNumberTable[tempChar] : -1;
+            temp2 = (tempChar < BASE_LENGTH) ? HEX_NUMBER_TABLE[tempChar] : -1;
             if (temp2 == -1) {
                 return null;
             }

@@ -544,8 +544,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
         try {
             List<FieldInfo> fields = beanInfo.getFields();
-            for (int i = 0; i < fields.size(); ++i) {
-                FieldInfo field = fields.get(i);
+            for (FieldInfo field : fields) {
                 Class<?> fieldType = field.getFieldType();
                 Object value = field.getField().get(sqlStat);
 
@@ -596,13 +595,12 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
 
         buf.append(" (domain, app, cluster, host, pid, collectTime");
         List<FieldInfo> fields = beanInfo.getFields();
-        for (int i = 0; i < fields.size(); ++i) {
-            FieldInfo field = fields.get(i);
+        for (FieldInfo field : fields) {
             buf.append(", ");
             buf.append(field.getColumnName());
         }
         buf.append(")\nVALUES (?, ?, ?, ?, ?, ?");
-        for (int i = 0; i < fields.size(); ++i) {
+        for (FieldInfo field : fields) {
             buf.append(", ?");
         }
         buf.append(")");

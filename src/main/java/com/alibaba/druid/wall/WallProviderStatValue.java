@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.wall;
 
+import com.alibaba.druid.support.monitor.annotation.AggregateType;
+import com.alibaba.druid.support.monitor.annotation.MField;
+import com.alibaba.druid.support.monitor.annotation.MTable;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.druid.support.monitor.annotation.AggregateType;
-import com.alibaba.druid.support.monitor.annotation.MField;
-import com.alibaba.druid.support.monitor.annotation.MTable;
 
 @MTable(name = "druid_wall")
 public class WallProviderStatValue {
@@ -107,8 +107,8 @@ public class WallProviderStatValue {
         return syntaxErrorCount;
     }
 
-    public void setSyntaxErrorCount(long syntaxErrroCount) {
-        this.syntaxErrorCount = syntaxErrroCount;
+    public void setSyntaxErrorCount(long syntaxErrorCount) {
+        this.syntaxErrorCount = syntaxErrorCount;
     }
 
     public long getViolationEffectRowCount() {
@@ -146,7 +146,7 @@ public class WallProviderStatValue {
         info.put("blackListSize", this.getBlackList().size());
         info.put("whiteListHitCount", this.getWhiteListHitCount());
         info.put("whiteListSize", this.getWhiteList().size());
-        info.put("syntaxErrrorCount", this.getSyntaxErrorCount());
+        info.put("syntaxErrorCount", this.getSyntaxErrorCount());
 
         {
             List<Map<String, Object>> tables = new ArrayList<Map<String, Object>>(this.tables.size());

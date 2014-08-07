@@ -58,10 +58,13 @@ public class LogFactory {
             }
 
             try {
-                logConstructor.newInstance(LogFactory.class.getName());
+                if (null != logConstructor) {
+                    logConstructor.newInstance(LogFactory.class.getName());
+                }
             } catch (Throwable t) {
                 logConstructor = null;
             }
+
         } catch (Throwable t) {
             // skip
         }
@@ -73,7 +76,7 @@ public class LogFactory {
 
     public static Log getLog(String loggerName) {
         try {
-            return (Log) logConstructor.newInstance(new Object[] { loggerName });
+            return (Log) logConstructor.newInstance(loggerName);
         } catch (Throwable t) {
             throw new RuntimeException("Error creating logger for logger '" + loggerName + "'.  Cause: " + t, t);
         }
@@ -86,6 +89,7 @@ public class LogFactory {
             Class implClass = Resources.classForName("com.alibaba.druid.support.logging.Log4jImpl");
             logConstructor = implClass.getConstructor(new Class[] { String.class });
         } catch (Throwable t) {
+            //ignore
         }
     }
 
@@ -96,6 +100,7 @@ public class LogFactory {
             Class implClass = Resources.classForName("com.alibaba.druid.support.logging.Jdk14LoggingImpl");
             logConstructor = implClass.getConstructor(new Class[] { String.class });
         } catch (Throwable t) {
+            //ignore
         }
     }
 }

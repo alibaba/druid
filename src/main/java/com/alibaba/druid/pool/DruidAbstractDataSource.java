@@ -1557,8 +1557,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         // 25 - 29
         map.put("ResultSetOpenCount", stat.getResultSetStat().getOpenCount());
-        map.put("ResultSetOpenningCount", stat.getResultSetStat().getOpenningCount());
-        map.put("ResultSetOpenningMax", stat.getResultSetStat().getOpenningMax());
+        map.put("ResultSetOpenningCount", stat.getResultSetStat().getOpeningCount());
+        map.put("ResultSetOpenningMax", stat.getResultSetStat().getOpeningMax());
         map.put("ResultSetFetchRowCount", stat.getResultSetStat().getFetchRowCount());
         map.put("ResultSetLastOpenTime", stat.getResultSetStat().getLastOpenTime());
 

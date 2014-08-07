@@ -51,7 +51,7 @@ public class DruidDriverPanel extends DruidPanel {
     @Override
     protected void tableDataProcess(ArrayList<LinkedHashMap<String, Object>> data) {
         ColumnData columnData = TableDataProcessor.row2col(data);
-        tableModel = new DruidTableModel(columnData.getDatas());
+        tableModel = new DruidTableModel(columnData.getData());
         table.setModel(tableModel);
         table.getColumnModel().getColumn(0).setCellRenderer(new DruidTableCellRenderer());
 

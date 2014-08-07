@@ -15,6 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-public interface SQLColumnConstraint extends SQLConstaint {
+public interface SQLColumnConstraint extends SQLConstraint {
 
 }

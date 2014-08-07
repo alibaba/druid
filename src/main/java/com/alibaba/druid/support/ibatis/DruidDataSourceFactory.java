@@ -30,7 +30,7 @@ public class DruidDataSourceFactory implements com.ibatis.sqlmap.engine.datasour
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("init datasource error", e);
+            throw new RuntimeException("init data source error", e);
         }
     }
 

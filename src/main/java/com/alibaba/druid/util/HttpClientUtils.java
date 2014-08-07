@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * @author sandzhang<sandzhangtoo@gmail.com>
@@ -53,7 +53,7 @@ public class HttpClientUtils {
                 responseBuilder = new StringBuilder();
                 String line = null;
                 while ((line = reader.readLine()) != null) {
-                    responseBuilder.append(line + "\n");
+                    responseBuilder.append(line).append("\n");
                 }
                 LOG.debug(responseBuilder.toString());
             }

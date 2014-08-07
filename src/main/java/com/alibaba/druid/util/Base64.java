@@ -46,7 +46,7 @@ public class Base64 {
         int numFullGroups = aLen / 3;
         int numBytesInPartialGroup = aLen - 3 * numFullGroups;
         int resultLen = 4 * ((aLen + 2) / 3);
-        StringBuffer result = new StringBuffer(resultLen);
+        StringBuilder result = new StringBuilder(resultLen);
         char[] intToAlpha = (alternate ? intToAltBase64 : intToBase64);
 
         // Translate all full groups from byte array elements to Base64

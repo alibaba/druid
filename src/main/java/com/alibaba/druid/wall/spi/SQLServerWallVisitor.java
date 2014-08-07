@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.wall.spi;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -56,6 +53,9 @@ import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements WallVisitor, SQLServerASTVisitor {
 
@@ -162,11 +162,8 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     public boolean visit(SQLExprTableSource x) {
         WallVisitorUtils.check(this, x);
 
-        if (x.getExpr() instanceof SQLName) {
-            return false;
-        }
+        return !(x.getExpr() instanceof SQLName);
 
-        return true;
     }
 
     public boolean visit(SQLSelectGroupByClause x) {
@@ -201,7 +198,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelelctAllow()) {
+        if (!config.isSelectAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "selelct not allow",
                                                                    this.toSQL(x)));
             return false;

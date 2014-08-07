@@ -57,7 +57,7 @@ public interface ErrorCode {
     public final static int TABLE_DENY                    = 2004;
     public final static int OBJECT_DENY                   = 2005;
 
-    public final static int ALWAY_TRUE                    = 2100;
+    public final static int ALWAYS_TRUE                   = 2100;
     public final static int CONST_ARITHMETIC              = 2101;
     public final static int XOR                           = 2102;
     public final static int BITWISE                       = 2103;
@@ -70,7 +70,7 @@ public interface ErrorCode {
     public final static int EVIL_HINTS                    = 2110;
     public final static int EVIL_NAME                     = 2111;
     public final static int EVIL_CONCAT                   = 2112;
-    public final static int ALWAY_FALSE                   = 2113;
+    public final static int ALWAYS_FALSE                  = 2113;
 
     public final static int NOT_PARAMETERIZED             = 2200;
     public final static int MULTI_TENANT                  = 2201;

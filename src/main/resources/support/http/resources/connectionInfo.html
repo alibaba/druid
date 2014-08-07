@@ -32,7 +32,7 @@
 										<table>
 											<thead><tr>
 												<th>sql</th>
-												<th width="50">defaultRowPretch</th>
+												<th width="50">defaultRowPrefetch</th>
 												<th width="50">rowPrefetch</th>
 												<th width="50">hitCount</th>
 											</tr></thead>
@@ -113,7 +113,7 @@
     					var stmt = pscache[i];
     					result += '<tr>';
     					result += '<td>' + stmt.sql + "</td>";
-    					result += '<td width="50">' + stmt.defaultRowPretch + "</td>";
+    					result += '<td width="50">' + stmt.defaultRowPrefetch + "</td>";
     					result += '<td width="50">' + stmt.rowPrefetch + "</td>";
     					result += '<td width="50">' + stmt.hitCount + "</td>";
     					result += '</tr>';

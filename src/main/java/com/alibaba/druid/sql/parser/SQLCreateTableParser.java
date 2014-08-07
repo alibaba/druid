@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 
@@ -76,7 +76,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                            || lexer.token == Token.UNIQUE //
                            || lexer.token == Token.CHECK //
                            || lexer.token == Token.CONSTRAINT) {
-                    SQLConstaint constraint = this.exprParser.parseConstaint();
+                    SQLConstraint constraint = this.exprParser.parseConstaint();
                     constraint.setParent(createTable);
                     createTable.getTableElementList().add((SQLTableElement) constraint);
                 } else if (lexer.token() == Token.TABLESPACE) {
@@ -100,7 +100,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             // while
             // (this.tokenList.current().equals(OracleToken.ConstraintToken)) {
-            // parseConstaint(table.getConstaints());
+            // parseConstaint(table.getConstraints());
             //
             // if (this.tokenList.current().equals(OracleToken.CommaToken))
             // ;

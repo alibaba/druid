@@ -31,7 +31,7 @@ public class TestStat extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
 
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");

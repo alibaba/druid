@@ -34,7 +34,7 @@ public class SQLServerWallTest_3 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
-        provider.getConfig().setSelectHavingAlwayTrueCheck(true);
+        provider.getConfig().setSelectHavingAlwaysTrueCheck(true);
 
         Assert.assertFalse(provider.checkValid(//
         "select * from t where LEN(HOST_NAME()) > 0"));

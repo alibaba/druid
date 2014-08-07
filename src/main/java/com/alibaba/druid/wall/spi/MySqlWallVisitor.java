@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.wall.spi;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -68,6 +65,9 @@ import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
 
@@ -197,7 +197,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelelctAllow()) {
+        if (!config.isSelectAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
                                                                    this.toSQL(x)));
             return false;
@@ -220,7 +220,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             int rowCount = ((SQLNumericLiteralExpr) x.getRowCount()).getNumber().intValue();
             if (rowCount == 0) {
                 if (context != null) {
-                    context.incrementWarnnings();
+                    context.incrementWarnings();
                 }
 
                 if (!provider.getConfig().isLimitZeroAllow()) {
@@ -510,7 +510,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(MySqlShowCreateTableStatement x) {
-        String tableName = ((SQLName) x.getName()).getSimleName();
+        String tableName = ((SQLName) x.getName()).getSimpleName();
         WallContext context = WallContext.current();
         if (context != null) {
             WallSqlTableStat tableStat = context.getTableStat(tableName);

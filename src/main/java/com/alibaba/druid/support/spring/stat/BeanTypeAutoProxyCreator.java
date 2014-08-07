@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.support.spring.stat;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
 import org.springframework.beans.factory.BeanFactory;
@@ -28,6 +24,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 import org.springframework.util.PatternMatchUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 类BeanTypeAutoProxyCreator.java的实现描述：使用配置类型代替Springframework中配置名称的实现
@@ -60,8 +60,7 @@ public class BeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implement
      */
     @SuppressWarnings("rawtypes")
     protected Object[] getAdvicesAndAdvisorsForBean(Class beanClass, String beanName, TargetSource targetSource) {
-        for (Iterator<String> it = this.beanNames.iterator(); it.hasNext();) {
-            String mappedName = (String) it.next();
+        for (String mappedName : this.beanNames) {
             if (FactoryBean.class.isAssignableFrom(beanClass)) {
                 if (!mappedName.startsWith(BeanFactory.FACTORY_BEAN_PREFIX)) {
                     continue;
@@ -93,9 +92,7 @@ public class BeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implement
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(targetBeanType, "targetType cannot be null");
         String[] beanNames = context.getBeanNamesForType(targetBeanType);
-        for (String name : beanNames) {
-            this.beanNames.add(name);
-        }
+        Collections.addAll(this.beanNames, beanNames);
     }
 
 }
