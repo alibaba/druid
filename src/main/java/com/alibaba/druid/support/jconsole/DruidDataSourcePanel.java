@@ -73,7 +73,7 @@ public class DruidDataSourcePanel extends DruidPanel {
     }
 
     private void addTable(ColumnData columnData) {
-        ArrayList<ArrayList<LinkedHashMap<String, Object>>> data = columnData.getTableDatas();
+        ArrayList<ArrayList<LinkedHashMap<String, Object>>> data = columnData.getTableData();
 
         int i = 0;
         ArrayList<String> ids = columnData.getNames();
@@ -98,7 +98,7 @@ public class DruidDataSourcePanel extends DruidPanel {
 
     @Override
     protected void tableDataProcess(ArrayList<LinkedHashMap<String, Object>> data) {
-        ColumnData columnData = TableDataProcessor.mutilRow2col(data, KEY_WORD_IDENTITY);
+        ColumnData columnData = TableDataProcessor.multiRow2Col(data, KEY_WORD_IDENTITY);
         contentPanel = new JPanel(new GridLayout(0, 1));
         addTable(columnData);
 

@@ -21,7 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLColumnReference extends SQLConstaintImpl implements SQLColumnConstraint {
+public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnConstraint {
 
     private SQLName       table;
     private List<SQLName> columns = new ArrayList<SQLName>();

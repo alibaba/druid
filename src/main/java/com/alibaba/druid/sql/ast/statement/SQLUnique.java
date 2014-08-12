@@ -21,7 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLUnique extends SQLConstaintImpl implements SQLUniqueConstraint, SQLTableElement {
+public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint, SQLTableElement {
 
     private final List<SQLExpr> columns = new ArrayList<SQLExpr>();
 

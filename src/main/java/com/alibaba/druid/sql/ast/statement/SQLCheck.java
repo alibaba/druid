@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCheck extends SQLConstaintImpl implements SQLTableElement {
+public class SQLCheck extends SQLConstraintImpl implements SQLTableElement {
 
     private SQLExpr expr;
 

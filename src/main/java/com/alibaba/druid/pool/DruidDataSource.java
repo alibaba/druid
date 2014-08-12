@@ -2133,7 +2133,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         Map<String, Object> stmtInfo = new LinkedHashMap<String, Object>();
 
                         stmtInfo.put("sql", stmtHolder.getKey().getSql());
-                        stmtInfo.put("defaultRowPretch", stmtHolder.getDefaultRowPretch());
+                        stmtInfo.put("defaultRowPretch", stmtHolder.getDefaultRowPrefetch());
                         stmtInfo.put("rowPrefetch", stmtHolder.getRowPrefetch());
                         stmtInfo.put("hitCount", stmtHolder.getHitCount());
 

@@ -347,7 +347,7 @@ public class DruidSqlDetailFrame extends JFrame {
 
         ColumnData colData = TableDataProcessor.row2col(data);
         JTable table = new JTable();
-        DruidTableModel tableModel = new DruidTableModel(colData.getDatas());
+        DruidTableModel tableModel = new DruidTableModel(colData.getData());
         table.setModel(tableModel);
 
         TableColumn col = table.getColumnModel().getColumn(0);

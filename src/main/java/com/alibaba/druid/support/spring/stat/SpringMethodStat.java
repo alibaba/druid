@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.support.spring.stat;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+import com.alibaba.druid.support.profile.Profiler;
 
 import java.util.Date;
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-import com.alibaba.druid.support.profile.Profiler;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
 public class SpringMethodStat {
 
@@ -189,8 +189,6 @@ public class SpringMethodStat {
             if (running > max) {
                 if (concurrentMax.compareAndSet(max, running)) {
                     break;
-                } else {
-                    continue;
                 }
             } else {
                 break;

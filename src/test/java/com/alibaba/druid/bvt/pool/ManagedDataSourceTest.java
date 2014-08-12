@@ -31,7 +31,7 @@ public class ManagedDataSourceTest extends TestCase {
     private DruidDataSource dataSource;
 
     public void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
 
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");

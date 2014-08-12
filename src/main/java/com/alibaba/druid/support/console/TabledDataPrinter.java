@@ -15,12 +15,12 @@
  */
 package com.alibaba.druid.support.console;
 
+import com.alibaba.druid.sql.SQLUtils;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.druid.sql.SQLUtils;
 
 public class TabledDataPrinter {
 
@@ -90,7 +90,7 @@ public class TabledDataPrinter {
             List<Map<String, Object>> matchedContent = new ArrayList<Map<String, Object>>();
             for (Map<String, Object> dsStat : content) {
                 Integer idStr = (Integer) dsStat.get("Identity");
-                if (idStr.intValue() == opt.getId()) {
+                if (idStr == opt.getId()) {
                     matchedContent.add(dsStat);
                     break;
                 }
@@ -126,7 +126,7 @@ public class TabledDataPrinter {
             List<Map<String, Object>> matchedContent = new ArrayList<Map<String, Object>>();
             for (Map<String, Object> sqlStat : content) {
                 Integer idStr = (Integer) sqlStat.get("ID");
-                if (idStr.intValue() == opt.getId()) {
+                if (idStr == opt.getId()) {
                     matchedContent.add(sqlStat);
                     if (opt.isDetailPrint()) {
                         String dbType = (String) sqlStat.get("DbType");
@@ -160,8 +160,7 @@ public class TabledDataPrinter {
             }
             printContents.add(row);
         }
-        String formattedStr = TableFormatter.format(printContents);
-        return formattedStr;
+        return TableFormatter.format(printContents);
     }
 
     public static String getVerticalFormattedOutput(List<Map<String, Object>> content, String[] titleFields) {
@@ -169,18 +168,17 @@ public class TabledDataPrinter {
 
         int maxCol = content.size() > MAX_COL ? MAX_COL : content.size();
 
-        for (int i = 0; i < titleFields.length; ++i) {
+        for (String titleField : titleFields) {
             String[] row = new String[maxCol + 1];
-            row[0] = titleFields[i];
+            row[0] = titleField;
             for (int j = 0; j < maxCol; j++) {
                 Map<String, Object> sqlStat = content.get(j);
-                Object value = sqlStat.get(titleFields[i]);
-                row[j + 1] = handleAndConvert(value, titleFields[i]);
+                Object value = sqlStat.get(titleField);
+                row[j + 1] = handleAndConvert(value, titleField);
             }
             printContents.add(row);
         }
-        String formattedStr = TableFormatter.format(printContents);
-        return formattedStr;
+        return TableFormatter.format(printContents);
     }
 
     public static String handleAndConvert(Object value, String fieldName) {

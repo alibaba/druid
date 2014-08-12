@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.support.ibatis;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.engine.impl.SqlMapClientImpl;
 import com.ibatis.sqlmap.engine.impl.SqlMapSessionImpl;
 import com.ibatis.sqlmap.engine.scope.SessionScope;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class IbatisUtils {
     private static Log     LOG               = LogFactory.getLog(IbatisUtils.class);
@@ -32,19 +32,20 @@ public class IbatisUtils {
 
     private static Method  methodGetId       = null;
     private static Method  methodGetResource = null;
+    private static Field sessionField;
 
     static {
         try {
             Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass("com.ibatis.sqlmap.engine.mapping.result.AutoResultMap");
             Method[] methods = clazz.getMethods();
             for (Method method : methods) {
-                if (method.equals("setResultObjectValues")) { // ibatis 2.3.4 add method 'setResultObjectValues'
+                if (method.getName().equals("setResultObjectValues")) { // ibatis 2.3.4 add method 'setResultObjectValues'
                     VERSION_2_3_4 = true;
                     break;
                 }
             }
         } catch (Throwable e) {
-            // skip
+            LOG.error("Error while initializing", e);
         }
     }
 
@@ -106,9 +107,7 @@ public class IbatisUtils {
             return null;
         }
     }
-    
-    private static Field sessionField;
-    
+
     public static void set(SqlMapSessionImpl session, SqlMapClientImpl client) {
         if (sessionField == null) {
             for (Field field : SqlMapSessionImpl.class.getDeclaredFields()) {

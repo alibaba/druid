@@ -15,16 +15,6 @@
  */
 package com.alibaba.druid.support.http;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
 import com.alibaba.druid.support.logging.Log;
@@ -32,10 +22,19 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
 
-@SuppressWarnings("serial")
-public abstract class ResourceSerlvet extends HttpServlet {
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-    private final static Log   LOG                 = LogFactory.getLog(ResourceSerlvet.class);
+@SuppressWarnings("serial")
+public abstract class ResourceServlet extends HttpServlet {
+
+    private final static Log   LOG                 = LogFactory.getLog(ResourceServlet.class);
 
     public static final String SESSION_USER_KEY    = "druid-user";
     public static final String PARAM_NAME_USERNAME = "loginUsername";
@@ -54,7 +53,7 @@ public abstract class ResourceSerlvet extends HttpServlet {
 
     protected String           remoteAddressHeader = null;
 
-    public ResourceSerlvet(String resourcePath){
+    public ResourceServlet(String resourcePath){
         this.resourcePath = resourcePath;
     }
 
@@ -123,15 +122,7 @@ public abstract class ResourceSerlvet extends HttpServlet {
         boolean ipV6 = remoteAddress != null && remoteAddress.indexOf(':') != -1;
 
         if (ipV6) {
-            if ("0:0:0:0:0:0:0:1".equals(remoteAddress)) {
-                return true;
-            }
-
-            if (denyList.size() == 0 && allowList.size() == 0) {
-                return true;
-            }
-
-            return false;
+            return "0:0:0:0:0:0:0:1".equals(remoteAddress) || (denyList.size() == 0 && allowList.size() == 0);
         }
 
         IPAddress ipAddress = new IPAddress(remoteAddress);
@@ -223,7 +214,7 @@ public abstract class ResourceSerlvet extends HttpServlet {
                  || path.startsWith("/css")//
                  || path.startsWith("/js") //
             || path.startsWith("/img"))) {
-            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+            if (contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/druid/login.html");
             } else {
                 if ("".equals(path)) {
@@ -236,7 +227,7 @@ public abstract class ResourceSerlvet extends HttpServlet {
         }
 
         if ("".equals(path)) {
-            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+            if (contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/druid/index.html");
             } else {
                 response.sendRedirect("druid/index.html");
@@ -249,7 +240,7 @@ public abstract class ResourceSerlvet extends HttpServlet {
             return;
         }
 
-        if (path.indexOf(".json") >= 0) {
+        if (path.contains(".json")) {
             String fullUrl = path;
             if (request.getQueryString() != null && request.getQueryString().length() > 0) {
                 fullUrl += "?" + request.getQueryString();
@@ -264,10 +255,7 @@ public abstract class ResourceSerlvet extends HttpServlet {
 
     public boolean ContainsUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            return false;
-        }
-        return session.getAttribute(SESSION_USER_KEY) != null;
+        return session != null && session.getAttribute(SESSION_USER_KEY) != null;
     }
 
     public boolean isRequireAuth() {
@@ -280,17 +268,17 @@ public abstract class ResourceSerlvet extends HttpServlet {
     }
 
     protected String getRemoteAddress(HttpServletRequest request) {
-        String remoteAddr = null;
+        String remoteAddress = null;
         
         if (remoteAddressHeader != null) {
-            remoteAddr = request.getHeader(remoteAddressHeader);
+            remoteAddress = request.getHeader(remoteAddressHeader);
         }
         
-        if (remoteAddr == null) {
-            remoteAddr = request.getRemoteAddr();
+        if (remoteAddress == null) {
+            remoteAddress = request.getRemoteAddr();
         }
         
-        return remoteAddr;
+        return remoteAddress;
     }
 
     protected abstract String process(String url);

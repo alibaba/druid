@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 
 public class SQLDDLParser extends SQLStatementParser {
 
@@ -27,7 +27,7 @@ public class SQLDDLParser extends SQLStatementParser {
         super(exprParser);
     }
 
-    protected SQLTableConstaint parseConstraint() {
+    protected SQLTableConstraint parseConstraint() {
         if (lexer.token() == Token.CONSTRAINT) {
             lexer.nextToken();
         }

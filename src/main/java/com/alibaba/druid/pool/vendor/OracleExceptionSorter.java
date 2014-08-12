@@ -15,15 +15,15 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-
-import com.alibaba.druid.pool.ExceptionSorter;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * Implementation of ExceptionSorter for Oracle.
@@ -139,11 +139,11 @@ public class OracleExceptionSorter implements ExceptionSorter, Serializable {
         // certain strings.
 
         if ((error_code < 20000 || error_code >= 21000)) {
-            if ((error_text.indexOf("SOCKET") > -1) // for control socket error
-                || (error_text.indexOf("套接字") > -1) // for control socket error
-                || (error_text.indexOf("CONNECTION HAS ALREADY BEEN CLOSED") > -1) //
-                || (error_text.indexOf("BROKEN PIPE") > -1) //
-                || (error_text.indexOf("管道已结束") > -1) //
+            if ((error_text.contains("SOCKET")) // for control socket error
+                || (error_text.contains("套接字")) // for control socket error
+                || (error_text.contains("CONNECTION HAS ALREADY BEEN CLOSED")) //
+                || (error_text.contains("BROKEN PIPE")) //
+                || (error_text.contains("管道已结束")) //
             ) {
                 return true;
             }

@@ -23,7 +23,7 @@ public class MonitorContext {
 
     public static String              DEFAULT_DOMAIN;
 
-    private final Map<String, Object> atrributes  = new HashMap<String, Object>();
+    private final Map<String, Object> attributes = new HashMap<String, Object>();
 
     private String                    domain  = "default";
     private String                    app     = "default";
@@ -54,8 +54,8 @@ public class MonitorContext {
         this.startTime = startTime;
     }
 
-    public Map<String, Object> getAtrributes() {
-        return atrributes;
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
     public int getPID() {

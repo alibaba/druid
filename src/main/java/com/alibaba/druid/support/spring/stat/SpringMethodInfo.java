@@ -52,7 +52,7 @@ public class SpringMethodInfo {
             return true;
         }
 
-        if (obj == null) {
+        if (obj == null || !(obj instanceof SpringMethodInfo)) {
             return false;
         }
 
@@ -80,7 +80,7 @@ public class SpringMethodInfo {
     }
 
     public static String getMethodSignature(Method method) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append(method.getName());
         sb.append('(');

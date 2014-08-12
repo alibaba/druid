@@ -30,7 +30,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 public class TestIdle3 extends TestCase {
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
     }
 
     protected void tearDown() throws Exception {

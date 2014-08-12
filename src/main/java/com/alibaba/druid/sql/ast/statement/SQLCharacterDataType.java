@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCharactorDataType extends SQLDataTypeImpl {
+public class SQLCharacterDataType extends SQLDataTypeImpl {
 
     private String             charSetName;
     private String             collate;
@@ -28,7 +28,7 @@ public class SQLCharactorDataType extends SQLDataTypeImpl {
     public final static String CHAR_TYPE_BYTE = "BYTE";
     public final static String CHAR_TYPE_CHAR = "CHAR";
 
-    public SQLCharactorDataType(String name){
+    public SQLCharacterDataType(String name){
         super(name);
     }
 

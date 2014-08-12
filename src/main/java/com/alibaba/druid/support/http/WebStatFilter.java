@@ -15,22 +15,6 @@
  */
 package com.alibaba.druid.support.http;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-
 import com.alibaba.druid.filter.stat.StatFilterContext;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
@@ -46,6 +30,21 @@ import com.alibaba.druid.util.DruidWebUtils;
 import com.alibaba.druid.util.PatternMatcher;
 import com.alibaba.druid.util.ServletPathMatcher;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * 用于配置Web和Druid数据源之间的管理关联监控统计
  * 
@@ -56,7 +55,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
 
     private final static Log   LOG                               = LogFactory.getLog(WebStatFilter.class);
 
-    public final static String PARAM_NAME_PORFILE_ENABLE         = "profileEnable";
+    public final static String PARAM_NAME_PROFILE_ENABLE         = "profileEnable";
     public final static String PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
     public final static String PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
     public static final String PARAM_NAME_EXCLUSIONS             = "exclusions";
@@ -250,7 +249,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
         }
 
         {
-            String param = config.getInitParameter(PARAM_NAME_PORFILE_ENABLE);
+            String param = config.getInitParameter(PARAM_NAME_PROFILE_ENABLE);
             if (param != null && param.trim().length() != 0) {
                 param = param.trim();
                 if ("true".equals(param)) {
@@ -258,7 +257,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
                 } else if ("false".equals(param)) {
                     this.profileEnable = false;
                 } else {
-                    LOG.error("WebStatFilter Parameter '" + PARAM_NAME_PORFILE_ENABLE + "' config error");
+                    LOG.error("WebStatFilter Parameter '" + PARAM_NAME_PROFILE_ENABLE + "' config error");
                 }
             }
         }

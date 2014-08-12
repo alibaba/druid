@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.stat;
 
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Method;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.DruidDataSourceUtils;
+import com.alibaba.druid.util.JMXUtils;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -33,12 +31,13 @@ import javax.management.openmbean.SimpleType;
 import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.DruidDataSourceUtils;
-import com.alibaba.druid.util.JMXUtils;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 @SuppressWarnings("rawtypes")
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
@@ -53,7 +52,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     private final AtomicLong                        resetCount                     = new AtomicLong();
 
     // global instances
-    private static volatile IdentityHashMap                  dataSources;
+    private static volatile IdentityHashMap         dataSources;
 
     private final static String                     MBEAN_NAME                     = "com.alibaba.druid:type=DruidDataSourceStat";
 
@@ -61,7 +60,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         return instance;
     }
 
-    public static void cear() {
+    public static void clear() {
         IdentityHashMap<Object, ObjectName> dataSources = getInstances();
 
         synchronized (dataSources) {
@@ -85,12 +84,18 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized static IdentityHashMap<Object, ObjectName> getInstances() {
-        if (dataSources == null) {
-            if (isRegisterToSystemProperty()) {
-                dataSources = getInstances0();
-            } else {
-                dataSources = new IdentityHashMap<Object, ObjectName>();                
+    public static IdentityHashMap<Object, ObjectName> getInstances() {
+        IdentityHashMap<Object, ObjectName> tmp = dataSources;
+        if (tmp == null) {
+            synchronized (DruidDataSourceStatManager.class) {
+                if (isRegisterToSystemProperty()) {
+                    dataSources = getInstances0();
+                } else {
+                    tmp = dataSources;
+                    if (null == tmp) {
+                        dataSources = tmp = new IdentityHashMap<Object, ObjectName>();
+                    }
+                }
             }
         }
 
@@ -99,12 +104,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
     public static boolean isRegisterToSystemProperty() {
         String value = System.getProperty(SYS_PROP_REGISTER_SYS_PROPERTY);
-
-        if ("true".equals(value)) {
-            return true;
-        }
-
-        return false;
+        return "true".equals(value);
     }
 
     @SuppressWarnings("unchecked")
@@ -189,12 +189,10 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
-            if (objectName != null) {
-                try {
-                    mbeanServer.unregisterMBean(objectName);
-                } catch (Throwable ex) {
-                    LOG.error("unregister mbean error", ex);
-                }
+            try {
+                mbeanServer.unregisterMBean(objectName);
+            } catch (Throwable ex) {
+                LOG.error("unregister mbean error", ex);
             }
 
             if (instances.size() == 0) {

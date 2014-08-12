@@ -55,9 +55,9 @@ public class IPRange {
     /**
      * Constructor.
      * 
-     * @param ip String representation of the IP address. The two following formats are supported :<br/>
+     * @param range String representation of the IP address. The two following formats are supported :<br/>
      * <li/>xxx.xxx.xxx.xxx/xxx.xxx.xxx.xxx <li/>xxx.xxx.xxx.xxx/xx <- extended network prefix
-     * @exception InvalidIPRangeException Throws this exception when the specified string doesn't represent a valid IP
+     * @exception IllegalArgumentException Throws this exception when the specified string doesn't represent a valid IP
      * address.
      */
     public IPRange(String range){
@@ -102,11 +102,7 @@ public class IPRange {
      * address/extended network prefixs).
      */
     public String toString() {
-        StringBuffer result = new StringBuffer(ipAddress.toString());
-        result.append("/");
-        result.append(extendedNetworkPrefix);
-
-        return result.toString();
+        return ipAddress.toString() + "/" + extendedNetworkPrefix;
     }
 
     // -------------------------------------------------------------------------
@@ -114,7 +110,7 @@ public class IPRange {
      * Parse the IP range string representation.
      * 
      * @param range String representation of the IP range.
-     * @exception InvalidIPRangeException Throws this exception if the specified range is not a valid IP network range.
+     * @exception IllegalArgumentException Throws this exception if the specified range is not a valid IP network range.
      */
     final void parseRange(String range) {
         if (range == null) {
@@ -180,19 +176,19 @@ public class IPRange {
     }
 
     public static String toDecimalString(String inBinaryIpAddress) {
-        StringBuilder decimalip = new StringBuilder();
+        StringBuilder decimalIp = new StringBuilder();
         String[] binary = new String[4];
 
         for (int i = 0, c = 0; i < 32; i = i + 8, c++) {
             binary[c] = inBinaryIpAddress.substring(i, i + 8);
             int octet = Integer.parseInt(binary[c], 2);
-            decimalip.append(octet);
+            decimalIp.append(octet);
             if (c < 3) {
 
-                decimalip.append('.');
+                decimalIp.append('.');
             }
         }
-        return decimalip.toString();
+        return decimalIp.toString();
     }
 
     // -------------------------------------------------------------------------

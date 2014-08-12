@@ -513,10 +513,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             return;
         }
 
-        if (holder.getDefaultRowPretch() == -1) {
+        if (holder.getDefaultRowPrefetch() == -1) {
             int defaultRowPretch = OracleUtils.getRowPrefetch(this);
-            if (defaultRowPretch != holder.getDefaultRowPretch()) {
-                holder.setDefaultRowPretch(defaultRowPretch);
+            if (defaultRowPretch != holder.getDefaultRowPrefetch()) {
+                holder.setDefaultRowPrefetch(defaultRowPretch);
                 holder.setRowPrefetch(defaultRowPretch);
             }
         }
@@ -525,8 +525,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
 
         if (fetchRowPeak <= 1) {
             rowPrefetch = 2;
-        } else if (fetchRowPeak > holder.getDefaultRowPretch()) {
-            rowPrefetch = holder.getDefaultRowPretch();
+        } else if (fetchRowPeak > holder.getDefaultRowPrefetch()) {
+            rowPrefetch = holder.getDefaultRowPrefetch();
         } else {
             rowPrefetch = fetchRowPeak + 1;
         }

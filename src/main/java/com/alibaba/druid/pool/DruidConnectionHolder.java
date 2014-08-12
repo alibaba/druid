@@ -15,6 +15,13 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.Utils;
+
+import javax.sql.ConnectionEventListener;
+import javax.sql.StatementEventListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,14 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.sql.ConnectionEventListener;
-import javax.sql.StatementEventListener;
-
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.util.JdbcConstants;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -42,7 +41,7 @@ public final class DruidConnectionHolder {
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
     private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
-    private final long                          connecttimeMillis;
+    private final long                          connectTimeMillis;
     private transient long                      lastActiveTimeMillis;
     private long                                useCount                 = 0;
 
@@ -66,8 +65,8 @@ public final class DruidConnectionHolder {
 
         this.dataSource = dataSource;
         this.conn = conn;
-        this.connecttimeMillis = System.currentTimeMillis();
-        this.lastActiveTimeMillis = connecttimeMillis;
+        this.connectTimeMillis = System.currentTimeMillis();
+        this.lastActiveTimeMillis = connectTimeMillis;
 
         this.underlyingAutoCommit = conn.getAutoCommit();
 
@@ -192,7 +191,7 @@ public final class DruidConnectionHolder {
     }
 
     public long getTimeMillis() {
-        return connecttimeMillis;
+        return connectTimeMillis;
     }
 
     public long getUseCount() {
@@ -251,7 +250,7 @@ public final class DruidConnectionHolder {
         buf.append("{ID:");
         buf.append(System.identityHashCode(conn));
         buf.append(", ConnectTime:\"");
-        buf.append(Utils.toString(new Date(this.connecttimeMillis)));
+        buf.append(Utils.toString(new Date(this.connectTimeMillis)));
 
         buf.append("\", UseCount:");
         buf.append(useCount);

@@ -37,9 +37,9 @@ public interface WallConfigMBean {
 
     void setTruncateAllow(boolean truncateAllow);
 
-    boolean isSelelctAllow();
+    boolean isSelectAllow();
 
-    void setSelelctAllow(boolean selelctAllow);
+    void setSelectAllow(boolean selectAllow);
 
     boolean isSelectIntoAllow();
 
@@ -53,29 +53,29 @@ public interface WallConfigMBean {
 
     void setSelectUnionCheck(boolean selectUnionCheck);
 
-    boolean isSelectWhereAlwayTrueCheck();
+    boolean isSelectWhereAlwaysTrueCheck();
 
-    void setSelectWhereAlwayTrueCheck(boolean selectWhereAlwayTrueCheck);
+    void setSelectWhereAlwaysTrueCheck(boolean selectWhereAlwaysTrueCheck);
 
-    boolean isSelectHavingAlwayTrueCheck();
+    boolean isSelectHavingAlwaysTrueCheck();
 
-    void setSelectHavingAlwayTrueCheck(boolean selectHavingAlwayTrueCheck);
+    void setSelectHavingAlwaysTrueCheck(boolean selectHavingAlwaysTrueCheck);
 
     boolean isDeleteAllow();
 
     void setDeleteAllow(boolean deleteAllow);
 
-    boolean isDeleteWhereAlwayTrueCheck();
+    boolean isDeleteWhereAlwaysTrueCheck();
 
-    void setDeleteWhereAlwayTrueCheck(boolean deleteWhereAlwayTrueCheck);
+    void setDeleteWhereAlwaysTrueCheck(boolean deleteWhereAlwaysTrueCheck);
 
     boolean isUpdateAllow();
 
     void setUpdateAllow(boolean updateAllow);
 
-    boolean isUpdateWhereAlayTrueCheck();
+    boolean isUpdateWhereAlwaysTrueCheck();
 
-    void setUpdateWhereAlayTrueCheck(boolean updateWhereAlayTrueCheck);
+    void setUpdateWhereAlwaysTrueCheck(boolean updateWhereAlwaysTrueCheck);
 
     boolean isInsertAllow();
 

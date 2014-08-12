@@ -35,9 +35,6 @@ public class SQLServerWallProvider extends WallProvider {
 
     public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/sqlserver";
 
-    /**
-     * @param config
-     */
     public SQLServerWallProvider(){
         this(new WallConfig(DEFAULT_CONFIG_DIR));
     }

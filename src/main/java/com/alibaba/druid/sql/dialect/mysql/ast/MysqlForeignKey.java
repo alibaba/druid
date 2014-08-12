@@ -27,7 +27,7 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
 
     private SQLName indexName;
 
-    private boolean hasConstaint;
+    private boolean hasConstraint;
 
     private Match   referenceMatch;
 
@@ -43,12 +43,12 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
         this.indexName = indexName;
     }
 
-    public boolean isHasConstaint() {
-        return hasConstaint;
+    public boolean isHasConstraint() {
+        return hasConstraint;
     }
 
-    public void setHasConstaint(boolean hasConstaint) {
-        this.hasConstaint = hasConstaint;
+    public void setHasConstraint(boolean hasConstraint) {
+        this.hasConstraint = hasConstraint;
     }
 
     @Override

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
@@ -136,7 +136,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     } else if (lexer.token() == (Token.KEY)) {
                         stmt.getTableElementList().add(parseConstraint());
                     } else if (lexer.token() == (Token.PRIMARY)) {
-                        SQLTableConstaint pk = parseConstraint();
+                        SQLTableConstraint pk = parseConstraint();
                         pk.setParent(stmt);
                         stmt.getTableElementList().add(pk);
                     } else if (lexer.token() == (Token.FOREIGN)) {
@@ -595,7 +595,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         return false;
     }
 
-    protected SQLTableConstaint parseConstraint() {
+    protected SQLTableConstraint parseConstraint() {
         SQLName name = null;
         boolean hasConstaint = false;
         if (lexer.token() == (Token.CONSTRAINT)) {
@@ -661,21 +661,21 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             MySqlPrimaryKey pk = this.getExprParser().parsePrimaryKey();
             pk.setName(name);
             pk.setHasConstaint(hasConstaint);
-            return (SQLTableConstaint) pk;
+            return (SQLTableConstraint) pk;
         }
 
         if (lexer.token() == Token.UNIQUE) {
             MySqlUnique uk = this.getExprParser().parseUnique();
             uk.setName(name);
             uk.setHasConstaint(hasConstaint);
-            return (SQLTableConstaint) uk;
+            return (SQLTableConstraint) uk;
         }
 
         if (lexer.token() == Token.FOREIGN) {
             MysqlForeignKey fk = this.getExprParser().parseForeignKey();
             fk.setName(name);
-            fk.setHasConstaint(hasConstaint);
-            return (SQLTableConstaint) fk;
+            fk.setHasConstraint(hasConstaint);
+            return (SQLTableConstraint) fk;
         }
 
         throw new ParserException("TODO :" + lexer.token());

@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.support.ibatis;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
 import com.ibatis.sqlmap.client.SqlMapSession;
 import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @SuppressWarnings("deprecation")
 public class SqlMapSessionWrapper extends SqlMapExecutorWrapper implements SqlMapSession {
@@ -48,8 +47,8 @@ public class SqlMapSessionWrapper extends SqlMapExecutorWrapper implements SqlMa
         session.endTransaction();
     }
 
-    public void setUserConnection(Connection connnection) throws SQLException {
-        session.setUserConnection(connnection);
+    public void setUserConnection(Connection connection) throws SQLException {
+        session.setUserConnection(connection);
     }
 
     @Deprecated

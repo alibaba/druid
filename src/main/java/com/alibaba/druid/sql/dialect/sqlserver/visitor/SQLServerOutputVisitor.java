@@ -267,7 +267,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             visitColumnDefault(x);
         }
 
-        for (SQLColumnConstraint item : x.getConstaints()) {
+        for (SQLColumnConstraint item : x.getConstraints()) {
             print(' ');
             item.accept(this);
         }

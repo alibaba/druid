@@ -16,11 +16,11 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLConstaint;
+import com.alibaba.druid.sql.ast.statement.SQLConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 
-public interface OracleConstraint extends OracleSQLObject, SQLConstaint, SQLTableElement {
+public interface OracleConstraint extends OracleSQLObject, SQLConstraint, SQLTableElement {
 
     SQLName getExceptionsInto();
 

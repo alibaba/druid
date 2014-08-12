@@ -20,14 +20,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddConstraint extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private SQLConstaint constraint;
+    private SQLConstraint constraint;
     private boolean      withNoCheck = false;
 
     public SQLAlterTableAddConstraint(){
 
     }
 
-    public SQLAlterTableAddConstraint(SQLConstaint constraint){
+    public SQLAlterTableAddConstraint(SQLConstraint constraint){
         this.setConstraint(constraint);
     }
 
@@ -39,11 +39,11 @@ public class SQLAlterTableAddConstraint extends SQLObjectImpl implements SQLAlte
         visitor.endVisit(this);
     }
 
-    public SQLConstaint getConstraint() {
+    public SQLConstraint getConstraint() {
         return constraint;
     }
 
-    public void setConstraint(SQLConstaint constraint) {
+    public void setConstraint(SQLConstraint constraint) {
         if (constraint != null) {
             constraint.setParent(this);
         }

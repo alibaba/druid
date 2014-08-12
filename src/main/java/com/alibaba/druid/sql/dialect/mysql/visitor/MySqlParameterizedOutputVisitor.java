@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import java.security.AccessControlException;
-import java.util.List;
-import java.util.Properties;
-
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -37,6 +33,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
+import java.security.AccessControlException;
+import java.util.List;
+import java.util.Properties;
+
 public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implements ParameterizedVisitor {
 
     private boolean shardingSupport = true;
@@ -51,12 +51,12 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
         super(appender);
 
         try {
-            configFromPropety(System.getProperties());
+            configFromProperty(System.getProperties());
         } catch (AccessControlException e) {
         }
     }
 
-    public void configFromPropety(Properties properties) {
+    public void configFromProperty(Properties properties) {
         {
             String property = properties.getProperty("druid.parameterized.shardingSupport");
             if ("true".equals(property)) {

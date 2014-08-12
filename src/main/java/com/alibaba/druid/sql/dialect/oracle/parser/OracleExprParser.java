@@ -36,7 +36,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
@@ -242,7 +242,7 @@ public class OracleExprParser extends SQLExprParser {
         }
         
         if (isCharType(typeName)) {
-            SQLCharactorDataType charType = new SQLCharactorDataType(typeName);
+            SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
             
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
@@ -251,10 +251,10 @@ public class OracleExprParser extends SQLExprParser {
                 
                 if (identifierEquals("CHAR")) {
                     lexer.nextToken();
-                    charType.setCharType(SQLCharactorDataType.CHAR_TYPE_CHAR);
+                    charType.setCharType(SQLCharacterDataType.CHAR_TYPE_CHAR);
                 } else if (identifierEquals("BYTE")) {
                     lexer.nextToken();
-                    charType.setCharType(SQLCharactorDataType.CHAR_TYPE_BYTE);
+                    charType.setCharType(SQLCharacterDataType.CHAR_TYPE_BYTE);
                 }
                 
                 accept(Token.RPAREN);

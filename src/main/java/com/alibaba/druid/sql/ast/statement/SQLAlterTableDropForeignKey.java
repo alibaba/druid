@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAlterTableDropForeinKey extends SQLObjectImpl implements SQLAlterTableItem {
+public class SQLAlterTableDropForeignKey extends SQLObjectImpl implements SQLAlterTableItem {
 
     private SQLName indexName;
 

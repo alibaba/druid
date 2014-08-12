@@ -35,7 +35,7 @@ public class TestIdle extends TestCase {
 
     protected void tearDown() throws Exception {
         JdbcUtils.close(dataSource);
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
     }
 
     protected void setUp() throws Exception {

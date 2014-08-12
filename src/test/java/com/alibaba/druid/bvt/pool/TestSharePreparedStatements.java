@@ -29,7 +29,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 public class TestSharePreparedStatements extends TestCase {
 
     protected void setUp() throws Exception {
-        DruidDataSourceStatManager.cear();
+        DruidDataSourceStatManager.clear();
     }
 
     protected void tearDown() throws Exception {

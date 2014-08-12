@@ -37,7 +37,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
@@ -2206,7 +2206,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         } else if (lexer.token() == Token.FOREIGN) {
                             MysqlForeignKey fk = this.getExprParser().parseForeignKey();
                             fk.setName(constraintName);
-                            fk.setHasConstaint(true);
+                            fk.setHasConstraint(true);
 
                             SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
 
@@ -2430,7 +2430,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
             accept(Token.KEY);
             SQLName indexName = this.exprParser.name();
-            SQLAlterTableDropForeinKey item = new SQLAlterTableDropForeinKey();
+            SQLAlterTableDropForeignKey item = new SQLAlterTableDropForeignKey();
             item.setIndexName(indexName);
             stmt.getItems().add(item);
         } else if (lexer.token() == Token.PRIMARY) {

@@ -49,7 +49,7 @@ public class SQLServerColumnDefinition extends SQLColumnDefinition implements SQ
             this.acceptChild(visitor, name);
             this.acceptChild(visitor, dataType);
             this.acceptChild(visitor, defaultExpr);
-            this.acceptChild(visitor, constaints);
+            this.acceptChild(visitor, constraints);
             this.acceptChild(visitor, identity);
         }
         visitor.endVisit(this);

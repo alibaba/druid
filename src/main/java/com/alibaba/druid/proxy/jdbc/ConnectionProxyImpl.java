@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
+import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.stat.StatFilter;
+
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -36,9 +39,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import com.alibaba.druid.filter.FilterChainImpl;
-import com.alibaba.druid.filter.stat.StatFilter;
-
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
@@ -52,7 +52,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private final long            connectedTime;
 
-    private TransactionInfo       transcationInfo;
+    private TransactionInfo       transactionInfo;
 
     private int                   closeCount;
 
@@ -122,8 +122,8 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         FilterChainImpl chain = createChain();
         chain.connection_commit(this);
 
-        if (transcationInfo != null) {
-            transcationInfo.setEndTimeMillis();
+        if (transactionInfo != null) {
+            transactionInfo.setEndTimeMillis();
         }
         recycleFilterChain(chain);
     }
@@ -399,8 +399,8 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         FilterChainImpl chain = createChain();
         chain.connection_rollback(this);
         recycleFilterChain(chain);
-        if (transcationInfo != null) {
-            transcationInfo.setEndTimeMillis();
+        if (transactionInfo != null) {
+            transactionInfo.setEndTimeMillis();
         }
     }
 
@@ -409,21 +409,21 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         FilterChainImpl chain = createChain();
         chain.connection_rollback(this, savepoint);
         recycleFilterChain(chain);
-        if (transcationInfo != null) {
-            transcationInfo.setEndTimeMillis();
+        if (transactionInfo != null) {
+            transactionInfo.setEndTimeMillis();
         }
     }
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         if (!autoCommit) {
-            if (transcationInfo == null) {
+            if (transactionInfo == null) {
                 long transactionId = this.dataSource.createTransactionId();
-                transcationInfo = new TransactionInfo(transactionId);
-                this.putAttribute(StatFilter.ATTR_TRANSACTION, transcationInfo); // compatible for druid 0.1.18
+                transactionInfo = new TransactionInfo(transactionId);
+                this.putAttribute(StatFilter.ATTR_TRANSACTION, transactionInfo); // compatible for druid 0.1.18
             }
         } else {
-            transcationInfo = null;
+            transactionInfo = null;
         }
 
         FilterChainImpl chain = createChain();
@@ -527,7 +527,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public TransactionInfo getTransactionInfo() {
-        return transcationInfo;
+        return transactionInfo;
     }
 
     @Override

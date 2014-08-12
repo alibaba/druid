@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
+import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -37,19 +41,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.sql.DataSource;
-
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public final class JdbcUtils implements JdbcConstants {
 
-    private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
+    private final static Log        LOG                = LogFactory.getLog(JdbcUtils.class);
 
-    private static final Properties driverUrlMapping = new Properties();
+    private static final Properties DRIVER_URL_MAPPING = new Properties();
 
     static {
         try {
@@ -68,7 +67,7 @@ public final class JdbcUtils implements JdbcConstants {
                         JdbcUtils.close(is);
                     }
 
-                    driverUrlMapping.putAll(property);
+                    DRIVER_URL_MAPPING.putAll(property);
                 }
             }
         } catch (Exception e) {
@@ -76,7 +75,7 @@ public final class JdbcUtils implements JdbcConstants {
         }
     }
 
-    public final static void close(Connection x) {
+    public static void close(Connection x) {
         if (x == null) {
             return;
         }
@@ -87,7 +86,7 @@ public final class JdbcUtils implements JdbcConstants {
         }
     }
 
-    public final static void close(Statement x) {
+    public static void close(Statement x) {
         if (x == null) {
             return;
         }
@@ -98,18 +97,18 @@ public final class JdbcUtils implements JdbcConstants {
         }
     }
 
-    public final static void close(ResultSet x) {
+    public static void close(ResultSet x) {
         if (x == null) {
             return;
         }
         try {
             x.close();
         } catch (Exception e) {
-            LOG.debug("close resultset error", e);
+            LOG.debug("close result set error", e);
         }
     }
 
-    public final static void close(Closeable x) {
+    public static void close(Closeable x) {
         if (x == null) {
             return;
         }
@@ -121,11 +120,11 @@ public final class JdbcUtils implements JdbcConstants {
         }
     }
 
-    public final static void printResultSet(ResultSet rs) throws SQLException {
+    public static void printResultSet(ResultSet rs) throws SQLException {
         printResultSet(rs, System.out);
     }
 
-    public final static void printResultSet(ResultSet rs, PrintStream out) throws SQLException {
+    public static void printResultSet(ResultSet rs, PrintStream out) throws SQLException {
         ResultSetMetaData metadata = rs.getMetaData();
         int columnCount = metadata.getColumnCount();
         for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
@@ -204,35 +203,35 @@ public final class JdbcUtils implements JdbcConstants {
                 } else if (type == Types.CLOB) {
                     out.print(String.valueOf(rs.getString(columnIndex)));
                 } else if (type == Types.JAVA_OBJECT) {
-                    Object objec = rs.getObject(columnIndex);
+                    Object object = rs.getObject(columnIndex);
 
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(String.valueOf(objec));
+                        out.print(String.valueOf(object));
                     }
                 } else if (type == Types.LONGVARCHAR) {
-                    Object objec = rs.getString(columnIndex);
+                    Object object = rs.getString(columnIndex);
 
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(String.valueOf(objec));
+                        out.print(String.valueOf(object));
                     }
                 } else if (type == Types.NULL) {
                     out.print("null");
                 } else {
-                    Object objec = rs.getObject(columnIndex);
+                    Object object = rs.getObject(columnIndex);
 
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        if (objec instanceof byte[]) {
-                            byte[] bytes = (byte[]) objec;
+                        if (object instanceof byte[]) {
+                            byte[] bytes = (byte[]) object;
                             String text = HexBin.encode(bytes);
                             out.print(text);
                         } else {
-                            out.print(String.valueOf(objec));
+                            out.print(String.valueOf(object));
                         }
                     }
                 }

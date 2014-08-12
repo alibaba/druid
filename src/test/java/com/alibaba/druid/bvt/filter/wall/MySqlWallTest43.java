@@ -43,7 +43,7 @@ public class MySqlWallTest43 extends TestCase {
 
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        provider.getConfig().setConditionAndAlwayTrueAllow(true);
+        provider.getConfig().setConditionAndAlwaysTrueAllow(true);
 
         Assert.assertTrue(provider.checkValid(//
         "SELECT COUNT(1) AS count FROM `team` " + //
@@ -64,7 +64,7 @@ public class MySqlWallTest43 extends TestCase {
 
     public void test_true2() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        provider.getConfig().setConditionAndAlwayFalseAllow(true);
+        provider.getConfig().setConditionAndAlwaysFalseAllow(true);
 
         Assert.assertTrue(provider.checkValid(//
         "SELECT COUNT(1) AS count FROM `team` " + //
