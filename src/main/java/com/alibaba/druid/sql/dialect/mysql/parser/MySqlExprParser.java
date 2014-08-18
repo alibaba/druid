@@ -612,6 +612,24 @@ public class MySqlExprParser extends SQLExprParser {
 
         return expr;
     }
+    
+    public SQLExpr additiveRest(SQLExpr expr) {
+        if (lexer.token() == Token.PLUS) {
+            lexer.nextToken();
+            SQLExpr rightExp = multiplicative();
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Add, rightExp);
+            expr = additiveRest(expr);
+        } else if (lexer.token() == Token.SUB) {
+            lexer.nextToken();
+            SQLExpr rightExp = multiplicative();
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Subtract, rightExp);
+            expr = additiveRest(expr);
+        }
+
+        return expr;
+    }
 
     public SQLAssignItem parseAssignItem() {
         SQLAssignItem item = new SQLAssignItem();

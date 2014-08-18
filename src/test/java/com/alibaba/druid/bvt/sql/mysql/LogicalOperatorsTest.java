@@ -156,7 +156,7 @@ public class LogicalOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 0 || NULL;", text);
+        Assert.assertEquals("SELECT 0\n\tOR NULL;", text);
     }
 
     public void test_12() throws Exception {
