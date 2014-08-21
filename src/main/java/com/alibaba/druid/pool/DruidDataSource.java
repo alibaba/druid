@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -53,7 +52,6 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
 import com.alibaba.druid.Constants;
-import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.AutoLoad;
@@ -128,11 +126,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private int                              notEmptyWaitThreadPeak  = 0;
 
     // threads
-    private ScheduledExecutorService         destroyScheduler;
     private ScheduledFuture<?>               destroySchedulerFuture;
     private DestroyTask                      destoryTask;
     
-    private ScheduledExecutorService         createScheduler;
     private CreateConnectionThread           createConnectionThread;
     private DestroyConnectionThread          destroyConnectionThread;
     private LogStatsThread                   logStatsThread;
@@ -494,10 +490,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         this.connectProperties = properties;
-    }
-
-    public boolean isInited() {
-        return this.inited;
     }
 
     public void init() throws SQLException {
@@ -2641,27 +2633,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
-    }
-    
-    
-    public ScheduledExecutorService getCreateScheduler() {
-        return createScheduler;
-    }
-    
-    public void setCreateScheduler(ScheduledExecutorService createScheduler) {
-        this.createScheduler = createScheduler;
-    }
-
-    public ScheduledExecutorService getDestroyScheduler() {
-        return destroyScheduler;
-    }
-
-    
-    public void setDestroyScheduler(ScheduledExecutorService destroyScheduler) {
-        if (isInited()) {
-            throw new DruidRuntimeException("dataSource inited.");
-        }
-        this.destroyScheduler = destroyScheduler;
     }
     
     private void emptySignal() {

@@ -60,6 +60,8 @@ public final class DruidConnectionHolder {
     private int                                 underlyingTransactionIsolation;
     private boolean                             underlyingAutoCommit;
     private boolean                             discard                  = false;
+    
+    public static boolean                       holdabilityUnsupported   = false;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
 
@@ -71,7 +73,7 @@ public final class DruidConnectionHolder {
         this.underlyingAutoCommit = conn.getAutoCommit();
 
         {
-            boolean initUnderlyHoldability = true;
+            boolean initUnderlyHoldability = !holdabilityUnsupported;
             if (JdbcConstants.SYBASE.equals(dataSource.getDbType()) //
                 || JdbcConstants.DB2.equals(dataSource.getDbType()) //
             ) {
@@ -80,6 +82,9 @@ public final class DruidConnectionHolder {
             if (initUnderlyHoldability) {
                 try {
                     this.underlyingHoldability = conn.getHoldability();
+                } catch (UnsupportedOperationException e) {
+                    holdabilityUnsupported = true;
+                    LOG.warn("getHoldability unsupported", e);
                 } catch (SQLException e) {
                     LOG.warn("getHoldability error", e);
                 }
@@ -90,10 +95,8 @@ public final class DruidConnectionHolder {
         try {
             this.underlyingTransactionIsolation = conn.getTransactionIsolation();
         } catch (SQLException e) {
-            if (!"com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName())) { // compatible
-                                                                                                               // for
-                                                                                                               // alibaba
-                                                                                                               // corba
+            // compartible for alibaba corba
+            if (!"com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName())) { 
                 throw e;
             }
         }
