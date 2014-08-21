@@ -15,6 +15,43 @@
  */
 package com.alibaba.druid.pool;
 
+import static com.alibaba.druid.util.Utils.getBoolean;
+
+import java.io.Closeable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.management.JMException;
+import javax.management.ObjectName;
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import javax.naming.Referenceable;
+import javax.naming.StringRefAddr;
+import javax.sql.ConnectionEvent;
+import javax.sql.ConnectionEventListener;
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.PooledConnection;
+
 import com.alibaba.druid.Constants;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
@@ -55,40 +92,6 @@ import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.WallFilter;
 import com.alibaba.druid.wall.WallProviderStatValue;
 
-import javax.management.JMException;
-import javax.management.ObjectName;
-import javax.naming.NamingException;
-import javax.naming.Reference;
-import javax.naming.Referenceable;
-import javax.naming.StringRefAddr;
-import javax.sql.ConnectionEvent;
-import javax.sql.ConnectionEventListener;
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.PooledConnection;
-import java.io.Closeable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ServiceLoader;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static com.alibaba.druid.util.Utils.getBoolean;
-
 /**
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
@@ -124,6 +127,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private int                              notEmptyWaitThreadPeak  = 0;
 
     // threads
+    private ScheduledExecutorService         destroyScheduler;
+    private ScheduledFuture<?>               destroySchedulerFuture;
+    private DestroyTask                      destoryTask;
     private CreateConnectionThread           createConnectionThread;
     private DestroyConnectionThread          destroyConnectionThread;
     private LogStatsThread                   logStatsThread;
@@ -666,7 +672,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         this.resetStatEnable = false;
     }
 
-    private void createAndStartDestroyThread() {
+    protected void createAndStartDestroyThread() {
+        destoryTask = new DestroyTask();
+        
+        if (destroyScheduler != null) {
+            long period = timeBetweenEvictionRunsMillis;
+            if (period <= 0) {
+                period = 1000;
+            }
+            destroySchedulerFuture = destroyScheduler.scheduleAtFixedRate(destoryTask, period, period, TimeUnit.MILLISECONDS);
+            return;
+        }
+        
         String threadName = "Druid-ConnectionPool-Destroy-" + System.identityHashCode(this);
         destroyConnectionThread = new DestroyConnectionThread(threadName);
         destroyConnectionThread.start();
@@ -1277,6 +1294,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (destroyConnectionThread != null) {
                 destroyConnectionThread.interrupt();
             }
+            
+            if (destroySchedulerFuture != null) {
+                destroySchedulerFuture.cancel(true);
+            }
 
             for (int i = 0; i < poolingCount; ++i) {
                 try {
@@ -1761,17 +1782,26 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         break;
                     }
 
-                    shrink(true);
-
-                    if (isRemoveAbandoned()) {
-                        removeAbandoned();
-                    }
+                    destoryTask.run();
                 } catch (InterruptedException e) {
                     break;
                 }
             }
         }
 
+    }
+    
+    public class DestroyTask implements Runnable {
+
+        @Override
+        public void run() {
+            shrink(true);
+
+            if (isRemoveAbandoned()) {
+                removeAbandoned();
+            }
+        }
+        
     }
 
     public class LogStatsThread extends Thread {
@@ -2530,5 +2560,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
+    }
+
+    
+    public ScheduledExecutorService getDestroyScheduler() {
+        return destroyScheduler;
+    }
+
+    
+    public void setDestroyScheduler(ScheduledExecutorService destroyScheduler) {
+        this.destroyScheduler = destroyScheduler;
     }
 }
