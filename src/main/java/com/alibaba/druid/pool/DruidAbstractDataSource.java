@@ -236,6 +236,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected long                                     timeBetweenLogStatsMillis;
     protected DruidDataSourceStatLogger                statLogger                                = new DruidDataSourceStatLoggerImpl();
+    
+    private boolean                                    asyncCloseConnectionEnable                = false;
 
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
@@ -1676,7 +1678,21 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         to.dupCloseLogEnable = this.dupCloseLogEnable;
         to.isOracle = this.isOracle;
         to.useOracleImplicitCache = this.useOracleImplicitCache;
+        to.asyncCloseConnectionEnable = this.asyncCloseConnectionEnable;
+    }
+    
+    public abstract void discardConnection(Connection realConnection);
+    
+
+    public boolean isAsyncCloseConnectionEnable() {
+        if (isRemoveAbandoned()) {
+            return true;
+        }
+        return asyncCloseConnectionEnable;
     }
 
-    public abstract void discardConnection(Connection realConnection);
+    public void setAsyncCloseConnectionEnable(boolean asyncCloseConnectionEnable) {
+        this.asyncCloseConnectionEnable = asyncCloseConnectionEnable;
+    }
+
 }

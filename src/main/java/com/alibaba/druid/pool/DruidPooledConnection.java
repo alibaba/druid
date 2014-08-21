@@ -217,7 +217,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
             return;
         }
 
-        if (holder.getDataSource().isRemoveAbandoned()) {
+        if (holder.getDataSource().isAsyncCloseConnectionEnable()) {
             syncClose();
             return;
         }
