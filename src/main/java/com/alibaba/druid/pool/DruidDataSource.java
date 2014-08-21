@@ -130,9 +130,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private ScheduledExecutorService         destroyScheduler;
     private ScheduledFuture<?>               destroySchedulerFuture;
     private DestroyTask                      destoryTask;
+    
+    private ScheduledExecutorService         createScheduler;
     private CreateConnectionThread           createConnectionThread;
     private DestroyConnectionThread          destroyConnectionThread;
     private LogStatsThread                   logStatsThread;
+    private int                              createTaskCount;
 
     private final CountDownLatch             initedLatch             = new CountDownLatch(2);
 
@@ -155,7 +158,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public static ThreadLocal<Long>          waitNanosLocal          = new ThreadLocal<Long>();
 
     private boolean                          logDifferentThread      = true;
-
+    
     public DruidDataSource(){
         this(false);
     }
@@ -1022,7 +1025,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             discardCount++;
 
             if (activeCount <= 0) {
-                empty.signal();
+                emptySignal();
             }
         } finally {
             lock.unlock();
@@ -1388,7 +1391,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     DruidConnectionHolder takeLast() throws InterruptedException, SQLException {
         try {
             while (poolingCount == 0) {
-                empty.signal(); // send signal to CreateThread create connection
+                emptySignal(); // send signal to CreateThread create connection
                 notEmptyWaitThreadCount++;
                 if (notEmptyWaitThreadCount > notEmptyWaitThreadPeak) {
                     notEmptyWaitThreadPeak = notEmptyWaitThreadCount;
@@ -1418,12 +1421,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return last;
     }
 
-    DruidConnectionHolder pollLast(long nanos) throws InterruptedException, SQLException {
+    private DruidConnectionHolder pollLast(long nanos) throws InterruptedException, SQLException {
         long estimate = nanos;
 
         for (;;) {
             if (poolingCount == 0) {
-                empty.signal(); // send signal to CreateThread create connection
+                emptySignal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {
                     waitNanosLocal.set(nanos - estimate);
@@ -1655,6 +1658,98 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public long getRemoveAbandonedCount() {
         return removeAbandonedCount;
     }
+    
+    protected void put(Connection connection) {
+        DruidConnectionHolder holder = null;
+        try {
+            holder = new DruidConnectionHolder(DruidDataSource.this, connection);
+        } catch (SQLException ex) {
+            LOG.error("create connection holder error", ex);
+            return;
+        }
+
+        lock.lock();
+        try {
+            connections[poolingCount++] = holder;
+
+            if (poolingCount > poolingPeak) {
+                poolingPeak = poolingCount;
+                poolingPeakTime = System.currentTimeMillis();
+            }
+
+            notEmpty.signal();
+            notEmptySignalCount++;
+            
+            if (createScheduler != null) {
+                createTaskCount--;
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public class CreateConnectionTask implements Runnable {
+        private int errorCount = 0;
+        
+        @Override
+        public void run() {
+            for (;;) {
+                // addLast
+                try {
+                    lock.lockInterruptibly();
+                } catch (InterruptedException e2) {
+                    break;
+                }
+
+                try {
+                    // 必须存在线程等待，才创建连接
+                    if (poolingCount >= notEmptyWaitThreadCount) {
+                        createTaskCount--;
+                        return;
+                    }
+
+                    // 防止创建超过maxActive数量的连接
+                    if (activeCount + poolingCount >= maxActive) {
+                        createTaskCount--;
+                        return;
+                    }
+                } finally {
+                    lock.unlock();
+                }
+
+                Connection connection = null;
+
+                try {
+                    connection = createPhysicalConnection();
+                } catch (SQLException e) {
+                    LOG.error("create connection error", e);
+
+                    errorCount++;
+
+                    if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
+                        if (breakAfterAcquireFailure) {
+                            break;
+                        }
+
+                        createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
+                        return;
+                    }
+                } catch (RuntimeException e) {
+                    LOG.error("create connection error", e);
+                    continue;
+                } catch (Error e) {
+                    LOG.error("create connection error", e);
+                    break;
+                }
+
+                if (connection == null) {
+                    continue;
+                }
+
+                put(connection);
+            }
+        }
+    }
 
     public class CreateConnectionThread extends Thread {
 
@@ -1727,30 +1822,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     continue;
                 }
 
-                DruidConnectionHolder holder = null;
-                try {
-                    holder = new DruidConnectionHolder(DruidDataSource.this, connection);
-                } catch (SQLException ex) {
-                    LOG.error("create connection holder error", ex);
-                    break;
-                }
-
-                lock.lock();
-                try {
-                    connections[poolingCount++] = holder;
-
-                    if (poolingCount > poolingPeak) {
-                        poolingPeak = poolingCount;
-                        poolingPeakTime = System.currentTimeMillis();
-                    }
-
-                    errorCount = 0; // reset errorCount
-
-                    notEmpty.signal();
-                    notEmptySignalCount++;
-                } finally {
-                    lock.unlock();
-                }
+                put(connection);
+                
+                errorCount = 0; // reset errorCount
             }
         }
     }
@@ -2562,7 +2636,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    
     public ScheduledExecutorService getDestroyScheduler() {
         return destroyScheduler;
     }
@@ -2570,5 +2643,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     
     public void setDestroyScheduler(ScheduledExecutorService destroyScheduler) {
         this.destroyScheduler = destroyScheduler;
+    }
+    
+    private void emptySignal() {
+        if (createScheduler == null) {
+            empty.signal();
+            return;
+        }
+        
+        if (createTaskCount >= 2) {
+            return;
+        }
+        
+        CreateConnectionTask task = new CreateConnectionTask();
+        createScheduler.submit(task);
+        
+        createTaskCount++;
     }
 }
