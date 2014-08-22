@@ -49,5 +49,7 @@ public class MySqlWallTest extends TestCase {
         Assert.assertTrue(WallUtils.isValidateMySql("select c1 from t where 1=1 or id =1"));
         Assert.assertFalse(WallUtils.isValidateMySql("select c1 from t where id =1 or 1=1"));
         Assert.assertFalse(WallUtils.isValidateMySql("select c1 from t where id =1 || 1=1"));
+        
+        Assert.assertFalse(WallUtils.isValidateMySql("select * from person where id = '3'/**/union select v,b,a from (select 1,2,4/*! ,database() as b,user() as a,version() as v*/) a where '1'<>''"));
     }
 }

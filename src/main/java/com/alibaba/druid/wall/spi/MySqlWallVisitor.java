@@ -482,6 +482,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         if (text.indexOf("or") != -1 //
             || text.indexOf("and") != -1 //
             || text.indexOf("union") != -1 //
+            || text.indexOf("xor") != -1 //
 
             || text.indexOf("select") != -1 //
             || text.indexOf("delete") != -1 //
@@ -501,6 +502,19 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             || text.indexOf("sleep") != -1 //
             || text.indexOf("benchmark") != -1 //
             || text.indexOf("load_file") != -1 //
+            || text.indexOf("version") != -1 //
+            || text.indexOf("database") != -1 //
+            || text.indexOf("schema") != -1 //
+            || text.indexOf("system_user") != -1 //
+            || text.indexOf("session_user") != -1 //
+            || text.indexOf("current_user") != -1 //
+            || text.indexOf("user") != -1 //
+            || text.indexOf("xmltype") != -1 //
+            || text.indexOf("receive_message") != -1 //
+
+            || text.indexOf("version_compile_os") != -1 //
+            || text.indexOf("basedir") != -1 //
+            || text.indexOf("datadir") != -1 //
         ) {
             addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints", SQLUtils.toMySqlString(x)));
         }
