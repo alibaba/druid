@@ -617,7 +617,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
                     Connection conn = createPhysicalConnection();
                     DruidConnectionHolder holder = new DruidConnectionHolder(this, conn);
-                    connections[poolingCount++] = holder;
+                    connections[poolingCount] = holder;
+                    incrementPoolingCount();
                 }
 
                 if (poolingCount > 0) {
@@ -1175,7 +1176,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
-        if (logDifferentThread && pooledConnection.getOwnerThread() != Thread.currentThread()) {
+        if (logDifferentThread //
+                && (!isAsyncCloseConnectionEnable()) //
+                && pooledConnection.getOwnerThread() != Thread.currentThread()//
+                ) {
             LOG.warn("get/close not same thread");
         }
 
@@ -1376,7 +1380,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     void putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
         e.setLastActiveTimeMillis(lastActiveTimeMillis);
-        connections[poolingCount++] = e;
+        connections[poolingCount] = e;
+        incrementPoolingCount();
 
         if (poolingCount > poolingPeak) {
             poolingPeak = poolingCount;
@@ -1413,7 +1418,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw ie;
         }
 
-        poolingCount--;
+        decrementPoolingCount();
         DruidConnectionHolder last = connections[poolingCount];
         connections[poolingCount] = null;
 
@@ -1467,12 +1472,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
-            poolingCount--;
+            decrementPoolingCount();
             DruidConnectionHolder last = connections[poolingCount];
             connections[poolingCount] = null;
 
             return last;
         }
+    }
+    
+    private final void decrementPoolingCount() {
+        poolingCount--;
+    }
+    
+    private final void incrementPoolingCount() {
+        poolingCount++;
     }
 
     @Override
@@ -1669,7 +1682,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         lock.lock();
         try {
-            connections[poolingCount++] = holder;
+            connections[poolingCount] = holder;
+            incrementPoolingCount();
 
             if (poolingCount > poolingPeak) {
                 poolingPeak = poolingCount;
@@ -1681,6 +1695,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             
             if (createScheduler != null) {
                 createTaskCount--;
+                
+                if (poolingCount + createTaskCount < notEmptyWaitThreadCount //
+                    && activeCount + poolingCount + createTaskCount < maxActive) {
+                    emptySignal();
+                }
             }
         } finally {
             lock.unlock();
@@ -1727,7 +1746,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
                         if (breakAfterAcquireFailure) {
-                            break;
+                            createTaskCount--;
+                            return;
                         }
 
                         createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
@@ -1746,6 +1766,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 put(connection);
+                break;
             }
         }
     }
@@ -2641,13 +2662,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
         
-        if (createTaskCount >= 2) {
+        if (createTaskCount >= maxCreateTaskCount) {
             return;
         }
         
-        CreateConnectionTask task = new CreateConnectionTask();
-        createScheduler.submit(task);
+        if (activeCount + poolingCount + createTaskCount >= maxActive) {
+            return;
+        }
         
         createTaskCount++;
+        CreateConnectionTask task = new CreateConnectionTask();
+        createScheduler.submit(task);
     }
 }
