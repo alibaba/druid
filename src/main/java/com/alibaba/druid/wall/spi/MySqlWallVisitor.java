@@ -445,6 +445,11 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLCommentHint x) {
+        if(!provider.getConfig().isHintAllow()) {
+            addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "hint not allow", SQLUtils.toMySqlString(x)));
+            return true;
+        }
+        
         String text = x.getText();
         text = text.trim();
         if (text.startsWith("!")) {
