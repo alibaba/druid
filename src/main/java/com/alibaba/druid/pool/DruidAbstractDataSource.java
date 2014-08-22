@@ -240,6 +240,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected DruidDataSourceStatLogger                statLogger                                = new DruidDataSourceStatLoggerImpl();
     
     private boolean                                    asyncCloseConnectionEnable                = false;
+    protected int                                      maxCreateTaskCount                        = 2;
     protected ScheduledExecutorService                 destroyScheduler;
     protected ScheduledExecutorService                 createScheduler;
 
@@ -1726,5 +1727,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public boolean isInited() {
         return this.inited;
+    }
+
+    
+    public int getMaxCreateTaskCount() {
+        return maxCreateTaskCount;
+    }
+
+    
+    public void setMaxCreateTaskCount(int maxCreateTaskCount) {
+        if (maxCreateTaskCount < 1) {
+            throw new IllegalArgumentException();
+        }
+        
+        this.maxCreateTaskCount = maxCreateTaskCount;
     }
 }
