@@ -17,7 +17,7 @@ import org.junit.Assert;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class Large10ConcurrentTest extends TestCase {
+public class Large10KConcurrentTest_2 extends TestCase {
 
     private DruidDataSource[]        dataSources = new DruidDataSource[10000];
     private ScheduledExecutorService scheduler;
@@ -51,8 +51,12 @@ public class Large10ConcurrentTest extends TestCase {
     }
 
     public void test_large() throws Exception {
-        final Connection[] connections = new Connection[dataSources.length * 8];
-        final CountDownLatch connLatch = new CountDownLatch(connections.length);
+        final Connection[] connections_A = new Connection[dataSources.length * 8];
+        final Connection[] connections_B = new Connection[dataSources.length * 8];
+        final CountDownLatch connLatch_A = new CountDownLatch(connections_A.length);
+        final CountDownLatch connLatch_B = new CountDownLatch(connections_A.length);
+        final CountDownLatch closeLatch_A = new CountDownLatch(connections_A.length);
+        final CountDownLatch closeLatch_B = new CountDownLatch(connections_A.length);
         final AtomicLong connErrorCount = new AtomicLong();
 
         for (int i = 0; i < dataSources.length; ++i) {
@@ -63,19 +67,19 @@ public class Large10ConcurrentTest extends TestCase {
 
                     public void run() {
                         try {
-                            connections[index] = dataSource.getConnection();
+                            connections_A[index] = dataSource.getConnection();
                         } catch (SQLException e) {
                             connErrorCount.incrementAndGet();
                             e.printStackTrace();
                         } finally {
-                            connLatch.countDown();
+                            connLatch_A.countDown();
                         }
                     }
                 };
                 executor.execute(task);
             }
         }
-        connLatch.await();
+        connLatch_A.await();
         
         for (int i = 0; i < dataSources.length; ++i) {
             Assert.assertEquals(8, dataSources[i].getActiveCount());
@@ -85,19 +89,54 @@ public class Large10ConcurrentTest extends TestCase {
             Assert.assertEquals(0, dataSources[i].getPoolingCount());
         }
 
-        final CountDownLatch closeLatch = new CountDownLatch(connections.length);
         for (int i = 0; i < dataSources.length; ++i) {
             for (int j = 0; j < 8; ++j) {
                 final int index = i * 8 + j;
                 Runnable task = new Runnable() {
                     public void run() {
-                        JdbcUtils.close(connections[index]);
-                        closeLatch.countDown();
+                        JdbcUtils.close(connections_A[index]);
+                        closeLatch_A.countDown();
                     }
                 };
                 executor.execute(task);
             }
         }
-        closeLatch.await();
+        
+        for (int i = 0; i < dataSources.length; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                final DataSource dataSource = dataSources[i];
+                final int index = i * 8 + j;
+                Runnable task = new Runnable() {
+
+                    public void run() {
+                        try {
+                            connections_B[index] = dataSource.getConnection();
+                        } catch (SQLException e) {
+                            connErrorCount.incrementAndGet();
+                            e.printStackTrace();
+                        } finally {
+                            connLatch_B.countDown();
+                        }
+                    }
+                };
+                executor.execute(task);
+            }
+        }
+        closeLatch_A.await();
+        connLatch_B.await();
+        
+        for (int i = 0; i < dataSources.length; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                final int index = i * 8 + j;
+                Runnable task = new Runnable() {
+                    public void run() {
+                        JdbcUtils.close(connections_B[index]);
+                        closeLatch_B.countDown();
+                    }
+                };
+                executor.execute(task);
+            }
+        }
+        closeLatch_B.await();
     }
 }
