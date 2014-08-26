@@ -2153,7 +2153,18 @@ public class WallVisitorUtils {
             SQLTableSource from = queryBlock.getFrom();
 
             if (from == null) {
-                return true;
+                boolean itemIsConst = true;
+                for (SQLSelectItem item : queryBlock.getSelectList()) {
+                    if (item.getExpr() instanceof SQLIdentifierExpr || item.getExpr() instanceof SQLPropertyExpr) {
+                        itemIsConst = false;
+                        break;
+                    }
+                }
+                if (itemIsConst) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
             if (from instanceof SQLExprTableSource) {
