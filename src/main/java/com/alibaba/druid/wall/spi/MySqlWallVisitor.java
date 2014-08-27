@@ -477,6 +477,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 case '|':
                 case '^':
                 case '\n':
+                case '.':
+                case '(':
                     addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints",
                                                                SQLUtils.toMySqlString(x)));
                 default:
