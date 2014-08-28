@@ -201,7 +201,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelectAllow()) {
+        if (!config.isSelelctAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
                                                                    this.toSQL(x)));
             return false;

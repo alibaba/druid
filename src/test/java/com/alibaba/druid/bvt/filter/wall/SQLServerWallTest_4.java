@@ -34,7 +34,7 @@ public class SQLServerWallTest_4 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
-        provider.getConfig().setSelectHavingAlwaysTrueCheck(true);
+        provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
         Assert.assertTrue(provider.checkValid(//
         "insert into t (fid, name) values (1, HOST_NAME())"));

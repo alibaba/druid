@@ -16,7 +16,7 @@ public class BitwiseAndTest extends TestCase {
 
     public void test_true() throws Exception {
         WallConfig config = new WallConfig();
-        config.setConditionOpBitwiseAllow(false);
+        config.setConditionOpBitwseAllow(false);
         Assert.assertFalse(WallUtils.isValidateMySql(//
         "SELECT * from t where id = 1 & 2", config)); //
     }

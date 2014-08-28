@@ -16,8 +16,13 @@ public class HintTest extends TestCase {
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config)); //
     }
 
-    public void test_true() throws Exception {
+    public void test_false_1() throws Exception {
         String sql = "select * from person where id = '3'/**/union select 0,1,v from (select 1,2,user/*!() as v*/) a where '1'<>''";
+        Assert.assertFalse(WallUtils.isValidateMySql(sql)); //
+    }
+    
+    public void test_true() throws Exception {
+        String sql = "SELECT /*! STRAIGHT_JOIN */ col1 FROM table1,table2";
         Assert.assertTrue(WallUtils.isValidateMySql(sql)); //
     }
 }

@@ -188,7 +188,7 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
 
     @Override
     public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelectAllow()) {
+        if (!config.isSelelctAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "selelct not allow",
                                                                    this.toSQL(x)));
             return false;
