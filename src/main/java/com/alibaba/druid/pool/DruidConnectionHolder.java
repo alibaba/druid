@@ -18,10 +18,12 @@ package com.alibaba.druid.pool;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -232,7 +234,7 @@ public final class DruidConnectionHolder {
 
         for (Object item : statementTrace.toArray()) {
             Statement stmt = (Statement) item;
-            stmt.close();
+            JdbcUtils.close(stmt);
         }
         statementTrace.clear();
 
