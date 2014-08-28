@@ -63,7 +63,9 @@ public class OracleExceptionSorterTest_closeConn extends TestCase {
         SQLException exception = new SQLException("xx", "xxx", 28);
         mockConn.setError(exception);
 
+        Assert.assertEquals(1, dataSource.getActiveCount());
         conn.close();
+        Assert.assertEquals(0, dataSource.getActiveCount());
         
         {
             Connection conn2 = dataSource.getConnection();

@@ -1169,6 +1169,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 
                 if (requireDiscard) {
                     this.discardConnection(holder.getConnection());
+                    holder.setDiscard(true);
                 }
                 
                 LOG.error("discard connection", sqlEx);
@@ -1225,7 +1226,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             // reset holder, restore default settings, clear warnings
-            holder.reset();
+            boolean isSameThread = pooledConnection.getOwnerThread() == Thread.currentThread();
+            if (!isSameThread) {
+                synchronized (pooledConnection) {
+                    holder.reset();
+                }
+            } else {
+                holder.reset();
+            }
+            
+            if (holder.isDiscard()) {
+                return;
+            }
 
             if (testOnReturn) {
                 boolean validate = testConnectionInternal(physicalConnection);
