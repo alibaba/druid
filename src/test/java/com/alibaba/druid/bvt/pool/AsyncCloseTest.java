@@ -1,25 +1,25 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
-import java.util.concurrent.Callable;
+import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import org.junit.Assert;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class AsyncCloseTest extends TestCase {
 
-    protected DruidDataSource                     dataSource;
-    private ExecutorService                       closeExecutor;
+    protected DruidDataSource dataSource;
+    private ExecutorService   connExecutor;
+    private ExecutorService   closeExecutor;
 
-    private ExecutorCompletionService<Connection> completionService;
+    final AtomicInteger       errorCount = new AtomicInteger();
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
@@ -28,61 +28,74 @@ public class AsyncCloseTest extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setMaxActive(16);
 
+        connExecutor = Executors.newFixedThreadPool(100);
         closeExecutor = Executors.newFixedThreadPool(100);
 
-        completionService = new ExecutorCompletionService<Connection>(Executors.newFixedThreadPool(100));
     }
 
     public void test_0() throws Exception {
         for (int i = 0; i < 16; ++i) {
             loop();
+            System.out.println("loop " + i + " done.");
         }
+    }
+
+    class CloseTask implements Runnable {
+
+        private Connection     conn;
+        private CountDownLatch latch;
+
+        public CloseTask(Connection conn, CountDownLatch latch){
+            this.conn = conn;
+            this.latch = latch;
+        }
+
+        @Override
+        public void run() {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                errorCount.incrementAndGet();
+            } finally {
+                latch.countDown();
+            }
+        }
+
     }
 
     protected void loop() throws InterruptedException {
         dataSource.shrink();
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getPoolingCount());
-        
-        final Callable<Connection> getTask = new Callable<Connection>() {
 
-            @Override
-            public Connection call() throws Exception {
-                return dataSource.getConnection();
-            }
+        final int COUNT = 1024 * 128;
+        final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
 
-        };
-
-        final int COUNT = 1024 * 1024;
-        final CountDownLatch latch = new CountDownLatch(COUNT);
-
-        for (int i = 0; i < COUNT; ++i) {
-            completionService.submit(getTask);
-        }
-
-        Runnable closeTask = new Runnable() {
+        Runnable connTask = new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    Future<Connection> task = completionService.take();
-                    Connection conn = task.get();
-                    conn.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    latch.countDown();
+                    Connection conn = dataSource.getConnection();
+
+                    CloseTask closeTask = new CloseTask(conn, closeLatch);
+
+                    closeExecutor.submit(closeTask);
+                    closeExecutor.submit(closeTask); // dup close
+                } catch (SQLException e) {
+                    errorCount.incrementAndGet();
                 }
             }
         };
 
         for (int i = 0; i < COUNT; ++i) {
-            closeExecutor.submit(closeTask);
+            connExecutor.submit(connTask);
         }
 
-        latch.await();
+        closeLatch.await();
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(16, dataSource.getPoolingCount());
+
 
     }
 }
