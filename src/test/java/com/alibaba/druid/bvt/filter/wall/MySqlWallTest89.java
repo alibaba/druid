@@ -34,7 +34,7 @@ public class MySqlWallTest89 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         
-        provider.getConfig().setSelectHavingAlwaysTrueCheck(true);
+        provider.getConfig().setSelectHavingAlwayTrueCheck(true);
         
         Assert.assertTrue(provider.checkValid(//
         "select login('', '', 'guest', '47ea3937793101011caaa5dd88d3bcae926526624796b8a26a9615e8d3bea6b4', 'iPad3,4', 'unknown'),     '', (select max(num) from accounts) +  @@auto_increment_increment"));

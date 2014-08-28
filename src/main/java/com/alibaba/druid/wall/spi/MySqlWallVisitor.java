@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -65,9 +68,6 @@ import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallTopStatementContext;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
 
@@ -197,7 +197,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLSelectStatement x) {
-        if (!config.isSelectAllow()) {
+        if (!config.isSelelctAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
                                                                    this.toSQL(x)));
             return false;
@@ -477,6 +477,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 case '|':
                 case '^':
                 case '\n':
+                case '.':
+                case '(':
                     addViolation(new IllegalSQLObjectViolation(ErrorCode.EVIL_HINTS, "evil hints",
                                                                SQLUtils.toMySqlString(x)));
                 default:

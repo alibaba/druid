@@ -34,7 +34,7 @@ public class SQLServerWallTest_6 extends TestCase {
     public void test_true() throws Exception {
         WallProvider provider = new SQLServerWallProvider();
 
-        provider.getConfig().setSelectHavingAlwaysTrueCheck(true);
+        provider.getConfig().setSelectHavingAlwayTrueCheck(true);
 
         Assert.assertFalse(provider.checkValid(//
         "update t set fid = 1 where LEN(HOST_NAME()) > 0"));

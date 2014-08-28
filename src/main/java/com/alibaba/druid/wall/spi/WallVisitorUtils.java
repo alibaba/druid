@@ -275,7 +275,7 @@ public class WallVisitorUtils {
             where.setParent(x);
             checkCondition(visitor, x.getWhere());
 
-            Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwaysTrueCheck());
+            Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
 
             if (Boolean.TRUE == whereValue) {
                 if (!isSimpleConstExpr(where)) {// 简单表达式
@@ -292,7 +292,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwaysTrueCheck())) {
+        if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck())) {
             if (!isSimpleConstExpr(x)) {
                 addViolation(visitor, ErrorCode.ALWAYS_TRUE, "having alway true condition not allow", x);
             }
@@ -331,7 +331,7 @@ public class WallVisitorUtils {
         if (where != null) {
             checkCondition(visitor, where);
 
-            if (Boolean.TRUE == getConditionValue(visitor, where, config.isDeleteWhereAlwaysTrueCheck())) {
+            if (Boolean.TRUE == getConditionValue(visitor, where, config.isDeleteWhereAlwayTrueCheck())) {
                 if (!isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "delete alway true condition not allow", x);
                 }
@@ -912,7 +912,7 @@ public class WallVisitorUtils {
             where.setParent(x);
             checkCondition(visitor, where);
 
-            if (Boolean.TRUE == getConditionValue(visitor, where, config.isUpdateWhereAlwaysTrueCheck())) {
+            if (Boolean.TRUE == getConditionValue(visitor, where, config.isUpdateWhereAlayTrueCheck())) {
                 if (!isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
                 }
@@ -1335,11 +1335,11 @@ public class WallVisitorUtils {
                 }
             }
 
-            if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwaysTrueAllow()) {
+            if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
                 addViolation(visitor, ErrorCode.ALWAYS_TRUE, "part alway true condition not allow", x);
             }
 
-            if (current.hasPartAlwayFalse() && !visitor.getConfig().isConditionAndAlwaysFalseAllow()) {
+            if (current.hasPartAlwayFalse() && !visitor.getConfig().isConditionAndAlwayFalseAllow()) {
                 addViolation(visitor, ErrorCode.ALWAYS_FALSE, "part alway false condition not allow", x);
             }
 
@@ -1351,7 +1351,7 @@ public class WallVisitorUtils {
                 addViolation(visitor, ErrorCode.XOR, "xor not allow", x);
             }
 
-            if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwiseAllow()) {
+            if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
                 addViolation(visitor, ErrorCode.BITWISE, "bitwise operator not allow", x);
             }
 
