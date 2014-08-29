@@ -448,7 +448,7 @@ public class MySqlLexer extends Lexer {
                 return;
             }
 
-            if (!isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
+            if (!isHint && !isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
                 throw new NotAllowCommentException();
             }
 
