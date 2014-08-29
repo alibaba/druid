@@ -237,4 +237,32 @@ public class MySqlWallTest91 extends TestCase {
             Assert.assertTrue(provider.checkValid(sql));
         }
     }
+    
+    public void test() throws Exception {
+        WallProvider provider = initWallProvider();
+        {
+            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where 1 and 1='1'";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+        {
+            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where 1 or 1='1'";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+        {
+            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where true or 1='1'";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+        {
+            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where 'a' or 1='1'";
+            Assert.assertTrue(provider.checkValid(sql));
+        }
+        {
+            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where id=1 or 1='1'";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+        {
+            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where id=1 or true";
+            Assert.assertFalse(provider.checkValid(sql));
+        }
+    }
 }
