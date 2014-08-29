@@ -16,13 +16,13 @@
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
-import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.druid.sql.parser.CharTypes;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
@@ -522,5 +522,9 @@ public class MySqlLexer extends Lexer {
             return false;
         }
         return true;
+    }
+    
+    private boolean isIdentifierChar(char c) {
+        return c != '#' && CharTypes.isIdentifierChar(c);
     }
 }
