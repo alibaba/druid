@@ -15,21 +15,7 @@
  */
 package com.alibaba.druid.wall;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.NotAllowCommentException;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
-import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.util.LRUCache;
-import com.alibaba.druid.util.Utils;
-import com.alibaba.druid.wall.spi.WallVisitorUtils;
-import com.alibaba.druid.wall.violation.ErrorCode;
-import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
-import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
+import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
 
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -44,7 +30,22 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static com.alibaba.druid.util.JdbcSqlStatUtils.get;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.NotAllowCommentException;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
+import com.alibaba.druid.util.LRUCache;
+import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
+import com.alibaba.druid.wall.violation.ErrorCode;
+import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
+import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public abstract class WallProvider {
 
@@ -640,7 +641,13 @@ public abstract class WallProvider {
         WallVisitor visitor = createWallVisitor();
 
         if (statementList.size() > 0) {
-            for (SQLStatement stmt : statementList) {
+            boolean lastIsHint = false;
+            for (int i=0; i<statementList.size(); i++) {
+                SQLStatement stmt = statementList.get(i);
+                if ((i == 0 || lastIsHint) && stmt instanceof MySqlHintStatement) {
+                    lastIsHint = true;
+                    continue;
+                }
                 try {
                     stmt.accept(visitor);
                 } catch (ParserException e) {
@@ -652,16 +659,6 @@ public abstract class WallProvider {
         if (visitor.getViolations().size() > 0) {
             violations.addAll(visitor.getViolations());
         }
-
-        // if (visitor.getViolations().size() == 0 && context != null && context.getWarnings() >= 2) {
-        // if (context.getCommentCount() > 0) {
-        // violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "comment not allow", sql));
-        // } else if (context.getLikeNumberWarnings() > 0) {
-        // violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "like number", sql));
-        // } else {
-        // violations.add(new IllegalSQLObjectViolation(ErrorCode.COMPOUND, "multi-warnnings", sql));
-        // }
-        // }
 
         WallSqlStat sqlStat = null;
         if (violations.size() > 0) {
