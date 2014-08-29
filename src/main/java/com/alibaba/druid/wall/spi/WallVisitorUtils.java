@@ -350,7 +350,19 @@ public class WallVisitorUtils {
         for (SQLExpr part : parts) {
             if(isFirst(part)) {
                 Object evalValue = part.getAttribute(EVAL_VALUE);
-                if(evalValue != null && evalValue instanceof Boolean && (Boolean)evalValue) {
+                if (evalValue == null) {
+                    if (part instanceof SQLBooleanExpr) {
+                        evalValue = ((SQLBooleanExpr) part).getValue();
+                    } else if (part instanceof SQLNumericLiteralExpr) {
+                        evalValue = ((SQLNumericLiteralExpr) part).getNumber();
+                    } else if (part instanceof SQLCharExpr) {
+                        evalValue = ((SQLCharExpr) part).getText();
+                    } else if (part instanceof SQLNCharExpr) {
+                        evalValue = ((SQLNCharExpr) part).getText();
+                    }
+                }
+                Boolean result = SQLEvalVisitorUtils.castToBoolean(evalValue);
+                if (result != null && result) {
                     return true;
                 }
             }
