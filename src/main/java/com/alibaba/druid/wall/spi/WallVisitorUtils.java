@@ -15,7 +15,22 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -84,6 +99,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
@@ -92,11 +108,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
@@ -116,25 +134,14 @@ import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
 public class WallVisitorUtils {
 
-    private final static Log   LOG           = LogFactory.getLog(WallVisitorUtils.class);
+    private final static Log     LOG           = LogFactory.getLog(WallVisitorUtils.class);
 
-    public final static String HAS_TRUE_LIKE = "hasTrueLike";
+    public final static String   HAS_TRUE_LIKE = "hasTrueLike";
+
+    public final static String[] whiteHints    = { "LOCAL", "TEMPORARY", "SQL_NO_CACHE", "SQL_CACHE", "HIGH_PRIORITY",
+            "LOW_PRIORITY", "STRAIGHT_JOIN", "SQL_BUFFER_RESULT", "SQL_BIG_RESULT", "SQL_SMALL_RESULT", "DELAYED" };
 
     public static void check(WallVisitor visitor, SQLInListExpr x) {
 
@@ -2405,14 +2412,84 @@ public class WallVisitorUtils {
             allow = config.isHintAllow();
             denyMessage = "hint not allow";
             errorCode = ErrorCode.HINT_NOT_ALLOW;
+        } else if (x instanceof MySqlLockTableStatement) {
+            allow = config.isLockTableAllow();
+            denyMessage = "lock table not allow";
+            errorCode = ErrorCode.LOCK_TABLE_NOT_ALLOW;
         } else {
             allow = config.isNoneBaseStatementAllow();
             errorCode = ErrorCode.NONE_BASE_STATEMENT_NOT_ALLOW;
             denyMessage = x.getClass() + " not allow";
-        }
+        } 
 
         if (!allow) {
             addViolation(visitor, errorCode, denyMessage, x);
+        }
+    }
+    
+    public static void check(WallVisitor visitor, SQLCommentHint x) {
+        if (!visitor.getConfig().isHintAllow()) {
+            addViolation(visitor, ErrorCode.EVIL_HINTS, "hint not allow", x);
+            return;
+        }
+
+        String text = x.getText();
+        text = text.trim();
+        if (text.startsWith("!")) {
+            text = text.substring(1);
+        }
+
+        if (text.length() == 0) {
+            return;
+        }
+
+        int pos = 0;
+        for (; pos < text.length(); pos++) {
+            char ch = text.charAt(pos);
+            if (ch >= '0' && ch <= '9') {
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        if (pos == 5) {
+            text = text.substring(5);
+            text = text.trim();
+        }
+
+        text = text.toUpperCase();
+        
+        boolean isWhite = false;
+        for (String hint : whiteHints) {
+            if (text.equals(hint)) {
+                isWhite = true;
+                break;
+            }
+        }
+
+        if (!isWhite) {
+            if (text.startsWith("FORCE INDEX") || text.startsWith("IGNORE INDEX")) {
+                isWhite = true;
+            }
+        }
+        
+        if(!isWhite) {
+            if (text.startsWith("SET")) {
+                SQLStatementParser parser = new MySqlStatementParser(text);
+                List<SQLStatement> statementList = parser.parseStatementList();
+                if (statementList != null && statementList.size() > 0)  {
+                    SQLStatement statement = statementList.get(0);
+                    if (statement instanceof SQLSetStatement || statement instanceof MySqlSetCharSetStatement
+                        || statement instanceof MySqlSetNamesStatement) {
+                        isWhite = true;
+                    }
+                }
+            }
+        }
+
+        if (!isWhite) {
+            addViolation(visitor, ErrorCode.EVIL_HINTS, "hint not allow", x);
         }
     }
 }

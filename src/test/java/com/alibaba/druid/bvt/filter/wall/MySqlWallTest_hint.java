@@ -53,5 +53,28 @@ public class MySqlWallTest_hint extends TestCase {
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config)); 
     }
     
+    public void test_true_4() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setHintAllow(true);
+        config.setMultiStatementAllow(true);
+        String sql = "LOCK TABLES `m_rpt_adgroupeffect` READ /*!32311 LOCAL */";
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config)); //
+    }
+    
+    public void test_true_5() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setHintAllow(true);
+        config.setMultiStatementAllow(true);
+        String sql = "DROP TABLE IF EXISTS `item_similarity`;"//
+                     + "\n/*!40101 SET @saved_cs_client     = @@character_set_client */;"//
+                     + "\n/*!40101 SET character_set_client = utf8 */;" //
+                     + "\nCREATE TABLE `item_similarity` ("//
+                     + " `id` bigint(20) unsigned NOT NULL, "//
+                     + " `sellerId` bigint(20) DEFAULT NULL,"//
+                     + " PRIMARY KEY (`id`)" //
+                     + " ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"//
+                     + " \n/*!40101 SET character_set_client = @saved_cs_client */;";
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config)); //
+    }
     
 }
