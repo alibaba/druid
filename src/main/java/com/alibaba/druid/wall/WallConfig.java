@@ -41,6 +41,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             alterTableAllow             = true;
     private boolean             renameTableAllow            = true;
     private boolean             hintAllow                   = true;
+    private boolean             lockTableAllow              = true;
 
     private boolean             conditionAndAlwayTrueAllow  = false;
     private boolean             conditionAndAlwayFalseAllow = false;
@@ -750,6 +751,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setInited(boolean inited) {
         this.inited = inited;
+    }
+
+    public boolean isLockTableAllow() {
+        return lockTableAllow;
+    }
+
+    public void setLockTableAllow(boolean lockTableAllow) {
+        this.lockTableAllow = lockTableAllow;
     }
 
 }

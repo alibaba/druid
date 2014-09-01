@@ -47,6 +47,7 @@ public interface ErrorCode {
     public final static int DROP_TABLE_NOT_ALLOW          = 1103;
     public final static int COMMENT_STATEMENT_NOT_ALLOW   = 1104;
     public final static int RENAME_TABLE_NOT_ALLOW        = 1105;
+    public final static int LOCK_TABLE_NOT_ALLOW          = 1105;
 
     public final static int LIMIT_ZERO                    = 2200;
     public final static int MULTI_STATEMENT               = 2201;
