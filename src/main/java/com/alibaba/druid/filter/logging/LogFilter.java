@@ -356,7 +356,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         Savepoint savepoint = chain.connection_setSavepoint(connection);
 
         if (isConnectionLogEnabled()) {
-            connectionLog("{conn " + connection.getId() + "} setSavepoint-" + savepoint.getSavepointId());
+            connectionLog("{conn " + connection.getId() + "} setSavepoint-" + savepointToString(savepoint));
         }
 
         return savepoint;
@@ -389,7 +389,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         super.connection_rollback(chain, connection, savePoint);
 
         if (connectionRollbackAfterLogEnable && isConnectionLogEnabled()) {
-            connectionLog("{conn " + connection.getId() + "} rollback -> " + savePoint.getSavepointId());
+            connectionLog("{conn " + connection.getId() + "} rollback -> " + savepointToString(savePoint));
         }
     }
 
@@ -858,5 +858,19 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             return (T) this;
         }
         return null;
+    }
+    
+    protected String savepointToString(Savepoint savePoint) {
+    	String savePointString = null;
+    	try{
+    		savePointString = savePoint.getSavepointName();
+    	} catch (SQLException e) {
+    		try {
+				savePointString = String.valueOf(savePoint.getSavepointId());
+			} catch (SQLException e1) {
+				savePointString = savePoint.toString();
+			}
+    	}
+    	return savePointString;
     }
 }
