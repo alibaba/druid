@@ -28,11 +28,19 @@ public class MySqlWallTest_union extends TestCase {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t union select 1, 2", config));
+        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2", config));
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t union select null, '1', 2", config));
+        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t union select 1, 2", config));
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t union select c1, c2", config));
+        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select null, '1', 2",
+                                                     config));
 
+        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select c1, c2", config));
+
+        Assert.assertTrue(WallUtils.isValidateMySql("SELECT typeid, typename FROM (SELECT typeid, typename FROM materialtype UNION ALL SELECT ? AS typeid, ? AS typename) a ORDER BY typeid",
+                                                    config));
+
+        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from (select 1 as f1, 2 as f2) t union select 'u1', 'u2'",
+                                                     config));
     }
 }

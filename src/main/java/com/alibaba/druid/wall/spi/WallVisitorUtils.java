@@ -2147,6 +2147,14 @@ public class WallVisitorUtils {
             if (isTopUpdateStatement || isTopInsertStatement) {
                 return;
             }
+            
+            if (x.getLeft() instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock left = (SQLSelectQueryBlock) x.getLeft();
+                SQLTableSource tableSource = left.getFrom();
+                if (left.getWhere() == null && tableSource != null && tableSource instanceof SQLExprTableSource) {
+                    return;
+                }
+            }
 
             WallContext context = WallContext.current();
             if (context != null) {

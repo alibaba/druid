@@ -55,11 +55,11 @@ public class MySqlWallTest62 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
         String sql = "SELECT 1, 2, 3" + //
-                     " UNION ALL SELECT  a  from tt " + //
+                     " UNION ALL SELECT  a  from tt where c=1" + //
                      " UNION ALL SELECT 2 FROM dual ";
         Assert.assertFalse(provider.checkValid(sql));
         
-        sql = "SELECT a from t UNION ALL SELECT 2 FROM dual ";
+        sql = "SELECT a from t where c=1 UNION ALL SELECT 2 FROM dual ";
         Assert.assertFalse(provider.checkValid(sql));
     }
 

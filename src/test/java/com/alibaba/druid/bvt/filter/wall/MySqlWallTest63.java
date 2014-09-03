@@ -36,7 +36,7 @@ public class MySqlWallTest63 extends TestCase {
         provider.getConfig().setSchemaCheck(true);
 
         Assert.assertFalse(provider.checkValid(//
-        "SELECT FID, FNAME FROM T UNION SELECT 1, 'AAA'"));
+        "SELECT FID, FNAME FROM T WHERE C=1 UNION SELECT 1, 'AAA'"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

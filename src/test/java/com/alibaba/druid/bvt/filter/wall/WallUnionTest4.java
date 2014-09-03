@@ -29,10 +29,10 @@ import com.alibaba.druid.wall.WallUtils;
 public class WallUnionTest4 extends TestCase {
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM T1 t UNION (SELECT * FROM (SELECT 1,'x') X)"));
+        Assert.assertFalse(WallUtils.isValidateMySql("SELECT id, product FROM T1 t where id=1 UNION (SELECT * FROM (SELECT 1,'x') X)"));
     }
     
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("SELECT id, product FROM T1 t UNION (SELECT * FROM (SELECT 1,'x') X)"));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT id, product FROM T1 t where id=1 UNION (SELECT * FROM (SELECT 1,'x') X)"));
     }
 }
