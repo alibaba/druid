@@ -15,14 +15,19 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlStartTransactionStatement extends MySqlStatementImpl {
 
-    private boolean consistentSnapshot = false;
+    private boolean              consistentSnapshot = false;
 
-    private boolean begin              = false;
-    private boolean work               = false;
+    private boolean              begin              = false;
+    private boolean              work               = false;
+
+    private List<SQLCommentHint> hints;
 
     public boolean isConsistentSnapshot() {
         return consistentSnapshot;
@@ -52,5 +57,13 @@ public class MySqlStartTransactionStatement extends MySqlStatementImpl {
         visitor.visit(this);
 
         visitor.endVisit(this);
+    }
+
+    public List<SQLCommentHint> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<SQLCommentHint> hints) {
+        this.hints = hints;
     }
 }

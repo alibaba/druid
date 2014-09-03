@@ -17,8 +17,11 @@ public class MySqlWallTest_hint extends TestCase {
     }
 
     public void test_false_1() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setHintAllow(true);
+        config.setMultiStatementAllow(true);
         String sql = "select * from person where id = '3'/**/union select 0,1,v from (select 1,2,user/*!() as v*/) a where '1'<>''";
-        Assert.assertFalse(WallUtils.isValidateMySql(sql)); //
+        Assert.assertFalse(WallUtils.isValidateMySql(sql, config)); //
     }
     
     public void test_true() throws Exception {
@@ -75,6 +78,21 @@ public class MySqlWallTest_hint extends TestCase {
                      + " ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"//
                      + " \n/*!40101 SET character_set_client = @saved_cs_client */;";
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config)); //
+    }
+    
+    public void test_true_6() throws Exception {
+        String sql = "START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */";
+        Assert.assertTrue(WallUtils.isValidateMySql(sql)); //
+    }
+
+    public void test_true_7() throws Exception {
+        String sql = "LOCK TABLES `m_rpt_adgroupeffect` READ /*!32311 LOCAL */";
+        Assert.assertTrue(WallUtils.isValidateMySql(sql)); //
+    }
+
+    public void test_true_8() throws Exception {
+        String sql = "SET SQL_QUOTE_SHOW_CREATE=1/*!40102 ,SQL_MODE=concat(@@sql_mode, _utf8 ',NO_KEY_OPTIONS,NO_TABLE_OPTIONS,NO_FIELD_OPTIONS') */";
+        Assert.assertTrue(WallUtils.isValidateMySql(sql)); //
     }
     
 }

@@ -1148,6 +1148,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLSetStatement x) {
         print("SET ");
         printAndAccept(x.getItems(), ", ");
+        
+        List<SQLCommentHint> hints = x.getHints();
+        if (hints != null && !hints.isEmpty()) {
+            print(" ");
+            for (SQLCommentHint hint : hints) {
+                hint.accept(this);
+            }
+        }
         return false;
     }
 

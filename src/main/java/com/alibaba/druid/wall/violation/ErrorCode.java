@@ -33,6 +33,7 @@ public interface ErrorCode {
     public final static int CALL_NOT_ALLOW                = 1300;
     public final static int COMMIT_NOT_ALLOW              = 1301;
     public final static int ROLLBACK_NOT_ALLOW            = 1302;
+    public final static int START_TRANSACTION_NOT_ALLOW   = 1303;
 
     public final static int SET_NOT_ALLOW                 = 1200;
     public final static int DESC_NOT_ALLOW                = 1201;
@@ -47,7 +48,7 @@ public interface ErrorCode {
     public final static int DROP_TABLE_NOT_ALLOW          = 1103;
     public final static int COMMENT_STATEMENT_NOT_ALLOW   = 1104;
     public final static int RENAME_TABLE_NOT_ALLOW        = 1105;
-    public final static int LOCK_TABLE_NOT_ALLOW          = 1105;
+    public final static int LOCK_TABLE_NOT_ALLOW          = 1106;
 
     public final static int LIMIT_ZERO                    = 2200;
     public final static int MULTI_STATEMENT               = 2201;
