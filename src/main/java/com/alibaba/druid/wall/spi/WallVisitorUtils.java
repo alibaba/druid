@@ -107,6 +107,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
@@ -2146,6 +2147,14 @@ public class WallVisitorUtils {
             if (isTopUpdateStatement || isTopInsertStatement) {
                 return;
             }
+            
+            if (x.getLeft() instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock left = (SQLSelectQueryBlock) x.getLeft();
+                SQLTableSource tableSource = left.getFrom();
+                if (left.getWhere() == null && tableSource != null && tableSource instanceof SQLExprTableSource) {
+                    return;
+                }
+            }
 
             WallContext context = WallContext.current();
             if (context != null) {
@@ -2416,6 +2425,10 @@ public class WallVisitorUtils {
             allow = config.isLockTableAllow();
             denyMessage = "lock table not allow";
             errorCode = ErrorCode.LOCK_TABLE_NOT_ALLOW;
+        } else if (x instanceof MySqlStartTransactionStatement) {
+            allow = config.isStartTransactionAllow();
+            denyMessage = "start transaction not allow";
+            errorCode = ErrorCode.START_TRANSACTION_NOT_ALLOW;
         } else {
             allow = config.isNoneBaseStatementAllow();
             errorCode = ErrorCode.NONE_BASE_STATEMENT_NOT_ALLOW;
