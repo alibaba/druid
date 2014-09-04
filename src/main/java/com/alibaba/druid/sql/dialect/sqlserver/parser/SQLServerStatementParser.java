@@ -123,6 +123,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 insertStatement.getValuesList().add(values);
                 accept(Token.RPAREN);
 
+                if (!parseCompleteValues && insertStatement.getValuesList().size() >= parseValuesSize) {
+                    lexer.skipToEOF();
+                    break;
+                }
+                
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;

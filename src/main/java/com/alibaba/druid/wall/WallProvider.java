@@ -611,7 +611,11 @@ public abstract class WallProvider {
             if (!config.isCommentAllow()) {
                 parser.getLexer().setAllowComment(false); // deny comment
             }
-
+            if (!config.isCompleteInsertValuesCheck()) {
+                parser.setParseCompleteValues(false);
+                parser.setParseValuesSize(config.getInsertValuesCheckSize());
+            }
+            
             parser.parseStatementList(statementList);
 
             final Token lastToken = parser.getLexer().token();
