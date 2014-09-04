@@ -1994,14 +1994,9 @@ public class MySqlStatementParser extends SQLStatementParser {
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
                 valueClauseList.add(values);
             }
-            
+
             if (lexer.token() != Token.RPAREN) {
                 throw new ParserException("syntax error");
-            }
-            
-            if (!parseCompleteValues && valueClauseList.size() >= parseValuesSize) {
-                lexer.skipToEOF();
-                break;
             }
 
             lexer.nextTokenComma();

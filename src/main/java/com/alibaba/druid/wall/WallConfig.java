@@ -119,9 +119,6 @@ public class WallConfig implements WallConfigMBean {
     private boolean             conditionOpBitwseAllow      = true;
 
     private boolean             caseConditionConstAllow     = false;
-    
-    private boolean             completeInsertValuesCheck   = false;
-    private int                 insertValuesCheckSize       = 3;
 
     public WallConfig(){
 
@@ -771,22 +768,6 @@ public class WallConfig implements WallConfigMBean {
 
     public void setStartTransactionAllow(boolean startTransactionAllow) {
         this.startTransactionAllow = startTransactionAllow;
-    }
-
-    public boolean isCompleteInsertValuesCheck() {
-        return completeInsertValuesCheck;
-    }
-
-    public void setCompleteInsertValuesCheck(boolean completeInsertValuesCheck) {
-        this.completeInsertValuesCheck = completeInsertValuesCheck;
-    }
-
-    public int getInsertValuesCheckSize() {
-        return insertValuesCheckSize;
-    }
-
-    public void setInsertValuesCheckSize(int insertValuesCheckSize) {
-        this.insertValuesCheckSize = insertValuesCheckSize;
     }
 
 }
