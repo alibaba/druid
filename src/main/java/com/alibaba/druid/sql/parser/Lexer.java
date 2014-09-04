@@ -1053,4 +1053,9 @@ public class Lexer {
     public boolean isHasComment() {
         return hasComment;
     }
+    
+    public void skipToEOF() {
+        pos = text.length();
+        this.token = Token.EOF;
+    }
 }
