@@ -85,6 +85,10 @@ public class SQLStatementParser extends SQLParser {
 
     protected SQLExprParser exprParser;
 
+    protected boolean       parseCompleteValues = true;
+
+    protected int           parseValuesSize     = 3;
+
     public SQLStatementParser(String sql){
         this(new SQLExprParser(sql));
     }
@@ -1568,5 +1572,22 @@ public class SQLStatementParser extends SQLParser {
         }
         accept(Token.RPAREN);
         return item;
+    }
+
+    
+    public boolean isParseCompleteValues() {
+        return parseCompleteValues;
+    }
+
+    public void setParseCompleteValues(boolean parseCompleteValues) {
+        this.parseCompleteValues = parseCompleteValues;
+    }
+
+    public int getParseValuesSize() {
+        return parseValuesSize;
+    }
+
+    public void setParseValuesSize(int parseValuesSize) {
+        this.parseValuesSize = parseValuesSize;
     }
 }

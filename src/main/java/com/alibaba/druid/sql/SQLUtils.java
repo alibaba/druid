@@ -117,6 +117,10 @@ public class SQLUtils {
         return format(sql, JdbcUtils.ODPS);
     }
 
+    public static String formatSQLServer(String sql) {
+        return format(sql, JdbcUtils.SQL_SERVER);
+    }
+    
     public static String toOracleString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         sqlObject.accept(new OracleOutputVisitor(out, false));
