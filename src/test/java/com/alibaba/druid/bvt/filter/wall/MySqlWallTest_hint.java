@@ -95,4 +95,19 @@ public class MySqlWallTest_hint extends TestCase {
         Assert.assertTrue(WallUtils.isValidateMySql(sql)); //
     }
     
+    public void test_true_9() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setHintAllow(true);
+        config.setMultiStatementAllow(true);
+        String sql = "CREATE TABLE `session` ("//
+                     + " `sess_id` varchar(128) NOT NULL,"//
+                     + " `created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',"//
+                     + " `changed` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',"//
+                     + " `ip` varchar(40) NOT NULL,"//
+                     + " `vars` mediumtext NOT NULL,"//
+                     + " PRIMARY KEY(`sess_id`),"//
+                     + " INDEX `changed_index` (`changed`)"//
+                     + ") /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */ ";
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config)); //
+    }
 }

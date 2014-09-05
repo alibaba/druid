@@ -497,6 +497,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             decrementIndent();
         }
 
+        for (SQLCommentHint hint : x.getOptionHints()) {
+            print(' ');
+            hint.accept(this);
+        }
         return false;
     }
 
