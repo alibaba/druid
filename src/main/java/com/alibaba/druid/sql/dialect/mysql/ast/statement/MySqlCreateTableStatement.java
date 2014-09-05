@@ -44,6 +44,8 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
 
+    private List<SQLCommentHint>   optionHints  = new ArrayList<SQLCommentHint>();
+
     private SQLExprTableSource     like;
 
     public MySqlCreateTableStatement(){
@@ -155,5 +157,13 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             visitor.endVisit(this);
         }
 
+    }
+
+    public List<SQLCommentHint> getOptionHints() {
+        return optionHints;
+    }
+
+    public void setOptionHints(List<SQLCommentHint> optionHints) {
+        this.optionHints = optionHints;
     }
 }

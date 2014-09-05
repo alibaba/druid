@@ -559,7 +559,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             SQLSelect query = new MySqlSelectParser(this.exprParser).select();
             stmt.setQuery(query);
         }
-
+        
+        while (lexer.token() == (Token.HINT)) {
+            this.exprParser.parseHints(stmt.getOptionHints());
+        }
         return stmt;
     }
 
