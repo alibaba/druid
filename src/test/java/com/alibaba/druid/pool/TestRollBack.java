@@ -32,7 +32,7 @@ public class TestRollBack extends TestCase {
     protected void setUp() throws Exception {
 
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://10.20.144.27/druid?useUnicode=true&characterEncoding=UTF-8");
+        dataSource.setUrl("jdbc:mysql://a.b.c.d/druid?useUnicode=true&characterEncoding=UTF-8");
         dataSource.setUsername("dragoon_test");
         dataSource.setPassword("dragoon_test");
         dataSource.setFilters("stat,trace,encoding");

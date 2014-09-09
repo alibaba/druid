@@ -33,7 +33,7 @@ public class OnlineOracleTest3 extends TestCase {
     private DruidDataSource dataSource;
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.18:1521:emdb";
+        jdbcUrl = "jdbc:oracle:thin:@xx.xx.xx.xx:1521:emdb";
         user = "wardon";
         password = "wardon";
 

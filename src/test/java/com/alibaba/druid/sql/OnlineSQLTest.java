@@ -34,7 +34,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVis
 
 public class OnlineSQLTest extends TestCase {
 
-    private String url      = "jdbc:mysql://10.20.129.146/dragoon_v25monitordb_online";
+    private String url      = "jdbc:mysql://a.b.c.d/dragoon_v25monitordb_online";
     private String user     = "dragoon";
     private String password = "dragoon";
 

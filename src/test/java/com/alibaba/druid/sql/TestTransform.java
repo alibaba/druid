@@ -44,7 +44,7 @@ public class TestTransform extends OracleTest {
     private ExecutorService executor = Executors.newFixedThreadPool(10);
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.18:1521:emdb";
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:emdb";
         user = "wardon";
         password = "wardon";
 

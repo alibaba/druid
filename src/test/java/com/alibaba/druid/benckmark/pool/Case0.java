@@ -55,9 +55,9 @@ public class Case0 extends TestCase {
          password = "dragoon25";
          driverClass = "com.alibaba.druid.mock.MockDriver";
 
-//        jdbcUrl = "jdbc:mysql://10.20.159.104:3306/masterdb";
-//        user = "dragoon";
-//        password = "dragoon";
+//        jdbcUrl = "jdbc:mysql://a.b.c.d:3306/masterdb";
+//        user = "x";
+//        password = "x";
     }
 
     public void test_druid() throws Exception {

@@ -12,7 +12,7 @@ public class OBTest extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://10.232.36.171:45447/");
+        dataSource.setUrl("jdbc:mysql://a.b.c.d:45447/");
         dataSource.setUsername("admin");
         dataSource.setPassword("admin");
         dataSource.setFilters("log4j");

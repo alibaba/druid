@@ -65,7 +65,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
     private JLabel                                  lbUrl                         = new JLabel("URL : ");
     private JTextField                              txtUrl                        = new JTextField(
-                                                                                                   "jdbc:oracle:thin:@10.20.36.18:1521:ocndb");
+                                                                                                   "jdbc:oracle:thin:@a.b.c.d:1521:ocndb");
 
     private JLabel                                  lbDriverClass                 = new JLabel("DriverClassName : ");
     private JTextField                              txtDriverClass                = new JTextField();

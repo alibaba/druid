@@ -34,7 +34,7 @@ public class TestOracle extends TestCase {
     private String password;
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:wrap-jdbc:filters=default:name=oracleTest:jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        jdbcUrl = "jdbc:wrap-jdbc:filters=default:name=oracleTest:jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         // jdbcUrl = "jdbc:wrap-jdbc:filters=default:name=oracleTest:jdbc:mock:xx";
         user = "alibaba";
         password = "ccbuauto";

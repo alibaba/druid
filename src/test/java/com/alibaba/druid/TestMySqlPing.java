@@ -30,12 +30,12 @@ public class TestMySqlPing extends TestCase {
     private String driverClass;
 
     protected void setUp() throws Exception {
-        // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        // jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         // user = "alibaba";
         // password = "ccbuauto";
         // SQL = "SELECT * FROM WP_ORDERS WHERE ID = ?";
 
-        jdbcUrl = "jdbc:mysql://10.20.147.142:3308/dragoon_v25_masterdb";
+        jdbcUrl = "jdbc:mysql://a.b.c.d:3308/dragoon_v25_masterdb";
         user = "dragoon_admin";
         password = "dragoon_root";
 

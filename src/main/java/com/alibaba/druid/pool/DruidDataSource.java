@@ -41,6 +41,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.management.JMException;
+import javax.management.MBeanRegistration;
+import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -95,7 +97,7 @@ import com.alibaba.druid.wall.WallProviderStatValue;
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
+public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource, MBeanRegistration {
 
     private final static Log                 LOG                     = LogFactory.getLog(DruidDataSource.class);
 
@@ -2701,5 +2703,25 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         createTaskCount++;
         CreateConnectionTask task = new CreateConnectionTask();
         createScheduler.submit(task);
+    }
+
+    @Override
+    public ObjectName preRegister(MBeanServer server, ObjectName name) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void postRegister(Boolean registrationDone) {
+        
+    }
+
+    @Override
+    public void preDeregister() throws Exception {
+        
+    }
+
+    @Override
+    public void postDeregister() {
+        
     }
 }
