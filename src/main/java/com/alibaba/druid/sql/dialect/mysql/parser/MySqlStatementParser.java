@@ -2537,6 +2537,10 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.DEFAULT) {
             lexer.nextToken();
         }
+        
+        if (lexer.token() == Token.HINT) {
+            stmt.setHints(this.exprParser.parseHints());
+        }
 
         return stmt;
     }

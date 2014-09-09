@@ -1534,8 +1534,13 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
         }
-
+        
         SQLExplainStatement explain = new SQLExplainStatement();
+        
+        if(lexer.token == Token.HINT) {
+            explain.setHints(this.exprParser.parseHints());
+        }
+
         explain.setStatement(parseStatement());
 
         return explain;

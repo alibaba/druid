@@ -1123,12 +1123,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(" WITH CONSISTENT SNAPSHOT");
         }
         
-        List<SQLCommentHint> hints = x.getHints();
-        if (hints != null && !hints.isEmpty()) {
+        if (x.getHints() != null && x.getHints().size() > 0) {
             print(" ");
-            for (SQLCommentHint hint : hints) {
-                hint.accept(this);
-            }
+            printAndAccept(x.getHints(), " ");
         }
 
         if (x.isBegin()) {
@@ -2143,12 +2140,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getTable().accept(this);
         }
         
-        List<SQLCommentHint> hints = x.getHints();
-        if (hints != null && !hints.isEmpty()) {
+        if (x.getHints() != null && x.getHints().size() > 0) {
             print(" ");
-            for (SQLCommentHint hint : hints) {
-                hint.accept(this);
-            }
+            printAndAccept(x.getHints(), " ");
         }
 
         return false;
@@ -2685,12 +2679,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(x.getLockType().name);
         }
         
-        List<SQLCommentHint> hints = x.getHints();
-        if (hints != null && !hints.isEmpty()) {
+        if (x.getHints() != null && x.getHints().size() > 0) {
             print(" ");
-            for (SQLCommentHint hint : hints) {
-                hint.accept(this);
-            }
+            printAndAccept(x.getHints(), " ");
         }
         return false;
     }
