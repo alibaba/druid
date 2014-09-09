@@ -35,7 +35,7 @@ public class MySqlBigTableTest extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:mysql://10.20.144.27:3306/dragoon_v25_masterdb";
+        jdbcUrl = "jdbc:mysql://a.b.c.d:3306/dragoon_v25_masterdb";
         user = "dragoon_test";
         password = "dragoon_test";
         driverClass = "com.mysql.jdbc.Driver";

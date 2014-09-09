@@ -26,7 +26,7 @@ public class Case3 extends TestCase {
 
     public void test_1() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://10.20.153.104:3306/druid2");
+        dataSource.setUrl("jdbc:mysql://a.b.c.d:3306/druid2");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
 

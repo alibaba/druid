@@ -17,7 +17,7 @@ public class QueryTimeoutTest extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://10.232.64.68:3306/umiddb");
+        dataSource.setUrl("jdbc:mysql://a.b.c.d:3306/umiddb");
         dataSource.setUsername("umiddb");
         dataSource.setPassword("umiddb1001");
         dataSource.setInitialSize(1);

@@ -30,7 +30,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
 public class OnlineSQLTest2 extends TestCase {
 
-    private String url      = "jdbc:mysql://10.20.36.26/dragoon_v25_monitordb_test";
+    private String url      = "jdbc:mysql://a.b.c.d/dragoon_v25_monitordb_test";
     private String user     = "dragoon";
     private String password = "dragoon";
 

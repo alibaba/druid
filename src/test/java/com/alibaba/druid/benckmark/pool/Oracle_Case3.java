@@ -47,7 +47,7 @@ public class Oracle_Case3 extends TestCase {
     private boolean testOnBorrow    = true;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         user = "alibaba";
         password = "ccbuauto";
         driverClass = "oracle.jdbc.driver.OracleDriver";

@@ -33,7 +33,7 @@ public class TestPoolStatement extends TestCase {
     protected void setUp() throws Exception {
 
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:oracle:thin:@10.20.36.18:1521:testconn");
+        dataSource.setUrl("jdbc:oracle:thin:@a.b.c.d:1521:testconn");
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(14);
         dataSource.setMaxIdle(14);

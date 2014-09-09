@@ -29,7 +29,7 @@ public class MySqlValdConnectionTest extends TestCase {
     private String driverClass;
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:mysql://10.20.129.146/dragoon_v25masterdb?useUnicode=true&characterEncoding=UTF-8";
+        jdbcUrl = "jdbc:mysql://a.b.c.d/dragoon_v25masterdb?useUnicode=true&characterEncoding=UTF-8";
         user = "dragoon25";
         password = "dragoon25";
         driverClass = "com.mysql.jdbc.Driver";

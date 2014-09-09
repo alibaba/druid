@@ -62,12 +62,12 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
 
         MockDriver.instance.setIdleTimeCount(50 * 60 * 10);
 
-        // jdbcUrl = "jdbc:mysql://10.20.141.150:8066/amoeba";
+        // jdbcUrl = "jdbc:mysql://a.b.c.d:8066/amoeba";
         // user = "root";
         // password = "12345";
         // driverClass = "com.mysql.jdbc.Driver";
 
-        // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        // jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         // user = "alibaba";
         // password = "ccbuauto";
         // driverClass = "oracle.jdbc.driver.OracleDriver";
