@@ -27,6 +27,10 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface PGASTVisitor extends SQLASTVisitor {
+	
+	boolean visit(PGSelectQueryBlock.PGLimit x);
+
+	void endVisit(PGSelectQueryBlock.PGLimit x);
 
     void endVisit(PGSelectQueryBlock x);
 

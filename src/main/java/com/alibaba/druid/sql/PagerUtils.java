@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLimit;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.util.JdbcConstants;
@@ -112,9 +113,30 @@ public class PagerUtils {
             return limitMySqlQueryBlock((MySqlSelectQueryBlock) queryBlock, dbType, offset, count);
         }
 
+        if (JdbcConstants.POSTGRESQL.equals(dbType))
+        {
+        	return limitPostgreSQLQueryBlock((PGSelectQueryBlock) queryBlock, dbType, offset, count);
+        }
         throw new UnsupportedOperationException();
     }
 
+    private static String limitPostgreSQLQueryBlock(PGSelectQueryBlock queryBlock, String dbType,
+    	int offset, int count) {
+    		if (queryBlock.getLimit() != null)
+    		{
+    		throw new IllegalArgumentException("limit already exists.");
+    		}
+
+    		    PGLimit limit = new PGLimit();
+    		    if (offset > 0)
+    		    {
+    		        limit.setOffset(new SQLNumberExpr(offset));
+    		    }
+    		    limit.setRowCount(new SQLNumberExpr(count));
+    		    queryBlock.setLimit(limit);
+
+    		    return SQLUtils.toSQLString(queryBlock, dbType);
+    		}
     private static String limitDB2(SQLSelect select, String dbType, int offset, int count) {
         SQLSelectQuery query = select.getQuery();
 
