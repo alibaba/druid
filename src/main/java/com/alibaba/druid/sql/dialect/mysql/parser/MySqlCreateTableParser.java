@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
@@ -336,6 +337,29 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 }
 
                 stmt.getTableOptions().put("STATS_PERSISTENT", this.exprParser.expr());
+                continue;
+            }
+            
+            if (identifierEquals("STATS_SAMPLE_PAGES")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                stmt.getTableOptions().put("STATS_SAMPLE_PAGES", this.exprParser.expr());
+                continue;
+            }
+            
+            if (lexer.token() == Token.UNION) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                accept(Token.LPAREN);
+                SQLTableSource tableSrc = this.createSQLSelectParser().parseTableSource();
+                stmt.getTableOptions().put("UNION", tableSrc);
+                accept(Token.RPAREN);
                 continue;
             }
 
