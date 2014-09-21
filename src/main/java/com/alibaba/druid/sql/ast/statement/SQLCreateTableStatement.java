@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
+    protected boolean               ifNotExiists     = false;
     protected Type                  type;
     protected SQLExprTableSource    tableSource;
 
@@ -70,6 +71,14 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public List<SQLTableElement> getTableElementList() {
         return tableElementList;
+    }
+    
+    public boolean isIfNotExiists() {
+        return ifNotExiists;
+    }
+
+    public void setIfNotExiists(boolean ifNotExiists) {
+        this.ifNotExiists = ifNotExiists;
     }
 
     @Override

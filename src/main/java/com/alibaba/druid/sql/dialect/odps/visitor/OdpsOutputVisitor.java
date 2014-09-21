@@ -29,6 +29,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -88,6 +90,12 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                 x.getPartitionColumns().get(i).accept(this);
             }
             print(")");
+        }
+        
+        if (x.getLifecycle() != null) {
+            println();
+            print("LIFECYCLE ");
+            x.getLifecycle().accept(this);
         }
 
         return false;
@@ -297,6 +305,30 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         
         print(")");
 
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsShowPartitionsStmt x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsShowPartitionsStmt x) {
+        print("SHOW PARTITIONS ");
+        x.getTableSource().accept(this);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OdpsShowStatisticStmt x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsShowStatisticStmt x) {
+        print("SHOW STATISTIC ");
+        x.getTableSource().accept(this);
         return false;
     }
 }
