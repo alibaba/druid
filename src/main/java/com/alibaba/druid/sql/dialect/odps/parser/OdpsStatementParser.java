@@ -21,10 +21,14 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -132,6 +136,33 @@ public class OdpsStatementParser extends SQLStatementParser {
         insert.setQuery(query);
 
         return insert;
+    }
+
+    public SQLStatement parseShow() {
+        accept(Token.SHOW);
+        
+        if (identifierEquals("PARTITIONS")) {
+            lexer.nextToken();
+            
+            OdpsShowPartitionsStmt stmt = new OdpsShowPartitionsStmt();
+            
+            SQLExpr expr = this.exprParser.expr();
+            stmt.setTableSource(new SQLExprTableSource(expr));
+            
+            return stmt;
+        }
+        
+        if (identifierEquals("STATISTIC")) {
+            lexer.nextToken();
+            
+            OdpsShowStatisticStmt stmt = new OdpsShowStatisticStmt();
+            
+            SQLExpr expr = this.exprParser.expr();
+            stmt.setTableSource(new SQLExprTableSource(expr));
+            
+            return stmt;
+        }
+        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
 
 }

@@ -34,8 +34,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
 
-    private boolean                ifNotExiists = false;
-
     private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
     protected SQLSelect            query;
@@ -97,14 +95,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setQuery(SQLSelect query) {
         this.query = query;
-    }
-
-    public boolean isIfNotExiists() {
-        return ifNotExiists;
-    }
-
-    public void setIfNotExiists(boolean ifNotExiists) {
-        this.ifNotExiists = ifNotExiists;
     }
 
     @Override

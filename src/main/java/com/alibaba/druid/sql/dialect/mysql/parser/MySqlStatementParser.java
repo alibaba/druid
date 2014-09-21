@@ -2375,6 +2375,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("REMOVE")) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("ALGORITHM")) {
+                    lexer.nextToken();
+                    accept(Token.EQ);
+                    stmt.getItems().add(new MySqlAlterTableOption("ALGORITHM", lexer.stringVal()));
+                    lexer.nextToken();
                 } else if (identifierEquals(ENGINE)) {
                     lexer.nextToken();
                     accept(Token.EQ);
