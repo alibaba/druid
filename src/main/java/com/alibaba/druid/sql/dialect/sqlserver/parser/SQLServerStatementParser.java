@@ -96,20 +96,20 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.INTO) {
             lexer.nextToken();
+        }
+        
+        SQLName tableName = this.exprParser.name();
+        insertStatement.setTableName(tableName);
 
-            SQLName tableName = this.exprParser.name();
-            insertStatement.setTableName(tableName);
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+            insertStatement.setAlias(as());
+        }
 
-            if (lexer.token() == Token.LITERAL_ALIAS) {
-                insertStatement.setAlias(as());
-            }
+        parseInsert0_hinits(insertStatement);
 
-            parseInsert0_hinits(insertStatement);
-
-            if (lexer.token() == Token.IDENTIFIER) {
-                insertStatement.setAlias(lexer.stringVal());
-                lexer.nextToken();
-            }
+        if (lexer.token() == Token.IDENTIFIER) {
+            insertStatement.setAlias(lexer.stringVal());
+            lexer.nextToken();
         }
 
         if (lexer.token() == (Token.LPAREN)) {
