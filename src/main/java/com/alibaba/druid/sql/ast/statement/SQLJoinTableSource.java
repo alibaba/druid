@@ -113,8 +113,12 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         CROSS_JOIN("CROSS JOIN"), //
         NATURAL_JOIN("NATURAL JOIN"), //
         NATURAL_INNER_JOIN("NATURAL INNER JOIN"), //
-        LEFT_OUTER_JOIN("LEFT JOIN"), RIGHT_OUTER_JOIN("RIGHT JOIN"), FULL_OUTER_JOIN("FULL JOIN"),
-        STRAIGHT_JOIN("STRAIGHT_JOIN");
+        LEFT_OUTER_JOIN("LEFT JOIN"), //
+        RIGHT_OUTER_JOIN("RIGHT JOIN"), //
+        FULL_OUTER_JOIN("FULL JOIN"),//
+        STRAIGHT_JOIN("STRAIGHT_JOIN"), //
+        OUTER_APPLY("OUTER APPLY"),//
+        CROSS_APPLY("CROSS APPLY");
 
         public final String name;
 
