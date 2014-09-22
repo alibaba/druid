@@ -110,4 +110,22 @@ public class MySqlWallTest_hint extends TestCase {
                      + ") /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */ ";
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config)); //
     }
+    
+    public void test_true_10() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setHintAllow(true);
+        config.setMultiStatementAllow(true);
+        config.setNoneBaseStatementAllow(true);
+        String sql = "CREATE DATABASE `newsfocus` /*!40100 COLLATE 'big5_chinese_ci' */ ";
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config)); //
+    }
+
+    public void test_true_11() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setHintAllow(true);
+        config.setMultiStatementAllow(true);
+        config.setNoneBaseStatementAllow(true);
+        String sql = "EXPLAIN /*!40100 EXTENDED */ SELECT * FROM trade_order_header WHERE id = ?";
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config)); //
+    }
 }

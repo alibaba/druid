@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -97,6 +98,14 @@ public class SQLServerParameterizedOutputVisitor extends SQLServerOutputVisitor 
             return super.visit(x);
         }
         
+        return ParameterizedOutputVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(SQLHexExpr x) {
+        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return super.visit(x);
+        }
+
         return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
