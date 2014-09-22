@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -58,4 +60,11 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     
     void endVisit(SQLServerExecStatement x);
     
+    boolean visit(SQLServerSetTransactionIsolationLevelStatement x);
+
+    void endVisit(SQLServerSetTransactionIsolationLevelStatement x);
+    
+    boolean visit(SQLServerSetStatement x);
+
+    void endVisit(SQLServerSetStatement x);
 }

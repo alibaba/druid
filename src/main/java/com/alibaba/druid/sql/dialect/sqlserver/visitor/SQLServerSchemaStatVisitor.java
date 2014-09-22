@@ -27,6 +27,8 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -133,6 +135,26 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     @Override
     public void endVisit(SQLServerExecStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(SQLServerSetTransactionIsolationLevelStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerSetTransactionIsolationLevelStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLServerSetStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerSetStatement x) {
+        
     }
 
 }

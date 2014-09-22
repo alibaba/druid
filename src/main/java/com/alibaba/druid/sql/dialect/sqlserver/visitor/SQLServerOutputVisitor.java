@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -27,6 +28,8 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -319,5 +322,32 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public void endVisit(SQLServerExecStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(SQLServerSetTransactionIsolationLevelStatement x) {
+        print("SET TRANSACTION ISOLATION LEVEL ");
+        print(x.getLevel());
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerSetTransactionIsolationLevelStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLServerSetStatement x) {
+        print("SET ");
+        SQLAssignItem item = x.getItem();
+        item.getTarget().accept(this);
+        print(" ");
+        item.getValue().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerSetStatement x) {
+        
     }
 }
