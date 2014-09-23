@@ -286,9 +286,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return discardCount;
     }
 
-    public void restart() {
+    public void restart() throws SQLException {
         lock.lock();
         try {
+            if (activeCount > 0) {
+                throw new SQLException("can not restart, activeCount not zero. " + activeCount);
+            }
             if (LOG.isInfoEnabled()) {
                 LOG.info("{dataSource-" + this.getID() + "} restart");
             }
