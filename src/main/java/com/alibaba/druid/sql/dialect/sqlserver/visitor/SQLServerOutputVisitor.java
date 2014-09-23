@@ -23,9 +23,12 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
@@ -95,7 +98,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         boolean paren = false;
 
-        if (x.getParent() instanceof SQLServerUpdateStatement) {
+        if (x.getParent() instanceof SQLServerUpdateStatement || x.getParent() instanceof SQLServerInsertStatement) {
             paren = true;
             print("(");
         }
@@ -131,8 +134,16 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerInsertStatement x) {
-        print("INSERT INTO ");
+        print("INSERT ");
 
+        if (x.getTop() != null) {
+            x.getTop().setParent(x);
+            x.getTop().accept(this);
+            print(' ');
+        }
+        
+        print("INTO ");
+        
         x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
@@ -152,6 +163,12 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             print(")");
             decrementIndent();
         }
+        
+        if (x.getOutput() != null) {
+            println();
+            x.getOutput().setParent(x);
+            x.getOutput().accept(this);
+        }
 
         if (x.getValuesList().size() != 0) {
             println();
@@ -170,7 +187,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             println();
             x.getQuery().accept(this);
         }
-        
+
         if (x.isDefaultValues()) {
             print(" DEFAULT VALUES");
         }
@@ -201,6 +218,12 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
                 print(", ");
             }
             x.getItems().get(i).accept(this);
+        }
+        
+        if (x.getOutput() != null) {
+            println();
+            x.getOutput().setParent(x);
+            x.getOutput().accept(this);
         }
 
         if (x.getFrom() != null) {
@@ -333,7 +356,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public void endVisit(SQLServerSetTransactionIsolationLevelStatement x) {
-        
+
     }
 
     @Override
@@ -348,6 +371,98 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public void endVisit(SQLServerSetStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLServerOutput x) {
+        print("OUTPUT ");
+        printSelectList(x.getSelectList());
+
+        if (x.getInto() != null) {
+            incrementIndent();
+            println();
+            print("INTO ");
+            x.getInto().accept(this);
+
+            if (x.getColumns().size() > 0) {
+                incrementIndent();
+                println();
+                print("(");
+                for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+                    if (i != 0) {
+                        if (i % 5 == 0) {
+                            println();
+                        }
+                        print(", ");
+                    }
+
+                    x.getColumns().get(i).accept(this);
+                }
+                print(")");
+                decrementIndent();
+            }
+        }
+        decrementIndent();
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerOutput x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLServerDeclareItem x) {
+        x.getName().accept(this);
+        
+        if(x.getType() == SQLServerDeclareItem.Type.TABLE) {
+            print(" TABLE");
+            int size = x.getTableElementList().size();
+
+            if (size > 0) {
+                print(" (");
+                incrementIndent();
+                println();
+                for (int i = 0; i < size; ++i) {
+                    if (i != 0) {
+                        print(",");
+                        println();
+                    }
+                    x.getTableElementList().get(i).accept(this);
+                }
+                decrementIndent();
+                println();
+                print(")");
+            }
+        } else if (x.getType() == SQLServerDeclareItem.Type.CURSOR) {
+            print(" CURSOR");
+        } else {
+            print(" ");
+            x.getDataType().accept(this);
+            if (x.getValue() != null) {
+                print(" = ");
+                x.getValue().accept(this);
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerDeclareItem x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLServerDeclareStatement x) {
+        print("DECLARE ");
+        this.printAndAccept(x.getItems(), ", ");
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerDeclareStatement x) {
         
     }
 }
