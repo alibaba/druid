@@ -23,10 +23,12 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
@@ -408,5 +410,59 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public void endVisit(SQLServerOutput x) {
 
+    }
+
+    @Override
+    public boolean visit(SQLServerDeclareItem x) {
+        x.getName().accept(this);
+        
+        if(x.getType() == SQLServerDeclareItem.Type.TABLE) {
+            print(" TABLE");
+            int size = x.getTableElementList().size();
+
+            if (size > 0) {
+                print(" (");
+                incrementIndent();
+                println();
+                for (int i = 0; i < size; ++i) {
+                    if (i != 0) {
+                        print(",");
+                        println();
+                    }
+                    x.getTableElementList().get(i).accept(this);
+                }
+                decrementIndent();
+                println();
+                print(")");
+            }
+        } else if (x.getType() == SQLServerDeclareItem.Type.CURSOR) {
+            print(" CURSOR");
+        } else {
+            print(" ");
+            x.getDataType().accept(this);
+            if (x.getValue() != null) {
+                print(" = ");
+                x.getValue().accept(this);
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerDeclareItem x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLServerDeclareStatement x) {
+        print("DECLARE ");
+        this.printAndAccept(x.getItems(), ", ");
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerDeclareStatement x) {
+        
     }
 }

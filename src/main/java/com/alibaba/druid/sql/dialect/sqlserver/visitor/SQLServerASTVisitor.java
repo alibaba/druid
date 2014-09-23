@@ -16,10 +16,12 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
@@ -72,4 +74,13 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     boolean visit(SQLServerOutput x);
 
     void endVisit(SQLServerOutput x);
+    
+    boolean visit(SQLServerDeclareItem x);
+
+    void endVisit(SQLServerDeclareItem x);
+
+    boolean visit(SQLServerDeclareStatement x);
+
+    void endVisit(SQLServerDeclareStatement x);
+
 }

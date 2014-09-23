@@ -21,13 +21,18 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
@@ -77,8 +82,90 @@ public class SQLServerStatementParser extends SQLStatementParser {
             statementList.add(execStmt);
             return true;
         }
+        
+        if (lexer.token() == Token.DECLARE) {
+            statementList.add(this.parseDeclare());
+            return true;
+        }
 
         return false;
+    }
+    
+    public SQLStatement parseDeclare() {
+        this.accept(Token.DECLARE);
+
+        SQLServerDeclareStatement declareStatement = new SQLServerDeclareStatement();
+        
+        for (;;) {
+            SQLServerDeclareItem item = new  SQLServerDeclareItem();
+            declareStatement.getItems().add(item);
+            
+            item.setName(this.exprParser.name());
+
+            if (lexer.token() == Token.AS) {
+                lexer.nextToken();
+            }
+
+            if (lexer.token() == Token.TABLE) {
+                lexer.nextToken();
+                item.setType(SQLServerDeclareItem.Type.TABLE);
+                
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+
+                    for (;;) {
+                        if (lexer.token() == Token.IDENTIFIER //
+                            || lexer.token() == Token.LITERAL_ALIAS) {
+                            SQLColumnDefinition column = this.exprParser.parseColumn();
+                            item.getTableElementList().add(column);
+                        } else if (lexer.token() == Token.PRIMARY //
+                                   || lexer.token() == Token.UNIQUE //
+                                   || lexer.token() == Token.CHECK //
+                                   || lexer.token() == Token.CONSTRAINT) {
+                            SQLConstraint constraint = this.exprParser.parseConstaint();
+                            constraint.setParent(item);
+                            item.getTableElementList().add((SQLTableElement) constraint);
+                        } else if (lexer.token() == Token.TABLESPACE) {
+                            throw new ParserException("TODO " + lexer.token());
+                        } else {
+                            SQLColumnDefinition column = this.exprParser.parseColumn();
+                            item.getTableElementList().add(column);
+                        }
+
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+
+                            if (lexer.token() == Token.RPAREN) {
+                                break;
+                            }
+                            continue;
+                        }
+
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                }
+                break;
+            } else if (lexer.token() == Token.CURSOR) {
+                item.setType(SQLServerDeclareItem.Type.CURSOR);
+                lexer.nextToken();
+            } else {
+                item.setType(SQLServerDeclareItem.Type.LOCAL);
+                item.setDataType(this.exprParser.parseDataType());
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                    item.setValue(this.exprParser.expr());
+                }
+            }
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            } else {
+                break;
+            }
+        }
+        return declareStatement;
     }
 
     public SQLStatement parseInsert() {
