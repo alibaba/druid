@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -93,6 +94,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
     protected void parseInsert0(SQLInsertInto insert, boolean acceptSubQuery) {
         SQLServerInsertStatement insertStatement = (SQLServerInsertStatement) insert;
+        
+        SQLServerTop top = this.getExprParser().parseTop();
+        if (top != null) {
+            insertStatement.setTop(top);
+        }
 
         if (lexer.token() == Token.INTO) {
             lexer.nextToken();
@@ -107,7 +113,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         parseInsert0_hinits(insertStatement);
 
-        if (lexer.token() == Token.IDENTIFIER) {
+        if (lexer.token() == Token.IDENTIFIER && !lexer.stringVal().equalsIgnoreCase("OUTPUT")) {
             insertStatement.setAlias(lexer.stringVal());
             lexer.nextToken();
         }
@@ -116,6 +122,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
             lexer.nextToken();
             this.exprParser.exprList(insertStatement.getColumns(), insertStatement);
             accept(Token.RPAREN);
+        }
+        
+        SQLServerOutput output = this.getExprParser().parserOutput();
+        if (output != null) {
+            insertStatement.setOutput(output);
         }
 
         if (lexer.token() == Token.VALUES) {
@@ -168,6 +179,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
         udpateStatement.setTableSource(tableSource);
 
         parseUpdateSet(udpateStatement);
+        
+        SQLServerOutput output = this.getExprParser().parserOutput();
+        if (output != null) {
+            udpateStatement.setOutput(output);
+        }
 
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
@@ -182,7 +198,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         return udpateStatement;
     }
-
+    
     public SQLServerExprParser getExprParser() {
         return (SQLServerExprParser) exprParser;
     }

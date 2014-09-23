@@ -20,6 +20,8 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObject;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -28,6 +30,10 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
     private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
 
     private boolean            defaultValues;
+
+    private SQLServerTop       top;
+
+    private SQLServerOutput    output;
 
     public ValuesClause getValues() {
         if (valuesList.size() == 0) {
@@ -56,8 +62,10 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
         if (visitor.visit(this)) {
+            this.acceptChild(visitor, getTop());
             this.acceptChild(visitor, getTableSource());
             this.acceptChild(visitor, getColumns());
+            this.acceptChild(visitor, getOutput());
             this.acceptChild(visitor, getValuesList());
             this.acceptChild(visitor, getQuery());
         }
@@ -71,6 +79,22 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
 
     public void setDefaultValues(boolean defaultValues) {
         this.defaultValues = defaultValues;
+    }
+
+    public SQLServerOutput getOutput() {
+        return output;
+    }
+
+    public void setOutput(SQLServerOutput output) {
+        this.output = output;
+    }
+
+    public SQLServerTop getTop() {
+        return top;
+    }
+
+    public void setTop(SQLServerTop top) {
+        this.top = top;
     }
 
 }

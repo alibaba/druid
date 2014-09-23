@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
@@ -24,8 +25,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLServerStatement {
 
-    private SQLServerTop   top;
-    private SQLTableSource from;
+    private SQLServerTop    top;
+    private SQLTableSource  from;
+    private SQLServerOutput output;
 
     public SQLServerTop getTop() {
         return top;
@@ -43,6 +45,14 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
         this.from = from;
     }
 
+    public SQLServerOutput getOutput() {
+        return output;
+    }
+
+    public void setOutput(SQLServerOutput output) {
+        this.output = output;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         this.accept0((SQLServerASTVisitor) visitor);
@@ -54,6 +64,7 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
             acceptChild(visitor, top);
             acceptChild(visitor, tableSource);
             acceptChild(visitor, items);
+            acceptChild(visitor, output);
             acceptChild(visitor, from);
             acceptChild(visitor, where);
         }
