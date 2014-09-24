@@ -21,8 +21,11 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement.Else;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
@@ -82,5 +85,17 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     boolean visit(SQLServerDeclareStatement x);
 
     void endVisit(SQLServerDeclareStatement x);
+    
+    boolean visit(Else x);
+
+    void endVisit(Else x);
+
+    boolean visit(SQLServerIfStatement x);
+
+    void endVisit(SQLServerIfStatement x);
+    
+    boolean visit(SQLServerBlockStatement x);
+
+    void endVisit(SQLServerBlockStatement x);
 
 }
