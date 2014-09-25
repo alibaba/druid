@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
@@ -3123,6 +3124,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlHintStatement x) {
         
+    }
+    
+    @Override
+    public boolean visit(MySqlSelectGroupByExpr x) {
+        x.getExpr().accept(this);
+        if (x.getType() != null) {
+            print(" ");
+            print(x.getType().name().toUpperCase());
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSelectGroupByExpr x) {
+
     }
 
 } //

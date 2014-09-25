@@ -331,6 +331,13 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public boolean visit(SQLServerExecStatement x) {
         print("EXEC ");
+        
+        SQLName returnStatus = x.getReturnStatus();
+        if (returnStatus != null) {
+            returnStatus.accept(this);
+            print(" = ");
+        }
+        
         SQLName moduleName = x.getModuleName();
         if (moduleName != null) {
             moduleName.accept(this);

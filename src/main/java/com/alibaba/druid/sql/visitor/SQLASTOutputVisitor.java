@@ -1989,7 +1989,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     public void endVisit(SQLBooleanExpr x) {
     }
-    
+
     @Override
     public boolean visit(SQLUnionQueryTableSource x) {
         print("(");
@@ -2006,4 +2006,5 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
+
 }

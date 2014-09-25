@@ -466,4 +466,5 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public boolean visit(SQLCreateTriggerStatement x) {
         return false;
     }
+    
 }

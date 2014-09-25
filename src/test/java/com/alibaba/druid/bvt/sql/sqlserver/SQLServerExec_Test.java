@@ -28,7 +28,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerExec_Test extends TestCase {
 
-    public void test_alter_first() throws Exception {
+    public void test_0() throws Exception {
         String sql = "EXEC sp_rename 'rules.temp_plugin_config_key', 'plugin_config_key'";
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
@@ -44,6 +44,28 @@ public class SQLServerExec_Test extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("EXEC sp_rename 'rules.temp_plugin_config_key', 'plugin_config_key'", output);
+
+        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
+    }
+    
+    
+    public void test_2() throws Exception {
+        String sql = "EXEC @returnstatus = dbo.ufnGetSalesOrderStatusText @Status = 2";
+        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+
+        SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
+        stmt.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+
+        String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
+        Assert.assertEquals("EXEC @returnstatus = dbo.ufnGetSalesOrderStatusText @Status = 2", output);
 
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

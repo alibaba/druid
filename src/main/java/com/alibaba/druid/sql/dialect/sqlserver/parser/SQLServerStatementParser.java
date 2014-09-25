@@ -76,9 +76,16 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 this.exprParser.exprList(execStmt.getParameters(), execStmt);
                 accept(Token.RPAREN);
             } else {
-                SQLName moduleName = this.exprParser.name();
-                execStmt.setModuleName(moduleName);
-                
+                SQLName sqlNameName = this.exprParser.name();
+
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                    execStmt.setReturnStatus(sqlNameName);
+                    execStmt.setModuleName(this.exprParser.name());
+                } else {
+                    execStmt.setModuleName(sqlNameName);
+                }
+
                 this.exprParser.exprList(execStmt.getParameters(), execStmt);
             }
             statementList.add(execStmt);
