@@ -964,6 +964,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.getOrderBy().setParent(x);
         }
 
+        accept(x.getWithSubQuery());
         accept(x.getQuery());
 
         String originalTable = getCurrentTable();
