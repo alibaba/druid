@@ -265,20 +265,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public boolean visit(OracleSelect x) {
-        setCurrentTable(x);
-
-        if (x.getOrderBy() != null) {
-            x.getOrderBy().setParent(x);
-        }
-
-        accept(x.getWithSubQuery());
-        accept(x.getQuery());
-
-        setCurrentTable(x, (String) x.getQuery().getAttribute("table"));
-
-        accept(x.getOrderBy());
-
-        return false;
+        return visit((SQLSelect) x);
     }
 
     public void endVisit(SQLSelect x) {
