@@ -27,7 +27,16 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 public class PGSelectTest5 extends PGTest {
 
     public void test_0() throws Exception {
-        String sql = " SELECT rs.* FROM ( WITH RECURSIVE r AS( SELECT * FROM t_e_shopcatalog WHERE parentcatalogid= (SELECT catalogid FROM t_e_shopcatalog where catalogname='学习分类' and parentcatalogid='0') UNION ALL SELECT t_e_shopcatalog.* FROM t_e_shopcatalog, r WHERE t_e_shopcatalog.parentcatalogid = r.catalogid )SELECT * FROM r )rs WHERE 1=1";
+        String sql = " SELECT rs.* FROM ( " //
+                     + "WITH RECURSIVE r AS( "//
+                     + "SELECT * " //
+                     + "FROM t_e_shopcatalog " //
+                     + "WHERE parentcatalogid= (SELECT catalogid FROM t_e_shopcatalog where catalogname='学习分类' and parentcatalogid='0') " //
+                     + "UNION ALL " //
+                     + "SELECT t_e_shopcatalog.* " //
+                     + "FROM t_e_shopcatalog, r " //
+                     + "WHERE t_e_shopcatalog.parentcatalogid = r.catalogid )"
+                     + "SELECT * FROM r )rs WHERE 1=1";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -43,7 +52,7 @@ public class PGSelectTest5 extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getTables().size());
     }
 

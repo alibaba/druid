@@ -38,6 +38,7 @@
 		</repository>
 	</repositories>
 
+<!--  
 	<distributionManagement>
 		<repository>
 			<id>opensesame</id>
@@ -48,7 +49,7 @@
 			<url>dav:http://code.alibabatech.com/mvn/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
+-->
 	<developers>
 		<developer>
 			<id>wenshao</id>
@@ -244,20 +245,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>mc-release</id>
-			<name>Local Maven repository of releases</name>
-			<url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<profiles>
 		<profile>

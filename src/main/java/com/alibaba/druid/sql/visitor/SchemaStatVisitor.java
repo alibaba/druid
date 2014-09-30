@@ -83,6 +83,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
@@ -871,6 +872,32 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public void endVisit(SQLSelectStatement x) {
+    }
+    
+    @Override
+    public boolean visit(SQLWithSubqueryClause.Entry x) {
+        String alias = x.getName().toString();
+        Map<String, String> aliasMap = getAliasMap();
+        SQLWithSubqueryClause with = (SQLWithSubqueryClause) x.getParent();
+
+        if (Boolean.TRUE == with.getRecursive()) {
+            
+            if (aliasMap != null && alias != null) {
+                aliasMap.put(alias, null);
+                subQueryMap.put(alias, x.getSubQuery().getQuery());
+            }
+            
+            x.getSubQuery().accept(this);
+        } else {
+            x.getSubQuery().accept(this);
+            
+            if (aliasMap != null && alias != null) {
+                aliasMap.put(alias, null);
+                subQueryMap.put(alias, x.getSubQuery().getQuery());
+            }
+        }
+        
+        return false;
     }
 
     public boolean visit(SQLSubqueryTableSource x) {

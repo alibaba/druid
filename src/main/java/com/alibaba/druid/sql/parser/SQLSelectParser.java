@@ -202,6 +202,7 @@ public class SQLSelectParser extends SQLParser {
 
             for (;;) {
                 SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
+                entry.setParent(withQueryClause);
                 entry.setName((SQLIdentifierExpr) this.exprParser.name());
 
                 if (lexer.token() == Token.LPAREN) {
