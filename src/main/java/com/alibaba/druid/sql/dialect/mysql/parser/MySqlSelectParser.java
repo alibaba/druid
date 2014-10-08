@@ -235,7 +235,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             accept(Token.BY);
 
             while (true) {
-                groupBy.addItem(this.exprParser.expr());
+                groupBy.addItem(this.getExprParser().parseSelectGroupByItem());
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 }
@@ -345,5 +345,9 @@ public class MySqlSelectParser extends SQLSelectParser {
 
     public Limit parseLimit() {
         return ((MySqlExprParser) this.exprParser).parseLimit();
+    }
+    
+    public MySqlExprParser getExprParser() {
+        return (MySqlExprParser) exprParser;
     }
 }

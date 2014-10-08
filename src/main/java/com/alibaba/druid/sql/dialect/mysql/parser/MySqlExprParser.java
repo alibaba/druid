@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -44,6 +45,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalUnit;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr.SearchModifier;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
@@ -860,5 +862,21 @@ public class MySqlExprParser extends SQLExprParser {
             aggregateExpr.putAttribute("SEPARATOR", seperator);
         }
         return aggregateExpr;
+    }
+    
+    public MySqlSelectGroupByExpr parseSelectGroupByItem() {
+        MySqlSelectGroupByExpr item = new MySqlSelectGroupByExpr();
+
+        item.setExpr(expr());
+
+        if (lexer.token() == Token.ASC) {
+            lexer.nextToken();
+            item.setType(SQLOrderingSpecification.ASC);
+        } else if (lexer.token() == Token.DESC) {
+            lexer.nextToken();
+            item.setType(SQLOrderingSpecification.DESC);
+        }
+
+        return item;
     }
 }

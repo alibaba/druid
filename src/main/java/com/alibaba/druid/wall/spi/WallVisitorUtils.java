@@ -94,6 +94,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
@@ -1166,6 +1167,8 @@ public class WallVisitorUtils {
             } else if (parent instanceof SQLOrderBy) {
                 return true;
             } else if (parent instanceof Limit) {
+                return true;
+            } else if (parent instanceof MySqlSelectGroupByExpr) {
                 return true;
             }
 
