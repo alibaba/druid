@@ -2182,16 +2182,25 @@ public class WallVisitorUtils {
         if (query instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
             SQLTableSource from = queryBlock.getFrom();
+            
+            if (queryBlock.getSelectList().size() < 1) {
+                return false;
+            }
 
             if (from == null) {
                 boolean itemIsConst = true;
+                boolean itemHasAlias = false;
                 for (SQLSelectItem item : queryBlock.getSelectList()) {
                     if (item.getExpr() instanceof SQLIdentifierExpr || item.getExpr() instanceof SQLPropertyExpr) {
                         itemIsConst = false;
                         break;
                     }
+                    if(item.getAlias() != null ) {
+                        itemHasAlias = true;
+                        break;
+                    }
                 }
-                if (itemIsConst) {
+                if (itemIsConst && !itemHasAlias) {
                     return true;
                 } else {
                     return false;
