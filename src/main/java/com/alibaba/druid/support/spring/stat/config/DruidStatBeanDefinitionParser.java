@@ -29,8 +29,8 @@ public class DruidStatBeanDefinitionParser implements BeanDefinitionParser {
 
 	public static final String STAT_ANNOTATION_PROCESSOR_BEAN_NAME = "com.alibaba.druid.support.spring.stat.annotation.internalStatAnnotationBeanPostProcessor";
 	public static final String STAT_ANNOTATION_PROCESSOR_BEAN_CLASS = "com.alibaba.druid.support.spring.stat.annotation.StatAnnotationBeanPostProcessor";
-	public static final String STAT_ANNOTATION_ADVICE_BEAN_NAME = "com.alibaba.druid.support.spring.stat.DruidStatInterceptor";
-	public static final String STAT_ANNOTATION_ADVICE_BEAN_CLASS = "druid-stat-interceptor";
+	public static final String STAT_ANNOTATION_ADVICE_BEAN_NAME = "druid-stat-interceptor";
+	public static final String STAT_ANNOTATION_ADVICE_BEAN_CLASS = "com.alibaba.druid.support.spring.stat.DruidStatInterceptor";
 	
 	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
