@@ -970,6 +970,21 @@ public class WallVisitorUtils {
             }
         }
 
+        if (x.getLeft() instanceof SQLName && !(x.getRight() instanceof SQLName)) {
+            switch (x.getOperator()) {
+                case Equality:
+                case NotEqual:
+                case GreaterThan:
+                case GreaterThanOrEqual:
+                case LessThan:
+                case LessThanOrEqual:
+                case LessThanOrGreater:
+                    return null;
+                default:
+                    break;
+            }
+        }
+
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
             List<SQLExpr> groupList = SQLUtils.split(x);
 
@@ -1043,16 +1058,15 @@ public class WallVisitorUtils {
             return null;
         }
 
-        SQLExpr left = x.getLeft();
-        SQLExpr right = x.getRight();
-        Object leftResult = getValue(visitor, left);
-        Object rightResult = getValue(visitor, right);
-
-        if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String && leftResult.equals(rightResult)) {
-            addViolation(visitor, ErrorCode.SAME_CONST_LIKE, "same const like", x);
-        }
-
         if (x.getOperator() == SQLBinaryOperator.Like || x.getOperator() == SQLBinaryOperator.NotLike) {
+            Object leftResult = getValue(visitor, x.getLeft());
+            Object rightResult = getValue(visitor, x.getRight());
+
+            if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String
+                && leftResult.equals(rightResult)) {
+                addViolation(visitor, ErrorCode.SAME_CONST_LIKE, "same const like", x);
+            }
+
             WallContext context = WallContext.current();
             if (context != null) {
                 if (rightResult instanceof Number || leftResult instanceof Number) {
