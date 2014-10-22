@@ -11,13 +11,13 @@ public class BitwiseInvertTest extends TestCase {
 
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT * from t where id = ~2")); //
+        "SELECT * from t where ~2")); //
     }
 
     public void test_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setConditionOpBitwseAllow(false);
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT * from t where id = ~2", config)); //
+        "SELECT * from t where ~2", config)); //
     }
 }

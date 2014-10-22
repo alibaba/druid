@@ -11,13 +11,13 @@ public class ConstantArithmeticCheckTest extends TestCase {
 
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT * from t where id = 3 - 1")); //
+        "SELECT * from t where 3 - 1")); //
     }
 
     public void test_false() throws Exception {
         WallConfig config = new WallConfig();
         config.setConstArithmeticAllow(false);
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT * from t where id = 3 - 1", config)); //
+        "SELECT * from t where  3 - 1", config)); //
     }
 }
