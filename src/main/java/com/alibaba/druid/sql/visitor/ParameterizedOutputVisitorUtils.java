@@ -32,7 +32,6 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ParameterizedOutputVisitor;
@@ -165,7 +164,7 @@ public class ParameterizedOutputVisitorUtils {
         if (parent instanceof SQLDataType //
             || parent instanceof SQLColumnDefinition //
             || parent instanceof SQLServerTop //
-            || parent instanceof SQLAssignItem //
+            //|| parent instanceof SQLAssignItem //
             || parent instanceof SQLSelectOrderByItem //
         ) {
             return false;
