@@ -1522,6 +1522,10 @@ public class WallVisitorUtils {
         SQLEvalVisitor visitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
         visitor.setParameters(parameters);
         visitor.registerFunction("rand", Nil.instance);
+        visitor.registerFunction("sin", Nil.instance);
+        visitor.registerFunction("cos", Nil.instance);
+        visitor.registerFunction("asin", Nil.instance);
+        visitor.registerFunction("acos", Nil.instance);
         sqlObject.accept(visitor);
 
         if (sqlObject instanceof SQLNumericLiteralExpr) {
