@@ -136,6 +136,7 @@ public class OdpsLexer extends Lexer {
             stringVal = subString(mark + 1, bufPos);
             token = Token.LINE_COMMENT;
             hasComment = true;
+            endOfComment = isEOF();
             return;
         }
     }
