@@ -31,6 +31,14 @@ public class SQLTruncateStatement extends SQLStatementImpl {
     private boolean                    only;
     private Boolean                    restartIdentity;
     private Boolean                    cascade;
+    
+    public SQLTruncateStatement() {
+        
+    }
+    
+    public SQLTruncateStatement(String dbType) {
+        super (dbType);
+    }
 
     public List<SQLExprTableSource> getTableSources() {
         return tableSources;

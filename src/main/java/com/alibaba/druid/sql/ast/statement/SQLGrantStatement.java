@@ -28,6 +28,14 @@ public class SQLGrantStatement extends SQLStatementImpl {
 
     private SQLExpr             on;
     private SQLExpr             to;
+    
+    public SQLGrantStatement() {
+        
+    }
+    
+    public SQLGrantStatement(String dbType) {
+        super (dbType);
+    }
 
     // mysql
     private ObjectType          objectType;

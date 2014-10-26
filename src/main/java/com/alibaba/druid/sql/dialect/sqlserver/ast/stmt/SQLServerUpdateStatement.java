@@ -22,12 +22,17 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLServerStatement {
 
     private SQLServerTop    top;
     private SQLTableSource  from;
     private SQLServerOutput output;
+    
+    public SQLServerUpdateStatement(){
+        super (JdbcConstants.SQL_SERVER);
+    }
 
     public SQLServerTop getTop() {
         return top;

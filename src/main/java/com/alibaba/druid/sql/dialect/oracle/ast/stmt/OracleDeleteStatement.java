@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleDeleteStatement extends SQLDeleteStatement {
 
@@ -32,7 +33,7 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
     private OracleReturningClause returning = null;
 
     public OracleDeleteStatement(){
-
+        super (JdbcConstants.ORACLE);
     }
 
     public OracleReturningClause getReturning() {

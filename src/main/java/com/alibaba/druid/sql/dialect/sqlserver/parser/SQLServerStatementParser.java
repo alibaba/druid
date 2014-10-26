@@ -374,7 +374,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.VARIANT) {
-            SQLSetStatement stmt = new SQLSetStatement();
+            SQLSetStatement stmt = new SQLSetStatement(getDbType());
             parseAssignItems(stmt.getItems(), stmt);
             return stmt;
         } else {

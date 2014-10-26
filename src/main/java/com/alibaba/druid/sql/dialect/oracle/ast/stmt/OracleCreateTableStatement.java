@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement {
 
@@ -58,6 +59,10 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private SQLPartitioningClause   partitioning;
 
     private DeferredSegmentCreation deferredSegmentCreation;
+    
+    public OracleCreateTableStatement() {
+        super (JdbcConstants.ORACLE);
+    }
 
     public OracleLobStorageClause getLobStorage() {
         return lobStorage;

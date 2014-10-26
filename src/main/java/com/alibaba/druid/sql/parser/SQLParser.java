@@ -19,17 +19,32 @@ public class SQLParser {
 
     protected final Lexer lexer;
 
-    public SQLParser(String sql){
-        this(new Lexer(sql));
+    protected String      dbType;
+
+    public SQLParser(String sql, String dbType){
+        this(new Lexer(sql), dbType);
         this.lexer.nextToken();
     }
 
+    public SQLParser(String sql){
+        this(sql, null);
+    }
+
     public SQLParser(Lexer lexer){
+        this(lexer, null);
+    }
+
+    public SQLParser(Lexer lexer, String dbType){
         this.lexer = lexer;
+        this.dbType = dbType;
     }
 
     public final Lexer getLexer() {
         return lexer;
+    }
+
+    public String getDbType() {
+        return dbType;
     }
 
     protected boolean identifierEquals(String text) {
@@ -143,7 +158,7 @@ public class SQLParser {
                     alias += ('.' + lexer.token().name());
                     lexer.nextToken();
                 }
-                
+
                 return alias;
             }
 
@@ -169,7 +184,7 @@ public class SQLParser {
         } else if (lexer.token() == Token.USER) {
             alias = lexer.stringVal();
             lexer.nextToken();
-        } 
+        }
 
         switch (lexer.token()) {
             case KEY:
@@ -184,7 +199,7 @@ public class SQLParser {
         return alias;
     }
 
-    protected void printError(Token token){
+    protected void printError(Token token) {
         String arround;
         if (lexer.mark >= 0 && (lexer.text.length() > lexer.mark + 30)) {
             if (lexer.mark - 5 > 0) {
@@ -202,7 +217,7 @@ public class SQLParser {
         } else {
             arround = lexer.text;
         }
-        
+
         // throw new
         // ParserException("syntax error, error arround:'"+arround+"',expect "
         // + token + ", actual " + lexer.token() + " "
@@ -210,7 +225,7 @@ public class SQLParser {
         throw new ParserException("syntax error, error in :'" + arround + "',expect " + token + ", actual "
                                   + lexer.token() + " " + lexer.stringVal());
     }
-    
+
     public void accept(Token token) {
         if (lexer.token() == token) {
             lexer.nextToken();
@@ -223,7 +238,7 @@ public class SQLParser {
     public void match(Token token) {
         if (lexer.token() != token) {
             throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token() + " "
-                                        + lexer.stringVal());
+                                      + lexer.stringVal());
         }
     }
 

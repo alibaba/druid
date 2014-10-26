@@ -25,6 +25,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLDropUserStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private List<SQLExpr> users = new ArrayList<SQLExpr>(2);
+    
+    public SQLDropUserStatement() {
+        
+    }
+    
+    public SQLDropUserStatement(String dbType) {
+        super (dbType);
+    }
 
     public List<SQLExpr> getUsers() {
         return users;

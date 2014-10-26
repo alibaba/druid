@@ -35,6 +35,10 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
     public SQLCreateIndexStatement(){
 
     }
+    
+    public SQLCreateIndexStatement(String dbType){
+        super (dbType);
+    }
 
     public SQLTableSource getTable() {
         return table;

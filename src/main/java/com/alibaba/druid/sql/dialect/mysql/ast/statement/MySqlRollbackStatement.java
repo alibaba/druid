@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlRollbackStatement extends SQLRollbackStatement implements MySqlStatement {
 
@@ -28,7 +29,7 @@ public class MySqlRollbackStatement extends SQLRollbackStatement implements MySq
     private SQLExpr force;
 
     public MySqlRollbackStatement(){
-
+        super (JdbcConstants.MYSQL);
     }
 
     public Boolean getChain() {
