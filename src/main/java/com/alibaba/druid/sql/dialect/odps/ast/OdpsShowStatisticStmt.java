@@ -5,10 +5,15 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsShowStatisticStmt extends SQLStatementImpl implements SQLStatement {
 
     private SQLExprTableSource tableSource;
+    
+    public OdpsShowStatisticStmt() {
+        super (JdbcConstants.ODPS);
+    }
 
     public SQLExprTableSource getTableSource() {
         return tableSource;

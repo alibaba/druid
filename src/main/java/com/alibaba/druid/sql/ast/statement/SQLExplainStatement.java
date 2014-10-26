@@ -27,6 +27,14 @@ public class SQLExplainStatement extends SQLStatementImpl {
     protected SQLStatement       statement;
 
     private List<SQLCommentHint> hints;
+    
+    public SQLExplainStatement() {
+        
+    }
+    
+    public SQLExplainStatement(String dbType) {
+        super (dbType);
+    }
 
     public SQLStatement getStatement() {
         return statement;

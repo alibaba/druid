@@ -22,6 +22,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLSavePointStatement extends SQLStatementImpl {
 
     private SQLExpr name;
+    
+    public SQLSavePointStatement() {
+        
+    }
+    
+    public SQLSavePointStatement(String dbType) {
+        super (dbType);
+    }
 
     public SQLExpr getName() {
         return name;

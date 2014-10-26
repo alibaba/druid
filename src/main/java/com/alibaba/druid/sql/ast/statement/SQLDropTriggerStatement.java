@@ -22,6 +22,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private SQLName name;
+    
+    public SQLDropTriggerStatement() {
+        
+    }
+    
+    public SQLDropTriggerStatement(String dbType) {
+        super (dbType);
+    }
 
     public SQLName getName() {
         return name;

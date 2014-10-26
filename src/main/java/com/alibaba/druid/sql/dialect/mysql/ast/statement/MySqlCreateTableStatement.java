@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
 
@@ -47,7 +48,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     private SQLExprTableSource     like;
 
     public MySqlCreateTableStatement(){
-
+        super (JdbcConstants.MYSQL);
     }
 
     public SQLExprTableSource getLike() {

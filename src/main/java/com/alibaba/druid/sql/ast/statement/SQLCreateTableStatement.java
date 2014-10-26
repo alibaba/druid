@@ -33,6 +33,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     public SQLCreateTableStatement(){
 
     }
+    
+    public SQLCreateTableStatement(String dbType){
+        super (dbType);
+    }
 
     public SQLName getName() {
         if (tableSource == null) {

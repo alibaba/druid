@@ -18,11 +18,16 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleAlterTableStatement extends SQLAlterTableStatement implements OracleDDLStatement {
 
     private boolean updateGlobalIndexes     = false;
     private boolean invalidateGlobalIndexes = false;
+    
+    public OracleAlterTableStatement() {
+        super (JdbcConstants.ORACLE);
+    }
 
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);

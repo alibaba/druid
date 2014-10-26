@@ -31,8 +31,17 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     public SQLSetStatement(){
     }
-
+    
+    public SQLSetStatement(String dbType){
+        super (dbType);
+    }
+    
     public SQLSetStatement(SQLExpr target, SQLExpr value){
+        this(target, value, null);
+    }
+
+    public SQLSetStatement(SQLExpr target, SQLExpr value, String dbType){
+        super (dbType);
         this.items.add(new SQLAssignItem(target, value));
     }
 

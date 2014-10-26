@@ -87,9 +87,17 @@ public class SQLExprParser extends SQLParser {
     public SQLExprParser(String sql){
         super(sql);
     }
+    
+    public SQLExprParser(String sql, String dbType){
+        super(sql, dbType);
+    }
 
     public SQLExprParser(Lexer lexer){
         super(lexer);
+    }
+    
+    public SQLExprParser(Lexer lexer, String dbType){
+        super(lexer, dbType);
     }
 
     public SQLExpr expr() {

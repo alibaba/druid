@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleUpdateStatement extends SQLUpdateStatement implements OracleStatement {
 
@@ -35,7 +36,7 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
     private List<SQLExpr>       returningInto = new ArrayList<SQLExpr>();
 
     public OracleUpdateStatement(){
-
+        super (JdbcConstants.ORACLE);
     }
 
     public List<SQLExpr> getReturning() {

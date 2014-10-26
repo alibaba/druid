@@ -36,12 +36,25 @@ public class SQLDropTableStatement extends SQLStatementImpl implements SQLDDLSta
     public SQLDropTableStatement(){
 
     }
-
-    public SQLDropTableStatement(SQLName name){
-        this(new SQLExprTableSource(name));
+    
+    public SQLDropTableStatement(String dbType){
+        super (dbType);
     }
 
+    public SQLDropTableStatement(SQLName name, String dbType){
+        this(new SQLExprTableSource(name), dbType);
+    }
+    
+    public SQLDropTableStatement(SQLName name){
+        this (name, null);
+    }
+    
     public SQLDropTableStatement(SQLExprTableSource tableSource){
+        this (tableSource, null);
+    }
+
+    public SQLDropTableStatement(SQLExprTableSource tableSource, String dbType){
+        this (dbType);
         this.tableSources.add(tableSource);
     }
 

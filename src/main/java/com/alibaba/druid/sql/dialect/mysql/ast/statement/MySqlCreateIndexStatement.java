@@ -18,10 +18,15 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlCreateIndexStatement extends SQLCreateIndexStatement implements MySqlStatement {
 
     private String using;
+    
+    public MySqlCreateIndexStatement() {
+        super (JdbcConstants.MYSQL);
+    }
 
     public String getUsing() {
         return using;

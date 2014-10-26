@@ -115,6 +115,6 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     protected SQLCreateTableStatement newCreateStatement() {
-        return new SQLCreateTableStatement();
+        return new SQLCreateTableStatement(getDbType());
     }
 }
