@@ -94,6 +94,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
@@ -969,6 +970,21 @@ public class WallVisitorUtils {
             }
         }
 
+        if (x.getLeft() instanceof SQLName && !(x.getRight() instanceof SQLName)) {
+            switch (x.getOperator()) {
+                case Equality:
+                case NotEqual:
+                case GreaterThan:
+                case GreaterThanOrEqual:
+                case LessThan:
+                case LessThanOrEqual:
+                case LessThanOrGreater:
+                    return null;
+                default:
+                    break;
+            }
+        }
+
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
             List<SQLExpr> groupList = SQLUtils.split(x);
 
@@ -1042,16 +1058,15 @@ public class WallVisitorUtils {
             return null;
         }
 
-        SQLExpr left = x.getLeft();
-        SQLExpr right = x.getRight();
-        Object leftResult = getValue(visitor, left);
-        Object rightResult = getValue(visitor, right);
-
-        if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String && leftResult.equals(rightResult)) {
-            addViolation(visitor, ErrorCode.SAME_CONST_LIKE, "same const like", x);
-        }
-
         if (x.getOperator() == SQLBinaryOperator.Like || x.getOperator() == SQLBinaryOperator.NotLike) {
+            Object leftResult = getValue(visitor, x.getLeft());
+            Object rightResult = getValue(visitor, x.getRight());
+
+            if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String
+                && leftResult.equals(rightResult)) {
+                addViolation(visitor, ErrorCode.SAME_CONST_LIKE, "same const like", x);
+            }
+
             WallContext context = WallContext.current();
             if (context != null) {
                 if (rightResult instanceof Number || leftResult instanceof Number) {
@@ -1166,6 +1181,8 @@ public class WallVisitorUtils {
             } else if (parent instanceof SQLOrderBy) {
                 return true;
             } else if (parent instanceof Limit) {
+                return true;
+            } else if (parent instanceof MySqlSelectGroupByExpr) {
                 return true;
             }
 
@@ -1505,6 +1522,10 @@ public class WallVisitorUtils {
         SQLEvalVisitor visitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
         visitor.setParameters(parameters);
         visitor.registerFunction("rand", Nil.instance);
+        visitor.registerFunction("sin", Nil.instance);
+        visitor.registerFunction("cos", Nil.instance);
+        visitor.registerFunction("asin", Nil.instance);
+        visitor.registerFunction("acos", Nil.instance);
         sqlObject.accept(visitor);
 
         if (sqlObject instanceof SQLNumericLiteralExpr) {
@@ -2179,16 +2200,25 @@ public class WallVisitorUtils {
         if (query instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
             SQLTableSource from = queryBlock.getFrom();
+            
+            if (queryBlock.getSelectList().size() < 1) {
+                return false;
+            }
 
             if (from == null) {
                 boolean itemIsConst = true;
+                boolean itemHasAlias = false;
                 for (SQLSelectItem item : queryBlock.getSelectList()) {
                     if (item.getExpr() instanceof SQLIdentifierExpr || item.getExpr() instanceof SQLPropertyExpr) {
                         itemIsConst = false;
                         break;
                     }
+                    if(item.getAlias() != null ) {
+                        itemHasAlias = true;
+                        break;
+                    }
                 }
-                if (itemIsConst) {
+                if (itemIsConst && !itemHasAlias) {
                     return true;
                 } else {
                     return false;

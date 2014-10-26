@@ -127,6 +127,9 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.token() == Token.EOF) {
                 return;
             }
+            if (lexer.token() == Token.END) {
+                return;
+            }
 
             if (lexer.token() == (Token.SEMI)) {
                 lexer.nextToken();

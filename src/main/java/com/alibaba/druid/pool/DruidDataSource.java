@@ -631,7 +631,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     poolingPeakTime = System.currentTimeMillis();
                 }
             } catch (SQLException ex) {
-                LOG.error("init datasource error", ex);
+                LOG.error("init datasource error, url: " + this.getUrl(), ex);
                 connectError = ex;
             }
 
@@ -1773,7 +1773,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 try {
                     connection = createPhysicalConnection();
                 } catch (SQLException e) {
-                    LOG.error("create connection error", e);
+                    LOG.error("create connection error, url: " + jdbcUrl, e);
 
                     errorCount++;
 
@@ -1848,7 +1848,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 try {
                     connection = createPhysicalConnection();
                 } catch (SQLException e) {
-                    LOG.error("create connection error", e);
+                    LOG.error("create connection error, url: " + jdbcUrl, e);
 
                     errorCount++;
 
@@ -2640,7 +2640,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 Connection conn = createPhysicalConnection();
                 holder = new DruidConnectionHolder(this, conn);
             } catch (SQLException e) {
-                LOG.error("fill connection error", e);
+                LOG.error("fill connection error, url: " + this.jdbcUrl, e);
                 connectErrorCount.incrementAndGet();
                 throw e;
             }

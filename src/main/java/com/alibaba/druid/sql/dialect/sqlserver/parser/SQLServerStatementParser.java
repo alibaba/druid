@@ -32,8 +32,10 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
@@ -74,9 +76,16 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 this.exprParser.exprList(execStmt.getParameters(), execStmt);
                 accept(Token.RPAREN);
             } else {
-                SQLName moduleName = this.exprParser.name();
-                execStmt.setModuleName(moduleName);
-                
+                SQLName sqlNameName = this.exprParser.name();
+
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                    execStmt.setReturnStatus(sqlNameName);
+                    execStmt.setModuleName(this.exprParser.name());
+                } else {
+                    execStmt.setModuleName(sqlNameName);
+                }
+
                 this.exprParser.exprList(execStmt.getParameters(), execStmt);
             }
             statementList.add(execStmt);
@@ -85,6 +94,16 @@ public class SQLServerStatementParser extends SQLStatementParser {
         
         if (lexer.token() == Token.DECLARE) {
             statementList.add(this.parseDeclare());
+            return true;
+        }
+        
+        if (lexer.token() == Token.IF) {
+            statementList.add(this.parseIf());
+            return true;
+        }
+
+        if (lexer.token() == Token.BEGIN) {
+            statementList.add(this.parseBlock());
             return true;
         }
 
@@ -373,5 +392,41 @@ public class SQLServerStatementParser extends SQLStatementParser {
             }
             return stmt;
         }
+    }
+    
+    public SQLServerIfStatement parseIf() {
+        accept(Token.IF);
+
+        SQLServerIfStatement stmt = new SQLServerIfStatement();
+
+        stmt.setCondition(this.exprParser.expr());
+
+        this.parseStatementList(stmt.getStatements(), 1);
+        
+        if(lexer.token() == Token.SEMI) {
+            lexer.nextToken();
+        }
+
+        if (lexer.token() == Token.ELSE) {
+            lexer.nextToken();
+
+            SQLServerIfStatement.Else elseItem = new SQLServerIfStatement.Else();
+            this.parseStatementList(elseItem.getStatements(), 1);
+            stmt.setElseItem(elseItem);
+        }
+
+        return stmt;
+    }
+
+    public SQLServerBlockStatement parseBlock() {
+        SQLServerBlockStatement block = new SQLServerBlockStatement();
+
+        accept(Token.BEGIN);
+
+        parseStatementList(block.getStatementList());
+
+        accept(Token.END);
+
+        return block;
     }
 }

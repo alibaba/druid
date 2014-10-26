@@ -315,6 +315,7 @@ public class SQLExprParser extends SQLParser {
             case MODE:
             case ADVISE:
             case VIEW:
+            case ESCAPE:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -975,7 +976,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr bitOrRest(SQLExpr expr) {
-        if (lexer.token() == Token.BAR) {
+        while (lexer.token() == Token.BAR) {
             lexer.nextToken();
             SQLExpr rightExp = bitAnd();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseOr, rightExp);
