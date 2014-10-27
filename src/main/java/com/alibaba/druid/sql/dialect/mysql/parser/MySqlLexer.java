@@ -110,6 +110,8 @@ public class MySqlLexer extends Lexer {
         if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
             return;
         }
+        
+        endOfComment = isEOF();
 
         if (!isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
             throw new NotAllowCommentException();
@@ -448,6 +450,8 @@ public class MySqlLexer extends Lexer {
                 return;
             }
 
+            endOfComment = isEOF();
+            
             if (!isHint && !isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
                 throw new NotAllowCommentException();
             }
@@ -489,6 +493,8 @@ public class MySqlLexer extends Lexer {
                 return;
             }
 
+            endOfComment = isEOF();
+            
             if (!isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
                 throw new NotAllowCommentException();
             }

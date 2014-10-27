@@ -64,13 +64,15 @@ public class Lexer {
     /*
      * anti sql injection
      */
-    private boolean        allowComment = true;
+    private boolean          allowComment = true;
 
-    private int            varIndex     = -1;
+    private int              varIndex     = -1;
 
     protected CommentHandler commentHandler;
-    
-    protected boolean        hasComment = false;
+
+    protected boolean        hasComment   = false;
+
+    protected boolean        endOfComment = false;
 
     public Lexer(String input){
         this(input, true);
@@ -1058,4 +1060,9 @@ public class Lexer {
         pos = text.length();
         this.token = Token.EOF;
     }
+
+    public boolean isEndOfComment() {
+        return endOfComment;
+    }
+
 }

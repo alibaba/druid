@@ -604,6 +604,7 @@ public abstract class WallProvider {
         final List<Violation> violations = new ArrayList<Violation>();
         List<SQLStatement> statementList = new ArrayList<SQLStatement>();
         boolean syntaxError = false;
+        boolean endOfComment = false;
         try {
             SQLStatementParser parser = createParser(sql);
             parser.getLexer().setCommentHandler(WallCommentHandler.instance);
@@ -619,10 +620,11 @@ public abstract class WallProvider {
             parser.parseStatementList(statementList);
 
             final Token lastToken = parser.getLexer().token();
-            if (lastToken != Token.EOF) {
+            if (lastToken != Token.EOF && config.isStrictSyntaxCheck()) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.SYNTAX_ERROR, "not terminal sql, token "
                                                                                      + lastToken, sql));
             }
+            endOfComment = parser.getLexer().isEndOfComment();
         } catch (NotAllowCommentException e) {
             violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMENT_STATEMENT_NOT_ALLOW, "comment not allow", sql));
             incrementCommentDeniedCount();
@@ -643,6 +645,9 @@ public abstract class WallProvider {
         }
 
         WallVisitor visitor = createWallVisitor();
+        if (!endOfComment) {
+            visitor.getConfig().setSelectUnionCheck(false);
+        }
 
         if (statementList.size() > 0) {
             boolean lastIsHint = false;

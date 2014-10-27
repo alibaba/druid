@@ -184,7 +184,10 @@ public class SQLParser {
         } else if (lexer.token() == Token.USER) {
             alias = lexer.stringVal();
             lexer.nextToken();
-        }
+        } else if (lexer.token() == Token.END) {
+            alias = lexer.stringVal();
+            lexer.nextToken();
+        } 
 
         switch (lexer.token()) {
             case KEY:

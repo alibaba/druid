@@ -19,12 +19,16 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 public class OracleWallTest extends TestCase {
 
     public void testWall() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2"));
+        WallConfig config = new WallConfig();
+        config.setSelectUnionCheck(true);
+        Assert.assertTrue(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2",config));
+        Assert.assertFalse(WallUtils.isValidateOracle("select f1, f2 from t where c=1 union select 1, 2 --",config));
         
         Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from TAB"));
         Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from ALL_TABLES where (1=1 or (1+1)=2) and (4=8 or 1=1)"));

@@ -28,22 +28,20 @@ public class MySqlWallTest_union extends TestCase {
         WallConfig config = new WallConfig();
         config.setSelectUnionCheck(true);
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2", config));
+        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2", config)); // not end of comment
+        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 1, 2 --", config));
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t union select 1, 2", config));
+        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t union select 1, 2", config)); // no where
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select null, '1', 2",
-                                                     config));
+        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select null, '1', 2 --", config));
 
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select c1, c2", config));
+        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select c1, c2", config)); //union select item is not const
 
         Assert.assertTrue(WallUtils.isValidateMySql("SELECT typeid, typename FROM (SELECT typeid, typename FROM materialtype UNION ALL SELECT ? AS typeid, ? AS typename) a ORDER BY typeid",
-                                                    config));
+                                                    config)); // union select item has alias
 
-        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from (select 1 as f1, 2 as f2) t union select 'u1', 'u2'",
-                                                     config));
-        
-        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 'u1' as u1, 'u2' as u2",
-                                                     config));
+        Assert.assertFalse(WallUtils.isValidateMySql("select f1, f2 from (select 1 as f1, 2 as f2) t union select 'u1', 'u2' --", config)); // from is subQuery
+
+        Assert.assertTrue(WallUtils.isValidateMySql("select f1, f2 from t where id=1 union select 'u1' as u1, 'u2' as u2",  config)); // union select item has alias
     }
 }
