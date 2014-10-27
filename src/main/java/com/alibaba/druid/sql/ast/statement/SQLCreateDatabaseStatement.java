@@ -33,6 +33,10 @@ public class SQLCreateDatabaseStatement extends SQLStatementImpl {
 
     public SQLCreateDatabaseStatement(){
     }
+    
+    public SQLCreateDatabaseStatement(String dbType){
+        super (dbType);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

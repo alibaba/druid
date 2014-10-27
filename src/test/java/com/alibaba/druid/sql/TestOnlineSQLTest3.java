@@ -26,7 +26,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class TestOnlineSQLTest3 extends TestCase {
 
-    private String       url      = "jdbc:mysql://10.20.144.27/dragoon_v25_masterdb";
+    private String       url      = "jdbc:mysql://a.b.c.d/dragoon_v25_masterdb";
     private String       user     = "dragoon_test";
     private String       password = "dragoon_test";
 

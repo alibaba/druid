@@ -105,6 +105,11 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
         
+        if (identifierEquals("LIFECYCLE")) {
+            lexer.nextToken();
+            stmt.setLifecycle(this.exprParser.expr());
+        }
+        
         return stmt;
     }
 }

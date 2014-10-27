@@ -90,11 +90,15 @@ public class SQLStatementParser extends SQLParser {
     protected int           parseValuesSize     = 3;
 
     public SQLStatementParser(String sql){
-        this(new SQLExprParser(sql));
+        this(sql, null);
+    }
+
+    public SQLStatementParser(String sql, String dbType){
+        this(new SQLExprParser(sql, dbType));
     }
 
     public SQLStatementParser(SQLExprParser exprParser){
-        super(exprParser.getLexer());
+        super(exprParser.getLexer(), exprParser.getDbType());
         this.exprParser = exprParser;
     }
 
@@ -318,7 +322,7 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
         }
 
-        SQLRollbackStatement stmt = new SQLRollbackStatement();
+        SQLRollbackStatement stmt = new SQLRollbackStatement(getDbType());
 
         if (lexer.token() == Token.TO) {
             lexer.nextToken();
@@ -342,14 +346,14 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLUseStatement parseUse() {
         accept(Token.USE);
-        SQLUseStatement stmt = new SQLUseStatement();
+        SQLUseStatement stmt = new SQLUseStatement(getDbType());
         stmt.setDatabase(this.exprParser.name());
         return stmt;
     }
 
     public SQLGrantStatement parseGrant() {
         accept(Token.GRANT);
-        SQLGrantStatement stmt = new SQLGrantStatement();
+        SQLGrantStatement stmt = new SQLGrantStatement(getDbType());
 
         for (;;) {
             String privilege = null;
@@ -622,7 +626,7 @@ public class SQLStatementParser extends SQLParser {
             acceptIdentifier("OPTION");
             stmt.setAdminOption(true);
         }
-        
+
         if (lexer.token() == Token.IDENTIFIED) {
             lexer.nextToken();
             accept(Token.BY);
@@ -634,7 +638,7 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseSavePoint() {
         acceptIdentifier("SAVEPOINT");
-        SQLSavePointStatement stmt = new SQLSavePointStatement();
+        SQLSavePointStatement stmt = new SQLSavePointStatement(getDbType());
         stmt.setName(this.exprParser.name());
         return stmt;
     }
@@ -642,7 +646,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseReleaseSavePoint() {
         acceptIdentifier("RELEASE");
         acceptIdentifier("SAVEPOINT");
-        SQLReleaseSavePointStatement stmt = new SQLReleaseSavePointStatement();
+        SQLReleaseSavePointStatement stmt = new SQLReleaseSavePointStatement(getDbType());
         stmt.setName(this.exprParser.name());
         return stmt;
     }
@@ -755,7 +759,7 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.DROP);
         }
 
-        SQLDropTableStatement stmt = new SQLDropTableStatement();
+        SQLDropTableStatement stmt = new SQLDropTableStatement(getDbType());
 
         if (identifierEquals("TEMPORARY")) {
             lexer.nextToken();
@@ -819,7 +823,7 @@ public class SQLStatementParser extends SQLParser {
 
         SQLName name = this.exprParser.name();
 
-        SQLDropSequenceStatement stmt = new SQLDropSequenceStatement();
+        SQLDropSequenceStatement stmt = new SQLDropSequenceStatement(getDbType());
         stmt.setName(name);
         return stmt;
     }
@@ -833,7 +837,7 @@ public class SQLStatementParser extends SQLParser {
 
         SQLName name = this.exprParser.name();
 
-        SQLDropTriggerStatement stmt = new SQLDropTriggerStatement();
+        SQLDropTriggerStatement stmt = new SQLDropTriggerStatement(getDbType());
         stmt.setName(name);
         return stmt;
     }
@@ -843,7 +847,7 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.DROP);
         }
 
-        SQLDropViewStatement stmt = new SQLDropViewStatement();
+        SQLDropViewStatement stmt = new SQLDropViewStatement(getDbType());
 
         accept(Token.VIEW);
 
@@ -884,7 +888,7 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.DROP);
         }
 
-        SQLDropDatabaseStatement stmt = new SQLDropDatabaseStatement();
+        SQLDropDatabaseStatement stmt = new SQLDropDatabaseStatement(getDbType());
 
         accept(Token.DATABASE);
 
@@ -899,67 +903,67 @@ public class SQLStatementParser extends SQLParser {
 
         return stmt;
     }
-    
+
     protected SQLDropFunctionStatement parseDropFunction(boolean acceptDrop) {
         if (acceptDrop) {
             accept(Token.DROP);
         }
-        
-        SQLDropFunctionStatement stmt = new SQLDropFunctionStatement();
-        
+
+        SQLDropFunctionStatement stmt = new SQLDropFunctionStatement(getDbType());
+
         accept(Token.FUNCTION);
-        
+
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
             accept(Token.EXISTS);
             stmt.setIfExists(true);
         }
-        
+
         SQLName name = this.exprParser.name();
         stmt.setName(name);
-        
+
         return stmt;
     }
-    
+
     protected SQLDropTableSpaceStatement parseDropTablespace(boolean acceptDrop) {
         if (acceptDrop) {
             accept(Token.DROP);
         }
-        
-        SQLDropTableSpaceStatement stmt = new SQLDropTableSpaceStatement();
-        
+
+        SQLDropTableSpaceStatement stmt = new SQLDropTableSpaceStatement(getDbType());
+
         accept(Token.TABLESPACE);
-        
+
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
             accept(Token.EXISTS);
             stmt.setIfExists(true);
         }
-        
+
         SQLName name = this.exprParser.name();
         stmt.setName(name);
-        
+
         return stmt;
     }
-    
+
     protected SQLDropProcedureStatement parseDropProcedure(boolean acceptDrop) {
         if (acceptDrop) {
             accept(Token.DROP);
         }
-        
-        SQLDropProcedureStatement stmt = new SQLDropProcedureStatement();
-        
+
+        SQLDropProcedureStatement stmt = new SQLDropProcedureStatement(getDbType());
+
         accept(Token.PROCEDURE);
-        
+
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
             accept(Token.EXISTS);
             stmt.setIfExists(true);
         }
-        
+
         SQLName name = this.exprParser.name();
         stmt.setName(name);
-        
+
         return stmt;
     }
 
@@ -968,7 +972,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token() == Token.TABLE) {
             lexer.nextToken();
         }
-        SQLTruncateStatement stmt = new SQLTruncateStatement();
+        SQLTruncateStatement stmt = new SQLTruncateStatement(getDbType());
 
         if (lexer.token() == Token.ONLY) {
             lexer.nextToken();
@@ -1093,7 +1097,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLDropUserStatement parseDropUser() {
         accept(Token.USER);
 
-        SQLDropUserStatement stmt = new SQLDropUserStatement();
+        SQLDropUserStatement stmt = new SQLDropUserStatement(getDbType());
         for (;;) {
             SQLExpr expr = this.exprParser.expr();
             stmt.getUsers().add(expr);
@@ -1109,7 +1113,7 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseDropIndex() {
         accept(Token.INDEX);
-        SQLDropIndexStatement stmt = new SQLDropIndexStatement();
+        SQLDropIndexStatement stmt = new SQLDropIndexStatement(getDbType());
         stmt.setIndexName(this.exprParser.name());
 
         if (lexer.token() == Token.ON) {
@@ -1126,9 +1130,9 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             brace = true;
         }
-        
-        SQLCallStatement stmt = new SQLCallStatement();
-        
+
+        SQLCallStatement stmt = new SQLCallStatement(getDbType());
+
         if (lexer.token() == Token.QUES) {
             lexer.nextToken();
             accept(Token.EQ);
@@ -1137,7 +1141,6 @@ public class SQLStatementParser extends SQLParser {
 
         acceptIdentifier("CALL");
 
-       
         stmt.setProcedureName(exprParser.name());
 
         if (lexer.token() == Token.LPAREN) {
@@ -1156,7 +1159,7 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseSet() {
         accept(Token.SET);
-        SQLSetStatement stmt = new SQLSetStatement();
+        SQLSetStatement stmt = new SQLSetStatement(getDbType());
 
         parseAssignItems(stmt.getItems(), stmt);
 
@@ -1234,7 +1237,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseCreateTrigger() {
         accept(Token.TRIGGER);
 
-        SQLCreateTriggerStatement stmt = new SQLCreateTriggerStatement();
+        SQLCreateTriggerStatement stmt = new SQLCreateTriggerStatement(getDbType());
         stmt.setName(this.exprParser.name());
 
         if (identifierEquals("BEFORE")) {
@@ -1296,7 +1299,7 @@ public class SQLStatementParser extends SQLParser {
 
         accept(Token.DATABASE);
 
-        SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement();
+        SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement(getDbType());
         stmt.setName(this.exprParser.name());
         return stmt;
     }
@@ -1314,7 +1317,7 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.CREATE);
         }
 
-        SQLCreateIndexStatement stmt = new SQLCreateIndexStatement();
+        SQLCreateIndexStatement stmt = new SQLCreateIndexStatement(getDbType());
         if (lexer.token() == Token.UNIQUE) {
             lexer.nextToken();
             if (identifierEquals("CLUSTERED")) {
@@ -1418,11 +1421,11 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected SQLUpdateStatement createUpdateStatement() {
-        return new SQLUpdateStatement();
+        return new SQLUpdateStatement(getDbType());
     }
 
     public SQLDeleteStatement parseDeleteStatement() {
-        SQLDeleteStatement deleteStatement = new SQLDeleteStatement();
+        SQLDeleteStatement deleteStatement = new SQLDeleteStatement(getDbType());
 
         if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
@@ -1455,7 +1458,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLCreateViewStatement parseCreateView() {
-        SQLCreateViewStatement createView = new SQLCreateViewStatement();
+        SQLCreateViewStatement createView = new SQLCreateViewStatement(getDbType());
 
         if (lexer.token() == Token.CREATE) {
             lexer.nextToken();
@@ -1537,10 +1540,10 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
         }
-        
-        SQLExplainStatement explain = new SQLExplainStatement();
-        
-        if(lexer.token == Token.HINT) {
+
+        SQLExplainStatement explain = new SQLExplainStatement(getDbType());
+
+        if (lexer.token == Token.HINT) {
             explain.setHints(this.exprParser.parseHints());
         }
 
@@ -1582,7 +1585,6 @@ public class SQLStatementParser extends SQLParser {
         return item;
     }
 
-    
     public boolean isParseCompleteValues() {
         return parseCompleteValues;
     }

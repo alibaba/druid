@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 public class TestOracle extends TestCase {
 
     public void test_0() throws Exception {
-        String url = "jdbc:oracle:thin:@10.20.144.80:1521:orcl";
+        String url = "jdbc:oracle:thin:@a.b.c.d:1521:orcl";
         Class.forName("oracle.jdbc.driver.OracleDriver");
         Connection conn = DriverManager.getConnection(url, "DRUID", "DRUID");
 

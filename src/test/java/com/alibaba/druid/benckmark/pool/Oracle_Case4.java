@@ -55,12 +55,12 @@ public class Oracle_Case4 extends TestCase {
     private String  SQL;
 
     protected void setUp() throws Exception {
-//         jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+//         jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
 //         user = "alibaba";
 //         password = "ccbuauto";
 //         SQL = "SELECT * FROM WP_ORDERS WHERE ID = ?";
 
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.81:1521:ointest3";
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ointest3";
         user = "alibaba";
         password = "deYcR7facWSJtCuDpm2r";
         SQL = "SELECT * FROM AV_INFO WHERE ID = ?";

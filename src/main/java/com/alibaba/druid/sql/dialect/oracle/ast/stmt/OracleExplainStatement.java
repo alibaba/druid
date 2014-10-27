@@ -21,11 +21,16 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleExplainStatement extends SQLExplainStatement implements OracleStatement {
 
     private SQLCharExpr statementId;
     private SQLExpr     into;
+    
+    public OracleExplainStatement() {
+        super (JdbcConstants.ORACLE);
+    }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {

@@ -11,7 +11,7 @@
   
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.9</version>
+	<version>1.0.10-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -38,6 +38,7 @@
 		</repository>
 	</repositories>
 
+<!--  
 	<distributionManagement>
 		<repository>
 			<id>opensesame</id>
@@ -48,7 +49,7 @@
 			<url>dav:http://code.alibabatech.com/mvn/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
+-->
 	<developers>
 		<developer>
 			<id>wenshao</id>
@@ -244,20 +245,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>mc-release</id>
-			<name>Local Maven repository of releases</name>
-			<url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<profiles>
 		<profile>
@@ -528,7 +515,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>7.0.34</version>
+			<version>8.0.12</version>
 			<scope>test</scope>
 		</dependency>
 

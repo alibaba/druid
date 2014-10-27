@@ -31,7 +31,7 @@ public class CobarTest extends TestCase {
     private DruidDataSource dataSource;
     
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:mysql://10.20.146.88:8066/pt_dragoon_masterdb_test?useUnicode=true&characterEncoding=UTF-8";
+        jdbcUrl = "jdbc:mysql://a.b.c.d:8066/pt_dragoon_masterdb_test?useUnicode=true&characterEncoding=UTF-8";
         user = "pt_dragoon_test";
         password = "pt_dragoon_test";
         driverClass = "com.mysql.jdbc.Driver";

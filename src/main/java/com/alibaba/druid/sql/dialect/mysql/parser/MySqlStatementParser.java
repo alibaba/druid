@@ -147,6 +147,7 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlStatementParser extends SQLStatementParser {
 
@@ -191,7 +192,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public SQLSelectStatement parseSelect() {
         MySqlSelectParser selectParser = new MySqlSelectParser(this.exprParser);
-        return new SQLSelectStatement(selectParser.select());
+        return new SQLSelectStatement(selectParser.select(), JdbcConstants.MYSQL);
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
@@ -2131,7 +2132,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             return stmt;
         } else {
-            SQLSetStatement stmt = new SQLSetStatement();
+            SQLSetStatement stmt = new SQLSetStatement(getDbType());
 
             parseAssignItems(stmt.getItems(), stmt);
 
@@ -2375,6 +2376,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("REMOVE")) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("ALGORITHM")) {
+                    lexer.nextToken();
+                    accept(Token.EQ);
+                    stmt.getItems().add(new MySqlAlterTableOption("ALGORITHM", lexer.stringVal()));
+                    lexer.nextToken();
                 } else if (identifierEquals(ENGINE)) {
                     lexer.nextToken();
                     accept(Token.EQ);
@@ -2531,7 +2537,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.DATABASE);
 
-        SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement();
+        SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement(JdbcConstants.MYSQL);
         stmt.setName(this.exprParser.name());
 
         if (lexer.token() == Token.DEFAULT) {

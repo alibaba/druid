@@ -23,6 +23,14 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLSta
 
     private SQLExpr            indexName;
     private SQLExprTableSource tableName;
+    
+    public SQLDropIndexStatement() {
+        
+    }
+    
+    public SQLDropIndexStatement(String dbType) {
+        super (dbType);
+    }
 
     public SQLExpr getIndexName() {
         return indexName;

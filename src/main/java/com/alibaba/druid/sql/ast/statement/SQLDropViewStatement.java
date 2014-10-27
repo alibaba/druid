@@ -33,6 +33,10 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
     public SQLDropViewStatement(){
 
     }
+    
+    public SQLDropViewStatement(String dbType){
+        super (dbType);
+    }
 
     public SQLDropViewStatement(SQLName name){
         this(new SQLExprTableSource(name));

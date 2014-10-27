@@ -105,6 +105,7 @@ import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleStatementParser extends SQLStatementParser {
 
@@ -163,7 +164,8 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == (Token.SELECT)) {
-                statementList.add(new SQLSelectStatement(new OracleSelectParser(this.exprParser).select()));
+                SQLSelectStatement stmt = new SQLSelectStatement(new OracleSelectParser(this.exprParser).select(), JdbcConstants.ORACLE); 
+                statementList.add(stmt);
                 continue;
             }
 
@@ -238,7 +240,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 if (variant instanceof SQLBinaryOpExpr) {
                     SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) variant;
                     if (binaryOpExpr.getOperator() == SQLBinaryOperator.Assignment) {
-                        SQLSetStatement stmt = new SQLSetStatement(binaryOpExpr.getLeft(), binaryOpExpr.getRight());
+                        SQLSetStatement stmt = new SQLSetStatement(binaryOpExpr.getLeft(), binaryOpExpr.getRight(), getDbType());
                         statementList.add(stmt);
                         continue;
                     }
@@ -246,7 +248,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 accept(Token.COLONEQ);
                 SQLExpr value = this.exprParser.expr();
 
-                SQLSetStatement stmt = new SQLSetStatement(variant, value);
+                SQLSetStatement stmt = new SQLSetStatement(variant, value, getDbType());
                 statementList.add(stmt);
                 continue;
             }

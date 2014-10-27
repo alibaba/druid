@@ -33,8 +33,8 @@ public class TestOracle_DruidDataSource extends TestCase {
     private String password;
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
-        // jdbcUrl = "jdbc:oracle:thin:@20.20.149.85:1521:ocnauto"; // error url
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
+        // jdbcUrl = "jdbc:oracle:thin:@b.c.d.e:1521:ocnauto"; // error url
         user = "alibaba";
         password = "ccbuauto";
     }

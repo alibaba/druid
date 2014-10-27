@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement {
 
@@ -41,6 +42,10 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     private Boolean enable            = null;
 
     private boolean computeStatistics = false;
+    
+    public OracleCreateIndexStatement() {
+        super (JdbcConstants.ORACLE);
+    }
 
     public SQLName getTablespace() {
         return tablespace;

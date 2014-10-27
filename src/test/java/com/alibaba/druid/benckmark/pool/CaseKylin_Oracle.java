@@ -64,12 +64,12 @@ public class CaseKylin_Oracle extends TestCase {
         // password = "dragoon25";
         // driverClass = "com.alibaba.druid.mock.MockDriver";
 
-        // jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        // jdbcUrl = "jdbc:mysql://a.b.c.d:3306/druid2";
         // user = "root";
         // password = "root";
         // driverClass = "com.mysql.jdbc.Driver";
 
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:ocnauto";
         user = "alibaba";
         password = "ccbuauto";
         driverClass = "oracle.jdbc.driver.OracleDriver";

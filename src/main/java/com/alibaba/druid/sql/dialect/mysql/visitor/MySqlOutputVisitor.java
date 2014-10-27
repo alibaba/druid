@@ -479,6 +479,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print(' ');
                 option.getValue().accept(this);
                 continue;
+            } else if ("UNION".equals(key)) {
+                print(" = (");
+                option.getValue().accept(this);
+                print(')');
+                continue;
             }
 
             print(" = ");

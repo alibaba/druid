@@ -40,7 +40,7 @@ public class TestMigrate extends OracleTest {
     private DruidDataSource dataSource;
 
     public void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.18:1521:emdb";
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:emdb";
         user = "wardon";
         password = "wardon";
 

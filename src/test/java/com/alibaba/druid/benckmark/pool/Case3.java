@@ -62,7 +62,7 @@ public class Case3 extends TestCase {
         driverClass = "com.alibaba.druid.mock.MockDriver";
         // connectionProperties = "connectSleep=3;executeSleep=1";
 
-        // jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        // jdbcUrl = "jdbc:mysql://a.b.c.d:3306/druid2";
         // user = "root";
         // password = "root";
         // driverClass = "com.mysql.jdbc.Driver";

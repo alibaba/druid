@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
@@ -1157,7 +1158,15 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlCreateTableStatement x) {
-        return super.visit((SQLCreateTableStatement) x);
+        boolean val = super.visit((SQLCreateTableStatement) x);
+
+        for (SQLObject option : x.getTableOptions().values()) {
+            if (option instanceof SQLTableSource) {
+                option.accept(this);
+            }
+        }
+
+        return val;
     }
 
     @Override
@@ -1342,7 +1351,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlHintStatement x) {
-        
+
     }
 
     @Override

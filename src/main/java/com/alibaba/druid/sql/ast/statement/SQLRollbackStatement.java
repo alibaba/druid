@@ -22,6 +22,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLRollbackStatement extends SQLStatementImpl {
 
     private SQLName to;
+    
+    public SQLRollbackStatement() {
+        
+    }
+    
+    public SQLRollbackStatement(String dbType) {
+        super (dbType);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

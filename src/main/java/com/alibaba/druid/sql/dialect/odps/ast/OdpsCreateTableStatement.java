@@ -25,10 +25,9 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsCreateTableStatement extends SQLCreateTableStatement {
-
-    private boolean                     ifNotExiists     = false;
 
     private SQLExprTableSource          like;
 
@@ -36,12 +35,10 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
 
-    public boolean isIfNotExiists() {
-        return ifNotExiists;
-    }
-
-    public void setIfNotExiists(boolean ifNotExiists) {
-        this.ifNotExiists = ifNotExiists;
+    protected SQLExpr                   lifecycle;
+    
+    public OdpsCreateTableStatement() {
+        super (JdbcConstants.ODPS);
     }
 
     public SQLExprTableSource getLike() {
@@ -67,7 +64,15 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
     public List<SQLColumnDefinition> getPartitionColumns() {
         return partitionColumns;
     }
-    
+
+    public SQLExpr getLifecycle() {
+        return lifecycle;
+    }
+
+    public void setLifecycle(SQLExpr lifecycle) {
+        this.lifecycle = lifecycle;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OdpsASTVisitor) visitor);
@@ -78,7 +83,9 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, partitionColumns);
+            this.acceptChild(visitor, lifecycle);
         }
         visitor.endVisit(this);
-    }    
+    }
+
 }
