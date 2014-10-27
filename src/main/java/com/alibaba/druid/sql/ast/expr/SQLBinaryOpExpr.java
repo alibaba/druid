@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -127,4 +128,7 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+    public String toString() {
+        return SQLUtils.toSQLString(this);
+    }
 }

@@ -82,15 +82,6 @@ public class MySqlExprParser extends SQLExprParser {
             return new SQLBinaryOpExpr(expr, SQLBinaryOperator.RegExp, rightExp);
         }
 
-        if (identifierEquals("RLIKE")) {
-            lexer.nextToken();
-            SQLExpr rightExp = equality();
-
-            rightExp = relationalRest(rightExp);
-
-            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.RegExp, rightExp);
-        }
-
         return super.relationalRest(expr);
     }
 
@@ -115,15 +106,6 @@ public class MySqlExprParser extends SQLExprParser {
             rightExp = relationalRest(rightExp);
 
             return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotRegExp, rightExp);
-        }
-
-        if (identifierEquals("RLIKE")) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-
-            rightExp = relationalRest(rightExp);
-
-            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotRLike, rightExp);
         }
 
         return super.notRationalRest(expr);
