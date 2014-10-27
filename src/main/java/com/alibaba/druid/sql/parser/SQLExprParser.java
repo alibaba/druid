@@ -498,7 +498,7 @@ public class SQLExprParser extends SQLParser {
                 break;
             case BANG:
                 lexer.nextToken();
-                SQLExpr bangExpr = expr();
+                SQLExpr bangExpr = primary();
                 sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Not, bangExpr);
                 break;
             case LITERAL_HEX:
@@ -1234,6 +1234,13 @@ public class SQLExprParser extends SQLParser {
                 rightExp = primary();
                 expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Escape, rightExp);
             }
+        } else if (identifierEquals("RLIKE")) {
+            lexer.nextToken();
+            rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.RLike, rightExp);
         } else if (lexer.token() == (Token.NOT)) {
             lexer.nextToken();
             expr = notRationalRest(expr);
@@ -1307,6 +1314,13 @@ public class SQLExprParser extends SQLParser {
             expr = new SQLBetweenExpr(expr, true, beginExpr, endExpr);
 
             return expr;
+        } else if (identifierEquals("RLIKE")) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+
+            rightExp = relationalRest(rightExp);
+
+            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotRLike, rightExp);
         } else {
             throw new ParserException("TODO " + lexer.token());
         }
