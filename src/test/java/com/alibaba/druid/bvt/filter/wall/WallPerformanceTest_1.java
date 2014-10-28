@@ -85,6 +85,59 @@ public class WallPerformanceTest_1 extends TestCase {
         }
     }
 
+    public void test_7() throws Exception {
+        String sql = "select * from( select  a.*,(select WorkOrderName from  WorkOrder where WorkOrder.WorkOrderID=a.WorkOrderID) as WorkOrderName, (select TrainName from  Train where Train.TrainID=a.TrainID) as TrainName, (select MemberName from  MemberInfo where MemberInfo.MemberID=a.MemberID) as MemberName, (select UserName from  SYS_UserInfo where SYS_UserInfo.UserID=a.TaskCreaterID) as UserInfo_UserName, (select ProcessName from  SYS_ProcessDefine where SYS_ProcessDefine.ProcessID=a.ProcessID) as ProcessName, (select ShopName from  shop where shop.ShopID=a.ShopID) as ShopName, (select UserName from  SYS_UserInfo where SYS_UserInfo.UserID=a.AssessID) as Assess_UserName, (select UserName from  SYS_UserInfo where SYS_UserInfo.UserID=a.Executuserid) as Executuser_UserName,  ROW_NUMBER() OVER(order by a.TaskID desc,a.TaskCreateDate asc) as row  from  [Task] as a where AccountID=48  and  (( a.TaskExecutorID = 12 and  a.TaskStatus !='2' and IFValid=1  ) or a.TaskID in   (select   a.TaskID  from  [Task] as a ,WorkOLDTaskMould as b where   a.TaskMouldOLDID=b.TaskMouldOLDID and  a.TaskExecutorID=0 and a.TaskStatus=0    and (  b.Deal_User like '%,12,%'     or b.Deal_Dept   like '%,18,%'  or b.Deal_Dept   like '%,53,%'  or b.Deal_Dept   like '%,129,%'  or b.Deal_Dept   like '%,151,%'  or b.Deal_Dept   like '%,79,%'  or b.Deal_Dept   like '%,116,%'  or b.Deal_Dept   like '%,117,%'  or b.Deal_Post  like '%,52,%'  or b.Deal_Post  like '%,6,%'  or b.Deal_Post  like '%,12,%'  or b.Deal_Post  like '%,13,%'  or b.Deal_Post  like '%,30,%'  or b.Deal_Post  like '%,64,%'  or b.Deal_Post  like '%,56,%'  or b.Deal_Group   like '%,6,%'  or b.Deal_Group   like '%,12,%'  or b.Deal_Group   like '%,14,%' ))) ) a where row between  1  and 100";
+        // System.out.println("sql: \n" + ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.MYSQL));
+        for (int i = 0; i < 5; i++) {
+            System.out.println("--7--use time：" + this.evaluate(sql, "mysql", 1000l));
+        }
+    }
+
+    public void test_8() throws Exception {
+        String sql = "SELECT pr.order_no,pr.receipt_no,pr.datetime, pt.type_name,pr.amount,u.username FROM   payments_record  pr  inner join  tasks t on t.order_no= pr.order_no  inner join orders o on o.order_number=t.order_no inner join pay_type pt on pt.id=pr.payment_type inner join users u on u.id=pr.operator_id where t.order_no=o.order_number  and o.order_status=4 and t.task_status=6 and o.station_collection=1  and pr.client_status='success'  and pr.operator_id=29 and (pt.id=1 or pt.id=2) and pr.datetime between '2014-10-22 00:00:00' and '2014-10-22 23:59:59'";
+        // System.out.println("sql: \n" + ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.MYSQL));
+        for (int i = 0; i < 5; i++) {
+            System.out.println("--8--use time：" + this.evaluate(sql, "mysql", 1000l));
+        }
+    }
+
+    public void test_9() throws Exception {
+        String sql = "SELECT  COUNT(*)  FROM  ReportSalesOrderList t0 LEFT JOIN ReportProductList t1 ON t0.SkuCode = t1.SkuCode WHERE  (ShopId = 0 OR 0 = 0) AND (ShopOrderNo = '' OR '' = '') AND (CustomerName LIKE CONCAT ('%', '', '%') OR '' = '')AND (t0.OrderType = '0' OR '0' = '0')AND (     (t0.orderStatus >0 AND t0.orderStatus <=45 AND 10 = 20 ) OR      (t0.orderStatus >45 AND t0.orderStatus <= 60 AND 10 = 30 ) OR     (t0.orderStatus >60 AND t0.orderStatus <= 70 AND 10 = 40 ) OR      (t0.orderStatus >70 AND t0.orderStatus <= 90 AND 10 = 50 )OR 10 = 10 ) AND (     ('30' = '10' AND t0.ShopPayTime >= '2014-10-01 00:00:00 ' AND t0.ShopPayTime < '2014-10-23 00:00:00 ' ) OR      ('30' = '20' AND t0.DeliveryTime >= '2014-10-01 00:00:00 ' AND t0.DeliveryTime < '2014-10-23 00:00:00 ' ) OR      ('30' = '30' AND t0.EndTime >= '2014-10-01 00:00:00 ' AND t0.EndTime < '2014-10-23 00:00:00 ' ) OR      ('30' = '40' AND t0.RefundTime >= '2014-10-01 00:00:00 ' AND t0.RefundTime < '2014-10-23 00:00:00 ' ) ) GROUP BY t0.OrderNo HAVING  ( GROUP_CONCAT(t1.ItemCode) LIKE CONCAT ('%', '', '%') OR GROUP_CONCAT(t1.ItemName) LIKE CONCAT ('%', '', '%') OR GROUP_CONCAT(t1.SkuCode)  LIKE CONCAT ('%', '', '%') OR GROUP_CONCAT(DISTINCT t1.SkuName) LIKE CONCAT ('%', '', '%')  OR '' = '') AND (GROUP_CONCAT(t1.BrandName)  LIKE CONCAT ('%', '', '%') Or '' = '')AND ('10' = '10' OR      ('10'= '20' AND GROUP_CONCAT(t0.RefundType) IS NULL )     OR('10' = '30' AND GROUP_CONCAT(t0.RefundType) != ''))";
+        // System.out.println("sql: \n" + ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.MYSQL));
+        for (int i = 0; i < 5; i++) {
+            System.out.println("--9--use time：" + this.evaluate(sql, "mysql", 1000l));
+        }
+    }
+
+    public void test_10() throws Exception {
+        String sql = "insert into  saleB_63ceb9cbab074f3f91dda04a3fe79a57_z (billid,tblastmodate,seller_CourierId,r3_billtype,tags_color,seller_momo,buyer_momo,buyer_province,buyer_city,buyer_area,buyer_mail_code,post_fee,ele_shopname,ele_sordercode,type,codfee,codfamt,ExpressCode,PointFee,invoiceType,invoicePayer,invoiceContent) select 719685,Modified,0,isnull(r3_billtype,''),isnull(SellerFlag,''),isnull(SellerMemo,''),isnull(BuyerMessage,''),isnull(ReceiverState,''),isnull(ReceiverCity,''),isnull(ReceiverDistrict,''),isnull(ReceiverZip,''),isnull(PostFee,''),isnull(Title,''),isnull(Tid,''),isnull(type,''),isnull(codfee,''),isnull(ExpressAgencyFee,''),isnull(Ext5,''),isnull(PointFee,''),isnull(Ext1,''),isnull(Ext2,''),isnull(Ext3,'') from taobao_order where r3_billid=837361947087831 and shopConfigid=2";
+        // System.out.println("sql: \n" + ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.MYSQL));
+        for (int i = 0; i < 5; i++) {
+            System.out.println("--10--use time：" + this.evaluate(sql, "mssql", 1000l));
+        }
+    }
+
+    public void test_11() throws Exception {
+        String sql = "create view tempview_CTbillflow_material as SELECT billflow.billtype, billflow.billid, billflow.itemno, billflow.MaterialID, billflow.quantity,  billflow.ioflag, billflow.storeid, content.CT1, content.CT2 FROM billflow INNER JOIN content ON billflow.billtype = content.tableid AND billflow.billid = content.billid AND  billflow.itemno = content.itemno WHERE billflow.billflowid>0  and billflow.storeid<>1 and billflow.storeid<>2 and billflow.storeid<>3 and billflow.storeid<>5 and billflow.storeid<>7 and billflow.storeid<>8 and billflow.storeid<>9 and billflow.storeid<>10 and billflow.storeid<>11 and (1=2 or billflow.MaterialID=893 or billflow.MaterialID=904 or billflow.MaterialID=80 or billflow.MaterialID=8 or billflow.MaterialID=8) UNION ALL SELECT billflow.billtype, billflow.billid, billflow.itemno, billflow.MaterialID, billflow.quantity,  billflow.ioflag, billflow.storeid, content.CT1, content.CT2 FROM billflow INNER JOIN content ON billflow.billtype = content.tableid AND billflow.billid = content.billid AND  billflow.itemno = content.itemno inner join Material on billflow.MaterialID=Material.MaterialID and Material.feature=1 WHERE billflow.billflowid< 0 and (1=2 or content.CT1<>'' or content.CT2<>'')  and billflow.storeid<>1 and billflow.storeid<>2 and billflow.storeid<>3 and billflow.storeid<>5 and billflow.storeid<>7 and billflow.storeid<>8 and billflow.storeid<>9 and billflow.storeid<>10 and billflow.storeid<>11 and (1=2 or billflow.MaterialID=893 or billflow.MaterialID=904 or billflow.MaterialID=80 or billflow.MaterialID=8 or billflow.MaterialID=8) UNION ALL SELECT billflow.billtype, billflow.billid, billflow.itemno, billflow.MaterialID, billflow.quantity,  billflow.ioflag, billflow.storeid, content.CT1, content.CT2 FROM billflow INNER JOIN content ON billflow.billtype = content.tableid AND billflow.billid = content.billid AND  billflow.itemno = content.itemno inner join Material on billflow.MaterialID=Material.MaterialID and Mater";
+        for (int i = 0; i < 5; i++) {
+            System.out.println("--11--use time：" + this.evaluate(sql, "mssql", 1000l));
+        }
+    }
+
+    public void test_12() throws Exception {
+        String sql = "select b.*,c.county,c.shangquan,c.naturevar,directionsvar,fitmentvar,c.villagename,c.titles,c.address,c.smallpath,c.imgcount,c.hall,c.layer,c.totallayer,c.tags from (select * from(select rentid,room,updatetime,minarea,minprice,avgprice,labelstate,unixdate,isimgs,zongdianid,mendianid,zongdianval,mendianval, Row_Number() over(order by minarea desc,rentid desc) as RowID from house_rent_search_kunshan  where isaudit=0 and isdel=0 and state=0 and countyid=@countyid and nature=@nature and directions=@directions) as a where RowID>=1 and RowID<=20) as b inner join house_rent_list_kunshan as c on b.rentid=c.rentid order by minarea desc,rentid desc";
+        for (int i = 0; i < 5; i++) {
+            System.out.println("--12--use time：" + this.evaluate(sql, "mssql", 1000l));
+        }
+    }
+
+    public void test_13() throws Exception {
+        String sql = "SELECT COUNT(*) cn1 FROM KUKA_SystemOrder   WHERE  1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  AND 1=1  ";
+        for (int i = 0; i < 5; i++) {
+            System.out.println("--13--use time：" + this.evaluate(sql, "mssql", 1000l));
+        }
+    }
+
     public Long evaluate(String sql, String dbType, Long num) {
         if (sql == null || dbType == null) {
             return new Long(-1);
@@ -109,7 +162,7 @@ public class WallPerformanceTest_1 extends TestCase {
             provider.getConfig().setConditionDoubleConstAllow(true);
 
             provider.getConfig().setCommentAllow(true);
-            provider.getConfig().setSelectUnionCheck(false);
+            // provider.getConfig().setSelectUnionCheck(false);
 
             // add by yanhui.liyh
             provider.setBlackListEnable(false);

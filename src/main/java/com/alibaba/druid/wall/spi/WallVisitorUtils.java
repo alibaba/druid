@@ -59,6 +59,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
@@ -944,47 +945,6 @@ public class WallVisitorUtils {
     }
 
     public static Object getValue(WallVisitor visitor, SQLBinaryOpExpr x) {
-        if (x.getLeft() instanceof SQLName && x.getRight() instanceof SQLName) {
-            if (x.getLeft().toString().equalsIgnoreCase(x.getRight().toString())) {
-                if (x.getOperator() == SQLBinaryOperator.Equality) {
-                    return Boolean.TRUE;
-                } else if (x.getOperator() == SQLBinaryOperator.NotEqual) {
-                    return Boolean.FALSE;
-                }
-
-                switch (x.getOperator()) {
-                    case Equality:
-                    case Like:
-                        return Boolean.TRUE;
-                    case NotEqual:
-                    case GreaterThan:
-                    case GreaterThanOrEqual:
-                    case LessThan:
-                    case LessThanOrEqual:
-                    case LessThanOrGreater:
-                    case NotLike:
-                        return Boolean.FALSE;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        if (x.getLeft() instanceof SQLName && !(x.getRight() instanceof SQLName)) {
-            switch (x.getOperator()) {
-                case Equality:
-                case NotEqual:
-                case GreaterThan:
-                case GreaterThanOrEqual:
-                case LessThan:
-                case LessThanOrEqual:
-                case LessThanOrGreater:
-                    return null;
-                default:
-                    break;
-            }
-        }
-
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
             List<SQLExpr> groupList = SQLUtils.split(x);
 
@@ -1058,6 +1018,55 @@ public class WallVisitorUtils {
             return null;
         }
 
+        if (x.getLeft() instanceof SQLName) {
+            if (x.getRight() instanceof SQLName) {
+                if (x.getLeft().toString().equalsIgnoreCase(x.getRight().toString())) {
+                    switch (x.getOperator()) {
+                        case Equality:
+                        case Like:
+                            return Boolean.TRUE;
+                        case NotEqual:
+                        case GreaterThan:
+                        case GreaterThanOrEqual:
+                        case LessThan:
+                        case LessThanOrEqual:
+                        case LessThanOrGreater:
+                        case NotLike:
+                            return Boolean.FALSE;
+                        default:
+                            break;
+                    }
+                }
+            } else {
+                switch (x.getOperator()) {
+                    case Equality:
+                    case NotEqual:
+                    case GreaterThan:
+                    case GreaterThanOrEqual:
+                    case LessThan:
+                    case LessThanOrEqual:
+                    case LessThanOrGreater:
+                        return null;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        if (x.getLeft() instanceof SQLValuableExpr && x.getRight() instanceof SQLValuableExpr) {
+            Object leftValue = ((SQLValuableExpr) x.getLeft()).getValue();
+            Object rightValue = ((SQLValuableExpr) x.getRight()).getValue();
+            if (x.getOperator() == SQLBinaryOperator.Equality) {
+                boolean evalValue = SQLEvalVisitorUtils.eq(leftValue, rightValue);
+                x.putAttribute(EVAL_VALUE, evalValue);
+                return evalValue;
+            } else if (x.getOperator() == SQLBinaryOperator.NotEqual) {
+                boolean evalValue = SQLEvalVisitorUtils.eq(leftValue, rightValue);
+                x.putAttribute(EVAL_VALUE, !evalValue);
+                return !evalValue;
+            }
+        }
+
         if (x.getOperator() == SQLBinaryOperator.Like || x.getOperator() == SQLBinaryOperator.NotLike) {
             Object leftResult = getValue(visitor, x.getLeft());
             Object rightResult = getValue(visitor, x.getRight());
@@ -1083,6 +1092,7 @@ public class WallVisitorUtils {
 
         return eval(visitor, dbType, x, Collections.emptyList());
     }
+    
 
     public static SQLExpr getFirst(SQLExpr x) {
         if (x instanceof SQLBinaryOpExpr) {

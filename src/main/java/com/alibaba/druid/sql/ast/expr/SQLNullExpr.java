@@ -18,7 +18,9 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr {
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
+
+public class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
 
     public SQLNullExpr(){
 
@@ -40,5 +42,10 @@ public class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     public boolean equals(Object o) {
         return o instanceof SQLNullExpr;
+    }
+
+    @Override
+    public Object getValue() {
+        return EVAL_VALUE_NULL;
     }
 }
