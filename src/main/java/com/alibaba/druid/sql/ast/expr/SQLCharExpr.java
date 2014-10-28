@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCharExpr extends SQLTextLiteralExpr {
+public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
 
     public SQLCharExpr(){
 
@@ -41,5 +41,10 @@ public class SQLCharExpr extends SQLTextLiteralExpr {
     protected void accept0(SQLASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
+    }
+
+    @Override
+    public Object getValue() {
+        return this.text;
     }
 }
