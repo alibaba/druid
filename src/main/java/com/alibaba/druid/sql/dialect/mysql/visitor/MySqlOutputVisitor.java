@@ -1752,11 +1752,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlSetTransactionIsolationLevelStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlSetTransactionIsolationLevelStatement x) {
         if (x.getGlobal() == null) {
             print("SET TRANSACTION ISOLATION LEVEL ");
         } else if (x.getGlobal().booleanValue()) {
@@ -1765,6 +1760,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print("SET SESSION TRANSACTION ISOLATION LEVEL ");
         }
         print(x.getLevel());
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSetTransactionIsolationLevelStatement x) {
+        
     }
 
     @Override
