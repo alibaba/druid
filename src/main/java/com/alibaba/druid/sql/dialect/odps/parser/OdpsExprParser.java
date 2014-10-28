@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.odps.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 
@@ -40,5 +42,9 @@ public class OdpsExprParser extends SQLExprParser {
     public OdpsExprParser(String sql){
         this(new OdpsLexer(sql));
         this.lexer.nextToken();
+    }
+    
+    protected SQLExpr parseAliasExpr(String alias) {
+        return new SQLCharExpr(alias);
     }
 }
