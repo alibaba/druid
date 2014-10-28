@@ -560,7 +560,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = allExpr;
                 break;
             case LITERAL_ALIAS:
-                sqlExpr = new SQLIdentifierExpr('"' + lexer.stringVal() + '"');
+                sqlExpr = parseAliasExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
             case EOF:
@@ -578,6 +578,10 @@ public class SQLExprParser extends SQLParser {
         }
 
         return primaryRest(sqlExpr);
+    }
+    
+    protected SQLExpr parseAliasExpr(String alias) {
+        return new SQLIdentifierExpr('"' + alias + '"');
     }
 
     protected SQLExpr parseInterval() {
