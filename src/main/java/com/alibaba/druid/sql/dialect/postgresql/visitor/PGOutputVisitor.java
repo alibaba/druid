@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
@@ -480,5 +481,18 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 	public void endVisit(PGLimit x) {
 		
 	}
+
+    @Override
+    public void endVisit(PGTypeCastExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGTypeCastExpr x) {
+        x.getExpr().accept(this);
+        print("::");
+        x.getDataType().accept(this);
+        return false;
+    }
 
 }
