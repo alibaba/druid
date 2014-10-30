@@ -68,9 +68,7 @@ public enum SQLBinaryOperator {
     BooleanAnd("AND", 140), 
     BooleanXor("XOR", 150), 
     BooleanOr("OR", 160), 
-    Assignment(":=", 169),
-    
-    PostgresStyleTypeCast("::", 20),
+    Assignment(":=", 169)    
     ;
 
     public static int getPriority(SQLBinaryOperator operator) {
