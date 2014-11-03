@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
@@ -254,6 +255,8 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 query = this.parseUpdateStatement();
             } else if (lexer.token() == Token.DELETE) {
                 query = this.parseDeleteStatement();
+            } else if (lexer.token() == Token.VALUES) {
+                query = this.parseSelect();
             } else {
                 throw new ParserException("syntax error, support token '" + lexer.token() + "'");
             }
@@ -266,7 +269,9 @@ public class PGSQLStatementParser extends SQLStatementParser {
     }
 
     public PGSelectStatement parseSelect() {
-        return new PGSelectStatement(createSQLSelectParser().select());
+        PGSelectParser selectParser = createSQLSelectParser();
+        SQLSelect select = selectParser.select();
+        return new PGSelectStatement(select);
     }
 
     public SQLStatement parseWith() {
@@ -279,6 +284,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.SELECT) {
             PGSelectStatement stmt = this.parseSelect();
+            stmt.setWith(with);
+            return stmt;
+        }
+        
+        if (lexer.token() == Token.DELETE) {
+            PGDeleteStatement stmt = this.parseDeleteStatement();
             stmt.setWith(with);
             return stmt;
         }

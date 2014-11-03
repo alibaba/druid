@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSelectQueryBlock extends SQLSelectQuery {
+public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery {
 
     protected int                       distionOption;
     protected final List<SQLSelectItem> selectList = new ArrayList<SQLSelectItem>();

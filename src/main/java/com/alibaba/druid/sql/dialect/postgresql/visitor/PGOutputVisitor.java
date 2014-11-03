@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
@@ -32,6 +33,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLi
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor {
@@ -145,6 +147,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGWithClause x) {
         print("WITH");
+        if (x.isRecursive()) {
+            print(" RECURSIVE ");
+        }
         incrementIndent();
         println();
         printlnAndAccept(x.getWithQuery(), ", ");
@@ -492,6 +497,32 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         x.getExpr().accept(this);
         print("::");
         x.getDataType().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGValuesQuery x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGValuesQuery x) {
+        print("VALUES(");
+        printAndAccept(x.getValues(), ", ");
+        print(")");
+        return false;
+    }
+    
+    @Override
+    public void endVisit(PGArrayExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGArrayExpr x) {
+        print("ARRAY[");
+        printAndAccept(x.getValues(), ", ");
+        print("]");
         return false;
     }
 

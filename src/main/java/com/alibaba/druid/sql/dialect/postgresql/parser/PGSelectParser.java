@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -48,6 +49,15 @@ public class PGSelectParser extends SQLSelectParser {
 
     @Override
     public SQLSelectQuery query() {
+        if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            PGValuesQuery valuesQuery = new PGValuesQuery();
+            this.exprParser.exprList(valuesQuery.getValues(), valuesQuery);
+            accept(Token.RPAREN);
+            return queryRest(valuesQuery);
+        }
+        
         PGSelectQueryBlock queryBlock = new PGSelectQueryBlock();
 
         if (lexer.token() == Token.SELECT) {
