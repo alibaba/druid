@@ -517,47 +517,13 @@ public class SQLExprParser extends SQLParser {
                 }
                 break;
             case ANY:
-                lexer.nextToken();
-                if (lexer.token() == Token.LPAREN) {
-                    SQLAnyExpr anyExpr = new SQLAnyExpr();
-
-                    accept(Token.LPAREN);
-                    SQLSelect anySubQuery = createSelectParser().select();
-                    anyExpr.setSubQuery(anySubQuery);
-                    accept(Token.RPAREN);
-
-                    anySubQuery.setParent(anyExpr);
-
-                    sqlExpr = anyExpr;
-                } else {
-                    sqlExpr = new SQLIdentifierExpr("ANY");
-                }
+                sqlExpr = parseAny();
                 break;
             case SOME:
-                lexer.nextToken();
-                SQLSomeExpr someExpr = new SQLSomeExpr();
-
-                accept(Token.LPAREN);
-                SQLSelect someSubQuery = createSelectParser().select();
-                someExpr.setSubQuery(someSubQuery);
-                accept(Token.RPAREN);
-
-                someSubQuery.setParent(someExpr);
-
-                sqlExpr = someExpr;
+                sqlExpr = parseSome();
                 break;
             case ALL:
-                lexer.nextToken();
-                SQLAllExpr allExpr = new SQLAllExpr();
-
-                accept(Token.LPAREN);
-                SQLSelect allSubQuery = createSelectParser().select();
-                allExpr.setSubQuery(allSubQuery);
-                accept(Token.RPAREN);
-
-                allSubQuery.setParent(allExpr);
-
-                sqlExpr = allExpr;
+                sqlExpr = parseAll();
                 break;
             case LITERAL_ALIAS:
                 sqlExpr = parseAliasExpr(lexer.stringVal());
@@ -578,6 +544,66 @@ public class SQLExprParser extends SQLParser {
         }
 
         return primaryRest(sqlExpr);
+    }
+
+    protected SQLExpr parseAll() {
+        SQLExpr sqlExpr;
+        lexer.nextToken();
+        SQLAllExpr allExpr = new SQLAllExpr();
+
+        accept(Token.LPAREN);
+        SQLSelect allSubQuery = createSelectParser().select();
+        allExpr.setSubQuery(allSubQuery);
+        accept(Token.RPAREN);
+
+        allSubQuery.setParent(allExpr);
+
+        sqlExpr = allExpr;
+        return sqlExpr;
+    }
+
+    protected SQLExpr parseSome() {
+        SQLExpr sqlExpr;
+        lexer.nextToken();
+        SQLSomeExpr someExpr = new SQLSomeExpr();
+
+        accept(Token.LPAREN);
+        SQLSelect someSubQuery = createSelectParser().select();
+        someExpr.setSubQuery(someSubQuery);
+        accept(Token.RPAREN);
+
+        someSubQuery.setParent(someExpr);
+
+        sqlExpr = someExpr;
+        return sqlExpr;
+    }
+
+    protected SQLExpr parseAny() {
+        SQLExpr sqlExpr;
+        lexer.nextToken();
+        if (lexer.token() == Token.LPAREN) {
+            accept(Token.LPAREN);
+            
+            if (lexer.token() == Token.IDENTIFIER) {
+                SQLExpr expr = this.expr();
+                SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr("ANY");
+                methodInvokeExpr.addParameter(expr);
+                accept(Token.RPAREN);
+                return methodInvokeExpr;
+            }
+            
+            SQLAnyExpr anyExpr = new SQLAnyExpr();
+            SQLSelect anySubQuery = createSelectParser().select();
+            anyExpr.setSubQuery(anySubQuery);
+            accept(Token.RPAREN);
+
+            anySubQuery.setParent(anyExpr);
+
+            sqlExpr = anyExpr;
+        } else {
+            sqlExpr = new SQLIdentifierExpr("ANY");
+        }
+        return sqlExpr;
     }
     
     protected SQLExpr parseAliasExpr(String alias) {

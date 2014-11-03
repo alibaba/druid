@@ -15,10 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLUnionQuery extends SQLSelectQuery {
+public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
     private SQLSelectQuery   left;
     private SQLSelectQuery   right;

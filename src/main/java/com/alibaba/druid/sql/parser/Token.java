@@ -220,6 +220,8 @@ public enum Token {
     // transact-sql
     TOP("TOP"),
     
+    ARRAY("ARRAY"),
+    
     // hive
 
     EOF, 

@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
@@ -29,6 +30,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLi
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVisitor {
@@ -177,5 +179,25 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
 	public void endVisit(PGTypeCastExpr x) {
 	    
 	}
+
+    @Override
+    public void endVisit(PGValuesQuery x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGValuesQuery x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGArrayExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGArrayExpr x) {
+        return true;
+    }
 
 }
