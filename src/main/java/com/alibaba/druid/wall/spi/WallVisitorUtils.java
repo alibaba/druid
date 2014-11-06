@@ -174,14 +174,21 @@ public class WallVisitorUtils {
                                 chrCount++;
                             }
                         }
+                    } else if (item instanceof SQLCharExpr) {
+                        if (((SQLCharExpr) item).getText().length() > 5) {
+                            chrCount = 0;
+                            continue;
+                        }
                     }
-                }
-                if (chrCount >= 4) {
-                    addViolation(visitor, ErrorCode.EVIL_CONCAT, "evil concat", x);
+
+                    if (chrCount >= 4) {
+                        addViolation(visitor, ErrorCode.EVIL_CONCAT, "evil concat", x);
+                        break;
+                    }
                 }
             }
         }
-
+        
         return true;
     }
 
@@ -1092,7 +1099,6 @@ public class WallVisitorUtils {
 
         return eval(visitor, dbType, x, Collections.emptyList());
     }
-    
 
     public static SQLExpr getFirst(SQLExpr x) {
         if (x instanceof SQLBinaryOpExpr) {
