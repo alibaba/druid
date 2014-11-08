@@ -13,7 +13,7 @@ public class BigSqlTest extends TestCase {
         String sql = "SELECT c from sbtest where id=0";
 
         for (int i = 0; i < 10000; i++) {
-            sql += "or id=0";
+            sql += " or id=0";
         }
         WallConfig config = new WallConfig();
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
@@ -23,7 +23,7 @@ public class BigSqlTest extends TestCase {
         String sql = "SELECT c from sbtest where id=0";
 
         for (int i = 0; i < 10000; i++) {
-            sql += "and id=0";
+            sql += " and id=0";
         }
         WallConfig config = new WallConfig();
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config));

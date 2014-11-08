@@ -373,7 +373,7 @@ public class Lexer {
                     return;
                 case '.':
                     scanChar();
-                    if (isDigit(ch)) {
+                    if (isDigit(ch) && !isFirstIdentifierChar(charAt(pos - 2))) {
                         unscan();
                         scanNumber();
                         return;
