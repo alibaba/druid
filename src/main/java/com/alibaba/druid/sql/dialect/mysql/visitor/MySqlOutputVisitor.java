@@ -1037,7 +1037,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 x.getLinesTerminatedBy().accept(this);
             }
         }
+        
+        if(x.getIgnoreLinesNumber() != null) {
+            print(" IGNORE ");
+            x.getIgnoreLinesNumber().accept(this);
+            print(" LINES");
+        }
 
+        if (x.getColumns().size() != 0) {
+            print(" (");
+            printAndAccept(x.getColumns(), ", ");
+            print(")");
+        }
+        
         if (x.getSetList().size() != 0) {
             print(" SET ");
             printAndAccept(x.getSetList(), ", ");
