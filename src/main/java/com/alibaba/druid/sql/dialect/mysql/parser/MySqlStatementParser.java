@@ -1787,19 +1787,61 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (identifierEquals("FIELDS") || identifierEquals("COLUMNS")) {
-            throw new ParserException("TODO");
+            lexer.nextToken();
+            if (identifierEquals("TERMINATED")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                stmt.setColumnsTerminatedBy((SQLLiteralExpr) this.exprParser.expr());
+            }
+
+            if (identifierEquals("OPTIONALLY")) {
+                stmt.setColumnsEnclosedOptionally(true);
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("ENCLOSED")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                stmt.setColumnsEnclosedBy((SQLLiteralExpr) this.exprParser.expr());
+            }
+
+            if (identifierEquals("ESCAPED")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                stmt.setColumnsEscaped((SQLLiteralExpr) this.exprParser.expr());
+            }
         }
 
         if (identifierEquals("LINES")) {
-            throw new ParserException("TODO");
+            lexer.nextToken();
+            if (identifierEquals("STARTING")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                stmt.setLinesStartingBy((SQLLiteralExpr) this.exprParser.expr());
+            }
+
+            if (identifierEquals("TERMINATED")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                stmt.setLinesTerminatedBy((SQLLiteralExpr) this.exprParser.expr());
+            }
         }
 
         if (identifierEquals(IGNORE)) {
-            throw new ParserException("TODO");
+            lexer.nextToken();
+            stmt.setIgnoreLinesNumber((SQLLiteralExpr) this.exprParser.expr());
+            acceptIdentifier("LINES");
+        }
+
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            this.exprParser.exprList(stmt.getColumns(), stmt);
+            accept(Token.RPAREN);
         }
 
         if (lexer.token() == Token.SET) {
-            throw new ParserException("TODO");
+            lexer.nextToken();
+            this.exprParser.exprList(stmt.getSetList(), stmt);
         }
 
         return stmt;
