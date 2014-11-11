@@ -11,7 +11,7 @@
   
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.10-SNAPSHOT</version>
+	<version>1.0.10</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
