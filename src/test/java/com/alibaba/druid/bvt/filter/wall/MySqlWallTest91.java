@@ -74,7 +74,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false3() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = "SELECT * FROM mp_Sites WHERE SiteID = -1 OR -1 = -1 ORDER BY SiteID LIMIT 1 ";
+            String sql = "SELECT * FROM mp_Sites WHERE SiteID = -1 OR -1 = -1 --ORDER BY SiteID LIMIT 1 ";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -82,7 +82,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false4() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = "select cid,title,id,img,fan from duoduo_mall where cid = cid and 1=1 order by sort desc limit 17 ";
+            String sql = "select cid,title,id,img,fan from duoduo_mall where cid = cid and 1=1 --order by sort desc limit 17 ";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -90,7 +90,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false5() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = "select count(1) as cot from w36ma_picking where (picking_no='' or ''='') and (DATE_FORMAT(create_time,'%Y-%m-%d') = '' or ''='')";
+            String sql = "select count(1) as cot from w36ma_picking where (picking_no='' or ''='') and (DATE_FORMAT(create_time,'%Y-%m-%d') = '' or ''='') --";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -98,7 +98,7 @@ public class MySqlWallTest91 extends TestCase {
     public void test_false6() throws Exception {
         WallProvider provider = initWallProvider();
         {
-            String sql = " select pg.*,an1.w36ma_name as create_name, an2.w36ma_name as print_name, an2.w36ma_name as receive_name, an2.w36ma_name as products_name, an2.w36ma_name as warehouse_name from w36ma_picking as pg left join iweb_admin as an1 on pg.create_name_id=an1.id left join iweb_admin as an2 on pg.print_name_id=an2.id left join iweb_admin as an3 on pg.receive_name_id=an3.id left join iweb_admin as an4 on pg.products_name_id=an4.id left join iweb_admin as an5 on pg.warehouse_name_id=an5.id where (pg.picking_no='' or ''='') and (DATE_FORMAT(pg.create_time,'%Y-%m-%d') = '' or ''='') limit 0,20 ";
+            String sql = " select pg.*,an1.w36ma_name as create_name, an2.w36ma_name as print_name, an2.w36ma_name as receive_name, an2.w36ma_name as products_name, an2.w36ma_name as warehouse_name from w36ma_picking as pg left join iweb_admin as an1 on pg.create_name_id=an1.id left join iweb_admin as an2 on pg.print_name_id=an2.id left join iweb_admin as an3 on pg.receive_name_id=an3.id left join iweb_admin as an4 on pg.products_name_id=an4.id left join iweb_admin as an5 on pg.warehouse_name_id=an5.id where (pg.picking_no='' or ''='') and (DATE_FORMAT(pg.create_time,'%Y-%m-%d') = '' or ''='') --limit 0,20 ";
             Assert.assertFalse(provider.checkValid(sql));
         }
     }
@@ -257,12 +257,12 @@ public class MySqlWallTest91 extends TestCase {
             Assert.assertTrue(provider.checkValid(sql));
         }
         {
-            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where id=1 or 1='1'";
+            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where id=1 or 1='1' --";
             Assert.assertFalse(provider.checkValid(sql));
         }
-        {
-            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where id=1 or true";
-            Assert.assertFalse(provider.checkValid(sql));
-        }
+//        {
+//            String sql = "SELECT * FROM `oammxncom2014`.`ecs_free_bank` where id=1 or true --";
+//            Assert.assertFalse(provider.checkValid(sql));
+//        }
     }
 }

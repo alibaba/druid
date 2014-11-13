@@ -108,15 +108,11 @@ public class SQLServerLexer extends Lexer {
                 hasComment = true;
             }
 
-            if (token != Token.HINT && !isAllowComment()) {
+            if (token != Token.HINT && !isAllowComment() && !isSafeComment(stringVal)) {
                 throw new NotAllowCommentException();
             }
 
             return;
-        }
-
-        if (!isAllowComment()) {
-            throw new NotAllowCommentException();
         }
 
         if (ch == '/' || ch == '-') {
@@ -150,6 +146,10 @@ public class SQLServerLexer extends Lexer {
             token = Token.LINE_COMMENT;
             hasComment = true;
             endOfComment = isEOF();
+            
+            if (!isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
+                throw new NotAllowCommentException();
+            }
             return;
         }
     }

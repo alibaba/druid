@@ -63,8 +63,9 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
     private final WallConfig      config;
     private final WallProvider    provider;
-    private final List<Violation> violations  = new ArrayList<Violation>();
-    private boolean               sqlModified = false;
+    private final List<Violation> violations      = new ArrayList<Violation>();
+    private boolean               sqlModified     = false;
+    private boolean               sqlEndOfComment = false;
 
     public OracleWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
@@ -346,5 +347,15 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     @Override
     public boolean visit(SQLCreateTriggerStatement x) {
         return false;
+    }
+    
+    @Override
+    public boolean isSqlEndOfComment() {
+        return this.sqlEndOfComment;
+    }
+
+    @Override
+    public void setSqlEndOfComment(boolean sqlEndOfComment) {
+        this.sqlEndOfComment = sqlEndOfComment;
     }
 }

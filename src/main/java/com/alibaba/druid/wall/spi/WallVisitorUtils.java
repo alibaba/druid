@@ -295,7 +295,8 @@ public class WallVisitorUtils {
             Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
 
             if (Boolean.TRUE == whereValue) {
-                if (!isSimpleConstExpr(where)) {// 简单表达式
+                if (visitor.getConfig().isSelectWhereAlwayTrueCheck() && visitor.isSqlEndOfComment()
+                    && !isSimpleConstExpr(where)) {// 简单表达式
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "select alway true condition not allow", x);
                 }
             }
@@ -310,7 +311,8 @@ public class WallVisitorUtils {
         }
 
         if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck())) {
-            if (!isSimpleConstExpr(x)) {
+            if (visitor.getConfig().isSelectHavingAlwayTrueCheck() && visitor.isSqlEndOfComment()
+                && !isSimpleConstExpr(x)) {
                 addViolation(visitor, ErrorCode.ALWAYS_TRUE, "having alway true condition not allow", x);
             }
         }
@@ -349,7 +351,7 @@ public class WallVisitorUtils {
             checkCondition(visitor, where);
 
             if (Boolean.TRUE == getConditionValue(visitor, where, config.isDeleteWhereAlwayTrueCheck())) {
-                if (!isSimpleConstExpr(where)) {
+                if (config.isDeleteWhereAlwayTrueCheck() && visitor.isSqlEndOfComment() && !isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "delete alway true condition not allow", x);
                 }
             }
@@ -942,7 +944,7 @@ public class WallVisitorUtils {
             checkCondition(visitor, where);
 
             if (Boolean.TRUE == getConditionValue(visitor, where, config.isUpdateWhereAlayTrueCheck())) {
-                if (!isSimpleConstExpr(where)) {
+                if (config.isUpdateWhereAlayTrueCheck() && visitor.isSqlEndOfComment()&& !isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
                 }
             }
@@ -1388,7 +1390,7 @@ public class WallVisitorUtils {
                 }
             }
 
-            if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
+            if (current.hasPartAlwayTrue() && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
                 addViolation(visitor, ErrorCode.ALWAYS_TRUE, "part alway true condition not allow", x);
             }
 
@@ -2198,7 +2200,8 @@ public class WallVisitorUtils {
                 context.incrementUnionWarnings();
             }
 
-            if (((x.getOperator() == SQLUnionOperator.UNION || x.getOperator() == SQLUnionOperator.UNION_ALL || x.getOperator() == SQLUnionOperator.DISTINCT) && visitor.getConfig().isSelectUnionCheck())
+            if (((x.getOperator() == SQLUnionOperator.UNION || x.getOperator() == SQLUnionOperator.UNION_ALL || x.getOperator() == SQLUnionOperator.DISTINCT)
+                 && visitor.getConfig().isSelectUnionCheck() && visitor.isSqlEndOfComment())
                 || (x.getOperator() == SQLUnionOperator.MINUS && visitor.getConfig().isSelectMinusCheck())
                 || (x.getOperator() == SQLUnionOperator.INTERSECT && visitor.getConfig().isSelectIntersectCheck())
                 || (x.getOperator() == SQLUnionOperator.EXCEPT && visitor.getConfig().isSelectExceptCheck())) {

@@ -1064,5 +1064,32 @@ public class Lexer {
     public boolean isEndOfComment() {
         return endOfComment;
     }
+    
+    protected boolean isSafeComment(String comment) {
+        if (comment == null) {
+            return true;
+        }
+        comment = comment.toLowerCase();
+        if (comment.indexOf("select") != -1 //
+            || comment.indexOf("delete") != -1 //
+            || comment.indexOf("insert") != -1 //
+            || comment.indexOf("update") != -1 //
+            || comment.indexOf("into") != -1 //
+            || comment.indexOf("where") != -1 //
+            || comment.indexOf("or") != -1 //
+            || comment.indexOf("and") != -1 //
+            || comment.indexOf("union") != -1 //
+            || comment.indexOf('\'') != -1 //
+            || comment.indexOf('=') != -1 //
+            || comment.indexOf('>') != -1 //
+            || comment.indexOf('<') != -1 //
+            || comment.indexOf('&') != -1 //
+            || comment.indexOf('|') != -1 //
+            || comment.indexOf('^') != -1 //
+        ) {
+            return false;
+        }
+        return true;
+    }
 
 }
