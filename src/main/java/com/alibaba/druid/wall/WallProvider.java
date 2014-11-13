@@ -645,9 +645,7 @@ public abstract class WallProvider {
         }
 
         WallVisitor visitor = createWallVisitor();
-        if (!endOfComment) {
-            visitor.getConfig().setSelectUnionCheck(false);
-        }
+        visitor.setSqlEndOfComment(endOfComment);
 
         if (statementList.size() > 0) {
             boolean lastIsHint = false;
