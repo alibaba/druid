@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
@@ -44,7 +45,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
@@ -125,7 +125,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new CheckOption().accept(adapter);
         new ReadOnly().accept(adapter);
         new OracleSelectUnPivot().accept(adapter);
-        new OracleTimestampExpr().accept(adapter);
+        new SQLTimestampExpr().accept(adapter);
         new PartitionExtensionClause().accept(adapter);
         new VersionsFlashbackQueryClause().accept(adapter);
         new VersionsFlashbackQueryClause().accept(adapter);

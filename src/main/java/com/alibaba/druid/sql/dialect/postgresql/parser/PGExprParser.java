@@ -17,6 +17,9 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
@@ -87,6 +90,44 @@ public class PGExprParser extends SQLExprParser {
             castExpr.setDataType(dataType);
 
             return primaryRest(castExpr);
+        }
+        
+        if (expr.getClass() == SQLIdentifierExpr.class) {
+            String ident = ((SQLIdentifierExpr)expr).getName();
+            
+            if ("TIMESTAMP".equalsIgnoreCase(ident)) {
+                if (lexer.token() != Token.LITERAL_ALIAS //
+                        && lexer.token() != Token.LITERAL_CHARS //
+                        && lexer.token() != Token.WITH) {
+                    return new SQLIdentifierExpr("TIMESTAMP");
+                }
+
+                SQLTimestampExpr timestamp = new SQLTimestampExpr();
+                
+                if (lexer.token() == Token.WITH) {
+                    lexer.nextToken();
+                    acceptIdentifier("TIME");
+                    acceptIdentifier("ZONE");
+                    timestamp.setWithTimeZone(true);
+                }
+
+                String literal = lexer.stringVal();
+                timestamp.setLiteral(literal);
+                accept(Token.LITERAL_CHARS);
+
+                if (identifierEquals("AT")) {
+                    lexer.nextToken();
+                    acceptIdentifier("TIME");
+                    acceptIdentifier("ZONE");
+
+                    String timezone = lexer.stringVal();
+                    timestamp.setTimeZone(timezone);
+                    accept(Token.LITERAL_CHARS);
+                }
+
+                
+                return primaryRest(timestamp);     
+            }
         }
 
         return super.primaryRest(expr);
