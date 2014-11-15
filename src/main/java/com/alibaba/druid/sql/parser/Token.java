@@ -177,6 +177,7 @@ public enum Token {
     DECLARE("DECLARE"),
     EXCEPTION("EXCEPTION"),
     GRANT("GRANT"),
+    REVOKE("REVOKE"),
     LOOP("LOOP"),
     GOTO("GOTO"),
     COMMIT("COMMIT"),

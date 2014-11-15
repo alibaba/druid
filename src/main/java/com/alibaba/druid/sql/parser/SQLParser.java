@@ -119,6 +119,7 @@ public class SQLParser {
                     case ANALYZE:
                     case OPTIMIZE:
                     case GRANT:
+                    case REVOKE:
                     case FULL:
                     case TO:
                     case NEW:

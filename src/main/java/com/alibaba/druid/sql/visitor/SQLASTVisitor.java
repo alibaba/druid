@@ -101,6 +101,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -549,5 +550,9 @@ public interface SQLASTVisitor {
     void endVisit(SQLTimestampExpr x);
     
     boolean visit(SQLTimestampExpr x);
+    
+    void endVisit(SQLRevokeStatement x);
+    
+    boolean visit(SQLRevokeStatement x);
     
 }

@@ -124,6 +124,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -1849,6 +1850,30 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getIdentifiedBy().accept(this);
         }
 
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLRevokeStatement x) {
+        print("ROVOKE ");
+        printAndAccept(x.getPrivileges(), ", ");
+        
+        if (x.getOn() != null) {
+            print(" ON ");
+            
+            if (x.getObjectType() != null) {
+                print(x.getObjectType().name());
+                print(' ');
+            }
+            
+            x.getOn().accept(this);
+        }
+        
+        if (x.getFrom() != null) {
+            print(" FROM ");
+            x.getFrom().accept(this);
+        }
+        
         return false;
     }
 
