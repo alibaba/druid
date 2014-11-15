@@ -452,7 +452,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLCharExpr x) {
-        if ((x.getText() == null) || (x.getText().length() == 0)) {
+        if (x.getText() == null) {
             print("NULL");
         } else {
             print("'");
@@ -541,7 +541,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         visitAggreateRest(x);
 
         print(")");
-        
+
         if (x.getWithinGroup() != null) {
             print(" WITHIN GROUP (");
             x.getWithinGroup().accept(this);
@@ -577,7 +577,31 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     public boolean visit(SQLNotExpr x) {
         print("NOT ");
-        x.getExpr().accept(this);
+        SQLExpr expr = x.getExpr();
+
+        boolean needQuote = false;
+
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
+            switch (binaryOpExpr.getOperator()) {
+                case BooleanAnd:
+                case BooleanOr:
+                case BooleanXor:
+                    needQuote = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (needQuote) {
+            print('(');
+        }
+        expr.accept(this);
+
+        if (needQuote) {
+            print(')');
+        }
         return false;
     }
 
@@ -699,7 +723,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLSelectItem x) {
-        if(x.isConnectByRoot()) {
+        if (x.isConnectByRoot()) {
             print("CONNECT_BY_ROOT ");
         }
         x.getExpr().accept(this);
@@ -1150,12 +1174,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLSetStatement x) {
         print("SET ");
         printAndAccept(x.getItems(), ", ");
-        
+
         if (x.getHints() != null && x.getHints().size() > 0) {
             print(" ");
             printAndAccept(x.getHints(), " ");
         }
-        
+
         return false;
     }
 
@@ -1433,24 +1457,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         x.getName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLCreateViewStatement x) {
         print("CREATE ");
-        if(x.isOrReplace()) {
+        if (x.isOrReplace()) {
             print("OR REPLACE ");
         }
         print("VIEW ");
         x.getName().accept(this);
-        
+
         if (x.getColumns().size() > 0) {
             print(" (");
             printAndAccept(x.getColumns(), ", ");
             print(")");
         }
-        
+
         print(" AS ");
-        
+
         x.getSubQuery().accept(this);
         return false;
     }
@@ -1852,28 +1876,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLRevokeStatement x) {
         print("ROVOKE ");
         printAndAccept(x.getPrivileges(), ", ");
-        
+
         if (x.getOn() != null) {
             print(" ON ");
-            
+
             if (x.getObjectType() != null) {
                 print(x.getObjectType().name());
                 print(' ');
             }
-            
+
             x.getOn().accept(this);
         }
-        
+
         if (x.getFrom() != null) {
             print(" FROM ");
             x.getFrom().accept(this);
         }
-        
+
         return false;
     }
 
@@ -2006,7 +2030,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         x.getBody().accept(this);
         return false;
     }
-    
+
     public boolean visit(SQLBooleanExpr x) {
         print(x.getValue() ? "true" : "false");
 
@@ -2036,11 +2060,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     @Override
     public boolean visit(SQLTimestampExpr x) {
         print("TIMESTAMP ");
-        
+
         if (x.isWithTimeZone()) {
             print(" WITH TIME ZONE ");
         }
-        
+
         print('\'');
         print(x.getLiteral());
         print('\'');
