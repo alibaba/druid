@@ -133,6 +133,7 @@ public class Keywords {
         map.put("COMPUTE", Token.COMPUTE);
         map.put("WITH", Token.WITH);
         map.put("GRANT", Token.GRANT);
+        map.put("REVOKE", Token.REVOKE);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }

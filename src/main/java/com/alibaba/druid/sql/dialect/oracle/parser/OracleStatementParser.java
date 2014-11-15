@@ -329,6 +329,12 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(this.parseGrant());
                 continue;
             }
+            
+            if (lexer.token() == Token.REVOKE) {
+                statementList.add(this.parseRevoke());
+                continue;
+            }
+            
             if (lexer.token() == Token.COMMENT) {
                 statementList.add(this.parseComment());
                 continue;

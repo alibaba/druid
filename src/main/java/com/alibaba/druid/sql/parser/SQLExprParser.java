@@ -846,6 +846,7 @@ public class SQLExprParser extends SQLParser {
                 case ANALYZE:
                 case OPTIMIZE:
                 case GRANT:
+                case REVOKE:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
