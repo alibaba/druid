@@ -83,7 +83,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
@@ -470,11 +469,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public void endVisit(OracleTimestampExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OraclePLSQLCommitStatement astNode) {
 
         return true;
@@ -639,13 +633,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleTimestampExpr x) {
-        return true;
-    }
-
-    @Override
     public boolean visit(SampleClause x) {
-
         return true;
     }
 

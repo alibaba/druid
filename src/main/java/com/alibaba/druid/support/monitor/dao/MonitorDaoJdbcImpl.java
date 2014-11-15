@@ -600,7 +600,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
             buf.append(field.getColumnName());
         }
         buf.append(")\nVALUES (?, ?, ?, ?, ?, ?");
-        for (FieldInfo field : fields) {
+        for (int i = 0; i < fields.size(); ++i) {
             buf.append(", ?");
         }
         buf.append(")");

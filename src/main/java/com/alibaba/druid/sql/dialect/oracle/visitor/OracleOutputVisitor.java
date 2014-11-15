@@ -88,7 +88,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement.Rebuild;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
@@ -740,21 +739,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleTimestampExpr x) {
-        print("TIMESTAMP '");
-
-        print(x.getLiteral());
-        print('\'');
-
-        if (x.getTimeZone() != null) {
-            print(" AT TIME ZONE '");
-            print(x.getTimeZone());
-            print('\'');
-        }
-
-        return false;
-    }
-
     public boolean visit(OracleUpdateStatement x) {
         print("UPDATE ");
         
@@ -906,10 +890,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
-    @Override
-    public void endVisit(OracleTimestampExpr x) {
-
-    }
 
     @Override
     public void endVisit(OracleUpdateStatement x) {

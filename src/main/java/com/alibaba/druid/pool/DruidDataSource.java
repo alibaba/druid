@@ -97,7 +97,14 @@ import com.alibaba.druid.wall.WallProviderStatValue;
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource, MBeanRegistration {
+public class DruidDataSource extends DruidAbstractDataSource 
+    implements DruidDataSourceMBean
+        , ManagedDataSource
+        , Referenceable
+        , Closeable
+        , Cloneable
+        , ConnectionPoolDataSource
+        , MBeanRegistration {
 
     private final static Log                 LOG                     = LogFactory.getLog(DruidDataSource.class);
 

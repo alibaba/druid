@@ -47,6 +47,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
@@ -544,5 +545,9 @@ public interface SQLASTVisitor {
     void endVisit(SQLUnionQueryTableSource x);
 
     boolean visit(SQLUnionQueryTableSource x);
+    
+    void endVisit(SQLTimestampExpr x);
+    
+    boolean visit(SQLTimestampExpr x);
     
 }

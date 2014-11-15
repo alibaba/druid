@@ -62,6 +62,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
@@ -2007,4 +2008,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         return false;
     }
 
+    @Override
+    public boolean visit(SQLTimestampExpr x) {
+        print("TIMESTAMP ");
+        
+        if (x.isWithTimeZone()) {
+            print(" WITH TIME ZONE ");
+        }
+        
+        print('\'');
+        print(x.getLiteral());
+        print('\'');
+
+        if (x.getTimeZone() != null) {
+            print(" AT TIME ZONE '");
+            print(x.getTimeZone());
+            print('\'');
+        }
+
+        return false;
+    }
 }
