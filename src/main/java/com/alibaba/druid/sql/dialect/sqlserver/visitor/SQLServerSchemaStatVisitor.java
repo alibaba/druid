@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
@@ -228,6 +229,16 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     @Override
     public void endVisit(SQLServerBlockStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(SQLServerSelect x) {
+        return super.visit(x);
+    }
+
+    @Override
+    public void endVisit(SQLServerSelect x) {
+        
     }
 
 }

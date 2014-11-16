@@ -29,7 +29,7 @@ public class SQLSelect extends SQLObjectImpl {
     protected SQLSelectQuery        query;
     protected SQLOrderBy            orderBy;
 
-    private List<SQLHint>           hints;
+    protected List<SQLHint>           hints;
 
     public SQLSelect(){
 

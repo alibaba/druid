@@ -15,8 +15,82 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.ast;
 
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SQLServerSelect extends SQLSelect {
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+public class SQLServerSelect extends SQLSelect implements SQLServerObject {
+
+    private boolean      forBrowse;
+    private List<String> forXmlOptions = new ArrayList<String>(4);
+
+    public boolean isForBrowse() {
+        return forBrowse;
+    }
+
+    public void setForBrowse(boolean forBrowse) {
+        this.forBrowse = forBrowse;
+    }
+
+    public List<String> getForXmlOptions() {
+        return forXmlOptions;
+    }
+
+    public void setForXmlOptions(List<String> forXmlOptions) {
+        this.forXmlOptions = forXmlOptions;
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        this.accept0((SQLServerASTVisitor) visitor);
+    }
+
+    @Override
+    public void accept0(SQLServerASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.query);
+            acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.hints);
+        }
+
+        visitor.endVisit(this);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (forBrowse ? 1231 : 1237);
+        result = prime * result + ((forXmlOptions == null) ? 0 : forXmlOptions.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SQLServerSelect other = (SQLServerSelect) obj;
+        if (forBrowse != other.forBrowse) {
+            return false;
+        }
+        if (forXmlOptions == null) {
+            if (other.forXmlOptions != null) {
+                return false;
+            }
+        } else if (!forXmlOptions.equals(other.forXmlOptions)) {
+            return false;
+        }
+        return true;
+    }
 
 }
