@@ -24,7 +24,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
@@ -307,6 +310,36 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     
     @Override
     public boolean visit(PGArrayExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGExtractExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGExtractExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGBoxExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGBoxExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGPointExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGPointExpr x) {
         return true;
     }
 }

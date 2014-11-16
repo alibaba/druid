@@ -158,4 +158,9 @@ public class PGLexer extends Lexer {
             stringVal = new String(buf, 0, bufPos);
         }
     }
+    
+    public void scanSharp() {
+        token = Token.POUND;
+        scanChar();
+    }
 }
