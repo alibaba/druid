@@ -142,11 +142,13 @@ public class PagerUtils {
 
         SQLBinaryOpExpr gt = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                  SQLBinaryOperator.GreaterThan, //
-                                                 new SQLNumberExpr(offset));
+                                                 new SQLNumberExpr(offset), //
+                                                 JdbcConstants.DB2);
         SQLBinaryOpExpr lteq = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                    SQLBinaryOperator.LessThanOrEqual, //
-                                                   new SQLNumberExpr(count + offset));
-        SQLBinaryOpExpr pageCondition = new SQLBinaryOpExpr(gt, SQLBinaryOperator.BooleanAnd, lteq);
+                                                   new SQLNumberExpr(count + offset), //
+                                                   JdbcConstants.DB2);
+        SQLBinaryOpExpr pageCondition = new SQLBinaryOpExpr(gt, SQLBinaryOperator.BooleanAnd, lteq, JdbcConstants.DB2);
 
         if (query instanceof SQLSelectQueryBlock) {
             DB2SelectQueryBlock queryBlock = (DB2SelectQueryBlock) query;
@@ -199,11 +201,14 @@ public class PagerUtils {
 
         SQLBinaryOpExpr gt = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                  SQLBinaryOperator.GreaterThan, //
-                                                 new SQLNumberExpr(offset));
+                                                 new SQLNumberExpr(offset), //
+                                                 JdbcConstants.SQL_SERVER
+                                                 );
         SQLBinaryOpExpr lteq = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                    SQLBinaryOperator.LessThanOrEqual, //
-                                                   new SQLNumberExpr(count + offset));
-        SQLBinaryOpExpr pageCondition = new SQLBinaryOpExpr(gt, SQLBinaryOperator.BooleanAnd, lteq);
+                                                   new SQLNumberExpr(count + offset), //
+                                                   JdbcConstants.SQL_SERVER);
+        SQLBinaryOpExpr pageCondition = new SQLBinaryOpExpr(gt, SQLBinaryOperator.BooleanAnd, lteq, JdbcConstants.SQL_SERVER);
 
         if (query instanceof SQLSelectQueryBlock) {
             SQLServerSelectQueryBlock queryBlock = (SQLServerSelectQueryBlock) query;
@@ -262,13 +267,17 @@ public class PagerUtils {
             if (queryBlock.getGroupBy() == null && select.getOrderBy() == null && offset <= 0) {
                 SQLExpr condition = new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                         SQLBinaryOperator.LessThanOrEqual, //
-                                                        new SQLNumberExpr(count));
+                                                        new SQLNumberExpr(count), //
+                                                        JdbcConstants.ORACLE
+                                                        );
                 if (queryBlock.getWhere() == null) {
                     queryBlock.setWhere(condition);
                 } else {
                     queryBlock.setWhere(new SQLBinaryOpExpr(queryBlock.getWhere(), //
                                                             SQLBinaryOperator.BooleanAnd, //
-                                                            condition));
+                                                            condition, //
+                                                            JdbcConstants.ORACLE
+                                                            ));
                 }
 
                 return SQLUtils.toSQLString(select, dbType);
@@ -282,7 +291,8 @@ public class PagerUtils {
         countQueryBlock.setFrom(new SQLSubqueryTableSource(select, "XX"));
         countQueryBlock.setWhere(new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                      SQLBinaryOperator.LessThanOrEqual, //
-                                                     new SQLNumberExpr(count + offset)));
+                                                     new SQLNumberExpr(count + offset), //
+                                                     JdbcConstants.ORACLE));
         if (offset <= 0) {
             return SQLUtils.toSQLString(countQueryBlock, dbType);
         }
@@ -292,7 +302,8 @@ public class PagerUtils {
         offsetQueryBlock.setFrom(new SQLSubqueryTableSource(new SQLSelect(countQueryBlock), "XXX"));
         offsetQueryBlock.setWhere(new SQLBinaryOpExpr(new SQLIdentifierExpr("RN"), //
                                                       SQLBinaryOperator.GreaterThan, //
-                                                      new SQLNumberExpr(offset)));
+                                                      new SQLNumberExpr(offset), //
+                                                      JdbcConstants.ORACLE));
 
         return SQLUtils.toSQLString(offsetQueryBlock, dbType);
     }

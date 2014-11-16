@@ -19,12 +19,21 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGDateField;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class PGExprParser extends SQLExprParser {
 
@@ -33,11 +42,13 @@ public class PGExprParser extends SQLExprParser {
     public PGExprParser(String sql){
         this(new PGLexer(sql));
         this.lexer.nextToken();
+        this.dbType = JdbcConstants.POSTGRESQL;
     }
 
     public PGExprParser(Lexer lexer){
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.dbType = JdbcConstants.POSTGRESQL;
     }
 
     @Override
@@ -74,7 +85,22 @@ public class PGExprParser extends SQLExprParser {
             this.exprList(array.getValues(), array);
             accept(Token.RBRACKET);
             return primaryRest(array);
+        } else if (lexer.token() == Token.POUND) {
+            lexer.nextToken();
+            if (lexer.token() == Token.LBRACE) {
+                lexer.nextToken();
+                String varName = lexer.stringVal();
+                lexer.nextToken();
+                accept(Token.RBRACE);
+                SQLVariantRefExpr expr = new SQLVariantRefExpr("#{" + varName + "}");
+                return primaryRest(expr);
+            } else {
+                SQLExpr value = this.primary();
+                SQLUnaryExpr expr = new SQLUnaryExpr(SQLUnaryOperator.Pound, value);
+                return primaryRest(expr);
+            }
         }
+        
         return super.primary();
     }
 
@@ -126,6 +152,35 @@ public class PGExprParser extends SQLExprParser {
 
                 
                 return primaryRest(timestamp);     
+            } else if ("EXTRACT".equalsIgnoreCase(ident)) {
+                accept(Token.LPAREN);
+                
+                PGExtractExpr extract = new PGExtractExpr();
+                
+                String fieldName = lexer.stringVal();
+                PGDateField field = PGDateField.valueOf(fieldName.toUpperCase());
+                lexer.nextToken();
+                
+                extract.setField(field);
+                
+                accept(Token.FROM);
+                SQLExpr source = this.expr();
+                
+                extract.setSource(source);
+                
+                accept(Token.RPAREN);
+                
+                return primaryRest(extract);     
+            } else if ("POINT".equalsIgnoreCase(ident)) {
+                SQLExpr value = this.primary();
+                PGPointExpr point = new PGPointExpr();
+                point.setValue(value);
+                return primaryRest(point);
+            } else if ("BOX".equalsIgnoreCase(ident)) {
+                SQLExpr value = this.primary();
+                PGBoxExpr box = new PGBoxExpr();
+                box.setValue(value);
+                return primaryRest(box);
             }
         }
 

@@ -21,7 +21,10 @@ import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
@@ -525,5 +528,43 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print("]");
         return false;
     }
+    
+    @Override
+    public void endVisit(PGExtractExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGExtractExpr x) {
+        print("EXTRACT (");
+        print(x.getField().name());
+        print(" FROM ");
+        x.getSource().accept(this);
+        print(")");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(PGBoxExpr x) {
+        print("BOX ");
+        x.getValue().accept(this);
+        return false;
+    }
 
+    @Override
+    public void endVisit(PGBoxExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGPointExpr x) {
+        print("POINT ");
+        x.getValue().accept(this);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(PGPointExpr x) {
+        
+    }
 }

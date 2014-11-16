@@ -264,6 +264,7 @@ public enum Token {
     GT(">"), 
     LT("<"), 
     BANG("!"),
+    BANGBANG("!!"),
     TILDE("~"), 
     QUES("?"), 
     COLON(":"), 
@@ -279,6 +280,8 @@ public enum Token {
     BANGLT("!<"),
     AMPAMP("&&"), 
     BARBAR("||"), 
+    BARBARSLASH("||/"), 
+    BARSLASH("|/"), 
     PLUS("+"), 
     SUB("-"), 
     STAR("*"), 
@@ -289,7 +292,9 @@ public enum Token {
     PERCENT("%"), 
     LTLT("<<"), 
     GTGT(">>"),
-    MONKEYS_AT("@");
+    MONKEYS_AT("@"),
+    POUND("#")
+    ;
 
     public final String name;
 

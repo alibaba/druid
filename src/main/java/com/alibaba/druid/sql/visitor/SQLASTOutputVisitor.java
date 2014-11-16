@@ -583,15 +583,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         if (expr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
-            switch (binaryOpExpr.getOperator()) {
-                case BooleanAnd:
-                case BooleanOr:
-                case BooleanXor:
-                    needQuote = true;
-                    break;
-                default:
-                    break;
-            }
+            needQuote = binaryOpExpr.getOperator().isLogical();
         }
 
         if (needQuote) {

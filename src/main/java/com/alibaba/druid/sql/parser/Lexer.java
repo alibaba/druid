@@ -498,7 +498,15 @@ public class Lexer {
                 scanChar();
                 if (ch == '|') {
                     scanChar();
-                    token = Token.BARBAR;
+                    if (ch == '/') {
+                        scanChar();
+                        token = Token.BARBARSLASH; 
+                    } else {
+                        token = Token.BARBAR;
+                    }
+                } else if (ch == '/') {
+                    scanChar();
+                    token = Token.BARSLASH;
                 } else {
                     token = Token.BAR;
                 }
@@ -563,6 +571,9 @@ public class Lexer {
                 } else if (ch == '<') {
                     scanChar();
                     token = Token.BANGLT;
+                } else if (ch == '!') {
+                    scanChar();
+                    token = Token.BANGBANG; // postsql
                 } else {
                     token = Token.BANG;
                 }

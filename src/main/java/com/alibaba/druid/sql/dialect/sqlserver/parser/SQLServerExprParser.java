@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReference
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerExprParser extends SQLExprParser {
 
@@ -40,12 +41,14 @@ public class SQLServerExprParser extends SQLExprParser {
 
     public SQLServerExprParser(Lexer lexer){
         super(lexer);
+        this.dbType = JdbcConstants.SQL_SERVER;
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
 
     public SQLServerExprParser(String sql){
         this(new SQLServerLexer(sql));
         this.lexer.nextToken();
+        this.dbType = JdbcConstants.SQL_SERVER;
     }
 
     public SQLExpr primary() {

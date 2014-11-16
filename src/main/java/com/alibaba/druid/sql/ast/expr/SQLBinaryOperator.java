@@ -117,4 +117,8 @@ public enum SQLBinaryOperator {
                 return false;
         }
     }
+    
+    public boolean isLogical() {
+        return this == BooleanAnd || this == BooleanOr || this == BooleanXor;
+    }
 }
