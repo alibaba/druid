@@ -25,12 +25,17 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGDateField;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
@@ -181,6 +186,36 @@ public class PGExprParser extends SQLExprParser {
                 PGBoxExpr box = new PGBoxExpr();
                 box.setValue(value);
                 return primaryRest(box);
+            } else if ("macaddr".equalsIgnoreCase(ident)) {
+                SQLExpr value = this.primary();
+                PGMacAddrExpr macaddr = new PGMacAddrExpr();
+                macaddr.setValue(value);
+                return primaryRest(macaddr);
+            } else if ("inet".equalsIgnoreCase(ident)) {
+                SQLExpr value = this.primary();
+                PGInetExpr inet = new PGInetExpr();
+                inet.setValue(value);
+                return primaryRest(inet);
+            } else if ("cidr".equalsIgnoreCase(ident)) {
+                SQLExpr value = this.primary();
+                PGCidrExpr cidr = new PGCidrExpr();
+                cidr.setValue(value);
+                return primaryRest(cidr);
+            } else if ("polygon".equalsIgnoreCase(ident)) {
+                SQLExpr value = this.primary();
+                PGPolygonExpr polygon = new PGPolygonExpr();
+                polygon.setValue(value);
+                return primaryRest(polygon);
+            } else if ("circle".equalsIgnoreCase(ident)) {
+                SQLExpr value = this.primary();
+                PGCircleExpr circle = new PGCircleExpr();
+                circle.setValue(value);
+                return primaryRest(circle);
+            } else if ("lseg".equalsIgnoreCase(ident)) {
+                SQLExpr value = this.primary();
+                PGLineSegmentsExpr lseg = new PGLineSegmentsExpr();
+                lseg.setValue(value);
+                return primaryRest(lseg);
             }
         }
 
