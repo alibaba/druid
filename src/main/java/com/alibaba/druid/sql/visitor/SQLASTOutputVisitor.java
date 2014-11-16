@@ -1808,16 +1808,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print("GRANT ");
         printAndAccept(x.getPrivileges(), ", ");
 
-        if (x.getOn() != null) {
-            print(" ON ");
-
-            if (x.getObjectType() != null) {
-                print(x.getObjectType().name());
-                print(' ');
-            }
-
-            x.getOn().accept(this);
-        }
+        printGrantOn(x);
 
         if (x.getTo() != null) {
             print(" TO ");
@@ -1875,6 +1866,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         return false;
+    }
+
+    protected void printGrantOn(SQLGrantStatement x) {
+        if (x.getOn() != null) {
+            print(" ON ");
+
+            if (x.getObjectType() != null) {
+                print(x.getObjectType().name());
+                print(' ');
+            }
+
+            x.getOn().accept(this);
+        }
     }
 
     @Override

@@ -22,10 +22,12 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
@@ -552,5 +554,45 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public void endVisit(SQLServerBlockStatement x) {
 
+    }
+    
+    @Override
+    protected void printGrantOn(SQLGrantStatement x) {
+        if (x.getOn() != null) {
+            print(" ON ");
+
+            if (x.getObjectType() != null) {
+                print(x.getObjectType().name());
+                print("::");
+            }
+
+            x.getOn().accept(this);
+        }
+    }
+    
+    @Override
+    public void endVisit(SQLServerSelect x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLServerSelect x) {
+        super.visit(x);
+        if (x.isForBrowse()) {
+            println();
+            print("FOR BROWSE");
+        }
+        
+        if (x.getForXmlOptions().size() > 0) {
+            println();
+            print("FOR XML ");
+            for (int i = 0; i < x.getForXmlOptions().size(); ++i) {
+                if (i != 0) {
+                    print(", ");
+                    print(x.getForXmlOptions().get(i));
+                }
+            }
+        }
+        return false;
     }
 }

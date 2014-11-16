@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -39,9 +40,9 @@ public class SQLServerSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
-    public SQLSelect select()  {
+    public SQLSelect select() {
         SQLServerSelect select = new SQLServerSelect();
-        
+
         withSubquery(select);
 
         select.setQuery(query());
@@ -51,10 +52,50 @@ public class SQLServerSelectParser extends SQLSelectParser {
             select.setOrderBy(parseOrderBy());
         }
 
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+
+            if (identifierEquals("BROWSE")) {
+                lexer.nextToken();
+                select.setForBrowse(true);
+            } else if (identifierEquals("XML")) {
+                lexer.nextToken();
+
+                for (;;) {
+                    if (identifierEquals("AUTO") //
+                        || identifierEquals("TYPE") //
+                        || identifierEquals("XMLSCHEMA") //
+                    ) {
+                        select.getForXmlOptions().add(lexer.stringVal());
+                        lexer.nextToken();
+                    } else if (identifierEquals("ELEMENTS")) {
+                        lexer.nextToken();
+                        if (identifierEquals("XSINIL")) {
+                            lexer.nextToken();
+                            select.getForXmlOptions().add("ELEMENTS XSINIL");
+                        } else {
+                            select.getForXmlOptions().add("ELEMENTS");
+                        }
+                    } else {
+                        break;
+                    }
+                    
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                throw new ParserException("syntax error, not support option : " + lexer.token());
+            }
+        }
+
         return select;
     }
 
-    public SQLSelectQuery query()  {
+    public SQLSelectQuery query() {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
@@ -68,7 +109,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
-            
+
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
             }
@@ -88,10 +129,10 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
             parseSelectList(queryBlock);
         }
-        
+
         if (lexer.token() == Token.INTO) {
             lexer.nextToken();
-            
+
             SQLTableSource into = this.parseTableSource();
             queryBlock.setInto((SQLExprTableSource) into);
         }
@@ -104,16 +145,16 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
         return queryRest(queryBlock);
     }
-    
+
     protected SQLServerExprParser createExprParser() {
         return new SQLServerExprParser(lexer);
     }
-    
+
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            
+
             for (;;) {
                 SQLExpr expr = this.expr();
                 SQLExprHint hint = new SQLExprHint(expr);
@@ -126,10 +167,10 @@ public class SQLServerSelectParser extends SQLSelectParser {
                     break;
                 }
             }
-            
+
             accept(Token.RPAREN);
         }
-        
+
         return super.parseTableSourceRest(tableSource);
     }
 }

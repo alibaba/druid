@@ -379,6 +379,13 @@ public class SQLStatementParser extends SQLParser {
             } else if (lexer.token() == Token.USER) {
                 lexer.nextToken();
                 stmt.setObjectType(SQLObjectType.USER);
+            } else if (lexer.token() == Token.DATABASE) {
+                lexer.nextToken();
+                stmt.setObjectType(SQLObjectType.DATABASE);
+            }
+            
+            if (stmt.getObjectType() != null && lexer.token() == Token.COLONCOLON) {
+                lexer.nextToken(); // sql server
             }
 
             SQLExpr expr = this.exprParser.expr();
@@ -631,6 +638,13 @@ public class SQLStatementParser extends SQLParser {
             } else if (identifierEquals("SUPER")) {
                 lexer.nextToken();
                 privilege = "SUPER";
+                
+            } else if (identifierEquals("CONTROL")) { // sqlserver
+                lexer.nextToken();
+                privilege = "CONTROL";
+            } else if (identifierEquals("IMPERSONATE")) { // sqlserver
+                lexer.nextToken();
+                privilege = "IMPERSONATE";
             }
 
             if (privilege != null) {
