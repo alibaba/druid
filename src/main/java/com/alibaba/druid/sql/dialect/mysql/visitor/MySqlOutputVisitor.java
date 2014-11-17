@@ -44,7 +44,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -772,20 +771,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(x.getSearchModifier().name);
         }
         print(')');
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlBinaryExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlBinaryExpr x) {
-        print("b'");
-        print(x.getValue());
-        print('\'');
 
         return false;
     }

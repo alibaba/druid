@@ -45,6 +45,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
@@ -1269,7 +1270,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLForeignKeyImpl x) {
 
-        for (SQLName column : x.getReferencedColumns()) {
+        for (SQLName column : x.getReferencingColumns()) {
             column.accept(this);
         }
 
@@ -1348,6 +1349,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
     
     public boolean visit(SQLDropProcedureStatement x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableRename x) {
         return false;
     }
 }

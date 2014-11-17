@@ -98,7 +98,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstain
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableRenameTo;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.TableSpaceItem;
@@ -2486,18 +2485,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleCreateTableStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleAlterTableRenameTo x) {
-        print("RENAME TO ");
-        x.getTo().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableRenameTo x) {
 
     }
 

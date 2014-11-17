@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
@@ -35,7 +36,6 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.sql.visitor.functions.Function;
@@ -101,7 +101,8 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
         return SQLEvalVisitorUtils.visit(this, x);
     }
     
-    public boolean visit(MySqlBinaryExpr x) {
+    @Override
+    public boolean visit(SQLBinaryExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
 

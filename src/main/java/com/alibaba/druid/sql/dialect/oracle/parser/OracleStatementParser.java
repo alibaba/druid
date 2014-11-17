@@ -33,8 +33,6 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
@@ -61,7 +59,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstain
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableRenameTo;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.TableSpaceItem;
@@ -912,27 +909,6 @@ public class OracleStatementParser extends SQLStatementParser {
         }
 
         return stmt;
-    }
-
-    private SQLAlterTableItem parseAlterTableRename() {
-        acceptIdentifier("RENAME");
-
-        if (lexer.token() == Token.COLUMN) {
-            lexer.nextToken();
-            SQLAlterTableRenameColumn renameColumn = new SQLAlterTableRenameColumn();
-            renameColumn.setColumn(this.exprParser.name());
-            accept(Token.TO);
-            renameColumn.setTo(this.exprParser.name());
-            return renameColumn;
-        }
-
-        if (lexer.token() == Token.TO) {
-            lexer.nextToken();
-            OracleAlterTableRenameTo item = new OracleAlterTableRenameTo();
-            item.setTo(this.exprParser.name());
-            return item;
-        }
-        throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
     }
 
     public void parseAlterDrop(SQLAlterTableStatement stmt) {

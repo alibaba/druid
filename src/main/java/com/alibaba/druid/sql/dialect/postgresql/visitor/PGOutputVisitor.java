@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
@@ -644,5 +645,14 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public void endVisit(PGLineSegmentsExpr x) {
         
+    }
+    
+    @Override
+    public boolean visit(SQLBinaryExpr x) {
+        print("B'");
+        print(x.getValue());
+        print('\'');
+
+        return false;
     }
 }

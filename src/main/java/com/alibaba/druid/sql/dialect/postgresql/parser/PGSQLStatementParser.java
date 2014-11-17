@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -287,12 +289,47 @@ public class PGSQLStatementParser extends SQLStatementParser {
             stmt.setWith(with);
             return stmt;
         }
-        
+
         if (lexer.token() == Token.DELETE) {
             PGDeleteStatement stmt = this.parseDeleteStatement();
             stmt.setWith(with);
             return stmt;
         }
         throw new ParserException("TODO");
+    }
+
+    protected SQLAlterTableAlterColumn parseAlterColumn() {
+        accept(Token.COLUMN);
+
+        SQLColumnDefinition column = this.exprParser.parseColumn();
+
+        SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
+        alterColumn.setColumn(column);
+
+        if (column.getDataType() == null && column.getConstraints().size() == 0) {
+            if (lexer.token() == Token.SET) {
+                lexer.nextToken();
+                if (lexer.token() == Token.NOT) {
+                    lexer.nextToken();
+                    accept(Token.NULL);
+                    alterColumn.setSetNotNull(true);
+                } else {
+                    accept(Token.DEFAULT);
+                    SQLExpr defaultValue = this.exprParser.expr();
+                    alterColumn.setSetDefault(defaultValue);
+                }
+            } else if (lexer.token() == Token.DROP) {
+                lexer.nextToken();
+                if (lexer.token() == Token.NOT) {
+                    lexer.nextToken();
+                    accept(Token.NULL);
+                    alterColumn.setDropNotNull(true);
+                } else {
+                    accept(Token.DEFAULT);
+                    alterColumn.setDropDefault(true);
+                }
+            }
+        }
+        return alterColumn;
     }
 }

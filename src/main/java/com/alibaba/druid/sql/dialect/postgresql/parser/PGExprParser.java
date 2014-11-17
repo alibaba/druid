@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
@@ -216,6 +217,12 @@ public class PGExprParser extends SQLExprParser {
                 PGLineSegmentsExpr lseg = new PGLineSegmentsExpr();
                 lseg.setValue(value);
                 return primaryRest(lseg);
+            } else if (ident.equalsIgnoreCase("b") && lexer.token() == Token.LITERAL_CHARS) {
+                String charValue = lexer.stringVal();
+                lexer.nextToken();
+                expr = new SQLBinaryExpr(charValue);
+
+                return primaryRest(expr);
             }
         }
 

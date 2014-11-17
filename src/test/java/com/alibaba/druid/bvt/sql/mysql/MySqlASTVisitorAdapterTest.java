@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
@@ -9,7 +10,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
@@ -107,7 +107,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlKey().accept(adapter);
         new MySqlPrimaryKey().accept(adapter);
         new MySqlIntervalExpr().accept(adapter);
-        new MySqlBinaryExpr().accept(adapter);
+        new SQLBinaryExpr().accept(adapter);
         new MySqlPrepareStatement().accept(adapter);
         new MySqlExecuteStatement().accept(adapter);
         new MySqlDeleteStatement().accept(adapter);

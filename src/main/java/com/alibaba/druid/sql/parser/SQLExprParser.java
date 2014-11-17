@@ -1453,8 +1453,11 @@ public class SQLExprParser extends SQLParser {
     public SQLColumnDefinition parseColumn() {
         SQLColumnDefinition column = createColumnDefinition();
         column.setName(name());
-        column.setDataType(parseDataType());
-
+        
+        if(lexer.token() != Token.SET //
+                && lexer.token() != Token.DROP) {
+            column.setDataType(parseDataType());
+        }
         return parseColumnRest(column);
     }
 
@@ -1469,7 +1472,7 @@ public class SQLExprParser extends SQLParser {
             column.setDefaultExpr(bitOr());
             return parseColumnRest(column);
         }
-
+        
         if (lexer.token() == Token.NOT) {
             lexer.nextToken();
             accept(Token.NULL);
@@ -1698,9 +1701,12 @@ public class SQLExprParser extends SQLParser {
 
         fk.setReferencedTableName(this.name());
 
-        accept(Token.LPAREN);
-        this.names(fk.getReferencedColumns());
-        accept(Token.RPAREN);
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            this.names(fk.getReferencedColumns(), fk);
+            accept(Token.RPAREN);
+        }
+
         return fk;
     }
 

@@ -26,6 +26,8 @@ public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlt
 
     private List<SQLName> columns = new ArrayList<SQLName>();
 
+    private boolean       cascade = false;
+
     public SQLAlterTableDropColumnItem(){
 
     }
@@ -40,6 +42,14 @@ public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlt
 
     public List<SQLName> getColumns() {
         return columns;
+    }
+
+    public boolean isCascade() {
+        return cascade;
+    }
+
+    public void setCascade(boolean cascade) {
+        this.cascade = cascade;
     }
 
 }
