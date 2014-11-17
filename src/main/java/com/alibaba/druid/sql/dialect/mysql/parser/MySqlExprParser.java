@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -39,7 +40,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Match;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.On;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Option;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -187,7 +187,7 @@ public class MySqlExprParser extends SQLExprParser {
                 } else if (ident.equalsIgnoreCase("b")) {
                     String charValue = lexer.stringVal();
                     lexer.nextToken();
-                    expr = new MySqlBinaryExpr(charValue);
+                    expr = new SQLBinaryExpr(charValue);
 
                     return primaryRest(expr);
                 } else if (ident.startsWith("_")) {
@@ -271,7 +271,7 @@ public class MySqlExprParser extends SQLExprParser {
                 String binaryString = lexer.stringVal();
                 if (intExpr.getNumber().intValue() == 0 && binaryString.startsWith("b")) {
                     lexer.nextToken();
-                    expr = new MySqlBinaryExpr(binaryString.substring(1));
+                    expr = new SQLBinaryExpr(binaryString.substring(1));
 
                     return primaryRest(expr);
                 }

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
@@ -151,4 +152,8 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
         return false;
     }
 
+    @Override
+    public boolean visit(SQLBinaryExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
 }

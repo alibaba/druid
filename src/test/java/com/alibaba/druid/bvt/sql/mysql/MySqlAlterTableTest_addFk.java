@@ -49,6 +49,6 @@ public class MySqlAlterTableTest_addFk extends TestCase {
                             output);
 
         Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
     }
 }

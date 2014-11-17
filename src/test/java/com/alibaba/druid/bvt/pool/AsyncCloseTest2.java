@@ -142,6 +142,6 @@ public class AsyncCloseTest2 extends TestCase {
         }
 
         closeLatch.await();
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        Assert.assertEquals("expect activeCount zero", 0, dataSource.getActiveCount());
     }
 }

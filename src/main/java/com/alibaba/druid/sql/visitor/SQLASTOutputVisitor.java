@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
@@ -80,6 +81,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
@@ -1391,6 +1393,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLAlterTableDropColumnItem x) {
         print("DROP COLUMN ");
         this.printAndAccept(x.getColumns(), ", ");
+        
+        if (x.isCascade()) {
+            print(" CASCADE");
+        }
         return false;
     }
 
@@ -1576,6 +1582,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLAlterTableAlterColumn x) {
         print("ALTER COLUMN ");
         x.getColumn().accept(this);
+        
+        if (x.isSetNotNull()) { // postgresql
+            print(" SET NOT NULL");
+        }
+        if (x.isDropNotNull()) { // postgresql
+            print(" DROP NOT NULL");
+        }
+        if (x.getSetDefault() != null) { // postgresql
+            print(" SET DEFAULT ");
+            x.getSetDefault().accept(this);
+        }
+        if (x.isDropDefault()) { // postgresql
+            print(" DROP DEFAULT");
+        }
+        
         return false;
     }
 
@@ -1746,9 +1767,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(" REFERENCES ");
         x.getReferencedTableName().accept(this);
 
-        print(" (");
-        printAndAccept(x.getReferencedColumns(), ", ");
-        print(")");
+        if (x.getReferencedColumns().size() > 0) {
+            print(" (");
+            printAndAccept(x.getReferencedColumns(), ", ");
+            print(")");
+        }
         return false;
     }
 
@@ -2071,6 +2094,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print('\'');
         }
 
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLBinaryExpr x) {
+        print("b'");
+        print(x.getValue());
+        print('\'');
+
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableRename x) {
+        print("RENAME TO ");
+        x.getTo().accept(this);
         return false;
     }
 }

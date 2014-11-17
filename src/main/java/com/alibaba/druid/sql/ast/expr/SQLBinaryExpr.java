@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.expr;
+package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlBinaryExpr extends MySqlExprImpl implements MySqlExpr, SQLLiteralExpr {
+public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     private String value;
 
-    public MySqlBinaryExpr(){
+    public SQLBinaryExpr(){
 
     }
 
-    public MySqlBinaryExpr(String value){
+    public SQLBinaryExpr(String value){
         super();
         this.value = value;
     }
@@ -40,12 +39,7 @@ public class MySqlBinaryExpr extends MySqlExprImpl implements MySqlExpr, SQLLite
         this.value = value;
     }
 
-    @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((MySqlASTVisitor) visitor);
-    }
-
-    public void accept0(MySqlASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         visitor.visit(this);
 
         visitor.endVisit(this);
@@ -76,7 +70,7 @@ public class MySqlBinaryExpr extends MySqlExprImpl implements MySqlExpr, SQLLite
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MySqlBinaryExpr other = (MySqlBinaryExpr) obj;
+        SQLBinaryExpr other = (SQLBinaryExpr) obj;
         if (value == null) {
             if (other.value != null) {
                 return false;

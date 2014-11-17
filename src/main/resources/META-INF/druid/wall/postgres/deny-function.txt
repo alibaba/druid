@@ -21,3 +21,6 @@ version
 pg_sleep
 pg_sleep_for
 pg_sleep_until
+current_setting
+set_config
+
