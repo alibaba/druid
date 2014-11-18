@@ -18,14 +18,17 @@ package com.alibaba.druid.sql.dialect.odps.parser;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -69,7 +72,7 @@ public class OdpsStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
             accept(Token.LPAREN);
-            
+
             SQLSelectParser selectParser = createSQLSelectParser();
             SQLSelect select = selectParser.select();
 
@@ -82,11 +85,11 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             stmt.setFrom(from);
         }
-        
+
         for (;;) {
             OdpsInsert insert = parseOdpsInsert();
             stmt.getItems().add(insert);
-            
+
             if (lexer.token() != Token.INSERT) {
                 break;
             }
@@ -140,29 +143,65 @@ public class OdpsStatementParser extends SQLStatementParser {
 
     public SQLStatement parseShow() {
         accept(Token.SHOW);
-        
+
         if (identifierEquals("PARTITIONS")) {
             lexer.nextToken();
-            
+
             OdpsShowPartitionsStmt stmt = new OdpsShowPartitionsStmt();
-            
+
             SQLExpr expr = this.exprParser.expr();
             stmt.setTableSource(new SQLExprTableSource(expr));
-            
+
             return stmt;
         }
-        
+
         if (identifierEquals("STATISTIC")) {
             lexer.nextToken();
-            
+
             OdpsShowStatisticStmt stmt = new OdpsShowStatisticStmt();
-            
+
             SQLExpr expr = this.exprParser.expr();
             stmt.setTableSource(new SQLExprTableSource(expr));
-            
+
             return stmt;
         }
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+    }
+
+    public SQLStatement parseSet() {
+        accept(Token.SET);
+
+        if (identifierEquals("LABEL")) {
+            lexer.nextToken();
+            OdpsSetLabelStatement stmt = new OdpsSetLabelStatement();
+            stmt.setLabel(lexer.stringVal());
+            lexer.nextToken();
+            accept(Token.TO);
+            if (lexer.token() == Token.USER) {
+                lexer.nextToken();
+                
+                SQLName name = this.exprParser.name();
+                stmt.setUser(name);
+                return stmt;
+            }
+            accept(Token.TABLE);
+            SQLExpr expr = this.exprParser.name();
+            stmt.setTable(new SQLExprTableSource(expr));
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                this.exprParser.names(stmt.getColumns(), stmt);
+                accept(Token.RPAREN);
+            }
+            
+            return stmt;
+        } else {
+            SQLSetStatement stmt = new SQLSetStatement(getDbType());
+
+            parseAssignItems(stmt.getItems(), stmt);
+
+            return stmt;
+        }
     }
 
 }
