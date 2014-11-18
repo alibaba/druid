@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.odps.parser;
 
+import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
+import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import java.util.Map;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OdpsLexer extends Lexer {
@@ -139,6 +142,54 @@ public class OdpsLexer extends Lexer {
             hasComment = true;
             endOfComment = isEOF();
             return;
+        }
+    }
+
+    public void scanIdentifier() {
+        final char first = ch;
+
+        final boolean firstFlag = isFirstIdentifierChar(first);
+        if (!firstFlag) {
+            throw new ParserException("illegal identifier");
+        }
+
+        mark = pos;
+        bufPos = 1;
+        char ch;
+        for (;;) {
+            ch = charAt(++pos);
+
+            if (!isIdentifierChar(ch)) {
+                break;
+            }
+
+            bufPos++;
+            continue;
+        }
+
+        this.ch = charAt(pos);
+        
+        if (ch == '@') { // for user identifier, like email, xx@alibaba-inc.com
+            bufPos++;
+            for (;;) {
+                ch = charAt(++pos);
+
+                if (ch != '-' && ch != '.' && !isIdentifierChar(ch)) {
+                    break;
+                }
+
+                bufPos++;
+                continue;
+            }
+        }
+        this.ch = charAt(pos);
+
+        stringVal = addSymbol();
+        Token tok = keywods.getKeyword(stringVal);
+        if (tok != null) {
+            token = tok;
+        } else {
+            token = Token.IDENTIFIER;
         }
     }
 

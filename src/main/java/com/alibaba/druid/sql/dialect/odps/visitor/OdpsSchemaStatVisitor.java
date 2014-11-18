@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
@@ -85,6 +86,19 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
     @Override
     public boolean visit(OdpsShowStatisticStmt x) {
         return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsSetLabelStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsSetLabelStatement x) {
+        if (x.getTable() != null) {
+            x.getTable().accept(this);
+        }
+        return false;
     }
 
     

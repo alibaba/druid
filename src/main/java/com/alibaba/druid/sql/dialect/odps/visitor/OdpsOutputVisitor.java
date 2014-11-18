@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
@@ -329,6 +330,33 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     public boolean visit(OdpsShowStatisticStmt x) {
         print("SHOW STATISTIC ");
         x.getTableSource().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsSetLabelStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsSetLabelStatement x) {
+        print("SET LABEL ");
+        print(x.getLabel());
+        print(" TO ");
+        
+        if (x.getUser() != null) {
+            print("USER ");
+            x.getUser().accept(this);
+        } else if (x.getTable() != null) {
+            print("TABLE ");
+            x.getTable().accept(this);
+            if (x.getColumns().size() > 0) {
+                print("(");
+                printAndAccept(x.getColumns(), ", ");
+                print(")");
+            }
+        }
+        
         return false;
     }
 }
