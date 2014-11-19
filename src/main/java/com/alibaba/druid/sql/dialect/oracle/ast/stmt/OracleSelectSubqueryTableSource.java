@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
@@ -73,4 +74,7 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
         visitor.endVisit(this);
     }
 
+    public String toString () {
+        return SQLUtils.toOracleString(this);
+    }
 }

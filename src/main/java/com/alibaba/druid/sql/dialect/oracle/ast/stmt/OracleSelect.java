@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -66,5 +67,9 @@ public class OracleSelect extends SQLSelect {
             acceptChild(visitor, this.forUpdate);
         }
         visitor.endVisit(this);
+    }
+    
+    public String toString() {
+        return SQLUtils.toOracleString(this);
     }
 }

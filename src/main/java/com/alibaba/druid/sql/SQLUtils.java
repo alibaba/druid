@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
@@ -69,7 +70,7 @@ public class SQLUtils {
         if (JdbcUtils.DB2.equals(dbType)) {
             return toDB2String(sqlObject);
         }
-        
+
         if (JdbcUtils.ODPS.equals(dbType)) {
             return toDB2String(sqlObject);
         }
@@ -92,11 +93,11 @@ public class SQLUtils {
         String sql = out.toString();
         return sql;
     }
-    
+
     public static String toMySqlString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         sqlObject.accept(new MySqlOutputVisitor(out));
-        
+
         String sql = out.toString();
         return sql;
     }
@@ -112,7 +113,7 @@ public class SQLUtils {
     public static String formatOracle(String sql) {
         return format(sql, JdbcUtils.ORACLE);
     }
-    
+
     public static String formatOdps(String sql) {
         return format(sql, JdbcUtils.ODPS);
     }
@@ -120,7 +121,7 @@ public class SQLUtils {
     public static String formatSQLServer(String sql) {
         return format(sql, JdbcUtils.SQL_SERVER);
     }
-    
+
     public static String toOracleString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         sqlObject.accept(new OracleOutputVisitor(out, false));
@@ -202,9 +203,9 @@ public class SQLUtils {
         if (parameters != null) {
             visitor.setParameters(parameters);
         }
-        
-        for(int i =0; i<statementList.size(); i++) {
-            if(i>0) {
+
+        for (int i = 0; i < statementList.size(); i++) {
+            if (i > 0) {
                 out.append(";\n");
             }
             statementList.get(i).accept(visitor);
@@ -331,5 +332,19 @@ public class SQLUtils {
             }
         }
         return groupList;
+    }
+
+    public static String translateOracleToMySql(String sql) {
+        List<SQLStatement> stmtList = toStatementList(sql, JdbcConstants.ORACLE);
+        
+        StringBuilder out = new StringBuilder();
+        OracleToMySqlOutputVisitor visitor = new OracleToMySqlOutputVisitor(out, false);
+        for (int i = 0; i < stmtList.size(); ++i) {
+            stmtList.get(i).accept(visitor);
+        }
+
+        String mysqlSql = out.toString();
+        return mysqlSql;
+        
     }
 }
