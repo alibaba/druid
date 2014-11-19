@@ -1112,6 +1112,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             buf.append("wait millis ")//
             .append(waitNanos / (1000 * 1000))//
             .append(", active " + activeCount)//
+            .append(", maxActive " + maxActive)//
             ;
 
             List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();
