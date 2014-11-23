@@ -28,7 +28,7 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
         {
             if (x.getParent() instanceof SQLSelect) {
                 SQLSelect select = (SQLSelect) x.getParent();
-                if (select.getParent() instanceof SQLSelectStatement) {
+                if (select.getParent() instanceof SQLSelectStatement || select.getParent() instanceof  SQLSubqueryTableSource) {
                     parentIsSelectStatment = true;
                 }
             }

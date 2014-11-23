@@ -95,7 +95,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.L
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
@@ -2090,44 +2090,57 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (identifierEquals("TRANSACTION")) {
-            lexer.nextToken();
-            acceptIdentifier("ISOLATION");
-            acceptIdentifier("LEVEL");
-
-            MySqlSetTransactionIsolationLevelStatement stmt = new MySqlSetTransactionIsolationLevelStatement();
+            MySqlSetTransactionStatement stmt = new MySqlSetTransactionStatement();
             stmt.setGlobal(global);
+            
+            lexer.nextToken();
+            if(identifierEquals("ISOLATION")) {
+                lexer.nextToken();
+                acceptIdentifier("LEVEL");
 
-            if (identifierEquals(READ)) {
-                lexer.nextToken();
-
-                if (identifierEquals("UNCOMMITTED")) {
-                    stmt.setLevel("READ UNCOMMITTED");
-                    lexer.nextToken();
-                } else if (identifierEquals(WRITE)) {
-                    stmt.setLevel("READ WRITE");
-                    lexer.nextToken();
-                } else if (identifierEquals("ONLY")) {
-                    stmt.setLevel("READ ONLY");
-                    lexer.nextToken();
-                } else if (identifierEquals("COMMITTED")) {
-                    stmt.setLevel("READ COMMITTED");
-                    lexer.nextToken();
-                } else {
-                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
-                }
-            } else if (identifierEquals("SERIALIZABLE")) {
-                stmt.setLevel("SERIALIZABLE");
-                lexer.nextToken();
-            } else if (identifierEquals("REPEATABLE")) {
-                lexer.nextToken();
                 if (identifierEquals(READ)) {
-                    stmt.setLevel("REPEATABLE READ");
                     lexer.nextToken();
+
+                    if (identifierEquals("UNCOMMITTED")) {
+                        stmt.setIsolationLevel("READ UNCOMMITTED");
+                        lexer.nextToken();
+                    } else if (identifierEquals(WRITE)) {
+                        stmt.setIsolationLevel("READ WRITE");
+                        lexer.nextToken();
+                    } else if (identifierEquals("ONLY")) {
+                        stmt.setIsolationLevel("READ ONLY");
+                        lexer.nextToken();
+                    } else if (identifierEquals("COMMITTED")) {
+                        stmt.setIsolationLevel("READ COMMITTED");
+                        lexer.nextToken();
+                    } else {
+                        throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                    }
+                } else if (identifierEquals("SERIALIZABLE")) {
+                    stmt.setIsolationLevel("SERIALIZABLE");
+                    lexer.nextToken();
+                } else if (identifierEquals("REPEATABLE")) {
+                    lexer.nextToken();
+                    if (identifierEquals(READ)) {
+                        stmt.setIsolationLevel("REPEATABLE READ");
+                        lexer.nextToken();
+                    } else {
+                        throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                    }
                 } else {
                     throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
                 }
-            } else {
-                throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+            } else if (identifierEquals(READ)) {
+                lexer.nextToken();
+                if (identifierEquals("ONLY")) {
+                    stmt.setAccessModel("ONLY");
+                    lexer.nextToken();
+                } else if (identifierEquals("WRITE")) {
+                    stmt.setAccessModel("WRITE");
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("UNKOWN ACCESS MODEL : " + lexer.stringVal());
+                }
             }
 
             return stmt;

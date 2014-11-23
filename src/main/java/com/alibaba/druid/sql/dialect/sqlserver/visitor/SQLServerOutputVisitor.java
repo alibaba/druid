@@ -32,11 +32,13 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement.Else;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
@@ -594,5 +596,54 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean visit(SQLServerCommitStatement x) {
+        print("COMMIT");
+
+        if (x.isWork()) {
+            print(" WORK");
+        } else {
+            print(" TRANSACTION");
+            if (x.getTransactionName() != null) {
+                print(" ");
+                x.getTransactionName().accept(this);
+            }
+            if (x.getDelayedDurability() != null) {
+                print(" WITH ( DELAYED_DURABILITY = ");
+                x.getDelayedDurability().accept(this);
+                print(" )");
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerCommitStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLServerRollbackStatement x) {
+        print("ROLLBACK");
+
+        if (x.isWork()) {
+            print(" WORK");
+        } else {
+            print(" TRANSACTION");
+            if (x.getName() != null) {
+                print(" ");
+                x.getName().accept(this);
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerRollbackStatement x) {
+        
     }
 }

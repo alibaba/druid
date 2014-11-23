@@ -48,7 +48,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
@@ -130,7 +130,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlPartitionByKey().accept(adapter);
         new MySqlOutFileExpr().accept(adapter);
         new MySqlUpdateStatement().accept(adapter);
-        new MySqlSetTransactionIsolationLevelStatement().accept(adapter);
+        new MySqlSetTransactionStatement().accept(adapter);
         new MySqlSetNamesStatement().accept(adapter);
         new MySqlShowMasterLogsStatement().accept(adapter);
         new MySqlSetCharSetStatement().accept(adapter);
