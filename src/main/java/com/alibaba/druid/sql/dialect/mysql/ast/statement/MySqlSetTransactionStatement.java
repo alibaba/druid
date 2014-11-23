@@ -17,19 +17,13 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlSetTransactionIsolationLevelStatement extends MySqlStatementImpl {
+public class MySqlSetTransactionStatement extends MySqlStatementImpl {
 
     private Boolean global;
 
-    private String  level;
+    private String  isolationLevel;
 
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
+    private String  accessModel;
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
@@ -42,6 +36,22 @@ public class MySqlSetTransactionIsolationLevelStatement extends MySqlStatementIm
 
     public void setGlobal(Boolean global) {
         this.global = global;
+    }
+
+    public String getIsolationLevel() {
+        return isolationLevel;
+    }
+
+    public void setIsolationLevel(String isolationLevel) {
+        this.isolationLevel = isolationLevel;
+    }
+
+    public String getAccessModel() {
+        return accessModel;
+    }
+
+    public void setAccessModel(String accessModel) {
+        this.accessModel = accessModel;
     }
 
 }

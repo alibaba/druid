@@ -71,7 +71,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
@@ -271,9 +271,9 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlUpdateStatement x);
 
-    boolean visit(MySqlSetTransactionIsolationLevelStatement x);
+    boolean visit(MySqlSetTransactionStatement x);
 
-    void endVisit(MySqlSetTransactionIsolationLevelStatement x);
+    void endVisit(MySqlSetTransactionStatement x);
 
     boolean visit(MySqlSetNamesStatement x);
 

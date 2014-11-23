@@ -33,10 +33,12 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
@@ -104,6 +106,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.BEGIN) {
             statementList.add(this.parseBlock());
+            return true;
+        }
+        
+        if (lexer.token() == Token.COMMIT) {
+            statementList.add(this.parseCommit());
             return true;
         }
 
@@ -428,5 +435,57 @@ public class SQLServerStatementParser extends SQLStatementParser {
         accept(Token.END);
 
         return block;
+    }
+    
+    public SQLServerCommitStatement parseCommit() {
+        acceptIdentifier("COMMIT");
+
+        SQLServerCommitStatement stmt = new SQLServerCommitStatement();
+
+        if (identifierEquals("WORK")) {
+            lexer.nextToken();
+            stmt.setWork(true);
+        }
+
+        if (identifierEquals("TRAN") || identifierEquals("TRANSACTION")) {
+            lexer.nextToken();
+            if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.VARIANT) {
+                stmt.setTransactionName(this.exprParser.expr());
+            }
+
+            if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                acceptIdentifier("DELAYED_DURABILITY");
+                accept(Token.EQ);
+                stmt.setDelayedDurability(this.exprParser.expr());
+                accept(Token.RPAREN);
+            }
+
+        }
+
+        return stmt;
+    }
+    
+    public SQLServerRollbackStatement parseRollback() {
+        acceptIdentifier("ROLLBACK");
+
+        SQLServerRollbackStatement stmt = new SQLServerRollbackStatement();
+
+        if (identifierEquals("WORK")) {
+            lexer.nextToken();
+            stmt.setWork(true);
+        }
+
+        if (identifierEquals("TRAN") || identifierEquals("TRANSACTION")) {
+            lexer.nextToken();
+            if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.VARIANT) {
+                stmt.setName(this.exprParser.expr());
+            }
+
+
+        }
+
+        return stmt;
     }
 }

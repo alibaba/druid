@@ -99,7 +99,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.L
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
@@ -1748,20 +1748,30 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public boolean visit(MySqlSetTransactionIsolationLevelStatement x) {
+    public boolean visit(MySqlSetTransactionStatement x) {
         if (x.getGlobal() == null) {
-            print("SET TRANSACTION ISOLATION LEVEL ");
+            print("SET TRANSACTION ");
         } else if (x.getGlobal().booleanValue()) {
-            print("SET GLOBAL TRANSACTION ISOLATION LEVEL ");
+            print("SET GLOBAL TRANSACTION ");
         } else {
-            print("SET SESSION TRANSACTION ISOLATION LEVEL ");
+            print("SET SESSION TRANSACTION ");
         }
-        print(x.getLevel());
+
+        if (x.getIsolationLevel() != null) {
+            print("ISOLATION LEVEL ");
+            print(x.getIsolationLevel());
+        }
+
+        if (x.getAccessModel() != null) {
+            print("READ ");
+            print(x.getAccessModel());
+        }
+
         return false;
     }
 
     @Override
-    public void endVisit(MySqlSetTransactionIsolationLevelStatement x) {
+    public void endVisit(MySqlSetTransactionStatement x) {
         
     }
 
