@@ -62,4 +62,21 @@ public class CommentTest extends TestCase {
 
         System.out.println(out.toString());
     }
+
+    public void test_2() throws Exception {
+        String sql = "//hello world\n";
+        Lexer lexer = new Lexer(sql);
+        lexer.nextToken();
+        assertEquals("hello world", lexer.stringVal());
+
+        sql = "/*hello \nworld*/";
+        lexer = new Lexer(sql);
+        lexer.nextToken();
+        assertEquals("hello \nworld", lexer.stringVal());
+
+        sql = "--hello world\n";
+        lexer = new Lexer(sql);
+        lexer.nextToken();
+        assertEquals("hello world", lexer.stringVal());
+    }
 }

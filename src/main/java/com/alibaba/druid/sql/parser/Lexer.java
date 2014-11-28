@@ -736,66 +736,66 @@ public class Lexer {
             throw new NotAllowCommentException();
         }
 
-        if (ch != '/') {
+        if ((ch == '/' && charAt(pos + 1) == '/')
+                || (ch == '-' && charAt(pos + 1) == '-')) {
+            scanSingleLineComment();
+        } else if (ch == '/' && charAt(pos + 1) == '*') {
+            scanMultiLineComment();
+        } else {
             throw new IllegalStateException();
         }
+    }
 
+    private void scanMultiLineComment() {
+        scanChar();
+        scanChar();
         mark = pos;
         bufPos = 0;
+
+        for (;;) {
+            if (ch == '*' && charAt(pos + 1) == '/') {
+                scanChar();
+                scanChar();
+                break;
+            }
+
+            scanChar();
+            bufPos++;
+        }
+
+        stringVal = subString(mark, bufPos);
+        token = Token.MULTI_LINE_COMMENT;
+        hasComment = true;
+    }
+
+    private void scanSingleLineComment() {
         scanChar();
+        scanChar();
+        mark = pos;
+        bufPos = 0;
 
-        if (ch == '*') {
-            scanChar();
-            bufPos++;
-
-            for (;;) {
-                if (ch == '*' && charAt(pos + 1) == '/') {
-                    bufPos += 2;
-                    scanChar();
+        for (;;) {
+            if (ch == '\r') {
+                if (charAt(pos + 1) == '\n') {
                     scanChar();
                     break;
                 }
-
-                scanChar();
                 bufPos++;
+                break;
             }
 
-            stringVal = subString(mark, bufPos);
-            token = Token.MULTI_LINE_COMMENT;
-            hasComment = true;
-            return;
-        }
-
-        if (ch == '/') {
-            scanChar();
-            bufPos++;
-
-            for (;;) {
-                if (ch == '\r') {
-                    if (charAt(pos + 1) == '\n') {
-                        bufPos += 2;
-                        scanChar();
-                        break;
-                    }
-                    bufPos++;
-                    break;
-                }
-
-                if (ch == '\n') {
-                    scanChar();
-                    bufPos++;
-                    break;
-                }
-
+            if (ch == '\n') {
                 scanChar();
-                bufPos++;
+                break;
             }
 
-            stringVal = subString(mark + 1, bufPos);
-            token = Token.LINE_COMMENT;
-            hasComment = true;
-            return;
+            scanChar();
+            bufPos++;
         }
+
+        stringVal = subString(mark, bufPos);
+        token = Token.LINE_COMMENT;
+        hasComment = true;
     }
 
     public void scanIdentifier() {
