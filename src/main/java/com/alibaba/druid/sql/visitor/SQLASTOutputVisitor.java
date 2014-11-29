@@ -1058,6 +1058,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             println();
             print(")");
         }
+        
+        if (x.getInherits() != null) {
+            print(" INHERITS (");
+            x.getInherits().accept(this);
+            print(")");
+        }
 
         return false;
     }
