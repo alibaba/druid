@@ -1107,6 +1107,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         accept(x.getTableElementList());
 
         restoreCurrentTable(x);
+        
+        if (x.getInherits() != null) {
+            x.getInherits().accept(this);
+        }
 
         return false;
     }

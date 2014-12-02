@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 
 public class SQLCreateTableParser extends SQLDDLParser {
@@ -109,6 +111,13 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             accept(Token.RPAREN);
 
+            if (identifierEquals("INHERITS")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                SQLName inherits = this.exprParser.name();
+                createTable.setInherits(new SQLExprTableSource(inherits));
+                accept(Token.RPAREN);
+            }
         }
 
         return createTable;
