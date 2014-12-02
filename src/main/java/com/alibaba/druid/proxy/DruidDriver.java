@@ -102,7 +102,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 if (LOG == null) {
                     LOG = LogFactory.getLog(DruidDriver.class);
                 }
-                LOG.error("register druid-driver mbean error", ex);
+                LOG.warn("register druid-driver mbean error", ex);
             }
 
             return true;
