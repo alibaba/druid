@@ -1,10 +1,9 @@
 package com.alibaba.druid.bvt.pool.exception;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import javax.resource.cci.ResultSet;
 
 import junit.framework.TestCase;
 
