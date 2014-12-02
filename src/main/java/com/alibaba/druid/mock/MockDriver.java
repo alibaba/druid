@@ -144,7 +144,7 @@ public class MockDriver implements Driver, MockDriverMBean {
                     mbeanServer.registerMBean(instance, objectName);
                 }
             } catch (Exception ex) {
-                getLog().error("register druid-driver mbean error", ex);
+                getLog().warn("register druid-driver mbean error", ex);
             }
 
             return true;
