@@ -69,6 +69,7 @@ import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.PGExceptionSorter;
 import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
@@ -911,6 +912,9 @@ public class DruidDataSource extends DruidAbstractDataSource
         } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
             this.exceptionSorter = new SybaseExceptionSorter();
 
+        } else if (realDriverClassName.equals("org.postgresql.Driver")) {
+            this.exceptionSorter = new PGExceptionSorter();
+            
         } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
             this.exceptionSorter = new MockExceptionSorter();
         } else if (realDriverClassName.contains("DB2")) {
