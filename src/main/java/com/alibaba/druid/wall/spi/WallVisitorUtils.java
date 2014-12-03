@@ -115,8 +115,10 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
@@ -2434,7 +2436,8 @@ public class WallVisitorUtils {
             errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;
         } else if (x instanceof MySqlSetCharSetStatement //
                    || x instanceof MySqlSetNamesStatement //
-                   || x instanceof SQLSetStatement) {
+                   || x instanceof SQLSetStatement //
+                   || x instanceof SQLServerSetStatement) {
             allow = config.isSetAllow();
             denyMessage = "set not allow";
             errorCode = ErrorCode.SET_NOT_ALLOW;
@@ -2450,7 +2453,7 @@ public class WallVisitorUtils {
             allow = config.isShowAllow();
             denyMessage = "show not allow";
             errorCode = ErrorCode.SHOW_NOT_ALLOW;
-        } else if (x instanceof MySqlCommitStatement) {
+        } else if (x instanceof MySqlCommitStatement || x instanceof SQLServerCommitStatement) {
             allow = config.isCommitAllow();
             denyMessage = "commit not allow";
             errorCode = ErrorCode.COMMIT_NOT_ALLOW;
