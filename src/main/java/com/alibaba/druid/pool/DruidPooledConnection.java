@@ -1085,6 +1085,17 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     }
 
     public void checkState() throws SQLException {
+        boolean asyncCloseEnable = this.getConnectionHolder().getDataSource().isAsyncCloseConnectionEnable();
+        if (asyncCloseEnable) {
+            synchronized (this) {
+                checkStateInternal();
+            }
+        } else {
+            checkStateInternal();
+        }
+    }
+    
+    private void checkStateInternal() throws SQLException {
         if (holder == null) {
             if (disableError != null) {
                 throw new SQLException("connection holder is null", disableError);
