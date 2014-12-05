@@ -1035,12 +1035,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     public void discardConnection(Connection realConnection) {
         JdbcUtils.close(realConnection);
 
-        try {
-            lock.lockInterruptibly();
-        } catch (InterruptedException e) {
-            LOG.error("interrupt");
-            return;
-        }
+        lock.lock();
         try {
             activeCount--;
             discardCount++;
@@ -1263,7 +1258,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                     destroyCount.incrementAndGet();
 
-                    lock.lockInterruptibly();
+                    lock.lock();
                     try {
                         activeCount--;
                         closeCount++;
@@ -1996,6 +1991,12 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         if (abandonedList.size() > 0) {
             for (DruidPooledConnection pooledConnection : abandonedList) {
+                synchronized (pooledConnection) {
+                    if (pooledConnection.isDisable()) {
+                        continue;
+                    }
+                }
+                
                 JdbcUtils.close(pooledConnection);
                 pooledConnection.abandond();
                 removeAbandonedCount++;
