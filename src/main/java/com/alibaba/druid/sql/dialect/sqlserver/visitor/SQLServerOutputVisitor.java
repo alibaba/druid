@@ -595,6 +595,19 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
                 }
             }
         }
+        
+        if (x.getOffset() != null) {
+            println();
+            print("OFFSET ");
+            x.getOffset().accept(this);
+            print(" ROWS");
+            
+            if (x.getRowCount() != null) {
+                print(" FETCH NEXT ");
+                x.getRowCount().accept(this);
+                print(" ROWS ONLY");
+            }
+        }
         return false;
     }
 
