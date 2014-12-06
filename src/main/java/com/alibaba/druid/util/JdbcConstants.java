@@ -57,6 +57,9 @@ public interface JdbcConstants {
     public static final String DM                = "dm";
     public static final String DM_DRIVER         = "dm.jdbc.driver.DmDriver";
     
+    public static final String KINGBASE          = "kingbase";
+    public static final String KINGBASE_DRIVER   = "com.kingbase.Driver";
+    
     /**
      * 阿里云odps
      */
