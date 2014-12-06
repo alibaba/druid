@@ -414,6 +414,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "com.mimer.jdbc.Driver";
         } else if (rawUrl.startsWith("jdbc:dm:")) {
             return JdbcConstants.DM_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:kingbase:")) {
+            return JdbcConstants.KINGBASE_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -486,6 +488,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "mimer";
         } else if (rawUrl.startsWith("jdbc:dm:")) {
             return JdbcConstants.DM;
+        } else if (rawUrl.startsWith("jdbc:kingbase:")) {
+            return JdbcConstants.KINGBASE;
         } else {
             return null;
         }
