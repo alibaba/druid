@@ -412,6 +412,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "ca.edbc.jdbc.EdbcDriver";
         } else if (rawUrl.startsWith("jdbc:mimer:multi1:")) {
             return "com.mimer.jdbc.Driver";
+        } else if (rawUrl.startsWith("jdbc:dm:")) {
+            return JdbcConstants.DM_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -482,6 +484,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "edbc";
         } else if (rawUrl.startsWith("jdbc:mimer:multi1:")) {
             return "mimer";
+        } else if (rawUrl.startsWith("jdbc:dm:")) {
+            return JdbcConstants.DM;
         } else {
             return null;
         }

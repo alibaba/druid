@@ -52,9 +52,11 @@ public interface JdbcConstants {
     public static final String HIVE              = "hive";
 
     public static final String H2                = "h2";
-
     public static final String H2_DRIVER         = "org.h2.Driver";
 
+    public static final String DM                = "dm";
+    public static final String DM_DRIVER         = "dm.jdbc.driver.DmDriver";
+    
     /**
      * 阿里云odps
      */
