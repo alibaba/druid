@@ -85,7 +85,7 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
         Assert.assertEquals(0, dataSource.getActiveCount());
     }
 
-    public void test_recycle_error_interrupt() throws Exception {
+    public void f_test_recycle_error_interrupt() throws Exception {
         final AtomicReference<Exception> errorRef = new AtomicReference<Exception>();
 
         final CountDownLatch closeBeforeLatch = new CountDownLatch(1);

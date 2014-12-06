@@ -91,6 +91,24 @@ public class SQLServerSelectParser extends SQLSelectParser {
                 throw new ParserException("syntax error, not support option : " + lexer.token());
             }
         }
+        
+        if (identifierEquals("OFFSET")) {
+            lexer.nextToken();
+            SQLExpr offset = this.expr();
+            
+            acceptIdentifier("ROWS");
+            select.setOffset(offset);
+            
+            if (identifierEquals("FETCH")) {
+                lexer.nextToken();
+                acceptIdentifier("NEXT");
+                
+                SQLExpr rowCount = expr();
+                acceptIdentifier("ROWS");
+                acceptIdentifier("ONLY");
+                select.setRowCount(rowCount);
+            }
+        }
 
         return select;
     }
