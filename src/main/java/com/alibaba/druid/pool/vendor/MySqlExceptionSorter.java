@@ -24,12 +24,13 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
     @Override
     public boolean isExceptionFatal(SQLException e) {
-        String sqlState = e.getSQLState();
+        final String sqlState = e.getSQLState();
         final int errorCode = e.getErrorCode();
 
         if (sqlState != null && sqlState.startsWith("08")) {
             return true;
         }
+        
         switch (errorCode) {
         // Communications Errors
             case 1040: // ER_CON_COUNT_ERROR
