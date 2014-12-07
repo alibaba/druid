@@ -55,7 +55,13 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 break;
         }
         
+        // for oceanbase
         if (errorCode >= -10000 && errorCode <= -9000) {
+            return true;
+        }
+        
+        String className = e.getClass().getName();
+        if ("com.mysql.jdbc.CommunicationsException".equals(className)) {
             return true;
         }
 
