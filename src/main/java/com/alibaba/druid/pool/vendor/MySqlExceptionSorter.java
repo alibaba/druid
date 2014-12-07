@@ -24,12 +24,13 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
     @Override
     public boolean isExceptionFatal(SQLException e) {
-        String sqlState = e.getSQLState();
+        final String sqlState = e.getSQLState();
         final int errorCode = e.getErrorCode();
 
         if (sqlState != null && sqlState.startsWith("08")) {
             return true;
         }
+        
         switch (errorCode) {
         // Communications Errors
             case 1040: // ER_CON_COUNT_ERROR
@@ -55,7 +56,13 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 break;
         }
         
+        // for oceanbase
         if (errorCode >= -10000 && errorCode <= -9000) {
+            return true;
+        }
+        
+        String className = e.getClass().getName();
+        if ("com.mysql.jdbc.CommunicationsException".equals(className)) {
             return true;
         }
 

@@ -38,9 +38,9 @@ public class TestOracle extends TestCase {
         // password = "ccbuauto";
         // SQL = "SELECT * FROM WP_ORDERS WHERE ID = ?";
 
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.81:1521:ointest3";
-        user = "alibaba";
-        password = "deYcR7facWSJtCuDpm2r";
+        jdbcUrl = "jdbc:oracle:thin:@a.b.c.d:1521:xx";
+        user = "a";
+        password = "b";
         SQL = "SELECT * FROM AV_INFO WHERE ID = ?";
 
         driverClass = "oracle.jdbc.driver.OracleDriver";

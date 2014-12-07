@@ -39,4 +39,9 @@ public class MySqlExceptionSorterTest extends TestCase {
         MySqlExceptionSorter sorter = new MySqlExceptionSorter();
         Assert.assertFalse(sorter.isExceptionFatal(new SQLException("", "", -8000)));
     }
+    
+    public void test_true_3() throws Exception {
+        MySqlExceptionSorter sorter = new MySqlExceptionSorter();
+        Assert.assertTrue(sorter.isExceptionFatal(new com.mysql.jdbc.CommunicationsException(null, 0, 0, null)));
+    }
 }
