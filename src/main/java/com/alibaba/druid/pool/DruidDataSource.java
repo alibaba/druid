@@ -70,6 +70,7 @@ import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.PGExceptionSorter;
+import com.alibaba.druid.pool.vendor.PGValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
@@ -887,12 +888,14 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     private void initValidConnectionChecker() {
         String realDriverClassName = driver.getClass().getName();
-        if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
+        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER)) {
             this.validConnectionChecker = new MySqlValidConnectionChecker();
-        } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
+        } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)) {
             this.validConnectionChecker = new OracleValidConnectionChecker();
-        } else if (realDriverClassName.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
+        } else if (realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER)) {
             this.validConnectionChecker = new MSSQLValidConnectionChecker();
+        } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)) {
+            this.validConnectionChecker = new PGValidConnectionChecker();
         }
     }
 

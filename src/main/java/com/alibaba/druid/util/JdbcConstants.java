@@ -28,10 +28,12 @@ public interface JdbcConstants {
     public static final String DB2_DRIVER        = "COM.ibm.db2.jdbc.app.DB2Driver";
 
     public static final String POSTGRESQL        = "postgresql";
+    public static final String POSTGRESQL_DRIVER = "org.postgresql.Driver";
 
     public static final String SYBASE            = "sybase";
 
     public static final String SQL_SERVER        = "sqlserver";
+    public static final String SQL_SERVER_DRIVER = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
 
     public static final String ORACLE            = "oracle";
     public static final String ORACLE_DRIVER     = "oracle.jdbc.driver.OracleDriver";
