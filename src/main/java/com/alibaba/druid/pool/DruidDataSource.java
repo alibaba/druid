@@ -915,7 +915,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
             this.exceptionSorter = new SybaseExceptionSorter();
 
-        } else if (realDriverClassName.equals("org.postgresql.Driver")) {
+        } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)) {
             this.exceptionSorter = new PGExceptionSorter();
             
         } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
