@@ -58,7 +58,11 @@ public class MySqlInsertStatement extends SQLInsertStatement {
         return valuesList;
     }
 
-    public boolean isLowPriority() {
+    public void setValuesList(List<ValuesClause> valuesList) {
+		this.valuesList = valuesList;
+	}
+
+	public boolean isLowPriority() {
         return lowPriority;
     }
 
