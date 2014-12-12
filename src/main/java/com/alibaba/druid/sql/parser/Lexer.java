@@ -645,6 +645,7 @@ public class Lexer {
             buf = new char[32];
         }
 
+        boolean hasSpecial = false;
         for (;;) {
             if (isEOF()) {
                 lexError("unclosed.str.lit");
@@ -652,21 +653,32 @@ public class Lexer {
             }
 
             ch = charAt(++pos);
+            
+            if(ch == '\\') {
+                hasSpecial = true;
+                continue;
+            }
 
-            if (ch == '\"') {
+            if (ch == '\"' && charAt(pos - 1) != '\\') {
                 scanChar();
                 token = LITERAL_ALIAS;
                 break;
             }
-
+            
             if (bufPos == buf.length) {
                 putChar(ch);
             } else {
                 buf[bufPos++] = ch;
             }
         }
+        
+        if (!hasSpecial) {
+            stringVal = subString(mark + 1, bufPos);
+        } else {
+            stringVal = new String(buf, 0, bufPos);
+        }
 
-        stringVal = subString(mark + 1, bufPos);
+        //stringVal = subString(mark + 1, bufPos);
     }
     
     public void scanSharp() {
