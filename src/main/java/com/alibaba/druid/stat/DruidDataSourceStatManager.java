@@ -127,10 +127,19 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     public synchronized static ObjectName addDataSource(Object dataSource, String name) {
+        if (dataSource == null || name == null) {
+            return null;
+        }
+        
         final IdentityHashMap<Object, ObjectName> instances = getInstances();
-
+        
         synchronized (instances) {
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+            
+            if (mbeanServer == null) {
+                return null;
+            }
+            
             if (instances.size() == 0) {
                 try {
 
