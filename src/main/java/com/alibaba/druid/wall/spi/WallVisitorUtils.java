@@ -1028,6 +1028,10 @@ public class WallVisitorUtils {
             }
             return null;
         }
+        
+        boolean checkCondition = visitor != null
+                                 && (!visitor.getConfig().isConstArithmeticAllow()
+                                     || !visitor.getConfig().isConditionOpBitwseAllow() || !visitor.getConfig().isConditionOpXorAllow());
 
         if (x.getLeft() instanceof SQLName) {
             if (x.getRight() instanceof SQLName) {
@@ -1048,7 +1052,7 @@ public class WallVisitorUtils {
                             break;
                     }
                 }
-            } else {
+            } else if (!checkCondition) {
                 switch (x.getOperator()) {
                     case Equality:
                     case NotEqual:
@@ -1078,15 +1082,14 @@ public class WallVisitorUtils {
             }
         }
 
+        Object leftResult = getValue(visitor, x.getLeft());
+        Object rightResult = getValue(visitor, x.getRight());
+
+        if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String && leftResult.equals(rightResult)) {
+            addViolation(visitor, ErrorCode.SAME_CONST_LIKE, "same const like", x);
+        }
+
         if (x.getOperator() == SQLBinaryOperator.Like || x.getOperator() == SQLBinaryOperator.NotLike) {
-            Object leftResult = getValue(visitor, x.getLeft());
-            Object rightResult = getValue(visitor, x.getRight());
-
-            if (x.getOperator() == SQLBinaryOperator.Like && leftResult instanceof String
-                && leftResult.equals(rightResult)) {
-                addViolation(visitor, ErrorCode.SAME_CONST_LIKE, "same const like", x);
-            }
-
             WallContext context = WallContext.current();
             if (context != null) {
                 if (rightResult instanceof Number || leftResult instanceof Number) {
