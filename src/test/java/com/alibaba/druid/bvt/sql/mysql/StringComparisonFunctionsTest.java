@@ -134,7 +134,7 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT filename, filename LIKE '%\\'\nFROM t1;", text);
+        Assert.assertEquals("SELECT filename, filename LIKE '%\\\\'\nFROM t1;", text);
     }
 
     public void test_10() throws Exception {

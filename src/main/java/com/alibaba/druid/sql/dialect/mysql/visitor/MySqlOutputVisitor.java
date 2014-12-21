@@ -592,7 +592,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         String text = x.getText();
         text = text.replaceAll("'", "''");
-        text = text.replaceAll("\\\\", "\\\\");
+        text = text.replace("\\", "\\\\");
 
         print(text);
 
