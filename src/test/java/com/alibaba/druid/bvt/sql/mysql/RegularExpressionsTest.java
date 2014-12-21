@@ -45,8 +45,10 @@ public class RegularExpressionsTest extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
 
         String text = output(stmtList);
+        
+        String e = "SELECT 'new*\n*line' REGEXP 'new\\*.\\*line';";
 
-        Assert.assertEquals("SELECT 'new*\n*line' REGEXP 'new\\*.\\*line';", text);
+        Assert.assertEquals("SELECT 'new*\n*line' REGEXP 'new\\\\*.\\\\*line';", text);
     }
 
     public void test_2() throws Exception {
