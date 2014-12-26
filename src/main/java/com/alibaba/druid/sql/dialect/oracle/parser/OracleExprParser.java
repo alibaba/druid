@@ -94,7 +94,7 @@ public class OracleExprParser extends SQLExprParser {
     /**
      * @formatter:off
      */
-    private static final String[] AGGREGATE_FUNCTIONS = {
+    public static final String[] AGGREGATE_FUNCTIONS = {
                                                           "AVG", // 
                                                           "CORR", // 
                                                           "COVAR_POP", //
