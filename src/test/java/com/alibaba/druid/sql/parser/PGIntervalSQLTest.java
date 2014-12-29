@@ -12,7 +12,7 @@ import org.junit.Assert;
 public class PGIntervalSQLTest extends TestCase{
 
 
-    public void testIntrevalSQL(){
+    public void testIntervalSQL(){
         String sql1="select timestamp '2001-09-28 01:00' + interval '23 hours'";
         String sql1Result="SELECT TIMESTAMP '2001-09-28 01:00' + INTERVAL '23 hours'";
         equal(sql1,sql1Result);
