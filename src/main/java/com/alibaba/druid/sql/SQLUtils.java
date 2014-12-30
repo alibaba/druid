@@ -241,6 +241,10 @@ public class SQLUtils {
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2OutputVisitor(out);
         }
+        
+        if (JdbcUtils.ODPS.equals(dbType)) {
+            return new OdpsOutputVisitor(out);
+        }
 
         return new SQLASTOutputVisitor(out);
     }

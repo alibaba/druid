@@ -42,6 +42,7 @@ public class OdpsLexer extends Lexer {
         map.put("PARTITIONED", Token.PARTITIONED);
         map.put("OVERWRITE", Token.OVERWRITE);
         map.put("OVER", Token.OVER);
+        map.put("LIMIT", Token.LIMIT);
         
         DEFAULT_ODPS_KEYWORDS = new Keywords(map);
     }
