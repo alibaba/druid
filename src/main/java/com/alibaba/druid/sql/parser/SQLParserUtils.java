@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsExprParser;
+import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
@@ -57,6 +58,10 @@ public class SQLParserUtils {
         
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2StatementParser(sql);
+        }
+        
+        if (JdbcUtils.ODPS.equals(dbType)) {
+            return new OdpsStatementParser(sql);
         }
 
         return new SQLStatementParser(sql);

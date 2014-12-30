@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
@@ -37,6 +38,7 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsStatementParser extends SQLStatementParser {
 
@@ -46,6 +48,11 @@ public class OdpsStatementParser extends SQLStatementParser {
 
     public OdpsStatementParser(SQLExprParser exprParser){
         super(exprParser);
+    }
+
+    public SQLSelectStatement parseSelect() {
+        OdpsSelectParser selectParser = new OdpsSelectParser(this.exprParser);
+        return new SQLSelectStatement(selectParser.select(), JdbcConstants.ODPS);
     }
 
     public SQLCreateTableStatement parseCreateTable() {
@@ -179,7 +186,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             accept(Token.TO);
             if (lexer.token() == Token.USER) {
                 lexer.nextToken();
-                
+
                 SQLName name = this.exprParser.name();
                 stmt.setUser(name);
                 return stmt;
@@ -187,13 +194,13 @@ public class OdpsStatementParser extends SQLStatementParser {
             accept(Token.TABLE);
             SQLExpr expr = this.exprParser.name();
             stmt.setTable(new SQLExprTableSource(expr));
-            
+
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
                 this.exprParser.names(stmt.getColumns(), stmt);
                 accept(Token.RPAREN);
             }
-            
+
             return stmt;
         } else {
             SQLSetStatement stmt = new SQLSetStatement(getDbType());
