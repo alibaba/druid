@@ -31,12 +31,19 @@ public class PGIntervalExpr extends SQLExprImpl implements SQLLiteralExpr,PGExpr
 
     @Override
     public boolean equals(Object o) {
-        return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PGIntervalExpr that = (PGIntervalExpr) o;
+
+        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return 0;
+        return value != null ? value.hashCode() : 0;
     }
 
     @Override
