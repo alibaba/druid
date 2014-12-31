@@ -770,7 +770,11 @@ public class Lexer {
                 scanChar();
                 break;
             }
-
+            
+			// multiline comment结束符错误
+			if (ch == EOI) {
+				throw new ParserException("unterminated /* comment.");
+			}
             scanChar();
             bufPos++;
         }
@@ -800,6 +804,11 @@ public class Lexer {
                 scanChar();
                 break;
             }
+            
+			// single line comment结束符错误
+			if (ch == EOI) {
+				throw new ParserException("syntax error at end of input.");
+			}
 
             scanChar();
             bufPos++;
