@@ -72,7 +72,7 @@ public class SQLUtils {
         }
 
         if (JdbcUtils.ODPS.equals(dbType)) {
-            return toDB2String(sqlObject);
+            return toOdpsString(sqlObject);
         }
 
         return toSQLServerString(sqlObject);
