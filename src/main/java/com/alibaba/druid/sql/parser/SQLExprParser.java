@@ -911,6 +911,9 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.token() == Token.DISTINCT) {
             aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateOption.DISTINCT);
             lexer.nextToken();
+        } else if (identifierEquals("DEDUPLICATION")) { //just for nut
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateOption.DEDUPLICATION);
+            lexer.nextToken();
         } else {
             aggregateExpr = new SQLAggregateExpr(methodName);
         }
