@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
@@ -905,10 +906,10 @@ public class SQLExprParser extends SQLParser {
 
         SQLAggregateExpr aggregateExpr;
         if (lexer.token() == Token.ALL) {
-            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateOption.ALL);
             lexer.nextToken();
         } else if (lexer.token() == Token.DISTINCT) {
-            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.DISTINCT);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateOption.DISTINCT);
             lexer.nextToken();
         } else {
             aggregateExpr = new SQLAggregateExpr(methodName);

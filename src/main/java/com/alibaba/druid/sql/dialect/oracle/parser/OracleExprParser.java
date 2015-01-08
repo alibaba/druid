@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -754,13 +755,13 @@ public class OracleExprParser extends SQLExprParser {
         
         SQLAggregateExpr aggregateExpr;
         if (lexer.token() == Token.UNIQUE) {
-            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.UNIQUE);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateOption.UNIQUE);
             lexer.nextToken();
         } else if (lexer.token() == (Token.ALL)) {
-            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateOption.ALL);
             lexer.nextToken();
         } else if (lexer.token() == (Token.DISTINCT)) {
-            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.DISTINCT);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateOption.DISTINCT);
             lexer.nextToken();
         } else {
             aggregateExpr = new SQLAggregateExpr(methodName);
