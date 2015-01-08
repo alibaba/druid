@@ -29,7 +29,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
 
     private static final long     serialVersionUID = 1L;
     protected String              methodName;
-    protected Option              option;
+    protected SQLAggregateOption  option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
     protected SQLOver             over;
     protected SQLOrderBy          withinGroup;
@@ -39,7 +39,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         this.methodName = methodName;
     }
 
-    public SQLAggregateExpr(String methodName, Option option){
+    public SQLAggregateExpr(String methodName, SQLAggregateOption option){
         this.methodName = methodName;
         this.option = option;
     }
@@ -64,11 +64,11 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         this.withinGroup = withinGroup;
     }
 
-    public Option getOption() {
+    public SQLAggregateOption getOption() {
         return this.option;
     }
 
-    public void setOption(Option option) {
+    public void setOption(SQLAggregateOption option) {
         this.option = option;
     }
 
@@ -153,7 +153,4 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
-    public static enum Option {
-        DISTINCT, ALL, UNIQUE
-    }
 }
