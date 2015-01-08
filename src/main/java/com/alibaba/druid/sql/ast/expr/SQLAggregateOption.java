@@ -17,6 +17,8 @@ package com.alibaba.druid.sql.ast.expr;
 
 public enum SQLAggregateOption {
 
-    DISTINCT, ALL, UNIQUE, DEDUPLICATION
+    DISTINCT, ALL, UNIQUE, //
+
+    DEDUPLICATION // just for nut
 
 }
