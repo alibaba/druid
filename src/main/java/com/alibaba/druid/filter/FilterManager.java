@@ -60,6 +60,7 @@ public class FilterManager {
 
         loadFilterConfig(filterProperties, ClassLoader.getSystemClassLoader());
         loadFilterConfig(filterProperties, Thread.currentThread().getContextClassLoader());
+        loadFilterConfig(filterProperties, FilterManager.class.getClassLoader());
 
         return filterProperties;
     }
