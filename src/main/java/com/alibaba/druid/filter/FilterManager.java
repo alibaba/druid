@@ -59,6 +59,7 @@ public class FilterManager {
         Properties filterProperties = new Properties();
 
         loadFilterConfig(filterProperties, ClassLoader.getSystemClassLoader());
+        loadFilterConfig(filterProperties, FilterManager.class.getClassLoader());
         loadFilterConfig(filterProperties, Thread.currentThread().getContextClassLoader());
 
         return filterProperties;
