@@ -376,6 +376,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(")");
         }
 
+        if (x.isHasBinary()) {
+            print(" BINARY ");
+        }
+        
         if (x.getCharSetName() != null) {
             print(" CHARACTER SET ");
             print(x.getCharSetName());

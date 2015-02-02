@@ -24,6 +24,7 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
     private String             collate;
 
     private String             charType;
+    private boolean            hasBinary;
 
     public final static String CHAR_TYPE_BYTE = "BYTE";
     public final static String CHAR_TYPE_CHAR = "CHAR";
@@ -38,6 +39,14 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
 
     public void setCharSetName(String charSetName) {
         this.charSetName = charSetName;
+    }
+    
+    public boolean isHasBinary() {
+        return hasBinary;
+    }
+
+    public void setHasBinary(boolean hasBinary) {
+        this.hasBinary = hasBinary;
     }
 
     public String getCollate() {
