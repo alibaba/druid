@@ -849,6 +849,8 @@ public class SQLExprParser extends SQLParser {
                 case OPTIMIZE:
                 case GRANT:
                 case REVOKE:
+                //binary有很多含义，lexer识别了这个token，实际上应该当做普通IDENTIFIER
+                case BINARY:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
@@ -1420,6 +1422,11 @@ public class SQLExprParser extends SQLParser {
     }
 
     protected SQLDataType parseCharTypeRest(SQLCharacterDataType charType) {
+        if (lexer.token() == Token.BINARY) {
+            charType.setHasBinary(true);
+            lexer.nextToken();
+        }
+        
         if (identifierEquals("CHARACTER")) {
             lexer.nextToken();
 
@@ -1429,6 +1436,11 @@ public class SQLExprParser extends SQLParser {
                 throw new ParserException();
             }
             charType.setCharSetName(lexer.stringVal());
+            lexer.nextToken();
+        }
+        
+        if (lexer.token() == Token.BINARY) {
+            charType.setHasBinary(true);
             lexer.nextToken();
         }
         
