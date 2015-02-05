@@ -151,6 +151,14 @@ public class PGSQLStatementParser extends SQLStatementParser {
         SQLName tableName = exprParser.name();
 
         deleteStatement.setTableName(tableName);
+        
+        if (lexer.token() == Token.AS) {
+			accept(Token.AS);
+		}
+		if (lexer.token() == Token.IDENTIFIER) {
+			deleteStatement.setAlias(lexer.stringVal());
+			lexer.nextToken();
+		}
 
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
