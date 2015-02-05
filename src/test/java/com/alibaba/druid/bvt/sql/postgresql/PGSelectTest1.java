@@ -21,6 +21,9 @@ import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 
@@ -45,6 +48,26 @@ public class PGSelectTest1 extends PGTest {
 
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getTables().size());
+    }
+    
+    public void test_1() throws Exception {
+    	String sql = "(select * from a) union select * from b";
+    	 PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+         List<SQLStatement> statementList = parser.parseStatementList();
+         SQLStatement statemen = statementList.get(0);
+         print(statementList);
+
+		Assert.assertEquals(1, statementList.size());
+		assertTrue(statemen instanceof PGSelectStatement);
+		PGSelectStatement select = (PGSelectStatement) statemen;
+		assertTrue(select.getSelect().getQuery() instanceof SQLUnionQuery);
+		SQLUnionQuery unionQuery = (SQLUnionQuery) select.getSelect()
+				.getQuery();
+		assertTrue(unionQuery.getLeft() instanceof SQLSelectQueryBlock);
+		assertTrue(unionQuery.getRight() instanceof SQLSelectQueryBlock);
+		SQLSelectQueryBlock leftQueryBlock = (SQLSelectQueryBlock) unionQuery
+				.getLeft();
+		assertTrue(leftQueryBlock.isParenthesized());
     }
 
 }

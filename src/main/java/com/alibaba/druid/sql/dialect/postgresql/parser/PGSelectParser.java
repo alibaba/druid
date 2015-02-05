@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
@@ -56,6 +57,18 @@ public class PGSelectParser extends SQLSelectParser {
             this.exprParser.exprList(valuesQuery.getValues(), valuesQuery);
             accept(Token.RPAREN);
             return queryRest(valuesQuery);
+        }
+        
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+
+            SQLSelectQuery select = query();
+			if (select instanceof SQLSelectQueryBlock) {
+				((SQLSelectQueryBlock) select).setParenthesized(true);
+			}
+            accept(Token.RPAREN);
+
+            return queryRest(select);
         }
         
         PGSelectQueryBlock queryBlock = new PGSelectQueryBlock();
