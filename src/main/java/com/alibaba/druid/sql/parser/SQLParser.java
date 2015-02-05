@@ -193,6 +193,7 @@ public class SQLParser {
         switch (lexer.token()) {
             case KEY:
             case INTERVAL:
+            case CONSTRAINT:
                 alias = lexer.token().name();
                 lexer.nextToken();
                 return alias;

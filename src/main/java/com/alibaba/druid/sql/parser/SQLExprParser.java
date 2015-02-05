@@ -319,6 +319,7 @@ public class SQLExprParser extends SQLParser {
             case ESCAPE:
             case OVER:
             case ORDER:
+            case CONSTRAINT:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
