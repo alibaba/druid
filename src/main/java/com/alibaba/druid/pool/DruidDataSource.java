@@ -1394,12 +1394,10 @@ public class DruidDataSource extends DruidAbstractDataSource
                 public Object run() {
                     ObjectName objectName = DruidDataSourceStatManager.addDataSource(DruidDataSource.this,
                                                                                      DruidDataSource.this.name);
-                    
-                    if (objectName != null) {
-                        DruidDataSource.this.setObjectName(objectName);
-                        DruidDataSource.this.mbeanRegistered = true;
-                    }
-                    
+
+                    DruidDataSource.this.setObjectName(objectName);
+                    DruidDataSource.this.mbeanRegistered = true;
+
                     return null;
                 }
             });
