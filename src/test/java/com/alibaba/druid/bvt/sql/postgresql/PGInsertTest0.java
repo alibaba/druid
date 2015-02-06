@@ -21,6 +21,7 @@ import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -51,5 +52,15 @@ public class PGInsertTest0 extends PGTest {
 //        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("films", "producer_id")));
     }
 
-    
+    public void test_1() {
+		String sql = "insert into test01 DEFAULT VALUES";
+		PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+		List<SQLStatement> statementList = parser.parseStatementList();
+		SQLStatement statemen = statementList.get(0);
+		print(statementList);
+		assertTrue(statemen instanceof PGInsertStatement);
+		PGInsertStatement insert = (PGInsertStatement) statemen;
+		assertTrue(insert.getTableName().getSimpleName()
+				.equalsIgnoreCase("test01"));
+	}
 }

@@ -100,6 +100,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
 
         }
+        
+        if (lexer.token() == Token.DEFAULT) {
+        	lexer.nextToken();
+        	accept(Token.VALUES);
+        	stmt.setDefaultValues(true);
+        }
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();

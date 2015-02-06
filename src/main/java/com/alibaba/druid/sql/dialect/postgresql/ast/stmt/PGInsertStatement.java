@@ -29,6 +29,7 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
     private PGWithClause       with;
     private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
     private SQLExpr            returning;
+    private boolean			   defaultValues = false;
 
     public SQLExpr getReturning() {
         return returning;
@@ -70,7 +71,15 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         valuesList.add(valueClause);
     }
 
-    protected void accept0(SQLASTVisitor visitor) {
+    public boolean isDefaultValues() {
+		return defaultValues;
+	}
+
+	public void setDefaultValues(boolean defaultValues) {
+		this.defaultValues = defaultValues;
+	}
+
+	protected void accept0(SQLASTVisitor visitor) {
         accept0((PGASTVisitor) visitor);
     }
 
