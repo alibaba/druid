@@ -127,22 +127,13 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     public synchronized static ObjectName addDataSource(Object dataSource, String name) {
-        if (dataSource == null || name == null) {
-            return null;
-        }
-        
         final IdentityHashMap<Object, ObjectName> instances = getInstances();
-        
+
         synchronized (instances) {
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-            
-            if (mbeanServer == null) {
-                return null;
-            }
-            
+
             if (instances.size() == 0) {
                 try {
-
                     ObjectName objectName = new ObjectName(MBEAN_NAME);
                     if (!mbeanServer.isRegistered(objectName)) {
                         mbeanServer.registerMBean(instance, objectName);
@@ -150,7 +141,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 } catch (JMException ex) {
                     LOG.error("register mbean error", ex);
                 }
-                
+
                 DruidStatService.registerMBean();
             }
 
