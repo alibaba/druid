@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStateme
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
@@ -657,6 +658,34 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public void endVisit(SQLServerRollbackStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLServerWaitForStatement x) {
+        print("WAITFOR");
+
+        if (x.getDelay() != null) {
+            print(" DELAY ");
+            x.getDelay().accept(this);
+        } else if (x.getTime() != null) {
+            print(" TIME ");
+            x.getTime().accept(this);
+        } if (x.getStatement() != null) {
+            print(" DELAY ");
+            x.getStatement().accept(this);
+        }
+        
+        if(x.getTimeout() != null) {
+            print(" ,TIMEOUT ");
+            x.getTimeout().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerWaitForStatement x) {
         
     }
 }
