@@ -1409,8 +1409,11 @@ public class SQLStatementParser extends SQLParser {
             stmt.setForEachRow(true);
         }
 
-        SQLStatement body = this.parseBlock();
-        stmt.setBody(body);
+        List<SQLStatement> body = this.parseStatementList();
+        if(body == null || body.isEmpty()) {
+            throw new ParserException("syntax error");
+        }
+        stmt.setBody(body.get(0));
         return stmt;
     }
 
