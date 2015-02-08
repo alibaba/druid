@@ -266,11 +266,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                     SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
                     deleteStatement.setFrom(tableSource);
                 }
+            } else if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                deleteStatement.setTableSource(createSQLSelectParser().parseTableSource());
             } else {
-                if (lexer.token() == Token.FROM) {
-                    lexer.nextToken();
-                    deleteStatement.setTableSource(createSQLSelectParser().parseTableSource());
-                }
+                throw new ParserException("syntax error");
             }
 
             if (identifierEquals("USING")) {
