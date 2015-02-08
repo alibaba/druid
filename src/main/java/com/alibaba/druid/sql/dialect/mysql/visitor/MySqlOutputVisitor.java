@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -63,6 +64,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -3157,6 +3159,31 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlSelectGroupByExpr x) {
 
+    }
+
+    @Override
+    public boolean visit(MySqlBlockStatement x) {
+        print("BEGIN");
+        incrementIndent();
+        println();
+        for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
+            if (i != 0) {
+                println();
+            }
+            SQLStatement stmt = x.getStatementList().get(i);
+            stmt.setParent(x);
+            stmt.accept(this);
+            print(";");
+        }
+        decrementIndent();
+        println();
+        print("END");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlBlockStatement x) {
+        
     }
 
 } //

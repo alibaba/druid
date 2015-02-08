@@ -41,6 +41,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -566,4 +567,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlSelectGroupByExpr x);
 
     void endVisit(MySqlSelectGroupByExpr x);
+    
+    boolean visit(MySqlBlockStatement x);
+
+    void endVisit(MySqlBlockStatement x);
 } //

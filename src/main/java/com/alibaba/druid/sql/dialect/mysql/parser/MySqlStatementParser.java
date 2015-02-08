@@ -70,6 +70,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -350,6 +351,13 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             return parseCreateView();
+        }
+        
+        if (lexer.token() == Token.TRIGGER) {
+            if (replace) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+            }
+            return parseCreateTrigger();
         }
 
         throw new ParserException("TODO " + lexer.token());
@@ -673,8 +681,25 @@ public class MySqlStatementParser extends SQLStatementParser {
             statementList.add(this.parseHint());
             return true;
         }
+        
+        if (lexer.token() == Token.BEGIN) {
+            statementList.add(this.parseBlock());
+            return true;
+        }
 
         return false;
+    }
+    
+    public MySqlBlockStatement parseBlock() {
+        MySqlBlockStatement block = new MySqlBlockStatement();
+
+        accept(Token.BEGIN);
+
+        parseStatementList(block.getStatementList());
+
+        accept(Token.END);
+
+        return block;
     }
 
     public MySqlDescribeStatement parseDescribe() {
@@ -1492,7 +1517,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setConsistentSnapshot(true);
         }
 
-        if (identifierEquals("BEGIN")) {
+        if (lexer.token() == Token.BEGIN) {
             lexer.nextToken();
             stmt.setBegin(true);
             if (identifierEquals("WORK")) {
