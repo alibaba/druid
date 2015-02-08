@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStateme
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -114,6 +115,11 @@ public class SQLServerStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (identifierEquals("WAITFOR")) {
+            statementList.add(this.parseWaitFor());
+            return true;
+        }
+        
         return false;
     }
     
@@ -484,6 +490,32 @@ public class SQLServerStatementParser extends SQLStatementParser {
             }
 
 
+        }
+
+        return stmt;
+    }
+    
+    public SQLServerWaitForStatement parseWaitFor() {
+        acceptIdentifier("WAITFOR");
+
+        SQLServerWaitForStatement stmt = new SQLServerWaitForStatement();
+
+        if (identifierEquals("DELAY")) {
+            lexer.nextToken();
+            stmt.setDelay(this.exprParser.expr());
+        }
+
+        if (identifierEquals("TIME")) {
+            lexer.nextToken();
+            stmt.setTime(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.COMMA) {
+            lexer.nextToken();
+            if (identifierEquals("TIMEOUT")) {
+                lexer.nextToken();
+                stmt.setTimeout(this.exprParser.expr());
+            }
         }
 
         return stmt;

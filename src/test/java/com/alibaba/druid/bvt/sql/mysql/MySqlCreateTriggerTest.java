@@ -22,8 +22,6 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 public class MySqlCreateTriggerTest extends MysqlTest {
 
@@ -36,15 +34,11 @@ public class MySqlCreateTriggerTest extends MysqlTest {
 
         Assert.assertEquals(1, statementList.size());
     }
-    
+
     public void test_1() throws Exception {
-        String sql = "CREATE TRIGGER testref BEFORE INSERT ON test1"
-                + " FOR EACH ROW"
-                + " BEGIN"
-                + " INSERT INTO test2 SET a2 = NEW.a1;"
-                + " DELETE FROM test3 WHERE a3 = NEW.a1;"
-                + " UPDATE test4 SET b4 = b4 + 1 WHERE a4 = NEW.a1;"
-                + " END;";
+        String sql = "CREATE TRIGGER testref BEFORE INSERT ON test1" + " FOR EACH ROW" + " BEGIN"
+                     + " INSERT INTO test2 SET a2 = NEW.a1;" + " DELETE FROM test3 WHERE a3 = NEW.a1;"
+                     + " UPDATE test4 SET b4 = b4 + 1 WHERE a4 = NEW.a1;" + " END;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -52,6 +46,5 @@ public class MySqlCreateTriggerTest extends MysqlTest {
 
         Assert.assertEquals(1, statementList.size());
     }
-    
-    
+
 }
