@@ -1990,7 +1990,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print("UNIQUE ");
         }
 
-        print("INDEX ");
+        print(x.getKeyOrIndex());
+        print(" ");
 
         if (x.getName() != null) {
             x.getName().accept(this);

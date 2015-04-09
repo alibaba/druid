@@ -1688,10 +1688,20 @@ public class SQLStatementParser extends SQLParser {
             item.setUnique(true);
             lexer.nextToken();
             if (lexer.token() == Token.INDEX) {
+                item.setKeyOrIndex(Token.INDEX.name);
+                lexer.nextToken();
+            } else if (lexer.token() == Token.KEY) {
+                item.setKeyOrIndex(Token.KEY.name);
                 lexer.nextToken();
             }
         } else {
-            accept(Token.INDEX);
+            if (lexer.token() == Token.INDEX) {
+                item.setKeyOrIndex(Token.INDEX.name);
+                accept(Token.INDEX);
+            } else if (lexer.token() == Token.KEY) {
+                item.setKeyOrIndex(Token.KEY.name);
+                accept(Token.KEY);
+            }
         }
 
         if (lexer.token() == Token.LPAREN) {
