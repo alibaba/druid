@@ -2290,7 +2290,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(primaryKey);
                         stmt.getItems().add(item);
                     } else if (lexer.token() == Token.KEY) {
-                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                        // throw new ParserException("TODO " + lexer.token() +
+                        // " " + lexer.stringVal());
+                        SQLAlterTableAddIndex item = parseAlterTableAddIndex();
+                        item.setParent(stmt);
+                        stmt.getItems().add(item);
                     } else if (lexer.token() == Token.CONSTRAINT) {
                         lexer.nextToken();
                         SQLName constraintName = this.exprParser.name();
