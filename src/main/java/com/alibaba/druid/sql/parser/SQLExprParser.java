@@ -458,6 +458,11 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLNumberExpr(lexer.decimalValue());
                         lexer.nextToken();
                         break;
+                    case IDENTIFIER: // 当+号后面为字段的情况
+                        sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
+                        lexer.nextToken();
+                        break;
                     case LPAREN:
                         lexer.nextToken();
                         sqlExpr = expr();
