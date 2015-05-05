@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -151,6 +148,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+
+import java.util.List;
+import java.util.Map;
 
 public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTVisitor {
 
@@ -290,6 +290,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print(' ');
         x.getDataType().accept(this);
 
+        for (SQLColumnConstraint item : x.getConstraints()) {
+            print(' ');
+            item.accept(this);
+        }
+
         if (x.getDefaultExpr() != null) {
             if (x.getDefaultExpr() instanceof SQLNullExpr) {
                 print(" NULL");
@@ -312,11 +317,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (mysqlColumn != null && mysqlColumn.isAutoIncrement()) {
             print(" AUTO_INCREMENT");
-        }
-
-        for (SQLColumnConstraint item : x.getConstraints()) {
-            print(' ');
-            item.accept(this);
         }
 
         if (x.getComment() != null) {
