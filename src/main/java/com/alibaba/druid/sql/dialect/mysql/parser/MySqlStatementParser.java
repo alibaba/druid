@@ -1482,7 +1482,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             SQLName table = exprParser.name();
             stmt.setTable(table);
 
-            if (lexer.token() == Token.FROM) {
+            if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
                 lexer.nextToken();
                 SQLName database = exprParser.name();
                 stmt.setDatabase(database);
