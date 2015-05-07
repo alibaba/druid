@@ -61,6 +61,11 @@
 			<name>kiki</name>
 			<email>little.fierydragon@gmail.com</email>
 		</developer>
+		<developer>
+			<id>yako</id>
+			<name>yako</name>
+			<email>yakolyh@gmail.com</email>
+		</developer>
 	</developers>
 
 	<scm>
