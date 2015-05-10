@@ -22,9 +22,12 @@ public class MySqlDescribeStatement extends MySqlStatementImpl {
 
     private SQLName object;
 
+    private SQLName colName;
+
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, object);
+            acceptChild(visitor, colName);
         }
         visitor.endVisit(this);
     }
@@ -35,6 +38,14 @@ public class MySqlDescribeStatement extends MySqlStatementImpl {
 
     public void setObject(SQLName object) {
         this.object = object;
+    }
+
+    public SQLName getColName() {
+        return colName;
+    }
+
+    public void setColName(SQLName colName) {
+        this.colName = colName;
     }
 
 }
