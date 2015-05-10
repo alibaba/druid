@@ -711,7 +711,9 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         MySqlDescribeStatement stmt = new MySqlDescribeStatement();
         stmt.setObject(this.exprParser.name());
-
+        if (lexer.token() == Token.IDENTIFIER) {
+            stmt.setColName(this.exprParser.name());
+        }
         return stmt;
     }
 

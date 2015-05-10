@@ -546,7 +546,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlDescribeStatement x) {
-        getTableStat(x.getObject().toString());
+        String table = x.getObject().toString();
+        getTableStat(table);
+        if (x.getColName() != null) {
+            addColumn(table, x.getColName().toString());
+        }
         return false;
     }
 

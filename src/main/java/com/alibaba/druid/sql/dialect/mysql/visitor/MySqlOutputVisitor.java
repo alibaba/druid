@@ -1696,6 +1696,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlDescribeStatement x) {
         print("DESC ");
         x.getObject().accept(this);
+        print(" ");
+        if (x.getColName() != null) {
+            x.getColName().accept(this);
+        }
         return false;
     }
 
