@@ -492,6 +492,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JdbcSqlStat sqlStat = statement.getSqlStat();
 
         if (sqlStat != null) {
+            sqlStat.decrementExecutingCount();
             sqlStat.error(error);
             sqlStat.addExecuteTime(statement.getLastExecuteType(), statement.isFirstResultSet(), nanos);
             statement.setLastExecuteTimeNano(nanos);
