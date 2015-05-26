@@ -315,8 +315,8 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
     }
 
     public final static class StatHttpServletResponseWrapper extends HttpServletResponseWrapper implements HttpServletResponse {
-
-        private int status;
+        //初始值应该设置为：HttpServletResponse.SC_OK，而不是 0。
+        private int status = HttpServletResponse.SC_OK;
 
         public StatHttpServletResponseWrapper(HttpServletResponse response){
             super(response);
