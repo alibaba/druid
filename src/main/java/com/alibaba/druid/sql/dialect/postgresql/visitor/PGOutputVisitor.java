@@ -519,7 +519,8 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     
     @Override
     public boolean visit(PGArrayExpr x) {
-        print("ARRAY[");
+        x.getExpr().accept(this);
+        print("[");
         printAndAccept(x.getValues(), ", ");
         print("]");
         return false;
