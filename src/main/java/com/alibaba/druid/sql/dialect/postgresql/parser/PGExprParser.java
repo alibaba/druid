@@ -40,6 +40,14 @@ public class PGExprParser extends SQLExprParser {
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.dbType = JdbcConstants.POSTGRESQL;
     }
+    
+    @Override
+    public SQLDataType parseDataType() {
+        if (lexer.token() == Token.TYPE) {
+            lexer.nextToken();
+        }
+        return super.parseDataType();
+    }
 
     @Override
     public PGOrderBy parseOrderBy() {
