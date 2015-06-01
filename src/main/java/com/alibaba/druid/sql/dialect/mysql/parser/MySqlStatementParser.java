@@ -1862,7 +1862,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals(IGNORE)) {
             lexer.nextToken();
-            stmt.setIgnoreLinesNumber((SQLLiteralExpr) this.exprParser.expr());
+            stmt.setIgnoreLinesNumber( this.exprParser.expr());
             acceptIdentifier("LINES");
         }
 
