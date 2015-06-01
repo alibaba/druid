@@ -1652,8 +1652,14 @@ public class SQLExprParser extends SQLParser {
         } else {
             accept(Token.EQ);
         }
-        item.setValue(expr());
-
+        
+        if(lexer.token() == Token.ON) {
+            item.setValue(new SQLIdentifierExpr(lexer.stringVal()));
+            lexer.nextToken();
+        } else {
+            item.setValue(expr());
+        }
+        
         return item;
     }
 

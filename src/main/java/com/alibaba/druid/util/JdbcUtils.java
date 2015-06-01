@@ -123,15 +123,21 @@ public final class JdbcUtils implements JdbcConstants {
     public static void printResultSet(ResultSet rs) throws SQLException {
         printResultSet(rs, System.out);
     }
-
+    
     public static void printResultSet(ResultSet rs, PrintStream out) throws SQLException {
+        printResultSet(rs, out, true, "\t");
+    }
+
+    public static void printResultSet(ResultSet rs, PrintStream out, boolean printHeader, String seperator) throws SQLException {
         ResultSetMetaData metadata = rs.getMetaData();
         int columnCount = metadata.getColumnCount();
-        for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
-            if (columnIndex != 1) {
-                out.print('\t');
+        if (printHeader) {
+            for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
+                if (columnIndex != 1) {
+                    out.print(seperator);
+                }
+                out.print(metadata.getColumnName(columnIndex));
             }
-            out.print(metadata.getColumnName(columnIndex));
         }
 
         out.println();
@@ -140,7 +146,7 @@ public final class JdbcUtils implements JdbcConstants {
 
             for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
                 if (columnIndex != 1) {
-                    out.print('\t');
+                    out.print(seperator);
                 }
 
                 int type = metadata.getColumnType(columnIndex);
