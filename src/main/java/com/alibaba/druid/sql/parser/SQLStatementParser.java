@@ -1658,6 +1658,9 @@ public class SQLStatementParser extends SQLParser {
             item.getColumns().add(columnDef);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
+                if (identifierEquals("ADD")) {
+                    break;
+                }
                 continue;
             }
             break;
