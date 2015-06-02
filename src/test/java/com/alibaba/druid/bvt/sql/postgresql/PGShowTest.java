@@ -46,7 +46,7 @@ public class PGShowTest extends PGTest {
         
         {
             WallProvider provider = new PGWallProvider();
-            provider.check(sql);
+            Assert.assertTrue(provider.checkValid(sql));
         }
 
         // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("reviews")));
