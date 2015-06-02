@@ -21,7 +21,19 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGIntervalExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
@@ -31,6 +43,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForC
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLimit;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -655,6 +668,18 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print(x.getValue());
         print('\'');
 
+        return false;
+    }
+    
+    @Override
+    public void endVisit(PGShowStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGShowStatement x) {
+        print("SHOW ");
+        x.getExpr().accept(this);
         return false;
     }
 }

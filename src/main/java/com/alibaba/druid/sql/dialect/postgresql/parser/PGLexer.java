@@ -55,6 +55,7 @@ public class PGLexer extends Lexer {
         map.put("ROW", Token.ROW);
         map.put("ROWS", Token.ROWS);
         map.put("SHARE", Token.SHARE);
+        map.put("SHOW", Token.SHOW);
 
         map.put("USING", Token.USING);
         map.put("WINDOW", Token.WINDOW);
