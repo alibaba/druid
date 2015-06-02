@@ -299,7 +299,9 @@ public class PGSQLStatementParser extends SQLStatementParser {
     }
 
     protected SQLAlterTableAlterColumn parseAlterColumn() {
-        accept(Token.COLUMN);
+        if (lexer.token() == Token.COLUMN) {
+            lexer.nextToken();
+        }
 
         SQLColumnDefinition column = this.exprParser.parseColumn();
 
