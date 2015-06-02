@@ -874,6 +874,16 @@ public class SQLStatementParser extends SQLParser {
             }
             
             stmt.getItems().add(item);
+        } else if (lexer.token() == Token.LITERAL_ALIAS) {
+            SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
+            this.exprParser.names(item.getColumns());
+            
+            if(lexer.token == Token.CASCADE) {
+                item.setCascade(true);
+                lexer.nextToken();
+            }
+            
+            stmt.getItems().add(item);
         } else {
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         }

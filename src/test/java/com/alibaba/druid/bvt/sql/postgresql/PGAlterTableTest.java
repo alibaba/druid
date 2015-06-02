@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class GPAlterTableTest extends PGTest {
+public class PGAlterTableTest extends PGTest {
 
     public void test_0() throws Exception {
         String sql = "ALTER TABLE dependencies ALTER COLUMN id TYPE bigint";
