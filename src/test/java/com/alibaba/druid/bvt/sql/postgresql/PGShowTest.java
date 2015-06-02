@@ -23,7 +23,8 @@ import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
 
 public class PGShowTest extends PGTest {
 
@@ -42,6 +43,11 @@ public class PGShowTest extends PGTest {
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
+        
+        {
+            WallProvider provider = new PGWallProvider();
+            provider.check(sql);
+        }
 
         // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("reviews")));
         
