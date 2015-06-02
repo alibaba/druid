@@ -796,6 +796,9 @@ public class SQLStatementParser extends SQLParser {
                     if (lexer.token() == Token.COLUMN) {
                         SQLAlterTableAlterColumn alterColumn = parseAlterColumn();
                         stmt.getItems().add(alterColumn);
+                    } else if (lexer.token() == Token.LITERAL_ALIAS) {
+                        SQLAlterTableAlterColumn alterColumn = parseAlterColumn();
+                        stmt.getItems().add(alterColumn);
                     } else {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     }
