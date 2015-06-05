@@ -47,7 +47,7 @@ public class MySqlCreateTableTest58 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `appservice_account` (" + "\n\t`id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY, "
+        Assert.assertEquals("CREATE TABLE `appservice_account` (" + "\n\t`id` integer NOT NULL PRIMARY KEY AUTO_INCREMENT, "
                 + "\n\t`password` varchar(128) NOT NULL, " + "\n\t`last_login` datetime NOT NULL, "
                 + "\n\t`username` varchar(40) NOT NULL UNIQUE, " + "\n\t`date_of_birth` date NOT NULL, "
                 + "\n\t`head` varchar(100) NOT NULL, " + "\n\t`headThumb` varchar(100) NOT NULL, "

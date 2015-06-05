@@ -26,15 +26,7 @@ public class MySqlError_test_2 extends MysqlTest {
         String sql = "Describe sdb_goods free_postage";
         Exception error = null;
 
-        try {
-            MySqlStatementParser parser = new MySqlStatementParser(sql);
-            parser.parseStatementList();
-        } catch (Exception e) {
-            error = e;
-        }
-
-        Assert.assertNotNull(error);
-//        error.printStackTrace();
-        Assert.assertEquals("syntax error, error in :'oods free_postage',expect IDENTIFIER, actual IDENTIFIER free_postage", error.getMessage());
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        parser.parseStatementList();
     }
 }

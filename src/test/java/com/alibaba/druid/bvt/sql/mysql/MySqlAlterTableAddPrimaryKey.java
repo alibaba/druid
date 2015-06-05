@@ -32,7 +32,7 @@ public class MySqlAlterTableAddPrimaryKey extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tCHANGE COLUMN `fid` `fid` INT(11) NULL NOT NULL,\n\t" + //
+                            "\n\tCHANGE COLUMN `fid` `fid` INT(11) NOT NULL NULL,\n\t" + //
                             "ADD PRIMARY KEY (`fid`)", output);
     }
 
