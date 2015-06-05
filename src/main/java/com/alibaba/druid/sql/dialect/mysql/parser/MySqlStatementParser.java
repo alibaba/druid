@@ -1760,6 +1760,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     protected MySqlLoadDataInFileStatement parseLoadDataInFile() {
+
         acceptIdentifier("DATA");
 
         MySqlLoadDataInFileStatement stmt = new MySqlLoadDataInFileStatement();
@@ -1818,7 +1819,8 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (identifierEquals("TERMINATED")) {
                 lexer.nextToken();
                 accept(Token.BY);
-                stmt.setColumnsTerminatedBy((SQLLiteralExpr) this.exprParser.expr());
+                stmt.setColumnsTerminatedBy(new SQLCharExpr(lexer.stringVal()));
+                lexer.nextToken();
             }
 
             if (identifierEquals("OPTIONALLY")) {
@@ -1829,13 +1831,15 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (identifierEquals("ENCLOSED")) {
                 lexer.nextToken();
                 accept(Token.BY);
-                stmt.setColumnsEnclosedBy((SQLLiteralExpr) this.exprParser.expr());
+                stmt.setColumnsEnclosedBy(new SQLCharExpr(lexer.stringVal()));
+                lexer.nextToken();
             }
 
             if (identifierEquals("ESCAPED")) {
                 lexer.nextToken();
                 accept(Token.BY);
-                stmt.setColumnsEscaped((SQLLiteralExpr) this.exprParser.expr());
+                stmt.setColumnsEscaped(new SQLCharExpr(lexer.stringVal()));
+                lexer.nextToken();
             }
         }
 
@@ -1844,19 +1848,21 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (identifierEquals("STARTING")) {
                 lexer.nextToken();
                 accept(Token.BY);
-                stmt.setLinesStartingBy((SQLLiteralExpr) this.exprParser.expr());
+                stmt.setLinesStartingBy(new SQLCharExpr(lexer.stringVal()));
+                lexer.nextToken();
             }
 
             if (identifierEquals("TERMINATED")) {
                 lexer.nextToken();
                 accept(Token.BY);
-                stmt.setLinesTerminatedBy((SQLLiteralExpr) this.exprParser.expr());
+                stmt.setLinesTerminatedBy(new SQLCharExpr(lexer.stringVal()));
+                lexer.nextToken();
             }
         }
 
         if (identifierEquals(IGNORE)) {
             lexer.nextToken();
-            stmt.setIgnoreLinesNumber((SQLLiteralExpr) this.exprParser.expr());
+            stmt.setIgnoreLinesNumber( this.exprParser.expr());
             acceptIdentifier("LINES");
         }
 
@@ -1872,6 +1878,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+
+
     }
 
     public MySqlPrepareStatement parsePrepare() {
