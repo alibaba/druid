@@ -50,4 +50,15 @@ public class PagerUtilsTest_Limit_db2_0 extends TestCase {
                             + "\nWHERE ROWNUM > 20"//
                             + "\n\tAND ROWNUM <= 30", result);
     }
+
+    public void test_fetch_order() {
+        String  sql="SELECT t.CUSTNAME AS custname\n" +
+                "FROM CPS_LOAN_INFO t WHERE t.DEL_FLAG = 0\n" +
+                "ORDER BY t.CREATE_TIME DESC";
+
+        String limitSql=PagerUtils.limit(sql, JdbcConstants.DB2,0,20)  ;
+        int fetchRowIndex=limitSql.indexOf("FETCH FIRST");
+        int orderIndex=limitSql.indexOf("ORDER BY") ;
+        Assert.assertTrue(fetchRowIndex>orderIndex);
+    }
 }
