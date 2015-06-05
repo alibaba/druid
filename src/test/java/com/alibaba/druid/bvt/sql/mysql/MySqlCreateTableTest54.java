@@ -105,7 +105,7 @@ public class MySqlCreateTableTest54 extends MysqlTest {
                                     + "\n\t`activity_type` int(11) NOT NULL COMMENT '活动类型', "
                                     + "\n\t`node_type` int(11) NOT NULL COMMENT '节点类型', "
                                     + "\n\t`node_title` varchar(200) NOT NULL COMMENT '节点标题', "
-                                    + "\n\t`status` int(11) DEFAULT '0' NOT NULL COMMENT '页面的显示状态', "
+                                    + "\n\t`status` int(11) NOT NULL DEFAULT '0' COMMENT '页面的显示状态', "
                                     + "\n\t`update_status` int(11) NULL COMMENT '节点创建后的修改状态', "
                                     + "\n\t`execute_status` int(11) NULL COMMENT '节点当前的执行状态', "
                                     + "\n\t`start_time` datetime NULL COMMENT '该节点活动的开始时间', "
