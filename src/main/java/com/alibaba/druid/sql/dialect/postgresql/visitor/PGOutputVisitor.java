@@ -234,13 +234,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getLimit().accept(this);
         }
 
-        if (x.getOffset() != null) {
-            println();
-            print("OFFSET ");
-            x.getOffset().accept(this);
-            print(" ROWS");
-        }
-
         if (x.getFetch() != null) {
             println();
             x.getFetch().accept(this);
@@ -491,7 +484,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
 	@Override
 	public boolean visit(PGLimit x) {
-		return true;
+	    x.getRowCount().accept(this);
+	    if (x.getOffset() != null) {
+	        print(" OFFSET ");
+	        x.getOffset().accept(this);
+	    }
+		return false;
 	}
 
 	@Override

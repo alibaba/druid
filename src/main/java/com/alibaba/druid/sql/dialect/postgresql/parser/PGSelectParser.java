@@ -27,8 +27,9 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLimit;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -158,18 +159,26 @@ public class PGSelectParser extends SQLSelectParser {
 
         for (;;) {
             if (lexer.token() == Token.LIMIT) {
+                PGLimit limit = new PGLimit();
+                
                 lexer.nextToken();
                 if (lexer.token() == Token.ALL) {
-                    queryBlock.setLimit(new SQLIdentifierExpr("ALL"));
+                    limit.setRowCount(new SQLIdentifierExpr("ALL"));
                     lexer.nextToken();
                 } else {
-                    SQLExpr limit = expr();
+                    limit.setRowCount(expr());
+                }
+                
+                queryBlock.setLimit(limit);
+            } else if (lexer.token() == Token.OFFSET) {
+                PGLimit limit = queryBlock.getLimit();
+                if (limit == null) {
+                    limit = new PGLimit();
                     queryBlock.setLimit(limit);
                 }
-            } else if (lexer.token() == Token.OFFSET) {
                 lexer.nextToken();
                 SQLExpr offset = expr();
-                queryBlock.setOffset(offset);
+                limit.setOffset(offset);
 
                 if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
                     lexer.nextToken();
