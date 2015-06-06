@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.db2.visitor;
 
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
@@ -31,12 +34,26 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         this.visit((SQLSelectQueryBlock) x);
 
         if (x.getFirst() != null) {
+
+            //order by 语句必须在FETCH FIRST ROWS ONLY之前
+            SQLObject parent= x.getParent();
+            if(parent instanceof SQLSelect)
+            {
+                SQLOrderBy orderBy= ((SQLSelect) parent).getOrderBy();
+                if (orderBy!=null&&orderBy.getItems().size() > 0) {
+                    println();
+                    print("ORDER BY ");
+                    printAndAccept(orderBy.getItems(), ", ");
+                    ((SQLSelect) parent).setOrderBy(null);
+                }
+            }
             println();
             print("FETCH FIRST ");
             x.getFirst().accept(this);
             print(" ROWS ONLY");
-        }
 
+
+        }
         if (x.isForReadOnly()) {
             println();
             print("FOR READ ONLY");
@@ -56,6 +73,7 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
         return false;
     }
+
 
     @Override
     public void endVisit(DB2SelectQueryBlock x) {
