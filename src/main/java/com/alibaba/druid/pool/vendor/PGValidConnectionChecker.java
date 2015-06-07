@@ -35,7 +35,7 @@ public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter impl
 
     private static final Log  LOG                  = LogFactory.getLog(PGValidConnectionChecker.class);
 
-    private String            defaultValidateQuery = "SELECT 'x' FROM DUAL";
+    private String            defaultValidateQuery = "SELECT 'x'";
 
     public PGValidConnectionChecker(){
         configFromProperties(System.getProperties());
