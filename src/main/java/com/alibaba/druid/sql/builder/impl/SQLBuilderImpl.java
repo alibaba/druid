@@ -22,12 +22,10 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.builder.SQLBuilder;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
-import com.alibaba.druid.util.JdbcConstants;
 
 
 public class SQLBuilderImpl implements SQLBuilder {
-    protected SQLExpr toSQLExpr(Object obj, String dbType) {
+    public static SQLExpr toSQLExpr(Object obj, String dbType) {
         if (obj == null) {
             return new SQLNullExpr();
         }

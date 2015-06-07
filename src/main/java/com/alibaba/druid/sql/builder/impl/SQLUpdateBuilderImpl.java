@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.builder.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -32,7 +33,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLUpdateBuilderImpl implements SQLUpdateBuilder {
+public class SQLUpdateBuilderImpl extends SQLBuilderImpl implements SQLUpdateBuilder {
 
     private SQLUpdateStatement stmt;
     private String             dbType;
@@ -123,6 +124,28 @@ public class SQLUpdateBuilderImpl implements SQLUpdateBuilder {
             SQLUpdateSetItem updateSetItem = SQLUtils.toUpdateSetItem(item, dbType);
             update.addItem(updateSetItem);
         }
+        
+        return this;
+    }
+    
+    public SQLUpdateBuilderImpl setValue(Map<String, Object> values) {
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            setValue(entry.getKey(), entry.getValue());
+        }
+        
+        return this;
+    }
+    
+    public SQLUpdateBuilderImpl setValue(String column, Object value) {
+        SQLUpdateStatement update = getSQLUpdateStatement();
+        
+        SQLExpr columnExpr = SQLUtils.toSQLExpr(column, dbType);
+        SQLExpr valueExpr = toSQLExpr(value, dbType);
+        
+        SQLUpdateSetItem item = new SQLUpdateSetItem();
+        item.setColumn(columnExpr);
+        item.setValue(valueExpr);
+        update.addItem(item);
         
         return this;
     }
