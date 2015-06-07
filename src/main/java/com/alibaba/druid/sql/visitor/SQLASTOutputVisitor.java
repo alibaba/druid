@@ -722,9 +722,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
         x.getExpr().accept(this);
 
-        if ((x.getAlias() != null) && (x.getAlias().length() > 0)) {
+        String alias = x.getAlias();
+        if (alias != null && alias.length() > 0) {
             print(" AS ");
-            print(x.getAlias());
+            if (alias.indexOf(' ') == -1 || alias.charAt(0) == '"' || alias.charAt(0) == '\'') {
+                print(alias);                
+            } else {
+                print('"');
+                print(alias);
+                print('"');
+            }
         }
         return false;
     }
@@ -948,9 +955,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         x.getTableName().accept(this);
 
         if (x.getWhere() != null) {
-            print(" WHERE ");
+            println();
+            print("WHERE ");
+            incrementIndent();
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
+            decrementIndent();
         }
 
         return false;
@@ -1023,9 +1033,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         if (x.getWhere() != null) {
             println();
+            incrementIndent();
             print("WHERE ");
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
+            decrementIndent();
         }
 
         return false;

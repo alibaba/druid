@@ -245,8 +245,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         if (x.getWhere() != null) {
             println();
             print("WHERE ");
+            incrementIndent();
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
+            decrementIndent();
         }
 
         return false;
