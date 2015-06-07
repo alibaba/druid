@@ -76,8 +76,10 @@ import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 
 public class SQLExprParser extends SQLParser {
 
@@ -1001,6 +1003,28 @@ public class SQLExprParser extends SQLParser {
 
         return item;
     }
+    
+    public SQLUpdateSetItem parseUpdateSetItem() {
+        SQLUpdateSetItem item = new SQLUpdateSetItem();
+
+        if (lexer.token() == (Token.LPAREN)) {
+            lexer.nextToken();
+            SQLListExpr list = new SQLListExpr();
+            this.exprList(list.getItems(), list);
+            accept(Token.RPAREN);
+            item.setColumn(list);
+        } else {
+            item.setColumn(this.primary());
+        }
+        if (lexer.token() == Token.COLONEQ) {
+            lexer.nextToken();
+        } else {
+            accept(Token.EQ);
+        }
+        
+        item.setValue(this.expr());
+        return item;
+    }
 
     public final SQLExpr bitAnd() {
         SQLExpr expr = shift();
@@ -1742,5 +1766,28 @@ public class SQLExprParser extends SQLParser {
 
     protected SQLForeignKeyConstraint createForeignKey() {
         return new SQLForeignKeyImpl();
+    }
+    
+    public SQLSelectItem parseSelectItem() {
+        SQLExpr expr;
+        boolean connectByRoot = false;
+        if (lexer.token() == Token.IDENTIFIER) {
+            if (identifierEquals("CONNECT_BY_ROOT")) {
+                connectByRoot = true;
+                lexer.nextToken();
+            }
+            expr = new SQLIdentifierExpr(lexer.stringVal());
+            lexer.nextTokenComma();
+
+            if (lexer.token() != Token.COMMA) {
+                expr = this.primaryRest(expr);
+                expr = this.exprRest(expr);
+            }
+        } else {
+            expr = expr();
+        }
+        final String alias = as();
+
+        return new SQLSelectItem(expr, alias, connectByRoot);
     }
 }

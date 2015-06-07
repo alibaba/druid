@@ -1137,12 +1137,10 @@ public class OracleStatementParser extends SQLStatementParser {
                 accept(Token.SET);
 
                 for (;;) {
-                    SQLUpdateSetItem item = new SQLUpdateSetItem();
-                    item.setColumn(this.exprParser.name());
-                    accept(Token.EQ);
-                    item.setValue(this.exprParser.expr());
+                    SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
 
                     updateClause.getItems().add(item);
+                    item.setParent(updateClause);
 
                     if (lexer.token() == (Token.COMMA)) {
                         lexer.nextToken();

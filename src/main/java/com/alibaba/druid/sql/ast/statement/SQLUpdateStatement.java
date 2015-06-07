@@ -75,6 +75,11 @@ public class SQLUpdateStatement extends SQLStatementImpl {
     public List<SQLUpdateSetItem> getItems() {
         return items;
     }
+    
+    public void addItem(SQLUpdateSetItem item) {
+        this.items.add(item);
+        item.setParent(this);
+    }
 
     @Override
     public void output(StringBuffer buf) {

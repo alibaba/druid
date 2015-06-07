@@ -82,6 +82,11 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     public List<SQLSelectItem> getSelectList() {
         return this.selectList;
     }
+    
+    public void addSelectItem(SQLSelectItem item) {
+        this.selectList.add(item);
+        item.setParent(this);
+    }
 
     public SQLTableSource getFrom() {
         return this.from;

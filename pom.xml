@@ -407,7 +407,7 @@
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis-spring</artifactId>
-			<version>1.1.1</version>
+			<version>1.2.2</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -446,7 +446,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.24</version>
+			<version>5.1.35</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -568,7 +568,7 @@
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.b.47</version>
+			<version>1.b.52</version>
 			<scope>test</scope>
 		</dependency>
 		
