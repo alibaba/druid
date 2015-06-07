@@ -26,9 +26,11 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
@@ -174,6 +176,39 @@ public class SQLUtils {
         }
 
         return expr;
+    }
+    
+    public static SQLSelectOrderByItem toOrderByItem(String sql, String dbType) {
+        SQLExprParser parser = SQLParserUtils.createExprParser(sql, dbType);
+        SQLSelectOrderByItem orderByItem = parser.parseSelectOrderByItem();
+        
+        if (parser.getLexer().token() != Token.EOF) {
+            throw new ParserException("illegal sql expr : " + sql);
+        }
+        
+        return orderByItem;
+    }
+    
+    public static SQLUpdateSetItem toUpdateSetItem(String sql, String dbType) {
+        SQLExprParser parser = SQLParserUtils.createExprParser(sql, dbType);
+        SQLUpdateSetItem updateSetItem = parser.parseUpdateSetItem();
+        
+        if (parser.getLexer().token() != Token.EOF) {
+            throw new ParserException("illegal sql expr : " + sql);
+        }
+        
+        return updateSetItem;
+    }
+    
+    public static SQLSelectItem toSelectItem(String sql, String dbType) {
+        SQLExprParser parser = SQLParserUtils.createExprParser(sql, dbType);
+        SQLSelectItem selectItem = parser.parseSelectItem();
+
+        if (parser.getLexer().token() != Token.EOF) {
+            throw new ParserException("illegal sql expr : " + sql);
+        }
+
+        return selectItem;
     }
 
     public static List<SQLStatement> toStatementList(String sql, String dbType) {
@@ -406,7 +441,7 @@ public class SQLUtils {
             SQLSelectQuery query = ((SQLSelectStatement) stmt).getSelect().getQuery();
             if (query instanceof SQLSelectQueryBlock) {
                 SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
-                SQLExpr newCondition = buildNewCondition(op, condition, left, queryBlock.getWhere());
+                SQLExpr newCondition = buildCondition(op, condition, left, queryBlock.getWhere());
                 queryBlock.setWhere(newCondition);
             } else {
                 throw new IllegalArgumentException("add condition not support " + stmt.getClass().getName());
@@ -418,7 +453,7 @@ public class SQLUtils {
         if (stmt instanceof SQLDeleteStatement) {
             SQLDeleteStatement delete = (SQLDeleteStatement) stmt;
 
-            SQLExpr newCondition = buildNewCondition(op, condition, left, delete.getWhere());
+            SQLExpr newCondition = buildCondition(op, condition, left, delete.getWhere());
             delete.setWhere(newCondition);
 
             return;
@@ -427,7 +462,7 @@ public class SQLUtils {
         if (stmt instanceof SQLUpdateStatement) {
             SQLUpdateStatement update = (SQLUpdateStatement) stmt;
 
-            SQLExpr newCondition = buildNewCondition(op, condition, left, update.getWhere());
+            SQLExpr newCondition = buildCondition(op, condition, left, update.getWhere());
             update.setWhere(newCondition);
 
             return;
@@ -436,7 +471,7 @@ public class SQLUtils {
         throw new IllegalArgumentException("add condition not support " + stmt.getClass().getName());
     }
     
-    protected static SQLExpr buildNewCondition(SQLBinaryOperator op, SQLExpr condition, boolean left, SQLExpr where) {
+    public static SQLExpr buildCondition(SQLBinaryOperator op, SQLExpr condition, boolean left, SQLExpr where) {
         if (where == null) {
             return condition;
         }

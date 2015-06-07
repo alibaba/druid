@@ -64,7 +64,7 @@ public class SQLSelectParser extends SQLParser {
             select.setOrderBy(parseOrderBy());
         }
 
-        while(lexer.token() == Token.HINT) {
+        while (lexer.token() == Token.HINT) {
             this.exprParser.parseHints(select.getHints());
         }
 
@@ -269,11 +269,12 @@ public class SQLSelectParser extends SQLParser {
         }
     }
 
-    protected final void parseSelectList(SQLSelectQueryBlock queryBlock) {
+    protected void parseSelectList(SQLSelectQueryBlock queryBlock) {
         final List<SQLSelectItem> selectList = queryBlock.getSelectList();
         for (;;) {
-            final SQLSelectItem selectItem = parseSelectItem();
+            final SQLSelectItem selectItem = this.exprParser.parseSelectItem();
             selectList.add(selectItem);
+            selectItem.setParent(queryBlock);
 
             if (lexer.token() != Token.COMMA) {
                 break;
@@ -281,29 +282,6 @@ public class SQLSelectParser extends SQLParser {
 
             lexer.nextToken();
         }
-    }
-
-    protected SQLSelectItem parseSelectItem() {
-        SQLExpr expr;
-        boolean connectByRoot = false;
-        if (lexer.token() == Token.IDENTIFIER) {
-            if (identifierEquals("CONNECT_BY_ROOT")) {
-                connectByRoot = true;
-                lexer.nextToken();
-            }
-            expr = new SQLIdentifierExpr(lexer.stringVal());
-            lexer.nextTokenComma();
-
-            if (lexer.token() != Token.COMMA) {
-                expr = this.exprParser.primaryRest(expr);
-                expr = this.exprParser.exprRest(expr);
-            }
-        } else {
-            expr = expr();
-        }
-        final String alias = as();
-
-        return new SQLSelectItem(expr, alias, connectByRoot);
     }
 
     public void parseFrom(SQLSelectQueryBlock queryBlock) {
