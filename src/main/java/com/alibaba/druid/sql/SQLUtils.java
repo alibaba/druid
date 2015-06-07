@@ -23,6 +23,13 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -241,7 +248,7 @@ public class SQLUtils {
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2OutputVisitor(out);
         }
-        
+
         if (JdbcUtils.ODPS.equals(dbType)) {
             return new OdpsOutputVisitor(out);
         }
@@ -340,7 +347,7 @@ public class SQLUtils {
 
     public static String translateOracleToMySql(String sql) {
         List<SQLStatement> stmtList = toStatementList(sql, JdbcConstants.ORACLE);
-        
+
         StringBuilder out = new StringBuilder();
         OracleToMySqlOutputVisitor visitor = new OracleToMySqlOutputVisitor(out, false);
         for (int i = 0; i < stmtList.size(); ++i) {
@@ -349,6 +356,147 @@ public class SQLUtils {
 
         String mysqlSql = out.toString();
         return mysqlSql;
+
+    }
+
+    public static String addCondition(String sql, String condition, String dbType) {
+        String result = addCondition(sql, condition, SQLBinaryOperator.BooleanAnd, false, dbType);
+        return result;
+    }
+
+    public static String addCondition(String sql, String condition, SQLBinaryOperator op, boolean left, String dbType) {
+        if (sql == null) {
+            throw new IllegalArgumentException("sql is null");
+        }
+
+        if (condition == null) {
+            return sql;
+        }
+
+        if (op == null) {
+            op = SQLBinaryOperator.BooleanAnd;
+        }
+
+        if (op != SQLBinaryOperator.BooleanAnd //
+            && op != SQLBinaryOperator.BooleanOr) {
+            throw new IllegalArgumentException("add condition not support : " + op);
+        }
+
+        List<SQLStatement> stmtList = parseStatements(sql, dbType);
+
+        if (stmtList.size() == 0) {
+            throw new IllegalArgumentException("not support empty-statement :" + sql);
+        }
+
+        if (stmtList.size() > 1) {
+            throw new IllegalArgumentException("not support multi-statement :" + sql);
+        }
+
+        SQLStatement stmt = stmtList.get(0);
+
+        SQLExpr conditionExpr = toSQLExpr(condition, dbType);
+
+        addCondition(stmt, op, conditionExpr, left);
+
+        return toSQLString(stmt, dbType);
+    }
+
+    public static void addCondition(SQLStatement stmt, SQLBinaryOperator op, SQLExpr condition, boolean left) {
+        if (stmt instanceof SQLSelectStatement) {
+            SQLSelectQuery query = ((SQLSelectStatement) stmt).getSelect().getQuery();
+            if (query instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+                SQLExpr newCondition = buildNewCondition(op, condition, left, queryBlock.getWhere());
+                queryBlock.setWhere(newCondition);
+            } else {
+                throw new IllegalArgumentException("add condition not support " + stmt.getClass().getName());
+            }
+
+            return;
+        }
+
+        if (stmt instanceof SQLDeleteStatement) {
+            SQLDeleteStatement delete = (SQLDeleteStatement) stmt;
+
+            SQLExpr newCondition = buildNewCondition(op, condition, left, delete.getWhere());
+            delete.setWhere(newCondition);
+
+            return;
+        }
+
+        if (stmt instanceof SQLUpdateStatement) {
+            SQLUpdateStatement update = (SQLUpdateStatement) stmt;
+
+            SQLExpr newCondition = buildNewCondition(op, condition, left, update.getWhere());
+            update.setWhere(newCondition);
+
+            return;
+        }
+
+        throw new IllegalArgumentException("add condition not support " + stmt.getClass().getName());
+    }
+    
+    protected static SQLExpr buildNewCondition(SQLBinaryOperator op, SQLExpr condition, boolean left, SQLExpr where) {
+        if (where == null) {
+            return condition;
+        }
+
+        SQLBinaryOpExpr newCondition;
+        if (left) {
+            newCondition = new SQLBinaryOpExpr(condition, op, where);            
+        } else {
+            newCondition = new SQLBinaryOpExpr(where, op, condition);
+        }
+        return newCondition;
+    }
+   
+    public static String addSelectItem(String selectSql, String expr, String alias, String dbType) {
+        return addSelectItem(selectSql, expr, alias, false, dbType);
+    }
+                                       
+    public static String addSelectItem(String selectSql, String expr, String alias, boolean first, String dbType) {
+        List<SQLStatement> stmtList = parseStatements(selectSql, dbType);
+
+        if (stmtList.size() == 0) {
+            throw new IllegalArgumentException("not support empty-statement :" + selectSql);
+        }
+
+        if (stmtList.size() > 1) {
+            throw new IllegalArgumentException("not support multi-statement :" + selectSql);
+        }
+
+        SQLStatement stmt = stmtList.get(0);
+
+        SQLExpr columnExpr = toSQLExpr(expr, dbType);
+
+        addSelectItem(stmt, columnExpr, alias, first);
+
+        return toSQLString(stmt, dbType);
+    }
+    
+    public static void addSelectItem(SQLStatement stmt, SQLExpr expr, String alias, boolean first) {
+        if (expr == null) {
+            return;
+        }
         
+        if (stmt instanceof SQLSelectStatement) {
+            SQLSelectQuery query = ((SQLSelectStatement) stmt).getSelect().getQuery();
+            if (query instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+                addSelectItem(queryBlock, expr, alias, first);
+            } else {
+                throw new IllegalArgumentException("add condition not support " + stmt.getClass().getName());
+            }
+
+            return;
+        }
+        
+        throw new IllegalArgumentException("add selectItem not support " + stmt.getClass().getName());
+    }
+    
+    public static void addSelectItem(SQLSelectQueryBlock queryBlock, SQLExpr expr, String alias, boolean first) {
+        SQLSelectItem selectItem = new SQLSelectItem(expr, alias);
+        queryBlock.getSelectList().add(selectItem);
+        selectItem.setParent(selectItem);
     }
 }

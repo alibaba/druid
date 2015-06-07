@@ -49,7 +49,7 @@ public class SQLServerUpdateTest extends TestCase {
         		"\n\t\tGROUP BY a.FId" +
         		"\n\t\t) b" +
         		"\nWHERE a.FId = b.FId" +
-        		"\nAND a.FId = ?";
+        		"\n\tAND a.FId = ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

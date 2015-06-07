@@ -2540,7 +2540,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
             }
             
-            if (lexer.token() == Token.COMMA) {
+            if (parenFlag && lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;
             }
