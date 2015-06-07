@@ -272,6 +272,10 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
         public Limit(){
 
         }
+        
+        public Limit(SQLExpr rowCount){
+            this.setRowCount(rowCount);
+        }
 
         private SQLExpr rowCount;
         private SQLExpr offset;
