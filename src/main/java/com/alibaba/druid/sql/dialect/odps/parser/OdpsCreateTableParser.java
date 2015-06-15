@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.odps.parser;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -52,11 +53,23 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         }
 
         stmt.setName(this.exprParser.name());
+        
+        if (identifierEquals("LIFECYCLE")) {
+            lexer.nextToken();
+            stmt.setLifecycle(this.exprParser.expr());
+        }
 
         if (lexer.token() == Token.LIKE) {
             lexer.nextToken();
             SQLName name = this.exprParser.name();
             stmt.setLike(name);
+        } else if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+            
+            OdpsSelectParser selectParser = new OdpsSelectParser(this.exprParser);
+            SQLSelect select = selectParser.select();
+            
+            stmt.setSelect(select);
         } else {
             accept(Token.LPAREN);
             

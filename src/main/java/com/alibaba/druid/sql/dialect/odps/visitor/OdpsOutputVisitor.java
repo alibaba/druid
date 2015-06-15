@@ -101,6 +101,11 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print("LIFECYCLE ");
             x.getLifecycle().accept(this);
         }
+        
+        if (x.getSelect() != null) {
+            println();
+            x.getSelect().accept(this);
+        }
 
         return false;
     }
