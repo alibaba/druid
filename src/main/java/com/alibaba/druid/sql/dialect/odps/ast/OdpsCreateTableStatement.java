@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -36,9 +37,11 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
     protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
 
     protected SQLExpr                   lifecycle;
-    
-    public OdpsCreateTableStatement() {
-        super (JdbcConstants.ODPS);
+
+    protected SQLSelect                 select;
+
+    public OdpsCreateTableStatement(){
+        super(JdbcConstants.ODPS);
     }
 
     public SQLExprTableSource getLike() {
@@ -73,6 +76,14 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
         this.lifecycle = lifecycle;
     }
 
+    public SQLSelect getSelect() {
+        return select;
+    }
+
+    public void setSelect(SQLSelect select) {
+        this.select = select;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OdpsASTVisitor) visitor);
@@ -84,6 +95,7 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, partitionColumns);
             this.acceptChild(visitor, lifecycle);
+            this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
     }
