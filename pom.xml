@@ -36,6 +36,15 @@
 			<url>file://${basedir}/lib/</url>
 			<layout>default</layout>
 		</repository>
+        <repository>
+            <id>oschina</id>
+            <name>oschina Repository</name>
+            <layout>default</layout>
+            <url>http://maven.oschina.net/content/repositories/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
 	</repositories>
 
 <!--  
@@ -108,6 +117,7 @@
 					<encoding>UTF-8</encoding>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
+                    <skip>true</skip>
 				</configuration>
 			</plugin>
 
@@ -119,6 +129,7 @@
 					<includes>
 						<include>**/bvt/**/*.java</include>
 					</includes>
+                    <skip>true</skip>
 				</configuration>
 			</plugin>
 
@@ -293,13 +304,6 @@
 				</file>
 			</activation>
 			<dependencies>
-				<dependency>
-					<groupId>com.alibaba</groupId>
-					<artifactId>jconsole</artifactId>
-					<version>1.6.0</version>
-					<scope>system</scope>
-					<systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
-				</dependency>
 			</dependencies>
 		</profile>
 
@@ -463,12 +467,17 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
-			<scope>provided</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.oracle</groupId>-->
+			<!--<artifactId>ojdbc6</artifactId>-->
+			<!--<version>11.2.0.3</version>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
+        <dependency>
+            <groupId>cn.guoyukun.jdbc</groupId>
+            <artifactId>oracle-ojdbc6</artifactId>
+            <version>11.2.0.3.0</version>
+        </dependency>
 		
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -518,14 +527,14 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>proxool</groupId>
+            <groupId>com.cloudhopper.proxool</groupId>
 			<artifactId>proxool</artifactId>
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>proxool</groupId>
-			<artifactId>proxool-cglib</artifactId>
+            <groupId>com.cloudhopper.proxool</groupId>
+            <artifactId>proxool-cglib</artifactId>
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
@@ -575,8 +584,7 @@
 		<dependency>
 			<groupId>com.taobao.tbdatasource</groupId>
 			<artifactId>tbdatasource</artifactId>
-			<version>2.0.2</version>
-			<scope>test</scope>
+			<version>3.0.1.5.taobaocode</version>
 			<exclusions>
 				<exclusion>
 					<groupId>jboss</groupId>
@@ -610,4 +618,18 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>gozap构件发布版仓库</name>
+            <url>http://repo.gozap.com/repos/content/repositories/gozap/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>gozap构件快照版仓库</name>
+            <url>http://repo.gozap.com/repos/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
