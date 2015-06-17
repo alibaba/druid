@@ -36,15 +36,6 @@
 			<url>file://${basedir}/lib/</url>
 			<layout>default</layout>
 		</repository>
-        <repository>
-            <id>oschina</id>
-            <name>oschina Repository</name>
-            <layout>default</layout>
-            <url>http://maven.oschina.net/content/repositories/public</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
 	</repositories>
 
 <!--  
