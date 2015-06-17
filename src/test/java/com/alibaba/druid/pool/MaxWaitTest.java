@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.util.concurrent.CountDownLatch;
 
-import EDU.oswego.cs.dl.util.concurrent.CountDown;
 import junit.framework.TestCase;
 
 public class MaxWaitTest extends TestCase {

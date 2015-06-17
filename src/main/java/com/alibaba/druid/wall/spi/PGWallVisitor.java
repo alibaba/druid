@@ -164,7 +164,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
     @Override
     public String toSQL(SQLObject obj) {
-        return SQLUtils.toOracleString(obj);
+        return SQLUtils.toPGString(obj);
     }
 
     @Override

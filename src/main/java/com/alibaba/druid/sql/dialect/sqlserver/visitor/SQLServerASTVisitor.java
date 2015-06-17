@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStateme
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface SQLServerASTVisitor extends SQLASTVisitor {
@@ -112,5 +113,9 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     boolean visit(SQLServerRollbackStatement x);
 
     void endVisit(SQLServerRollbackStatement x);
+    
+    boolean visit(SQLServerWaitForStatement x);
+
+    void endVisit(SQLServerWaitForStatement x);
 
 }

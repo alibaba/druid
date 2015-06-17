@@ -56,6 +56,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -545,7 +546,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlDescribeStatement x) {
-        getTableStat(x.getObject().toString());
+        String table = x.getObject().toString();
+        getTableStat(table);
+        if (x.getColName() != null) {
+            addColumn(table, x.getColName().toString());
+        }
         return false;
     }
 
@@ -1349,6 +1354,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlSelectGroupByExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlBlockStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlBlockStatement x) {
         
     }
 

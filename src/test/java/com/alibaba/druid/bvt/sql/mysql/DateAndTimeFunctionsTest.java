@@ -621,6 +621,29 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         Assert.assertEquals("SELECT YEARWEEK('1987-01-01');", text);
     }
+    
+    
+    public void test_54() throws Exception {
+        String sql = "SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL +t.c1 DAY) from t";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL +t.c1 DAY)\nFROM t;", text);
+    }
+    
+    public void test_55() throws Exception {
+        String sql = "SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL -t.c1 DAY) from t";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL -t.c1 DAY)\nFROM t;", text);
+    }
 
     private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();

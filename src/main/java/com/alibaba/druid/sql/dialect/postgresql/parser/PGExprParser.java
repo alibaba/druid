@@ -40,6 +40,14 @@ public class PGExprParser extends SQLExprParser {
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
         this.dbType = JdbcConstants.POSTGRESQL;
     }
+    
+    @Override
+    public SQLDataType parseDataType() {
+        if (lexer.token() == Token.TYPE) {
+            lexer.nextToken();
+        }
+        return super.parseDataType();
+    }
 
     @Override
     public PGOrderBy parseOrderBy() {
@@ -69,8 +77,9 @@ public class PGExprParser extends SQLExprParser {
     
     public SQLExpr primary() {
         if (lexer.token() == Token.ARRAY) {
-            lexer.nextToken();
             PGArrayExpr array = new PGArrayExpr();
+            array.setExpr(new SQLIdentifierExpr(lexer.stringVal()));
+            lexer.nextToken();
             accept(Token.LBRACKET);
             this.exprList(array.getValues(), array);
             accept(Token.RBRACKET);
@@ -117,6 +126,15 @@ public class PGExprParser extends SQLExprParser {
             castExpr.setDataType(dataType);
 
             return primaryRest(castExpr);
+        }
+        
+        if (lexer.token() == Token.LBRACKET) {
+            PGArrayExpr array = new PGArrayExpr();
+            array.setExpr(expr);
+            lexer.nextToken();
+            this.exprList(array.getValues(), array);
+            accept(Token.RBRACKET);
+            return primaryRest(array);
         }
         
         if (expr.getClass() == SQLIdentifierExpr.class) {

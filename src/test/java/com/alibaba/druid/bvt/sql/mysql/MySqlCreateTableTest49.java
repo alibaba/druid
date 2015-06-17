@@ -56,7 +56,7 @@ public class MySqlCreateTableTest49 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE tauth (" //
-                            + "\n\tcid varchar(36) NOT NULL PRIMARY KEY, "//
+                            + "\n\tcid varchar(36) NOT NULL UNIQUE, "//
                             + "\n\tcdesc varchar(200), "//
                             + "\n\tcname varchar(100) NOT NULL, "//
                             + "\n\tcseq decimal(22, 0), "//

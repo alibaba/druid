@@ -27,7 +27,12 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public SQLExprTableSource(SQLExpr expr){
+        this(expr, null);
+    }
+    
+    public SQLExprTableSource(SQLExpr expr, String alias){
         this.setExpr(expr);
+        this.setAlias(alias);
     }
 
     public SQLExpr getExpr() {

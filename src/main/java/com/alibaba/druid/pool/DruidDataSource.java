@@ -20,8 +20,10 @@ import static com.alibaba.druid.util.Utils.getBoolean;
 import java.io.Closeable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
@@ -1013,6 +1015,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             if (isRemoveAbandoned()) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
                 poolableConnection.setConnectStackTrace(stackTrace);
+                poolableConnection.setConnectedTime();
                 poolableConnection.setConnectedTimeNano();
                 poolableConnection.setTraceEnable(true);
 
@@ -1394,12 +1397,10 @@ public class DruidDataSource extends DruidAbstractDataSource
                 public Object run() {
                     ObjectName objectName = DruidDataSourceStatManager.addDataSource(DruidDataSource.this,
                                                                                      DruidDataSource.this.name);
-                    
-                    if (objectName != null) {
-                        DruidDataSource.this.setObjectName(objectName);
-                        DruidDataSource.this.mbeanRegistered = true;
-                    }
-                    
+
+                    DruidDataSource.this.setObjectName(objectName);
+                    DruidDataSource.this.mbeanRegistered = true;
+
                     return null;
                 }
             });
@@ -1997,6 +1998,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         }
 
         if (abandonedList.size() > 0) {
+            SimpleDateFormat connectedTimeFormate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             for (DruidPooledConnection pooledConnection : abandonedList) {
                 synchronized (pooledConnection) {
                     if (pooledConnection.isDisable()) {
@@ -2012,8 +2014,16 @@ public class DruidDataSource extends DruidAbstractDataSource
                 if (isLogAbandoned()) {
                     StringBuilder buf = new StringBuilder();
                     buf.append("abandon connection, open stackTrace\n");
+                    buf.append("ownerThread " + pooledConnection.getOwnerThread() + " getConnect at " + connectedTimeFormate.format(new Date(pooledConnection.getConnectedTime())) + "\n");
 
                     StackTraceElement[] trace = pooledConnection.getConnectStackTrace();
+                    for (int i = 0; i < trace.length; i++) {
+                        buf.append("\tat ");
+                        buf.append(trace[i].toString());
+                        buf.append("\n");
+                    }
+                    buf.append("ownerThread current state is "+pooledConnection.getOwnerThread().getState() + ", current stackTrace\n");
+                    trace = pooledConnection.getOwnerThread().getStackTrace();
                     for (int i = 0; i < trace.length; i++) {
                         buf.append("\tat ");
                         buf.append(trace[i].toString());

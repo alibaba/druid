@@ -174,7 +174,7 @@ public class SQLServerExprParser extends SQLExprParser {
         return null;
     }
 
-    protected SQLSelectItem parseSelectItem() {
+    public SQLSelectItem parseSelectItem() {
         SQLExpr expr;
         if (lexer.token() == Token.IDENTIFIER) {
             expr = new SQLIdentifierExpr(lexer.stringVal());

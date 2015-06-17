@@ -154,6 +154,7 @@ public enum Token {
     RETURNING("RETURNING"),
     COMMENT("COMMENT"),
     OVER("OVER"),
+    TYPE("TYPE"), 
     
     // oracle
     START("START"),

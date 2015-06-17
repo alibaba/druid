@@ -66,6 +66,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     private boolean                          closed               = false;
     private final Thread                     ownerThread;
 
+    private long                             connectedTime        = 0;
     private long                             connectedTimeNano;
     private volatile boolean                 running              = false;
 
@@ -82,6 +83,13 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         this.holder = holder;
         dupCloseLogEnable = holder.getDataSource().isDupCloseLogEnable();
         ownerThread = Thread.currentThread();
+    }
+
+    public void setConnectedTime(){
+        this.connectedTime = System.currentTimeMillis();
+    }
+    public long getConnectedTime() {
+        return connectedTime;
     }
 
     public Thread getOwnerThread() {

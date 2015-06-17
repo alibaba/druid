@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStateme
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcUtils;
@@ -154,7 +155,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerSetTransactionIsolationLevelStatement x) {
-        
+
     }
 
     @Override
@@ -164,7 +165,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerSetStatement x) {
-        
+
     }
 
     @Override
@@ -174,7 +175,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerOutput x) {
-        
+
     }
 
     @Override
@@ -240,7 +241,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerSelect x) {
-        
+
     }
 
     @Override
@@ -250,7 +251,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerCommitStatement x) {
-        
+
     }
 
     @Override
@@ -260,7 +261,17 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerRollbackStatement x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(SQLServerWaitForStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLServerWaitForStatement x) {
+
     }
 
 }

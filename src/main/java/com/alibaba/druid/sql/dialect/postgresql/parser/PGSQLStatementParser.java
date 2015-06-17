@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -299,7 +300,9 @@ public class PGSQLStatementParser extends SQLStatementParser {
     }
 
     protected SQLAlterTableAlterColumn parseAlterColumn() {
-        accept(Token.COLUMN);
+        if (lexer.token() == Token.COLUMN) {
+            lexer.nextToken();
+        }
 
         SQLColumnDefinition column = this.exprParser.parseColumn();
 
@@ -331,5 +334,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
         }
         return alterColumn;
+    }
+    
+    public SQLStatement parseShow() {
+        accept(Token.SHOW);
+        PGShowStatement stmt = new PGShowStatement();
+        stmt.setExpr(this.exprParser.expr());
+        return stmt;
     }
 }

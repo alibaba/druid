@@ -31,8 +31,7 @@ public class SQLOrderBy extends SQLObjectImpl {
 
     public SQLOrderBy(SQLExpr expr){
         SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr);
-        item.setParent(this);
-        this.items.add(item);
+        addItem(item);
     }
 
     public void addItem(SQLSelectOrderByItem item) {
@@ -71,5 +70,14 @@ public class SQLOrderBy extends SQLObjectImpl {
         return items.equals(other.items);
     }
 
+    public void addItem(SQLExpr expr, SQLOrderingSpecification type) {
+        SQLSelectOrderByItem item = createItem();
+        item.setExpr(expr);
+        item.setType(type);
+        addItem(item);
+    }
 
+    protected SQLSelectOrderByItem createItem() {
+        return new SQLSelectOrderByItem();
+    }
 }

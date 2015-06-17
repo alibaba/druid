@@ -11,7 +11,7 @@
   
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.13</version>
+	<version>1.0.15-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -61,6 +61,11 @@
 			<name>kiki</name>
 			<email>little.fierydragon@gmail.com</email>
 		</developer>
+		<developer>
+			<id>yako</id>
+			<name>yako</name>
+			<email>yakolyh@gmail.com</email>
+		</developer>
 	</developers>
 
 	<scm>
@@ -103,6 +108,7 @@
 					<encoding>UTF-8</encoding>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
+                    <skip>true</skip>
 				</configuration>
 			</plugin>
 
@@ -114,6 +120,7 @@
 					<includes>
 						<include>**/bvt/**/*.java</include>
 					</includes>
+                    <skip>true</skip>
 				</configuration>
 			</plugin>
 
@@ -288,13 +295,6 @@
 				</file>
 			</activation>
 			<dependencies>
-				<dependency>
-					<groupId>com.alibaba</groupId>
-					<artifactId>jconsole</artifactId>
-					<version>1.6.0</version>
-					<scope>system</scope>
-					<systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
-				</dependency>
 			</dependencies>
 		</profile>
 
@@ -395,14 +395,14 @@
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
-			<version>3.1.1</version>
+			<version>3.3.0</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis-spring</artifactId>
-			<version>1.1.1</version>
+			<version>1.2.2</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -410,7 +410,7 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
+			<version>1.2.17</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -425,11 +425,23 @@
 			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.3</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.24</version>
+			<version>5.1.35</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -446,11 +458,24 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!--<dependency>-->
+			<!--<groupId>com.oracle</groupId>-->
+			<!--<artifactId>ojdbc6</artifactId>-->
+			<!--<version>11.2.0.3</version>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
+        <dependency>
+            <groupId>cn.guoyukun.jdbc</groupId>
+            <artifactId>oracle-ojdbc6</artifactId>
+            <version>11.2.0.3.0</version>
+        </dependency>
+		
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.1</version>
 			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 
 <!--  
@@ -493,14 +518,14 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>proxool</groupId>
+            <groupId>com.cloudhopper.proxool</groupId>
 			<artifactId>proxool</artifactId>
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>proxool</groupId>
-			<artifactId>proxool-cglib</artifactId>
+            <groupId>com.cloudhopper.proxool</groupId>
+            <artifactId>proxool-cglib</artifactId>
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
@@ -543,15 +568,14 @@
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.b.47</version>
+			<version>1.b.52</version>
 			<scope>test</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.taobao.tbdatasource</groupId>
 			<artifactId>tbdatasource</artifactId>
-			<version>2.0.2</version>
-			<scope>test</scope>
+			<version>3.0.1.5.taobaocode</version>
 			<exclusions>
 				<exclusion>
 					<groupId>jboss</groupId>
@@ -585,4 +609,18 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>gozap构件发布版仓库</name>
+            <url>http://repo.gozap.com/repos/content/repositories/gozap/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>gozap构件快照版仓库</name>
+            <url>http://repo.gozap.com/repos/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>

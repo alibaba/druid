@@ -55,6 +55,7 @@ public class PGLexer extends Lexer {
         map.put("ROW", Token.ROW);
         map.put("ROWS", Token.ROWS);
         map.put("SHARE", Token.SHARE);
+        map.put("SHOW", Token.SHOW);
 
         map.put("USING", Token.USING);
         map.put("WINDOW", Token.WINDOW);
@@ -63,6 +64,7 @@ public class PGLexer extends Lexer {
         map.put("FALSE", Token.FALSE);
         map.put("ARRAY", Token.ARRAY);
         map.put("IF", Token.IF);
+        map.put("TYPE", Token.TYPE);
 
         DEFAULT_PG_KEYWORDS = new Keywords(map);
     }

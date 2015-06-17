@@ -59,6 +59,17 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
+    
+    public void test_3() throws Exception {
+        String sql = "SHOW COLUMNS FROM mytable IN mydb;";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
+    }
 
     private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();

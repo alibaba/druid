@@ -296,9 +296,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         if (x.getWhere() != null) {
             println();
+            incrementIndent();
             print("WHERE ");
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
+            decrementIndent();
         }
 
         if (x.getReturning() != null) {
@@ -770,8 +772,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getWhere() != null) {
             println();
             print("WHERE ");
+            incrementIndent();
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
+            decrementIndent();
         }
 
         if (x.getReturning().size() > 0) {

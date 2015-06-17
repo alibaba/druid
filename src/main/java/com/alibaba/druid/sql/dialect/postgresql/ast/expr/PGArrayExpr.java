@@ -23,7 +23,17 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
 public class PGArrayExpr extends PGExprImpl {
 
+    private SQLExpr       expr;
+
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
+
+    public SQLExpr getExpr() {
+        return expr;
+    }
+
+    public void setExpr(SQLExpr expr) {
+        this.expr = expr;
+    }
 
     public List<SQLExpr> getValues() {
         return values;
@@ -36,6 +46,7 @@ public class PGArrayExpr extends PGExprImpl {
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, expr);
             acceptChild(visitor, values);
         }
         visitor.endVisit(this);
@@ -43,7 +54,11 @@ public class PGArrayExpr extends PGExprImpl {
 
     @Override
     public int hashCode() {
-        return values.hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
+        result = prime * result + ((values == null) ? 0 : values.hashCode());
+        return result;
     }
 
     @Override
@@ -52,6 +67,9 @@ public class PGArrayExpr extends PGExprImpl {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         PGArrayExpr other = (PGArrayExpr) obj;
+        if (expr == null) {
+            if (other.expr != null) return false;
+        } else if (!expr.equals(other.expr)) return false;
         if (values == null) {
             if (other.values != null) return false;
         } else if (!values.equals(other.values)) return false;
