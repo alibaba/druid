@@ -2745,7 +2745,9 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     @Override
     public ObjectName preRegister(MBeanServer server, ObjectName name) throws Exception {
-        return null;
+        //do nothing
+        //return original name to avoid NullPointerException
+        return name;
     }
 
     @Override

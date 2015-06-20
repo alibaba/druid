@@ -36,7 +36,7 @@ public interface JdbcConstants {
     public static final String SQL_SERVER_DRIVER = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
 
     public static final String ORACLE            = "oracle";
-    public static final String ORACLE_DRIVER     = "oracle.jdbc.driver.OracleDriver";
+    public static final String ORACLE_DRIVER     = "oracle.jdbc.OracleDriver";
 
     public static final String ALI_ORACLE        = "AliOracle";
     public static final String ALI_ORACLE_DRIVER = "com.alibaba.jdbc.AlibabaDriver";
