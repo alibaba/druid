@@ -1720,6 +1720,12 @@ public class DruidDataSource extends DruidAbstractDataSource
         try {
             holder = new DruidConnectionHolder(DruidDataSource.this, connection);
         } catch (SQLException ex) {
+            lock.lock();
+            try {
+                createTaskCount--;
+            } finally {
+                lock.unlock();
+            }
             LOG.error("create connection holder error", ex);
             return;
         }
@@ -1791,7 +1797,12 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
                         if (breakAfterAcquireFailure) {
-                            createTaskCount--;
+                            lock.lock();
+                            try {
+                                createTaskCount--;
+                            } finally {
+                                lock.unlock();
+                            }
                             return;
                         }
 
@@ -1802,6 +1813,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                     LOG.error("create connection error", e);
                     continue;
                 } catch (Error e) {
+                    lock.lock();
+                    try {
+                        createTaskCount--;
+                    } finally {
+                        lock.unlock();
+                    }
                     LOG.error("create connection error", e);
                     break;
                 }

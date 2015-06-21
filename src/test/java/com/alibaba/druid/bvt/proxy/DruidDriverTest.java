@@ -77,7 +77,7 @@ public class DruidDriverTest extends TestCase {
 
     public void test_getRawDriverClassName() throws Exception {
         Assert.assertEquals("com.mysql.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
-        Assert.assertEquals("oracle.jdbc.driver.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
+        Assert.assertEquals("oracle.jdbc.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
         Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver",
                             JdbcUtils.getDriverClassName("jdbc:microsoft:"));
         Assert.assertEquals("org.postgresql.Driver", JdbcUtils.getDriverClassName("jdbc:postgresql:xx"));
