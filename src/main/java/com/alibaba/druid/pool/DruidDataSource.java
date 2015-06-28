@@ -1762,14 +1762,13 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         @Override
         public void run() {
+            runInternal();
+        }
+      
+        private void runInternal() {
             for (;;) {
                 // addLast
-                try {
-                    lock.lockInterruptibly();
-                } catch (InterruptedException e2) {
-                    break;
-                }
-
+                lock.lock();
                 try {
                     // 必须存在线程等待，才创建连接
                     if (poolingCount >= notEmptyWaitThreadCount) {
