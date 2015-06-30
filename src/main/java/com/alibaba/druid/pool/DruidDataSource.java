@@ -1722,7 +1722,9 @@ public class DruidDataSource extends DruidAbstractDataSource
         } catch (SQLException ex) {
             lock.lock();
             try {
-                createTaskCount--;
+                if (createScheduler != null) {
+                    createTaskCount--;
+                }
             } finally {
                 lock.unlock();
             }
@@ -1767,6 +1769,13 @@ public class DruidDataSource extends DruidAbstractDataSource
                 try {
                     lock.lockInterruptibly();
                 } catch (InterruptedException e2) {
+                    LOG.error("interrupt: ", e2);
+                    lock.lock();
+                    try {
+                        createTaskCount--;
+                    } finally {
+                        lock.unlock();
+                    }
                     break;
                 }
 
@@ -1806,6 +1815,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                             return;
                         }
 
+                        this.errorCount = 0; // reset errorCount
                         createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
                         return;
                     }
