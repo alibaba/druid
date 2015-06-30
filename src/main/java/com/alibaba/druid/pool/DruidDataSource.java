@@ -2036,7 +2036,11 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                 if (isLogAbandoned()) {
                     StringBuilder buf = new StringBuilder();
-                    buf.append("abandon connection, open stackTrace\n");
+                    buf.append("abandon connection, owner thread: ");
+                    buf.append(pooledConnection.getOwnerThread().getName());
+                    buf.append(", connected time nano: ");
+                    buf.append(pooledConnection.getConnectedTimeNano());
+                    buf.append(", open stackTrace\n");
 
                     StackTraceElement[] trace = pooledConnection.getConnectStackTrace();
                     for (int i = 0; i < trace.length; i++) {
