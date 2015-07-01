@@ -1722,7 +1722,9 @@ public class DruidDataSource extends DruidAbstractDataSource
         } catch (SQLException ex) {
             lock.lock();
             try {
-                createTaskCount--;
+                if (createScheduler != null) {
+                    createTaskCount--;
+                }
             } finally {
                 lock.unlock();
             }
@@ -1769,6 +1771,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             for (;;) {
                 // addLast
                 lock.lock();
+
                 try {
                     // 必须存在线程等待，才创建连接
                     if (poolingCount >= notEmptyWaitThreadCount) {
@@ -1805,6 +1808,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                             return;
                         }
 
+                        this.errorCount = 0; // reset errorCount
                         createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
                         return;
                     }
@@ -2025,7 +2029,11 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                 if (isLogAbandoned()) {
                     StringBuilder buf = new StringBuilder();
-                    buf.append("abandon connection, open stackTrace\n");
+                    buf.append("abandon connection, owner thread: ");
+                    buf.append(pooledConnection.getOwnerThread().getName());
+                    buf.append(", connected time nano: ");
+                    buf.append(pooledConnection.getConnectedTimeNano());
+                    buf.append(", open stackTrace\n");
 
                     StackTraceElement[] trace = pooledConnection.getConnectStackTrace();
                     for (int i = 0; i < trace.length; i++) {
