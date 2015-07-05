@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -1344,6 +1345,11 @@ public class SQLStatementParser extends SQLParser {
                 lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreateProcedure();
             }
+            
+            if (lexer.token() == Token.VIEW) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateView();
+            }
 
             // lexer.reset(mark_bp, mark_ch, Token.CREATE);
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
@@ -1600,13 +1606,46 @@ public class SQLStatementParser extends SQLParser {
         }
 
         this.accept(Token.VIEW);
+        
+        if (lexer.token() == Token.IF || identifierEquals("IF")) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            createView.setIfNotExists(true);
+        }
 
         createView.setName(exprParser.name());
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
-            this.exprParser.exprList(createView.getColumns(), createView);
+            
+            for (;;) {
+                SQLCreateViewStatement.Column column = new SQLCreateViewStatement.Column();
+                SQLExpr expr = this.exprParser.expr();
+                column.setExpr(expr);
+                
+                if (lexer.token() == Token.COMMENT) {
+                    lexer.nextToken();
+                    column.setComment((SQLCharExpr) exprParser.primary()); 
+                }
+                
+                column.setParent(createView);
+                createView.getColumns().add(column);
+                
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                } else {
+                    break;
+                }
+            }
+            
             accept(Token.RPAREN);
+        }
+        
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+            SQLCharExpr comment = (SQLCharExpr) exprParser.primary();
+            createView.setComment(comment);
         }
 
         this.accept(Token.AS);
