@@ -52,6 +52,7 @@ public interface JdbcConstants {
     public static final String HBASE             = "hbase";
 
     public static final String HIVE              = "hive";
+    public static final String HIVE_DRIVER       = "org.apache.hive.jdbc.HiveDriver";
 
     public static final String H2                = "h2";
     public static final String H2_DRIVER         = "org.h2.Driver";

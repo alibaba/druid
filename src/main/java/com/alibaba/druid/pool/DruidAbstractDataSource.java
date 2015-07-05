@@ -240,7 +240,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected DruidDataSourceStatLogger                statLogger                                = new DruidDataSourceStatLoggerImpl();
     
     private boolean                                    asyncCloseConnectionEnable                = false;
-    protected int                                      maxCreateTaskCount                        = 2;
+    protected int                                      maxCreateTaskCount                        = 3;
     protected ScheduledExecutorService                 destroyScheduler;
     protected ScheduledExecutorService                 createScheduler;
 

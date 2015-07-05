@@ -26,6 +26,7 @@ import javax.sql.StatementEventListener;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,7 +88,14 @@ public final class DruidConnectionHolder {
                 } catch (UnsupportedOperationException e) {
                     holdabilityUnsupported = true;
                     LOG.warn("getHoldability unsupported", e);
+                } catch (SQLFeatureNotSupportedException e) {
+                    holdabilityUnsupported = true;
+                    LOG.warn("getHoldability unsupported", e);
                 } catch (SQLException e) {
+                    // bug fixed for hive jdbc-driver
+                    if ("Method not supported".equals(e.getMessage())) {
+                        holdabilityUnsupported = true;
+                    }
                     LOG.warn("getHoldability error", e);
                 }
             }
