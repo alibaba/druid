@@ -20,25 +20,31 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    private boolean               orReplace = false;
-    protected SQLName             name;
-    protected SQLSelect           subQuery;
+    private boolean     orReplace   = false;
+    protected SQLName   name;
+    protected SQLSelect subQuery;
+    protected boolean   ifNotExists = false;
 
-    protected final List<SQLExpr> columns   = new ArrayList<SQLExpr>();
+    protected final List<Column> columns = new ArrayList<Column>();
 
-    private Level                 with;
+    private Level with;
+
+    private SQLLiteralExpr comment;
 
     public SQLCreateViewStatement(){
 
     }
-    
+
     public SQLCreateViewStatement(String dbType){
-        super (dbType);
+        super(dbType);
     }
 
     public boolean isOrReplace() {
@@ -73,8 +79,27 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         this.subQuery = subQuery;
     }
 
-    public List<SQLExpr> getColumns() {
+    public List<Column> getColumns() {
         return columns;
+    }
+
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
+    }
+
+    public SQLLiteralExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLLiteralExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
+        this.comment = comment;
     }
 
     public void output(StringBuffer buf) {
@@ -106,12 +131,49 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         if (visitor.visit(this)) {
             acceptChild(visitor, this.name);
             acceptChild(visitor, this.columns);
+            acceptChild(visitor, this.comment);
             acceptChild(visitor, this.subQuery);
         }
         visitor.endVisit(this);
     }
 
     public static enum Level {
-        CASCADED, LOCAL
+                              CASCADED, LOCAL
+    }
+
+    public static class Column extends SQLObjectImpl {
+
+        private SQLExpr     expr;
+        private SQLCharExpr comment;
+
+        public SQLExpr getExpr() {
+            return expr;
+        }
+
+        public void setExpr(SQLExpr expr) {
+            if (expr != null) {
+                expr.setParent(this);
+            }
+            this.expr = expr;
+        }
+
+        public SQLCharExpr getComment() {
+            return comment;
+        }
+
+        public void setComment(SQLCharExpr comment) {
+            if (comment != null) {
+                comment.setParent(this);
+            }
+            this.comment = comment;
+        }
+
+        @Override
+        protected void accept0(SQLASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, expr);
+                acceptChild(visitor, comment);
+            }
+        }
     }
 }

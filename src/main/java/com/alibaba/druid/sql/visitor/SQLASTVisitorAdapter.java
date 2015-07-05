@@ -391,6 +391,13 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     public void endVisit(SQLCreateViewStatement x) {
     }
+    
+    public boolean visit(SQLCreateViewStatement.Column x) {
+        return true;
+    }
+    
+    public void endVisit(SQLCreateViewStatement.Column x) {
+    }
 
     public boolean visit(NotNullConstraint x) {
         return true;

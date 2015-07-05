@@ -156,7 +156,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     private boolean            prettyFormat           = true;
     protected int              selectListNumberOfLine = 5;
 
-    private List<Object>       parameters;
+    private List<Object> parameters;
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
@@ -726,7 +726,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         if (alias != null && alias.length() > 0) {
             print(" AS ");
             if (alias.indexOf(' ') == -1 || alias.charAt(0) == '"' || alias.charAt(0) == '\'') {
-                print(alias);                
+                print(alias);
             } else {
                 print('"');
                 print(alias);
@@ -1070,7 +1070,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             println();
             print(")");
         }
-        
+
         if (x.getInherits() != null) {
             print(" INHERITS (");
             x.getInherits().accept(this);
@@ -1411,7 +1411,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLAlterTableDropColumnItem x) {
         print("DROP COLUMN ");
         this.printAndAccept(x.getColumns(), ", ");
-        
+
         if (x.isCascade()) {
             print(" CASCADE");
         }
@@ -1481,17 +1481,52 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print("OR REPLACE ");
         }
         print("VIEW ");
+
+        if (x.isIfNotExists()) {
+            print("IF NOT EXISTS ");
+        }
+
         x.getName().accept(this);
 
         if (x.getColumns().size() > 0) {
-            print(" (");
-            printAndAccept(x.getColumns(), ", ");
+            println();
+            print("(");
+            incrementIndent();
+            println();
+            for (int i = 0; i < x.getColumns().size(); ++i) {
+                if (i != 0) {
+                    print(", ");
+                    println();
+                }
+                x.getColumns().get(i).accept(this);
+            }
+            decrementIndent();
+            println();
             print(")");
         }
 
-        print(" AS ");
+        if (x.getComment() != null) {
+            println();
+            print("COMMENT ");
+            x.getComment().accept(this);
+        }
+
+        println();
+        print("AS");
+        println();
 
         x.getSubQuery().accept(this);
+        return false;
+    }
+
+    public boolean visit(SQLCreateViewStatement.Column x) {
+        x.getExpr().accept(this);
+
+        if (x.getComment() != null) {
+            print(" COMMENT ");
+            x.getComment().accept(this);
+        }
+
         return false;
     }
 
@@ -1600,7 +1635,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLAlterTableAlterColumn x) {
         print("ALTER COLUMN ");
         x.getColumn().accept(this);
-        
+
         if (x.isSetNotNull()) { // postgresql
             print(" SET NOT NULL");
         }
@@ -1614,7 +1649,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         if (x.isDropDefault()) { // postgresql
             print(" DROP DEFAULT");
         }
-        
+
         return false;
     }
 
@@ -2115,7 +2150,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLBinaryExpr x) {
         print("b'");
@@ -2124,7 +2159,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableRename x) {
         print("RENAME TO ");

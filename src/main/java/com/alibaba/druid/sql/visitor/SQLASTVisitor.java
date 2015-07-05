@@ -292,6 +292,10 @@ public interface SQLASTVisitor {
     boolean visit(SQLCreateViewStatement x);
 
     void endVisit(SQLCreateViewStatement x);
+    
+    boolean visit(SQLCreateViewStatement.Column x);
+    
+    void endVisit(SQLCreateViewStatement.Column x);
 
     boolean visit(NotNullConstraint x);
 
