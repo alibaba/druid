@@ -424,6 +424,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.KINGBASE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hive:")) {
             return JdbcConstants.HIVE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:hive2:")) {
+            return JdbcConstants.HIVE_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -500,6 +502,8 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
             return LOG4JDBC;
         } else if (rawUrl.startsWith("jdbc:hive:")) {
+            return HIVE;
+        } else if (rawUrl.startsWith("jdbc:hive2:")) {
             return HIVE;
         } else {
             return null;
