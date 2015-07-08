@@ -96,6 +96,13 @@ public final class DruidStatManagerFacade {
         resetCount.incrementAndGet();
     }
 
+    public void logAndResetDataSource() {
+        if (!isResetEnable()) {
+            return;
+        }
+        DruidDataSourceStatManager.getInstance().logAndResetDataSource();
+    }
+
     public boolean isResetEnable() {
         return resetEnable;
     }

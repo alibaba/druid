@@ -230,6 +230,23 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         }
     }
 
+    public void logAndResetDataSource() {
+        IdentityHashMap<Object, ObjectName> dataSources = getInstances();
+
+        synchronized (dataSources) {
+            for (Object item : dataSources.keySet()) {
+                try {
+                    Method method = item.getClass().getMethod("logStats");
+                    method.invoke(item);
+                } catch (Exception e) {
+                    LOG.error("resetStat error", e);
+                }
+            }
+
+            resetCount.incrementAndGet();
+        }
+    }
+
     public long getResetCount() {
         return resetCount.get();
     }

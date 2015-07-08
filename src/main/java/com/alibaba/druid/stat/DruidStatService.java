@@ -91,6 +91,12 @@ public final class DruidStatService implements DruidStatServiceMBean {
             return returnJSONResult(RESULT_CODE_SUCCESS, null);
         }
 
+        if (url.equals("/log-and-reset.json")) {
+            statManagerFacade.logAndResetDataSource();
+
+            return returnJSONResult(RESULT_CODE_SUCCESS, null);
+        }
+
         if (url.equals("/datasource.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, statManagerFacade.getDataSourceStatDataList());
         }
