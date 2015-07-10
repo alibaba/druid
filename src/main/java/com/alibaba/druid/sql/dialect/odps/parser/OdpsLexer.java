@@ -194,4 +194,88 @@ public class OdpsLexer extends Lexer {
         }
     }
 
+
+    public void scanNumber() {
+        mark = pos;
+
+        if (ch == '-') {
+            bufPos++;
+            ch = charAt(++pos);
+        }
+
+        for (;;) {
+            if (ch >= '0' && ch <= '9') {
+                bufPos++;
+            } else {
+                break;
+            }
+            ch = charAt(++pos);
+        }
+
+        boolean isDouble = false;
+
+        if (ch == '.') {
+            if (charAt(pos + 1) == '.') {
+                token = Token.LITERAL_INT;
+                return;
+            }
+            bufPos++;
+            ch = charAt(++pos);
+            isDouble = true;
+
+            for (;;) {
+                if (ch >= '0' && ch <= '9') {
+                    bufPos++;
+                } else {
+                    break;
+                }
+                ch = charAt(++pos);
+            }
+        }
+
+        if (ch == 'e' || ch == 'E') {
+            bufPos++;
+            ch = charAt(++pos);
+
+            if (ch == '+' || ch == '-') {
+                bufPos++;
+                ch = charAt(++pos);
+            }
+
+            for (;;) {
+                if (ch >= '0' && ch <= '9') {
+                    bufPos++;
+                } else {
+                    break;
+                }
+                ch = charAt(++pos);
+            }
+
+            isDouble = true;
+        }
+
+        if (isDouble) {
+            token = Token.LITERAL_FLOAT;
+        } else {
+            if (isFirstIdentifierChar(ch) && !(ch == 'b' && bufPos == 1 && charAt(pos - 1) == '0')) {
+                bufPos++;
+                for (;;) {
+                    ch = charAt(++pos);
+
+                    if (!isIdentifierChar(ch)) {
+                        break;
+                    }
+
+                    bufPos++;
+                    continue;
+                }
+
+                stringVal = addSymbol();
+                token = Token.IDENTIFIER;
+            } else {
+                token = Token.LITERAL_INT;
+            }
+        }
+    }
+
 }
