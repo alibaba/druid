@@ -354,7 +354,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseShow() {
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
-
+    
     public SQLUseStatement parseUse() {
         accept(Token.USE);
         SQLUseStatement stmt = new SQLUseStatement(getDbType());

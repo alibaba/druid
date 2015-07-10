@@ -136,6 +136,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
@@ -2164,6 +2165,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLAlterTableRename x) {
         print("RENAME TO ");
         x.getTo().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLShowTablesStatement x) {
+        print("SHOW TABLES");
+        if (x.getDatabase() != null) {
+            print(" FROM ");
+            x.getDatabase().accept(this);
+        }
+        
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
+        }
         return false;
     }
 }
