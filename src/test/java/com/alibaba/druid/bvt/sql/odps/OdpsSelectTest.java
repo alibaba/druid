@@ -37,6 +37,8 @@ import com.alibaba.druid.util.Utils;
 public class OdpsSelectTest extends TestCase {
 
     public void test_0() throws Exception {
+        exec_test("bvt/parser/odps-1.sql");
+        exec_test("bvt/parser/odps-2.sql");
         exec_test("bvt/parser/odps-3.sql");
     }
 
