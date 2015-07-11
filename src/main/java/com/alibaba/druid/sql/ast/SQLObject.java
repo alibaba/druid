@@ -46,7 +46,7 @@ public interface SQLObject {
     
     boolean hasBeforeComment();
     
-    boolean hasAfterComment()
+    boolean hasAfterComment();
 
     void output(StringBuffer buf);
 }
