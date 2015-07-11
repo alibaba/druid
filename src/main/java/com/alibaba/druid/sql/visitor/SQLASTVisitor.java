@@ -113,6 +113,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
@@ -568,5 +569,9 @@ public interface SQLASTVisitor {
     void endVisit(SQLAlterTableRename x);
     
     boolean visit(SQLAlterTableRename x);
+    
+    void endVisit(SQLShowTablesStatement x);
+    
+    boolean visit(SQLShowTablesStatement x);
     
 }

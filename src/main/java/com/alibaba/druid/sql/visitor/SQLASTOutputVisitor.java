@@ -136,6 +136,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
@@ -349,6 +350,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             visitBinaryLeft(item, x.getOperator());
 
             if (relational) {
+                if (isPrettyFormat() && item.hasAfterComment()) {
+                    print(' ');
+                    printComment(item.getAfterCommentsDirect(), "\n");
+                }
                 println();
             } else {
                 print(" ");
@@ -683,6 +688,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
+        if (isPrettyFormat() && x.hasBeforeComment()) {
+            printComment(x.getBeforeCommentsDirect(), "\n");
+        }
+        
         print("SELECT ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
@@ -762,10 +771,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     public boolean visit(SQLExprTableSource x) {
         x.getExpr().accept(this);
-
+        
         if (x.getAlias() != null) {
             print(' ');
             print(x.getAlias());
+        }
+        
+        if (isPrettyFormat() && x.hasAfterComment()) {
+            print(' ');
+            printComment(x.getAfterCommentsDirect(), "\n");
         }
 
         return false;
@@ -2165,5 +2179,32 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print("RENAME TO ");
         x.getTo().accept(this);
         return false;
+    }
+    
+    @Override
+    public boolean visit(SQLShowTablesStatement x) {
+        print("SHOW TABLES");
+        if (x.getDatabase() != null) {
+            print(" FROM ");
+            x.getDatabase().accept(this);
+        }
+        
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
+        }
+        return false;
+    }
+    
+    protected void printComment(List<String> comments, String seperator) {
+        if (comments != null) {
+            for (int i = 0; i < comments.size(); ++i) {
+                if (i != 0) {
+                    print(seperator);
+                }
+                String comment = comments.get(i);
+                print(comment);
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -34,6 +35,18 @@ public interface SQLObject {
     void putAttribute(String name, Object value);
 
     Map<String, Object> getAttributesDirect();
+    
+    void addBeforeComment(String comment);
+    
+    List<String> getBeforeCommentsDirect();
+    
+    void addAfterComment(String comment);
+    
+    List<String> getAfterCommentsDirect();
+    
+    boolean hasBeforeComment();
+    
+    boolean hasAfterComment()
 
     void output(StringBuffer buf);
 }

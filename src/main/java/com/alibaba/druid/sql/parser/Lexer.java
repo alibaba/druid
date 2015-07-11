@@ -56,6 +56,8 @@ public class Lexer {
     protected Keywords     keywods      = Keywords.DEFAULT_KEYWORDS;
 
     protected String       stringVal;
+    
+    protected String       commentVal;
 
     protected boolean      skipComment  = true;
 
@@ -73,9 +75,24 @@ public class Lexer {
     protected boolean        hasComment   = false;
 
     protected boolean        endOfComment = false;
+    
+    protected boolean        keepComments = false;
 
     public Lexer(String input){
+        this(input, null);
+    }
+    
+    public Lexer(String input, CommentHandler commentHandler){
         this(input, true);
+        this.commentHandler = commentHandler;
+    }
+    
+    public boolean isKeepComments() {
+        return keepComments;
+    }
+    
+    public void setKeepComments(boolean keepComments) {
+        this.keepComments = keepComments;
     }
 
     public CommentHandler getCommentHandler() {
@@ -270,6 +287,7 @@ public class Lexer {
 
     public final void nextToken() {
         bufPos = 0;
+        hasComment = false;
 
         for (;;) {
             if (isWhitespace(ch)) {
@@ -759,6 +777,8 @@ public class Lexer {
     }
 
     private void scanMultiLineComment() {
+        Token lastToken = this.token;
+        
         scanChar();
         scanChar();
         mark = pos;
@@ -782,12 +802,25 @@ public class Lexer {
         stringVal = subString(mark, bufPos);
         token = Token.MULTI_LINE_COMMENT;
         hasComment = true;
+        if (keepComments) {
+            commentVal = stringVal;
+        }
+        
+        if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+            return;
+        }
+        
+        if (!isAllowComment() && !isSafeComment(stringVal)) {
+            throw new NotAllowCommentException();
+        }
     }
 
     private void scanSingleLineComment() {
+        Token lastToken = this.token;
+        
         scanChar();
         scanChar();
-        mark = pos;
+        mark = pos - 1;
         bufPos = 0;
 
         for (;;) {
@@ -817,6 +850,17 @@ public class Lexer {
         stringVal = subString(mark, bufPos);
         token = Token.LINE_COMMENT;
         hasComment = true;
+        if (keepComments) {
+            commentVal = stringVal;
+        }
+        
+        if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+            return;
+        }
+        
+        if (!isAllowComment() && !isSafeComment(stringVal)) {
+            throw new NotAllowCommentException();
+        }
     }
 
     public void scanIdentifier() {
@@ -972,6 +1016,10 @@ public class Lexer {
     public final String stringVal() {
         return stringVal;
     }
+    
+    public final String commentVal() {
+        return commentVal;
+    }
 
     private boolean isOperator(char ch) {
         switch (ch) {
@@ -1080,11 +1128,10 @@ public class Lexer {
     }
 
     public static interface CommentHandler {
-
         boolean handle(Token lastToken, String comment);
     }
 
-    public boolean isHasComment() {
+    public boolean hasComment() {
         return hasComment;
     }
     

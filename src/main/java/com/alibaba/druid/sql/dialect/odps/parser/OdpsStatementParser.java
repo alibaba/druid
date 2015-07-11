@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
@@ -41,9 +42,11 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsStatementParser extends SQLStatementParser {
-
     public OdpsStatementParser(String sql){
-        super(new OdpsExprParser(sql));
+        super (new OdpsLexer(sql), JdbcConstants.ODPS);
+        this.exprParser = new OdpsExprParser(this.lexer);
+        this.lexer.setCommentHandler(commentCallBack);
+        this.lexer.nextToken();
     }
 
     public OdpsStatementParser(SQLExprParser exprParser){
@@ -107,6 +110,11 @@ public class OdpsStatementParser extends SQLStatementParser {
 
     public OdpsInsert parseOdpsInsert() {
         OdpsInsert insert = new OdpsInsert();
+        
+        if (lexer.hasComment()) {
+            insert.addBeforeComment(lexer.commentVal());
+        }
+        
         SQLSelectParser selectParser = createSQLSelectParser();
 
         accept(Token.INSERT);
@@ -172,6 +180,25 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             return stmt;
         }
+        
+        if (identifierEquals("TABLES")) {
+            lexer.nextToken();
+
+            SQLShowTablesStatement stmt = new SQLShowTablesStatement();
+            
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                stmt.setDatabase(this.exprParser.name());
+            }
+            
+            if (lexer.token() == Token.LIKE) {
+                lexer.nextToken();
+                stmt.setLike(this.exprParser.expr());
+            }
+
+            return stmt;
+        }
+        
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
 
@@ -210,5 +237,6 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         }
     }
+
 
 }

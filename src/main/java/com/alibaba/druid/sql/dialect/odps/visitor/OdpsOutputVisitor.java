@@ -153,6 +153,10 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
     @Override
     public boolean visit(OdpsInsert x) {
+        if (x.hasBeforeComment()) {
+            printComment(x.getBeforeCommentsDirect(), "\n");
+            println();
+        }
         if (x.isOverwrite()) {
             print("INSERT OVERWRITE TABLE ");
         } else {
@@ -231,12 +235,22 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     protected void printSelectList(List<SQLSelectItem> selectList) {
         incrementIndent();
         for (int i = 0, size = selectList.size(); i < size; ++i) {
+            SQLSelectItem selectItem = selectList.get(i);
+            
             if (i != 0) {
                 print(", ");
+                
+                printComment(selectList.get(i - 1).getAfterCommentsDirect(), "\n");
+                
                 println();
             }
-
-            selectList.get(i).accept(this);
+            
+            selectItem.accept(this);
+            
+            if (i == selectList.size() - 1 && selectItem.hasAfterComment()) {
+                print(' ');
+                printComment(selectItem.getAfterCommentsDirect(), "\n");
+            }
         }
         decrementIndent();
     }
@@ -374,6 +388,11 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
     @Override
     public boolean visit(OdpsSelectQueryBlock x) {
+        if (isPrettyFormat() && x.hasBeforeComment()) {
+            printComment(x.getBeforeCommentsDirect(), "\n");
+            println();
+        }
+        
         print("SELECT ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
@@ -397,6 +416,10 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print("WHERE ");
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
+            if (x.getWhere().hasAfterComment() && isPrettyFormat()) {
+                print(' ');
+                printComment(x.getWhere().getAfterCommentsDirect(), "\n");
+            }
         }
 
         if (x.getGroupBy() != null) {
