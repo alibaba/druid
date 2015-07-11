@@ -226,7 +226,10 @@ public class SQLUtils {
 
     public static String format(String sql, String dbType, List<Object> parameters) {
         try {
-            List<SQLStatement> statementList = toStatementList(sql, dbType);
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+            parser.setKeepComments(true);
+            
+            List<SQLStatement> statementList = parser.parseStatementList();
 
             return toSQLString(statementList, dbType, parameters);
         } catch (ParserException ex) {
@@ -247,10 +250,27 @@ public class SQLUtils {
         }
 
         for (int i = 0; i < statementList.size(); i++) {
+            SQLStatement stmt = statementList.get(i);
+            
             if (i > 0) {
-                out.append(";\n");
+                visitor.println(";");
             }
-            statementList.get(i).accept(visitor);
+            
+            List<String> comments = stmt.getBeforeCommentsDirect();
+            if (comments != null){
+                for(String comment : comments) {
+                    visitor.println(comment);
+                }
+            }
+            stmt.accept(visitor);
+            
+            if (i == statementList.size() - 1) {
+                Boolean semi = (Boolean) stmt.getAttribute("format.semi");
+                if (semi != null && semi.booleanValue()) {
+                    visitor.println();
+                    visitor.print(";");
+                }
+            }
         }
 
         return out.toString();

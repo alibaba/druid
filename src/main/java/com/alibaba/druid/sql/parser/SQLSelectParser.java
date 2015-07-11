@@ -158,14 +158,18 @@ public class SQLSelectParser extends SQLParser {
 
             return queryRest(select);
         }
+        
+        SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock();
+        
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            queryBlock.addBeforeComment(lexer.commentVal());
+        }
 
         accept(Token.SELECT);
 
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
         }
-
-        SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock();
 
         if (lexer.token() == Token.DISTINCT) {
             queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
@@ -234,7 +238,15 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token() == Token.WHERE) {
             lexer.nextToken();
 
-            queryBlock.setWhere(expr());
+            SQLExpr where = expr();
+            
+            if (lexer.hasComment() && lexer.isKeepComments() //
+                    && lexer.token() != Token.INSERT // odps multi-insert
+                    ) {
+                where.addAfterComment(lexer.commentVal());
+            }
+            
+            queryBlock.setWhere(where);
         }
     }
 
@@ -326,7 +338,13 @@ public class SQLSelectParser extends SQLParser {
 
         parseTableSourceQueryTableExpr(tableReference);
 
-        return parseTableSourceRest(tableReference);
+        SQLTableSource tableSrc = parseTableSourceRest(tableReference);
+        
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            tableSrc.addAfterComment(lexer.commentVal());
+        }
+        
+        return tableSrc;
     }
 
     private void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) {

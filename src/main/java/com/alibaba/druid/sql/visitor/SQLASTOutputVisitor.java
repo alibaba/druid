@@ -350,6 +350,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             visitBinaryLeft(item, x.getOperator());
 
             if (relational) {
+                if (isPrettyFormat() && item.hasAfterComment()) {
+                    print(' ');
+                    printComment(item.getAfterCommentsDirect(), "\n");
+                }
                 println();
             } else {
                 print(" ");
@@ -684,6 +688,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
+        if (isPrettyFormat() && x.hasBeforeComment()) {
+            printComment(x.getBeforeCommentsDirect(), "\n");
+        }
+        
         print("SELECT ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
@@ -763,10 +771,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     public boolean visit(SQLExprTableSource x) {
         x.getExpr().accept(this);
-
+        
         if (x.getAlias() != null) {
             print(' ');
             print(x.getAlias());
+        }
+        
+        if (isPrettyFormat() && x.hasAfterComment()) {
+            print(' ');
+            printComment(x.getAfterCommentsDirect(), "\n");
         }
 
         return false;
@@ -2181,5 +2194,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getLike().accept(this);
         }
         return false;
+    }
+    
+    protected void printComment(List<String> comments, String seperator) {
+        if (comments != null) {
+            for (int i = 0; i < comments.size(); ++i) {
+                if (i != 0) {
+                    print(seperator);
+                }
+                String comment = comments.get(i);
+                print(comment);
+            }
+        }
     }
 }

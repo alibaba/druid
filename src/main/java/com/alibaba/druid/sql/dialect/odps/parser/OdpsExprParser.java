@@ -48,6 +48,11 @@ public class OdpsExprParser extends SQLExprParser {
         this.lexer.nextToken();
     }
     
+    public OdpsExprParser(String sql, Lexer.CommentHandler commentHandler){
+        this(new OdpsLexer(sql, commentHandler));
+        this.lexer.nextToken();
+    }
+    
     protected SQLExpr parseAliasExpr(String alias) {
         return new SQLCharExpr(alias);
     }
@@ -97,7 +102,13 @@ public class OdpsExprParser extends SQLExprParser {
         }
 
         final String alias = as();
+        
+        SQLSelectItem item = new SQLSelectItem(expr, alias);
+        
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            item.addAfterComment(lexer.commentVal());
+        }
 
-        return new SQLSelectItem(expr, alias);
+        return item;
     }
 }

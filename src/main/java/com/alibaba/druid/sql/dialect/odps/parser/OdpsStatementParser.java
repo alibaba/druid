@@ -42,9 +42,11 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsStatementParser extends SQLStatementParser {
-
     public OdpsStatementParser(String sql){
-        super(new OdpsExprParser(sql));
+        super (new OdpsLexer(sql), JdbcConstants.ODPS);
+        this.exprParser = new OdpsExprParser(this.lexer);
+        this.lexer.setCommentHandler(commentCallBack);
+        this.lexer.nextToken();
     }
 
     public OdpsStatementParser(SQLExprParser exprParser){
@@ -108,6 +110,11 @@ public class OdpsStatementParser extends SQLStatementParser {
 
     public OdpsInsert parseOdpsInsert() {
         OdpsInsert insert = new OdpsInsert();
+        
+        if (lexer.hasComment()) {
+            insert.addBeforeComment(lexer.commentVal());
+        }
+        
         SQLSelectParser selectParser = createSQLSelectParser();
 
         accept(Token.INSERT);
