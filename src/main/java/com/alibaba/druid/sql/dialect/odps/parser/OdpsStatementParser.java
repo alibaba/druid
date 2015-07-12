@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
@@ -130,6 +131,33 @@ public class OdpsStatementParser extends SQLStatementParser {
             }
             
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+        }
+        
+        if (identifierEquals("READ")) {
+            lexer.nextToken();
+            OdpsReadStatement stmt = new OdpsReadStatement();
+            stmt.setTable(this.exprParser.name());
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                this.exprParser.names(stmt.getColumns(), stmt);
+                accept(Token.RPAREN);
+            }
+            
+            if (lexer.token() == Token.PARTITION) {
+                lexer.nextToken();
+
+                accept(Token.LPAREN);
+                parseAssignItems(stmt.getPartition(), stmt);
+                accept(Token.RPAREN);
+            }
+            
+            if (lexer.token() == Token.LITERAL_INT) {
+                stmt.setRowCount(this.exprParser.primary());
+            }
+            
+            statementList.add(stmt);
+            return true;
         }
         return false;
     }

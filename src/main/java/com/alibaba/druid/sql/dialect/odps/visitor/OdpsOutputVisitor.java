@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
@@ -106,7 +107,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print("LIFECYCLE ");
             x.getLifecycle().accept(this);
         }
-        
+
         if (x.getSelect() != null) {
             println();
             x.getSelect().accept(this);
@@ -241,17 +242,17 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         incrementIndent();
         for (int i = 0, size = selectList.size(); i < size; ++i) {
             SQLSelectItem selectItem = selectList.get(i);
-            
+
             if (i != 0) {
                 print(", ");
-                
+
                 printComment(selectList.get(i - 1).getAfterCommentsDirect(), "\n");
-                
+
                 println();
             }
-            
+
             selectItem.accept(this);
-            
+
             if (i == selectList.size() - 1 && selectItem.hasAfterComment()) {
                 print(' ');
                 printComment(selectItem.getAfterCommentsDirect(), "\n");
@@ -397,10 +398,10 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             printComment(x.getBeforeCommentsDirect(), "\n");
             println();
         }
-        
+
         print("SELECT ");
 
-        List<SQLHint> hints= x.getHintsDirect();
+        List<SQLHint> hints = x.getHintsDirect();
         if (hints != null) {
             printAndAccept(hints, " ");
             print(' ');
@@ -442,7 +443,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             println();
             x.getOrderBy().accept(this);
         }
-        
+
         if (x.getLimit() != null) {
             println();
             print("LIMIT ");
@@ -451,7 +452,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         return false;
     }
-    
+
     public boolean visit(SQLOrderBy x) {
         int itemSize = x.getItems().size();
         if (itemSize > 0) {
@@ -471,28 +472,28 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
     @Override
     public void endVisit(OdpsAnalyzeTableStatement x) {
-        
+
     }
 
     @Override
     public boolean visit(OdpsAnalyzeTableStatement x) {
         print("ANALYZE TABLE ");
         x.getTable().accept(this);
-        
+
         if (x.getPartition().size() > 0) {
             print(" PARTITION (");
             printAndAccept(x.getPartition(), ", ");
             print(")");
         }
-        
+
         print(" COMPUTE STATISTICS");
-        
+
         return false;
     }
 
     @Override
     public void endVisit(OdpsAddStatisticStatement x) {
-        
+
     }
 
     @Override
@@ -501,93 +502,123 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         x.getTable().accept(this);
         print(" ");
         x.getStatisticClause().accept(this);
-        
+
         return false;
     }
-    
+
     @Override
     public void endVisit(OdpsRemoveStatisticStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OdpsRemoveStatisticStatement x) {
         print("REMOVE STATISTIC ");
         x.getTable().accept(this);
         print(" ");
         x.getStatisticClause().accept(this);
-        
+
         return false;
     }
-    
+
     @Override
     public void endVisit(OdpsStatisticClause.TableCount x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OdpsStatisticClause.TableCount x) {
         print("TABLE_COUNT");
         return false;
     }
-    
+
     @Override
     public void endVisit(OdpsStatisticClause.ExpressionCondition x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OdpsStatisticClause.ExpressionCondition x) {
         print("EXPRESSION_CONDITION ");
         x.getExpr().accept(this);
         return false;
     }
-    
+
     @Override
     public void endVisit(OdpsStatisticClause.NullValue x) {
-  
+
     }
-    
+
     @Override
     public boolean visit(OdpsStatisticClause.NullValue x) {
         print("NULL_VALUE ");
         x.getColumn().accept(this);
         return false;
     }
-    
+
     @Override
     public void endVisit(OdpsStatisticClause.ColumnSum x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OdpsStatisticClause.ColumnSum x) {
         print("COLUMN_SUM ");
         x.getColumn().accept(this);
         return false;
     }
-    
+
     @Override
     public void endVisit(OdpsStatisticClause.ColumnMax x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OdpsStatisticClause.ColumnMax x) {
         print("COLUMN_MAX ");
         x.getColumn().accept(this);
         return false;
     }
-    
+
     @Override
     public void endVisit(OdpsStatisticClause.ColumnMin x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OdpsStatisticClause.ColumnMin x) {
         print("COLUMN_MIN ");
         x.getColumn().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsReadStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsReadStatement x) {
+        print("READ ");
+        x.getTable().accept(this);
+        
+        if (x.getColumns().size() > 0) {
+            print(" (");
+            printAndAccept(x.getColumns(), ", ");
+            print(")");
+        }
+
+        if (x.getPartition().size() > 0) {
+            print(" PARTITION (");
+            printAndAccept(x.getPartition(), ", ");
+            print(")");
+        }
+        
+        if (x.getRowCount() != null) {
+            print(' ');
+            x.getRowCount().accept(this);
+        }
+
         return false;
     }
 }
