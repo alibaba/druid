@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
@@ -98,4 +99,8 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
     void endVisit(OdpsStatisticClause.ColumnMin x);
     
     boolean visit(OdpsStatisticClause.ColumnMin x);
+    
+    void endVisit(OdpsReadStatement x);
+    
+    boolean visit(OdpsReadStatement x);
 }
