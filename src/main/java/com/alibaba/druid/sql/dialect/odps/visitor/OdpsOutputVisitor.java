@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -28,13 +29,17 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -395,6 +400,12 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         
         print("SELECT ");
 
+        List<SQLHint> hints= x.getHintsDirect();
+        if (hints != null) {
+            printAndAccept(hints, " ");
+            print(' ');
+        }
+
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
             print("ALL ");
         } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
@@ -455,6 +466,128 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             decrementIndent();
         }
 
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsAnalyzeTableStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsAnalyzeTableStatement x) {
+        print("ANALYZE TABLE ");
+        x.getTable().accept(this);
+        
+        if (x.getPartition().size() > 0) {
+            print(" PARTITION (");
+            printAndAccept(x.getPartition(), ", ");
+            print(")");
+        }
+        
+        print(" COMPUTE STATISTICS");
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsAddStatisticStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsAddStatisticStatement x) {
+        print("ADD STATISTIC ");
+        x.getTable().accept(this);
+        print(" ");
+        x.getStatisticClause().accept(this);
+        
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OdpsRemoveStatisticStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsRemoveStatisticStatement x) {
+        print("REMOVE STATISTIC ");
+        x.getTable().accept(this);
+        print(" ");
+        x.getStatisticClause().accept(this);
+        
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.TableCount x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.TableCount x) {
+        print("TABLE_COUNT");
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.ExpressionCondition x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.ExpressionCondition x) {
+        print("EXPRESSION_CONDITION ");
+        x.getExpr().accept(this);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.NullValue x) {
+  
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.NullValue x) {
+        print("NULL_VALUE ");
+        x.getColumn().accept(this);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.ColumnSum x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.ColumnSum x) {
+        print("COLUMN_SUM ");
+        x.getColumn().accept(this);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.ColumnMax x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.ColumnMax x) {
+        print("COLUMN_MAX ");
+        x.getColumn().accept(this);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.ColumnMin x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.ColumnMin x) {
+        print("COLUMN_MIN ");
+        x.getColumn().accept(this);
         return false;
     }
 }

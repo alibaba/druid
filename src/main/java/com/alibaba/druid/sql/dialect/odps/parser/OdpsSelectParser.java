@@ -47,6 +47,10 @@ public class OdpsSelectParser extends SQLSelectParser {
         }
         
         accept(Token.SELECT);
+        
+        if (lexer.token() == Token.HINT) {
+            this.exprParser.parseHints(queryBlock.getHints());
+        }
 
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();

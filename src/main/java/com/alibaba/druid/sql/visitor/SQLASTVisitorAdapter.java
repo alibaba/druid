@@ -56,19 +56,28 @@ import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableLifecycle;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableLifecycle;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenamePartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableSetComment;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableSetLifecycle;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableTouch;
+import com.alibaba.druid.sql.ast.statement.SQLAlterViewRenameStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
@@ -1117,12 +1126,102 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
     
     @Override
+    public void endVisit(SQLAlterViewRenameStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterViewRenameStatement x) {
+        return true;
+    }
+    
+    @Override
     public void endVisit(SQLShowTablesStatement x) {
         
     }
     
     @Override
     public boolean visit(SQLShowTablesStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableAddPartition x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAddPartition x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableDropPartition x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropPartition x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableRenamePartition x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableRenamePartition x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableSetComment x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableSetComment x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableSetLifecycle x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableSetLifecycle x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableEnableLifecycle x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableEnableLifecycle x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableDisableLifecycle x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDisableLifecycle x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableTouch x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableTouch x) {
         return true;
     }
     
