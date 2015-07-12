@@ -28,11 +28,15 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -73,7 +77,95 @@ public class OdpsStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
+        
+        if (identifierEquals("ANALYZE")) {
+            lexer.nextToken();
+            accept(Token.TABLE);
+            
+            OdpsAnalyzeTableStatement stmt = new OdpsAnalyzeTableStatement();
+            
+            SQLName table = this.exprParser.name();
+            stmt.setTable(table);
+            
+            if (lexer.token() == Token.PARTITION) {
+                lexer.nextToken();
+
+                accept(Token.LPAREN);
+                parseAssignItems(stmt.getPartition(), stmt);
+                accept(Token.RPAREN);
+            }
+            
+            accept(Token.COMPUTE);
+            acceptIdentifier("STATISTICS");
+            
+            statementList.add(stmt);
+            return true;
+        }
+        
+        if (identifierEquals("ADD")) {
+            lexer.nextToken();
+            
+            if (identifierEquals("STATISTIC")) {
+                lexer.nextToken();
+                OdpsAddStatisticStatement stmt = new OdpsAddStatisticStatement();
+                stmt.setTable(this.exprParser.name());
+                stmt.setStatisticClause(parseStaticClause());
+                statementList.add(stmt);
+                return true;
+            }
+            
+            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+        }
+        
+        if (identifierEquals("REMOVE")) {
+            lexer.nextToken();
+            
+            if (identifierEquals("STATISTIC")) {
+                lexer.nextToken();
+                OdpsRemoveStatisticStatement stmt = new OdpsRemoveStatisticStatement();
+                stmt.setTable(this.exprParser.name());
+                stmt.setStatisticClause(parseStaticClause());
+                statementList.add(stmt);
+                return true;
+            }
+            
+            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+        }
         return false;
+    }
+
+    protected OdpsStatisticClause parseStaticClause() {
+        if (identifierEquals("TABLE_COUNT")) {
+            lexer.nextToken();
+            return new OdpsStatisticClause.TableCount();
+        } else if (identifierEquals("NULL_VALUE")) {
+            lexer.nextToken();
+            OdpsStatisticClause.NullValue null_value = new OdpsStatisticClause.NullValue();
+            null_value.setColumn(this.exprParser.name());
+            return null_value;
+        } else if (identifierEquals("COLUMN_SUM")) {
+            lexer.nextToken();
+            OdpsStatisticClause.ColumnSum column_sum = new OdpsStatisticClause.ColumnSum();
+            column_sum.setColumn(this.exprParser.name());
+            return column_sum;
+        } else if (identifierEquals("COLUMN_MAX")) {
+            lexer.nextToken();
+            OdpsStatisticClause.ColumnMax column_max = new OdpsStatisticClause.ColumnMax();
+            column_max.setColumn(this.exprParser.name());
+            return column_max;
+        } else if (identifierEquals("COLUMN_MIN")) {
+            lexer.nextToken();
+            OdpsStatisticClause.ColumnMin column_min = new OdpsStatisticClause.ColumnMin();
+            column_min.setColumn(this.exprParser.name());
+            return column_min;
+        } else if (identifierEquals("EXPRESSION_CONDITION")) {
+            lexer.nextToken();
+            OdpsStatisticClause.ExpressionCondition expr_condition = new OdpsStatisticClause.ExpressionCondition();
+            expr_condition.setExpr(this.exprParser.expr());
+            return expr_condition;
+        } else {
+            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+        }
     }
 
     public SQLStatement parseInsert() {

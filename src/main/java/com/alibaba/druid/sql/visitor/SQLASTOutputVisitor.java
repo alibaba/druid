@@ -70,20 +70,29 @@ import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableLifecycle;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableLifecycle;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenamePartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableSetComment;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableSetLifecycle;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableTouch;
+import com.alibaba.druid.sql.ast.statement.SQLAlterViewRenameStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
@@ -2207,4 +2216,101 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
         }
     }
+    
+    @Override
+    public boolean visit(SQLAlterViewRenameStatement x) {
+        print("ALTER VIEW ");
+        x.getName().accept(this);
+        print(" RENAME TO ");
+        x.getTo().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAddPartition x) {
+        print("ADD ");
+        if (x.isIfNotExists()) {
+            print("IF NOT EXISTS ");
+        }
+        print("PARTITION (");
+        printAndAccept(x.getPartition(), ", ");
+        print(")");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropPartition x) {
+        print("DROP ");
+        if (x.isIfNotExists()) {
+            print("IF NOT EXISTS ");
+        }
+        print("PARTITION (");
+        printAndAccept(x.getPartition(), ", ");
+        print(")");
+        
+        if (x.isPurge()) {
+            print(" PURGE");
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableRenamePartition x) {
+        print("PARTITION (");
+        printAndAccept(x.getPartition(), ", ");
+        print(") RENAME TO PARTITION(");
+        printAndAccept(x.getTo(), ", ");
+        print(")");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableSetComment x) {
+        print("SET COMMENT ");
+        x.getComment().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableSetLifecycle x) {
+        print("SET LIFECYCLE ");
+        x.getLifecycle().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableEnableLifecycle x) {
+        if (x.getPartition().size() != 0) {
+            print("PARTITION (");
+            printAndAccept(x.getPartition(), ", ");
+            print(") ");
+        }
+        
+        print("ENABLE LIFECYCLE");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDisableLifecycle x) {
+        if (x.getPartition().size() != 0) {
+            print("PARTITION (");
+            printAndAccept(x.getPartition(), ", ");
+            print(") ");
+        }
+        
+        print("DISABLE LIFECYCLE");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableTouch x) {
+        print("TOUCH");
+        if (x.getPartition().size() != 0) {
+            print(" PARTITION (");
+            printAndAccept(x.getPartition(), ", ");
+            print(")");
+        }
+        return false;
+    }
+
 }
