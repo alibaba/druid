@@ -203,7 +203,10 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             println();
         }
 
-        printAndAccept(x.getItems(), " ");
+        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+            println();
+            x.getItems().get(i).accept(this);
+        }
 
         if (x.getElseExpr() != null) {
             println();
@@ -211,9 +214,10 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             x.getElseExpr().accept(this);
         }
 
+        decrementIndent();
         println();
         print("END");
-        decrementIndent();
+        
         return false;
     }
 
