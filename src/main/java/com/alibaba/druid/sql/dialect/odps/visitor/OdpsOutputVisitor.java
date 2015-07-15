@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -619,6 +620,18 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             x.getRowCount().accept(this);
         }
 
+        return false;
+    }
+    
+    public boolean visit(SQLMethodInvokeExpr x) {
+        if (x.getOwner() != null) {
+            x.getOwner().accept(this);
+            print(":");
+        }
+        print(x.getMethodName());
+        print("(");
+        printAndAccept(x.getParameters(), ", ");
+        print(")");
         return false;
     }
 }

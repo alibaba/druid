@@ -301,4 +301,13 @@ public class OdpsLexer extends Lexer {
         }
     }
 
+    public void scanVariable() {
+        if (ch == ':') {
+            token = Token.COLON;
+            ch = charAt(++pos);
+            return;
+        }
+        
+        super.scanVariable();
+    }
 }
