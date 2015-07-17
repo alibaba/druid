@@ -30,6 +30,7 @@ public class PGFormatTest extends TestCase {
                             "\n\tfooid int," + //
                             "\n\tfoosubid int," + //
                             "\n\tfooname text" + //
-                            "\n)", formatedSql);
+                            "\n)"
+                            + "\n;", formatedSql);
     }
 }

@@ -15,7 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.odps.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
@@ -26,6 +30,8 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
     private SQLOrderBy orderBy;
 
     private SQLExpr    limit;
+    
+    protected List<SQLHint> hints;
 
     public OdpsSelectQueryBlock(){
 
@@ -69,6 +75,21 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
         } else if (!limit.equals(other.limit)) return false;
         return true;
     }
+    
+    public List<SQLHint> getHintsDirect() {
+        return hints;
+    }
+    
+    public List<SQLHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLHint>(2);
+        }
+        return hints;
+    }
+
+    public void setHints(List<SQLHint> hints) {
+        this.hints = hints;
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -82,6 +103,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     public void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.hints);
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);

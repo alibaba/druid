@@ -16,15 +16,14 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlShowTablesStatement extends MySqlStatementImpl implements MySqlShowStatement {
+public class MySqlShowTablesStatement extends SQLShowTablesStatement implements MySqlShowStatement {
 
     private boolean full;
 
-    private SQLName database;
-    private SQLExpr like;
     private SQLExpr where;
 
     public boolean isFull() {
@@ -33,22 +32,6 @@ public class MySqlShowTablesStatement extends MySqlStatementImpl implements MySq
 
     public void setFull(boolean full) {
         this.full = full;
-    }
-
-    public SQLName getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(SQLName database) {
-        this.database = database;
-    }
-
-    public SQLExpr getLike() {
-        return like;
-    }
-
-    public void setLike(SQLExpr like) {
-        this.like = like;
     }
 
     public SQLExpr getWhere() {
@@ -66,5 +49,14 @@ public class MySqlShowTablesStatement extends MySqlStatementImpl implements MySq
             acceptChild(visitor, where);
         }
         visitor.endVisit(this);
+    }
+    
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
     }
 }

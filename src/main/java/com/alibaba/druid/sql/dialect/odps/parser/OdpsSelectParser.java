@@ -40,13 +40,21 @@ public class OdpsSelectParser extends SQLSelectParser {
             return queryRest(select);
         }
 
+        OdpsSelectQueryBlock queryBlock = new OdpsSelectQueryBlock();
+        
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            queryBlock.addBeforeComment(lexer.commentVal());
+        }
+        
         accept(Token.SELECT);
+        
+        if (lexer.token() == Token.HINT) {
+            this.exprParser.parseHints(queryBlock.getHints());
+        }
 
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
         }
-
-        OdpsSelectQueryBlock queryBlock = new OdpsSelectQueryBlock();
 
         if (lexer.token() == Token.DISTINCT) {
             queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);

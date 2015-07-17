@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -45,6 +46,11 @@ public class OdpsExprParser extends SQLExprParser {
 
     public OdpsExprParser(String sql){
         this(new OdpsLexer(sql));
+        this.lexer.nextToken();
+    }
+    
+    public OdpsExprParser(String sql, Lexer.CommentHandler commentHandler){
+        this(new OdpsLexer(sql, commentHandler));
         this.lexer.nextToken();
     }
     
@@ -97,7 +103,22 @@ public class OdpsExprParser extends SQLExprParser {
         }
 
         final String alias = as();
+        
+        SQLSelectItem item = new SQLSelectItem(expr, alias);
+        
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            item.addAfterComment(lexer.commentVal());
+        }
 
-        return new SQLSelectItem(expr, alias);
+        return item;
+    }
+    
+    public SQLExpr primaryRest(SQLExpr expr) {
+        if(lexer.token() == Token.COLON) {
+            lexer.nextToken();
+            expr = dotRest(expr);
+            return expr;
+        }
+        return super.primaryRest(expr);
     }
 }

@@ -15,13 +15,18 @@
  */
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
@@ -105,6 +110,106 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
 
     @Override
     public boolean visit(OdpsSelectQueryBlock x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsAnalyzeTableStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsAnalyzeTableStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OdpsAddStatisticStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsAddStatisticStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsRemoveStatisticStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsRemoveStatisticStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.TableCount x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.TableCount x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.ExpressionCondition x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.ExpressionCondition x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.NullValue x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.NullValue x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.ColumnSum x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.ColumnSum x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.ColumnMax x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.ColumnMax x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsStatisticClause.ColumnMin x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsStatisticClause.ColumnMin x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsReadStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsReadStatement x) {
         return true;
     }
 

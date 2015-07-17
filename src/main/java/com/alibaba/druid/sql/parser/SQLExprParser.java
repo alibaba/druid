@@ -1179,6 +1179,10 @@ public class SQLExprParser extends SQLParser {
     public SQLExpr andRest(SQLExpr expr) {
         for (;;) {
             if (lexer.token() == Token.AND || lexer.token() == Token.AMPAMP) {
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    expr.addAfterComment(lexer.commentVal());
+                }
+                
                 lexer.nextToken();
                 SQLExpr rightExp = relational();
 
@@ -1682,7 +1686,12 @@ public class SQLExprParser extends SQLParser {
             item.setValue(new SQLIdentifierExpr(lexer.stringVal()));
             lexer.nextToken();
         } else {
-            item.setValue(expr());
+            if (lexer.token() == Token.ALL) {
+                item.setValue(new SQLIdentifierExpr(lexer.stringVal()));
+                lexer.nextToken();
+            } else {
+                item.setValue(expr());
+            }
         }
         
         return item;
