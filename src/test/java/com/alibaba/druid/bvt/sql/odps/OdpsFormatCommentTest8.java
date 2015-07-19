@@ -20,7 +20,7 @@ public class OdpsFormatCommentTest8 extends TestCase {
                 + "\nFROM table2;"
                 + "\nSELECT *"
                 + "\nFROM table3"
-                + "\n;--comment2 goes her", SQLUtils.formatOdps(sql));
+                + "\n;--comment2 goes here", SQLUtils.formatOdps(sql));
     }
 
    

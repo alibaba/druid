@@ -450,6 +450,10 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         if (x.getWhere() != null) {
             println();
             print("WHERE ");
+            if (x.getWhere().hasBeforeComment() && isPrettyFormat()) {
+                printlnComments(x.getWhere().getBeforeCommentsDirect());
+            }
+            
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
             if (x.getWhere().hasAfterComment() && isPrettyFormat()) {

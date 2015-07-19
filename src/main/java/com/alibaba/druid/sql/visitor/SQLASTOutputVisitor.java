@@ -356,13 +356,30 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         for (int i = groupList.size() - 1; i >= 0; --i) {
             SQLExpr item = groupList.get(i);
+            
+            if (relational) {
+                if (isPrettyFormat() && item.hasBeforeComment()) {
+                    printlnComments(item.getBeforeCommentsDirect());
+                }
+            }
+            
+            if (isPrettyFormat() && item.hasBeforeComment()) {
+                printlnComments(item.getBeforeCommentsDirect());
+            }
+            
             visitBinaryLeft(item, x.getOperator());
 
+            if (isPrettyFormat() && item.hasAfterComment()) {
+                print(' ');
+                printComment(item.getAfterCommentsDirect(), "\n");
+            }
+            
+            if (i != groupList.size() - 1 && isPrettyFormat() && item.getParent().hasAfterComment()) {
+                print(' ');
+                printComment(item.getParent().getAfterCommentsDirect(), "\n");
+            }
+            
             if (relational) {
-                if (isPrettyFormat() && item.hasAfterComment()) {
-                    print(' ');
-                    printComment(item.getAfterCommentsDirect(), "\n");
-                }
                 println();
             } else {
                 print(" ");
@@ -381,6 +398,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     private void visitorBinaryRight(SQLBinaryOpExpr x) {
+        if (isPrettyFormat() && x.getRight().hasBeforeComment()) {
+            printlnComments(x.getRight().getBeforeCommentsDirect());
+        }
+        
         if (x.getRight() instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr right = (SQLBinaryOpExpr) x.getRight();
             boolean rightRational = right.getOperator() == SQLBinaryOperator.BooleanAnd
@@ -403,6 +424,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
         } else {
             x.getRight().accept(this);
+        }
+        
+        if (x.getRight().hasAfterComment() && isPrettyFormat()) {
+            print(' ');
+            printlnComments(x.getRight().getAfterCommentsDirect());
         }
     }
 
@@ -2140,9 +2166,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLUnionQueryTableSource x) {
         print("(");
         incrementIndent();
-        x.getUnion().accept(this);
         println();
+        x.getUnion().accept(this);
         decrementIndent();
+        println();
         print(")");
 
         if (x.getAlias() != null) {
@@ -2213,6 +2240,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
                 }
                 String comment = comments.get(i);
                 print(comment);
+            }
+        }
+    }
+    
+    protected void printlnComments(List<String> comments) {
+        if (comments != null) {
+            for (int i = 0; i < comments.size(); ++i) {
+                String comment = comments.get(i);
+                println(comment);
             }
         }
     }
