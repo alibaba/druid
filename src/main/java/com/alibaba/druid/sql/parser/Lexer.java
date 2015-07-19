@@ -35,7 +35,9 @@ import static com.alibaba.druid.sql.parser.Token.RPAREN;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -57,7 +59,7 @@ public class Lexer {
 
     protected String       stringVal;
     
-    protected String       commentVal;
+    protected List<String> comments = new ArrayList<String>(2);
 
     protected boolean      skipComment  = true;
 
@@ -288,6 +290,7 @@ public class Lexer {
     public final void nextToken() {
         bufPos = 0;
         hasComment = false;
+        comments = null;
 
         for (;;) {
             if (isWhitespace(ch)) {
@@ -803,7 +806,7 @@ public class Lexer {
         token = Token.MULTI_LINE_COMMENT;
         hasComment = true;
         if (keepComments) {
-            commentVal = stringVal;
+            addComment(stringVal);
         }
         
         if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
@@ -851,7 +854,7 @@ public class Lexer {
         token = Token.LINE_COMMENT;
         hasComment = true;
         if (keepComments) {
-            commentVal = stringVal;
+            addComment(stringVal);
         }
         
         if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
@@ -1017,8 +1020,26 @@ public class Lexer {
         return stringVal;
     }
     
-    public final String commentVal() {
-        return commentVal;
+    public final String readAndResetCommentValue() {
+        if (comments.size() == 0) {
+            return null;
+        }
+        
+        String val = comments.get(0);
+        
+        this.hasComment = false;
+        this.comments.clear();
+        
+        return val;
+    }
+    
+    public final List<String> readAndResetComments() {
+        List<String> comments = this.comments;
+        
+        this.hasComment = false;
+        this.comments = null;
+        
+        return comments;
     }
 
     private boolean isOperator(char ch) {
@@ -1171,4 +1192,10 @@ public class Lexer {
         return true;
     }
 
+    protected void addComment(String comment) {
+        if (comments == null) {
+            comments = new ArrayList<String>(2);
+        }
+        comments.add(stringVal);
+    }
 }

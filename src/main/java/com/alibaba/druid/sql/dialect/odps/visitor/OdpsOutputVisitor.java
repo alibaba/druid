@@ -144,10 +144,14 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             println();
             print(") ");
             print(x.getFrom().getAlias());
+            println();
         }
 
-        for (OdpsInsert insert : x.getItems()) {
-            println();
+        for (int i = 0; i < x.getItems().size(); ++i) {
+            OdpsInsert insert = x.getItems().get(i);
+            if (i != 0) {
+                println();
+            }
             insert.accept(this);
         }
         return false;
@@ -327,15 +331,30 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     public boolean visit(OdpsUDTFSQLSelectItem x) {
         x.getExpr().accept(this);
 
-        print(" AS (");
+        println();
+        print("AS (");
+        
+        int aliasSize = x.getAliasList().size();
+        if (aliasSize > 5) {
+            incrementIndent();
+            println();
+        }
 
-        for (int i = 0; i < x.getAliasList().size(); ++i) {
+        for (int i = 0; i < aliasSize; ++i) {
             if (i != 0) {
-                print(", ");
+                if (aliasSize > 5) {
+                    println(",");
+                } else {
+                    print(", ");    
+                }
             }
             print(x.getAliasList().get(i));
         }
-
+        
+        if (aliasSize > 5) {
+            decrementIndent();
+            println();
+        }
         print(")");
 
         return false;

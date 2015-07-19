@@ -21,9 +21,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectItem extends SQLObjectImpl {
 
-    private SQLExpr expr;
-    private String  alias;
-    private boolean connectByRoot = false;
+    protected SQLExpr expr;
+    protected String  alias;
+    protected boolean connectByRoot = false;
 
     public SQLSelectItem(){
 

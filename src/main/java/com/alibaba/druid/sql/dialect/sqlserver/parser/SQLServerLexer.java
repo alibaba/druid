@@ -107,7 +107,7 @@ public class SQLServerLexer extends Lexer {
                 token = Token.MULTI_LINE_COMMENT;
                 hasComment = true;
                 if (keepComments) {
-                    commentVal = stringVal;
+                    addComment(stringVal);
                 }
             }
 
@@ -149,7 +149,7 @@ public class SQLServerLexer extends Lexer {
             token = Token.LINE_COMMENT;
             hasComment = true;
             if (keepComments) {
-                commentVal = stringVal;
+                addComment(stringVal);
             }
             endOfComment = isEOF();
             

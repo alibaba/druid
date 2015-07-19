@@ -36,7 +36,8 @@ public class SQLUtilsTest extends TestCase {
         String expected = "SELECT lottery_notice_issue, lottery_notice_date, lottery_notice_result"
                           + "\nFROM tb_lottery_notice" + "\nWHERE lottery_type_id = 8"
                           + "\n\tAND lottery_notice_issue <= 2014066" + "\nUNION ALL"
-                          + "\nSELECT NULL, NULL, NULL, NULL, NULL" + "\n\t, NULL";
+                          + "\nSELECT NULL, NULL, NULL, NULL, NULL" // 
+                          + "\n\t, NULL# and lottery_notice_issue>=2014062 order by lottery_notice_issue desc";
         Assert.assertEquals(expected, formattedSql);
     }
 }

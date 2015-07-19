@@ -48,9 +48,8 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsStatementParser extends SQLStatementParser {
     public OdpsStatementParser(String sql){
-        super (new OdpsLexer(sql), JdbcConstants.ODPS);
+        super (new OdpsLexer(sql, true, true), JdbcConstants.ODPS);
         this.exprParser = new OdpsExprParser(this.lexer);
-        this.lexer.setCommentHandler(commentCallBack);
         this.lexer.nextToken();
     }
 
@@ -231,8 +230,8 @@ public class OdpsStatementParser extends SQLStatementParser {
     public OdpsInsert parseOdpsInsert() {
         OdpsInsert insert = new OdpsInsert();
         
-        if (lexer.hasComment()) {
-            insert.addBeforeComment(lexer.commentVal());
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            insert.addBeforeComment(lexer.readAndResetComments());
         }
         
         SQLSelectParser selectParser = createSQLSelectParser();
@@ -323,11 +322,22 @@ public class OdpsStatementParser extends SQLStatementParser {
     }
 
     public SQLStatement parseSet() {
+        List<String> comments = null;
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            comments = lexer.readAndResetComments();
+        }
+        
         accept(Token.SET);
 
         if (identifierEquals("LABEL")) {
-            lexer.nextToken();
             OdpsSetLabelStatement stmt = new OdpsSetLabelStatement();
+            
+            if (comments != null) {
+                stmt.addBeforeComment(comments);
+            }
+            
+            lexer.nextToken();
+            
             stmt.setLabel(lexer.stringVal());
             lexer.nextToken();
             accept(Token.TO);
@@ -351,6 +361,10 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         } else {
             SQLSetStatement stmt = new SQLSetStatement(getDbType());
+            
+            if (comments != null) {
+                stmt.addBeforeComment(comments);
+            }
 
             parseAssignItems(stmt.getItems(), stmt);
 

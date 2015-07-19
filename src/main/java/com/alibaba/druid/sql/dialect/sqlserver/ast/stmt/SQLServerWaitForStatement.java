@@ -30,6 +30,8 @@ public class SQLServerWaitForStatement extends SQLServerObjectImpl implements SQ
     private SQLStatement statement;
 
     private SQLExpr      timeout;
+    
+    private String       dbType;
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
@@ -74,4 +76,11 @@ public class SQLServerWaitForStatement extends SQLServerObjectImpl implements SQ
         this.timeout = timeout;
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 }
