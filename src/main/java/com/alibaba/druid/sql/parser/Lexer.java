@@ -74,8 +74,6 @@ public class Lexer {
 
     protected CommentHandler commentHandler;
 
-    protected boolean        hasComment   = false;
-
     protected boolean        endOfComment = false;
     
     protected boolean        keepComments = false;
@@ -289,8 +287,9 @@ public class Lexer {
 
     public final void nextToken() {
         bufPos = 0;
-        hasComment = false;
-        comments = null;
+        if (comments != null) {
+            comments = null;
+        }
 
         for (;;) {
             if (isWhitespace(ch)) {
@@ -804,7 +803,6 @@ public class Lexer {
 
         stringVal = subString(mark, bufPos);
         token = Token.MULTI_LINE_COMMENT;
-        hasComment = true;
         if (keepComments) {
             addComment(stringVal);
         }
@@ -852,7 +850,6 @@ public class Lexer {
 
         stringVal = subString(mark, bufPos);
         token = Token.LINE_COMMENT;
-        hasComment = true;
         if (keepComments) {
             addComment(stringVal);
         }
@@ -1020,23 +1017,9 @@ public class Lexer {
         return stringVal;
     }
     
-    public final String readAndResetCommentValue() {
-        if (comments.size() == 0) {
-            return null;
-        }
-        
-        String val = comments.get(0);
-        
-        this.hasComment = false;
-        this.comments.clear();
-        
-        return val;
-    }
-    
     public final List<String> readAndResetComments() {
         List<String> comments = this.comments;
         
-        this.hasComment = false;
         this.comments = null;
         
         return comments;
@@ -1153,7 +1136,7 @@ public class Lexer {
     }
 
     public boolean hasComment() {
-        return hasComment;
+        return comments != null;
     }
     
     public void skipToEOF() {
