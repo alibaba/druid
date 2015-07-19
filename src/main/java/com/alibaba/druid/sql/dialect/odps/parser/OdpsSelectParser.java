@@ -43,7 +43,7 @@ public class OdpsSelectParser extends SQLSelectParser {
         OdpsSelectQueryBlock queryBlock = new OdpsSelectQueryBlock();
         
         if (lexer.hasComment() && lexer.isKeepComments()) {
-            queryBlock.addBeforeComment(lexer.commentVal());
+            queryBlock.addBeforeComment(lexer.readAndResetComments());
         }
         
         accept(Token.SELECT);

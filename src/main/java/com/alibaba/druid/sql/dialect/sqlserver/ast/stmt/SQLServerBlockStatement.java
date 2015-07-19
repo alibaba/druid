@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 public class SQLServerBlockStatement  extends SQLServerObjectImpl implements SQLServerStatement  {
 
     private List<SQLStatement>    statementList = new ArrayList<SQLStatement>();
+    
+    private String dbType;
 
     public List<SQLStatement> getStatementList() {
         return statementList;
@@ -43,4 +45,11 @@ public class SQLServerBlockStatement  extends SQLServerObjectImpl implements SQL
         visitor.endVisit(this);
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 }

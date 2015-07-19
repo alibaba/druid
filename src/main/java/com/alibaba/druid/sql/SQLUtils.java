@@ -255,11 +255,12 @@ public class SQLUtils {
             if (i > 0) {
                 visitor.println(";");
             }
-            
-            List<String> comments = stmt.getBeforeCommentsDirect();
-            if (comments != null){
-                for(String comment : comments) {
-                    visitor.println(comment);
+            {
+                List<String> comments = stmt.getBeforeCommentsDirect();
+                if (comments != null){
+                    for(String comment : comments) {
+                        visitor.println(comment);
+                    }
                 }
             }
             stmt.accept(visitor);
@@ -269,6 +270,17 @@ public class SQLUtils {
                 if (semi != null && semi.booleanValue()) {
                     visitor.println();
                     visitor.print(";");
+                }
+                
+                List<String> comments = stmt.getAfterCommentsDirect();
+                if (comments != null){
+                    for (int j = 0; j < comments.size(); ++j) {
+                        String comment = comments.get(j);
+                        if (j != 0) {
+                            visitor.println();
+                        }
+                        visitor.print(comment);
+                    }
                 }
             }
         }

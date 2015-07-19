@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerObjectImpl implements SQLServerStatement {
 
     private String level;
+    private String dbType;
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
@@ -37,4 +38,11 @@ public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerObj
         this.level = level;
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 }

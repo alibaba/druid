@@ -29,6 +29,7 @@ public class SQLServerExecStatement extends SQLServerObjectImpl implements SQLSe
     private SQLName       returnStatus;
     private SQLName       moduleName;
     private List<SQLExpr> parameters = new ArrayList<SQLExpr>();
+    private String        dbType;
 
     public SQLName getModuleName() {
         return moduleName;
@@ -57,5 +58,13 @@ public class SQLServerExecStatement extends SQLServerObjectImpl implements SQLSe
 
     public void setReturnStatus(SQLName returnStatus) {
         this.returnStatus = returnStatus;
+    }
+    
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 }

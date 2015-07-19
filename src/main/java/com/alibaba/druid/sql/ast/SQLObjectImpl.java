@@ -111,6 +111,10 @@ public abstract class SQLObjectImpl implements SQLObject {
     
     @SuppressWarnings("unchecked")
     public void addBeforeComment(String comment) {
+        if (comment == null) {
+            return;
+        }
+        
         if (attributes == null) {
             attributes = new HashMap<String, Object>(1);
         }
@@ -122,6 +126,20 @@ public abstract class SQLObjectImpl implements SQLObject {
         }
         
         comments.add(comment);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void addBeforeComment(List<String> comments) {
+        if (attributes == null) {
+            attributes = new HashMap<String, Object>(1);
+        }
+        
+        List<String> attrComments = (List<String>) attributes.get("format.before_comment");
+        if (attrComments == null) {
+            attributes.put("format.before_comment", comments);
+        } else {
+            attrComments.addAll(comments);
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -146,6 +164,20 @@ public abstract class SQLObjectImpl implements SQLObject {
         }
         
         comments.add(comment);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void addAfterComment(List<String> comments) {
+        if (attributes == null) {
+            attributes = new HashMap<String, Object>(1);
+        }
+        
+        List<String> attrComments = (List<String>) attributes.get("format.after_comment");
+        if (attrComments == null) {
+            attributes.put("format.after_comment", comments);
+        } else {
+            attrComments.addAll(comments);
+        }
     }
     
     @SuppressWarnings("unchecked")

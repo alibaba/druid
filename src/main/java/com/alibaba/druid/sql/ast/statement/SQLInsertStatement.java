@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
+    private String dbType;
 
     public SQLInsertStatement(){
 
@@ -84,5 +85,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
             visitor.endVisit(this);
         }
+    }
+
+    @Override
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 }

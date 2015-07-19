@@ -1180,7 +1180,7 @@ public class SQLExprParser extends SQLParser {
         for (;;) {
             if (lexer.token() == Token.AND || lexer.token() == Token.AMPAMP) {
                 if (lexer.isKeepComments() && lexer.hasComment()) {
-                    expr.addAfterComment(lexer.commentVal());
+                    expr.addAfterComment(lexer.readAndResetComments());
                 }
                 
                 lexer.nextToken();

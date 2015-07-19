@@ -37,10 +37,13 @@ public interface SQLObject {
     Map<String, Object> getAttributesDirect();
     
     void addBeforeComment(String comment);
+    void addBeforeComment(List<String> comments);
     
     List<String> getBeforeCommentsDirect();
     
     void addAfterComment(String comment);
+    
+    void addAfterComment(List<String> comments);
     
     List<String> getAfterCommentsDirect();
     

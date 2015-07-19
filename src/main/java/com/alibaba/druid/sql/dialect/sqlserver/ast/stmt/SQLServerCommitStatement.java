@@ -27,6 +27,8 @@ public class SQLServerCommitStatement extends SQLServerObjectImpl implements SQL
     private SQLExpr transactionName;
 
     private SQLExpr delayedDurability;
+    
+    private String  dbType;
 
     public boolean isWork() {
         return work;
@@ -58,5 +60,13 @@ public class SQLServerCommitStatement extends SQLServerObjectImpl implements SQL
 
     public void setDelayedDurability(SQLExpr delayedDurability) {
         this.delayedDurability = delayedDurability;
+    }
+    
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 }

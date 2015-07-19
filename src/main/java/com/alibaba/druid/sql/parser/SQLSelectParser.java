@@ -162,7 +162,7 @@ public class SQLSelectParser extends SQLParser {
         SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock();
         
         if (lexer.hasComment() && lexer.isKeepComments()) {
-            queryBlock.addBeforeComment(lexer.commentVal());
+            queryBlock.addBeforeComment(lexer.readAndResetCommentValue());
         }
 
         accept(Token.SELECT);
@@ -243,7 +243,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.hasComment() && lexer.isKeepComments() //
                     && lexer.token() != Token.INSERT // odps multi-insert
                     ) {
-                where.addAfterComment(lexer.commentVal());
+                where.addAfterComment(lexer.readAndResetCommentValue());
             }
             
             queryBlock.setWhere(where);
@@ -341,7 +341,7 @@ public class SQLSelectParser extends SQLParser {
         SQLTableSource tableSrc = parseTableSourceRest(tableReference);
         
         if (lexer.hasComment() && lexer.isKeepComments()) {
-            tableSrc.addAfterComment(lexer.commentVal());
+            tableSrc.addAfterComment(lexer.readAndResetComments());
         }
         
         return tableSrc;

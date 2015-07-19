@@ -29,6 +29,7 @@ public class SQLServerIfStatement extends SQLServerObjectImpl implements SQLServ
     private SQLExpr            condition;
     private List<SQLStatement> statements = new ArrayList<SQLStatement>();
     private Else               elseItem;
+    private String             dbType;
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
@@ -86,4 +87,11 @@ public class SQLServerIfStatement extends SQLServerObjectImpl implements SQLServ
 
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 }

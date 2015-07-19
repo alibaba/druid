@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 public class SQLServerSetStatement extends SQLServerObjectImpl implements SQLServerStatement {
 
     private SQLAssignItem item = new SQLAssignItem();
-    
+    private String dbType;
 
     public SQLServerSetStatement(){
     }
@@ -52,5 +52,13 @@ public class SQLServerSetStatement extends SQLServerObjectImpl implements SQLSer
             acceptChild(visitor, this.item);
         }
         visitor.endVisit(this);
+    }
+    
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 }
