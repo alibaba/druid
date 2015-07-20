@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
@@ -93,13 +94,27 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         int partitionSize = x.getPartitionColumns().size();
         if (partitionSize > 0) {
             println();
-            print("PARTITIONED (");
+            print("PARTITIONED BY (");
+            incrementIndent();
+            println();
             for (int i = 0; i < partitionSize; ++i) {
-                if (i != 0) {
-                    print(", ");
+                SQLColumnDefinition column = x.getPartitionColumns().get(i);
+                column.accept(this);
+                
+                if (i != partitionSize - 1) {
+                    print(',');
                 }
-                x.getPartitionColumns().get(i).accept(this);
+                if (this.isPrettyFormat() && column.hasAfterComment()) {
+                    print(' ');
+                    printComment(column.getAfterCommentsDirect(), "\n");
+                }
+                
+                if (i != partitionSize - 1) {
+                    println();
+                }
             }
+            decrementIndent();
+            println();
             print(")");
         }
 

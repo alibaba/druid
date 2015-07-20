@@ -989,7 +989,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(" COMMENT ");
             x.getComment().accept(this);
         }
-
+        
         return false;
     }
 
