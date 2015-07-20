@@ -81,10 +81,18 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 SQLColumnDefinition column = this.exprParser.parseColumn();
                 stmt.getTableElementList().add(column);
                 
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    column.addAfterComment(lexer.readAndResetComments());
+                }
+                
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 } else {
                     lexer.nextToken();
+                    
+                    if (lexer.isKeepComments() && lexer.hasComment()) {
+                        column.addAfterComment(lexer.readAndResetComments());
+                    }
                 }
             }
             accept(Token.RPAREN);
