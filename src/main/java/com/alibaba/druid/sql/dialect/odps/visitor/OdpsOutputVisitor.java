@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -74,11 +75,20 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             incrementIndent();
             println();
             for (int i = 0; i < size; ++i) {
-                if (i != 0) {
-                    print(", ");
+                SQLTableElement element = x.getTableElementList().get(i);
+                element.accept(this);
+                
+                if (i != size - 1) {
+                    print(',');
+                }
+                if (this.isPrettyFormat() && element.hasAfterComment()) {
+                    print(' ');
+                    printComment(element.getAfterCommentsDirect(), "\n");
+                }
+                
+                if (i != size - 1) {
                     println();
                 }
-                x.getTableElementList().get(i).accept(this);
             }
             decrementIndent();
             println();
