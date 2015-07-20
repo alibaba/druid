@@ -31,7 +31,10 @@ public class OdpsCreateTableTest extends TestCase {
                 + "\n\ttotal_price DOUBLE"//
                 + "\n)"//
                 + "\nCOMMENT 'xxxx'"//
-                + "\nPARTITIONED (sale_date STRING, region STRING)"//
+                + "\nPARTITIONED BY ("
+                + "\n\tsale_date STRING,"
+                + "\n\tregion STRING"
+                + "\n)"//
                 + "\nLIFECYCLE 5", output);
     }
 }
