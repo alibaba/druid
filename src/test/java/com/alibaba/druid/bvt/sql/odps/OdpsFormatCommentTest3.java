@@ -23,8 +23,7 @@ public class OdpsFormatCommentTest3 extends TestCase {
                 + "\nSELECT f1 -- aa"//
                 + "\nFROM t0;"//
                 + "\nSELECT f2 -- aa"//
-                + "\nFROM t1"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nFROM t1;", SQLUtils.formatOdps(sql));
     }
 
 }

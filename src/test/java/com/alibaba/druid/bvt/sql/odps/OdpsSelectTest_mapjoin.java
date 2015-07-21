@@ -34,8 +34,7 @@ public class OdpsSelectTest_mapjoin extends TestCase {
                 + "\n\tb.customer_id, "
                 + "\n\tb.total_price"
                 + "\nFROM shop a"
-                + "\nJOIN sale_detail b ON a.shop_name = b.shop_name"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nJOIN sale_detail b ON a.shop_name = b.shop_name;", SQLUtils.formatOdps(sql));
     }
 
 

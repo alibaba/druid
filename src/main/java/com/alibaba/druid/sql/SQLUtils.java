@@ -268,7 +268,9 @@ public class SQLUtils {
             if (i == statementList.size() - 1) {
                 Boolean semi = (Boolean) stmt.getAttribute("format.semi");
                 if (semi != null && semi.booleanValue()) {
-                    visitor.println();
+                    if (stmt.hasAfterComment()) {
+                        visitor.println();
+                    }
                     visitor.print(";");
                 }
                 

@@ -11,7 +11,6 @@ public class OdpsAlterTableSetCommentTest extends TestCase {
     public void test_if() throws Exception {
         String sql = "alter table sale_detail set comment 'new coments for table sale_detail';";
         Assert.assertEquals("ALTER TABLE sale_detail" //
-                            + "\n\tSET COMMENT 'new coments for table sale_detail'" //
-                            + "\n;", SQLUtils.formatOdps(sql));
+                            + "\n\tSET COMMENT 'new coments for table sale_detail';", SQLUtils.formatOdps(sql));
     }
 }

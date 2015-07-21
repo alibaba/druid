@@ -14,8 +14,7 @@ public class OdpsFormatCommentTest5 extends TestCase {
                 ;//
         Assert.assertEquals("SELECT *" //
                 + "\nFROM t -- xxxx" //
-                + "\nWHERE id > 0"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nWHERE id > 0;", SQLUtils.formatOdps(sql));
     }
 
     public void test_column_comment_as() throws Exception {
@@ -25,8 +24,7 @@ public class OdpsFormatCommentTest5 extends TestCase {
                 ;//
         Assert.assertEquals("SELECT *" //
                 + "\nFROM xxxx a -- xxxx" //
-                + "\nWHERE id > 0"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nWHERE id > 0;", SQLUtils.formatOdps(sql));
     }
     
 
@@ -42,7 +40,6 @@ public class OdpsFormatCommentTest5 extends TestCase {
                 + "\n\t-- comment_xxx" //
                 + "\n\tSELECT *" //
                 + "\n\tFROM t" //
-                + "\n) a"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\n) a;", SQLUtils.formatOdps(sql));
     }
 }
