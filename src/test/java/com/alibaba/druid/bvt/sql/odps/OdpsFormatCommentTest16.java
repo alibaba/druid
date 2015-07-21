@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.sql.odps;
 
+import java.net.URLDecoder;
+
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -24,8 +26,7 @@ public class OdpsFormatCommentTest16 extends TestCase {
                 + "\nPARTITIONED BY ("
                 + "\n\tds string, -- c_1"
                 + "\n\thh string -- c_2"
-                + "\n)"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\n);", SQLUtils.formatOdps(sql));
     }
 
    

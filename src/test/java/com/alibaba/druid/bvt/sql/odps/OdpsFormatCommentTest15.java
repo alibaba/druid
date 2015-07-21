@@ -15,8 +15,7 @@ public class OdpsFormatCommentTest15 extends TestCase {
                 + "\nPARTITIONED BY ("
                 + "\n\tds string,"
                 + "\n\thh string"
-                + "\n)"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\n);", SQLUtils.formatOdps(sql));
     }
 
    

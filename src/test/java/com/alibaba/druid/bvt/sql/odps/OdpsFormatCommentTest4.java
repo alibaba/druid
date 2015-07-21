@@ -33,8 +33,7 @@ public class OdpsFormatCommentTest4 extends TestCase {
                 + "\nSELECT f0, "//
                 + "\n\tf1, "//
                 + "\n\tf2"//
-                + "\nWHERE name RLIKE 'kk'"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nWHERE name RLIKE 'kk';", SQLUtils.formatOdps(sql));
     }
 
 }

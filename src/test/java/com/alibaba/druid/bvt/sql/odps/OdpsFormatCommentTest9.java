@@ -12,8 +12,7 @@ public class OdpsFormatCommentTest9 extends TestCase {
         Assert.assertEquals("INSERT OVERWRITE TABLE ttt PARTITION (ds='20150710', hh='07')"
                 + "\nSELECT tt_split(content, 60)"
                 + "\n\tAS (f0, f1, f2, f3)"
-                + "\nFROM xxx"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nFROM xxx;", SQLUtils.formatOdps(sql));
     }
 
    

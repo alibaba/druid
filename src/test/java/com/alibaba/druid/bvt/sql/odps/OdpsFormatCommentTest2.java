@@ -20,8 +20,7 @@ public class OdpsFormatCommentTest2 extends TestCase {
                 + "\n--[Update ]"
                 + "\nSET odps.sql.mapper.split.size = 2048;"
                 + "\nSELECT *"
-                + "\nFROM dual"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nFROM dual;", SQLUtils.formatOdps(sql));
     }
 
 }

@@ -79,7 +79,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                 element.accept(this);
                 
                 if (i != size - 1) {
-                    print(',');
+                    print(",");
                 }
                 if (this.isPrettyFormat() && element.hasAfterComment()) {
                     print(' ');

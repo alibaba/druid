@@ -20,8 +20,7 @@ public class OdpsFormatCommentTest10 extends TestCase {
                 + "\n\t\tf5,"
                 + "\n\t\tf6"
                 + "\n\t)"
-                + "\nFROM xxx"
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nFROM xxx;", SQLUtils.formatOdps(sql));
     }
 
    

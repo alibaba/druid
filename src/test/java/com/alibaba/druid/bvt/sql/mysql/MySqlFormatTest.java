@@ -29,7 +29,6 @@ public class MySqlFormatTest extends TestCase {
                             "\ta INT, \n" + //
                             "\tb CHAR(20), \n" + //
                             "\tINDEX(a)\n" + //
-                            ")" //
-                            + "\n;", SQLUtils.format(text, JdbcUtils.MYSQL));
+                            ");", SQLUtils.format(text, JdbcUtils.MYSQL));
     }
 }

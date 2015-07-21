@@ -26,8 +26,8 @@ public class OdpsCreateTableTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
         Assert.assertEquals("CREATE TABLE IF NOT EXISTS sale_detailsale_detail ("//
-                + "\n\tshop_name STRING, "//
-                + "\n\tcustomer_id STRING, "//
+                + "\n\tshop_name STRING,"//
+                + "\n\tcustomer_id STRING,"//
                 + "\n\ttotal_price DOUBLE"//
                 + "\n)"//
                 + "\nCOMMENT 'xxxx'"//
