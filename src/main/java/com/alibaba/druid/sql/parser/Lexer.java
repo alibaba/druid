@@ -674,15 +674,19 @@ public class Lexer {
 
             ch = charAt(++pos);
             
-            if(ch == '\\') {
-                hasSpecial = true;
-                continue;
-            }
-
             if (ch == '\"' && charAt(pos - 1) != '\\') {
                 scanChar();
                 token = LITERAL_ALIAS;
                 break;
+            }
+            
+            if(ch == '\\') {
+                scanChar();
+                if (ch == '"') {
+                    hasSpecial = true;
+                } else {
+                    unscan();
+                }
             }
             
             if (bufPos == buf.length) {
