@@ -415,7 +415,7 @@ public class MySqlExprParser extends SQLExprParser {
                 expr = matchAgainstExpr;
 
                 return primaryRest(expr);
-            } else if ("CONVERT".equalsIgnoreCase(ident)) {
+            } else if (("CONVERT".equalsIgnoreCase(ident))||("CHAR".equalsIgnoreCase(ident))) {
                 lexer.nextToken();
                 SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(ident);
 
