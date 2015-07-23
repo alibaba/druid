@@ -142,6 +142,7 @@ public class SQLParser {
                     case EXCLUSIVE:
                     case MODE:
                     case ADVISE:
+                    case TYPE:
                         alias = lexer.stringVal();
                         lexer.nextToken();
                         return alias;
