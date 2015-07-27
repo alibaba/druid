@@ -77,6 +77,8 @@ public class Lexer {
     protected boolean        endOfComment = false;
     
     protected boolean        keepComments = false;
+    
+    protected int            line         = 0;
 
     public Lexer(String input){
         this(input, null);
@@ -293,6 +295,10 @@ public class Lexer {
 
         for (;;) {
             if (isWhitespace(ch)) {
+                if (ch == '\n') {
+                    line++;
+                }
+                
                 scanChar();
                 continue;
             }
@@ -831,6 +837,7 @@ public class Lexer {
         for (;;) {
             if (ch == '\r') {
                 if (charAt(pos + 1) == '\n') {
+                    line++;
                     scanChar();
                     break;
                 }
@@ -839,6 +846,7 @@ public class Lexer {
             }
 
             if (ch == '\n') {
+                line++;
                 scanChar();
                 break;
             }
@@ -1184,5 +1192,9 @@ public class Lexer {
             comments = new ArrayList<String>(2);
         }
         comments.add(stringVal);
+    }
+    
+    public int getLine() {
+        return line;
     }
 }

@@ -253,7 +253,20 @@ public class SQLUtils {
             SQLStatement stmt = statementList.get(i);
             
             if (i > 0) {
-                visitor.println(";");
+                visitor.print(";");
+                
+                SQLStatement preStmt = statementList.get(i - 1);
+                List<String> comments = preStmt.getAfterCommentsDirect();
+                if (comments != null){
+                    for (int j = 0; j < comments.size(); ++j) {
+                        String comment = comments.get(j);
+                        if (j != 0) {
+                            visitor.println();
+                        }
+                        visitor.print(comment);
+                    }
+                }
+                visitor.println();
             }
             {
                 List<String> comments = stmt.getBeforeCommentsDirect();
@@ -268,9 +281,9 @@ public class SQLUtils {
             if (i == statementList.size() - 1) {
                 Boolean semi = (Boolean) stmt.getAttribute("format.semi");
                 if (semi != null && semi.booleanValue()) {
-                    if (stmt.hasAfterComment()) {
-                        visitor.println();
-                    }
+//                    if (stmt.hasAfterComment()) {
+//                        visitor.println();
+//                    }
                     visitor.print(";");
                 }
                 

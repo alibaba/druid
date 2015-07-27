@@ -159,9 +159,15 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (lexer.token() == Token.SEMI) {
+                int line0 = lexer.getLine();
                 lexer.nextToken();
-                if (lexer.isKeepComments()) {
+                int line1 = lexer.getLine();
+                
+                if (lexer.isKeepComments() && statementList.size() > 0) {
                     SQLStatement stmt = statementList.get(statementList.size() - 1);
+                    if (line1 - line0 <= 1) {
+                        stmt.addAfterComment(lexer.readAndResetComments());
+                    }
                     stmt.getAttributes().put("format.semi", Boolean.TRUE);
                 }
                 continue;
