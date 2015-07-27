@@ -139,6 +139,7 @@ public class OdpsLexer extends Lexer {
             for (;;) {
                 if (ch == '\r') {
                     if (charAt(pos + 1) == '\n') {
+                        line++;
                         bufPos += 2;
                         scanChar();
                         break;
@@ -150,6 +151,7 @@ public class OdpsLexer extends Lexer {
                 }
 
                 if (ch == '\n') {
+                    line++;
                     scanChar();
                     bufPos++;
                     break;
