@@ -9,12 +9,12 @@ import junit.framework.TestCase;
 public class OdpsFormatCommentTest15 extends TestCase {
     public void test_column_comment() throws Exception {
         String sql = "create table t1 (f0 bigint) partitioned by (ds string, hh string);";
-        Assert.assertEquals("CREATE TABLE t1t1 ("
-                + "\n\tf0 bigint"
+        Assert.assertEquals("CREATE TABLE t1 ("
+                + "\n\tf0 BIGINT"
                 + "\n)"
                 + "\nPARTITIONED BY ("
-                + "\n\tds string,"
-                + "\n\thh string"
+                + "\n\tds STRING,"
+                + "\n\thh STRING"
                 + "\n);", SQLUtils.formatOdps(sql));
     }
 

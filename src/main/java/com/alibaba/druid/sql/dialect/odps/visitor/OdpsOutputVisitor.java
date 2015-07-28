@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
@@ -59,8 +60,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         } else {
             print("CREATE TABLE ");
         }
-
-        x.getName().accept(this);
 
         x.getName().accept(this);
 
@@ -701,5 +700,16 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         } else {
             print(JoinType.toString(joinType));
         }
+    }
+    
+    public boolean visit(SQLDataType x) {
+        print(x.getName().toUpperCase());
+        if (x.getArguments().size() > 0) {
+            print("(");
+            printAndAccept(x.getArguments(), ", ");
+            print(")");
+        }
+
+        return false;
     }
 }
