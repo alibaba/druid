@@ -562,11 +562,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getOwner().accept(this);
             print(".");
         }
-        print(x.getMethodName());
+        printFunctionName(x.getMethodName());
         print("(");
         printAndAccept(x.getParameters(), ", ");
         print(")");
         return false;
+    }
+    
+    protected void printFunctionName(String name) {
+        print(name);
     }
 
     public boolean visit(SQLAggregateExpr x) {
