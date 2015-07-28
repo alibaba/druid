@@ -30,11 +30,12 @@ public class OdpsSelectTest_mapjoin extends TestCase {
                 + "\nb.total_price"
                 + "\nfrom shop a join sale_detail b"
                 + "\non a.shop_name = b.shop_name;";
-        Assert.assertEquals("SELECT /*+ mapjoin(a) */ a.shop_name, "
-                + "\n\tb.customer_id, "
-                + "\n\tb.total_price"
+        Assert.assertEquals("SELECT /*+ mapjoin(a) */ a.shop_name"
+                + "\n\t, b.customer_id"
+                + "\n\t, b.total_price"
                 + "\nFROM shop a"
-                + "\nJOIN sale_detail b ON a.shop_name = b.shop_name;", SQLUtils.formatOdps(sql));
+                + "\nJOIN sale_detail b"
+                + "\n\tON a.shop_name = b.shop_name;", SQLUtils.formatOdps(sql));
     }
 
 
