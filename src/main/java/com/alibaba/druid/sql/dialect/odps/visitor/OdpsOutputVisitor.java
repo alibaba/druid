@@ -15,8 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
@@ -48,7 +51,24 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVisitor {
-
+    
+    private Set<String> builtInFunctions = new HashSet<String>();
+    
+    {
+        builtInFunctions.add("IF");
+        builtInFunctions.add("COALESCE");
+        builtInFunctions.add("TO_DATE");
+        builtInFunctions.add("SUBSTR");
+        builtInFunctions.add("INSTR");
+        builtInFunctions.add("LENGTH");
+        builtInFunctions.add("SPLIT");
+        builtInFunctions.add("TOLOWER");
+        builtInFunctions.add("TOUPPER");
+        builtInFunctions.add("EXPLODE");
+        builtInFunctions.add("LEAST");
+        builtInFunctions.add("GREATEST");
+    }
+    
     public OdpsOutputVisitor(Appendable appender){
         super(appender);
     }
@@ -59,8 +79,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         } else {
             print("CREATE TABLE ");
         }
-
-        x.getName().accept(this);
 
         x.getName().accept(this);
 
@@ -684,7 +702,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             x.getOwner().accept(this);
             print(":");
         }
-        print(x.getMethodName());
+        printFunctionName(x.getMethodName());
         print("(");
         printAndAccept(x.getParameters(), ", ");
         print(")");
@@ -700,6 +718,26 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print("FULL OUTER JOIN");
         } else {
             print(JoinType.toString(joinType));
+        }
+    }
+    
+    public boolean visit(SQLDataType x) {
+        print(x.getName().toUpperCase());
+        if (x.getArguments().size() > 0) {
+            print("(");
+            printAndAccept(x.getArguments(), ", ");
+            print(")");
+        }
+
+        return false;
+    }
+    
+    protected void printFunctionName(String name) {
+        String upperName = name.toUpperCase();
+        if (builtInFunctions.contains(upperName)) {
+            print(upperName);
+        } else {
+            print(name);
         }
     }
 }

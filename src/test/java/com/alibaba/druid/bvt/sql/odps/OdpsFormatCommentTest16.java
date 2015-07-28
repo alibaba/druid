@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.odps;
 
-import java.net.URLDecoder;
-
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -18,14 +16,14 @@ public class OdpsFormatCommentTest16 extends TestCase {
                 + "ds string, -- c_1"
                 + "\nhh string -- c_2"
                 + "\n);";
-        Assert.assertEquals("CREATE TABLE t1t1 ("
-                + "\n\tf0 bigint, -- fc_0"
-                + "\n\tf1 string, -- fc_1"
-                + "\n\tf2 string -- fc_2"
+        Assert.assertEquals("CREATE TABLE t1 ("
+                + "\n\tf0 BIGINT, -- fc_0"
+                + "\n\tf1 STRING, -- fc_1"
+                + "\n\tf2 STRING -- fc_2"
                 + "\n)"
                 + "\nPARTITIONED BY ("
-                + "\n\tds string, -- c_1"
-                + "\n\thh string -- c_2"
+                + "\n\tds STRING, -- c_1"
+                + "\n\thh STRING -- c_2"
                 + "\n);", SQLUtils.formatOdps(sql));
     }
 
