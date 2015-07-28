@@ -24,15 +24,15 @@ public class OdpsFormatCommentTest4 extends TestCase {
                 + "\n) a" //
                 + "\n-- comment_0"//
                 + "\nINSERT OVERWRITE TABLE b PARTITION (ds='20150711')"//
-                + "\nSELECT f0, "//
-                + "\n\tf1, "//
-                + "\n\tf2"//
+                + "\nSELECT f0"//
+                + "\n\t, f1"//
+                + "\n\t, f2"//
                 + "\nWHERE name RLIKE 'xxxx'" //
                 + "\n-- comment_1"//
                 + "\nINSERT OVERWRITE TABLE c PARTITION (ds='20150711')"//
-                + "\nSELECT f0, "//
-                + "\n\tf1, "//
-                + "\n\tf2"//
+                + "\nSELECT f0"//
+                + "\n\t, f1"//
+                + "\n\t, f2"//
                 + "\nWHERE name RLIKE 'kk';", SQLUtils.formatOdps(sql));
     }
 

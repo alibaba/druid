@@ -18,8 +18,8 @@ public class OdpsFormatCommentTest extends TestCase {
         String sql = "select f1 -- aaa"
                 + "\n, f2 -- bbb"
                 + "\n from t1";
-        Assert.assertEquals("SELECT f1, -- aaa" //
-                + "\n\tf2 -- bbb" //
+        Assert.assertEquals("SELECT f1 -- aaa" //
+                + "\n\t, f2 -- bbb" //
                 + "\nFROM t1", SQLUtils.formatOdps(sql));
     }
     
@@ -27,8 +27,8 @@ public class OdpsFormatCommentTest extends TestCase {
         String sql = "select f1 /*aa*/"
                 + "\n, f2 -- bbb"
                 + "\n from t1";
-        Assert.assertEquals("SELECT f1, /*aa*/" //
-                + "\n\tf2 -- bbb" //
+        Assert.assertEquals("SELECT f1 /*aa*/" //
+                + "\n\t, f2 -- bbb" //
                 + "\nFROM t1", SQLUtils.formatOdps(sql));
     }
 }

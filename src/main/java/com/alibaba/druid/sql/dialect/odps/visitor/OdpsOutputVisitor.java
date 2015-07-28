@@ -278,11 +278,14 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             SQLSelectItem selectItem = selectList.get(i);
 
             if (i != 0) {
-                print(", ");
-
-                printComment(selectList.get(i - 1).getAfterCommentsDirect(), "\n");
-
+                SQLSelectItem preSelectItem = selectList.get(i - 1);
+                if (preSelectItem.hasAfterComment()) {
+                    print(' ');
+                    printComment(preSelectItem.getAfterCommentsDirect(), "\n");
+                }
+                
                 println();
+                print(", ");
             }
 
             selectItem.accept(this);
@@ -321,14 +324,15 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print(",");
         } else {
             println();
-            print(JoinType.toString(x.getJoinType()));
+            printJoinType(x.getJoinType());
         }
         print(" ");
         x.getRight().accept(this);
 
         if (x.getCondition() != null) {
             incrementIndent();
-            print(" ON ");
+            println();
+            print("ON ");
             x.getCondition().accept(this);
             decrementIndent();
         }
@@ -685,5 +689,17 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         printAndAccept(x.getParameters(), ", ");
         print(")");
         return false;
+    }
+    
+    protected void printJoinType(JoinType joinType) {
+        if (joinType.equals(JoinType.LEFT_OUTER_JOIN)) {
+            print("LEFT OUTER JOIN");
+        } else if (joinType.equals(JoinType.RIGHT_OUTER_JOIN)) {
+            print("RIGHT OUTER JOIN");
+        } else if (joinType.equals(JoinType.FULL_OUTER_JOIN)) {
+            print("FULL OUTER JOIN");
+        } else {
+            print(JoinType.toString(joinType));
+        }
     }
 }

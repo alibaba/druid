@@ -1283,7 +1283,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(",");
         } else {
             println();
-            print(JoinType.toString(x.getJoinType()));
+            printJoinType(x.getJoinType());
         }
         print(" ");
         x.getRight().accept(this);
@@ -1309,6 +1309,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         decrementIndent();
 
         return false;
+    }
+
+    protected void printJoinType(JoinType joinType) {
+        print(JoinType.toString(joinType));
     }
 
     @Override
