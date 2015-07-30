@@ -337,14 +337,15 @@ public class SQLUtils {
 
         return new SQLASTOutputVisitor(out);
     }
-
+    
+    @Deprecated
     public static SchemaStatVisitor createSchemaStatVisitor(List<SQLStatement> statementList, String dbType) {
+        return createSchemaStatVisitor(dbType);
+    }
+
+    public static SchemaStatVisitor createSchemaStatVisitor(String dbType) {
         if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
-            if (statementList.size() == 1) {
-                return new OracleSchemaStatVisitor();
-            } else {
-                return new OracleSchemaStatVisitor();
-            }
+            return new OracleSchemaStatVisitor();
         }
 
         if (JdbcUtils.MYSQL.equals(dbType) || //

@@ -317,9 +317,9 @@ public final class DruidStatService implements DruidStatServiceMBean {
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
 
         if (!statementList.isEmpty()) {
-            SQLStatement statemen = statementList.get(0);
-            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, dbType);
-            statemen.accept(visitor);
+            SQLStatement sqlStmt = statementList.get(0);
+            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
+            sqlStmt.accept(visitor);
             map.put("parsedTable", visitor.getTables().toString());
             map.put("parsedFields", visitor.getColumns().toString());
             map.put("parsedConditions", visitor.getConditions().toString());
