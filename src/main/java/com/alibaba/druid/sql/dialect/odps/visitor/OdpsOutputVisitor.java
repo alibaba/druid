@@ -154,6 +154,8 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         if (x.getSelect() != null) {
             println();
+            print("AS");
+            println();
             x.getSelect().accept(this);
         }
 

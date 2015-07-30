@@ -216,44 +216,91 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (lexer.token() == Token.DROP) {
+                List<String> beforeComments = null;
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    beforeComments = lexer.readAndResetComments();
+                }
+                
                 lexer.nextToken();
 
                 if (lexer.token() == Token.TABLE || identifierEquals("TEMPORARY")) {
 
                     SQLDropTableStatement stmt = parseDropTable(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
 
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.USER) {
                     SQLStatement stmt = parseDropUser();
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.INDEX) {
                     SQLStatement stmt = parseDropIndex();
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.VIEW) {
                     SQLStatement stmt = parseDropView(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.TRIGGER) {
                     SQLStatement stmt = parseDropTrigger(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.DATABASE) {
                     SQLStatement stmt = parseDropDatabase(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.FUNCTION) {
                     SQLStatement stmt = parseDropFunction(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.TABLESPACE) {
                     SQLStatement stmt = parseDropTablespace(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.PROCEDURE) {
                     SQLStatement stmt = parseDropProcedure(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else {
@@ -1255,12 +1302,16 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected SQLDropTableSpaceStatement parseDropTablespace(boolean acceptDrop) {
+        SQLDropTableSpaceStatement stmt = new SQLDropTableSpaceStatement(getDbType());
+        
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
+        }
+        
         if (acceptDrop) {
             accept(Token.DROP);
         }
-
-        SQLDropTableSpaceStatement stmt = new SQLDropTableSpaceStatement(getDbType());
-
+        
         accept(Token.TABLESPACE);
 
         if (lexer.token() == Token.IF) {
