@@ -53,6 +53,13 @@ public class OdpsLexer extends Lexer {
         super.keywods = DEFAULT_ODPS_KEYWORDS;
     }
     
+    public OdpsLexer(String input, boolean skipComment, boolean keepComments){
+        super(input, skipComment);
+        this.skipComment = skipComment;
+        this.keepComments = keepComments;
+        super.keywods = DEFAULT_ODPS_KEYWORDS;
+    }
+    
     public OdpsLexer(String input, CommentHandler commentHandler){
         super(input, commentHandler);
         super.keywods = DEFAULT_ODPS_KEYWORDS;
@@ -105,9 +112,8 @@ public class OdpsLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos + 1);
                 token = Token.MULTI_LINE_COMMENT;
-                hasComment = true;
                 if (keepComments) {
-                    commentVal = stringVal;
+                    addComment(stringVal);
                 }
             }
             
@@ -133,6 +139,7 @@ public class OdpsLexer extends Lexer {
             for (;;) {
                 if (ch == '\r') {
                     if (charAt(pos + 1) == '\n') {
+                        line++;
                         bufPos += 2;
                         scanChar();
                         break;
@@ -144,6 +151,7 @@ public class OdpsLexer extends Lexer {
                 }
 
                 if (ch == '\n') {
+                    line++;
                     scanChar();
                     bufPos++;
                     break;
@@ -153,11 +161,10 @@ public class OdpsLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark, bufPos);
+            stringVal = subString(mark, ch != EOI ? bufPos : bufPos + 1);
             token = Token.LINE_COMMENT;
-            hasComment = true;
             if (keepComments) {
-                commentVal = stringVal;
+                addComment(stringVal);
             }
             endOfComment = isEOF();
             

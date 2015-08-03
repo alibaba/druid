@@ -12,8 +12,7 @@ public class OdpsFormatTest extends TestCase {
         Assert.assertEquals("SELECT *" //
                 + "\nFROM t1;" //
                 + "\nSELECT *" //
-                + "\nFROM t2"//
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\nFROM t2;", SQLUtils.formatOdps(sql));
     }
     
     public void test_no_semi() throws Exception {

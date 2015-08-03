@@ -20,13 +20,13 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public abstract class OdpsObjectImpl extends SQLObjectImpl {
+public abstract class OdpsObjectImpl extends SQLObjectImpl implements OdpsObject {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OdpsASTVisitor) visitor);
     }
     
-    protected abstract void accept0(OdpsASTVisitor visitor);
+    public abstract void accept0(OdpsASTVisitor visitor);
     
     public String toString() {
         return SQLUtils.toOdpsString(this);

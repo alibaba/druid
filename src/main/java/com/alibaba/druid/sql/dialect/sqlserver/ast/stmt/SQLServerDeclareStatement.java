@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 public class SQLServerDeclareStatement extends SQLServerObjectImpl implements SQLServerStatement {
 
     protected List<SQLServerDeclareItem> items = new ArrayList<SQLServerDeclareItem>();
+    
+    private String dbType;
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
@@ -43,4 +45,11 @@ public class SQLServerDeclareStatement extends SQLServerObjectImpl implements SQ
         this.items = items;
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 }

@@ -40,7 +40,7 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
 
     public static class NullValue extends ColumnStatisticClause {
         @Override
-        protected void accept0(OdpsASTVisitor visitor) {
+        public void accept0(OdpsASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, column);
             }
@@ -50,7 +50,7 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
 
     public static class ColumnSum extends ColumnStatisticClause {
         @Override
-        protected void accept0(OdpsASTVisitor visitor) {
+        public void accept0(OdpsASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, column);
             }
@@ -60,7 +60,7 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
 
     public static class ColumnMin extends ColumnStatisticClause {
         @Override
-        protected void accept0(OdpsASTVisitor visitor) {
+        public void accept0(OdpsASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, column);
             }
@@ -70,7 +70,7 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
 
     public static class ColumnMax extends ColumnStatisticClause {
         @Override
-        protected void accept0(OdpsASTVisitor visitor) {
+        public void accept0(OdpsASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, column);
             }
@@ -94,7 +94,7 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
         }
     
         @Override
-        protected void accept0(OdpsASTVisitor visitor) {
+        public void accept0(OdpsASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, expr);
             }
@@ -105,7 +105,7 @@ public abstract class OdpsStatisticClause extends OdpsObjectImpl {
     public static class TableCount extends OdpsStatisticClause {
     
         @Override
-        protected void accept0(OdpsASTVisitor visitor) {
+        public void accept0(OdpsASTVisitor visitor) {
             if (visitor.visit(this)) {
     
             }

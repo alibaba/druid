@@ -11,7 +11,6 @@ public class OdpsAlterTableSetLifecycle extends TestCase {
     public void test_if() throws Exception {
         String sql = "alter table test_lifecycle set lifecycle 50;";
         Assert.assertEquals("ALTER TABLE test_lifecycle" //
-                + "\n\tSET LIFECYCLE 50" //
-                + "\n;", SQLUtils.formatOdps(sql));
+                + "\n\tSET LIFECYCLE 50;", SQLUtils.formatOdps(sql));
     }
 }

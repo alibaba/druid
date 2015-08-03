@@ -18,9 +18,12 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelect extends SQLObjectImpl {
@@ -118,4 +121,16 @@ public class SQLSelect extends SQLObjectImpl {
         return true;
     }
 
+    public String toString() {
+        SQLObject parent = this.getParent();
+        if (parent instanceof SQLStatement) {
+            String dbType = ((SQLStatement) parent).getDbType();
+            
+            if (dbType != null) {
+                return SQLUtils.toSQLString(this, dbType);
+            }
+        }
+        
+        return super.toString();
+    }
 }

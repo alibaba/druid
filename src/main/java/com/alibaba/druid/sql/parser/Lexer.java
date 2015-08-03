@@ -35,7 +35,9 @@ import static com.alibaba.druid.sql.parser.Token.RPAREN;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -57,7 +59,7 @@ public class Lexer {
 
     protected String       stringVal;
     
-    protected String       commentVal;
+    protected List<String> comments = new ArrayList<String>(2);
 
     protected boolean      skipComment  = true;
 
@@ -72,11 +74,11 @@ public class Lexer {
 
     protected CommentHandler commentHandler;
 
-    protected boolean        hasComment   = false;
-
     protected boolean        endOfComment = false;
     
     protected boolean        keepComments = false;
+    
+    protected int            line         = 0;
 
     public Lexer(String input){
         this(input, null);
@@ -287,10 +289,16 @@ public class Lexer {
 
     public final void nextToken() {
         bufPos = 0;
-        hasComment = false;
+        if (comments != null) {
+            comments = null;
+        }
 
         for (;;) {
             if (isWhitespace(ch)) {
+                if (ch == '\n') {
+                    line++;
+                }
+                
                 scanChar();
                 continue;
             }
@@ -672,15 +680,19 @@ public class Lexer {
 
             ch = charAt(++pos);
             
-            if(ch == '\\') {
-                hasSpecial = true;
-                continue;
-            }
-
             if (ch == '\"' && charAt(pos - 1) != '\\') {
                 scanChar();
                 token = LITERAL_ALIAS;
                 break;
+            }
+            
+            if(ch == '\\') {
+                scanChar();
+                if (ch == '"') {
+                    hasSpecial = true;
+                } else {
+                    unscan();
+                }
             }
             
             if (bufPos == buf.length) {
@@ -801,9 +813,8 @@ public class Lexer {
 
         stringVal = subString(mark, bufPos);
         token = Token.MULTI_LINE_COMMENT;
-        hasComment = true;
         if (keepComments) {
-            commentVal = stringVal;
+            addComment(stringVal);
         }
         
         if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
@@ -826,6 +837,7 @@ public class Lexer {
         for (;;) {
             if (ch == '\r') {
                 if (charAt(pos + 1) == '\n') {
+                    line++;
                     scanChar();
                     break;
                 }
@@ -834,6 +846,7 @@ public class Lexer {
             }
 
             if (ch == '\n') {
+                line++;
                 scanChar();
                 break;
             }
@@ -849,9 +862,8 @@ public class Lexer {
 
         stringVal = subString(mark, bufPos);
         token = Token.LINE_COMMENT;
-        hasComment = true;
         if (keepComments) {
-            commentVal = stringVal;
+            addComment(stringVal);
         }
         
         if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
@@ -1017,8 +1029,12 @@ public class Lexer {
         return stringVal;
     }
     
-    public final String commentVal() {
-        return commentVal;
+    public final List<String> readAndResetComments() {
+        List<String> comments = this.comments;
+        
+        this.comments = null;
+        
+        return comments;
     }
 
     private boolean isOperator(char ch) {
@@ -1132,7 +1148,7 @@ public class Lexer {
     }
 
     public boolean hasComment() {
-        return hasComment;
+        return comments != null;
     }
     
     public void skipToEOF() {
@@ -1171,4 +1187,14 @@ public class Lexer {
         return true;
     }
 
+    protected void addComment(String comment) {
+        if (comments == null) {
+            comments = new ArrayList<String>(2);
+        }
+        comments.add(stringVal);
+    }
+    
+    public int getLine() {
+        return line;
+    }
 }

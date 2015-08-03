@@ -253,13 +253,27 @@ public class SQLUtils {
             SQLStatement stmt = statementList.get(i);
             
             if (i > 0) {
-                visitor.println(";");
+                visitor.print(";");
+                
+                SQLStatement preStmt = statementList.get(i - 1);
+                List<String> comments = preStmt.getAfterCommentsDirect();
+                if (comments != null){
+                    for (int j = 0; j < comments.size(); ++j) {
+                        String comment = comments.get(j);
+                        if (j != 0) {
+                            visitor.println();
+                        }
+                        visitor.print(comment);
+                    }
+                }
+                visitor.println();
             }
-            
-            List<String> comments = stmt.getBeforeCommentsDirect();
-            if (comments != null){
-                for(String comment : comments) {
-                    visitor.println(comment);
+            {
+                List<String> comments = stmt.getBeforeCommentsDirect();
+                if (comments != null){
+                    for(String comment : comments) {
+                        visitor.println(comment);
+                    }
                 }
             }
             stmt.accept(visitor);
@@ -267,8 +281,21 @@ public class SQLUtils {
             if (i == statementList.size() - 1) {
                 Boolean semi = (Boolean) stmt.getAttribute("format.semi");
                 if (semi != null && semi.booleanValue()) {
-                    visitor.println();
+//                    if (stmt.hasAfterComment()) {
+//                        visitor.println();
+//                    }
                     visitor.print(";");
+                }
+                
+                List<String> comments = stmt.getAfterCommentsDirect();
+                if (comments != null){
+                    for (int j = 0; j < comments.size(); ++j) {
+                        String comment = comments.get(j);
+                        if (j != 0) {
+                            visitor.println();
+                        }
+                        visitor.print(comment);
+                    }
                 }
             }
         }
@@ -310,14 +337,15 @@ public class SQLUtils {
 
         return new SQLASTOutputVisitor(out);
     }
-
+    
+    @Deprecated
     public static SchemaStatVisitor createSchemaStatVisitor(List<SQLStatement> statementList, String dbType) {
+        return createSchemaStatVisitor(dbType);
+    }
+
+    public static SchemaStatVisitor createSchemaStatVisitor(String dbType) {
         if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
-            if (statementList.size() == 1) {
-                return new OracleSchemaStatVisitor();
-            } else {
-                return new OracleSchemaStatVisitor();
-            }
+            return new OracleSchemaStatVisitor();
         }
 
         if (JdbcUtils.MYSQL.equals(dbType) || //

@@ -25,8 +25,7 @@ public class OdpsDropViewTest extends TestCase {
 
     public void test_column_comment() throws Exception {
         String sql = "drop view if exists view_name;";
-        Assert.assertEquals("DROP VIEW IF EXISTS view_name" //
-                + "\n;", SQLUtils.formatOdps(sql));
+        Assert.assertEquals("DROP VIEW IF EXISTS view_name;", SQLUtils.formatOdps(sql));
     }
 
 

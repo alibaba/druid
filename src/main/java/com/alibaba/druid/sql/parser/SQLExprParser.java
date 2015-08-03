@@ -185,6 +185,11 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLExpr primary() {
+      List<String> beforeComments = null;
+      if (lexer.isKeepComments() && lexer.hasComment()) {
+          beforeComments = lexer.readAndResetComments();
+      }
+
         SQLExpr sqlExpr = null;
 
         final Token tok = lexer.token();
@@ -555,7 +560,13 @@ public class SQLExprParser extends SQLParser {
                 throw new ParserException("ERROR. token : " + tok + ", pos : " + lexer.pos());
         }
 
-        return primaryRest(sqlExpr);
+        SQLExpr expr = primaryRest(sqlExpr);
+        
+        if (beforeComments != null) {
+            expr.addBeforeComment(beforeComments);
+        }
+        
+        return expr;
     }
 
     protected SQLExpr parseAll() {
@@ -1180,10 +1191,11 @@ public class SQLExprParser extends SQLParser {
         for (;;) {
             if (lexer.token() == Token.AND || lexer.token() == Token.AMPAMP) {
                 if (lexer.isKeepComments() && lexer.hasComment()) {
-                    expr.addAfterComment(lexer.commentVal());
+                    expr.addAfterComment(lexer.readAndResetComments());
                 }
                 
                 lexer.nextToken();
+                
                 SQLExpr rightExp = relational();
 
                 expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanAnd, rightExp, getDbType());

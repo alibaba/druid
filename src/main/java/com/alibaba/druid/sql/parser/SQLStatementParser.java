@@ -103,10 +103,6 @@ public class SQLStatementParser extends SQLParser {
 
     protected int parseValuesSize = 3;
 
-    protected List<String> comments;
-
-    protected CommentCallback commentCallBack = new CommentCallback();
-
     public SQLStatementParser(String sql){
         this(sql, null);
     }
@@ -147,44 +143,31 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public void parseStatementList(List<SQLStatement> statementList, int max) {
-        List<String> comments = null;
-        if (this.comments != null) {
-            comments = this.comments;
-            this.comments = null;
-        }
-
-        int size_original = statementList.size();
-
         for (;;) {
-            boolean isFirstStmt = statementList.size() == size_original + 1;
-            if (isFirstStmt && comments != null && lexer.isKeepComments()) {
-                SQLStatement firstStmt = statementList.get(size_original);
-                for (String comment : comments) {
-                    firstStmt.addBeforeComment(comment);
-                }
-                comments = null;
-            }
-
             if (max != -1) {
                 if (statementList.size() >= max) {
                     return;
                 }
             }
 
-            if (lexer.token() == Token.EOF) {
-                return;
-            }
-            if (lexer.token() == Token.END) {
+            if (lexer.token() == Token.EOF || lexer.token() == Token.END) {
+                if (lexer.isKeepComments() && lexer.hasComment() && statementList.size() > 0) {
+                    SQLStatement stmt = statementList.get(statementList.size() - 1);
+                    stmt.addAfterComment(lexer.readAndResetComments());
+                }
                 return;
             }
 
             if (lexer.token() == Token.SEMI) {
-                size_original = statementList.size();
-                this.comments = null;
+                int line0 = lexer.getLine();
                 lexer.nextToken();
-                comments = this.comments;
-                if (lexer.isKeepComments()) {
+                int line1 = lexer.getLine();
+                
+                if (lexer.isKeepComments() && statementList.size() > 0) {
                     SQLStatement stmt = statementList.get(statementList.size() - 1);
+                    if (line1 - line0 <= 1) {
+                        stmt.addAfterComment(lexer.readAndResetComments());
+                    }
                     stmt.getAttributes().put("format.semi", Boolean.TRUE);
                 }
                 continue;
@@ -233,44 +216,91 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (lexer.token() == Token.DROP) {
+                List<String> beforeComments = null;
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    beforeComments = lexer.readAndResetComments();
+                }
+                
                 lexer.nextToken();
 
                 if (lexer.token() == Token.TABLE || identifierEquals("TEMPORARY")) {
 
                     SQLDropTableStatement stmt = parseDropTable(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
 
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.USER) {
                     SQLStatement stmt = parseDropUser();
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.INDEX) {
                     SQLStatement stmt = parseDropIndex();
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.VIEW) {
                     SQLStatement stmt = parseDropView(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.TRIGGER) {
                     SQLStatement stmt = parseDropTrigger(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.DATABASE) {
                     SQLStatement stmt = parseDropDatabase(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.FUNCTION) {
                     SQLStatement stmt = parseDropFunction(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.TABLESPACE) {
                     SQLStatement stmt = parseDropTablespace(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else if (lexer.token() == Token.PROCEDURE) {
                     SQLStatement stmt = parseDropProcedure(false);
+                    
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+                    
                     statementList.add(stmt);
                     continue;
                 } else {
@@ -1272,12 +1302,16 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected SQLDropTableSpaceStatement parseDropTablespace(boolean acceptDrop) {
+        SQLDropTableSpaceStatement stmt = new SQLDropTableSpaceStatement(getDbType());
+        
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            stmt.addBeforeComment(lexer.readAndResetComments());
+        }
+        
         if (acceptDrop) {
             accept(Token.DROP);
         }
-
-        SQLDropTableSpaceStatement stmt = new SQLDropTableSpaceStatement(getDbType());
-
+        
         accept(Token.TABLESPACE);
 
         if (lexer.token() == Token.IF) {
@@ -1987,23 +2021,5 @@ public class SQLStatementParser extends SQLParser {
 
     public void setParseValuesSize(int parseValuesSize) {
         this.parseValuesSize = parseValuesSize;
-    }
-
-    class CommentCallback implements Lexer.CommentHandler {
-
-        @Override
-        public boolean handle(Token lastToken, String comment) {
-            addComment(comment);
-
-            return true;
-        }
-
-    }
-
-    void addComment(String comment) {
-        if (comments == null) {
-            comments = new ArrayList<String>();
-        }
-        comments.add(comment);
     }
 }
