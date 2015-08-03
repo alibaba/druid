@@ -14,7 +14,7 @@
   	
     <div class="container-fluid">
       <h2>ActiveConnection StackTrace for Datasource
-        <a href="activeConnectionStackTrace-{datasourceId}.json" target="_blank">[View JSON API]</a>
+        <a id="datasourceId" href="activeConnectionStackTrace.json" target="_blank">[View JSON API]</a>
       </h2>
       <div id="activeConnectionStackTraceDiv">
         
@@ -29,6 +29,7 @@
     var datasourceId = druid.common.getUrlVar("datasourceId");
       return  {
         init : function() {
+          $("#datasourceId").attr("href", "activeConnectionStackTrace-" + datasourceId + ".json")
           druid.activeConnectionStackTrace.ajaxRequestForActiveConnectionStackTrace();
           var time2=setInterval("druid.activeConnectionStackTrace.ajaxRequestForActiveConnectionStackTrace();",8000);
       },
