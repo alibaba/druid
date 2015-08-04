@@ -1,12 +1,3 @@
-package com.alibaba.druid.sql.ast.expr;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-
 /*
  * Copyright 1999-2011 Alibaba Group Holding Ltd.
  *
@@ -22,6 +13,15 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.alibaba.druid.sql.ast.expr;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 public class SQLArrayExpr extends SQLExprImpl {
 
     private SQLExpr       expr;
