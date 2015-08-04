@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGArrayExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -524,20 +523,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print("VALUES(");
         printAndAccept(x.getValues(), ", ");
         print(")");
-        return false;
-    }
-    
-    @Override
-    public void endVisit(PGArrayExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGArrayExpr x) {
-        x.getExpr().accept(this);
-        print("[");
-        printAndAccept(x.getValues(), ", ");
-        print("]");
         return false;
     }
     
