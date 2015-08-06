@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -238,7 +239,14 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     private PGWithQuery withQuery() {
         PGWithQuery withQuery = new PGWithQuery();
-        withQuery.setName(this.exprParser.expr());
+        
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+			withQuery.setName(new SQLIdentifierExpr("\"" + lexer.stringVal()
+					+ "\""));
+		} else {
+			withQuery.setName(new SQLIdentifierExpr(lexer.stringVal()));
+		}
+		lexer.nextToken();
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
