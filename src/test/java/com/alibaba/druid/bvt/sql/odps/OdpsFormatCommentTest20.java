@@ -12,7 +12,7 @@ public class OdpsFormatCommentTest20 extends TestCase {
         Assert.assertEquals("SELECT *"
                 + "\nFROM a"
                 + "\nFULL OUTER JOIN b"
-                + "\nON a.id = b.id", SQLUtils.formatOdps(sql));
+                + "\n\tON a.id = b.id", SQLUtils.formatOdps(sql));
     }
 
    
