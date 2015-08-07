@@ -350,9 +350,9 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         x.getRight().accept(this);
 
         if (x.getCondition() != null) {
+            incrementIndent();
             println();
             print("ON ");
-            incrementIndent();
             x.getCondition().accept(this);
             decrementIndent();
         }
