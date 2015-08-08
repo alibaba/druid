@@ -44,8 +44,8 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
     public MySqlValidConnectionChecker(){
         try {
-            clazz = Utils.loadClass("com.mysql.jdbc.Connection");
-            ping = clazz.getMethod("ping");
+            clazz = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
+            ping = clazz.getMethod("pingInternal", boolean.class, int.class);
             if (ping != null) {
                 usePingMethod = true;
             }
@@ -95,7 +95,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
             if (clazz.isAssignableFrom(conn.getClass())) {
                 try {
-                    ping.invoke(conn);
+                    ping.invoke(conn, true, validationQueryTimeout);
                     return true;
                 } catch (InvocationTargetException e) {
                     Throwable cause = e.getCause();
