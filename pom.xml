@@ -1,11 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!-- <parent> <groupId>com.alibaba</groupId> <artifactId>parent-pom</artifactId> <version>1.0.0-SNAPSHOT</version> </parent> -->
-
+<!--  
+	<parent>
+	    <groupId>com.alibaba</groupId>
+	   <artifactId>parent-pom</artifactId>
+	   <version>1.0.0-SNAPSHOT</version>
+	 </parent>
+-->
+  
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.16-SNAPSHOT</version>
+	<version>1.0.15-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -32,9 +38,18 @@
 		</repository>
 	</repositories>
 
-	<!-- <distributionManagement> <repository> <id>opensesame</id> <url>dav:http://code.alibabatech.com/mvn/releases/</url> 
-		</repository> <snapshotRepository> <id>opensesame</id> <url>dav:http://code.alibabatech.com/mvn/snapshots/</url> </snapshotRepository> 
-		</distributionManagement> -->
+<!--  
+	<distributionManagement>
+		<repository>
+			<id>opensesame</id>
+			<url>dav:http://code.alibabatech.com/mvn/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>opensesame</id>
+			<url>dav:http://code.alibabatech.com/mvn/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+-->
 	<developers>
 		<developer>
 			<id>wenshao</id>
@@ -93,6 +108,7 @@
 					<encoding>UTF-8</encoding>
 					<source>${jdk.version}</source>
 					<target>${jdk.version}</target>
+                    <skip>true</skip>
 				</configuration>
 			</plugin>
 
@@ -104,6 +120,7 @@
 					<includes>
 						<include>**/bvt/**/*.java</include>
 					</includes>
+                    <skip>true</skip>
 				</configuration>
 			</plugin>
 
@@ -278,42 +295,35 @@
 				</file>
 			</activation>
 			<dependencies>
-				<dependency>
-					<groupId>com.alibaba</groupId>
-					<artifactId>jconsole</artifactId>
-					<version>1.6.0</version>
-					<scope>system</scope>
-					<systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
-				</dependency>
 			</dependencies>
 		</profile>
 
-		<profile>
-			<id>mac-profile-oracle-jdk</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-				<file>
-					<exists>${java.home}/../lib/jconsole.jar</exists>
-				</file>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>com.alibaba</groupId>
-					<artifactId>jconsole</artifactId>
-					<version>1.8.0</version>
-					<scope>system</scope>
-					<systemPath>${java.home}/../lib/jconsole.jar</systemPath>
-				</dependency>
+        <profile>
+            <id>mac-profile-oracle-jdk</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>${java.home}/../lib/jconsole.jar</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>jconsole</artifactId>
+                    <version>1.8.0</version>
+                    <scope>system</scope>
+                    <systemPath>${java.home}/../lib/jconsole.jar</systemPath>
+                </dependency>
 
-				<dependency>
-					<groupId>com.alibaba</groupId>
-					<artifactId>tools</artifactId>
-					<version>1.8.0</version>
-					<scope>system</scope>
-					<systemPath>${java.home}/../lib/tools.jar</systemPath>
-				</dependency>
-			</dependencies>
-		</profile>
+                <dependency>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>tools</artifactId>
+                    <version>1.8.0</version>
+                    <scope>system</scope>
+                    <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                </dependency>
+            </dependencies>
+        </profile>
 	</profiles>
 
 	<dependencies>
@@ -448,13 +458,18 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
-			<scope>provided</scope>
-		</dependency>
-
+		<!--<dependency>-->
+			<!--<groupId>com.oracle</groupId>-->
+			<!--<artifactId>ojdbc6</artifactId>-->
+			<!--<version>11.2.0.3</version>-->
+			<!--<scope>provided</scope>-->
+		<!--</dependency>-->
+        <dependency>
+            <groupId>cn.guoyukun.jdbc</groupId>
+            <artifactId>oracle-ojdbc6</artifactId>
+            <version>11.2.0.3.0</version>
+        </dependency>
+		
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
@@ -463,8 +478,14 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> <version>4.0.2206.100</version> 
-			<scope>test</scope> </dependency> -->
+<!--  
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>sqljdbc4</artifactId>
+			<version>4.0.2206.100</version>
+			<scope>test</scope>
+		</dependency>
+-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -497,14 +518,14 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>proxool</groupId>
+            <groupId>com.cloudhopper.proxool</groupId>
 			<artifactId>proxool</artifactId>
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>proxool</groupId>
-			<artifactId>proxool-cglib</artifactId>
+            <groupId>com.cloudhopper.proxool</groupId>
+            <artifactId>proxool-cglib</artifactId>
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
@@ -550,12 +571,11 @@
 			<version>1.b.52</version>
 			<scope>test</scope>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>com.taobao.tbdatasource</groupId>
 			<artifactId>tbdatasource</artifactId>
-			<version>2.0.2</version>
-			<scope>test</scope>
+			<version>3.0.1.5.taobaocode</version>
 			<exclusions>
 				<exclusion>
 					<groupId>jboss</groupId>
@@ -563,7 +583,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-spring</artifactId>
@@ -588,19 +608,19 @@
 			<version>14.0.1</version>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>com.aliyun.odps</groupId>
-			<artifactId>odps-sdk-udf</artifactId>
-			<version>0.17.3</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.validation</groupId>
-					<artifactId>validation-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 	</dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>gozap构件发布版仓库</name>
+            <url>http://repo.gozap.com/repos/content/repositories/gozap/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>gozap构件快照版仓库</name>
+            <url>http://repo.gozap.com/repos/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
