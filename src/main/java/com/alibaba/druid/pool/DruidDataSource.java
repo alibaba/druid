@@ -138,7 +138,7 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     // threads
     private ScheduledFuture<?>               destroySchedulerFuture;
-    private DestroyTask                      destoryTask;
+    private DestroyTask                      destroyTask;
 
     private CreateConnectionThread           createConnectionThread;
     private DestroyConnectionThread          destroyConnectionThread;
@@ -684,14 +684,14 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     protected void createAndStartDestroyThread() {
-        destoryTask = new DestroyTask();
+        destroyTask = new DestroyTask();
 
         if (destroyScheduler != null) {
             long period = timeBetweenEvictionRunsMillis;
             if (period <= 0) {
                 period = 1000;
             }
-            destroySchedulerFuture = destroyScheduler.scheduleAtFixedRate(destoryTask, period, period,
+            destroySchedulerFuture = destroyScheduler.scheduleAtFixedRate(destroyTask, period, period,
                                                                           TimeUnit.MILLISECONDS);
             initedLatch.countDown();
             return;
@@ -1941,7 +1941,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                         break;
                     }
 
-                    destoryTask.run();
+                    destroyTask.run();
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -2031,11 +2031,19 @@ public class DruidDataSource extends DruidAbstractDataSource
                     StringBuilder buf = new StringBuilder();
                     buf.append("abandon connection, owner thread: ");
                     buf.append(pooledConnection.getOwnerThread().getName());
-                    buf.append(", connected time nano: ");
-                    buf.append(pooledConnection.getConnectedTimeNano());
+                    buf.append(", connected at : ");
+                    buf.append(pooledConnection.getConnectedTimeMillis());
                     buf.append(", open stackTrace\n");
 
                     StackTraceElement[] trace = pooledConnection.getConnectStackTrace();
+                    for (int i = 0; i < trace.length; i++) {
+                        buf.append("\tat ");
+                        buf.append(trace[i].toString());
+                        buf.append("\n");
+                    }
+
+                    buf.append("ownerThread current state is "+pooledConnection.getOwnerThread().getState() + ", current stackTrace\n");
+                    trace = pooledConnection.getOwnerThread().getStackTrace();
                     for (int i = 0; i < trace.length; i++) {
                         buf.append("\tat ");
                         buf.append(trace[i].toString());
@@ -2117,6 +2125,12 @@ public class DruidDataSource extends DruidAbstractDataSource
             final long currentTimeMillis = System.currentTimeMillis();
             for (int i = 0; i < checkCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
+
+                long phyConnectTimeMillis = connection.getTimeMillis();//physical connection connected time
+                if( phyConnectTimeMillis  > phyTimeoutMillis  ){
+                    evictList.add(connection);//if physical connection connected greater than phyTimeoutMillis, close the connection, for mysql 8 hours timeout
+                    continue;
+                }
 
                 if (checkTime) {
                     long idleMillis = currentTimeMillis - connection.getLastActiveTimeMillis();
