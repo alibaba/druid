@@ -54,6 +54,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public final static String    PROP_TIMEBETWEENEVICTIONRUNSMILLIS       = "timeBetweenEvictionRunsMillis";
     public final static String    PROP_NUMTESTSPEREVICTIONRUN              = "numTestsPerEvictionRun";
     public final static String    PROP_MINEVICTABLEIDLETIMEMILLIS          = "minEvictableIdleTimeMillis";
+    public final static String    PROP_PHY_TIMEOUT_MILLIS                  = "phyTimeoutMillis";
     public final static String    PROP_TESTWHILEIDLE                       = "testWhileIdle";
     public final static String    PROP_PASSWORD                            = "password";
     public final static String    PROP_URL                                 = "url";
@@ -231,6 +232,11 @@ public class DruidDataSourceFactory implements ObjectFactory {
         value = (String) properties.get(PROP_MINEVICTABLEIDLETIMEMILLIS);
         if (value != null) {
             dataSource.setMinEvictableIdleTimeMillis(Long.parseLong(value));
+        }
+
+        value = (String) properties.get(PROP_PHY_TIMEOUT_MILLIS);
+        if (value != null) {
+            dataSource.setPhyTimeoutMillis(Long.parseLong(value));
         }
 
         value = (String) properties.get(PROP_TESTWHILEIDLE);

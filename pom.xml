@@ -32,8 +32,8 @@
 		</repository>
 	</repositories>
 
-	<!-- <distributionManagement> <repository> <id>opensesame</id> <url>dav:http://code.alibabatech.com/mvn/releases/</url> 
-		</repository> <snapshotRepository> <id>opensesame</id> <url>dav:http://code.alibabatech.com/mvn/snapshots/</url> </snapshotRepository> 
+	<!-- <distributionManagement> <repository> <id>opensesame</id> <url>dav:http://code.alibabatech.com/mvn/releases/</url>
+		</repository> <snapshotRepository> <id>opensesame</id> <url>dav:http://code.alibabatech.com/mvn/snapshots/</url> </snapshotRepository>
 		</distributionManagement> -->
 	<developers>
 		<developer>
@@ -463,7 +463,7 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> <version>4.0.2206.100</version> 
+		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> <version>4.0.2206.100</version>
 			<scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
