@@ -215,7 +215,7 @@ public class ConfigFilter extends FilterAdapter {
     public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
         String key = null;
         if (configFileProperties != null) {
-            configFileProperties.getProperty(CONFIG_KEY);
+            key = configFileProperties.getProperty(CONFIG_KEY);
         }
 
         if (StringUtils.isEmpty(key) && connectinProperties != null) {
