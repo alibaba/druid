@@ -21,6 +21,7 @@ import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -50,5 +51,17 @@ public class PGDeleteTest extends PGTest {
         //Assert.assertTrue(visitor.getFields().size() == 0);
     }
 
+    public void test_1() {
+		String sql = "delete from test01 as a where a.id = 2";
+		PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+		List<SQLStatement> statementList = parser.parseStatementList();
+		SQLStatement statemen = statementList.get(0);
+		print(statementList);
+		assertTrue(statementList.size() == 1);
+		assertTrue(statemen instanceof PGDeleteStatement);
+		PGDeleteStatement delete = (PGDeleteStatement) statemen;
+		assertTrue(delete.getAlias().equalsIgnoreCase("a"));
+		assertTrue(delete.getTableName().getSimpleName().equals("test01"));
+	}
     
 }

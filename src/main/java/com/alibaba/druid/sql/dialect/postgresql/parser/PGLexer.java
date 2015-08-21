@@ -94,6 +94,7 @@ public class PGLexer extends Lexer {
                     hasSpecial = true;
                 }
 
+                putChar('\\');
                 switch (ch) {
                     case '\0':
                         putChar('\0');
@@ -138,6 +139,7 @@ public class PGLexer extends Lexer {
                     initBuff(bufPos);
                     arraycopy(mark + 1, buf, 0, bufPos);
                     hasSpecial = true;
+                    putChar('\'');
                     putChar('\'');
                     continue;
                 }

@@ -259,11 +259,10 @@ public class PGSelectParser extends SQLSelectParser {
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (lexer.token() == Token.AS && tableSource instanceof SQLExprTableSource) {
-            String alias = this.as();
-
             if (lexer.token() == Token.LPAREN) {
                 SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
 
+                String alias = this.as();
                 PGFunctionTableSource functionTableSource = new PGFunctionTableSource(exprTableSource.getExpr());
                 functionTableSource.setAlias(alias);
 
