@@ -520,6 +520,17 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             println();
             x.getOrderBy().accept(this);
         }
+        
+        if (x.getDistributeBy() != null) {
+            println();
+            print("DISTRIBUTE BY ");
+            x.getDistributeBy().accept(this);
+            
+            if (x.getSortBy() != null) {
+                print(" SORT BY ");
+                x.getSortBy().accept(this);
+            }
+        }
 
         if (x.getLimit() != null) {
             println();

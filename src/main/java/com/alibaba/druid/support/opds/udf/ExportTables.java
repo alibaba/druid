@@ -10,29 +10,36 @@ import com.alibaba.druid.stat.TableStat;
 import com.aliyun.odps.udf.UDF;
 
 public class ExportTables extends UDF {
+
     public String evaluate(String sql) {
         return evaluate(sql, null);
     }
-    
+
     public String evaluate(String sql, String dbType) {
-        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
-        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
-        
-        for (SQLStatement stmt : statementList) {
-            stmt.accept(visitor);
-        }
-        
-        StringBuffer buf = new StringBuffer();
-        
-        for (Map.Entry<TableStat.Name, TableStat> entry : visitor.getTables().entrySet()) {
-            TableStat.Name name = entry.getKey();
-            
-            if (buf.length() != 0) {
-                buf.append(',');
+        try {
+            List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
+            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
+
+            for (SQLStatement stmt : statementList) {
+                stmt.accept(visitor);
             }
-            buf.append(name.toString());
+
+            StringBuffer buf = new StringBuffer();
+
+            for (Map.Entry<TableStat.Name, TableStat> entry : visitor.getTables().entrySet()) {
+                TableStat.Name name = entry.getKey();
+
+                if (buf.length() != 0) {
+                    buf.append(',');
+                }
+                buf.append(name.toString());
+            }
+
+            return buf.toString();
+        } catch (Exception ex) {
+            System.err.println("error sql : " + sql);
+            ex.printStackTrace();
+            return null;
         }
-        
-        return buf.toString();
     }
 }

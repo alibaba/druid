@@ -29,9 +29,12 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     private SQLOrderBy orderBy;
 
-    private SQLExpr    limit;
-    
+    private SQLExpr limit;
+
     protected List<SQLHint> hints;
+
+    protected SQLExpr distributeBy;
+    protected SQLExpr sortBy;
 
     public OdpsSelectQueryBlock(){
 
@@ -43,6 +46,22 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     public void setOrderBy(SQLOrderBy orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public SQLExpr getDistributeBy() {
+        return distributeBy;
+    }
+
+    public void setDistributeBy(SQLExpr distributeBy) {
+        this.distributeBy = distributeBy;
+    }
+
+    public SQLExpr getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(SQLExpr sortBy) {
+        this.sortBy = sortBy;
     }
 
     public SQLExpr getLimit() {
@@ -75,11 +94,11 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
         } else if (!limit.equals(other.limit)) return false;
         return true;
     }
-    
+
     public List<SQLHint> getHintsDirect() {
         return hints;
     }
-    
+
     public List<SQLHint> getHints() {
         if (hints == null) {
             hints = new ArrayList<SQLHint>(2);
@@ -109,6 +128,8 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
             acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.distributeBy);
+            acceptChild(visitor, this.sortBy);
             acceptChild(visitor, this.limit);
             acceptChild(visitor, this.into);
         }
