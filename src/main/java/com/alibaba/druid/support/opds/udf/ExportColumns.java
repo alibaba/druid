@@ -24,27 +24,34 @@ import com.alibaba.druid.stat.TableStat;
 import com.aliyun.odps.udf.UDF;
 
 public class ExportColumns extends UDF {
+
     public String evaluate(String sql) {
         return evaluate(sql, null);
     }
-    
+
     public String evaluate(String sql, String dbType) {
-        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
-        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
-        
-        for (SQLStatement stmt : statementList) {
-            stmt.accept(visitor);
-        }
-        
-        StringBuffer buf = new StringBuffer();
-        
-        for (TableStat.Column column : visitor.getColumns()) {
-            if (buf.length() != 0) {
-                buf.append(',');
+        try {
+            List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
+            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
+
+            for (SQLStatement stmt : statementList) {
+                stmt.accept(visitor);
             }
-            buf.append(column.toString());
+
+            StringBuffer buf = new StringBuffer();
+
+            for (TableStat.Column column : visitor.getColumns()) {
+                if (buf.length() != 0) {
+                    buf.append(',');
+                }
+                buf.append(column.toString());
+            }
+
+            return buf.toString();
+        } catch (Exception ex) {
+            System.err.println("error sql : " + sql);
+            ex.printStackTrace();
+            return null;
         }
-        
-        return buf.toString();
     }
 }

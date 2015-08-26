@@ -223,6 +223,7 @@ public enum Token {
     TOP("TOP"),
     
     ARRAY("ARRAY"),
+    DISTRIBUTE("DISTRIBUTE"),
     
     // hive
 

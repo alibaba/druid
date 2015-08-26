@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.odps.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
@@ -76,6 +77,21 @@ public class OdpsSelectParser extends SQLSelectParser {
         parseGroupBy(queryBlock);
 
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
+        
+        if (lexer.token() == Token.DISTRIBUTE) {
+            lexer.nextToken();
+            accept(Token.BY);
+            SQLExpr distributeBy = this.expr();
+            queryBlock.setDistributeBy(distributeBy);
+            
+
+            if (identifierEquals("SORT")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                SQLExpr sortBy = this.expr();
+                queryBlock.setSortBy(sortBy);
+            }
+        }
 
         if (lexer.token() == Token.LIMIT) {
             lexer.nextToken();
