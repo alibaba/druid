@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
@@ -267,6 +268,10 @@ public class SQLUtils {
                     }
                 }
                 visitor.println();
+                
+                if (!(stmt instanceof SQLSetStatement)) {
+                    visitor.println();
+                }
             }
             {
                 List<String> comments = stmt.getBeforeCommentsDirect();

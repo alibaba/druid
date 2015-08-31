@@ -79,6 +79,8 @@ public class Lexer {
     protected boolean        keepComments = false;
     
     protected int            line         = 0;
+    
+    protected int            lines        = 0;
 
     public Lexer(String input){
         this(input, null);
@@ -293,10 +295,15 @@ public class Lexer {
             comments = null;
         }
 
+        this.lines = 0;
+        int startLine = line;
+        
         for (;;) {
             if (isWhitespace(ch)) {
                 if (ch == '\n') {
                     line++;
+                    
+                    lines = line - startLine;
                 }
                 
                 scanChar();

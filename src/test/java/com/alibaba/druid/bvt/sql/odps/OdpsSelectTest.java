@@ -36,5 +36,12 @@ public class OdpsSelectTest extends TestCase {
                             + "\nFROM sale_detail" //
                             + "\nDISTRIBUTE BY region SORT BY f1;", SQLUtils.formatOdps(sql));
     }
+    
+    public void test_distribute_by_2() throws Exception {
+        String sql = " select region from sale_detail distribute by region sort by f1 asc;";//
+        Assert.assertEquals("SELECT region" //
+                            + "\nFROM sale_detail" //
+                            + "\nDISTRIBUTE BY region SORT BY f1 ASC;", SQLUtils.formatOdps(sql));
+    }
 
 }

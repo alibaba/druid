@@ -11,6 +11,7 @@ public class OdpsFormatTest extends TestCase {
         String sql = "select * from t1; ;select * from t2;";
         Assert.assertEquals("SELECT *" //
                 + "\nFROM t1;" //
+                + "\n"
                 + "\nSELECT *" //
                 + "\nFROM t2;", SQLUtils.formatOdps(sql));
     }
@@ -19,6 +20,7 @@ public class OdpsFormatTest extends TestCase {
         String sql = "select * from t1; ;select * from t2";
         Assert.assertEquals("SELECT *" //
                 + "\nFROM t1;" //
+                + "\n"
                 + "\nSELECT *" //
                 + "\nFROM t2", SQLUtils.formatOdps(sql));
     }

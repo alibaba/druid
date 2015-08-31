@@ -20,8 +20,10 @@ public class OdpsFormatCommentTest3 extends TestCase {
                 + "\nSET odps.service.mode = all;"//
                 + "\n-- 使用新引擎"//
                 + "\nSET odps.nvm.enabled = true;"//
+                + "\n" //
                 + "\nSELECT f1 -- aa"//
                 + "\nFROM t0;"//
+                + "\n" //
                 + "\nSELECT f2 -- aa"//
                 + "\nFROM t1;", SQLUtils.formatOdps(sql));
     }

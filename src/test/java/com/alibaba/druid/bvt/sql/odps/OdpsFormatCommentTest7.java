@@ -15,6 +15,7 @@ public class OdpsFormatCommentTest7 extends TestCase {
         Assert.assertEquals("--这里是注释"
                 + "\nSELECT *"
                 + "\nFROM table1;"
+                + "\n"
                 + "\nSELECT *"
                 + "\nFROM table2;", SQLUtils.formatOdps(sql));
     }
