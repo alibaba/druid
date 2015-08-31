@@ -549,7 +549,35 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(" IN (");
         }
 
-        printAndAccept(x.getTargetList(), ", ");
+        final List<SQLExpr> list = x.getTargetList();
+        
+        boolean printLn = false;
+        if (list.size() > 5) {
+            printLn = true;
+            for (int i = 0, size = list.size(); i < size; ++i) {
+                if (!(list.get(i) instanceof SQLCharExpr)) {
+                    printLn = false;
+                    break;
+                }
+            }
+        }
+        
+        if (printLn) {
+            incrementIndent();
+            println();
+            for (int i = 0, size = list.size(); i < size; ++i) {
+                if (i != 0) {
+                    print(", ");
+                    println();
+                }
+                list.get(i).accept(this);
+            }
+            decrementIndent();
+            println();
+        } else {
+            printAndAccept(x.getTargetList(), ", ");
+        }
+
         print(')');
         return false;
     }
