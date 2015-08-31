@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -34,7 +35,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
     protected List<SQLHint> hints;
 
     protected SQLExpr distributeBy;
-    protected SQLExpr sortBy;
+    protected SQLSelectOrderByItem sortBy;
 
     public OdpsSelectQueryBlock(){
 
@@ -56,11 +57,11 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
         this.distributeBy = distributeBy;
     }
 
-    public SQLExpr getSortBy() {
+    public SQLSelectOrderByItem getSortBy() {
         return sortBy;
     }
 
-    public void setSortBy(SQLExpr sortBy) {
+    public void setSortBy(SQLSelectOrderByItem sortBy) {
         this.sortBy = sortBy;
     }
 
