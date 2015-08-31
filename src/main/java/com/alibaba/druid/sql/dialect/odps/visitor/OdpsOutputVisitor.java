@@ -51,9 +51,9 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVisitor {
-    
+
     private Set<String> builtInFunctions = new HashSet<String>();
-    
+
     {
         builtInFunctions.add("IF");
         builtInFunctions.add("COALESCE");
@@ -68,7 +68,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         builtInFunctions.add("LEAST");
         builtInFunctions.add("GREATEST");
     }
-    
+
     public OdpsOutputVisitor(Appendable appender){
         super(appender);
     }
@@ -95,7 +95,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             for (int i = 0; i < size; ++i) {
                 SQLTableElement element = x.getTableElementList().get(i);
                 element.accept(this);
-                
+
                 if (i != size - 1) {
                     print(",");
                 }
@@ -103,7 +103,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                     print(' ');
                     printComment(element.getAfterCommentsDirect(), "\n");
                 }
-                
+
                 if (i != size - 1) {
                     println();
                 }
@@ -128,7 +128,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             for (int i = 0; i < partitionSize; ++i) {
                 SQLColumnDefinition column = x.getPartitionColumns().get(i);
                 column.accept(this);
-                
+
                 if (i != partitionSize - 1) {
                     print(',');
                 }
@@ -136,7 +136,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                     print(' ');
                     printComment(column.getAfterCommentsDirect(), "\n");
                 }
-                
+
                 if (i != partitionSize - 1) {
                     println();
                 }
@@ -266,7 +266,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         decrementIndent();
         println();
         print("END");
-        
+
         return false;
     }
 
@@ -303,7 +303,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                     print(' ');
                     printComment(preSelectItem.getAfterCommentsDirect(), "\n");
                 }
-                
+
                 println();
                 print(", ");
             }
@@ -382,7 +382,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         println();
         print("AS (");
-        
+
         int aliasSize = x.getAliasList().size();
         if (aliasSize > 5) {
             incrementIndent();
@@ -394,12 +394,12 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                 if (aliasSize > 5) {
                     println(",");
                 } else {
-                    print(", ");    
+                    print(", ");
                 }
             }
             print(x.getAliasList().get(i));
         }
-        
+
         if (aliasSize > 5) {
             decrementIndent();
             println();
@@ -502,7 +502,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             if (x.getWhere().hasBeforeComment() && isPrettyFormat()) {
                 printlnComments(x.getWhere().getBeforeCommentsDirect());
             }
-            
+
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
             if (x.getWhere().hasAfterComment() && isPrettyFormat()) {
@@ -520,12 +520,12 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             println();
             x.getOrderBy().accept(this);
         }
-        
+
         if (x.getDistributeBy() != null) {
             println();
             print("DISTRIBUTE BY ");
             x.getDistributeBy().accept(this);
-            
+
             if (x.getSortBy() != null) {
                 print(" SORT BY ");
                 x.getSortBy().accept(this);
@@ -689,7 +689,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     public boolean visit(OdpsReadStatement x) {
         print("READ ");
         x.getTable().accept(this);
-        
+
         if (x.getColumns().size() > 0) {
             print(" (");
             printAndAccept(x.getColumns(), ", ");
@@ -701,7 +701,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             printAndAccept(x.getPartition(), ", ");
             print(")");
         }
-        
+
         if (x.getRowCount() != null) {
             print(' ');
             x.getRowCount().accept(this);
@@ -709,7 +709,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         return false;
     }
-    
+
     public boolean visit(SQLMethodInvokeExpr x) {
         if (x.getOwner() != null) {
             x.getOwner().accept(this);
@@ -721,7 +721,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         print(")");
         return false;
     }
-    
+
     protected void printJoinType(JoinType joinType) {
         if (joinType.equals(JoinType.LEFT_OUTER_JOIN)) {
             print("LEFT OUTER JOIN");
@@ -733,7 +733,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print(JoinType.toString(joinType));
         }
     }
-    
+
     public boolean visit(SQLDataType x) {
         print(x.getName().toUpperCase());
         if (x.getArguments().size() > 0) {
@@ -744,7 +744,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         return false;
     }
-    
+
     protected void printFunctionName(String name) {
         String upperName = name.toUpperCase();
         if (builtInFunctions.contains(upperName)) {
