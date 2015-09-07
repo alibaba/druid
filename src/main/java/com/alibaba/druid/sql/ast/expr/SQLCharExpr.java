@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
@@ -46,5 +47,9 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
     @Override
     public Object getValue() {
         return this.text;
+    }
+    
+    public String toString() {
+        return SQLUtils.toSQLString(this);
     }
 }

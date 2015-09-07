@@ -438,8 +438,13 @@ public class SQLExprParser extends SQLParser {
                         break;
                     case IDENTIFIER: // 当负号后面为字段的情况
                         sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         lexer.nextToken();
+                        
+                        if (lexer.token() == Token.LPAREN || lexer.token() == Token.LBRACKET) {
+                            sqlExpr = primaryRest(sqlExpr);
+                        }
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
+                        
                         break;
                     case QUES:
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, new SQLVariantRefExpr("?"));
@@ -705,6 +710,14 @@ public class SQLExprParser extends SQLParser {
             }
 
             accept(Token.RPAREN);
+            
+            if (lexer.token() == Token.OVER) {
+                SQLAggregateExpr aggregateExpr = new SQLAggregateExpr(methodName);
+                aggregateExpr.getArguments().addAll(methodInvokeExpr.getParameters());
+                over(aggregateExpr);
+                
+                return primaryRest(aggregateExpr);
+            }
 
             return primaryRest(methodInvokeExpr);
         }
@@ -947,31 +960,35 @@ public class SQLExprParser extends SQLParser {
         accept(Token.RPAREN);
 
         if (lexer.token() == Token.OVER) {
-            lexer.nextToken();
-            SQLOver over = new SQLOver();
-            accept(Token.LPAREN);
-
-            if (lexer.token() == Token.PARTITION || identifierEquals("PARTITION")) {
-                lexer.nextToken();
-                accept(Token.BY);
-
-                if (lexer.token() == (Token.LPAREN)) {
-                    lexer.nextToken();
-                    exprList(over.getPartitionBy(), over);
-                    accept(Token.RPAREN);
-                } else {
-                    exprList(over.getPartitionBy(), over);
-                }
-            }
-
-            over.setOrderBy(parseOrderBy());
-
-            accept(Token.RPAREN);
-            aggregateExpr.setOver(over);
+            over(aggregateExpr);
 
         }
 
         return aggregateExpr;
+    }
+
+    protected void over(SQLAggregateExpr aggregateExpr) {
+        lexer.nextToken();
+        SQLOver over = new SQLOver();
+        accept(Token.LPAREN);
+
+        if (lexer.token() == Token.PARTITION || identifierEquals("PARTITION")) {
+            lexer.nextToken();
+            accept(Token.BY);
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                exprList(over.getPartitionBy(), over);
+                accept(Token.RPAREN);
+            } else {
+                exprList(over.getPartitionBy(), over);
+            }
+        }
+
+        over.setOrderBy(parseOrderBy());
+
+        accept(Token.RPAREN);
+        aggregateExpr.setOver(over);
     }
 
     protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {

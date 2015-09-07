@@ -9,7 +9,7 @@ import com.alibaba.druid.wall.WallUtils;
 public class PGWallTest extends TestCase {
 
     public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidatePostgres(//
+        Assert.assertTrue(WallUtils.isValidatePostgres(//
         "select wm_concat(article_id) over() from t_nds_web_article")); //
     }
 }

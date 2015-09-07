@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -75,5 +76,11 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
+    }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        output(buf);
+        return buf.toString();
     }
 }
