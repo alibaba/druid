@@ -736,6 +736,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (selectList != null) {
             for (SQLSelectItem item : selectList) {
+                if (!item.getClass().equals(SQLSelectItem.class)) {
+                    continue;
+                }
+                
                 String itemAlias = item.getAlias();
                 SQLExpr itemExpr = item.getExpr();
                 if (itemAlias == null) {

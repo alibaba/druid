@@ -97,4 +97,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return true;
     }
 
+    public String toString() {
+        return this.name;
+    }
 }

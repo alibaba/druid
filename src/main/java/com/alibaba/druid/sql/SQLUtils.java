@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleToMySqlOutputVisitor;
@@ -369,6 +370,10 @@ public class SQLUtils {
 
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2SchemaStatVisitor();
+        }
+        
+        if (JdbcUtils.ODPS.equals(dbType)) {
+            return new OdpsSchemaStatVisitor();
         }
 
         return new SchemaStatVisitor();

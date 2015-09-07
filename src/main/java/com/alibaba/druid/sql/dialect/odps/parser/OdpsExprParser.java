@@ -17,11 +17,15 @@ package com.alibaba.druid.sql.dialect.odps.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
+import com.alibaba.druid.sql.parser.EOFParserException;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -130,5 +134,24 @@ public class OdpsExprParser extends SQLExprParser {
         }
         
         return super.primaryRest(expr);
+    }
+    
+    public SQLExpr equalityRest(SQLExpr expr) {
+        if (lexer.token() == Token.EQEQ) {
+            SQLExpr rightExp;
+            lexer.nextToken();
+            try {
+                rightExp = bitOr();
+            } catch (EOFParserException e) {
+                throw new ParserException("EOF, " + expr + "=", e);
+            }
+            rightExp = equalityRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, getDbType());
+            
+            return expr;
+        }
+        
+        return super.equalityRest(expr);
     }
 }

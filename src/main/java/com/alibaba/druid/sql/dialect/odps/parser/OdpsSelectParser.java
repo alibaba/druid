@@ -90,19 +90,28 @@ public class OdpsSelectParser extends SQLSelectParser {
             if (identifierEquals("SORT")) {
                 lexer.nextToken();
                 accept(Token.BY);
-                SQLExpr expr = this.expr();
                 
-                SQLSelectOrderByItem sortBy = new SQLSelectOrderByItem(expr);
-                
-                if (lexer.token() == Token.ASC) {
-                    sortBy.setType(SQLOrderingSpecification.ASC);
-                    lexer.nextToken();
-                } else if (lexer.token() == Token.DESC) {
-                    sortBy.setType(SQLOrderingSpecification.DESC);
-                    lexer.nextToken();
+                for (;;) {
+                    SQLExpr expr = this.expr();
+                    
+                    SQLSelectOrderByItem sortByItem = new SQLSelectOrderByItem(expr);
+                    
+                    if (lexer.token() == Token.ASC) {
+                        sortByItem.setType(SQLOrderingSpecification.ASC);
+                        lexer.nextToken();
+                    } else if (lexer.token() == Token.DESC) {
+                        sortByItem.setType(SQLOrderingSpecification.DESC);
+                        lexer.nextToken();
+                    }
+                    
+                    queryBlock.getSortBy().add(sortByItem);
+                    
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                    } else {
+                        break;
+                    }
                 }
-                
-                queryBlock.setSortBy(sortBy);
             }
         }
 

@@ -50,8 +50,12 @@ public class OdpsResourceTest extends TestCase {
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
-        String expect = items[1].trim();
-
+        String expect = null;
+        
+        if (items.length > 1) {
+            expect = items[1].trim();
+        }
+        
         OdpsStatementParser parser = new OdpsStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);

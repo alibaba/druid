@@ -526,9 +526,9 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print("DISTRIBUTE BY ");
             x.getDistributeBy().accept(this);
 
-            if (x.getSortBy() != null) {
+            if (!x.getSortBy().isEmpty()) {
                 print(" SORT BY ");
-                x.getSortBy().accept(this);
+                printAndAccept(x.getSortBy(), ", ");
             }
         }
 

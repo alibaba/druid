@@ -51,7 +51,7 @@ public class ExportTables extends UDF {
             }
 
             return buf.toString();
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             System.err.println("error sql : " + sql);
             ex.printStackTrace();
             return null;
