@@ -19,11 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -57,6 +61,16 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
@@ -358,6 +372,13 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             return parseCreateTrigger();
         }
+        //parse create procedure
+ 		if (lexer.token() == Token.PROCEDURE) {
+ 			if (replace) {
+ 				lexer.reset(markBp, markChar, Token.CREATE);
+ 			}
+ 			return parseCreateProcedure();
+ 		}
 
         throw new ParserException("TODO " + lexer.token());
     }
@@ -694,8 +715,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.BEGIN);
 
-        parseStatementList(block.getStatementList());
-
+        //parseStatementList(block.getStatementList());
+        parseProcedureStatementList(block.getStatementList());
         accept(Token.END);
 
         return block;
@@ -2705,6 +2726,418 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlHintStatement stmt = new MySqlHintStatement();
         stmt.setHints(this.exprParser.parseHints());
 
-        return stmt;
-    }
+		return stmt;
+	}
+
+	/**
+	 * parse create procedure statement
+	 */
+	public MySqlCreateProcedureStatement parseCreateProcedure() {
+		/**
+		 * CREATE OR REPALCE PROCEDURE SP_NAME(parameter_list) BEGIN block_statement END
+		 */
+		MySqlCreateProcedureStatement stmt = new MySqlCreateProcedureStatement();
+
+		accept(Token.CREATE);
+		if (lexer.token() == Token.OR) {
+			lexer.nextToken();
+			accept(Token.REPLACE);
+			stmt.setOrReplace(true);
+		}
+
+		accept(Token.PROCEDURE);
+
+		stmt.setName(this.exprParser.name());
+
+		if (lexer.token() == Token.LPAREN) {// match "("
+			lexer.nextToken();
+			parserParameters(stmt.getParameters());
+			accept(Token.RPAREN);// match ")"
+		}
+		MySqlBlockStatement block = this.parseBlock();
+
+		stmt.setBlock(block);
+
+		return stmt;
+	}
+
+	/**
+	 * parse create procedure parameters
+	 * @param parameters
+	 */
+	private void parserParameters(List<MySqlParameter> parameters) {
+		for (;;) {
+			MySqlParameter parameter = new MySqlParameter();
+
+			if (lexer.token() == Token.CURSOR) {
+				lexer.nextToken();
+
+				parameter.setName(this.exprParser.name());
+
+				accept(Token.IS);
+				SQLSelect select = this.createSQLSelectParser().select();
+
+				SQLDataTypeImpl dataType = new SQLDataTypeImpl();
+				dataType.setName("CURSOR");
+				parameter.setDataType(dataType);
+
+				parameter.setDefaultValue(new SQLQueryExpr(select));
+			} else {
+				parameter.setName(this.exprParser.name());
+				parameter.setDataType(this.exprParser.parseDataType());
+
+				if (lexer.token() == Token.COLONEQ) {
+					lexer.nextToken();
+					parameter.setDefaultValue(this.exprParser.expr());
+				}
+			}
+
+			parameters.add(parameter);
+			if (lexer.token() == Token.COMMA || lexer.token() == Token.SEMI) {
+				lexer.nextToken();
+			}
+
+			if (lexer.token() != Token.BEGIN && lexer.token() != Token.RPAREN) {
+				continue;
+			}
+
+			break;
+		}
+	}
+
+	/**
+	 * parse procedure statement block
+	 * @param statementList
+	 */
+	private void parseProcedureStatementList(List<SQLStatement> statementList)
+	{
+		parseProcedureStatementList(statementList,-1);
+	}
+	
+	/**
+	 * parse procedure statement block
+	 */
+	private void parseProcedureStatementList(List<SQLStatement> statementList, int max) {
+
+		for (;;) {
+			if (max != -1) {
+				if (statementList.size() >= max) {
+					return;
+				}
+			}
+
+			if (lexer.token() == Token.EOF) {
+				return;
+			}
+			if (lexer.token() == Token.END) {
+				return;
+			}
+			if (lexer.token() == Token.ELSE) {
+				return;
+			}
+			if (lexer.token() == (Token.SEMI)) {
+				lexer.nextToken();
+				continue;
+			}
+			if (lexer.token() == Token.WHEN) {
+				return;
+			}
+			// select into
+			if (lexer.token() == (Token.SELECT)) {
+				statementList.add(this.parseSelectInto());
+				continue;
+			}
+			
+			// update
+			if (lexer.token() == (Token.UPDATE)) {
+				statementList.add(parseUpdateStatement());
+				continue;
+			}
+			
+			// create
+			if (lexer.token() == (Token.CREATE)) {
+				statementList.add(parseCreate());
+				continue;
+			}
+			
+			// insert
+			if (lexer.token() == Token.INSERT) {
+				statementList.add(parseInsert());
+				continue;
+			}
+			
+			// delete
+			if (lexer.token() == (Token.DELETE)) {
+				statementList.add(parseDeleteStatement());
+				continue;
+			}
+			
+			// call
+			if (lexer.token() == Token.LBRACE || identifierEquals("CALL")) {
+				statementList.add(this.parseCall());
+				continue;
+			}
+
+			// begin
+			if (lexer.token() == Token.BEGIN) {
+				statementList.add(this.parseBlock());
+				continue;
+			}
+
+			if (lexer.token() == Token.VARIANT) {
+				SQLExpr variant = this.exprParser.primary();
+				if (variant instanceof SQLBinaryOpExpr) {
+					SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) variant;
+					if (binaryOpExpr.getOperator() == SQLBinaryOperator.Assignment) {
+						SQLSetStatement stmt = new SQLSetStatement(
+								binaryOpExpr.getLeft(),
+								binaryOpExpr.getRight(), getDbType());
+						statementList.add(stmt);
+						continue;
+					}
+				}
+				accept(Token.COLONEQ);
+				SQLExpr value = this.exprParser.expr();
+
+				SQLSetStatement stmt = new SQLSetStatement(variant, value,
+						getDbType());
+				statementList.add(stmt);
+				continue;
+			}			
+			
+			// select
+			if (lexer.token() == Token.LPAREN) {
+				char ch = lexer.current();
+				int bp = lexer.bp();
+				lexer.nextToken();
+
+				if (lexer.token() == Token.SELECT) {
+					lexer.reset(bp, ch, Token.LPAREN);
+					statementList.add(this.parseSelect());
+					continue;
+				} else {
+					throw new ParserException("TODO : " + lexer.token() + " "
+							+ lexer.stringVal());
+				}
+			}
+			// assign statement
+			if (lexer.token() == Token.SET) {
+				statementList.add(this.parseAssign());
+				continue;
+			}			
+			
+			// while statement
+			if (lexer.token() == Token.WHILE) {
+				statementList.add(this.parseWhile());
+				continue;
+			}
+			
+			// if statement
+			if (lexer.token() == Token.IF) {
+				statementList.add(this.parseIf());
+				continue;
+			}
+			
+			// case statement
+			if (lexer.token() == Token.CASE) {
+				statementList.add(this.parseCase());
+				continue;
+			}
+
+			// declare statement
+			if (lexer.token() == Token.DECLARE) {
+				statementList.add(this.parseDeclare());
+				continue;
+			}					
+
+			throw new ParserException("TODO : " + lexer.token() + " "
+					+ lexer.stringVal());
+		}
+
+	}
+
+	/**
+	 * parse if statement
+	 * @return MySqlIfStatement
+	 */
+	public MySqlIfStatement parseIf() {
+		accept(Token.IF);
+
+		MySqlIfStatement stmt = new MySqlIfStatement();
+
+		stmt.setCondition(this.exprParser.expr());
+
+		accept(Token.THEN);
+
+		this.parseProcedureStatementList(stmt.getStatements());
+
+		while (lexer.token() == Token.ELSE) {
+			lexer.nextToken();
+
+			if (lexer.token() == Token.IF) {
+				lexer.nextToken();
+
+				MySqlElseIfStatement elseIf = new MySqlElseIfStatement();
+
+				elseIf.setCondition(this.exprParser.expr());
+
+				accept(Token.THEN);
+				this.parseProcedureStatementList(elseIf.getStatements());
+
+				stmt.getElseIfList().add(elseIf);
+			} else {
+				MySqlElseStatement elseItem = new MySqlElseStatement();
+				this.parseProcedureStatementList(elseItem.getStatements());
+				stmt.setElseItem(elseItem);
+				break;
+			}
+		}
+
+		accept(Token.END);
+		accept(Token.IF);
+
+		return stmt;
+	}
+
+	/**
+	 * parse while statement
+	 * @return MySqlWhileStatement
+	 */
+	public MySqlWhileStatement parseWhile() {
+		accept(Token.WHILE);
+		MySqlWhileStatement stmt = new MySqlWhileStatement();
+
+		stmt.setCondition(this.exprParser.expr());
+
+		accept(Token.DO);
+
+		this.parseProcedureStatementList(stmt.getStatements());
+
+		accept(Token.END);
+
+		accept(Token.WHILE);
+
+		return stmt;
+
+	}
+	
+	/**
+	 * parse case statement
+	 * @return MySqlCaseStatement
+	 */
+	public MySqlCaseStatement parseCase()
+	{
+		MySqlCaseStatement stmt=new MySqlCaseStatement();
+		accept(Token.CASE);
+		
+		if(lexer.token()==Token.WHEN)// grammar 1
+		{
+			while (lexer.token() == Token.WHEN) {
+				
+				MySqlWhenfStatement when=new MySqlWhenfStatement();
+				//when expr
+				when.setCondition(exprParser.expr());
+				
+				accept(Token.THEN);
+				
+				//when block
+				parseProcedureStatementList(when.getStatements());
+				
+				stmt.addWhenStatement(when);
+			}
+			if(lexer.token()==Token.ELSE)
+			{
+				//parse else block
+				MySqlElseStatement elseStmt=new MySqlElseStatement();
+				parseProcedureStatementList(elseStmt.getStatements());
+				stmt.setElseItem(elseStmt);
+			}
+		}
+		else// grammar 2
+		{
+			//case expr
+			stmt.setCondition(exprParser.expr());
+			
+			while (lexer.token() == Token.WHEN) {
+				accept(Token.WHEN);
+				MySqlWhenfStatement when=new MySqlWhenfStatement();
+				//when expr
+				when.setCondition(exprParser.expr());
+				
+				accept(Token.THEN);
+				
+				//when block
+				parseProcedureStatementList(when.getStatements());
+				
+				stmt.addWhenStatement(when);
+			}
+			if(lexer.token()==Token.ELSE)
+			{
+				accept(Token.ELSE);
+				//else block
+				MySqlElseStatement elseStmt=new MySqlElseStatement();
+				parseProcedureStatementList(elseStmt.getStatements());
+				stmt.setElseItem(elseStmt);
+			}
+		}
+		accept(Token.END);
+		accept(Token.CASE);
+		
+		return stmt;
+		
+	}
+	/**
+	 * parse declare statement
+	 */
+	public MySqlDeclareStatement parseDeclare()
+	{
+		MySqlDeclareStatement stmt=new MySqlDeclareStatement();
+		accept(Token.DECLARE);
+		//lexer.nextToken();
+		for(;;)
+		{
+			SQLExpr var = exprParser.primary();
+			if (var instanceof SQLIdentifierExpr) {
+	            var = new SQLVariantRefExpr(((SQLIdentifierExpr) var).getName());
+	        }
+			stmt.addVar(var);
+			if(lexer.token()==Token.COMMA)
+			{
+				accept(Token.COMMA);
+				continue;
+			}
+			else if(lexer.token()!=Token.EOF)
+			{
+				//var type
+				stmt.setType(exprParser.parseDataType());
+				break;
+			}
+			else
+			{
+				setErrorEndPos(lexer.pos());
+	            printError(lexer.token());
+			}
+		}
+		return stmt;		
+	}
+	
+	/**
+	 * parse assign statement
+	 */
+	public SQLSetStatement parseAssign()
+	{
+		accept(Token.SET);
+		SQLSetStatement stmt = new SQLSetStatement(getDbType());
+		parseAssignItems(stmt.getItems(), stmt);
+		return stmt;
+	}
+	
+	/**
+	 * parse select into
+	 */
+	public MySqlSelectIntoStatement parseSelectInto()
+	{
+		MySqlSelectIntoParser parse=new MySqlSelectIntoParser(this.exprParser);		
+		return parse.parseSelectInto();
+	}
 }

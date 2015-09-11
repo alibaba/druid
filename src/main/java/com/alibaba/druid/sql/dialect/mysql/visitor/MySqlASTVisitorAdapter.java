@@ -22,6 +22,16 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -1267,5 +1277,129 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     public void endVisit(MySqlBlockStatement x) {
         
     }
+
+	/**
+	 * support procedure
+	 */
+	@Override
+	public boolean visit(MySqlCreateProcedureStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlCreateProcedureStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlParameter x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlParameter x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlWhileStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlWhileStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlIfStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlIfStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlElseIfStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlElseIfStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlElseStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlElseStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlCaseStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlCaseStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlDeclareStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlDeclareStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlSelectIntoStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlSelectIntoStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlWhenfStatement x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlWhenfStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+	//add:end
 
 } //

@@ -134,6 +134,11 @@ public class Keywords {
         map.put("WITH", Token.WITH);
         map.put("GRANT", Token.GRANT);
         map.put("REVOKE", Token.REVOKE);
+        
+        // MySql procedure by:zz
+        map.put("WHILE", Token.WHILE);
+        map.put("DO", Token.DO);
+        map.put("DECLARE", Token.DECLARE);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }

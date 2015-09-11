@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
@@ -34,6 +35,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
@@ -42,6 +44,16 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -3197,5 +3209,286 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlBlockStatement x) {
         
     }
+
+    
+    /**
+     * comment: visit procedure node
+	 * author С��zz
+     */
+	@Override
+	public boolean visit(MySqlCreateProcedureStatement x) {
+		// TODO Auto-generated method stub
+		if (x.isOrReplace()) {
+            print("CREATE OR REPLACE PROCEDURE ");
+        } else {
+            print("CREATE PROCEDURE ");
+        }
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        if (paramSize > 0) {
+            print(" (");
+            incrementIndent();
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print(", ");
+                    println();
+                }
+                MySqlParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            decrementIndent();
+            println();
+            print(")");
+        }
+
+        println();
+        x.getBlock().setParent(x);
+        x.getBlock().accept(this);
+        return false;
+	}
+
+	@Override
+	public void endVisit(MySqlCreateProcedureStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlParameter x) {
+		// TODO Auto-generated method stub
+		if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
+            print("CURSOR ");
+            x.getName().accept(this);
+            print(" IS");
+            incrementIndent();
+            println();
+            SQLSelect select = ((SQLQueryExpr) x.getDefaultValue()).getSubQuery();
+            select.accept(this);
+            decrementIndent();
+
+        } else {
+            x.getName().accept(this);
+            print(" ");
+
+            x.getDataType().accept(this);
+
+            if (x.getDefaultValue() != null) {
+                print(" := ");
+                x.getDefaultValue().accept(this);
+            }
+        }
+
+        return false;
+	}
+
+	@Override
+	public void endVisit(MySqlParameter x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlWhileStatement x) {
+		// TODO Auto-generated method stub
+		
+		print("WHILE ");
+		x.getCondition().accept(this);
+		print(" DO");
+		println();
+		for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.setParent(x);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+		println();
+        print("END WHILE");
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlWhileStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlIfStatement x) {
+		// TODO Auto-generated method stub
+		print("IF ");
+		x.getCondition().accept(this);
+		print(" THEN");
+		println();
+		for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.setParent(x);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+		println();
+		for (MySqlElseIfStatement iterable_element : x.getElseIfList()) {
+			iterable_element.accept(this);
+		}
+		
+		if(x.getElseItem()!=null)
+			x.getElseItem().accept(this);
+		
+		print("END IF");
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlIfStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlElseIfStatement x) {
+		// TODO Auto-generated method stub
+		
+		print("ELSE IF ");
+		x.getCondition().accept(this);
+		print(" THEN");
+		println();
+		for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.setParent(x);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+		println();
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlElseIfStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlElseStatement x) {
+		// TODO Auto-generated method stub
+		print("ELSE ");
+		println();
+		for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.setParent(x);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+		println();
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlElseStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlCaseStatement x) {
+		// TODO Auto-generated method stub
+		
+		print("CASE ");
+		x.getCondition().accept(this);
+		println();
+		for (int i = 0; i < x.getWhenList().size(); i++) {
+			x.getWhenList().get(i).accept(this);
+//			if (i != x.getWhenList().size() - 1) {
+//                println();
+//            }
+		}
+		if(x.getElseItem()!=null)
+			x.getElseItem().accept(this);
+		print("END CASE");
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlCaseStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlDeclareStatement x) {
+		// TODO Auto-generated method stub
+		
+		print("DECLARE ");
+		
+		for (int i = 0; i < x.getVarList().size(); i++) {
+			x.getVarList().get(i).accept(this);
+			if(i!=x.getVarList().size()-1)
+				print(",");
+		}
+		print(" ");
+		x.getType().accept(this);
+		
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlDeclareStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlSelectIntoStatement x) {
+		// TODO Auto-generated method stub
+		x.getSelect().accept(this);
+		print(" INTO ");
+		for (int i = 0; i < x.getVarList().size(); i++) {
+			x.getVarList().get(i).accept(this);
+			if(i!=x.getVarList().size()-1)
+				print(",");
+			//println(x.getVarList().get(i).toString());
+		}
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlSelectIntoStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlWhenfStatement x) {
+		// TODO Auto-generated method stub
+		print("WHEN ");
+		x.getCondition().accept(this);
+		println(" THEN");
+		for (int i = 0; i < x.getStatements().size(); i++) {
+			x.getStatements().get(i).accept(this);
+			if (i != x.getStatements().size() - 1) {
+                println();
+            }
+		}
+		println();
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlWhenfStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
 
 } //

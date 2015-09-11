@@ -22,6 +22,16 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -571,4 +581,48 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlBlockStatement x);
 
     void endVisit(MySqlBlockStatement x);
+	
+	
+	/**
+	 * support procedure
+	 */
+    boolean visit(MySqlCreateProcedureStatement x);
+
+    void endVisit(MySqlCreateProcedureStatement x);
+	
+    boolean visit(MySqlParameter x);
+
+    void endVisit(MySqlParameter x);
+    
+    boolean visit(MySqlWhileStatement x);
+
+    void endVisit(MySqlWhileStatement x);
+    
+    boolean visit(MySqlIfStatement x);
+
+    void endVisit(MySqlIfStatement x);
+    
+    boolean visit(MySqlElseIfStatement x);
+
+    void endVisit(MySqlElseIfStatement x);
+    
+    boolean visit(MySqlElseStatement x);
+
+    void endVisit(MySqlElseStatement x);
+    
+    boolean visit(MySqlCaseStatement x);
+
+    void endVisit(MySqlCaseStatement x);
+    
+    boolean visit(MySqlDeclareStatement x);
+
+    void endVisit(MySqlDeclareStatement x);
+    
+    boolean visit(MySqlSelectIntoStatement x);
+
+    void endVisit(MySqlSelectIntoStatement x);
+    
+    boolean visit(MySqlWhenfStatement x);
+
+    void endVisit(MySqlWhenfStatement x);
 } //
