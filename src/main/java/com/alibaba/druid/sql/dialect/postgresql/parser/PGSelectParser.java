@@ -59,24 +59,24 @@ public class PGSelectParser extends SQLSelectParser {
             accept(Token.RPAREN);
             return queryRest(valuesQuery);
         }
-        
+
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
-			if (select instanceof SQLSelectQueryBlock) {
-				((SQLSelectQueryBlock) select).setParenthesized(true);
-			}
+            if (select instanceof SQLSelectQueryBlock) {
+                ((SQLSelectQueryBlock) select).setParenthesized(true);
+            }
             accept(Token.RPAREN);
 
             return queryRest(select);
         }
-        
+
         PGSelectQueryBlock queryBlock = new PGSelectQueryBlock();
 
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
-            
+
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
             }
@@ -160,7 +160,7 @@ public class PGSelectParser extends SQLSelectParser {
         for (;;) {
             if (lexer.token() == Token.LIMIT) {
                 PGLimit limit = new PGLimit();
-                
+
                 lexer.nextToken();
                 if (lexer.token() == Token.ALL) {
                     limit.setRowCount(new SQLIdentifierExpr("ALL"));
@@ -168,7 +168,7 @@ public class PGSelectParser extends SQLSelectParser {
                 } else {
                     limit.setRowCount(expr());
                 }
-                
+
                 queryBlock.setLimit(limit);
             } else if (lexer.token() == Token.OFFSET) {
                 PGLimit limit = queryBlock.getLimit();
@@ -259,13 +259,22 @@ public class PGSelectParser extends SQLSelectParser {
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (lexer.token() == Token.AS && tableSource instanceof SQLExprTableSource) {
+            lexer.nextToken();
+
+            String alias = null;
+            if (lexer.token() == Token.IDENTIFIER) {
+                alias = lexer.stringVal();
+                lexer.nextToken();
+            }
+
             if (lexer.token() == Token.LPAREN) {
                 SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
 
-                String alias = this.as();
                 PGFunctionTableSource functionTableSource = new PGFunctionTableSource(exprTableSource.getExpr());
-                functionTableSource.setAlias(alias);
-
+                if (alias != null) {
+                    functionTableSource.setAlias(alias);
+                }
+                
                 lexer.nextToken();
                 parserParameters(functionTableSource.getParameters());
                 accept(Token.RPAREN);

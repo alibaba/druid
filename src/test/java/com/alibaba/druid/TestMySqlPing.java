@@ -20,6 +20,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
+
 import junit.framework.TestCase;
 
 
@@ -35,9 +37,9 @@ public class TestMySqlPing extends TestCase {
         // password = "ccbuauto";
         // SQL = "SELECT * FROM WP_ORDERS WHERE ID = ?";
 
-        jdbcUrl = "jdbc:mysql://a.b.c.d:3308/dragoon_v25_masterdb";
-        user = "dragoon_admin";
-        password = "dragoon_root";
+        jdbcUrl = "jdbc:mysql://a.b.c.d/tddl5_00";
+        user = "aa";
+        password = "bb";
 
         driverClass = "com.mysql.jdbc.Driver";
     }
@@ -48,6 +50,10 @@ public class TestMySqlPing extends TestCase {
         Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
 
         com.mysql.jdbc.Connection mysqlConn = (com.mysql.jdbc.Connection) conn;
+        
+        MySqlValidConnectionChecker checker = new MySqlValidConnectionChecker();
+        
+        checker.isValidConnection(mysqlConn, "select 'x'", 30);
 
         for (int i = 0; i < 10; ++i) {
             ping_1000(mysqlConn);

@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -103,20 +104,20 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     protected final List<Column>                       orderByColumns = new ArrayList<Column>();
     protected final Set<Column>                        groupByColumns = new LinkedHashSet<Column>();
 
-    protected final Map<String, SQLObject>             subQueryMap    = new LinkedHashMap<String, SQLObject>();
+    protected final Map<String, SQLObject> subQueryMap = new LinkedHashMap<String, SQLObject>();
 
-    protected final Map<String, SQLObject>             variants       = new LinkedHashMap<String, SQLObject>();
+    protected final Map<String, SQLObject> variants = new LinkedHashMap<String, SQLObject>();
 
-    protected Map<String, String>                      aliasMap       = new HashMap<String, String>();
+    protected Map<String, String> aliasMap = new HashMap<String, String>();
 
-    protected String                                   currentTable;
+    protected String currentTable;
 
-    public final static String                         ATTR_TABLE     = "_table_";
-    public final static String                         ATTR_COLUMN    = "_column_";
+    public final static String ATTR_TABLE  = "_table_";
+    public final static String ATTR_COLUMN = "_column_";
 
-    private List<Object>                               parameters;
+    private List<Object> parameters;
 
-    private Mode                                       mode;
+    private Mode mode;
 
     public SchemaStatVisitor(){
         this(new ArrayList<Object>());
@@ -739,7 +740,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 if (!item.getClass().equals(SQLSelectItem.class)) {
                     continue;
                 }
-                
+
                 String itemAlias = item.getAlias();
                 SQLExpr itemExpr = item.getExpr();
                 if (itemAlias == null) {
@@ -880,7 +881,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public void endVisit(SQLSelectStatement x) {
     }
-    
+
     @Override
     public boolean visit(SQLWithSubqueryClause.Entry x) {
         String alias = x.getName().toString();
@@ -888,22 +889,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLWithSubqueryClause with = (SQLWithSubqueryClause) x.getParent();
 
         if (Boolean.TRUE == with.getRecursive()) {
-            
+
             if (aliasMap != null && alias != null) {
                 aliasMap.put(alias, null);
                 subQueryMap.put(alias, x.getSubQuery().getQuery());
             }
-            
+
             x.getSubQuery().accept(this);
         } else {
             x.getSubQuery().accept(this);
-            
+
             if (aliasMap != null && alias != null) {
                 aliasMap.put(alias, null);
                 subQueryMap.put(alias, x.getSubQuery().getQuery());
             }
         }
-        
+
         return false;
     }
 
@@ -1069,7 +1070,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
+
     public boolean visit(SQLInListExpr x) {
         if (x.isNot()) {
             handleCondition(x.getExpr(), "NOT IN", x.getTargetList());
@@ -1111,7 +1112,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         accept(x.getTableElementList());
 
         restoreCurrentTable(x);
-        
+
         if (x.getInherits() != null) {
             x.getInherits().accept(this);
         }
@@ -1317,7 +1318,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLRevokeStatement x) {
         if (x.getOn() != null) {
@@ -1325,12 +1326,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLDropDatabaseStatement x) {
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableAddIndex x) {
         for (SQLSelectOrderByItem item : x.getItems()) {
@@ -1338,30 +1339,44 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
         return false;
     }
-    
+
     public boolean visit(SQLCheck x) {
         x.getExpr().accept(this);
         return false;
     }
-    
+
     public boolean visit(SQLCreateTriggerStatement x) {
         return false;
     }
-    
+
     public boolean visit(SQLDropFunctionStatement x) {
         return false;
     }
-    
+
     public boolean visit(SQLDropTableSpaceStatement x) {
         return false;
     }
-    
+
     public boolean visit(SQLDropProcedureStatement x) {
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableRename x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLArrayExpr x) {
+        accept(x.getValues());
+
+        SQLExpr exp = x.getExpr();
+        if (exp instanceof SQLIdentifierExpr) {
+            if (((SQLIdentifierExpr) exp).getName().equals("ARRAY")) {
+                return false;
+            }
+        }
+        exp.accept(this);
         return false;
     }
 }
