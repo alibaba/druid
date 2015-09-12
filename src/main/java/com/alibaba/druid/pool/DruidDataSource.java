@@ -2126,7 +2126,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             for (int i = 0; i < checkCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
 
-                long phyConnectTimeMillis = connection.getTimeMillis();//physical connection connected time
+                long phyConnectTimeMillis = connection.getTimeMillis() - currentTimeMillis;//physical connection connected time
                 if( phyConnectTimeMillis  > phyTimeoutMillis  ){
                     evictList.add(connection);//if physical connection connected greater than phyTimeoutMillis, close the connection, for mysql 8 hours timeout
                     continue;
