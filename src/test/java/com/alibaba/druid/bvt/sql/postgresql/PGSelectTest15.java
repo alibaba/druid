@@ -51,7 +51,7 @@ public class PGSelectTest15 extends PGTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(7, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getTables().size());
     }
 }

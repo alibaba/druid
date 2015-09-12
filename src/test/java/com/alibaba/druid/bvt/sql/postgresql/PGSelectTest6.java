@@ -29,7 +29,12 @@ public class PGSelectTest6 extends PGTest {
     public void test_0() throws Exception {
         String sql = "select fromUserId, toMemberId, rank, tag " + //
                      "from cnres.function_get_re_cni_myali_acion_fct0(?) " + //
-                     "as (fromUserId character varying(128), toMemberId character varying(128), rank numeric, tag character varying(128))";
+                     "as ("//
+                     + "fromUserId character varying(128), " //
+                     + "toMemberId character varying(128), " //
+                     + "rank numeric, " //
+                     + "tag character varying(128)" //
+                     + ")";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

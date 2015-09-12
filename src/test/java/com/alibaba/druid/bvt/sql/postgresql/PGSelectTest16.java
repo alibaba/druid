@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 
 public class PGSelectTest16 extends PGTest {
 
@@ -57,6 +58,16 @@ public class PGSelectTest16 extends PGTest {
 
         Assert.assertEquals(9, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getTables().size());
+        
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "link")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "data")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("search_graph", "depth")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "path")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("search_graph", "link")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "cycle")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sg", "depth")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sg", "link")));
     }
 }
 

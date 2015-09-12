@@ -97,6 +97,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGWithQuery x) {
+        x.getQuery().accept(this);
+        
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
             String alias = null;
@@ -109,7 +111,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
                 subQueryMap.put(alias, x.getQuery());
             }
         }
-        x.getQuery().accept(this);
+        
         return false;
     }
 
