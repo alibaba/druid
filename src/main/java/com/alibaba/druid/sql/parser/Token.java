@@ -128,6 +128,10 @@ public enum Token {
     SHOW("SHOW"),
     REPLACE("REPLACE"),
     
+    // MySql procedure by:zz
+    WHILE("WHILE"),
+    DO("DO"),
+    
     //postgresql
     WINDOW("WINDOW"),
     OFFSET("OFFSET"),
