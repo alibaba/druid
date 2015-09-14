@@ -23,7 +23,13 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlBlockStatement  extends MySqlStatementImpl   {
 
-    private List<SQLStatement>    statementList = new ArrayList<SQLStatement>();
+	/**
+	 * begin-end block label name 
+	 * @author zz
+	 */
+	private String labelName;
+	
+	private List<SQLStatement>    statementList = new ArrayList<SQLStatement>();
 
     public List<SQLStatement> getStatementList() {
         return statementList;
@@ -32,6 +38,14 @@ public class MySqlBlockStatement  extends MySqlStatementImpl   {
     public void setStatementList(List<SQLStatement> statementList) {
         this.statementList = statementList;
     }
+
+    public String getLabelName() {
+		return labelName;
+	}
+
+	public void setLabelName(String labelName) {
+		this.labelName = labelName;
+	}
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {

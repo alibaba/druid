@@ -62,13 +62,17 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
@@ -714,8 +718,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlBlockStatement block = new MySqlBlockStatement();
 
         accept(Token.BEGIN);
-
-        //parseStatementList(block.getStatementList());
         parseProcedureStatementList(block.getStatementList());
         accept(Token.END);
 
@@ -2842,6 +2844,9 @@ public class MySqlStatementParser extends SQLStatementParser {
 			if (lexer.token() == Token.WHEN) {
 				return;
 			}
+			if (lexer.token() == Token.UNTIL) {
+				return;
+			}
 			// select into
 			if (lexer.token() == (Token.SELECT)) {
 				statementList.add(this.parseSelectInto());
@@ -2932,6 +2937,12 @@ public class MySqlStatementParser extends SQLStatementParser {
 				continue;
 			}
 			
+			// loop statement
+			if (lexer.token() == Token.LOOP) {
+				statementList.add(this.parseLoop());
+				continue;
+			}
+			
 			// if statement
 			if (lexer.token() == Token.IF) {
 				statementList.add(this.parseIf());
@@ -2948,8 +2959,63 @@ public class MySqlStatementParser extends SQLStatementParser {
 			if (lexer.token() == Token.DECLARE) {
 				statementList.add(this.parseDeclare());
 				continue;
-			}					
-
+			}
+			
+			// leave statement
+			if (lexer.token() == Token.LEAVE) {
+				statementList.add(this.parseLeave());
+				continue;
+			}
+			
+			// iterate statement
+			if (lexer.token() == Token.ITERATE) {
+				statementList.add(this.parseIterate());
+				continue;
+			}
+			
+			// repeat statement
+			if (lexer.token() == Token.REPEAT) {
+				statementList.add(this.parseRepeat());
+				continue;
+			}
+			
+			if(lexer.token() == Token.IDENTIFIER)
+			{
+				String label=lexer.stringVal();
+				char ch = lexer.current();
+				int bp = lexer.bp();
+				lexer.nextToken();
+				if(lexer.token()==Token.VARIANT&&lexer.stringVal().equals(":"))
+				{
+					lexer.nextToken();
+					if(lexer.token()==Token.LOOP)
+					{
+						//parse loop statement
+						statementList.add(this.parseLoop(label));
+					}
+					else if(lexer.token()==Token.WHILE)
+					{
+						//parse while statement with label
+						statementList.add(this.parseWhile(label));
+					}
+					else if(lexer.token()==Token.BEGIN)
+					{
+						//parse begin-end statement with label
+						statementList.add(this.parseBlock(label));
+					}
+					else if(lexer.token()==Token.REPEAT)
+					{
+						//parse repeat statement with label
+						statementList.add(this.parseRepeat(label));
+					}
+					continue;
+				}
+				else
+				{
+					lexer.reset(bp, ch, Token.IDENTIFIER);
+				}
+				
+			}
 			throw new ParserException("TODO : " + lexer.token() + " "
 					+ lexer.stringVal());
 		}
@@ -2995,6 +3061,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
 		accept(Token.END);
 		accept(Token.IF);
+		accept(Token.SEMI);
 
 		return stmt;
 	}
@@ -3016,6 +3083,37 @@ public class MySqlStatementParser extends SQLStatementParser {
 		accept(Token.END);
 
 		accept(Token.WHILE);
+		
+		accept(Token.SEMI);
+
+		return stmt;
+
+	}
+	
+	/**
+	 * parse while statement with label
+	 * @return MySqlWhileStatement
+	 */
+	public MySqlWhileStatement parseWhile(String label) {
+		accept(Token.WHILE);
+		
+		MySqlWhileStatement stmt = new MySqlWhileStatement();
+
+		stmt.setLabelName(label);
+		
+		stmt.setCondition(this.exprParser.expr());
+
+		accept(Token.DO);
+
+		this.parseProcedureStatementList(stmt.getStatements());
+
+		accept(Token.END);
+
+		accept(Token.WHILE);
+		
+		acceptIdentifier(label);
+		
+		accept(Token.SEMI);
 
 		return stmt;
 
@@ -3034,7 +3132,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 		{
 			while (lexer.token() == Token.WHEN) {
 				
-				MySqlWhenfStatement when=new MySqlWhenfStatement();
+				MySqlWhenStatement when=new MySqlWhenStatement();
 				//when expr
 				when.setCondition(exprParser.expr());
 				
@@ -3060,7 +3158,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 			
 			while (lexer.token() == Token.WHEN) {
 				accept(Token.WHEN);
-				MySqlWhenfStatement when=new MySqlWhenfStatement();
+				MySqlWhenStatement when=new MySqlWhenStatement();
 				//when expr
 				when.setCondition(exprParser.expr());
 				
@@ -3082,7 +3180,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 		}
 		accept(Token.END);
 		accept(Token.CASE);
-		
+		accept(Token.SEMI);
 		return stmt;
 		
 	}
@@ -3139,5 +3237,109 @@ public class MySqlStatementParser extends SQLStatementParser {
 	{
 		MySqlSelectIntoParser parse=new MySqlSelectIntoParser(this.exprParser);		
 		return parse.parseSelectInto();
+	}
+	
+	/**
+	 * parse loop statement
+	 */
+	public MySqlLoopStatement parseLoop()
+	{
+		MySqlLoopStatement loopStmt=new MySqlLoopStatement(); 
+		accept(Token.LOOP);
+		parseProcedureStatementList(loopStmt.getStatements());
+		accept(Token.END);
+		accept(Token.LOOP);
+		accept(Token.SEMI);
+		return loopStmt;
+	}
+	
+	/**
+	 * parse loop statement with label
+	 */
+	public MySqlLoopStatement parseLoop(String label)
+	{
+		MySqlLoopStatement loopStmt=new MySqlLoopStatement(); 
+		loopStmt.setLabelName(label);
+		accept(Token.LOOP);
+		parseProcedureStatementList(loopStmt.getStatements());
+		accept(Token.END);
+		accept(Token.LOOP);
+		acceptIdentifier(label);
+		accept(Token.SEMI);
+		return loopStmt;
+	}
+	
+	/**
+	 * parse loop statement with label
+	 */
+	public MySqlBlockStatement parseBlock(String label) {
+        MySqlBlockStatement block = new MySqlBlockStatement();
+        block.setLabelName(label);
+        accept(Token.BEGIN);
+        parseProcedureStatementList(block.getStatementList());
+        accept(Token.END);
+        acceptIdentifier(label);
+        return block;
+    }
+	
+	/**
+	 * parse leave statement
+	 */
+	public MySqlLeaveStatement parseLeave()
+	{
+		accept(Token.LEAVE);
+		MySqlLeaveStatement leaveStmt=new MySqlLeaveStatement();
+		leaveStmt.setLabelName(exprParser.name().getSimpleName());
+		accept(Token.SEMI);
+		return leaveStmt;
+	}
+	
+	/**
+	 * parse iterate statement
+	 */
+	public MySqlIterateStatement parseIterate()
+	{
+		accept(Token.ITERATE);
+		MySqlIterateStatement iterateStmt=new MySqlIterateStatement();
+		iterateStmt.setLabelName(exprParser.name().getSimpleName());
+		accept(Token.SEMI);
+		return iterateStmt;
+	}
+	
+	/**
+	 * parse repeat statement
+	 * @return
+	 */
+	public MySqlRepeatStatement parseRepeat()
+	{
+		MySqlRepeatStatement repeatStmt=new MySqlRepeatStatement(); 
+		accept(Token.REPEAT);
+		parseProcedureStatementList(repeatStmt.getStatements());
+		accept(Token.UNTIL);
+		repeatStmt.setCondition(exprParser.expr());
+		accept(Token.END);
+		accept(Token.REPEAT);
+		accept(Token.SEMI);
+		return repeatStmt;
+	}
+	
+	/**
+	 * parse repeat statement with label
+	 * @param label
+	 * @return
+	 */
+	public MySqlRepeatStatement parseRepeat(String label)
+	{
+		MySqlRepeatStatement repeatStmt=new MySqlRepeatStatement(); 
+		repeatStmt.setLabelName(label);
+		accept(Token.REPEAT);
+		parseProcedureStatementList(repeatStmt.getStatements());
+		accept(Token.UNTIL);
+		repeatStmt.setCondition(exprParser.expr());
+		accept(Token.END);
+		accept(Token.REPEAT);
+		acceptIdentifier(label);
+		accept(Token.SEMI);
+		return repeatStmt;
 	}
 }

@@ -25,9 +25,11 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 /**
- * MySql procedure if statement
- * @author sei.zz
- *
+ * 
+ * @Description: MySql procedure if statement
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
  */
 public class MySqlIfStatement extends MySqlStatementImpl{
 	 private SQLExpr            condition;
@@ -70,9 +72,11 @@ public class MySqlIfStatement extends MySqlStatementImpl{
 		this.elseItem = elseItem;
 	}
 	/**
-	 * comment: else if语句
-	 * @author sei.zz
-	 *
+	 * 
+	 * @Description: MySql procedure else if statement
+	 * @author zz email:455910092@qq.com
+	 * @date 2015-9-14
+	 * @version V1.0
 	 */
 	public static class MySqlElseIfStatement extends MySqlObjectImpl {
 

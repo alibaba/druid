@@ -23,18 +23,18 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-
 /**
- * MySql procedure case statement
- * @author zz
- *
+ * 
+ * @Description: MySql procedure Case statement
+ * @author zz email:455910092@qq.com
+ * @version V1.0
  */
 public class MySqlCaseStatement extends MySqlStatementImpl{
 
 	//case expr
 	private SQLExpr            		  condition;
 	//when statement list
-	private List<MySqlWhenfStatement> whenList=new ArrayList<MySqlCaseStatement.MySqlWhenfStatement>();
+	private List<MySqlWhenStatement> whenList=new ArrayList<MySqlCaseStatement.MySqlWhenStatement>();
 	//else statement
 	private MySqlElseStatement        elseItem;
 	
@@ -46,15 +46,15 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 		this.condition = condition;
 	}
 
-	public List<MySqlWhenfStatement> getWhenList() {
+	public List<MySqlWhenStatement> getWhenList() {
 		return whenList;
 	}
 
-	public void setWhenList(List<MySqlWhenfStatement> whenList) {
+	public void setWhenList(List<MySqlWhenStatement> whenList) {
 		this.whenList = whenList;
 	}
 	
-	public void addWhenStatement(MySqlWhenfStatement stmt)
+	public void addWhenStatement(MySqlWhenStatement stmt)
 	{
 		this.whenList.add(stmt);
 	}
@@ -83,7 +83,7 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 	 * @author zz
 	 *
 	 */
-	public static class MySqlWhenfStatement extends MySqlObjectImpl {
+	public static class MySqlWhenStatement extends MySqlObjectImpl {
 
         private SQLExpr            condition;
         private List<SQLStatement> statements = new ArrayList<SQLStatement>();

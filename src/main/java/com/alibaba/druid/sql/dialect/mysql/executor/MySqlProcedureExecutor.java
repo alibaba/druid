@@ -20,9 +20,11 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
 /**
- * comment: mysql存储过程执行器
- * @author sei.zz
- *
+ * 
+ * @Description: MySql procedure executor
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
  */
 public class MySqlProcedureExecutor {
 	

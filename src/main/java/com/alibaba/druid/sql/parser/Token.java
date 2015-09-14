@@ -131,6 +131,10 @@ public enum Token {
     // MySql procedure by:zz
     WHILE("WHILE"),
     DO("DO"),
+    LEAVE("LEAVE"),
+    ITERATE("ITERATE"),
+    REPEAT("REPEAT"),
+    UNTIL("UNTIL"),
     
     //postgresql
     WINDOW("WINDOW"),

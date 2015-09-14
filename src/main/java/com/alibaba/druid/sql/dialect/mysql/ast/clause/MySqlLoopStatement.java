@@ -18,49 +18,45 @@ package com.alibaba.druid.sql.dialect.mysql.ast.clause;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.ast.SQLExpr;
+
 /**
  * 
- * @Description: MySql procedure select into statement
+ * @Description: MySql procedure loop statement
  * @author zz email:455910092@qq.com
  * @date 2015-9-14
  * @version V1.0
  */
-public class MySqlSelectIntoStatement extends MySqlStatementImpl{
-
-	//select statement
-	private SQLSelect select;
-	//var list
-	private List<SQLExpr> varList=new ArrayList<SQLExpr>();
+public class MySqlLoopStatement extends MySqlStatementImpl {
 	
-	public SQLSelect getSelect() {
-		return select;
-	}
+	private String labelName;
 
-	public void setSelect(SQLSelect select) {
-		this.select = select;
-	}
-
-	public List<SQLExpr> getVarList() {
-		return varList;
-	}
-
-	public void setVarList(List<SQLExpr> varList) {
-		this.varList = varList;
-	}
-
-	
+	private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 	
 	@Override
-	public void accept0(MySqlASTVisitor visitor) {
-		if (visitor.visit(this)) {
-            acceptChild(visitor, select);
-            acceptChild(visitor, varList);
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, statements);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLStatement> getStatements() {
+        return statements;
+    }
+
+    public void setStatements(List<SQLStatement> statements) {
+        this.statements = statements;
+    }
+
+	public String getLabelName() {
+		return labelName;
 	}
 
+	public void setLabelName(String labelName) {
+		this.labelName = labelName;
+	}
+    
 }

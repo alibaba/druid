@@ -46,9 +46,11 @@ import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
 /**
- * parse select into statement
- * @author sei.zz
- *
+ * 
+ * @Description: parse select into statement
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
  */
 public class MySqlSelectIntoParser extends SQLSelectParser {
 	private List<SQLExpr> argsList;
@@ -187,7 +189,10 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
 
         return queryRest(queryBlock);
     }
-    
+    /**
+     * parser the select into arguments
+     * @return
+     */
 	protected List<SQLExpr> parseIntoArgs() {
 		
 		List<SQLExpr> args=new ArrayList<SQLExpr>();

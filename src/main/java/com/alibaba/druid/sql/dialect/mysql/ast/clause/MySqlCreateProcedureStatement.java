@@ -24,9 +24,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 /**
- * MySql create procedure statement
- * @author zz
- *
+ * 
+ * @Description: MySql create procedure statement
+ * @author zz email:455910092@qq.com
+ * @version V1.0
  */
 public class MySqlCreateProcedureStatement extends MySqlStatementImpl {
 	private boolean               orReplace;

@@ -26,38 +26,22 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
-public class MySqlCreateProcedureTest extends MysqlTest {
+/**
+ * 
+ * @Description: begin-end within begin-end
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
+ */
+public class MySqlCreateProcedureTest1 extends MysqlTest {
 
     public void test_0() throws Exception {
     	String sql="create or replace procedure sp_name(level int,age int)"+
 				" begin"+
 				" declare x,y,z int;"+
-				" select id into x,y,z from test;"+
+				" begin"+
 				" insert into test values(id,age);"+
-				" while x do"+
-				" insert into test values(id,age);"+
-				" end while;"+
-				" if x then"+
-				" insert into test values(id,age);"+
-				" insert into test values(id,age);"+
-				" else if y then"+
-				" insert into test values(id,age);"+
-				" while x do"+
-				" insert into test values(id,age);"+
-				" end while;"+
-				" else"+
-				" insert into test values(id,age);"+
-				" end if;"+
-				" case x"+
-				" when x>10 then"+
-				" insert into test values(id,age);"+
-				" insert into test values(id,age);"+
-				" when x>20 then"+
-				" insert into test values(id,age);"+
-				" insert into test values(id,age);"+
-				" else"+
-				" insert into test values(id,age);"+
-				" end case;"+
+				" end"+
 				" end";
 	
     	MySqlStatementParser parser=new MySqlStatementParser(sql);
