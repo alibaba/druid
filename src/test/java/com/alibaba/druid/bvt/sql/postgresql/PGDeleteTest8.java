@@ -55,8 +55,10 @@ public class PGDeleteTest8 extends PGTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("parts")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("included_parts")));
 
-        Assert.assertTrue(visitor.getColumns().size() == 4);
+        Assert.assertTrue(visitor.getColumns().size() == 3);
         
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("parts", "sub_part")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("included_parts", "sub_part")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("parts", "part")));
     }
 
