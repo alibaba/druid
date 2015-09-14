@@ -8,11 +8,11 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-
 /**
- * MySql procedure case statement
- * @author zz
- *
+ * 
+ * @Description: MySql procedure Case statement
+ * @author zz email:455910092@qq.com
+ * @version V1.0
  */
 public class MySqlCaseStatement extends MySqlStatementImpl{
 

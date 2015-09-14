@@ -5,13 +5,14 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 /**
- * MySql declare statement
- * @author sei.zz
- *
+ * 
+ * @Description: MySql declare statement
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
  */
 public class MySqlDeclareStatement extends MySqlStatementImpl{
 	

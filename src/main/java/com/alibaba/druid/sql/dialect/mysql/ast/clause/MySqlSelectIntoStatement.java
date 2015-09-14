@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.ast.SQLExpr;
 /**
- * MySql procedure select into statement
- * @author sei.zz
- *
+ * 
+ * @Description: MySql procedure select into statement
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
  */
 public class MySqlSelectIntoStatement extends MySqlStatementImpl{
 

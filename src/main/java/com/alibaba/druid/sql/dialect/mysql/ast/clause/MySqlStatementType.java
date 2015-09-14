@@ -8,9 +8,11 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 
 /**
- * MySql procedure statement type
- * @author zz
- *
+ * 
+ * @Description: MySql procedure statement type
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
  */
 public enum MySqlStatementType {
 	//select statement

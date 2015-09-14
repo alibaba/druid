@@ -8,9 +8,11 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 /**
- * MySql procedure else statement
- * @author zz
- *
+ * 
+ * @Description: MySql procedure else statement
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
  */
 public class MySqlElseStatement extends MySqlObjectImpl {
 

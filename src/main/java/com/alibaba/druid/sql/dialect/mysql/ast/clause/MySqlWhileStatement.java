@@ -9,13 +9,15 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 /**
- * comment: 存储过程中while循环语句
- * @author 小竹zz
- *
+ * 
+ * @Description: MySql procedure while statement
+ * @author zz email:455910092@qq.com
+ * @date 2015-9-14
+ * @version V1.0
  */
 public class MySqlWhileStatement extends MySqlStatementImpl {
 	
-	//while循环的表达式
+	//while expr
 	private SQLExpr            condition;
 	private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 	

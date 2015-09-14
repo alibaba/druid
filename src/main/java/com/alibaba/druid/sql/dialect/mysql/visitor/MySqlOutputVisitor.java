@@ -3212,12 +3212,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     
     /**
-     * comment: visit procedure node
-	 * author С��zz
+     * visit procedure create node
      */
 	@Override
 	public boolean visit(MySqlCreateProcedureStatement x) {
-		// TODO Auto-generated method stub
 		if (x.isOrReplace()) {
             print("CREATE OR REPLACE PROCEDURE ");
         } else {
@@ -3254,13 +3252,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlCreateProcedureStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlParameter x) {
-		// TODO Auto-generated method stub
 		if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
             print("CURSOR ");
             x.getName().accept(this);
@@ -3288,14 +3284,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlParameter x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlWhileStatement x) {
-		// TODO Auto-generated method stub
-		
 		print("WHILE ");
 		x.getCondition().accept(this);
 		print(" DO");
@@ -3315,13 +3308,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlWhileStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlIfStatement x) {
-		// TODO Auto-generated method stub
 		print("IF ");
 		x.getCondition().accept(this);
 		print(" THEN");
@@ -3348,14 +3339,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlIfStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlElseIfStatement x) {
-		// TODO Auto-generated method stub
-		
 		print("ELSE IF ");
 		x.getCondition().accept(this);
 		print(" THEN");
@@ -3374,13 +3362,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlElseIfStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlElseStatement x) {
-		// TODO Auto-generated method stub
 		print("ELSE ");
 		println();
 		for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
@@ -3397,22 +3383,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlElseStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlCaseStatement x) {
-		// TODO Auto-generated method stub
 		
 		print("CASE ");
 		x.getCondition().accept(this);
 		println();
 		for (int i = 0; i < x.getWhenList().size(); i++) {
 			x.getWhenList().get(i).accept(this);
-//			if (i != x.getWhenList().size() - 1) {
-//                println();
-//            }
 		}
 		if(x.getElseItem()!=null)
 			x.getElseItem().accept(this);
@@ -3422,16 +3403,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlCaseStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlDeclareStatement x) {
-		// TODO Auto-generated method stub
-		
 		print("DECLARE ");
-		
 		for (int i = 0; i < x.getVarList().size(); i++) {
 			x.getVarList().get(i).accept(this);
 			if(i!=x.getVarList().size()-1)
@@ -3439,39 +3416,33 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 		}
 		print(" ");
 		x.getType().accept(this);
-		
 		return false;
 	}
 
 	@Override
 	public void endVisit(MySqlDeclareStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlSelectIntoStatement x) {
-		// TODO Auto-generated method stub
 		x.getSelect().accept(this);
 		print(" INTO ");
 		for (int i = 0; i < x.getVarList().size(); i++) {
 			x.getVarList().get(i).accept(this);
 			if(i!=x.getVarList().size()-1)
 				print(",");
-			//println(x.getVarList().get(i).toString());
 		}
 		return false;
 	}
 
 	@Override
 	public void endVisit(MySqlSelectIntoStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlWhenfStatement x) {
-		// TODO Auto-generated method stub
 		print("WHEN ");
 		x.getCondition().accept(this);
 		println(" THEN");
@@ -3487,7 +3458,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlWhenfStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 

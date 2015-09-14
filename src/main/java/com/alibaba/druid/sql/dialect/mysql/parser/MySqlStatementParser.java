@@ -714,8 +714,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlBlockStatement block = new MySqlBlockStatement();
 
         accept(Token.BEGIN);
-
-        //parseStatementList(block.getStatementList());
         parseProcedureStatementList(block.getStatementList());
         accept(Token.END);
 
@@ -2806,7 +2804,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 	}
 
 	/**
-	 * parse procedure statement block
+	 * parse procedure statement block,not support begin-end block
 	 * @param statementList
 	 */
 	private void parseProcedureStatementList(List<SQLStatement> statementList)
@@ -2948,8 +2946,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 			if (lexer.token() == Token.DECLARE) {
 				statementList.add(this.parseDeclare());
 				continue;
-			}					
-
+			}
+			
 			throw new ParserException("TODO : " + lexer.token() + " "
 					+ lexer.stringVal());
 		}
@@ -2995,6 +2993,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
 		accept(Token.END);
 		accept(Token.IF);
+		accept(Token.SEMI);
 
 		return stmt;
 	}
@@ -3016,6 +3015,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 		accept(Token.END);
 
 		accept(Token.WHILE);
+		
+		accept(Token.SEMI);
 
 		return stmt;
 
@@ -3082,7 +3083,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 		}
 		accept(Token.END);
 		accept(Token.CASE);
-		
+		accept(Token.SEMI);
 		return stmt;
 		
 	}
