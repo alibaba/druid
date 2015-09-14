@@ -23,13 +23,17 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
@@ -622,7 +626,23 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlSelectIntoStatement x);
     
-    boolean visit(MySqlWhenfStatement x);
+    boolean visit(MySqlWhenStatement x);
 
-    void endVisit(MySqlWhenfStatement x);
+    void endVisit(MySqlWhenStatement x);
+    
+    boolean visit(MySqlLoopStatement x);
+
+    void endVisit(MySqlLoopStatement x);
+    
+    boolean visit(MySqlLeaveStatement x);
+
+    void endVisit(MySqlLeaveStatement x);
+    
+    boolean visit(MySqlIterateStatement x);
+
+    void endVisit(MySqlIterateStatement x);
+    
+    boolean visit(MySqlRepeatStatement x);
+
+    void endVisit(MySqlRepeatStatement x);
 } //

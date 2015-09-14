@@ -1,3 +1,18 @@
+/*
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.alibaba.druid.sql.dialect.mysql.ast.clause;
 
 import java.util.ArrayList;
@@ -19,7 +34,7 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 	//case expr
 	private SQLExpr            		  condition;
 	//when statement list
-	private List<MySqlWhenfStatement> whenList=new ArrayList<MySqlCaseStatement.MySqlWhenfStatement>();
+	private List<MySqlWhenStatement> whenList=new ArrayList<MySqlCaseStatement.MySqlWhenStatement>();
 	//else statement
 	private MySqlElseStatement        elseItem;
 	
@@ -31,15 +46,15 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 		this.condition = condition;
 	}
 
-	public List<MySqlWhenfStatement> getWhenList() {
+	public List<MySqlWhenStatement> getWhenList() {
 		return whenList;
 	}
 
-	public void setWhenList(List<MySqlWhenfStatement> whenList) {
+	public void setWhenList(List<MySqlWhenStatement> whenList) {
 		this.whenList = whenList;
 	}
 	
-	public void addWhenStatement(MySqlWhenfStatement stmt)
+	public void addWhenStatement(MySqlWhenStatement stmt)
 	{
 		this.whenList.add(stmt);
 	}
@@ -68,7 +83,7 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 	 * @author zz
 	 *
 	 */
-	public static class MySqlWhenfStatement extends MySqlObjectImpl {
+	public static class MySqlWhenStatement extends MySqlObjectImpl {
 
         private SQLExpr            condition;
         private List<SQLStatement> statements = new ArrayList<SQLStatement>();

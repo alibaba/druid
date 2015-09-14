@@ -38,13 +38,17 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
@@ -1409,7 +1413,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public boolean visit(MySqlWhileStatement x) {
-		// TODO Auto-generated method stub
+		accept(x.getStatements());
 		return false;
 	}
 
@@ -1421,7 +1425,9 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public boolean visit(MySqlIfStatement x) {
-		// TODO Auto-generated method stub
+		accept(x.getStatements());
+		accept(x.getElseIfList());
+		accept(x.getElseItem());
 		return false;
 	}
 
@@ -1433,7 +1439,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public boolean visit(MySqlElseIfStatement x) {
-		// TODO Auto-generated method stub
+		accept(x.getStatements());
 		return false;
 	}
 
@@ -1445,7 +1451,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public boolean visit(MySqlElseStatement x) {
-		// TODO Auto-generated method stub
+		accept(x.getStatements());
 		return false;
 	}
 
@@ -1457,7 +1463,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public boolean visit(MySqlCaseStatement x) {
-		// TODO Auto-generated method stub
+		accept(x.getWhenList());
 		return false;
 	}
 
@@ -1492,13 +1498,62 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 	}
 
 	@Override
-	public boolean visit(MySqlWhenfStatement x) {
+	public boolean visit(MySqlWhenStatement x) {
+		accept(x.getStatements());
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlWhenStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlLoopStatement x) {
+		accept(x.getStatements());
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlLoopStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlLeaveStatement x) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void endVisit(MySqlWhenfStatement x) {
+	public void endVisit(MySqlLeaveStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlIterateStatement x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlIterateStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlRepeatStatement x) {
+		// TODO Auto-generated method stub
+		accept(x.getStatements());
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlRepeatStatement x) {
 		// TODO Auto-generated method stub
 		
 	}

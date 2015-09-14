@@ -139,7 +139,12 @@ public class Keywords {
         map.put("WHILE", Token.WHILE);
         map.put("DO", Token.DO);
         map.put("DECLARE", Token.DECLARE);
-
+        map.put("LOOP", Token.LOOP);
+        map.put("LEAVE", Token.LEAVE);
+        map.put("ITERATE", Token.ITERATE);
+        map.put("REPEAT", Token.REPEAT);
+        map.put("UNTIL", Token.UNTIL);
+        
         DEFAULT_KEYWORDS = new Keywords(map);
     }
 
