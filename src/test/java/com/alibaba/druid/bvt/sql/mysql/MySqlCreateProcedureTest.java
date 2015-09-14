@@ -36,7 +36,7 @@ public class MySqlCreateProcedureTest extends MysqlTest {
 				" insert into test values(id,age);"+
 				" while x do"+
 				" insert into test values(id,age);"+
-				" end while"+
+				" end while;"+
 				" if x then"+
 				" insert into test values(id,age);"+
 				" insert into test values(id,age);"+
@@ -44,10 +44,10 @@ public class MySqlCreateProcedureTest extends MysqlTest {
 				" insert into test values(id,age);"+
 				" while x do"+
 				" insert into test values(id,age);"+
-				" end while"+
+				" end while;"+
 				" else"+
 				" insert into test values(id,age);"+
-				" end if"+
+				" end if;"+
 				" case x"+
 				" when x>10 then"+
 				" insert into test values(id,age);"+
@@ -57,7 +57,7 @@ public class MySqlCreateProcedureTest extends MysqlTest {
 				" insert into test values(id,age);"+
 				" else"+
 				" insert into test values(id,age);"+
-				" end case"+
+				" end case;"+
 				" end";
 	
     	MySqlStatementParser parser=new MySqlStatementParser(sql);

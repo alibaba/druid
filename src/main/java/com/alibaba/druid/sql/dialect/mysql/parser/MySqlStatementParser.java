@@ -2804,7 +2804,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 	}
 
 	/**
-	 * parse procedure statement block,not support begin-end block
+	 * parse procedure statement block
 	 * @param statementList
 	 */
 	private void parseProcedureStatementList(List<SQLStatement> statementList)
