@@ -64,6 +64,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorCloseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorFetchIntoStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorOpenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
@@ -2957,7 +2961,20 @@ public class MySqlStatementParser extends SQLStatementParser {
 
 			// declare statement
 			if (lexer.token() == Token.DECLARE) {
-				statementList.add(this.parseDeclare());
+				char markChar = lexer.current();
+		        int markBp = lexer.bp();
+		        lexer.nextToken();
+		        lexer.nextToken();
+		        if(lexer.token()==Token.CURSOR)// cursor declare statement
+		        {
+		        	lexer.reset(markBp, markChar, Token.DECLARE);
+		        	statementList.add(this.parseCursorDeclare());
+		        }
+		        else
+		        {
+		        	lexer.reset(markBp, markChar, Token.DECLARE);
+		        	statementList.add(this.parseDeclare());
+		        }
 				continue;
 			}
 			
@@ -2976,6 +2993,24 @@ public class MySqlStatementParser extends SQLStatementParser {
 			// repeat statement
 			if (lexer.token() == Token.REPEAT) {
 				statementList.add(this.parseRepeat());
+				continue;
+			}
+			
+			// open cursor
+			if (lexer.token() == Token.OPEN) {
+				statementList.add(this.parseCursorOpen());
+				continue;
+			}
+			
+			// close cursor
+			if (lexer.token() == Token.CLOSE) {
+				statementList.add(this.parseCursorClose());
+				continue;
+			}
+			
+			// fetch cursor into
+			if (lexer.token() == Token.FETCH) {
+				statementList.add(this.parseCursorFetchInto());
 				continue;
 			}
 			
@@ -3341,5 +3376,95 @@ public class MySqlStatementParser extends SQLStatementParser {
 		acceptIdentifier(label);
 		accept(Token.SEMI);
 		return repeatStmt;
+	}
+	
+	/**
+	 * parse cursor declare statement
+	 * @return
+	 */
+	public MySqlCursorDeclareStatement parseCursorDeclare()
+	{
+		MySqlCursorDeclareStatement stmt=new MySqlCursorDeclareStatement();
+		accept(Token.DECLARE);
+		
+		stmt.setCursorName(exprParser.name().getSimpleName());
+		
+		accept(Token.CURSOR);
+		
+		accept(Token.FOR);
+		
+		stmt.setSelect(parseSelect());
+		
+		accept(Token.SEMI);
+		
+		return stmt;
+	}
+	
+	/**
+	 * parse cursor open statement
+	 * @return
+	 */
+	public MySqlCursorOpenStatement parseCursorOpen()
+	{
+		MySqlCursorOpenStatement stmt=new MySqlCursorOpenStatement();
+		accept(Token.OPEN);
+		stmt.setCursorName(exprParser.name().getSimpleName());
+		accept(Token.SEMI);
+		return stmt;
+	}
+	
+	/**
+	 * parse cursor close statement
+	 * @return
+	 */
+	public MySqlCursorCloseStatement parseCursorClose()
+	{
+		MySqlCursorCloseStatement stmt=new MySqlCursorCloseStatement();
+		accept(Token.CLOSE);
+		stmt.setCursorName(exprParser.name().getSimpleName());
+		accept(Token.SEMI);
+		return stmt;
+	}
+	
+	/**
+	 * parse cursor fetch into statement
+	 * @return
+	 */
+	public MySqlCursorFetchIntoStatement parseCursorFetchInto()
+	{
+		MySqlCursorFetchIntoStatement stmt=new MySqlCursorFetchIntoStatement();
+		accept(Token.FETCH);
+		stmt.setCursorName(exprParser.name().getSimpleName());
+		stmt.setVarList(parseIntoArgs());
+		return stmt;
+	}
+	
+	/**
+	 * parse fetch into var list
+	 * @return
+	 */
+	protected List<SQLExpr> parseIntoArgs() {
+		List<SQLExpr> args=new ArrayList<SQLExpr>();
+		if (lexer.token() == (Token.INTO)) {
+			accept(Token.INTO);
+			//lexer.nextToken();
+			for (;;) {
+				SQLExpr var = exprParser.primary();
+				if (var instanceof SQLIdentifierExpr) {
+					var = new SQLVariantRefExpr(
+							((SQLIdentifierExpr) var).getName());
+				}
+				args.add(var);
+				if (lexer.token() == Token.COMMA) {
+					accept(Token.COMMA);
+					continue;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		return args;
 	}
 }

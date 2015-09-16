@@ -135,6 +135,8 @@ public enum Token {
     ITERATE("ITERATE"),
     REPEAT("REPEAT"),
     UNTIL("UNTIL"),
+    OPEN("OPEN"),
+    CLOSE("CLOSE"),
     
     //postgresql
     WINDOW("WINDOW"),
