@@ -144,6 +144,10 @@ public class Keywords {
         map.put("ITERATE", Token.ITERATE);
         map.put("REPEAT", Token.REPEAT);
         map.put("UNTIL", Token.UNTIL);
+        map.put("OPEN", Token.OPEN);
+        map.put("CLOSE", Token.CLOSE);
+        map.put("CURSOR", Token.CURSOR);
+        map.put("FETCH", Token.FETCH);
         
         DEFAULT_KEYWORDS = new Keywords(map);
     }
