@@ -82,6 +82,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
+import com.alibaba.druid.sql.ast.statement.SQLCloseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
@@ -107,10 +108,12 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
@@ -623,5 +626,17 @@ public interface SQLASTVisitor {
     void endVisit(SQLArrayExpr x);
     
     boolean visit(SQLArrayExpr x);
+    
+    void endVisit(SQLOpenStatement x);
+    
+    boolean visit(SQLOpenStatement x);
+    
+    void endVisit(SQLFetchStatement x);
+    
+    boolean visit(SQLFetchStatement x);
+    
+    void endVisit(SQLCloseStatement x);
+    
+    boolean visit(SQLCloseStatement x);
     
 }

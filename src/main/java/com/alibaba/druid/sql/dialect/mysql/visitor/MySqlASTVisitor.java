@@ -25,10 +25,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorCloseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorFetchIntoStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorOpenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
@@ -653,16 +650,5 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlCursorDeclareStatement x);
 
     void endVisit(MySqlCursorDeclareStatement x);
-    
-    boolean visit(MySqlCursorOpenStatement x);
 
-    void endVisit(MySqlCursorOpenStatement x);
-    
-    boolean visit(MySqlCursorCloseStatement x);
-
-    void endVisit(MySqlCursorCloseStatement x);
-    
-    boolean visit(MySqlCursorFetchIntoStatement x);
-
-    void endVisit(MySqlCursorFetchIntoStatement x);
 } //

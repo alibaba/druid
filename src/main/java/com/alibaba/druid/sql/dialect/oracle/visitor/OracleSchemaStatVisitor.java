@@ -112,7 +112,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
@@ -1607,16 +1606,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleExitStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleFetchStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleFetchStatement x) {
 
     }
 
