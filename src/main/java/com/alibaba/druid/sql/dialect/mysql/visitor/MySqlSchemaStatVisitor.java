@@ -40,10 +40,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorCloseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorFetchIntoStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorOpenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
@@ -1570,42 +1567,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlCursorDeclareStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean visit(MySqlCursorOpenStatement x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlCursorOpenStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean visit(MySqlCursorCloseStatement x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlCursorCloseStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean visit(MySqlCursorFetchIntoStatement x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlCursorFetchIntoStatement x) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterViewRenameStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
+import com.alibaba.druid.sql.ast.statement.SQLCloseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLConstraint;
@@ -75,10 +76,12 @@ import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLObjectType;
+import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
@@ -2005,6 +2008,45 @@ public class SQLStatementParser extends SQLParser {
         }
         accept(Token.RPAREN);
         return item;
+    }
+    
+    /**
+     * parse cursor open statement
+     * @return
+     */
+    public SQLOpenStatement parseOpen() {
+        SQLOpenStatement stmt=new SQLOpenStatement();
+        accept(Token.OPEN);
+        stmt.setCursorName(exprParser.name().getSimpleName());
+        accept(Token.SEMI);
+        return stmt;
+    }
+    
+    public SQLFetchStatement parseFetch() {
+        accept(Token.FETCH);
+        
+        SQLFetchStatement stmt = new SQLFetchStatement();
+        stmt.setCursorName(this.exprParser.name());
+        accept(Token.INTO);
+        for (;;) {
+            stmt.getInto().add(this.exprParser.name());
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+        
+        return stmt;
+    }
+    
+    public SQLStatement parseClose() {
+        SQLCloseStatement stmt=new SQLCloseStatement();
+        accept(Token.CLOSE);
+        stmt.setCursorName(exprParser.name().getSimpleName());
+        accept(Token.SEMI);
+        return stmt;
     }
 
     public boolean isParseCompleteValues() {

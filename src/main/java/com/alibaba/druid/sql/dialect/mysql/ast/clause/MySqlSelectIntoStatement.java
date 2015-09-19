@@ -56,7 +56,6 @@ public class MySqlSelectIntoStatement extends MySqlStatementImpl{
 	
 	@Override
 	public void accept0(MySqlASTVisitor visitor) {
-		// TODO Auto-generated method stub
 		if (visitor.visit(this)) {
             acceptChild(visitor, select);
             acceptChild(visitor, varList);

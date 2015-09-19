@@ -81,7 +81,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
@@ -539,10 +538,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleExitStatement x);
 
     void endVisit(OracleExitStatement x);
-
-    boolean visit(OracleFetchStatement x);
-
-    void endVisit(OracleFetchStatement x);
 
     boolean visit(OracleSavePointStatement x);
 
