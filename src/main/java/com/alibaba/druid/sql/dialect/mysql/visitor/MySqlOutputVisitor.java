@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -47,10 +50,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorCloseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorFetchIntoStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorOpenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
@@ -168,9 +168,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-
-import java.util.List;
-import java.util.Map;
 
 public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTVisitor {
 
@@ -3570,51 +3567,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlCursorDeclareStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean visit(MySqlCursorOpenStatement x) {
-		print("OPEN ");
-		print(x.getCursorName());
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlCursorOpenStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean visit(MySqlCursorCloseStatement x) {
-		print("CLOSE ");
-		print(x.getCursorName());
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlCursorCloseStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean visit(MySqlCursorFetchIntoStatement x) {
-		print("FETCH ");
-		print(x.getCursorName());
-		print(" INTO ");
-		for (int i = 0; i < x.getVarList().size(); i++) {
-			x.getVarList().get(i).accept(this);
-			if(i!=x.getVarList().size()-1)
-				print(",");
-		}
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlCursorFetchIntoStatement x) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -13,51 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.clause;
+package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 /**
  * 
- * @Description: MySql procedure cursor fetch into statement
+ * @Description: MySql cursor open statement
  * @author zz email:455910092@qq.com
  * @date 2015-9-14
  * @version V1.0
  */
-public class MySqlCursorFetchIntoStatement extends MySqlStatementImpl{
-
+public class SQLOpenStatement extends SQLStatementImpl{
+	
 	//cursor name
-	private String cursorName;
-	//var list
-	private List<SQLExpr> varList=new ArrayList<SQLExpr>();
+	private String cursorName; 
 	
 	public String getCursorName() {
 		return cursorName;
 	}
-
+	
 	public void setCursorName(String cursorName) {
 		this.cursorName = cursorName;
 	}
 
-	public List<SQLExpr> getVarList() {
-		return varList;
-	}
-
-	public void setVarList(List<SQLExpr> varList) {
-		this.varList = varList;
-	}
-	
 	@Override
-	public void accept0(MySqlASTVisitor visitor) {
+	protected void accept0(SQLASTVisitor visitor) {
 		// TODO Auto-generated method stub
-		if (visitor.visit(this)) {
-            acceptChild(visitor, varList);
-        }
-        visitor.endVisit(this);
+		visitor.visit(this);
+	    visitor.endVisit(this);
+		
 	}
 
 }

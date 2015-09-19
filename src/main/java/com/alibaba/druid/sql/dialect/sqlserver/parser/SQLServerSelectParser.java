@@ -99,7 +99,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
             acceptIdentifier("ROWS");
             select.setOffset(offset);
             
-            if (identifierEquals("FETCH")) {
+            if (lexer.token() == Token.FETCH) {
                 lexer.nextToken();
                 acceptIdentifier("NEXT");
                 

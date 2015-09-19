@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
+import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
@@ -74,7 +75,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
@@ -187,7 +187,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleCreateDatabaseDbLinkStatement().accept(adapter);
         new OracleCreateProcedureStatement().accept(adapter);
         new OracleSavePointStatement().accept(adapter);
-        new OracleFetchStatement().accept(adapter);
+        new SQLFetchStatement().accept(adapter);
         new OracleExitStatement().accept(adapter);
         new OracleExplainStatement().accept(adapter);
         new OracleAlterProcedureStatement().accept(adapter);
