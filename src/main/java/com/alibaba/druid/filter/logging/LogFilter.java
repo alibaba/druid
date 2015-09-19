@@ -345,6 +345,10 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected abstract void resultSetLogError(String message, Throwable error);
 
     public void connection_connectAfter(ConnectionProxy connection) {
+        if (connection == null) {
+            return;
+        }
+        
         if (connectionConnectAfterLogEnable && isConnectionLogEnabled()) {
             connectionLog("{conn-" + connection.getId() + "} connected");
         }
