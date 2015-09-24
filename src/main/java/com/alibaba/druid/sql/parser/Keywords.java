@@ -135,7 +135,7 @@ public class Keywords {
         map.put("GRANT", Token.GRANT);
         map.put("REVOKE", Token.REVOKE);
         
-        // MySql procedure by:zz
+        // MySql procedure: add by zz
         map.put("WHILE", Token.WHILE);
         map.put("DO", Token.DO);
         map.put("DECLARE", Token.DECLARE);
@@ -148,6 +148,8 @@ public class Keywords {
         map.put("CLOSE", Token.CLOSE);
         map.put("CURSOR", Token.CURSOR);
         map.put("FETCH", Token.FETCH);
+        map.put("OUT", Token.OUT);
+        map.put("INOUT", Token.INOUT);
         
         DEFAULT_KEYWORDS = new Keywords(map);
     }

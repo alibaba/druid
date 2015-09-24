@@ -32,8 +32,17 @@ public class MySqlParameter extends MySqlObjectImpl {
     private SQLExpr     name;
     private SQLDataType dataType;
     private SQLExpr     defaultValue;
+    private ParameterType paramType;
 
-    public SQLExpr getDefaultValue() {
+    public ParameterType getParamType() {
+		return paramType;
+	}
+
+	public void setParamType(ParameterType paramType) {
+		this.paramType = paramType;
+	}
+
+	public SQLExpr getDefaultValue() {
         return defaultValue;
     }
 
@@ -65,6 +74,16 @@ public class MySqlParameter extends MySqlObjectImpl {
             acceptChild(visitor, defaultValue);
         }
         visitor.endVisit(this);
+    }
+    /**
+     * mysql procedure parameter type
+     */
+    public static enum ParameterType
+    {
+    	DEFAULT,
+    	IN,//in
+    	OUT,//out
+    	INOUT//inout
     }
 
 }

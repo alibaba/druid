@@ -59,6 +59,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter.ParameterType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
@@ -3277,6 +3278,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             decrementIndent();
 
         } else {
+        	
+        	if(x.getParamType()==ParameterType.IN)
+        	{
+        		print("IN ");
+        	}
+        	else if(x.getParamType()==ParameterType.OUT)
+        	{
+        		print("OUT ");
+        	}
+        	else if(x.getParamType()==ParameterType.INOUT)
+        	{
+        		print("INOUT ");
+        	}
             x.getName().accept(this);
             print(" ");
 

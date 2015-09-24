@@ -128,7 +128,7 @@ public enum Token {
     SHOW("SHOW"),
     REPLACE("REPLACE"),
     
-    // MySql procedure by:zz
+    // MySql procedure add by zz
     WHILE("WHILE"),
     DO("DO"),
     LEAVE("LEAVE"),
@@ -137,6 +137,8 @@ public enum Token {
     UNTIL("UNTIL"),
     OPEN("OPEN"),
     CLOSE("CLOSE"),
+    OUT("OUT"),
+    INOUT("INOUT"),
     
     //postgresql
     WINDOW("WINDOW"),
