@@ -168,6 +168,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTVisitor {
@@ -3585,4 +3586,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 		
 	}
 
+	@Override
+    public boolean visit(MySqlUpdateTableSource x) {
+        MySqlUpdateStatement update = x.getUpdate();
+        if (update != null) {
+            update.accept0(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlUpdateTableSource x) {
+
+    }
 } //

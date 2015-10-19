@@ -19,11 +19,16 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHint;
@@ -32,8 +37,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -164,6 +171,94 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
 
         return queryRest(queryBlock);
+    }
+    
+    public SQLTableSource parseTableSource() {
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            SQLTableSource tableSource;
+            if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
+                SQLSelect select = select();
+                accept(Token.RPAREN);
+                SQLSelectQuery query = queryRest(select.getQuery());
+                if (query instanceof SQLUnionQuery) {
+                    tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
+                } else {
+                    tableSource = new SQLSubqueryTableSource(select);
+                }
+            } else if (lexer.token() == Token.LPAREN) {
+                tableSource = parseTableSource();
+                accept(Token.RPAREN);
+            } else {
+                tableSource = parseTableSource();
+                accept(Token.RPAREN);
+            }
+
+            return parseTableSourceRest(tableSource);
+        }
+        
+        if(lexer.token() == Token.UPDATE) {
+            SQLTableSource tableSource = new MySqlUpdateTableSource(parseUpdateStatment());
+            return parseTableSourceRest(tableSource);
+        }
+
+        if (lexer.token() == Token.SELECT) {
+            throw new ParserException("TODO");
+        }
+
+        SQLExprTableSource tableReference = new SQLExprTableSource();
+
+        parseTableSourceQueryTableExpr(tableReference);
+
+        SQLTableSource tableSrc = parseTableSourceRest(tableReference);
+        
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            tableSrc.addAfterComment(lexer.readAndResetComments());
+        }
+        
+        return tableSrc;
+    }
+    
+    private MySqlUpdateStatement parseUpdateStatment() {
+        MySqlUpdateStatement update = new MySqlUpdateStatement();
+
+        lexer.nextToken();
+
+        if (identifierEquals("LOW_PRIORITY")) {
+            lexer.nextToken();
+            update.setLowPriority(true);
+        }
+
+        if (identifierEquals("IGNORE")) {
+            lexer.nextToken();
+            update.setIgnore(true);
+        }
+
+        SQLTableSource updateTableSource = this.exprParser.createSelectParser().parseTableSource();
+        update.setTableSource(updateTableSource);
+
+        accept(Token.SET);
+
+        for (;;) {
+            SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
+            update.addItem(item);
+
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+
+            lexer.nextToken();
+        }
+
+        if (lexer.token() == (Token.WHERE)) {
+            lexer.nextToken();
+            update.setWhere(this.exprParser.expr());
+        }
+
+        update.setOrderBy(this.exprParser.parseOrderBy());
+        update.setLimit(parseLimit());
+        
+        return update;
     }
     
     protected void parseInto(SQLSelectQueryBlock queryBlock) {

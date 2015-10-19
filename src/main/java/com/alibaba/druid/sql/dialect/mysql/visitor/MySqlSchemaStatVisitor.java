@@ -156,6 +156,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
@@ -1570,5 +1571,18 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+    public boolean visit(MySqlUpdateTableSource x) {
+        if (x.getUpdate() != null) {
+            return this.visit(x.getUpdate());
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlUpdateTableSource x) {
+
+    }
 
 }
