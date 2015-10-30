@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.mogu.MoguPatchs;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -87,6 +89,7 @@ public final class DruidPooledResultSet extends PoolableWrapper implements Resul
             rs.close();
             
             stmt.recordFetchRowCount(fetchRowCount);
+            MoguPatchs.logBigResultIfPossible(fetchRowCount, stmt);
         } catch (Throwable t) {
             throw checkException(t);
         }
