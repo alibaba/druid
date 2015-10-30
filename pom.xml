@@ -5,7 +5,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.16</version>
+	<version>1.0.16-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -165,38 +165,38 @@
 			</plugin>
 
 			<!-- http://code.google.com/p/maven-license-plugin/wiki/HowTo -->
-			<plugin>
-				<!-- Working with multi-module projects -->
-				<inherited>false</inherited>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<version>1.10.b1</version>
-				<configuration>
-					<header>${basedir}/doc/license.txt</header>
-					<failIfMissing>true</failIfMissing>
-					<aggregate>true</aggregate>
-					<strictCheck>true</strictCheck>
-					<properties>
-						<!-- <year>2012</year> -->
-					</properties>
-					<mapping>
-						<java>SLASHSTAR_STYLE</java>
-					</mapping>
-					<includes>
-						<include>src/main/java/**/*.java</include>
-					</includes>
-					<encoding>UTF-8</encoding>
-				</configuration>
-				<executions>
-					<execution>
-						<id>check-headers</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!--<plugin>-->
+				<!--&lt;!&ndash; Working with multi-module projects &ndash;&gt;-->
+				<!--<inherited>false</inherited>-->
+				<!--<groupId>com.mycila.maven-license-plugin</groupId>-->
+				<!--<artifactId>maven-license-plugin</artifactId>-->
+				<!--<version>1.10.b1</version>-->
+				<!--<configuration>-->
+					<!--<header>${basedir}/doc/license.txt</header>-->
+					<!--<failIfMissing>true</failIfMissing>-->
+					<!--<aggregate>true</aggregate>-->
+					<!--<strictCheck>true</strictCheck>-->
+					<!--<properties>-->
+						<!--&lt;!&ndash; <year>2012</year> &ndash;&gt;-->
+					<!--</properties>-->
+					<!--<mapping>-->
+						<!--<java>SLASHSTAR_STYLE</java>-->
+					<!--</mapping>-->
+					<!--<includes>-->
+						<!--<include>src/main/java/**/*.java</include>-->
+					<!--</includes>-->
+					<!--<encoding>UTF-8</encoding>-->
+				<!--</configuration>-->
+				<!--<executions>-->
+					<!--<execution>-->
+						<!--<id>check-headers</id>-->
+						<!--<phase>verify</phase>-->
+						<!--<goals>-->
+							<!--<goal>unpack</goal>-->
+						<!--</goals>-->
+					<!--</execution>-->
+				<!--</executions>-->
+			<!--</plugin>-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -603,4 +603,21 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+
+    <!-- 仓库相关配置 -->
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://maven.mogujie.org/nexus/content/repositories/releases/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://maven.mogujie.org/nexus/content/repositories/snapshots/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+    <!-- 仓库相关配置 -->
 </project>

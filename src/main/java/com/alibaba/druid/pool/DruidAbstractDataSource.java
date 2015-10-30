@@ -252,6 +252,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
+        try {
+            addFilters("com.alibaba.druid.mogu.MoguStatFilter");
+        }catch (Exception e) {
+            LOG.error("add mogu filter error");
+        }
     }
 
     public boolean isUseLocalSessionState() {
