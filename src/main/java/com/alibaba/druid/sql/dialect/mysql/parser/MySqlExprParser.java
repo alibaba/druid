@@ -531,7 +531,19 @@ public class MySqlExprParser extends SQLExprParser {
             SQLExpr expr = this.expr();
             ((MySqlSQLColumnDefinition) column).setOnUpdate(expr);
         }
-
+        if (identifierEquals("CHARSET")) {
+            lexer.nextToken();
+            MySqlCharExpr charSetCollateExpr=new MySqlCharExpr();
+            charSetCollateExpr.setCharset(lexer.stringVal());
+            lexer.nextToken();
+            if (identifierEquals("COLLATE")) {
+                lexer.nextToken();
+                charSetCollateExpr.setCollate(lexer.stringVal());
+                lexer.nextToken();
+            }
+            ((MySqlSQLColumnDefinition) column).setCharsetExpr(charSetCollateExpr);
+            return parseColumnRest(column);
+        }
         if (identifierEquals("AUTO_INCREMENT")) {
             lexer.nextToken();
             if (column instanceof MySqlSQLColumnDefinition) {
