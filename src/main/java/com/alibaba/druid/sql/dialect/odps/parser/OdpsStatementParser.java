@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
@@ -159,6 +160,18 @@ public class OdpsStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
+        
+        if(identifierEquals("LIST")) {
+            OdpsListStmt stmt = new OdpsListStmt();
+
+            lexer.nextToken();
+            stmt.setObject(this.exprParser.expr());
+            
+            statementList.add(stmt);
+
+            return true;
+        }
+        
         return false;
     }
 
@@ -390,6 +403,5 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         }
     }
-
-
+    
 }
