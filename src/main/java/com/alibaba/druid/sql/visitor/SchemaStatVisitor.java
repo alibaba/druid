@@ -793,6 +793,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
         return false;
     }
+    
+    private boolean isParentSelectItem(SQLObject parent) {
+        if (parent == null) {
+            return false;
+        }
+        
+        if (parent instanceof SQLSelectItem) {
+            return true;
+        }
+        
+        if (parent instanceof SQLSelectQueryBlock) {
+            return false;
+        }
+        
+        return isParentSelectItem(parent.getParent());
+    }
 
     private void setColumn(SQLExpr x, Column column) {
         SQLObject current = x;
@@ -821,7 +837,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 break;
             }
 
-            if (parent instanceof SQLSelectItem) {
+            if (isParentSelectItem(parent)) {
                 column.setSelec(true);
                 break;
             }
@@ -1118,6 +1134,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (x.getInherits() != null) {
             x.getInherits().accept(this);
+        }
+
+        if (x.getSelect() != null) {
+            x.getSelect().accept(this);
         }
 
         return false;

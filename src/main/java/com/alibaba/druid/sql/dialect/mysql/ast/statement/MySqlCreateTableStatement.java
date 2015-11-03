@@ -37,8 +37,6 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
-    protected SQLSelect            query;
-
     private SQLPartitioningClause  partitioning;
 
     private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
@@ -90,12 +88,14 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         return tableOptions;
     }
 
+    @Deprecated
     public SQLSelect getQuery() {
-        return query;
+        return select;
     }
 
+    @Deprecated
     public void setQuery(SQLSelect query) {
-        this.query = query;
+        this.select = query;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             this.acceptChild(visitor, getTableSource());
             this.acceptChild(visitor, getTableElementList());
             this.acceptChild(visitor, getLike());
-            this.acceptChild(visitor, getQuery());
+            this.acceptChild(visitor, getSelect());
         }
         visitor.endVisit(this);
     }

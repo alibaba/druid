@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -29,8 +28,6 @@ import com.alibaba.druid.util.JdbcConstants;
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement {
 
     private SQLName                 tablespace;
-
-    private SQLSelect               select;
 
     private boolean                 inMemoryMetadata;
 
@@ -198,14 +195,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     public void setTablespace(SQLName tablespace) {
         this.tablespace = tablespace;
-    }
-
-    public SQLSelect getSelect() {
-        return select;
-    }
-
-    public void setSelect(SQLSelect select) {
-        this.select = select;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
