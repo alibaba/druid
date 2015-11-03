@@ -23,22 +23,19 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
-    private SQLExprTableSource          like;
+    private SQLExprTableSource like;
 
-    protected SQLExpr                   comment;
+    protected SQLExpr comment;
 
     protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
 
-    protected SQLExpr                   lifecycle;
-
-    protected SQLSelect                 select;
+    protected SQLExpr lifecycle;
 
     public OdpsCreateTableStatement(){
         super(JdbcConstants.ODPS);
@@ -74,14 +71,6 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     public void setLifecycle(SQLExpr lifecycle) {
         this.lifecycle = lifecycle;
-    }
-
-    public SQLSelect getSelect() {
-        return select;
-    }
-
-    public void setSelect(SQLSelect select) {
-        this.select = select;
     }
 
     @Override

@@ -520,10 +520,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getPartitioning().accept(this);
         }
 
-        if (x.getQuery() != null) {
+        if (x.getSelect() != null) {
             incrementIndent();
             println();
-            x.getQuery().accept(this);
+            x.getSelect().accept(this);
             decrementIndent();
         }
 
