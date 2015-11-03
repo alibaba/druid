@@ -32,9 +32,11 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowGrantsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
@@ -158,6 +160,18 @@ public class OdpsStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
+        
+        if(identifierEquals("LIST")) {
+            OdpsListStmt stmt = new OdpsListStmt();
+
+            lexer.nextToken();
+            stmt.setObject(this.exprParser.expr());
+            
+            statementList.add(stmt);
+
+            return true;
+        }
+        
         return false;
     }
 
@@ -318,6 +332,24 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         }
         
+        if (identifierEquals("GRANTS")) {
+            lexer.nextToken();
+            OdpsShowGrantsStmt stmt = new OdpsShowGrantsStmt();
+
+            if (lexer.token() == Token.FOR) {
+                lexer.nextToken();
+                stmt.setUser(this.exprParser.expr());
+            }
+            
+            if (lexer.token() == Token.ON) {
+                lexer.nextToken();
+                acceptIdentifier("type");
+                stmt.setObjectType(this.exprParser.expr());
+            }
+
+            return stmt;
+        }
+        
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
 
@@ -371,6 +403,5 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         }
     }
-
-
+    
 }

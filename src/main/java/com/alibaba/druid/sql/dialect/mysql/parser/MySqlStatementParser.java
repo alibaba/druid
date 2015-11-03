@@ -73,6 +73,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter.ParameterType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
@@ -2785,7 +2786,28 @@ public class MySqlStatementParser extends SQLStatementParser {
 				parameter.setDataType(dataType);
 
 				parameter.setDefaultValue(new SQLQueryExpr(select));
+				
+			} else if (lexer.token() == Token.IN || lexer.token() == Token.OUT || lexer.token() == Token.INOUT) {
+				
+				if(lexer.token()==Token.IN)
+				{
+					parameter.setParamType(ParameterType.IN);
+				}
+				else if(lexer.token()==Token.OUT)
+				{
+					parameter.setParamType(ParameterType.OUT);
+				}
+				else if(lexer.token()==Token.INOUT)
+				{
+					parameter.setParamType(ParameterType.INOUT);
+				}
+				lexer.nextToken();
+
+				parameter.setName(this.exprParser.name());
+
+				parameter.setDataType(this.exprParser.parseDataType());
 			} else {
+				parameter.setParamType(ParameterType.DEFAULT);//default parameter type is in
 				parameter.setName(this.exprParser.name());
 				parameter.setDataType(this.exprParser.parseDataType());
 

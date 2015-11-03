@@ -40,10 +40,12 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowGrantsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
@@ -752,5 +754,39 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         } else {
             print(name);
         }
+    }
+
+    @Override
+    public void endVisit(OdpsShowGrantsStmt x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsShowGrantsStmt x) {
+        print("SHOW GRANTS");
+        if (x.getUser() != null) {
+            print(" FOR ");
+            x.getUser().accept(this);
+        }
+        
+        if (x.getObjectType() != null) {
+            print(" ON TYPE ");
+            x.getObjectType().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsListStmt x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsListStmt x) {
+        print("LIST ");
+        if (x.getObject() != null) {
+            x.getObject().accept(this);
+        }
+        return false;
     }
 }

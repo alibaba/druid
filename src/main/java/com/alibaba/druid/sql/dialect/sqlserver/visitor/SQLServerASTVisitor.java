@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement.Else;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -117,5 +118,9 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     boolean visit(SQLServerWaitForStatement x);
 
     void endVisit(SQLServerWaitForStatement x);
+    
+    boolean visit(SQLServerParameter x);
+
+    void endVisit(SQLServerParameter x);
 
 }

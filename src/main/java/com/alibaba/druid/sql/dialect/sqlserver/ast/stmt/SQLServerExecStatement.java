@@ -1,8 +1,3 @@
-package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /*
  * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
@@ -18,6 +13,11 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
@@ -28,7 +28,7 @@ public class SQLServerExecStatement extends SQLServerObjectImpl implements SQLSe
 
     private SQLName       returnStatus;
     private SQLName       moduleName;
-    private List<SQLExpr> parameters = new ArrayList<SQLExpr>();
+    private List<SQLServerParameter> parameters = new ArrayList<SQLServerParameter>();
     private String        dbType;
 
     public SQLName getModuleName() {
@@ -39,7 +39,7 @@ public class SQLServerExecStatement extends SQLServerObjectImpl implements SQLSe
         this.moduleName = moduleName;
     }
 
-    public List<SQLExpr> getParameters() {
+    public List<SQLServerParameter> getParameters() {
         return parameters;
     }
 
@@ -66,5 +66,38 @@ public class SQLServerExecStatement extends SQLServerObjectImpl implements SQLSe
     
     public void setDbType(String dbType) {
         this.dbType = dbType;
+    }
+    
+    /**
+     * 
+     * @Description: SQLServer execute Parameter statement
+     * @author zz email:455910092@qq.com
+     * @date 2015-9-20
+     * @version V1.0
+     */
+    public static class SQLServerParameter extends SQLServerObjectImpl
+    {
+    	private SQLExpr expr;
+    	private boolean type;//sql server 支持参数只有input 和 output 两种
+		public SQLExpr getExpr() {
+			return expr;
+		}
+		public void setExpr(SQLExpr expr) {
+			this.expr = expr;
+		}
+		public boolean getType() {
+			return type;
+		}
+		public void setType(boolean type) {
+			this.type = type;
+		}
+		@Override
+		public void accept0(SQLServerASTVisitor visitor) {
+			if (visitor.visit(this)) {
+	            acceptChild(visitor, expr);
+	        }
+	        visitor.endVisit(this);
+			
+		}
     }
 }

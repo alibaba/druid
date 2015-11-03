@@ -355,7 +355,7 @@ public class SQLSelectParser extends SQLParser {
         return tableSrc;
     }
 
-    private void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) {
+    protected void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) {
         if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.IDENTIFIED
             || lexer.token() == Token.LITERAL_CHARS) {
             tableReference.setExpr(this.exprParser.name());

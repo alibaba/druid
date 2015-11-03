@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowGrantsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
@@ -210,6 +212,26 @@ public class OdpsASTVisitorAdapter extends SQLASTVisitorAdapter implements OdpsA
     
     @Override
     public boolean visit(OdpsReadStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OdpsShowGrantsStmt x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsShowGrantsStmt x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OdpsListStmt x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsListStmt x) {
         return true;
     }
 

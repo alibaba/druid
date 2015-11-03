@@ -1049,6 +1049,20 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, result);
                 break;
             }
+            case BooleanAnd:
+            {
+            	boolean first = eq(leftValue, true);
+            	boolean second = eq(rightValue, true);
+            	x.putAttribute(EVAL_VALUE, first&&second);
+            	break;
+            }
+            case BooleanOr:
+            {
+            	boolean first = eq(leftValue, true);
+            	boolean second = eq(rightValue, true);
+            	x.putAttribute(EVAL_VALUE, first||second);
+            	break;
+            }
             default:
                 break;
         }

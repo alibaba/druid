@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
+import java.util.Collection;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -43,6 +46,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -76,7 +80,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             SQLServerExecStatement execStmt = new SQLServerExecStatement();
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
-                this.exprParser.exprList(execStmt.getParameters(), execStmt);
+                this.parseExecParameter(execStmt.getParameters(), execStmt);
                 accept(Token.RPAREN);
             } else {
                 SQLName sqlNameName = this.exprParser.name();
@@ -88,8 +92,8 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 } else {
                     execStmt.setModuleName(sqlNameName);
                 }
-
-                this.exprParser.exprList(execStmt.getParameters(), execStmt);
+                
+                this.parseExecParameter(execStmt.getParameters(), execStmt);
             }
             statementList.add(execStmt);
             return true;
@@ -121,6 +125,44 @@ public class SQLServerStatementParser extends SQLStatementParser {
         }
         
         return false;
+    }
+    /**
+     * SQLServer parse Parameter statement support out type
+     * @author zz email:455910092@qq.com
+     * @date 2015-9-20
+     */
+    public void parseExecParameter(Collection<SQLServerParameter> exprCol, SQLObject parent)
+    {
+    	if (lexer.token() == Token.RPAREN || lexer.token() == Token.RBRACKET) {
+            return;
+        }
+
+        if (lexer.token() == Token.EOF) {
+            return;
+        }
+    	SQLServerParameter param=new SQLServerParameter();
+        SQLExpr expr=this.exprParser.expr();
+        expr.setParent(parent);
+        param.setExpr(expr);
+        if(lexer.token()==Token.OUT)
+    	{
+        	param.setType(true);
+    		accept(Token.OUT);
+    	}
+        exprCol.add(param);
+        while (lexer.token() == Token.COMMA) {
+        	lexer.nextToken();
+        	param=new SQLServerParameter();
+        	expr=this.exprParser.expr();
+            expr.setParent(parent);
+            param.setExpr(expr);
+        	if(lexer.token()==Token.OUT)
+        	{
+        		param.setType(true);
+        		accept(Token.OUT);
+        	}
+        	exprCol.add(param);
+        }
     }
     
     public SQLStatement parseDeclare() {
