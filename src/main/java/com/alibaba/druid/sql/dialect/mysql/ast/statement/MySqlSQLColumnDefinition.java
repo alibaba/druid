@@ -26,8 +26,19 @@ public class MySqlSQLColumnDefinition extends SQLColumnDefinition {
 
     private SQLExpr storage;
 
+    private SQLExpr charsetExpr;
+
+
     public MySqlSQLColumnDefinition(){
 
+    }
+
+    public SQLExpr getCharsetExpr() {
+        return charsetExpr;
+    }
+
+    public void setCharsetExpr(SQLExpr charsetExpr) {
+        this.charsetExpr = charsetExpr;
     }
 
     public boolean isAutoIncrement() {

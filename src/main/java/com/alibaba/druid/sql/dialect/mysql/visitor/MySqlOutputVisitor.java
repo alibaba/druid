@@ -309,6 +309,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print(' ');
         x.getDataType().accept(this);
 
+        if (mysqlColumn != null && mysqlColumn.getCharsetExpr() != null) {
+            print(" CHARSET ");
+            mysqlColumn.getCharsetExpr().accept(this);
+        }
+
         for (SQLColumnConstraint item : x.getConstraints()) {
             print(' ');
             item.accept(this);
