@@ -16,5 +16,6 @@
 package com.alibaba.druid.sql.ast.statement;
 
 public enum SQLObjectType {
-    TABLE, FUNCTION, PROCEDURE, USER, DATABASE
+    TABLE, FUNCTION, PROCEDURE, USER, DATABASE, //
+    ROLE, PROJECT, PACKAGE, RESOURCE, INSTANCE, JOB, VOLUME, OfflineModel, XFLOW // for odps
 }

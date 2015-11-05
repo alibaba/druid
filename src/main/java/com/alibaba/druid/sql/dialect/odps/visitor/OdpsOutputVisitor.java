@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
@@ -758,7 +759,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
     @Override
     public void endVisit(OdpsShowGrantsStmt x) {
-        
+
     }
 
     @Override
@@ -768,7 +769,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print(" FOR ");
             x.getUser().accept(this);
         }
-        
+
         if (x.getObjectType() != null) {
             print(" ON TYPE ");
             x.getObjectType().accept(this);
@@ -787,6 +788,57 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         if (x.getObject() != null) {
             x.getObject().accept(this);
         }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsGrantStmt x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsGrantStmt x) {
+        print("GRANT ");
+        if (x.isSuper()) {
+            print("SUPER ");
+        }
+
+        if (x.isLabel()) {
+            print("LABEL ");
+            x.getLabel().accept(this);;
+        } else {
+            printAndAccept(x.getPrivileges(), ", ");
+        }
+
+        if (x.getOn() != null) {
+            print(" ON ");
+            if (x.getObjectType() != null) {
+                print(x.getObjectType().name());
+                print(' ');
+            }
+            x.getOn().accept(this);
+            
+            if (x.getColumns().size() > 0) {
+                print("(");
+                printAndAccept(x.getColumns(), ", ");
+                print(")");
+            }
+        }
+
+        if (x.getTo() != null) {
+            print(" TO ");
+            if (x.getSubjectType() != null) {
+                print(x.getSubjectType().name());
+                print(' ');
+            }
+            x.getTo().accept(this);
+        }
+
+        if (x.getExpire() != null) {
+            print(" WITH EXP ");
+            x.getExpire().accept(this);
+        }
+
         return false;
     }
 }
