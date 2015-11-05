@@ -16,10 +16,12 @@
 package com.alibaba.druid.sql.dialect.odps.visitor;
 
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
@@ -237,5 +239,15 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
     @Override
     public boolean visit(OdpsListStmt x) {
         return true;
+    }
+
+    @Override
+    public void endVisit(OdpsGrantStmt x) {
+        super.endVisit((SQLGrantStatement) x);
+    }
+
+    @Override
+    public boolean visit(OdpsGrantStmt x) {
+        return super.visit((SQLGrantStatement) x);
     }
 }
