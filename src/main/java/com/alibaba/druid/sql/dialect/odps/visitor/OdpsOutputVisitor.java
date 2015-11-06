@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsDescStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
@@ -839,6 +840,31 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             x.getExpire().accept(this);
         }
 
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsDescStmt x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsDescStmt x) {
+        print("DESC ");
+        if (x.getObjectType() != null) {
+            print(x.getObjectType().name());
+            print(' ');
+        }
+        
+        if(x.getObject() != null) {
+            x.getObject().accept(this);
+        }
+        
+        if (x.getPartition().size() > 0) {
+            print(" PARTITION (");
+            printAndAccept(x.getPartition(), ", ");
+            print(")");
+        }
         return false;
     }
 }
