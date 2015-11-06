@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsDescStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
@@ -53,8 +54,9 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsStatementParser extends SQLStatementParser {
+
     public OdpsStatementParser(String sql){
-        super (new OdpsLexer(sql, true, true), JdbcConstants.ODPS);
+        super(new OdpsLexer(sql, true, true), JdbcConstants.ODPS);
         this.exprParser = new OdpsExprParser(this.lexer);
         this.lexer.nextToken();
     }
@@ -83,16 +85,16 @@ public class OdpsStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
-        
+
         if (identifierEquals("ANALYZE")) {
             lexer.nextToken();
             accept(Token.TABLE);
-            
+
             OdpsAnalyzeTableStatement stmt = new OdpsAnalyzeTableStatement();
-            
+
             SQLName table = this.exprParser.name();
             stmt.setTable(table);
-            
+
             if (lexer.token() == Token.PARTITION) {
                 lexer.nextToken();
 
@@ -100,17 +102,17 @@ public class OdpsStatementParser extends SQLStatementParser {
                 parseAssignItems(stmt.getPartition(), stmt);
                 accept(Token.RPAREN);
             }
-            
+
             accept(Token.COMPUTE);
             acceptIdentifier("STATISTICS");
-            
+
             statementList.add(stmt);
             return true;
         }
-        
+
         if (identifierEquals("ADD")) {
             lexer.nextToken();
-            
+
             if (identifierEquals("STATISTIC")) {
                 lexer.nextToken();
                 OdpsAddStatisticStatement stmt = new OdpsAddStatisticStatement();
@@ -119,13 +121,13 @@ public class OdpsStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 return true;
             }
-            
+
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         }
-        
+
         if (identifierEquals("REMOVE")) {
             lexer.nextToken();
-            
+
             if (identifierEquals("STATISTIC")) {
                 lexer.nextToken();
                 OdpsRemoveStatisticStatement stmt = new OdpsRemoveStatisticStatement();
@@ -134,21 +136,21 @@ public class OdpsStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 return true;
             }
-            
+
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         }
-        
+
         if (identifierEquals("READ")) {
             lexer.nextToken();
             OdpsReadStatement stmt = new OdpsReadStatement();
             stmt.setTable(this.exprParser.name());
-            
+
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
                 this.exprParser.names(stmt.getColumns(), stmt);
                 accept(Token.RPAREN);
             }
-            
+
             if (lexer.token() == Token.PARTITION) {
                 lexer.nextToken();
 
@@ -156,26 +158,32 @@ public class OdpsStatementParser extends SQLStatementParser {
                 parseAssignItems(stmt.getPartition(), stmt);
                 accept(Token.RPAREN);
             }
-            
+
             if (lexer.token() == Token.LITERAL_INT) {
                 stmt.setRowCount(this.exprParser.primary());
             }
-            
+
             statementList.add(stmt);
             return true;
         }
-        
-        if(identifierEquals("LIST")) {
+
+        if (identifierEquals("LIST")) {
             OdpsListStmt stmt = new OdpsListStmt();
 
             lexer.nextToken();
             stmt.setObject(this.exprParser.expr());
-            
+
             statementList.add(stmt);
 
             return true;
         }
-        
+
+        if (lexer.token() == Token.DESC || identifierEquals("DESCRIBE")) {
+            OdpsDescStmt stmt = parseDescribe();
+            statementList.add(stmt);
+            return true;
+        }
+
         return false;
     }
 
@@ -247,11 +255,11 @@ public class OdpsStatementParser extends SQLStatementParser {
 
     public OdpsInsert parseOdpsInsert() {
         OdpsInsert insert = new OdpsInsert();
-        
+
         if (lexer.isKeepComments() && lexer.hasComment()) {
             insert.addBeforeComment(lexer.readAndResetComments());
         }
-        
+
         SQLSelectParser selectParser = createSQLSelectParser();
 
         accept(Token.INSERT);
@@ -317,17 +325,17 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             return stmt;
         }
-        
+
         if (identifierEquals("TABLES")) {
             lexer.nextToken();
 
             SQLShowTablesStatement stmt = new SQLShowTablesStatement();
-            
+
             if (lexer.token() == Token.FROM) {
                 lexer.nextToken();
                 stmt.setDatabase(this.exprParser.name());
             }
-            
+
             if (lexer.token() == Token.LIKE) {
                 lexer.nextToken();
                 stmt.setLike(this.exprParser.expr());
@@ -335,7 +343,7 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             return stmt;
         }
-        
+
         if (identifierEquals("GRANTS")) {
             lexer.nextToken();
             OdpsShowGrantsStmt stmt = new OdpsShowGrantsStmt();
@@ -344,7 +352,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 stmt.setUser(this.exprParser.expr());
             }
-            
+
             if (lexer.token() == Token.ON) {
                 lexer.nextToken();
                 acceptIdentifier("type");
@@ -353,7 +361,7 @@ public class OdpsStatementParser extends SQLStatementParser {
 
             return stmt;
         }
-        
+
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
 
@@ -362,18 +370,18 @@ public class OdpsStatementParser extends SQLStatementParser {
         if (lexer.isKeepComments() && lexer.hasComment()) {
             comments = lexer.readAndResetComments();
         }
-        
+
         accept(Token.SET);
 
         if (identifierEquals("LABEL")) {
             OdpsSetLabelStatement stmt = new OdpsSetLabelStatement();
-            
+
             if (comments != null) {
                 stmt.addBeforeComment(comments);
             }
-            
+
             lexer.nextToken();
-            
+
             stmt.setLabel(lexer.stringVal());
             lexer.nextToken();
             accept(Token.TO);
@@ -397,7 +405,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         } else {
             SQLSetStatement stmt = new SQLSetStatement(getDbType());
-            
+
             if (comments != null) {
                 stmt.addBeforeComment(comments);
             }
@@ -407,7 +415,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         }
     }
-    
+
     public OdpsGrantStmt parseGrant() {
         accept(Token.GRANT);
         OdpsGrantStmt stmt = new OdpsGrantStmt();
@@ -488,7 +496,7 @@ public class OdpsStatementParser extends SQLStatementParser {
 
         return stmt;
     }
-    
+
     protected void parsePrivileages(List<SQLExpr> privileges, SQLObject parent) {
         for (;;) {
             String privilege = null;
@@ -545,14 +553,14 @@ public class OdpsStatementParser extends SQLStatementParser {
                 privilege = "CreateJob";
             } else if (identifierEquals("CreateVolume")) {
                 lexer.nextToken();
-                    privilege = "CreateVolume";
-            }  else if (identifierEquals("CreateOfflineModel")) {
+                privilege = "CreateVolume";
+            } else if (identifierEquals("CreateOfflineModel")) {
                 lexer.nextToken();
                 privilege = "CreateOfflineModel";
             } else if (identifierEquals("CreateXflow")) {
                 lexer.nextToken();
                 privilege = "CreateXflow";
-            } 
+            }
 
             SQLExpr expr = null;
             if (privilege != null) {
@@ -569,5 +577,43 @@ public class OdpsStatementParser extends SQLStatementParser {
             }
             break;
         }
+    }
+
+    public OdpsDescStmt parseDescribe() {
+        if (lexer.token() == Token.DESC || identifierEquals("DESCRIBE")) {
+            lexer.nextToken();
+        } else {
+            throw new ParserException("expect DESC, actual " + lexer.token());
+        }
+
+        OdpsDescStmt stmt = new OdpsDescStmt();
+        if (identifierEquals("ROLE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.ROLE);
+        } else if (identifierEquals("PACKAGE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.PACKAGE);
+        } else if (identifierEquals("INSTANCE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.INSTANCE);
+        }
+        stmt.setObject(this.exprParser.name());
+
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            this.accept(Token.LPAREN);
+            for (;;) {
+                stmt.getPartition().add(this.exprParser.expr());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                if (lexer.token() == Token.RPAREN) {
+                    lexer.nextToken();
+                    break;
+                }
+            }
+        }
+        return stmt;
     }
 }
