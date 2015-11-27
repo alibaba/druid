@@ -62,14 +62,18 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
 
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, tableSource);
-            this.acceptChild(visitor, columns);
-            this.acceptChild(visitor, values);
-            this.acceptChild(visitor, query);
+            this.acceptChild(visitor, getTableSource());
+            this.acceptChild(visitor, getColumns());
+            this.acceptChild(visitor, getValues());
+            this.acceptChild(visitor, getQuery());
             this.acceptChild(visitor, returning);
             this.acceptChild(visitor, errorLogging);
         }
 
         visitor.endVisit(this);
+    }
+    
+    public void output(StringBuffer buf) {
+    	new OracleOutputVisitor(buf).visit(this);
     }
 }
