@@ -2170,7 +2170,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             // 5 - 9
             map.put("CloseCount", this.getCloseCount());
-            map.put("ActiveCount", this.getActivePeak());
+            map.put("ActiveCount", this.getActiveCount());
             map.put("PoolingCount", this.getPoolingCount());
             map.put("LockQueueLength", this.getLockQueueLength());
             map.put("WaitThreadCount", this.getNotEmptyWaitThreadPeak());
