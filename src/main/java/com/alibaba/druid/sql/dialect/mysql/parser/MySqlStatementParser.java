@@ -236,6 +236,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         parseUpdateSet(stmt);
+        
+        if(lexer.token() == Token.IDENTIFIER) {
+        	throw new ParserException("You have an error in your SQL syntax; check the manual that corresponds "
+        			+ "to your MySQL server version for the right syntax to use near '" + lexer.stringVal() + "'");
+        }
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
@@ -245,6 +250,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setOrderBy(this.exprParser.parseOrderBy());
 
         stmt.setLimit(parseLimit());
+        
+        if(lexer.token() != Token.EOF && lexer.token() != Token.SEMI) {
+        	throw new ParserException("You have an error in your SQL syntax; check the manual that corresponds "
+        			+ "to your MySQL server version for the right syntax to use near '" + lexer.stringVal() + "'");
+        }
 
         return stmt;
     }
@@ -300,7 +310,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 deleteStatement.setUsing(tableSource);
             }
         }
-
+        
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
             SQLExpr where = this.exprParser.expr();
@@ -313,6 +323,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         deleteStatement.setLimit(parseLimit());
+        
+        if(lexer.token() != Token.EOF && lexer.token() != Token.SEMI) {
+        	throw new ParserException("You have an error in your SQL syntax; check the manual that corresponds "
+        			+ "to your MySQL server version for the right syntax to use near '" + lexer.stringVal() + "'");
+        }
 
         return deleteStatement;
     }
