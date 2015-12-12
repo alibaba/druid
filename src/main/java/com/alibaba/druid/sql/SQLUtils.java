@@ -60,6 +60,8 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 
 public class SQLUtils {
+    public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption();
+    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION = new FormatOption(false);
 
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
@@ -104,10 +106,21 @@ public class SQLUtils {
         String sql = out.toString();
         return sql;
     }
-
+    
     public static String toMySqlString(SQLObject sqlObject) {
+        return toMySqlString(sqlObject, null);
+    }
+
+    public static String toMySqlString(SQLObject sqlObject, FormatOption option) {
         StringBuilder out = new StringBuilder();
-        sqlObject.accept(new MySqlOutputVisitor(out));
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
+        
+        if (option == null) {
+            option = DEFAULT_FORMAT_OPTION;
+        }
+        visitor.setUppCase(option.isUppCase());
+        
+        sqlObject.accept(visitor);
 
         String sql = out.toString();
         return sql;
@@ -128,6 +141,10 @@ public class SQLUtils {
     public static String formatOdps(String sql) {
         return format(sql, JdbcUtils.ODPS);
     }
+    
+    public static String formatOdps(String sql, FormatOption option) {
+        return format(sql, JdbcUtils.ODPS, option);
+    }
 
     public static String formatSQLServer(String sql) {
         return format(sql, JdbcUtils.SQL_SERVER);
@@ -140,10 +157,22 @@ public class SQLUtils {
         String sql = out.toString();
         return sql;
     }
-
+    
     public static String toPGString(SQLObject sqlObject) {
+        return toPGString(sqlObject, null);
+    }
+
+    public static String toPGString(SQLObject sqlObject, FormatOption option) {
+        
         StringBuilder out = new StringBuilder();
-        sqlObject.accept(new PGOutputVisitor(out));
+        PGOutputVisitor visitor = new PGOutputVisitor(out);
+        
+        if (option == null) {
+            option = DEFAULT_FORMAT_OPTION;
+        }
+        visitor.setUppCase(option.isUppCase());
+        
+        sqlObject.accept(visitor);
 
         String sql = out.toString();
         return sql;
@@ -223,17 +252,25 @@ public class SQLUtils {
     }
 
     public static String format(String sql, String dbType) {
-        return format(sql, dbType, null);
+        return format(sql, dbType, null, null);
+    }
+    
+    public static String format(String sql, String dbType, FormatOption option) {
+        return format(sql, dbType, null, option);
+    }
+    
+    public static String format(String sql, String dbType, List<Object> parameters) {
+        return format(sql, dbType, parameters, null);
     }
 
-    public static String format(String sql, String dbType, List<Object> parameters) {
+    public static String format(String sql, String dbType, List<Object> parameters, FormatOption option) {
         try {
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
             parser.setKeepComments(true);
             
             List<SQLStatement> statementList = parser.parseStatementList();
 
-            return toSQLString(statementList, dbType, parameters);
+            return toSQLString(statementList, dbType, parameters, option);
         } catch (ParserException ex) {
             LOG.warn("format error", ex);
             return sql;
@@ -243,13 +280,22 @@ public class SQLUtils {
     public static String toSQLString(List<SQLStatement> statementList, String dbType) {
         return toSQLString(statementList, dbType, null);
     }
-
+    
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters) {
+        return toSQLString(statementList, dbType, parameters, null);
+    }
+
+    public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters, FormatOption option) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
             visitor.setParameters(parameters);
         }
+        
+        if (option == null) {
+            option = DEFAULT_FORMAT_OPTION;
+        }
+        visitor.setUppCase(option.isUppCase());
 
         for (int i = 0; i < statementList.size(); i++) {
             SQLStatement stmt = statementList.get(i);
@@ -591,5 +637,26 @@ public class SQLUtils {
         SQLSelectItem selectItem = new SQLSelectItem(expr, alias);
         queryBlock.getSelectList().add(selectItem);
         selectItem.setParent(selectItem);
+    }
+    
+    public static class FormatOption {
+
+        private boolean ucase = true;
+        
+        public FormatOption() {
+            
+        }
+        
+        public FormatOption(boolean ucase) {
+            this.ucase = ucase;
+        }
+
+        public boolean isUppCase() {
+            return ucase;
+        }
+
+        public void setUppCase(boolean val) {
+            this.ucase = val;
+        }
     }
 }

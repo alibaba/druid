@@ -121,9 +121,11 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         CROSS_APPLY("CROSS APPLY");
 
         public final String name;
+        public final String name_lcase;
 
         JoinType(String name){
             this.name = name;
+            this.name_lcase = name.toLowerCase();
         }
 
         public static String toString(JoinType joinType) {
