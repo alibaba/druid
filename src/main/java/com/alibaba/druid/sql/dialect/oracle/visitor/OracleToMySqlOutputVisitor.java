@@ -105,7 +105,7 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
                 if (limit != null) {
                     select.accept(this);
                     println();
-                    print("LIMIT ");
+                    print0(ucase ? "LIMIT " : "limit ");
                     print(limit);
                     return false;
                 }

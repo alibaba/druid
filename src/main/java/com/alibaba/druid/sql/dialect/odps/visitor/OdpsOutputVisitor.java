@@ -753,9 +753,9 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     protected void printFunctionName(String name) {
         String upperName = name.toUpperCase();
         if (builtInFunctions.contains(upperName)) {
-            print(ucase ? upperName : name);
+            print0(ucase ? upperName : name);
         } else {
-            print(name);
+            print0(name);
         }
     }
 
@@ -830,7 +830,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         if (x.getTo() != null) {
             print0(ucase ? " TO " : " to ");
             if (x.getSubjectType() != null) {
-                print(x.getSubjectType().name());
+                print0(x.getSubjectType().name());
                 print(' ');
             }
             x.getTo().accept(this);

@@ -68,5 +68,14 @@ public class MySqlSelectTest_14 extends MysqlTest {
                             + "\n\tFROM t2"//
                             + "\n\t)", //
                             output);
+        
+        String output_lcase = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+        Assert.assertEquals("select *" //
+                            + "\nfrom t1"//
+                            + "\nwhere column1 = ("//
+                            + "\n\tselect column1"//
+                            + "\n\tfrom t2"//
+                            + "\n\t)", //
+                            output_lcase);
     }
 }

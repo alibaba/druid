@@ -61,7 +61,7 @@ import com.alibaba.druid.util.StringUtils;
 
 public class SQLUtils {
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption();
-    public static FormatOption DEFAULT_UPPCASE_FORMAT_OPTION = new FormatOption();
+    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION = new FormatOption(false);
 
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
@@ -106,10 +106,21 @@ public class SQLUtils {
         String sql = out.toString();
         return sql;
     }
-
+    
     public static String toMySqlString(SQLObject sqlObject) {
+        return toMySqlString(sqlObject, null);
+    }
+
+    public static String toMySqlString(SQLObject sqlObject, FormatOption option) {
         StringBuilder out = new StringBuilder();
-        sqlObject.accept(new MySqlOutputVisitor(out));
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
+        
+        if (option == null) {
+            option = DEFAULT_FORMAT_OPTION;
+        }
+        visitor.setUppCase(option.isUppCase());
+        
+        sqlObject.accept(visitor);
 
         String sql = out.toString();
         return sql;
@@ -146,10 +157,22 @@ public class SQLUtils {
         String sql = out.toString();
         return sql;
     }
-
+    
     public static String toPGString(SQLObject sqlObject) {
+        return toPGString(sqlObject, null);
+    }
+
+    public static String toPGString(SQLObject sqlObject, FormatOption option) {
+        
         StringBuilder out = new StringBuilder();
-        sqlObject.accept(new PGOutputVisitor(out));
+        PGOutputVisitor visitor = new PGOutputVisitor(out);
+        
+        if (option == null) {
+            option = DEFAULT_FORMAT_OPTION;
+        }
+        visitor.setUppCase(option.isUppCase());
+        
+        sqlObject.accept(visitor);
 
         String sql = out.toString();
         return sql;
@@ -269,9 +292,10 @@ public class SQLUtils {
             visitor.setParameters(parameters);
         }
         
-        if (option != null) {
-            visitor.setUppCase(option.isUppCase());
+        if (option == null) {
+            option = DEFAULT_FORMAT_OPTION;
         }
+        visitor.setUppCase(option.isUppCase());
 
         for (int i = 0; i < statementList.size(); i++) {
             SQLStatement stmt = statementList.get(i);
