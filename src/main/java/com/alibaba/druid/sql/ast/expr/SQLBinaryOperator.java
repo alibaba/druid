@@ -76,6 +76,7 @@ public enum SQLBinaryOperator {
     }
 
     public final String name;
+    public final String name_lcase;
     public final int    priority;
 
     SQLBinaryOperator(){
@@ -84,6 +85,7 @@ public enum SQLBinaryOperator {
 
     SQLBinaryOperator(String name, int priority){
         this.name = name;
+        this.name_lcase = name.toLowerCase();
         this.priority = priority;
     }
     

@@ -20,9 +20,11 @@ public enum SQLUnionOperator {
     DISTINCT("UNION DISTINCT");
 
     public final String name;
+    public final String name_lcase;
 
     private SQLUnionOperator(String name){
         this.name = name;
+        this.name_lcase = name.toLowerCase();
     }
 
     public String toString() {
