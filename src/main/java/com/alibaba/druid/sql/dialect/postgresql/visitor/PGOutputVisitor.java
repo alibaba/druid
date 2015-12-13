@@ -192,7 +192,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getInto() != null) {
             println();
             if (x.getIntoOption() != null) {
-                print(x.getIntoOption().name());
+                print0(x.getIntoOption().name());
                 print(' ');
             }
 
@@ -296,7 +296,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (x.getAlias() != null) {
             print0(ucase ? " AS " : " as ");
-            print(x.getAlias());
+            print0(x.getAlias());
         }
 
         if (x.getUsing().size() > 0) {
@@ -469,7 +469,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (x.getAlias() != null) {
             print0(ucase ? " AS " : " as ");
-            print(x.getAlias());
+            print0(x.getAlias());
         }
 
         if (x.getParameters().size() > 0) {
@@ -535,7 +535,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGExtractExpr x) {
         print0(ucase ? "EXTRACT (" : "extract (");
-        print(x.getField().name());
+        print0(x.getField().name());
         print0(ucase ? " FROM " : " from ");
         x.getSource().accept(this);
         print(')');
@@ -653,7 +653,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(SQLBinaryExpr x) {
         print0(ucase ? "B'" : "b'");
-        print(x.getValue());
+        print0(x.getValue());
         print('\'');
 
         return false;

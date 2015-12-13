@@ -136,9 +136,9 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
                         if (limit != null) {
                             subSelect.accept(this);
                             println();
-                            print("LIMIT ");
+                            print0(ucase ? "LIMIT " : "limit ");
                             print(offset);
-                            print(", ");
+                            print0(", ");
                             print(limit);
                             return false;
                         }
