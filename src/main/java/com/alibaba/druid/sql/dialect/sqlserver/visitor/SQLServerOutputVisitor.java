@@ -53,14 +53,14 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     public boolean visit(SQLServerSelectQueryBlock x) {
-        print("SELECT ");
+        print0(ucase ? "SELECT " : "select ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
-            print("ALL ");
+            print0(ucase ? "ALL " : "all ");
         } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
-            print("DISTINCT ");
+            print0(ucase ? "DISTINCT " : "distinct ");
         } else if (SQLSetQuantifier.UNIQUE == x.getDistionOption()) {
-            print("UNIQUE ");
+            print0(ucase ? "UNIQUE " : "unique ");
         }
 
         if (x.getTop() != null) {
@@ -72,19 +72,19 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (x.getInto() != null) {
             println();
-            print("INTO ");
+            print0(ucase ? "INTO " : "into ");
             x.getInto().accept(this);
         }
 
         if (x.getFrom() != null) {
             println();
-            print("FROM ");
+            print0(ucase ? "FROM " : "from ");
             x.getFrom().accept(this);
         }
 
         if (x.getWhere() != null) {
             println();
-            print("WHERE ");
+            print0(ucase ? "WHERE " : "where ");
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
@@ -104,23 +104,23 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerTop x) {
-        print("TOP ");
+        print0(ucase ? "TOP " : "top ");
 
         boolean paren = false;
 
         if (x.getParent() instanceof SQLServerUpdateStatement || x.getParent() instanceof SQLServerInsertStatement) {
             paren = true;
-            print("(");
+            print('(');
         }
 
         x.getExpr().accept(this);
 
         if (paren) {
-            print(")");
+            print(')');
         }
 
         if (x.isPercent()) {
-            print(" PERCENT");
+            print0(ucase ? " PERCENT" : " percent");
         }
 
         return false;
@@ -133,7 +133,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
-        print(x.toString());
+        print0(x.toString());
         return false;
     }
 
@@ -144,7 +144,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerInsertStatement x) {
-        print("INSERT ");
+        print0(ucase ? "INSERT " : "insert ");
 
         if (x.getTop() != null) {
             x.getTop().setParent(x);
@@ -152,25 +152,25 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             print(' ');
         }
         
-        print("INTO ");
+        print0(ucase ? "INTO " : "into ");
         
         x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             incrementIndent();
             println();
-            print("(");
+            print('(');
             for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
                 if (i != 0) {
                     if (i % 5 == 0) {
                         println();
                     }
-                    print(", ");
+                    print0(", ");
                 }
 
                 x.getColumns().get(i).accept(this);
             }
-            print(")");
+            print(')');
             decrementIndent();
         }
         
@@ -182,11 +182,11 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (x.getValuesList().size() != 0) {
             println();
-            print("VALUES");
+            print0(ucase ? "VALUES" : "values");
             println();
             for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
                 if (i != 0) {
-                    print(",");
+                    print(',');
                     println();
                 }
                 x.getValuesList().get(i).accept(this);
@@ -199,7 +199,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
 
         if (x.isDefaultValues()) {
-            print(" DEFAULT VALUES");
+            print0(ucase ? " DEFAULT VALUES" : " default values");
         }
         return false;
     }
@@ -211,7 +211,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerUpdateStatement x) {
-        print("UPDATE ");
+        print0(ucase ? "UPDATE " : "update ");
 
         if (x.getTop() != null) {
             x.getTop().setParent(x);
@@ -222,10 +222,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         x.getTableSource().accept(this);
 
         println();
-        print("SET ");
+        print0(ucase ? "SET " : "set ");
         for (int i = 0, size = x.getItems().size(); i < size; ++i) {
             if (i != 0) {
-                print(", ");
+                print0(", ");
             }
             x.getItems().get(i).accept(this);
         }
@@ -238,14 +238,14 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (x.getFrom() != null) {
             println();
-            print("FROM ");
+            print0(ucase ? "FROM " : "from ");
             x.getFrom().setParent(x);
             x.getFrom().accept(this);
         }
 
         if (x.getWhere() != null) {
             println();
-            print("WHERE ");
+            print0(ucase ? "WHERE " : "where ");
             incrementIndent();
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
@@ -264,14 +264,14 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         x.getExpr().accept(this);
 
         if (x.getHints() != null && x.getHints().size() > 0) {
-            print(" WITH (");
+            print0(ucase ? " WITH (" : " with (");
             printAndAccept(x.getHints(), ", ");
-            print(")");
+            print(')');
         }
 
         if (x.getAlias() != null) {
             print(' ');
-            print(x.getAlias());
+            print0(x.getAlias());
         }
 
         return false;
@@ -279,11 +279,11 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(Identity x) {
-        print("IDENTITY (");
+        print0(ucase ? "IDENTITY (" : "identity (");
         print(x.getSeed());
-        print(", ");
+        print0(", ");
         print(x.getIncrement());
-        print(")");
+        print(')');
         return false;
     }
 
@@ -317,7 +317,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (x.getEnable() != null) {
             if (x.getEnable().booleanValue()) {
-                print(" ENABLE");
+                print0(ucase ? " ENABLE" : " enable");
             }
         }
 
@@ -338,12 +338,12 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerExecStatement x) {
-        print("EXEC ");
+        print0(ucase ? "EXEC " : "exec ");
         
         SQLName returnStatus = x.getReturnStatus();
         if (returnStatus != null) {
             returnStatus.accept(this);
-            print(" = ");
+            print0(" = ");
         }
         
         SQLName moduleName = x.getModuleName();
@@ -351,7 +351,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             moduleName.accept(this);
             print(' ');
         } else {
-            print(" (");
+            print0(" (");
         }
         printAndAccept(x.getParameters(), ", ");
 
@@ -368,8 +368,8 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerSetTransactionIsolationLevelStatement x) {
-        print("SET TRANSACTION ISOLATION LEVEL ");
-        print(x.getLevel());
+        print0(ucase ? "SET TRANSACTION ISOLATION LEVEL " : "set transaction isolation level ");
+        print0(x.getLevel());
         return false;
     }
 
@@ -380,10 +380,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerSetStatement x) {
-        print("SET ");
+        print0(ucase ? "SET " : "set ");
         SQLAssignItem item = x.getItem();
         item.getTarget().accept(this);
-        print(" ");
+        print(' ');
         item.getValue().accept(this);
         return false;
     }
@@ -395,30 +395,30 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerOutput x) {
-        print("OUTPUT ");
+        print0(ucase ? "OUTPUT " : "output ");
         printSelectList(x.getSelectList());
 
         if (x.getInto() != null) {
             incrementIndent();
             println();
-            print("INTO ");
+            print0(ucase ? "INTO " : "into ");
             x.getInto().accept(this);
 
             if (x.getColumns().size() > 0) {
                 incrementIndent();
                 println();
-                print("(");
+                print('(');
                 for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
                     if (i != 0) {
                         if (i % 5 == 0) {
                             println();
                         }
-                        print(", ");
+                        print0(", ");
                     }
 
                     x.getColumns().get(i).accept(this);
                 }
-                print(")");
+                print(')');
                 decrementIndent();
             }
         }
@@ -436,31 +436,31 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         x.getName().accept(this);
         
         if(x.getType() == SQLServerDeclareItem.Type.TABLE) {
-            print(" TABLE");
+            print0(ucase ? " TABLE" : " table");
             int size = x.getTableElementList().size();
 
             if (size > 0) {
-                print(" (");
+                print0(" (");
                 incrementIndent();
                 println();
                 for (int i = 0; i < size; ++i) {
                     if (i != 0) {
-                        print(",");
+                        print(',');
                         println();
                     }
                     x.getTableElementList().get(i).accept(this);
                 }
                 decrementIndent();
                 println();
-                print(")");
+                print(')');
             }
         } else if (x.getType() == SQLServerDeclareItem.Type.CURSOR) {
-            print(" CURSOR");
+            print0(ucase ? " CURSOR" : " cursor");
         } else {
-            print(" ");
+            print(' ');
             x.getDataType().accept(this);
             if (x.getValue() != null) {
-                print(" = ");
+                print0(" = ");
                 x.getValue().accept(this);
             }
         }
@@ -475,7 +475,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerDeclareStatement x) {
-        print("DECLARE ");
+        print0(ucase ? "DECLARE " : "declare ");
         this.printAndAccept(x.getItems(), ", ");
         return false;
     }
@@ -487,7 +487,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(Else x) {
-        print("ELSE");
+        print0(ucase ? "ELSE" : "else");
         incrementIndent();
         println();
 
@@ -511,7 +511,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerIfStatement x) {
-        print("IF ");
+        print0(ucase ? "IF " : "if ");
         x.getCondition().accept(this);
         incrementIndent();
         println();
@@ -539,7 +539,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerBlockStatement x) {
-        print("BEGIN");
+        print0(ucase ? "BEGIN" : "begin");
         incrementIndent();
         println();
         for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
@@ -549,11 +549,11 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             SQLStatement stmt = x.getStatementList().get(i);
             stmt.setParent(x);
             stmt.accept(this);
-            print(";");
+            print(';');
         }
         decrementIndent();
         println();
-        print("END");
+        print0(ucase ? "END" : "end");
         return false;
     }
 
@@ -565,11 +565,11 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     protected void printGrantOn(SQLGrantStatement x) {
         if (x.getOn() != null) {
-            print(" ON ");
+            print0(ucase ? " ON " : " on ");
 
             if (x.getObjectType() != null) {
-                print(x.getObjectType().name());
-                print("::");
+                print0(x.getObjectType().name());
+                print0("::");
             }
 
             x.getOn().accept(this);
@@ -586,30 +586,30 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         super.visit(x);
         if (x.isForBrowse()) {
             println();
-            print("FOR BROWSE");
+            print0(ucase ? "FOR BROWSE" : "for browse");
         }
         
         if (x.getForXmlOptions().size() > 0) {
             println();
-            print("FOR XML ");
+            print0(ucase ? "FOR XML " : "for xml ");
             for (int i = 0; i < x.getForXmlOptions().size(); ++i) {
                 if (i != 0) {
-                    print(", ");
-                    print(x.getForXmlOptions().get(i));
+                    print0(", ");
+                    print0(x.getForXmlOptions().get(i));
                 }
             }
         }
         
         if (x.getOffset() != null) {
             println();
-            print("OFFSET ");
+            print0(ucase ? "OFFSET " : "offset ");
             x.getOffset().accept(this);
-            print(" ROWS");
+            print0(ucase ? " ROWS" : " rows");
             
             if (x.getRowCount() != null) {
-                print(" FETCH NEXT ");
+                print0(ucase ? " FETCH NEXT " : " fetch next ");
                 x.getRowCount().accept(this);
-                print(" ROWS ONLY");
+                print0(ucase ? " ROWS ONLY" : " rows only");
             }
         }
         return false;
@@ -617,20 +617,20 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerCommitStatement x) {
-        print("COMMIT");
+        print0(ucase ? "COMMIT" : "commit");
 
         if (x.isWork()) {
-            print(" WORK");
+            print0(ucase ? " WORK" : " work");
         } else {
-            print(" TRANSACTION");
+            print0(ucase ? " TRANSACTION" : " transaction");
             if (x.getTransactionName() != null) {
-                print(" ");
+                print(' ');
                 x.getTransactionName().accept(this);
             }
             if (x.getDelayedDurability() != null) {
-                print(" WITH ( DELAYED_DURABILITY = ");
+                print0(ucase ? " WITH ( DELAYED_DURABILITY = " : " with ( delayed_durability = ");
                 x.getDelayedDurability().accept(this);
-                print(" )");
+                print0(" )");
             }
         }
 
@@ -644,14 +644,14 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerRollbackStatement x) {
-        print("ROLLBACK");
+        print0(ucase ? "ROLLBACK" : "rollback");
 
         if (x.isWork()) {
-            print(" WORK");
+            print0(ucase ? " WORK" : " work");
         } else {
-            print(" TRANSACTION");
+            print0(ucase ? " TRANSACTION" : " transaction");
             if (x.getName() != null) {
-                print(" ");
+                print(' ');
                 x.getName().accept(this);
             }
         }
@@ -666,21 +666,21 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerWaitForStatement x) {
-        print("WAITFOR");
+        print0(ucase ? "WAITFOR" : "waitfor");
 
         if (x.getDelay() != null) {
-            print(" DELAY ");
+            print0(ucase ? " DELAY " : " delay ");
             x.getDelay().accept(this);
         } else if (x.getTime() != null) {
-            print(" TIME ");
+            print0(ucase ? " TIME " : " time ");
             x.getTime().accept(this);
         } if (x.getStatement() != null) {
-            print(" DELAY ");
+            print0(ucase ? " DELAY " : " delay ");
             x.getStatement().accept(this);
         }
         
         if(x.getTimeout() != null) {
-            print(" ,TIMEOUT ");
+            print0(ucase ? " ,TIMEOUT " : " ,timeout ");
             x.getTimeout().accept(this);
         }
         
@@ -698,7 +698,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 		x.getExpr().accept(this);
 		if(x.getType())
 		{
-			print(" OUT");
+			print0(ucase ? " OUT" : " out");
 		}
 		return false;
 	}

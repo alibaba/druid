@@ -133,9 +133,17 @@ public class SQLUtils {
     public static String formatMySql(String sql) {
         return format(sql, JdbcUtils.MYSQL);
     }
+    
+    public static String formatMySql(String sql, FormatOption option) {
+        return format(sql, JdbcUtils.MYSQL, option);
+    }
 
     public static String formatOracle(String sql) {
         return format(sql, JdbcUtils.ORACLE);
+    }
+    
+    public static String formatOracle(String sql, FormatOption option) {
+        return format(sql, JdbcUtils.ORACLE, option);
     }
 
     public static String formatOdps(String sql) {
@@ -151,8 +159,20 @@ public class SQLUtils {
     }
 
     public static String toOracleString(SQLObject sqlObject) {
+        return toOracleString(sqlObject, null);
+    }
+    
+    public static String toOracleString(SQLObject sqlObject, FormatOption option) {
         StringBuilder out = new StringBuilder();
-        sqlObject.accept(new OracleOutputVisitor(out, false));
+        OracleOutputVisitor visitor = new OracleOutputVisitor(out, false);
+        
+        if (option == null) {
+            option = DEFAULT_FORMAT_OPTION;
+        }
+        
+        visitor.setUppCase(option.isUppCase());
+        
+        sqlObject.accept(visitor);
 
         String sql = out.toString();
         return sql;
@@ -194,8 +214,8 @@ public class SQLUtils {
         return sql;
     }
 
-    public static String formatPGSql(String sql) {
-        return format(sql, JdbcUtils.POSTGRESQL);
+    public static String formatPGSql(String sql, FormatOption option) {
+        return format(sql, JdbcUtils.POSTGRESQL, option);
     }
 
     public static SQLExpr toSQLExpr(String sql, String dbType) {
