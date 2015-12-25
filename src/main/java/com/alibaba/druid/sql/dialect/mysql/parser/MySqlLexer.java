@@ -115,7 +115,7 @@ public class MySqlLexer extends Lexer {
         if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
             return;
         }
-        
+
         endOfComment = isEOF();
 
         if (!isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
@@ -393,7 +393,7 @@ public class MySqlLexer extends Lexer {
 
     public void scanComment() {
         Token lastToken = this.token;
-        
+
         if (ch == '-') {
             char next_2 = charAt(pos + 2);
             if (isDigit(next_2)) {
@@ -455,7 +455,7 @@ public class MySqlLexer extends Lexer {
             }
 
             endOfComment = isEOF();
-            
+
             if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
                 return;
             }
@@ -504,7 +504,7 @@ public class MySqlLexer extends Lexer {
             }
 
             endOfComment = isEOF();
-            
+
             if (!isAllowComment() && (isEOF() || !isSafeComment(stringVal))) {
                 throw new NotAllowCommentException();
             }
@@ -513,8 +513,21 @@ public class MySqlLexer extends Lexer {
         }
     }
 
+    private final static boolean[] identifierFlags = new boolean[256];
+    static {
+        identifierFlags['-'] = true;
+    }
+
+    private boolean isIdentifierChar0(char c) {
+        if (c <= identifierFlags.length) {
+            return identifierFlags[c];
+        }
+
+        return c != '　' && c != '，';
+    }
+
     private boolean isIdentifierChar(char c) {
-        return c != '#' && CharTypes.isIdentifierChar(c);
+        return c != '#' && (CharTypes.isIdentifierChar(c) || isIdentifierChar0(c));
     }
 
     public void scanNumber() {
