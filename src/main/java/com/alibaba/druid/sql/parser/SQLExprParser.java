@@ -198,6 +198,7 @@ public class SQLExprParser extends SQLParser {
         switch (tok) {
             case LPAREN:
                 lexer.nextToken();
+ 
                 sqlExpr = expr();
                 if (lexer.token() == Token.COMMA) {
                     SQLListExpr listExpr = new SQLListExpr();
@@ -209,6 +210,7 @@ public class SQLExprParser extends SQLParser {
 
                     sqlExpr = listExpr;
                 }
+                
                 accept(Token.RPAREN);
                 break;
             case INSERT:
@@ -683,6 +685,30 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
             
             accept(Token.LPAREN);
+            
+            for (;;) {
+                SQLExpr item;
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    
+                    SQLListExpr listExpr = new SQLListExpr();
+                    this.exprList(listExpr.getItems(), listExpr);
+                    item = listExpr;
+                    
+                    accept(Token.RPAREN);
+                } else {
+                    item = this.expr();
+                }
+                
+                item.setParent(groupingSets);
+                groupingSets.getParameters().add(item);
+                
+                if (lexer.token() == Token.RPAREN) {
+                    break;
+                }
+                
+                accept(Token.COMMA);
+            }
 
             this.exprList(groupingSets.getParameters(), groupingSets);
 

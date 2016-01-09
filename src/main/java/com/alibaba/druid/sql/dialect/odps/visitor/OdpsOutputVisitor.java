@@ -31,7 +31,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
@@ -71,6 +70,8 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         builtInFunctions.add("EXPLODE");
         builtInFunctions.add("LEAST");
         builtInFunctions.add("GREATEST");
+        
+        groupItemSingleLine = true;
     }
 
     public OdpsOutputVisitor(Appendable appender){
@@ -271,28 +272,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         println();
         print0(ucase ? "END" : "end");
 
-        return false;
-    }
-
-    public boolean visit(SQLSelectGroupByClause x) {
-        int itemSize = x.getItems().size();
-        if (itemSize > 0) {
-            print0(ucase ? "GROUP BY " : "group by ");
-            incrementIndent();
-            for (int i = 0; i < itemSize; ++i) {
-                if (i != 0) {
-                    println(", ");
-                }
-                x.getItems().get(i).accept(this);
-            }
-            decrementIndent();
-        }
-
-        if (x.getHaving() != null) {
-            println();
-            print0(ucase ? "HAVING " : "having ");
-            x.getHaving().accept(this);
-        }
         return false;
     }
 

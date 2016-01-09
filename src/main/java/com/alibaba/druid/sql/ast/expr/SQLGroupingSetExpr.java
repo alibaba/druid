@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLGroupingSetExpr extends SQLExprImpl {
@@ -33,10 +32,6 @@ public class SQLGroupingSetExpr extends SQLExprImpl {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
-    }
-
-    protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, parameters);
         }
