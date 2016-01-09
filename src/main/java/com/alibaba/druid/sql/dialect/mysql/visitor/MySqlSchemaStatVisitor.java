@@ -17,9 +17,11 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
@@ -42,9 +44,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWh
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
@@ -1420,41 +1419,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 	}
 
 	@Override
-	public boolean visit(MySqlIfStatement x) {
-		accept(x.getStatements());
-		accept(x.getElseIfList());
-		accept(x.getElseItem());
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlIfStatement x) {
-		
-	}
-
-	@Override
-	public boolean visit(MySqlElseIfStatement x) {
-		accept(x.getStatements());
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlElseIfStatement x) {
-		
-	}
-
-	@Override
-	public boolean visit(MySqlElseStatement x) {
-		accept(x.getStatements());
-		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlElseStatement x) {
-		
-	}
-
-	@Override
 	public boolean visit(MySqlCaseStatement x) {
 		accept(x.getWhenList());
 		return false;
@@ -1467,6 +1431,13 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public boolean visit(MySqlDeclareStatement x) {
+        for (SQLExpr item : x.getVarList()) {
+            item.setParent(x);
+
+            SQLVariantRefExpr var = (SQLVariantRefExpr)item;
+            this.variants.put(var.getName(), var);
+        }
+        
 		return false;
 	}
 

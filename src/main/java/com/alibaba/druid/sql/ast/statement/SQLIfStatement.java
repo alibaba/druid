@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLServerIfStatement extends SQLServerObjectImpl implements SQLServerStatement {
+public class SQLIfStatement extends SQLStatementImpl {
 
     private SQLExpr            condition;
     private List<SQLStatement> statements = new ArrayList<SQLStatement>();
+    private List<ElseIf>       elseIfList = new ArrayList<ElseIf>();
     private Else               elseItem;
-    private String             dbType;
 
     @Override
-    public void accept0(SQLServerASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, condition);
             acceptChild(visitor, statements);
+            acceptChild(visitor, elseIfList);
             acceptChild(visitor, elseItem);
         }
         visitor.endVisit(this);
@@ -56,6 +57,15 @@ public class SQLServerIfStatement extends SQLServerObjectImpl implements SQLServ
     public void setStatements(List<SQLStatement> statements) {
         this.statements = statements;
     }
+    
+    public List<ElseIf> getElseIfList() {
+        return elseIfList;
+    }
+
+    
+    public void setElseIfList(List<ElseIf> elseIfList) {
+        this.elseIfList = elseIfList;
+    }
 
     public Else getElseItem() {
         return elseItem;
@@ -65,12 +75,46 @@ public class SQLServerIfStatement extends SQLServerObjectImpl implements SQLServ
         this.elseItem = elseItem;
     }
 
-    public static class Else extends SQLServerObjectImpl {
+    public static class ElseIf extends SQLObjectImpl {
+
+        private SQLExpr            condition;
+        private List<SQLStatement> statements = new ArrayList<SQLStatement>();
+
+        @Override
+        public void accept0(SQLASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, condition);
+                acceptChild(visitor, statements);
+            }
+            visitor.endVisit(this);
+        }
+
+        public List<SQLStatement> getStatements() {
+            return statements;
+        }
+
+        public void setStatements(List<SQLStatement> statements) {
+            this.statements = statements;
+        }
+
+        public SQLExpr getCondition() {
+            return condition;
+        }
+
+        public void setCondition(SQLExpr condition) {
+            if (condition != null) {
+                condition.setParent(this);
+            }
+            this.condition = condition;
+        }
+    }
+
+    public static class Else extends SQLObjectImpl {
 
         private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
         @Override
-        public void accept0(SQLServerASTVisitor visitor) {
+        public void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, statements);
             }
@@ -85,13 +129,5 @@ public class SQLServerIfStatement extends SQLServerObjectImpl implements SQLServ
             this.statements = statements;
         }
 
-    }
-
-    public String getDbType() {
-        return dbType;
-    }
-    
-    public void setDbType(String dbType) {
-        this.dbType = dbType;
     }
 }

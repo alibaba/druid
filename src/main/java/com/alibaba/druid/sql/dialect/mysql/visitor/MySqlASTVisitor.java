@@ -27,9 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWh
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
@@ -599,18 +596,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlWhileStatement x);
 
     void endVisit(MySqlWhileStatement x);
-    
-    boolean visit(MySqlIfStatement x);
-
-    void endVisit(MySqlIfStatement x);
-    
-    boolean visit(MySqlElseIfStatement x);
-
-    void endVisit(MySqlElseIfStatement x);
-    
-    boolean visit(MySqlElseStatement x);
-
-    void endVisit(MySqlElseStatement x);
     
     boolean visit(MySqlCaseStatement x);
 

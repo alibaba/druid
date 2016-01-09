@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
@@ -52,9 +53,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWh
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
@@ -3336,7 +3334,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 	}
 
 	@Override
-	public boolean visit(MySqlIfStatement x) {
+	public boolean visit(SQLIfStatement x) {
 		print0(ucase ? "IF " : "if ");
 		x.getCondition().accept(this);
 		print0(ucase ? " THEN" : " then");
@@ -3350,7 +3348,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
 		println();
-		for (MySqlElseIfStatement iterable_element : x.getElseIfList()) {
+		for (SQLIfStatement.ElseIf iterable_element : x.getElseIfList()) {
 			iterable_element.accept(this);
 		}
 		
@@ -3362,12 +3360,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 	}
 
 	@Override
-	public void endVisit(MySqlIfStatement x) {
-		
-	}
-
-	@Override
-	public boolean visit(MySqlElseIfStatement x) {
+	public boolean visit(SQLIfStatement.ElseIf x) {
 		print0(ucase ? "ELSE IF " : "else if ");
 		x.getCondition().accept(this);
 		print0(ucase ? " THEN" : " then");
@@ -3385,12 +3378,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 	}
 
 	@Override
-	public void endVisit(MySqlElseIfStatement x) {
-		
-	}
-
-	@Override
-	public boolean visit(MySqlElseStatement x) {
+	public boolean visit(SQLIfStatement.Else x) {
 		print0(ucase ? "ELSE " : "else ");
 		println();
 		for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
@@ -3403,11 +3391,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 		println();
 		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlElseStatement x) {
-		
 	}
 
 	@Override

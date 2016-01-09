@@ -49,6 +49,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -65,9 +66,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWh
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
@@ -3090,10 +3088,10 @@ public class MySqlStatementParser extends SQLStatementParser {
 	 * parse if statement
 	 * @return MySqlIfStatement
 	 */
-	public MySqlIfStatement parseIf() {
+	public SQLIfStatement parseIf() {
 		accept(Token.IF);
 
-		MySqlIfStatement stmt = new MySqlIfStatement();
+		SQLIfStatement stmt = new SQLIfStatement();
 
 		stmt.setCondition(this.exprParser.expr());
 
@@ -3107,7 +3105,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 			if (lexer.token() == Token.IF) {
 				lexer.nextToken();
 
-				MySqlElseIfStatement elseIf = new MySqlElseIfStatement();
+				SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
 
 				elseIf.setCondition(this.exprParser.expr());
 
@@ -3116,7 +3114,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
 				stmt.getElseIfList().add(elseIf);
 			} else {
-				MySqlElseStatement elseItem = new MySqlElseStatement();
+			    SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
 				this.parseProcedureStatementList(elseItem.getStatements());
 				stmt.setElseItem(elseItem);
 				break;
@@ -3210,7 +3208,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 			if(lexer.token()==Token.ELSE)
 			{
 				//parse else block
-				MySqlElseStatement elseStmt=new MySqlElseStatement();
+			    SQLIfStatement.Else elseStmt=new SQLIfStatement.Else();
 				parseProcedureStatementList(elseStmt.getStatements());
 				stmt.setElseItem(elseStmt);
 			}
@@ -3237,7 +3235,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 			{
 				accept(Token.ELSE);
 				//else block
-				MySqlElseStatement elseStmt=new MySqlElseStatement();
+				SQLIfStatement.Else elseStmt=new SQLIfStatement.Else();
 				parseProcedureStatementList(elseStmt.getStatements());
 				stmt.setElseItem(elseStmt);
 			}

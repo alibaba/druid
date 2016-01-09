@@ -40,8 +40,6 @@ public enum MySqlStatementType {
 	DELETE(MySqlDeleteStatement.class.getName()),
 	//while statement
 	WHILE(MySqlWhileStatement.class.getName()),
-	//if statement
-	IF(MySqlIfStatement.class.getName()),
 	//begin-end
 	BLOCK(MySqlBlockStatement.class.getName()),
 	//declare statement

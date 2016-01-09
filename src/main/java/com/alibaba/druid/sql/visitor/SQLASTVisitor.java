@@ -112,6 +112,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
@@ -643,4 +644,16 @@ public interface SQLASTVisitor {
     boolean visit(SQLGroupingSetExpr x);
 
     void endVisit(SQLGroupingSetExpr x);
+    
+    boolean visit(SQLIfStatement x);
+    
+    void endVisit(SQLIfStatement x);
+    
+    boolean visit(SQLIfStatement.ElseIf x);
+    
+    void endVisit(SQLIfStatement.ElseIf x);
+    
+    boolean visit(SQLIfStatement.Else x);
+    
+    void endVisit(SQLIfStatement.Else x);
 }

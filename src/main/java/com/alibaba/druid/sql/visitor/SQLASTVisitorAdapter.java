@@ -113,6 +113,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -1277,6 +1278,36 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLGroupingSetExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLIfStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLIfStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLIfStatement.Else x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLIfStatement.Else x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLIfStatement.ElseIf x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLIfStatement.ElseIf x) {
         
     }
     

@@ -34,8 +34,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement.Else;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
@@ -202,26 +200,6 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerDeclareStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(Else x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(Else x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLServerIfStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerIfStatement x) {
 
     }
 
