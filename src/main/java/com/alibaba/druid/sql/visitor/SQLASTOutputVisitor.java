@@ -169,8 +169,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     private String             indent                 = "\t";
     private int                indentCount            = 0;
     private boolean            prettyFormat           = true;
-    protected boolean           ucase                 = true;
+    protected boolean          ucase                  = true;
     protected int              selectListNumberOfLine = 5;
+
+    protected boolean          groupItemSingleLine    = false;
 
     private List<Object> parameters;
 
@@ -734,9 +736,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLSelectGroupByClause x) {
-        if (x.getItems().size() > 0) {
+        int itemSize = x.getItems().size();
+        if (itemSize > 0) {
             print0(ucase ? "GROUP BY " : "group by ");
-            printAndAccept(x.getItems(), ", ");
+            incrementIndent();
+            for (int i = 0; i < itemSize; ++i) {
+                if (i != 0) {
+                    println(", ");
+                }
+                x.getItems().get(i).accept(this);
+            }
+            decrementIndent();
         }
 
         if (x.getHaving() != null) {
