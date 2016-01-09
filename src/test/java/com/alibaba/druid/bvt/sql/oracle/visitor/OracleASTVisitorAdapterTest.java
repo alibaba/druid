@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
@@ -13,7 +14,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
@@ -130,7 +130,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new VersionsFlashbackQueryClause().accept(adapter);
         new VersionsFlashbackQueryClause().accept(adapter);
         new AsOfFlashbackQueryClause().accept(adapter);
-        new GroupingSetExpr().accept(adapter);
+        new SQLGroupingSetExpr().accept(adapter);
         new OracleWithSubqueryEntry().accept(adapter);
         new OracleFileSpecification().accept(adapter);
         new OracleAlterTablespaceAddDataFile().accept(adapter);

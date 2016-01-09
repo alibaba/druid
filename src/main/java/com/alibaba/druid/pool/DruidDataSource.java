@@ -266,6 +266,17 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
         }
+        {
+            String property = properties.getProperty("druid.maxWaitThreadCount");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setMaxWaitThreadCount(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.maxWaitThreadCount'", e);
+                }
+            }
+        }
     }
 
     public boolean isUseGlobalDataSourceStat() {

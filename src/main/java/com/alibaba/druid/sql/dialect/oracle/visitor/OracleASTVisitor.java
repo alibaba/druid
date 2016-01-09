@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
@@ -222,10 +221,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(AsOfFlashbackQueryClause x);
 
     void endVisit(AsOfFlashbackQueryClause x);
-
-    boolean visit(GroupingSetExpr x);
-
-    void endVisit(GroupingSetExpr x);
 
     boolean visit(OracleWithSubqueryEntry x);
 

@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
+import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
@@ -743,6 +744,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print0(ucase ? "HAVING " : "having ");
             x.getHaving().accept(this);
         }
+        
+        if (x.isRollUp()) {
+            print0(ucase ? " WITH ROLLUP" : " with rollup");
+        }
+        
         return false;
     }
 
@@ -2431,6 +2437,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLCloseStatement x) {
         print0(ucase ? "CLOSE " : "close ");
         print0(x.getCursorName());
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLGroupingSetExpr x) {
+        print0(ucase ? "GROUPING SETS" : "grouping sets");
+        print0(" (");
+        printAndAccept(x.getParameters(), ", ");
+        print(')');
         return false;
     }
     

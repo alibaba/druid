@@ -34,7 +34,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.builder.SQLSelectBuilder;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
@@ -370,10 +369,6 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
     }
 
     protected SQLSelectGroupByClause createGroupBy() {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
-            return new MySqlSelectGroupBy();
-        }
-
         return new SQLSelectGroupByClause();
     }
 
