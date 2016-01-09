@@ -24,11 +24,12 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -36,17 +37,16 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -473,8 +473,8 @@ public class SQLServerStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLServerBlockStatement parseBlock() {
-        SQLServerBlockStatement block = new SQLServerBlockStatement();
+    public SQLBlockStatement parseBlock() {
+        SQLBlockStatement block = new SQLBlockStatement();
 
         accept(Token.BEGIN);
 

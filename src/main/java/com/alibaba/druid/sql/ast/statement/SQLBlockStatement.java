@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLServerBlockStatement  extends SQLServerObjectImpl implements SQLServerStatement  {
+public class SQLBlockStatement extends SQLStatementImpl {
+    private String             labelName;
 
-    private List<SQLStatement>    statementList = new ArrayList<SQLStatement>();
-    
-    private String dbType;
+    private List<SQLParameter> parameters    = new ArrayList<SQLParameter>();
+
+    private List<SQLStatement> statementList = new ArrayList<SQLStatement>();
 
     public List<SQLStatement> getStatementList() {
         return statementList;
@@ -36,20 +37,30 @@ public class SQLServerBlockStatement  extends SQLServerObjectImpl implements SQL
     public void setStatementList(List<SQLStatement> statementList) {
         this.statementList = statementList;
     }
+    
+    public String getLabelName() {
+        return labelName;
+    }
+
+    public void setLabelName(String labelName) {
+        this.labelName = labelName;
+    }
 
     @Override
-    public void accept0(SQLServerASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, parameters);
             acceptChild(visitor, statementList);
         }
         visitor.endVisit(this);
     }
 
-    public String getDbType() {
-        return dbType;
+    public List<SQLParameter> getParameters() {
+        return parameters;
     }
-    
-    public void setDbType(String dbType) {
-        this.dbType = dbType;
+
+    public void setParameters(List<SQLParameter> parameters) {
+        this.parameters = parameters;
     }
+
 }

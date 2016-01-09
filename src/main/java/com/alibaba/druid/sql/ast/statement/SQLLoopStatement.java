@@ -13,46 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlBlockStatement  extends MySqlStatementImpl   {
+public class SQLLoopStatement extends SQLStatementImpl {
 
-	/**
-	 * begin-end block label name 
-	 * @author zz
-	 */
-	private String labelName;
-	
-	private List<SQLStatement>    statementList = new ArrayList<SQLStatement>();
+    private String             labelName;
 
-    public List<SQLStatement> getStatementList() {
-        return statementList;
+    private List<SQLStatement> statements = new ArrayList<SQLStatement>();
+
+    @Override
+    public void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, statements);
+        }
+        visitor.endVisit(this);
     }
 
-    public void setStatementList(List<SQLStatement> statementList) {
-        this.statementList = statementList;
+    public List<SQLStatement> getStatements() {
+        return statements;
+    }
+
+    public void setStatements(List<SQLStatement> statements) {
+        this.statements = statements;
     }
 
     public String getLabelName() {
-		return labelName;
-	}
+        return labelName;
+    }
 
-	public void setLabelName(String labelName) {
-		this.labelName = labelName;
-	}
-
-    @Override
-    public void accept0(MySqlASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, statementList);
-        }
-        visitor.endVisit(this);
+    public void setLabelName(String labelName) {
+        this.labelName = labelName;
     }
 
 }

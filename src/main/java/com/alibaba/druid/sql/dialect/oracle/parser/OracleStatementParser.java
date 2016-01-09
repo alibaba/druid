@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
@@ -28,6 +29,9 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
@@ -50,7 +54,6 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
@@ -70,12 +73,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDat
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
@@ -90,7 +91,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement.LockMode;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLoopStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
@@ -544,10 +544,10 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleLoopStatement parseLoop() {
+    public SQLLoopStatement parseLoop() {
         accept(Token.LOOP);
 
-        OracleLoopStatement stmt = new OracleLoopStatement();
+        SQLLoopStatement stmt = new SQLLoopStatement();
 
         this.parseStatementList(stmt.getStatements());
         accept(Token.END);
@@ -1034,14 +1034,14 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleBlockStatement parseBlock() {
-        OracleBlockStatement block = new OracleBlockStatement();
+    public SQLBlockStatement parseBlock() {
+        SQLBlockStatement block = new SQLBlockStatement();
 
         if (lexer.token() == Token.DECLARE) {
             lexer.nextToken();
 
             parserParameters(block.getParameters());
-            for (OracleParameter param : block.getParameters()) {
+            for (SQLParameter param : block.getParameters()) {
                 param.setParent(block);
             }
         }
@@ -1055,9 +1055,9 @@ public class OracleStatementParser extends SQLStatementParser {
         return block;
     }
 
-    private void parserParameters(List<OracleParameter> parameters) {
+    private void parserParameters(List<SQLParameter> parameters) {
         for (;;) {
-            OracleParameter parameter = new OracleParameter();
+            SQLParameter parameter = new SQLParameter();
 
             if (lexer.token() == Token.CURSOR) {
                 lexer.nextToken();
@@ -1648,8 +1648,8 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleCreateProcedureStatement parseCreateProcedure() {
-        OracleCreateProcedureStatement stmt = new OracleCreateProcedureStatement();
+    public SQLCreateProcedureStatement parseCreateProcedure() {
+        SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
         accept(Token.CREATE);
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
@@ -1669,7 +1669,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         accept(Token.AS);
 
-        OracleBlockStatement block = this.parseBlock();
+        SQLBlockStatement block = this.parseBlock();
 
         stmt.setBlock(block);
 

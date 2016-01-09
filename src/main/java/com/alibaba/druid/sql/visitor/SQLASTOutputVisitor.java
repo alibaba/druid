@@ -136,6 +136,7 @@ import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -2525,6 +2526,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
         
         decrementIndent();
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLLoopStatement x) {
+        print0(ucase ? "LOOP" : "loop");
+        incrementIndent();
+        println();
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.setParent(x);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+
+        decrementIndent();
+        println();
+        print0(ucase ? "END LOOP" : "end loop");
         return false;
     }
 

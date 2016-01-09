@@ -57,7 +57,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitio
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
@@ -97,12 +96,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDat
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -118,7 +115,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLoopStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
@@ -1050,22 +1046,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleBlockStatement x) {
-        for (OracleParameter param : x.getParameters()) {
-            param.setParent(x);
-
-            SQLExpr name = param.getName();
-            this.variants.put(name.toString(), name);
-        }
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleBlockStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterSessionStatement x) {
         return false;
     }
@@ -1405,16 +1385,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleParameter x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleParameter x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCommitStatement x) {
         return true;
     }
@@ -1545,16 +1515,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleLoopStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleLoopStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleExitStatement x) {
         return true;
     }
@@ -1571,19 +1531,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleSavePointStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleCreateProcedureStatement x) {
-        String name = x.getName().toString();
-        this.variants.put(name, x);
-        accept(x.getBlock());
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateProcedureStatement x) {
 
     }
 

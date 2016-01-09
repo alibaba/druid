@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
@@ -167,16 +166,6 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
 
     }
 
-    @Override
-    public boolean visit(SQLServerBlockStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerBlockStatement x) {
-
-    }
-    
     @Override
     public boolean visit(SQLServerSelect x) {
         return true;

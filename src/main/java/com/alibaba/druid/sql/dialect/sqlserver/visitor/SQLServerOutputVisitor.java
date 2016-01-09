@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -31,7 +32,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
@@ -484,7 +484,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public boolean visit(SQLServerBlockStatement x) {
+    public boolean visit(SQLBlockStatement x) {
         print0(ucase ? "BEGIN" : "begin");
         incrementIndent();
         println();
@@ -503,11 +503,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         return false;
     }
 
-    @Override
-    public void endVisit(SQLServerBlockStatement x) {
-
-    }
-    
     @Override
     protected void printGrantOn(SQLGrantStatement x) {
         if (x.getOn() != null) {

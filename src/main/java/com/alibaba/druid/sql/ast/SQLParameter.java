@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.clause;
+package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleParameter extends OracleSQLObjectImpl {
+public class SQLParameter extends SQLObjectImpl {
 
-    private SQLExpr     name;
-    private SQLDataType dataType;
-    private SQLExpr     defaultValue;
+    private SQLExpr       name;
+    private SQLDataType   dataType;
+    private SQLExpr       defaultValue;
+    private ParameterType paramType;
 
     public SQLExpr getDefaultValue() {
         return defaultValue;
@@ -49,14 +47,29 @@ public class OracleParameter extends OracleSQLObjectImpl {
     public void setDataType(SQLDataType dataType) {
         this.dataType = dataType;
     }
+    
+    public ParameterType getParamType() {
+        return paramType;
+    }
+
+    public void setParamType(ParameterType paramType) {
+        this.paramType = paramType;
+    }
 
     @Override
-    public void accept0(OracleASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, dataType);
             acceptChild(visitor, defaultValue);
         }
         visitor.endVisit(this);
+    }
+    
+    public static enum ParameterType {
+        DEFAULT, //
+        IN, // in
+        OUT, // out
+        INOUT// inout
     }
 }

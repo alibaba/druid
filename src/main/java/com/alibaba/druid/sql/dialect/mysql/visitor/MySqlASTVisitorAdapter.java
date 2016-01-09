@@ -24,13 +24,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
@@ -54,7 +51,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -1260,39 +1256,6 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 
     }
 
-    @Override
-    public boolean visit(MySqlBlockStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlBlockStatement x) {
-        
-    }
-
-	/**
-	 * support procedure
-	 */
-	@Override
-	public boolean visit(MySqlCreateProcedureStatement x) {
-		return true;
-	}
-
-	@Override
-	public void endVisit(MySqlCreateProcedureStatement x) {
-		
-	}
-
-	@Override
-	public boolean visit(MySqlParameter x) {
-		return true;
-	}
-
-	@Override
-	public void endVisit(MySqlParameter x) {
-		
-	}
-
 	@Override
 	public boolean visit(MySqlWhileStatement x) {
 		return true;
@@ -1343,16 +1306,6 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 		
 	}
 	//add:end
-
-	@Override
-	public boolean visit(MySqlLoopStatement x) {
-		return true;
-	}
-
-	@Override
-	public void endVisit(MySqlLoopStatement x) {
-		
-	}
 
 	@Override
 	public boolean visit(MySqlLeaveStatement x) {

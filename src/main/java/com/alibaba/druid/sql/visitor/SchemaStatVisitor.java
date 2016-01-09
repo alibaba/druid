@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
@@ -48,12 +49,14 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLCloseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
@@ -1418,4 +1421,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        String name = x.getName().toString();
+        this.variants.put(name, x);
+        accept(x.getBlock());
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLBlockStatement x) {
+        for (SQLParameter param : x.getParameters()) {
+            param.setParent(x);
+
+            SQLExpr name = param.getName();
+            this.variants.put(name.toString(), name);
+        }
+        return true;
+    }
 }

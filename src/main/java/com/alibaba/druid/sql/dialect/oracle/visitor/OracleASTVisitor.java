@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.Vers
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
@@ -66,12 +65,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDat
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -87,7 +84,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLoopStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
@@ -331,10 +327,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleSelectQueryBlock x);
 
-    boolean visit(OracleBlockStatement x);
-
-    void endVisit(OracleBlockStatement x);
-
     boolean visit(OracleLockTableStatement x);
 
     void endVisit(OracleLockTableStatement x);
@@ -455,10 +447,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleLabelStatement x);
 
-    boolean visit(OracleParameter x);
-
-    void endVisit(OracleParameter x);
-
     boolean visit(OracleCommitStatement x);
 
     void endVisit(OracleCommitStatement x);
@@ -511,10 +499,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OraclePartitionByRangeClause x);
 
-    boolean visit(OracleLoopStatement x);
-
-    void endVisit(OracleLoopStatement x);
-
     boolean visit(OracleExitStatement x);
 
     void endVisit(OracleExitStatement x);
@@ -522,10 +506,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleSavePointStatement x);
 
     void endVisit(OracleSavePointStatement x);
-
-    boolean visit(OracleCreateProcedureStatement x);
-
-    void endVisit(OracleCreateProcedureStatement x);
 
     boolean visit(OracleCreateDatabaseDbLinkStatement x);
 

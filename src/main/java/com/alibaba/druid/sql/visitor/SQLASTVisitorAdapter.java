@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
@@ -81,6 +82,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableTouch;
 import com.alibaba.druid.sql.ast.statement.SQLAlterViewRenameStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
@@ -93,6 +95,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
@@ -117,6 +120,7 @@ import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
@@ -1308,6 +1312,46 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     
     @Override
     public void endVisit(SQLIfStatement.ElseIf x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLLoopStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLLoopStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLParameter x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLParameter x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCreateProcedureStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLBlockStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLBlockStatement x) {
         
     }
     

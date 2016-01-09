@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLParameter.ParameterType;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -45,13 +47,16 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
@@ -63,14 +68,10 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter.ParameterType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
@@ -87,7 +88,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -714,8 +714,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         return false;
     }
 
-    public MySqlBlockStatement parseBlock() {
-        MySqlBlockStatement block = new MySqlBlockStatement();
+    public SQLBlockStatement parseBlock() {
+        SQLBlockStatement block = new SQLBlockStatement();
 
         accept(Token.BEGIN);
         parseProcedureStatementList(block.getStatementList());
@@ -2744,11 +2744,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 	/**
 	 * parse create procedure statement
 	 */
-	public MySqlCreateProcedureStatement parseCreateProcedure() {
+	public SQLCreateProcedureStatement parseCreateProcedure() {
 		/**
 		 * CREATE OR REPALCE PROCEDURE SP_NAME(parameter_list) BEGIN block_statement END
 		 */
-		MySqlCreateProcedureStatement stmt = new MySqlCreateProcedureStatement();
+	    SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
 
 		accept(Token.CREATE);
 		if (lexer.token() == Token.OR) {
@@ -2766,7 +2766,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 			parserParameters(stmt.getParameters());
 			accept(Token.RPAREN);// match ")"
 		}
-		MySqlBlockStatement block = this.parseBlock();
+		SQLBlockStatement block = this.parseBlock();
 
 		stmt.setBlock(block);
 
@@ -2777,9 +2777,9 @@ public class MySqlStatementParser extends SQLStatementParser {
 	 * parse create procedure parameters
 	 * @param parameters
 	 */
-	private void parserParameters(List<MySqlParameter> parameters) {
+	private void parserParameters(List<SQLParameter> parameters) {
 		for (;;) {
-			MySqlParameter parameter = new MySqlParameter();
+		    SQLParameter parameter = new SQLParameter();
 
 			if (lexer.token() == Token.CURSOR) {
 				lexer.nextToken();
@@ -3304,9 +3304,9 @@ public class MySqlStatementParser extends SQLStatementParser {
 	/**
 	 * parse loop statement
 	 */
-	public MySqlLoopStatement parseLoop()
+	public SQLLoopStatement parseLoop()
 	{
-		MySqlLoopStatement loopStmt=new MySqlLoopStatement(); 
+		SQLLoopStatement loopStmt=new SQLLoopStatement(); 
 		accept(Token.LOOP);
 		parseProcedureStatementList(loopStmt.getStatements());
 		accept(Token.END);
@@ -3318,24 +3318,23 @@ public class MySqlStatementParser extends SQLStatementParser {
 	/**
 	 * parse loop statement with label
 	 */
-	public MySqlLoopStatement parseLoop(String label)
-	{
-		MySqlLoopStatement loopStmt=new MySqlLoopStatement(); 
-		loopStmt.setLabelName(label);
-		accept(Token.LOOP);
-		parseProcedureStatementList(loopStmt.getStatements());
-		accept(Token.END);
-		accept(Token.LOOP);
-		acceptIdentifier(label);
-		accept(Token.SEMI);
-		return loopStmt;
-	}
+    public SQLLoopStatement parseLoop(String label) {
+        SQLLoopStatement loopStmt = new SQLLoopStatement();
+        loopStmt.setLabelName(label);
+        accept(Token.LOOP);
+        parseProcedureStatementList(loopStmt.getStatements());
+        accept(Token.END);
+        accept(Token.LOOP);
+        acceptIdentifier(label);
+        accept(Token.SEMI);
+        return loopStmt;
+    }
 	
 	/**
 	 * parse loop statement with label
 	 */
-	public MySqlBlockStatement parseBlock(String label) {
-        MySqlBlockStatement block = new MySqlBlockStatement();
+    public SQLBlockStatement parseBlock(String label) {
+        SQLBlockStatement block = new SQLBlockStatement();
         block.setLabelName(label);
         accept(Token.BEGIN);
         parseProcedureStatementList(block.getStatementList());
