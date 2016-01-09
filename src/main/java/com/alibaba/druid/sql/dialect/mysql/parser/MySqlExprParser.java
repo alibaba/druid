@@ -64,7 +64,7 @@ public class MySqlExprParser extends SQLExprParser {
     public static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "GROUP_CONCAT", "MAX", "MIN", "STDDEV", "SUM" };
 
     public MySqlExprParser(Lexer lexer){
-        super(lexer);
+        super(lexer, JdbcConstants.MYSQL);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
 

@@ -26,6 +26,7 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
 
     private final List<SQLExpr> items = new ArrayList<SQLExpr>();
     private SQLExpr             having;
+    private boolean             rollUp = false;
 
     public SQLSelectGroupByClause(){
 
@@ -39,12 +40,24 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
 
         visitor.endVisit(this);
     }
+    
+    public boolean isRollUp() {
+        return rollUp;
+    }
+
+    public void setRollUp(boolean rollUp) {
+        this.rollUp = rollUp;
+    }    
 
     public SQLExpr getHaving() {
         return this.having;
     }
 
     public void setHaving(SQLExpr having) {
+        if (having != null) {
+            having.setParent(this);
+        }
+        
         this.having = having;
     }
 

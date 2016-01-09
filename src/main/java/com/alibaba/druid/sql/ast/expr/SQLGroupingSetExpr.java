@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.clause;
+package com.alibaba.druid.sql.ast.expr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class GroupingSetExpr extends SQLExprImpl {
+public class SQLGroupingSetExpr extends SQLExprImpl {
 
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
 
@@ -59,10 +59,10 @@ public class GroupingSetExpr extends SQLExprImpl {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof GroupingSetExpr)) {
+        if (!(obj instanceof SQLGroupingSetExpr)) {
             return false;
         }
-        GroupingSetExpr other = (GroupingSetExpr) obj;
+        SQLGroupingSetExpr other = (SQLGroupingSetExpr) obj;
         if (parameters == null) {
             if (other.parameters != null) {
                 return false;

@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OdpsSelectParser extends SQLSelectParser {
-
     public OdpsSelectParser(SQLExprParser exprParser){
         super(exprParser.getLexer());
         this.exprParser = exprParser;

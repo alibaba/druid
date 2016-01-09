@@ -4,13 +4,13 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
+import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
 
 public class EqualTest_groupSet extends TestCase {
 
     public void test_eq() throws Exception {
-        GroupingSetExpr exprA = new GroupingSetExpr();
-        GroupingSetExpr exprB = new GroupingSetExpr();
+        SQLGroupingSetExpr exprA = new SQLGroupingSetExpr();
+        SQLGroupingSetExpr exprB = new SQLGroupingSetExpr();
         Assert.assertEquals(exprA.hashCode(), exprB.hashCode());
         Assert.assertEquals(exprA, exprB);
     }
