@@ -61,6 +61,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAlterColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
@@ -1370,13 +1371,22 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlBlockStatement x) {
         
     }
+    
+    @Override
+    public boolean visit(MySqlAlterTableAlterColumn x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableAlterColumn x) {
+        
+    }
 
     /**
      * support procedure
      */
 	@Override
 	public boolean visit(MySqlCreateProcedureStatement x) {
-		// TODO Auto-generated method stub
 		String name = x.getName().toString();
         this.variants.put(name, x);
         accept(x.getBlock());
@@ -1385,19 +1395,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlCreateProcedureStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlParameter x) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public void endVisit(MySqlParameter x) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1409,7 +1416,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlWhileStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1423,7 +1429,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlIfStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1435,7 +1440,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlElseIfStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1447,7 +1451,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlElseStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1459,31 +1462,26 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlCaseStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlDeclareStatement x) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void endVisit(MySqlDeclareStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlSelectIntoStatement x) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void endVisit(MySqlSelectIntoStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1495,7 +1493,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlWhenStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1507,44 +1504,37 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlLoopStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlLeaveStatement x) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void endVisit(MySqlLeaveStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlIterateStatement x) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void endVisit(MySqlIterateStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean visit(MySqlRepeatStatement x) {
-		// TODO Auto-generated method stub
 		accept(x.getStatements());
 		return false;
 	}
 
 	@Override
 	public void endVisit(MySqlRepeatStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -1556,7 +1546,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public void endVisit(MySqlCursorDeclareStatement x) {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -1572,5 +1561,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlUpdateTableSource x) {
 
     }
+
 
 }
