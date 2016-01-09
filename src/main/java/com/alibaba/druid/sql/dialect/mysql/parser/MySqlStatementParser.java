@@ -35,7 +35,6 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
@@ -79,6 +78,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAlterColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
@@ -2353,9 +2353,19 @@ public class MySqlStatementParser extends SQLStatementParser {
                         lexer.nextToken();
                     }
 
-                    SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
-                    SQLColumnDefinition columnDef = this.exprParser.parseColumn();
-                    alterColumn.setColumn(columnDef);
+                    MySqlAlterTableAlterColumn alterColumn = new MySqlAlterTableAlterColumn();
+                    alterColumn.setColumn(this.exprParser.name());
+                    
+                    if (lexer.token() == Token.SET) {
+                        lexer.nextToken();
+                        accept(Token.DEFAULT);
+                        
+                        alterColumn.setDefaultExpr(this.exprParser.expr());
+                    } else {
+                        accept(Token.DROP);
+                        accept(Token.DEFAULT);
+                        alterColumn.setDropDefault(true);
+                    }
 
                     stmt.getItems().add(alterColumn);
                 } else if (identifierEquals("CHANGE")) {
