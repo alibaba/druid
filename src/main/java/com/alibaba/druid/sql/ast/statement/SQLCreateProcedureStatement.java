@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleCreateProcedureStatement extends OracleStatementImpl {
+public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
-    private boolean               orReplace;
-    private SQLName               name;
-    private OracleBlockStatement  block;
-    private List<OracleParameter> parameters = new ArrayList<OracleParameter>();
+    private boolean            orReplace;
+    private SQLName            name;
+    private SQLStatement       block;
+    private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     @Override
-    public void accept0(OracleASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, parameters);
@@ -39,11 +41,11 @@ public class OracleCreateProcedureStatement extends OracleStatementImpl {
         visitor.endVisit(this);
     }
 
-    public List<OracleParameter> getParameters() {
+    public List<SQLParameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<OracleParameter> parameters) {
+    public void setParameters(List<SQLParameter> parameters) {
         this.parameters = parameters;
     }
 
@@ -55,11 +57,11 @@ public class OracleCreateProcedureStatement extends OracleStatementImpl {
         this.name = name;
     }
 
-    public OracleBlockStatement getBlock() {
+    public SQLStatement getBlock() {
         return block;
     }
 
-    public void setBlock(OracleBlockStatement block) {
+    public void setBlock(SQLStatement block) {
         this.block = block;
     }
 

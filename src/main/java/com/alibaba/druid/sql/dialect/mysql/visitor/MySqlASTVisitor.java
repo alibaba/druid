@@ -24,16 +24,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
@@ -57,7 +51,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -579,38 +572,13 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlSelectGroupByExpr x);
 
     void endVisit(MySqlSelectGroupByExpr x);
-    
-    boolean visit(MySqlBlockStatement x);
-
-    void endVisit(MySqlBlockStatement x);
-	
 	
 	/**
 	 * support procedure
 	 */
-    boolean visit(MySqlCreateProcedureStatement x);
-
-    void endVisit(MySqlCreateProcedureStatement x);
-	
-    boolean visit(MySqlParameter x);
-
-    void endVisit(MySqlParameter x);
-    
     boolean visit(MySqlWhileStatement x);
 
     void endVisit(MySqlWhileStatement x);
-    
-    boolean visit(MySqlIfStatement x);
-
-    void endVisit(MySqlIfStatement x);
-    
-    boolean visit(MySqlElseIfStatement x);
-
-    void endVisit(MySqlElseIfStatement x);
-    
-    boolean visit(MySqlElseStatement x);
-
-    void endVisit(MySqlElseStatement x);
     
     boolean visit(MySqlCaseStatement x);
 
@@ -627,10 +595,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlWhenStatement x);
 
     void endVisit(MySqlWhenStatement x);
-    
-    boolean visit(MySqlLoopStatement x);
-
-    void endVisit(MySqlLoopStatement x);
     
     boolean visit(MySqlLeaveStatement x);
 

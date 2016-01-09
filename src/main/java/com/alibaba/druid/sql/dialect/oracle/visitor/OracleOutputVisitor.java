@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -28,12 +29,15 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
@@ -63,7 +67,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceMode
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
@@ -107,13 +110,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDat
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -126,13 +127,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLoopStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
@@ -186,14 +183,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         if ((!isPrintPostSemi()) //
-            && (!(x.getParent() instanceof OracleBlockStatement))) {
+            && (!(x.getParent() instanceof SQLBlockStatement))) {
             return;
         }
 
         if (x instanceof OraclePLSQLCommitStatement) {
             return;
         }
-        if (x.getParent() instanceof OracleCreateProcedureStatement) {
+        if (x.getParent() instanceof SQLCreateProcedureStatement) {
             return;
         }
 
@@ -1648,7 +1645,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleBlockStatement x) {
+    public boolean visit(SQLBlockStatement x) {
         if (x.getParameters().size() != 0) {
             print0(ucase ? "DECLARE" : "declare");
             incrementIndent();
@@ -1658,7 +1655,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 if (i != 0) {
                     println();
                 }
-                OracleParameter param = x.getParameters().get(i);
+                SQLParameter param = x.getParameters().get(i);
                 param.accept(this);
                 print(';');
             }
@@ -1684,7 +1681,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleBlockStatement x) {
+    public void endVisit(SQLBlockStatement x) {
 
     }
 
@@ -2185,7 +2182,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(Else x) {
+    public boolean visit(SQLIfStatement.Else x) {
         print0(ucase ? "ELSE" : "else");
         incrementIndent();
         println();
@@ -2205,7 +2202,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(ElseIf x) {
+    public boolean visit(SQLIfStatement.ElseIf x) {
         print0(ucase ? "ELSE IF " : "else if ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
@@ -2227,17 +2224,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(ElseIf x) {
-
-    }
-
-    @Override
-    public void endVisit(Else x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleIfStatement x) {
+    public boolean visit(SQLIfStatement x) {
         print0(ucase ? "IF " : "if ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
@@ -2254,7 +2241,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(';');
         decrementIndent();
 
-        for (ElseIf elseIf : x.getElseIfList()) {
+        for (SQLIfStatement.ElseIf elseIf : x.getElseIfList()) {
             println();
             elseIf.accept(this);
         }
@@ -2266,11 +2253,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         println();
         print0(ucase ? "END IF" : "end if");
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleIfStatement x) {
-
     }
 
     @Override
@@ -2287,7 +2269,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     protected void visitColumnDefault(SQLColumnDefinition x) {
-        if (x.getParent() instanceof OracleBlockStatement) {
+        if (x.getParent() instanceof SQLBlockStatement) {
             print0(" := ");
         } else {
             print0(ucase ? " DEFAULT " : " default ");
@@ -2571,7 +2553,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleParameter x) {
+    public boolean visit(SQLParameter x) {
         if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
             print0(ucase ? "CURSOR " : "cursor ");
             x.getName().accept(this);
@@ -2598,7 +2580,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleParameter x) {
+    public void endVisit(SQLParameter x) {
 
     }
 
@@ -2918,32 +2900,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleLoopStatement x) {
-        print0(ucase ? "LOOP" : "loop");
-        incrementIndent();
-        println();
-
-        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
-            SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
-            item.accept(this);
-            if (i != size - 1) {
-                println();
-            }
-        }
-
-        decrementIndent();
-        println();
-        print0(ucase ? "END LOOP" : "end loop");
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleLoopStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleExitStatement x) {
         print0(ucase ? "EXIT" : "exit");
         if (x.getWhen() != null) {
@@ -2979,7 +2935,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleCreateProcedureStatement x) {
+    public boolean visit(SQLCreateProcedureStatement x) {
         if (x.isOrReplace()) {
             print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
         } else {
@@ -2999,7 +2955,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                     print0(", ");
                     println();
                 }
-                OracleParameter param = x.getParameters().get(i);
+                SQLParameter param = x.getParameters().get(i);
                 param.accept(this);
             }
 
@@ -3015,7 +2971,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleCreateProcedureStatement x) {
+    public void endVisit(SQLCreateProcedureStatement x) {
 
     }
 

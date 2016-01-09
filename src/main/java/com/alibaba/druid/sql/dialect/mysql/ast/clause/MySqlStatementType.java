@@ -16,8 +16,10 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.clause;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
@@ -40,10 +42,12 @@ public enum MySqlStatementType {
 	DELETE(MySqlDeleteStatement.class.getName()),
 	//while statement
 	WHILE(MySqlWhileStatement.class.getName()),
-	//if statement
-	IF(MySqlIfStatement.class.getName()),
 	//begin-end
-	BLOCK(MySqlBlockStatement.class.getName()),
+	IF(SQLIfStatement.class.getName()),
+	//begin-end
+	LOOP(SQLLoopStatement.class.getName()),
+	//begin-end
+	BLOCK(SQLBlockStatement.class.getName()),
 	//declare statement
 	DECLARE(MySqlDeclareStatement.class.getName()),
 	//select into

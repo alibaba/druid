@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
@@ -33,11 +34,15 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
@@ -49,17 +54,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter.ParameterType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
@@ -83,7 +81,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -3182,7 +3179,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public boolean visit(MySqlBlockStatement x) {
+    public boolean visit(SQLBlockStatement x) {
         if (x.getLabelName() != null && !x.getLabelName().equals("")) {
             print0(x.getLabelName());
             print0(": ");
@@ -3209,17 +3206,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    @Override
-    public void endVisit(MySqlBlockStatement x) {
-        
-    }
-
     
     /**
      * visit procedure create node
      */
 	@Override
-	public boolean visit(MySqlCreateProcedureStatement x) {
+	public boolean visit(SQLCreateProcedureStatement x) {
 		if (x.isOrReplace()) {
             print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
         } else {
@@ -3239,7 +3231,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                     print0(", ");
                     println();
                 }
-                MySqlParameter param = x.getParameters().get(i);
+                SQLParameter param = x.getParameters().get(i);
                 param.accept(this);
             }
 
@@ -3254,14 +3246,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
 	}
 
-	@Override
-	public void endVisit(MySqlCreateProcedureStatement x) {
-		
-	}
-
-	@Override
-	public boolean visit(MySqlParameter x) {
-		if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
+    @Override
+    public boolean visit(SQLParameter x) {
+        if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
             print0(ucase ? "CURSOR " : "cursor ");
             x.getName().accept(this);
             print0(ucase ? " IS" : " is");
@@ -3272,19 +3259,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             decrementIndent();
 
         } else {
-        	
-        	if(x.getParamType()==ParameterType.IN)
-        	{
-        		print0(ucase ? "IN " : "in ");
-        	}
-        	else if(x.getParamType()==ParameterType.OUT)
-        	{
-        		print0(ucase ? "OUT " : "out ");
-        	}
-        	else if(x.getParamType()==ParameterType.INOUT)
-        	{
-        		print0(ucase ? "INOUT " : "inout ");
-        	}
+
+            if (x.getParamType() == SQLParameter.ParameterType.IN) {
+                print0(ucase ? "IN " : "in ");
+            } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
+                print0(ucase ? "OUT " : "out ");
+            } else if (x.getParamType() == SQLParameter.ParameterType.INOUT) {
+                print0(ucase ? "INOUT " : "inout ");
+            }
             x.getName().accept(this);
             print(' ');
 
@@ -3297,12 +3279,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         return false;
-	}
-
-	@Override
-	public void endVisit(MySqlParameter x) {
-		
-	}
+    }
 
 	@Override
 	public boolean visit(MySqlWhileStatement x) {
@@ -3336,7 +3313,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 	}
 
 	@Override
-	public boolean visit(MySqlIfStatement x) {
+	public boolean visit(SQLIfStatement x) {
 		print0(ucase ? "IF " : "if ");
 		x.getCondition().accept(this);
 		print0(ucase ? " THEN" : " then");
@@ -3350,7 +3327,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
 		println();
-		for (MySqlElseIfStatement iterable_element : x.getElseIfList()) {
+		for (SQLIfStatement.ElseIf iterable_element : x.getElseIfList()) {
 			iterable_element.accept(this);
 		}
 		
@@ -3362,12 +3339,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 	}
 
 	@Override
-	public void endVisit(MySqlIfStatement x) {
-		
-	}
-
-	@Override
-	public boolean visit(MySqlElseIfStatement x) {
+	public boolean visit(SQLIfStatement.ElseIf x) {
 		print0(ucase ? "ELSE IF " : "else if ");
 		x.getCondition().accept(this);
 		print0(ucase ? " THEN" : " then");
@@ -3385,12 +3357,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 	}
 
 	@Override
-	public void endVisit(MySqlElseIfStatement x) {
-		
-	}
-
-	@Override
-	public boolean visit(MySqlElseStatement x) {
+	public boolean visit(SQLIfStatement.Else x) {
 		print0(ucase ? "ELSE " : "else ");
 		println();
 		for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
@@ -3403,11 +3370,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 		println();
 		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlElseStatement x) {
-		
 	}
 
 	@Override
@@ -3486,11 +3448,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 	}
 
 	@Override
-	public boolean visit(MySqlLoopStatement x) {
-		if(x.getLabelName()!=null&&!x.getLabelName().equals("")) {
-			print0(x.getLabelName());
-			print0(": ");
-		}
+	public boolean visit(SQLLoopStatement x) {
+        if (x.getLabelName() != null && !x.getLabelName().equals("")) {
+            print0(x.getLabelName());
+            print0(": ");
+        }
 		
 		print0(ucase ? "LOOP " : "loop ");
 		println();
@@ -3509,12 +3471,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(x.getLabelName());
         }
 		return false;
-	}
-
-	@Override
-	public void endVisit(MySqlLoopStatement x) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

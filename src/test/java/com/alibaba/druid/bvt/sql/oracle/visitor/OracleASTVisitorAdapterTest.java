@@ -1,12 +1,14 @@
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import junit.framework.TestCase;
-
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
-import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -24,7 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
@@ -62,11 +63,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDat
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -78,13 +77,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLoopStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
@@ -106,6 +101,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+
+import junit.framework.TestCase;
 
 public class OracleASTVisitorAdapterTest extends TestCase {
 
@@ -138,7 +135,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleCreateSequenceStatement().accept(adapter);
         new OracleRangeValuesClause().accept(adapter);
         new OraclePartitionByRangeClause().accept(adapter);
-        new OracleLoopStatement().accept(adapter);
+        new SQLLoopStatement().accept(adapter);
         new OracleIntervalExpr().accept(adapter);
         new OracleDeleteStatement().accept(adapter);
         new OracleUpdateStatement().accept(adapter);
@@ -170,7 +167,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new ConditionalInsertClause().accept(adapter);
         new ConditionalInsertClauseItem().accept(adapter);
         new OracleSelectQueryBlock().accept(adapter);
-        new OracleBlockStatement().accept(adapter);
+        new SQLBlockStatement().accept(adapter);
         new OracleLockTableStatement().accept(adapter);
         new OracleAlterSessionStatement().accept(adapter);
         new OracleExprStatement().accept(adapter);
@@ -185,7 +182,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleDataTypeTimestamp().accept(adapter);
         new OracleDropDbLinkStatement().accept(adapter);
         new OracleCreateDatabaseDbLinkStatement().accept(adapter);
-        new OracleCreateProcedureStatement().accept(adapter);
+        new SQLCreateProcedureStatement().accept(adapter);
         new OracleSavePointStatement().accept(adapter);
         new SQLFetchStatement().accept(adapter);
         new OracleExitStatement().accept(adapter);
@@ -203,9 +200,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleAlterIndexStatement().accept(adapter);
         new OracleForStatement().accept(adapter);
         new OracleAlterIndexStatement().accept(adapter);
-        new Else().accept(adapter);
-        new ElseIf().accept(adapter);
-        new OracleIfStatement().accept(adapter);
         new OracleRangeExpr().accept(adapter);
         new OracleAlterTableAddConstaint().accept(adapter);
         new OraclePrimaryKey().accept(adapter);
@@ -214,7 +208,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleStorageClause().accept(adapter);
         new OracleGotoStatement().accept(adapter);
         new OracleLabelStatement().accept(adapter);
-        new OracleParameter().accept(adapter);
+        new SQLParameter().accept(adapter);
         new OracleCommitStatement().accept(adapter);
         new OracleAlterTriggerStatement().accept(adapter);
         new OracleAlterSynonymStatement().accept(adapter);

@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleIfStatement extends OracleStatementImpl {
+public class SQLIfStatement extends SQLStatementImpl {
 
     private SQLExpr            condition;
     private List<SQLStatement> statements = new ArrayList<SQLStatement>();
@@ -31,7 +32,7 @@ public class OracleIfStatement extends OracleStatementImpl {
     private Else               elseItem;
 
     @Override
-    public void accept0(OracleASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, condition);
             acceptChild(visitor, statements);
@@ -56,11 +57,12 @@ public class OracleIfStatement extends OracleStatementImpl {
     public void setStatements(List<SQLStatement> statements) {
         this.statements = statements;
     }
-
+    
     public List<ElseIf> getElseIfList() {
         return elseIfList;
     }
 
+    
     public void setElseIfList(List<ElseIf> elseIfList) {
         this.elseIfList = elseIfList;
     }
@@ -73,26 +75,18 @@ public class OracleIfStatement extends OracleStatementImpl {
         this.elseItem = elseItem;
     }
 
-    public static class ElseIf extends OracleSQLObjectImpl {
+    public static class ElseIf extends SQLObjectImpl {
 
         private SQLExpr            condition;
         private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
         @Override
-        public void accept0(OracleASTVisitor visitor) {
+        public void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, condition);
                 acceptChild(visitor, statements);
             }
             visitor.endVisit(this);
-        }
-
-        public SQLExpr getCondition() {
-            return condition;
-        }
-
-        public void setCondition(SQLExpr condition) {
-            this.condition = condition;
         }
 
         public List<SQLStatement> getStatements() {
@@ -103,14 +97,24 @@ public class OracleIfStatement extends OracleStatementImpl {
             this.statements = statements;
         }
 
+        public SQLExpr getCondition() {
+            return condition;
+        }
+
+        public void setCondition(SQLExpr condition) {
+            if (condition != null) {
+                condition.setParent(this);
+            }
+            this.condition = condition;
+        }
     }
 
-    public static class Else extends OracleSQLObjectImpl {
+    public static class Else extends SQLObjectImpl {
 
         private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
         @Override
-        public void accept0(OracleASTVisitor visitor) {
+        public void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, statements);
             }
