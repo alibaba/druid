@@ -2475,6 +2475,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
         }
         decrementIndent();
+        
+        for (SQLIfStatement.ElseIf elseIf : x.getElseIfList()) {
+            println();
+            elseIf.accept(this);
+        }
 
         if (x.getElseItem() != null) {
             println();

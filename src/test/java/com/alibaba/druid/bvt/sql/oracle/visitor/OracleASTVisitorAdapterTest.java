@@ -1,12 +1,10 @@
 package com.alibaba.druid.bvt.sql.oracle.visitor;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
-import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
+import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -78,9 +76,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
@@ -106,6 +101,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+
+import junit.framework.TestCase;
 
 public class OracleASTVisitorAdapterTest extends TestCase {
 
@@ -203,9 +200,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleAlterIndexStatement().accept(adapter);
         new OracleForStatement().accept(adapter);
         new OracleAlterIndexStatement().accept(adapter);
-        new Else().accept(adapter);
-        new ElseIf().accept(adapter);
-        new OracleIfStatement().accept(adapter);
         new OracleRangeExpr().accept(adapter);
         new OracleAlterTableAddConstaint().accept(adapter);
         new OraclePrimaryKey().accept(adapter);

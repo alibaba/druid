@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
@@ -126,9 +127,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
@@ -2185,7 +2183,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(Else x) {
+    public boolean visit(SQLIfStatement.Else x) {
         print0(ucase ? "ELSE" : "else");
         incrementIndent();
         println();
@@ -2205,7 +2203,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(ElseIf x) {
+    public boolean visit(SQLIfStatement.ElseIf x) {
         print0(ucase ? "ELSE IF " : "else if ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
@@ -2227,17 +2225,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(ElseIf x) {
-
-    }
-
-    @Override
-    public void endVisit(Else x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleIfStatement x) {
+    public boolean visit(SQLIfStatement x) {
         print0(ucase ? "IF " : "if ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
@@ -2254,7 +2242,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(';');
         decrementIndent();
 
-        for (ElseIf elseIf : x.getElseIfList()) {
+        for (SQLIfStatement.ElseIf elseIf : x.getElseIfList()) {
             println();
             elseIf.accept(this);
         }
@@ -2266,11 +2254,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         println();
         print0(ucase ? "END IF" : "end if");
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleIfStatement x) {
-
     }
 
     @Override

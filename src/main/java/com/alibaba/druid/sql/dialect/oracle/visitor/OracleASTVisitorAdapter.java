@@ -92,9 +92,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
@@ -934,36 +931,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleAlterIndexStatement.Rebuild x) {
-
-    }
-
-    @Override
-    public boolean visit(Else x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(Else x) {
-
-    }
-
-    @Override
-    public boolean visit(ElseIf x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(ElseIf x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleIfStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleIfStatement x) {
 
     }
 

@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -85,7 +86,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
@@ -492,7 +492,7 @@ public class OracleStatementParser extends SQLStatementParser {
     public SQLStatement parseIf() {
         accept(Token.IF);
 
-        OracleIfStatement stmt = new OracleIfStatement();
+        SQLIfStatement stmt = new SQLIfStatement();
 
         stmt.setCondition(this.exprParser.expr());
 
@@ -506,7 +506,7 @@ public class OracleStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.IF) {
                 lexer.nextToken();
 
-                OracleIfStatement.ElseIf elseIf = new OracleIfStatement.ElseIf();
+                SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
 
                 elseIf.setCondition(this.exprParser.expr());
 
@@ -515,7 +515,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 stmt.getElseIfList().add(elseIf);
             } else {
-                OracleIfStatement.Else elseItem = new OracleIfStatement.Else();
+                SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
                 this.parseStatementList(elseItem.getStatements());
                 stmt.setElseItem(elseItem);
                 break;
