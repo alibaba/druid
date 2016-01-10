@@ -54,7 +54,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
@@ -89,7 +88,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
@@ -137,8 +135,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleSelectJoin x);
 
-    void endVisit(OracleOrderByItem x);
-
     void endVisit(OracleSelectPivot x);
 
     void endVisit(OracleSelectPivot.Item x);
@@ -178,8 +174,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleSelectHierachicalQueryClause x);
 
     boolean visit(OracleSelectJoin x);
-
-    boolean visit(OracleOrderByItem x);
 
     boolean visit(OracleSelectPivot x);
 
@@ -418,10 +412,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleAlterIndexStatement x);
 
     void endVisit(OracleAlterIndexStatement x);
-
-    boolean visit(OracleAlterTableAddConstaint x);
-
-    void endVisit(OracleAlterTableAddConstaint x);
 
     boolean visit(OraclePrimaryKey x);
 

@@ -51,7 +51,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
@@ -188,11 +187,11 @@ public class OracleSelectParser extends SQLSelectParser {
                     acceptIdentifier("FIRST");
                     accept(Token.BY);
 
-                    searchClause.getItems().add((OracleOrderByItem) exprParser.parseSelectOrderByItem());
+                    searchClause.getItems().add(exprParser.parseSelectOrderByItem());
 
                     while (lexer.token() == (Token.COMMA)) {
                         lexer.nextToken();
-                        searchClause.getItems().add((OracleOrderByItem) exprParser.parseSelectOrderByItem());
+                        searchClause.getItems().add(exprParser.parseSelectOrderByItem());
                     }
 
                     accept(Token.SET);

@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
@@ -72,7 +73,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint.Initially;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
@@ -877,8 +877,8 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     @Override
-    public OracleOrderByItem parseSelectOrderByItem() {
-        OracleOrderByItem item = new OracleOrderByItem();
+    public SQLSelectOrderByItem parseSelectOrderByItem() {
+        SQLSelectOrderByItem item = new SQLSelectOrderByItem();
 
         item.setExpr(expr());
 
@@ -894,10 +894,10 @@ public class OracleExprParser extends SQLExprParser {
             lexer.nextToken();
             if (identifierEquals("FIRST")) {
                 lexer.nextToken();
-                item.setNullsOrderType(OracleOrderByItem.NullsOrderType.NullsFirst);
+                item.setNullsOrderType(SQLSelectOrderByItem.NullsOrderType.NullsFirst);
             } else if (identifierEquals("LAST")) {
                 lexer.nextToken();
-                item.setNullsOrderType(OracleOrderByItem.NullsOrderType.NullsLast);
+                item.setNullsOrderType(SQLSelectOrderByItem.NullsOrderType.NullsLast);
             } else {
                 throw new ParserException("TODO " + lexer.token());
             }

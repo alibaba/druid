@@ -288,7 +288,7 @@ public class SQLSelectParser extends SQLParser {
                 lexer.nextToken();
                 acceptIdentifier("ROLLUP");
 
-                groupBy.setRollUp(true);
+                groupBy.setWithRollUp(true);
             }
             
             if(JdbcConstants.MYSQL.equals(getDbType()) && lexer.token() == Token.DESC) {
@@ -324,7 +324,7 @@ public class SQLSelectParser extends SQLParser {
                 lexer.nextToken();
                 acceptIdentifier("ROLLUP");
 
-                groupBy.setRollUp(true);
+                groupBy.setWithRollUp(true);
             }
             
             if(JdbcConstants.MYSQL.equals(getDbType()) && lexer.token() == Token.DESC) {

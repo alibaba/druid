@@ -744,7 +744,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             incrementIndent();
             for (int i = 0; i < itemSize; ++i) {
                 if (i != 0) {
-                    println(", ");
+                    if (groupItemSingleLine) {
+                        println(", ");                        
+                    } else {
+                        print(", ");
+                    }
                 }
                 x.getItems().get(i).accept(this);
             }
@@ -757,8 +761,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getHaving().accept(this);
         }
         
-        if (x.isRollUp()) {
+        if (x.isWithRollUp()) {
             print0(ucase ? " WITH ROLLUP" : " with rollup");
+        }
+        
+        if (x.isWithCube()) {
+            print0(ucase ? " WITH CUBE" : " with cube");
         }
         
         return false;
