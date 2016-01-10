@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
@@ -2565,6 +2566,41 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         decrementIndent();
         println();
         print0(ucase ? "END LOOP" : "end loop");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLParameter x) {
+        if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
+            print0(ucase ? "CURSOR " : "cursor ");
+            x.getName().accept(this);
+            print0(ucase ? " IS" : " is");
+            incrementIndent();
+            println();
+            SQLSelect select = ((SQLQueryExpr) x.getDefaultValue()).getSubQuery();
+            select.accept(this);
+            decrementIndent();
+
+        } else {
+
+            if (x.getParamType() == SQLParameter.ParameterType.IN) {
+                print0(ucase ? "IN " : "in ");
+            } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
+                print0(ucase ? "OUT " : "out ");
+            } else if (x.getParamType() == SQLParameter.ParameterType.INOUT) {
+                print0(ucase ? "INOUT " : "inout ");
+            }
+            x.getName().accept(this);
+            print(' ');
+
+            x.getDataType().accept(this);
+
+            if (x.getDefaultValue() != null) {
+                print0(" := ");
+                x.getDefaultValue().accept(this);
+            }
+        }
+
         return false;
     }
 

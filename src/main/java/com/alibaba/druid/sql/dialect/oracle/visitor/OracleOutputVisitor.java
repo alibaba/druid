@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
@@ -2512,38 +2511,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleLabelStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLParameter x) {
-        if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
-            print0(ucase ? "CURSOR " : "cursor ");
-            x.getName().accept(this);
-            print0(ucase ? " IS" : " is");
-            incrementIndent();
-            println();
-            SQLSelect select = ((SQLQueryExpr) x.getDefaultValue()).getSubQuery();
-            select.accept(this);
-            decrementIndent();
-
-        } else {
-            x.getName().accept(this);
-            print(' ');
-
-            x.getDataType().accept(this);
-
-            if (x.getDefaultValue() != null) {
-                print0(" := ");
-                x.getDefaultValue().accept(this);
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(SQLParameter x) {
 
     }
 

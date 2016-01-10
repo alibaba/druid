@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGIntervalExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
@@ -147,16 +146,6 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
 
     @Override
     public boolean visit(PGSelectQueryBlock x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGParameter x) {
-
-    }
-
-    @Override
-    public boolean visit(PGParameter x) {
         return true;
     }
 
