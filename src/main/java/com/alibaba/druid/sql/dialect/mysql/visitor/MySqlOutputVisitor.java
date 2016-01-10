@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
@@ -44,7 +43,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
@@ -3205,41 +3203,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         x.getBlock().accept(this);
         return false;
 	}
-
-    @Override
-    public boolean visit(SQLParameter x) {
-        if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
-            print0(ucase ? "CURSOR " : "cursor ");
-            x.getName().accept(this);
-            print0(ucase ? " IS" : " is");
-            incrementIndent();
-            println();
-            SQLSelect select = ((SQLQueryExpr) x.getDefaultValue()).getSubQuery();
-            select.accept(this);
-            decrementIndent();
-
-        } else {
-
-            if (x.getParamType() == SQLParameter.ParameterType.IN) {
-                print0(ucase ? "IN " : "in ");
-            } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
-                print0(ucase ? "OUT " : "out ");
-            } else if (x.getParamType() == SQLParameter.ParameterType.INOUT) {
-                print0(ucase ? "INOUT " : "inout ");
-            }
-            x.getName().accept(this);
-            print(' ');
-
-            x.getDataType().accept(this);
-
-            if (x.getDefaultValue() != null) {
-                print0(" := ");
-                x.getDefaultValue().accept(this);
-            }
-        }
-
-        return false;
-    }
 
 	@Override
 	public boolean visit(MySqlWhileStatement x) {
