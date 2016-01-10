@@ -1043,6 +1043,11 @@ public class SQLExprParser extends SQLParser {
             SQLOrderBy orderBy = new SQLOrderBy();
 
             lexer.nextToken();
+            
+            if (identifierEquals("SIBLINGS")) {
+                lexer.nextToken();
+                orderBy.setSibings(true);
+            }
 
             accept(Token.BY);
 

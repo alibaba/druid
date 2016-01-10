@@ -31,6 +31,9 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
     private List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
 
     private String                     type;
+    
+    // for mysql
+    private String                     using;
 
     public SQLCreateIndexStatement(){
 
@@ -74,6 +77,14 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
 
     public void setType(String type) {
         this.type = type;
+    }
+    
+    public String getUsing() {
+        return using;
+    }
+
+    public void setUsing(String using) {
+        this.using = using;
     }
 
     @Override

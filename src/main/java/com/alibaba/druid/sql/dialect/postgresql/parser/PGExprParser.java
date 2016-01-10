@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -67,32 +66,6 @@ public class PGExprParser extends SQLExprParser {
         return super.parseDataType();
     }
 
-    @Override
-    public PGOrderBy parseOrderBy() {
-        if (lexer.token() == (Token.ORDER)) {
-            PGOrderBy orderBy = new PGOrderBy();
-            lexer.nextToken();
-
-            if (identifierEquals("SIBLINGS")) {
-                lexer.nextToken();
-                orderBy.setSibings(true);
-            }
-
-            accept(Token.BY);
-
-            orderBy.addItem(parseSelectOrderByItem());
-
-            while (lexer.token() == (Token.COMMA)) {
-                lexer.nextToken();
-                orderBy.addItem(parseSelectOrderByItem());
-            }
-
-            return orderBy;
-        }
-
-        return null;
-    }
-    
     public SQLExpr primary() {
         if (lexer.token() == Token.ARRAY) {
             SQLArrayExpr array = new SQLArrayExpr();

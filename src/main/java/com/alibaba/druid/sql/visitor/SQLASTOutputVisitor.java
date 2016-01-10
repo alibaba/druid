@@ -136,8 +136,8 @@ import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
@@ -744,7 +744,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             incrementIndent();
             for (int i = 0; i < itemSize; ++i) {
                 if (i != 0) {
-                    println(", ");
+                    if (groupItemSingleLine) {
+                        println(", ");                        
+                    } else {
+                        print(", ");
+                    }
                 }
                 x.getItems().get(i).accept(this);
             }
@@ -757,8 +761,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getHaving().accept(this);
         }
         
-        if (x.isRollUp()) {
+        if (x.isWithRollUp()) {
             print0(ucase ? " WITH ROLLUP" : " with rollup");
+        }
+        
+        if (x.isWithCube()) {
+            print0(ucase ? " WITH CUBE" : " with cube");
         }
         
         return false;
@@ -846,7 +854,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     public boolean visit(SQLOrderBy x) {
         if (x.getItems().size() > 0) {
-            print0(ucase ? "ORDER BY " : "order by ");
+            if (x.isSibings()) {
+                print0(ucase ? "ORDER SIBLINGS BY " : "order siblings by ");
+            } else {
+                print0(ucase ? "ORDER BY " : "order by ");    
+            }
 
             printAndAccept(x.getItems(), ", ");
         }
@@ -1868,6 +1880,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(" (");
         printAndAccept(x.getItems(), ", ");
         print(')');
+        
+        // for mysql
+        if (x.getUsing() != null) {
+            print0(ucase ? " USING " : " using ");;
+            print0(x.getUsing());
+        }
 
         return false;
     }

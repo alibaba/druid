@@ -84,7 +84,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
@@ -116,7 +115,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlStartTransactionStatement().accept(adapter);
         new MySqlRollbackStatement().accept(adapter);
         new MySqlShowColumnsStatement().accept(adapter);
-        new MySqlShowTablesStatement().accept(adapter);
         new MySqlShowDatabasesStatement().accept(adapter);
         new MySqlShowWarningsStatement().accept(adapter);
         new MySqlShowStatusStatement().accept(adapter);
