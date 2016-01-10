@@ -37,10 +37,8 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLimit;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
@@ -357,14 +355,6 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
     }
 
     protected SQLOrderBy createOrderBy() {
-        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
-            return new PGOrderBy();
-        }
-
-        if (JdbcConstants.ORACLE.equals(dbType)) {
-            return new OracleOrderBy();
-        }
-
         return new SQLOrderBy();
     }
 

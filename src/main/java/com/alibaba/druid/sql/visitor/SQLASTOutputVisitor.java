@@ -136,8 +136,8 @@ import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
@@ -854,7 +854,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     public boolean visit(SQLOrderBy x) {
         if (x.getItems().size() > 0) {
-            print0(ucase ? "ORDER BY " : "order by ");
+            if (x.isSibings()) {
+                print0(ucase ? "ORDER SIBLINGS BY " : "order siblings by ");
+            } else {
+                print0(ucase ? "ORDER BY " : "order by ");    
+            }
 
             printAndAccept(x.getItems(), ", ");
         }
@@ -1876,6 +1880,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(" (");
         printAndAccept(x.getItems(), ", ");
         print(')');
+        
+        // for mysql
+        if (x.getUsing() != null) {
+            print0(ucase ? " USING " : " using ");;
+            print0(x.getUsing());
+        }
 
         return false;
     }

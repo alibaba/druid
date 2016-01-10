@@ -49,7 +49,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
@@ -347,19 +346,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
         }
 
-        return false;
-    }
-
-    public boolean visit(OracleOrderBy x) {
-        if (x.getItems().size() > 0) {
-            print0(ucase ? "ORDER " : "order ");
-            if (x.isSibings()) {
-                print0(ucase ? "SIBLINGS " : "siblings ");
-            }
-            print0(ucase ? "BY " : "by ");
-
-            printAndAccept(x.getItems(), ", ");
-        }
         return false;
     }
 
@@ -825,11 +811,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(SQLMethodInvokeExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleOrderBy x) {
 
     }
 

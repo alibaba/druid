@@ -21,10 +21,20 @@ import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlSelectGroupByExpr extends SQLExprImpl implements MySqlExpr {
+public class MySqlGroupByItemExpr extends SQLExprImpl implements MySqlExpr {
 
     protected SQLExpr                  expr;
     protected SQLOrderingSpecification type;
+    
+    public MySqlGroupByItemExpr() {
+        
+    }
+    
+    public MySqlGroupByItemExpr(SQLExpr expr, SQLOrderingSpecification type){
+        super();
+        this.expr = expr;
+        this.type = type;
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -64,7 +74,7 @@ public class MySqlSelectGroupByExpr extends SQLExprImpl implements MySqlExpr {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MySqlSelectGroupByExpr other = (MySqlSelectGroupByExpr) obj;
+        MySqlGroupByItemExpr other = (MySqlGroupByItemExpr) obj;
         if (expr != other.expr) {
             return false;
         }

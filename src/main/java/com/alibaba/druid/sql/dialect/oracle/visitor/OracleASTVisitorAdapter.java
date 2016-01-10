@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.oracle.visitor;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
@@ -169,11 +168,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public void endVisit(OracleOrderBy x) {
-
-    }
-
-    @Override
     public void endVisit(OracleOuterExpr x) {
 
     }
@@ -272,12 +266,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleIntervalExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleOrderBy x) {
 
         return true;
     }

@@ -88,6 +88,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
@@ -1438,5 +1439,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             this.variants.put(name.toString(), name);
         }
         return true;
+    }
+    
+    @Override
+    public boolean visit(SQLShowTablesStatement x) {
+        return false;
     }
 }

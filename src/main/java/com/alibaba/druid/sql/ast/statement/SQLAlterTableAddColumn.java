@@ -18,12 +18,20 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTableItem {
 
     private final List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
+    
+    
+    // for mysql
+    private SQLName firstColumn;
+    private SQLName afterColumn;
+
+    private boolean first;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -37,4 +45,27 @@ public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTab
         return columns;
     }
 
+    public SQLName getFirstColumn() {
+        return firstColumn;
+    }
+
+    public void setFirstColumn(SQLName first) {
+        this.firstColumn = first;
+    }
+
+    public boolean isFirst() {
+        return first;
+    }
+
+    public void setFirst(boolean first) {
+        this.first = first;
+    }
+
+    public SQLName getAfterColumn() {
+        return afterColumn;
+    }
+
+    public void setAfterColumn(SQLName after) {
+        this.afterColumn = after;
+    }
 }

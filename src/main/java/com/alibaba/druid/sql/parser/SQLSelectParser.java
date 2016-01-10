@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -34,6 +35,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlGroupByItemExpr;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLSelectParser extends SQLParser {
@@ -265,7 +267,7 @@ public class SQLSelectParser extends SQLParser {
 
             SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
             for (;;) {
-                SQLExpr item = this.exprParser.expr();
+                SQLExpr item = parseGroupByItem();
                 
                 item.setParent(groupBy);
                 groupBy.addItem(item);
@@ -291,10 +293,6 @@ public class SQLSelectParser extends SQLParser {
                 groupBy.setWithRollUp(true);
             }
             
-            if(JdbcConstants.MYSQL.equals(getDbType()) && lexer.token() == Token.DESC) {
-                lexer.nextToken(); // skip
-            }
-
             queryBlock.setGroupBy(groupBy);
         } else if (lexer.token() == (Token.HAVING)) {
             lexer.nextToken();
@@ -307,7 +305,7 @@ public class SQLSelectParser extends SQLParser {
                 accept(Token.BY);
 
                 for (;;) {
-                    SQLExpr item = this.exprParser.expr();
+                    SQLExpr item = parseGroupByItem();
                     
                     item.setParent(groupBy);
                     groupBy.addItem(item);
@@ -333,6 +331,21 @@ public class SQLSelectParser extends SQLParser {
 
             queryBlock.setGroupBy(groupBy);
         }
+    }
+
+    protected SQLExpr parseGroupByItem() {
+        SQLExpr item = this.exprParser.expr();
+        
+        if(JdbcConstants.MYSQL.equals(getDbType())) {
+            if (lexer.token() == Token.DESC) {
+                lexer.nextToken(); // skip
+                item =new MySqlGroupByItemExpr(item, SQLOrderingSpecification.DESC);
+            } else if (lexer.token() == Token.ASC) {
+                lexer.nextToken(); // skip
+                item =new MySqlGroupByItemExpr(item, SQLOrderingSpecification.ASC);
+            }
+        }
+        return item;
     }
 
     protected void parseSelectList(SQLSelectQueryBlock queryBlock) {

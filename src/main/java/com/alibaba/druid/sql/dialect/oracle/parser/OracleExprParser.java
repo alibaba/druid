@@ -47,7 +47,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause.FlashCacheType;
@@ -721,33 +720,6 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         return super.dotRest(expr);
-    }
-
-    @Override
-    public OracleOrderBy parseOrderBy() {
-        if (lexer.token() == (Token.ORDER)) {
-            OracleOrderBy orderBy = new OracleOrderBy();
-
-            lexer.nextToken();
-
-            if (identifierEquals("SIBLINGS")) {
-                lexer.nextToken();
-                orderBy.setSibings(true);
-            }
-
-            accept(Token.BY);
-
-            orderBy.addItem(parseSelectOrderByItem());
-
-            while (lexer.token() == (Token.COMMA)) {
-                lexer.nextToken();
-                orderBy.addItem(parseSelectOrderByItem());
-            }
-
-            return orderBy;
-        }
-
-        return null;
     }
 
     protected SQLAggregateExpr parseAggregateExpr(String methodName) {

@@ -33,13 +33,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlGroupByItemExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAlterColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
@@ -52,7 +51,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
@@ -120,7 +118,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -212,10 +209,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlShowColumnsStatement x);
 
     boolean visit(MySqlShowColumnsStatement x);
-
-    void endVisit(MySqlShowTablesStatement x);
-
-    boolean visit(MySqlShowTablesStatement x);
 
     void endVisit(MySqlShowDatabasesStatement x);
 
@@ -445,14 +438,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlAlterTableStatement x);
 
-    boolean visit(MySqlAlterTableAddColumn x);
-
-    void endVisit(MySqlAlterTableAddColumn x);
-
-    boolean visit(MySqlCreateIndexStatement x);
-
-    void endVisit(MySqlCreateIndexStatement x);
-
     boolean visit(MySqlRenameTableStatement.Item x);
 
     void endVisit(MySqlRenameTableStatement.Item x);
@@ -569,9 +554,9 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlHintStatement x);
     
-    boolean visit(MySqlSelectGroupByExpr x);
+    boolean visit(MySqlGroupByItemExpr x);
 
-    void endVisit(MySqlSelectGroupByExpr x);
+    void endVisit(MySqlGroupByItemExpr x);
 	
 	/**
 	 * support procedure

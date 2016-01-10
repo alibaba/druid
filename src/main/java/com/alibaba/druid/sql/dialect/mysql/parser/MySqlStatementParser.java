@@ -35,6 +35,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
@@ -50,6 +51,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -62,6 +64,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -76,7 +79,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAlterColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
@@ -89,7 +91,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
@@ -153,7 +154,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -392,7 +392,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.CREATE);
         }
 
-        MySqlCreateIndexStatement stmt = new MySqlCreateIndexStatement();
+        SQLCreateIndexStatement stmt = new SQLCreateIndexStatement();
 
         if (lexer.token() == Token.UNIQUE) {
             stmt.setType("UNIQUE");
@@ -434,7 +434,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    private void parseCreateIndexUsing(MySqlCreateIndexStatement stmt) {
+    private void parseCreateIndexUsing(SQLCreateIndexStatement stmt) {
         if (identifierEquals("USING")) {
             lexer.nextToken();
 
@@ -779,7 +779,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (identifierEquals(TABLES)) {
             lexer.nextToken();
 
-            MySqlShowTablesStatement stmt = parseShowTabless();
+            SQLShowTablesStatement stmt = parseShowTabless();
             stmt.setFull(full);
 
             return stmt;
@@ -1474,8 +1474,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    private MySqlShowTablesStatement parseShowTabless() {
-        MySqlShowTablesStatement stmt = new MySqlShowTablesStatement();
+    private SQLShowTablesStatement parseShowTabless() {
+        SQLShowTablesStatement stmt = new SQLShowTablesStatement();
 
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
@@ -2555,7 +2555,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             parenFlag = true;
         }
         
-        MySqlAlterTableAddColumn item = new MySqlAlterTableAddColumn();
+        SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
         for (;;) {
             
             SQLColumnDefinition columnDef = this.exprParser.parseColumn();
