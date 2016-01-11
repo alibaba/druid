@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
@@ -2601,6 +2602,12 @@ public class MySqlStatementParser extends SQLStatementParser {
             SQLName indexName = this.exprParser.name();
             SQLAlterTableDropForeignKey item = new SQLAlterTableDropForeignKey();
             item.setIndexName(indexName);
+            stmt.getItems().add(item);
+        } else if (lexer.token() == Token.KEY) {
+            lexer.nextToken();
+            SQLName keyName = this.exprParser.name();
+            SQLAlterTableDropKey item = new SQLAlterTableDropKey();
+            item.setKeyName(keyName);
             stmt.getItems().add(item);
         } else if (lexer.token() == Token.PRIMARY) {
             lexer.nextToken();
