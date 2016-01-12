@@ -2688,6 +2688,14 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.DATABASE);
 
         SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement(JdbcConstants.MYSQL);
+        
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.NOT);
+            accept(Token.EXISTS);
+            stmt.setIfNotExists(true);
+        }
+        
         stmt.setName(this.exprParser.name());
 
         if (lexer.token() == Token.DEFAULT) {

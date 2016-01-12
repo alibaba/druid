@@ -1601,6 +1601,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     @Override
     public boolean visit(SQLCreateDatabaseStatement x) {
         print0(ucase ? "CREATE DATABASE " : "create database ");
+        if (x.isIfNotExists()) {
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");    
+        }
         x.getName().accept(this);
         return false;
     }
