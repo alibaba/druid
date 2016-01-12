@@ -81,6 +81,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLExprParser extends SQLParser {
 
@@ -1486,6 +1487,14 @@ public class SQLExprParser extends SQLParser {
 
         SQLName typeExpr = name();
         String typeName = typeExpr.toString();
+        
+        if ("long".equalsIgnoreCase(typeName) // 
+                && identifierEquals("byte") //
+                && JdbcConstants.MYSQL.equals(getDbType()) //
+                ) {
+            typeName += (' ' + lexer.stringVal());
+            lexer.nextToken();
+        }
 
         if (isCharType(typeName)) {
             SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
@@ -1505,7 +1514,7 @@ public class SQLExprParser extends SQLParser {
             typeName += ' ' + lexer.stringVal();
             lexer.nextToken();
         }
-
+        
         SQLDataType dataType = new SQLDataTypeImpl(typeName);
         return parseDataTypeRest(dataType);
     }
