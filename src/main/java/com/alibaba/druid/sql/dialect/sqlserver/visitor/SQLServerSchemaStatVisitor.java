@@ -17,13 +17,13 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -177,18 +177,8 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     }
 
     @Override
-    public boolean visit(SQLServerDeclareItem x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerDeclareItem x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerDeclareStatement x) {
-        for (SQLServerDeclareItem item : x.getItems()) {
+        for (SQLDeclareItem item : x.getItems()) {
             item.setParent(x);
 
             SQLExpr name = item.getName();

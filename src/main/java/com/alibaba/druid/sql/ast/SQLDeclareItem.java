@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.sqlserver.ast;
+package com.alibaba.druid.sql.ast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLServerDeclareItem extends SQLServerObjectImpl {
+public class SQLDeclareItem extends SQLObjectImpl {
 
     protected Type                  type;
 
@@ -36,7 +34,7 @@ public class SQLServerDeclareItem extends SQLServerObjectImpl {
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
     @Override
-    public void accept0(SQLServerASTVisitor visitor) {
+    protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.name);
             acceptChild(visitor, this.dataType);

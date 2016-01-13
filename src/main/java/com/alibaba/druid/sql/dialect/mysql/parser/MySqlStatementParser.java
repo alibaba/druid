@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -29,7 +30,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -378,7 +378,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return parseCreateTrigger();
         }
         //parse create procedure
- 		if (lexer.token() == Token.PROCEDURE) {
+ 		if (lexer.token() == Token.PROCEDURE || identifierEquals("DEFINER")) {
  			if (replace) {
  				lexer.reset(markBp, markChar, Token.CREATE);
  			}
@@ -2765,12 +2765,19 @@ public class MySqlStatementParser extends SQLStatementParser {
 		 */
 	    SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
 
-		accept(Token.CREATE);
-		if (lexer.token() == Token.OR) {
-			lexer.nextToken();
-			accept(Token.REPLACE);
-			stmt.setOrReplace(true);
-		}
+	    if(identifierEquals("DEFINER")) {
+	        lexer.nextToken();
+	        accept(Token.EQ);
+	        SQLName definer = this.exprParser.name();
+	        stmt.setDefiner(definer);
+        } else {
+            accept(Token.CREATE);
+            if (lexer.token() == Token.OR) {
+                lexer.nextToken();
+                accept(Token.REPLACE);
+                stmt.setOrReplace(true);
+            }
+        }
 
 		accept(Token.PROCEDURE);
 
@@ -2793,6 +2800,10 @@ public class MySqlStatementParser extends SQLStatementParser {
 	 * @param parameters
 	 */
 	private void parserParameters(List<SQLParameter> parameters) {
+	    if (lexer.token() == Token.RPAREN) {
+	        return;
+	    }
+	    
 		for (;;) {
 		    SQLParameter parameter = new SQLParameter();
 
@@ -3264,37 +3275,35 @@ public class MySqlStatementParser extends SQLStatementParser {
 	/**
 	 * parse declare statement
 	 */
-	public MySqlDeclareStatement parseDeclare()
-	{
-		MySqlDeclareStatement stmt=new MySqlDeclareStatement();
-		accept(Token.DECLARE);
-		//lexer.nextToken();
-		for(;;)
-		{
-			SQLExpr var = exprParser.primary();
-			if (var instanceof SQLIdentifierExpr) {
-	            var = new SQLVariantRefExpr(((SQLIdentifierExpr) var).getName());
-	        }
-			stmt.addVar(var);
-			if(lexer.token()==Token.COMMA)
-			{
-				accept(Token.COMMA);
-				continue;
-			}
-			else if(lexer.token()!=Token.EOF)
-			{
-				//var type
-				stmt.setType(exprParser.parseDataType());
-				break;
-			}
-			else
-			{
-				setErrorEndPos(lexer.pos());
-	            printError(lexer.token());
-			}
-		}
-		return stmt;		
-	}
+    public MySqlDeclareStatement parseDeclare() {
+        MySqlDeclareStatement stmt = new MySqlDeclareStatement();
+        accept(Token.DECLARE);
+        // lexer.nextToken();
+        for (;;) {
+            SQLDeclareItem item = new SQLDeclareItem();
+            item.setName(exprParser.name());
+            
+            stmt.addVar(item);
+            if (lexer.token() == Token.COMMA) {
+                accept(Token.COMMA);
+                continue;
+            } else if (lexer.token() != Token.EOF) {
+                // var type
+                item.setDataType(exprParser.parseDataType());
+                
+                if (lexer.token() == Token.DEFAULT) {
+                    lexer.nextToken();
+                    SQLExpr defaultValue = this.exprParser.primary();
+                    item.setValue(defaultValue);
+                }
+                
+                break;
+            } else {
+                throw new ParserException("TODO");
+            }
+        }
+        return stmt;
+    }
 	
 	/**
 	 * parse assign statement

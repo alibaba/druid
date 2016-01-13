@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.visitor;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -1364,6 +1365,15 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     @Override
     public void endVisit(SQLAlterTableDropKey x) {
         
+    }
+
+    @Override
+    public boolean visit(SQLDeclareItem x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDeclareItem x) {
     }
     
 }

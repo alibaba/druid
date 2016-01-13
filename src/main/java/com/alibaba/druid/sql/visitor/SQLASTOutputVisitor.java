@@ -28,6 +28,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -166,6 +167,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements PrintableVisitor {
 
@@ -178,7 +180,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     protected boolean          groupItemSingleLine    = false;
 
-    private List<Object> parameters;
+    private List<Object>       parameters;
+
+    protected String           dbType;
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
@@ -2613,6 +2617,53 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDeclareItem x) {
+        x.getName().accept(this);
+        
+        if(x.getType() == SQLDeclareItem.Type.TABLE) {
+            print0(ucase ? " TABLE" : " table");
+            int size = x.getTableElementList().size();
+
+            if (size > 0) {
+                print0(" (");
+                incrementIndent();
+                println();
+                for (int i = 0; i < size; ++i) {
+                    if (i != 0) {
+                        print(',');
+                        println();
+                    }
+                    x.getTableElementList().get(i).accept(this);
+                }
+                decrementIndent();
+                println();
+                print(')');
+            }
+        } else if (x.getType() == SQLDeclareItem.Type.CURSOR) {
+            print0(ucase ? " CURSOR" : " cursor");
+        } else {
+            if (x.getDataType() != null) {
+                print(' ');
+                x.getDataType().accept(this);
+            }
+            if (x.getValue() != null) {
+                if (JdbcConstants.MYSQL.equals(getDbType())) {
+                    print0(ucase ? " DEFAULT " : " default ");
+                } else {
+                    print0(" = ");
+                }
+                x.getValue().accept(this);
+            }
+        }
+        
+        return false;
+    }
+    
+    public String getDbType() {
+        return dbType;
     }
 
     public boolean isUppCase() {

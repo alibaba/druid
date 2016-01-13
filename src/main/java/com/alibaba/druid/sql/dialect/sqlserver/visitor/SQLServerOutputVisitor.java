@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -427,48 +426,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public void endVisit(SQLServerOutput x) {
 
-    }
-
-    @Override
-    public boolean visit(SQLServerDeclareItem x) {
-        x.getName().accept(this);
-        
-        if(x.getType() == SQLServerDeclareItem.Type.TABLE) {
-            print0(ucase ? " TABLE" : " table");
-            int size = x.getTableElementList().size();
-
-            if (size > 0) {
-                print0(" (");
-                incrementIndent();
-                println();
-                for (int i = 0; i < size; ++i) {
-                    if (i != 0) {
-                        print(',');
-                        println();
-                    }
-                    x.getTableElementList().get(i).accept(this);
-                }
-                decrementIndent();
-                println();
-                print(')');
-            }
-        } else if (x.getType() == SQLServerDeclareItem.Type.CURSOR) {
-            print0(ucase ? " CURSOR" : " cursor");
-        } else {
-            print(' ');
-            x.getDataType().accept(this);
-            if (x.getValue() != null) {
-                print0(" = ");
-                x.getValue().accept(this);
-            }
-        }
-        
-        return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerDeclareItem x) {
-        
     }
 
     @Override
