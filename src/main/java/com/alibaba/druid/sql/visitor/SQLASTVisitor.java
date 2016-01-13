@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.visitor;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
@@ -681,4 +682,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableDropKey x);
     
     void endVisit(SQLAlterTableDropKey x);
+    
+    boolean visit(SQLDeclareItem x);
+    
+    void endVisit(SQLDeclareItem x);
 }

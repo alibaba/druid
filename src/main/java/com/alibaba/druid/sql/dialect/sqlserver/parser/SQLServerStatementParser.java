@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -34,7 +35,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
@@ -171,7 +171,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         SQLServerDeclareStatement declareStatement = new SQLServerDeclareStatement();
         
         for (;;) {
-            SQLServerDeclareItem item = new  SQLServerDeclareItem();
+            SQLDeclareItem item = new  SQLDeclareItem();
             declareStatement.getItems().add(item);
             
             item.setName(this.exprParser.name());
@@ -182,7 +182,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
             if (lexer.token() == Token.TABLE) {
                 lexer.nextToken();
-                item.setType(SQLServerDeclareItem.Type.TABLE);
+                item.setType(SQLDeclareItem.Type.TABLE);
                 
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
@@ -221,10 +221,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 }
                 break;
             } else if (lexer.token() == Token.CURSOR) {
-                item.setType(SQLServerDeclareItem.Type.CURSOR);
+                item.setType(SQLDeclareItem.Type.CURSOR);
                 lexer.nextToken();
             } else {
-                item.setType(SQLServerDeclareItem.Type.LOCAL);
+                item.setType(SQLDeclareItem.Type.LOCAL);
                 item.setDataType(this.exprParser.parseDataType());
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();

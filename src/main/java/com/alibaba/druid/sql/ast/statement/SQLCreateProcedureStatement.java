@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
+    private SQLName            definer;
+
     private boolean            orReplace;
     private SQLName            name;
     private SQLStatement       block;
@@ -34,6 +36,7 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, definer);
             acceptChild(visitor, name);
             acceptChild(visitor, parameters);
             acceptChild(visitor, block);
@@ -71,6 +74,15 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
     public void setOrReplace(boolean orReplace) {
         this.orReplace = orReplace;
+    }
+
+    public SQLName getDefiner() {
+        return definer;
+    }
+
+    
+    public void setDefiner(SQLName definer) {
+        this.definer = definer;
     }
 
 }

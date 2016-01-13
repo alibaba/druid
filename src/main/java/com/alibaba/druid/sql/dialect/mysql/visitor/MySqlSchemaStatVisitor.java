@@ -17,11 +17,10 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import java.util.Map;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -1359,11 +1358,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
 	@Override
 	public boolean visit(MySqlDeclareStatement x) {
-        for (SQLExpr item : x.getVarList()) {
+        for (SQLDeclareItem item : x.getVarList()) {
             item.setParent(x);
 
-            SQLVariantRefExpr var = (SQLVariantRefExpr)item;
-            this.variants.put(var.getName(), var);
+            SQLName var = (SQLName)item.getName();
+            this.variants.put(var.toString(), var);
         }
         
 		return false;

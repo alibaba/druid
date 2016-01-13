@@ -164,8 +164,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTVisitor {
+    {
+        this.dbType = JdbcConstants.MYSQL;
+    }
 
     public MySqlOutputVisitor(Appendable appender){
         super(appender);
@@ -3179,8 +3183,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         int paramSize = x.getParameters().size();
 
+        print0(" (");
         if (paramSize > 0) {
-            print0(" (");
             incrementIndent();
             println();
 
@@ -3195,8 +3199,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
             decrementIndent();
             println();
-            print(')');
         }
+        print(')');
 
         println();
         x.getBlock().setParent(x);
@@ -3317,13 +3321,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 	@Override
 	public boolean visit(MySqlDeclareStatement x) {
 		print0(ucase ? "DECLARE " : "declare ");
-		for (int i = 0; i < x.getVarList().size(); i++) {
-			x.getVarList().get(i).accept(this);
-			if(i!=x.getVarList().size()-1)
-				print0(", ");
-		}
-		print(' ');
-		x.getType().accept(this);
+		printAndAccept(x.getVarList(), ", ");
 		return false;
 	}
 
