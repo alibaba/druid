@@ -35,7 +35,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlGroupByItemExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLSelectParser extends SQLParser {
@@ -339,10 +339,10 @@ public class SQLSelectParser extends SQLParser {
         if(JdbcConstants.MYSQL.equals(getDbType())) {
             if (lexer.token() == Token.DESC) {
                 lexer.nextToken(); // skip
-                item =new MySqlGroupByItemExpr(item, SQLOrderingSpecification.DESC);
+                item =new MySqlOrderingExpr(item, SQLOrderingSpecification.DESC);
             } else if (lexer.token() == Token.ASC) {
                 lexer.nextToken(); // skip
-                item =new MySqlGroupByItemExpr(item, SQLOrderingSpecification.ASC);
+                item =new MySqlOrderingExpr(item, SQLOrderingSpecification.ASC);
             }
         }
         return item;
