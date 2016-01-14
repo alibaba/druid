@@ -757,6 +757,13 @@ public class MySqlExprParser extends SQLExprParser {
             SQLName indexName = name();
             unique.setIndexName(indexName);
         }
+        
+        //5.5语法 USING BTREE 放在index 名字后
+        if (identifierEquals("USING")) {
+            lexer.nextToken();
+            unique.setIndexType(lexer.stringVal());
+            lexer.nextToken();
+        }
 
         accept(Token.LPAREN);
         for (;;) {
