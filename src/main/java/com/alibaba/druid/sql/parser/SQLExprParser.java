@@ -389,10 +389,9 @@ public class SQLExprParser extends SQLParser {
                     SQLExpr notTarget = expr();
 
                     accept(Token.RPAREN);
-                    notTarget = exprRest(notTarget);
-
+                    notTarget = relationalRest(notTarget);
                     sqlExpr = new SQLNotExpr(notTarget);
-
+                    
                     return primaryRest(sqlExpr);
                 } else {
                     SQLExpr restExpr = relational();

@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsDescStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
@@ -259,6 +260,16 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
 
     @Override
     public boolean visit(OdpsDescStmt x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OdpsLateralViewTableSource x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OdpsLateralViewTableSource x) {
         return true;
     }
 }

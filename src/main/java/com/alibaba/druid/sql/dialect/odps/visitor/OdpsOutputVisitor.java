@@ -41,6 +41,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsDescStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
@@ -845,6 +846,26 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             printAndAccept(x.getPartition(), ", ");
             print(')');
         }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsLateralViewTableSource x) {
+        
+    }
+
+    @Override
+    public boolean visit(OdpsLateralViewTableSource x) {
+        x.getTableSource().accept(this);
+        incrementIndent();
+        println();
+        print0(ucase ? "LATERAL VIEW " : "lateral view ");
+        x.getMethod().accept(this);
+        print(' ');
+        print0(x.getAlias());
+        print0(ucase ? " AS " : " as ");
+        printAndAccept(x.getColumns(), ", ");
+        decrementIndent();
         return false;
     }
 }
