@@ -1,7 +1,9 @@
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import junit.framework.TestCase;
 import org.junit.Assert;
@@ -54,5 +56,16 @@ public class MySQLCharSetTest extends TestCase{
         System.out.println(sqlStatements.get(0).toString());
         Assert.assertTrue(sqlStatements.get(0).toString().equals(resultSql));
 
+    }
+
+    public void testHasMinusChar() {
+        String stmt = "SHOW FULL TABLES FROM 'crm-ds' WHERE Table_type != 'VIEW'";
+
+        MySqlStatementParser parser = new MySqlStatementParser(stmt);
+        MySqlShowTablesStatement statement = (MySqlShowTablesStatement) parser.parseStatement();
+
+        SQLName database = statement.getDatabase();
+
+        Assert.assertEquals("'crm-ds'", database.getSimpleName());
     }
 }
