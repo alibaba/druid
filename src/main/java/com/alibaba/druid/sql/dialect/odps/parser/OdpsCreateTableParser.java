@@ -73,6 +73,10 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         } else {
             accept(Token.LPAREN);
             
+            if (lexer.isKeepComments() && lexer.hasComment()) {
+                stmt.addBodyBeforeComment(lexer.readAndResetComments());
+            }
+            
             for (;;) {
                 if (lexer.token() != Token.IDENTIFIER) {
                     throw new ParserException("expect identifier");

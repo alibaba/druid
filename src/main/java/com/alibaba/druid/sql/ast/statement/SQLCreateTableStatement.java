@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
@@ -119,4 +120,37 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
         visitor.endVisit(this);
     }
+    
+    @SuppressWarnings("unchecked")
+    public void addBodyBeforeComment(List<String> comments) {
+        if (attributes == null) {
+            attributes = new HashMap<String, Object>(1);
+        }
+        
+        List<String> attrComments = (List<String>) attributes.get("format.body_before_comment");
+        if (attrComments == null) {
+            attributes.put("format.body_before_comment", comments);
+        } else {
+            attrComments.addAll(comments);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<String> getBodyBeforeCommentsDirect() {
+        if (attributes == null) {
+            return null;
+        }
+        
+        return (List<String>) attributes.get("format.body_before_comment");
+    }
+    
+    public boolean hasBodyBeforeComment() {
+        List<String> comments = getBodyBeforeCommentsDirect();
+        if (comments == null) {
+            return false;
+        }
+        
+        return !comments.isEmpty();
+    }
+    
 }
