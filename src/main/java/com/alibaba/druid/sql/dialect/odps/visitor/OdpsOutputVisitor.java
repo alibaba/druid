@@ -96,6 +96,12 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         int size = x.getTableElementList().size();
         if (size > 0) {
             print0(" (");
+            
+            if (this.isPrettyFormat() && x.hasBodyBeforeComment()) {
+                print(' ');
+                printComment(x.getBodyBeforeCommentsDirect(), "");
+            }
+            
             incrementIndent();
             println();
             for (int i = 0; i < size; ++i) {
