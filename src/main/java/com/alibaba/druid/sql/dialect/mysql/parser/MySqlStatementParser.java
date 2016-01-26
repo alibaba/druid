@@ -2705,6 +2705,21 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.HINT) {
             stmt.setHints(this.exprParser.parseHints());
         }
+        
+        if (identifierEquals("CHARACTER")) {
+            lexer.nextToken();
+            accept(Token.SET);
+            String charset = lexer.stringVal();
+            accept(Token.IDENTIFIER);
+            stmt.setCharacterSet(charset);
+        }
+        
+        if (identifierEquals("COLLATE")) {
+            lexer.nextToken();
+            String collate = lexer.stringVal();
+            accept(Token.IDENTIFIER);
+            stmt.setCollate(collate);
+        }
 
         return stmt;
     }

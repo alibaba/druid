@@ -1609,6 +1609,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");    
         }
         x.getName().accept(this);
+        
+        if (x.getCharacterSet() != null) {
+            print0(ucase ? " CHARACTER SET " : " character set ");
+            print0(x.getCharacterSet());
+        }
+        
+        if (x.getCollate() != null) {
+            print0(ucase ? " COLLATE " : " collate ");
+            print0(x.getCollate());
+        }
+        
         return false;
     }
 
