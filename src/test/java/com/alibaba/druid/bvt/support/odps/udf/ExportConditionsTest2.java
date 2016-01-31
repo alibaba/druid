@@ -6,11 +6,11 @@ import com.alibaba.druid.support.opds.udf.ExportConditions;
 
 import junit.framework.TestCase;
 
-public class ExportConditionsTest extends TestCase {
+public class ExportConditionsTest2 extends TestCase {
     ExportConditions udf = new ExportConditions();
     
     public void test_export_conditions() throws Exception {
-        String result = udf.evaluate("select * from t where id = 3 and name = 'chensheng'");
-        Assert.assertEquals("[[\"t\",\"id\",\"=\",3],[\"t\",\"name\",\"=\",\"chensheng\"]]", result);
+        String result = udf.evaluate("select * from t where proof_account is not null");
+        Assert.assertEquals("[[\"t\",\"proof_account\",\"IS NOT\",null]]", result);
     }
 }

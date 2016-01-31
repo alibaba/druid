@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.aliyun.odps.udf.UDF;
@@ -45,12 +46,13 @@ public class ExportConditions extends UDF {
             List<Condition> conditions = visitor.getConditions();
             for (int i = 0; i < conditions.size(); ++i) {
                 TableStat.Condition condition = conditions.get(i);
-                String column = condition.getColumn().toString();
+                Column column = condition.getColumn();
                 String operator = condition.getOperator();
                 List<Object> values = condition.getValues();
                 
                 List<Object> row = new ArrayList<Object>();
-                row.add(column);
+                row.add(column.getTable());
+                row.add(column.getName());
                 row.add(operator);
                 if (values.size() == 0) {
                     row.add(null);

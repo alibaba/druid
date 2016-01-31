@@ -383,6 +383,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case GreaterThan:
             case GreaterThanOrEqual:
             case LessThan:
+            case LessThanOrGreater:
             case LessThanOrEqual:
             case LessThanOrEqualOrGreaterThan:
             case Like:
@@ -458,6 +459,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap == null) {
             return null;
+        }
+        
+        if (expr instanceof SQLMethodInvokeExpr) {
+            SQLMethodInvokeExpr methodInvokeExp = (SQLMethodInvokeExpr) expr;
+            if (methodInvokeExp.getParameters().size() == 1) {
+                SQLExpr firstExpr = methodInvokeExp.getParameters().get(0);
+                return getColumn(firstExpr);
+            }
         }
 
         if (expr instanceof SQLPropertyExpr) {
