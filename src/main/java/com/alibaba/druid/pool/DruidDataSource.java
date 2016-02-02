@@ -166,7 +166,7 @@ public class DruidDataSource extends DruidAbstractDataSource
     public static ThreadLocal<Long>          waitNanosLocal          = new ThreadLocal<Long>();
 
     private boolean                          logDifferentThread      = true;
-
+    
     public DruidDataSource(){
         this(false);
     }
@@ -640,8 +640,8 @@ public class DruidDataSource extends DruidAbstractDataSource
             try {
                 // init connections
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
-                    Connection conn = createPhysicalConnection();
-                    DruidConnectionHolder holder = new DruidConnectionHolder(this, conn);
+                    PhysicalConnectionInfo pyConnectInfo = createPhysicalConnection();
+                    DruidConnectionHolder holder = new DruidConnectionHolder(this, pyConnectInfo);
                     connections[poolingCount] = holder;
                     incrementPoolingCount();
                 }
@@ -1530,6 +1530,9 @@ public class DruidDataSource extends DruidAbstractDataSource
             decrementPoolingCount();
             DruidConnectionHolder last = connections[poolingCount];
             connections[poolingCount] = null;
+            
+            long waitNanos = nanos - estimate;
+            last.setLastNotEmptyWaitNanos(waitNanos);
 
             return last;
         }
@@ -1726,10 +1729,10 @@ public class DruidDataSource extends DruidAbstractDataSource
         return removeAbandonedCount;
     }
 
-    protected void put(Connection connection) {
+    protected void put(PhysicalConnectionInfo physicalConnectionInfo) {
         DruidConnectionHolder holder = null;
         try {
-            holder = new DruidConnectionHolder(DruidDataSource.this, connection);
+            holder = new DruidConnectionHolder(DruidDataSource.this, physicalConnectionInfo);
         } catch (SQLException ex) {
             lock.lock();
             try {
@@ -1799,10 +1802,10 @@ public class DruidDataSource extends DruidAbstractDataSource
                     lock.unlock();
                 }
 
-                Connection connection = null;
+                PhysicalConnectionInfo physicalConnection = null;
 
                 try {
-                    connection = createPhysicalConnection();
+                    physicalConnection = createPhysicalConnection();
                 } catch (SQLException e) {
                     LOG.error("create connection error, url: " + jdbcUrl, e);
 
@@ -1837,11 +1840,11 @@ public class DruidDataSource extends DruidAbstractDataSource
                     break;
                 }
 
-                if (connection == null) {
+                if (physicalConnection == null) {
                     continue;
                 }
 
-                put(connection);
+                put(physicalConnection);
                 break;
             }
         }
@@ -1886,7 +1889,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     lock.unlock();
                 }
 
-                Connection connection = null;
+                PhysicalConnectionInfo connection = null;
 
                 try {
                     connection = createPhysicalConnection();
@@ -2704,8 +2707,8 @@ public class DruidDataSource extends DruidAbstractDataSource
 
             DruidConnectionHolder holder;
             try {
-                Connection conn = createPhysicalConnection();
-                holder = new DruidConnectionHolder(this, conn);
+                PhysicalConnectionInfo pyConnInfo = createPhysicalConnection();
+                holder = new DruidConnectionHolder(this, pyConnInfo);
             } catch (SQLException e) {
                 LOG.error("fill connection error, url: " + this.jdbcUrl, e);
                 connectErrorCount.incrementAndGet();
@@ -2774,7 +2777,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         CreateConnectionTask task = new CreateConnectionTask();
         createScheduler.submit(task);
     }
-
+    
     @Override
     public ObjectName preRegister(MBeanServer server, ObjectName name) throws Exception {
         //do nothing

@@ -1393,7 +1393,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return conn;
     }
 
-    public Connection createPhysicalConnection() throws SQLException {
+    public PhysicalConnectionInfo createPhysicalConnection() throws SQLException {
         String url = this.getUrl();
         Properties connectProperties = getConnectProperties();
 
@@ -1436,18 +1436,22 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         Connection conn;
 
-        long startNano = System.nanoTime();
-
+        long connectStartNanos = System.nanoTime();
+        long connectedNanos, initedNanos, validatedNanos;
         try {
             conn = createPhysicalConnection(url, physicalConnectProperties);
+            connectedNanos = System.nanoTime();
 
             if (conn == null) {
                 throw new SQLException("connect error, url " + url + ", driverClass " + this.driverClass);
             }
 
             initPhysicalConnection(conn);
+            initedNanos = System.nanoTime();
 
             validateConnection(conn);
+            validatedNanos = System.nanoTime();
+            
             createError = null;
         } catch (SQLException ex) {
             createErrorCount.incrementAndGet();
@@ -1465,11 +1469,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             createErrorCount.incrementAndGet();
             throw ex;
         } finally {
-            long nano = System.nanoTime() - startNano;
+            long nano = System.nanoTime() - connectStartNanos;
             createTimespan += nano;
         }
 
-        return conn;
+        return new PhysicalConnectionInfo(conn, connectStartNanos, connectedNanos, initedNanos, validatedNanos);
     }
 
     public void initPhysicalConnection(Connection conn) throws SQLException {
@@ -1752,5 +1756,50 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
         
         this.maxCreateTaskCount = maxCreateTaskCount;
+    }
+    
+    static class PhysicalConnectionInfo {
+        private Connection connection;
+        private long connectStartNanos;
+        private long connectedNanos;
+        private long initedNanos;
+        private long validatedNanos;
+        
+        public PhysicalConnectionInfo(Connection connection //
+                                      , long connectStartNanos //
+                                      , long connectedNanos //
+                                      , long initedNanos //
+                                      , long validatedNanos) {
+            this.connection = connection;
+            
+            this.connectStartNanos = connectStartNanos;
+            this.connectedNanos = connectedNanos;
+            this.initedNanos = initedNanos;
+            this.validatedNanos = validatedNanos;
+        }
+        
+        public Connection getPhysicalConnection() {
+            return connection;
+        }
+
+        public long getConnectStartNanos() {
+            return connectStartNanos;
+        }
+        
+        public long getConnectedNanos() {
+            return connectedNanos;
+        }
+        
+        public long getInitedNanos() {
+            return initedNanos;
+        }
+
+        public long getValidatedNanos() {
+            return validatedNanos;
+        }
+        
+        public long getConnectNanoSpan() {
+            return connectedNanos - connectStartNanos;
+        }
     }
 }
