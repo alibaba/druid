@@ -244,6 +244,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     
     private boolean                                    asyncCloseConnectionEnable                = false;
     protected int                                      maxCreateTaskCount                        = 3;
+    protected boolean                                  failFast                                  = false;
     protected ScheduledExecutorService                 destroyScheduler;
     protected ScheduledExecutorService                 createScheduler;
 
@@ -1454,16 +1455,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             
             createError = null;
         } catch (SQLException ex) {
-            createErrorCount.incrementAndGet();
-            createError = ex;
-            lastCreateError = ex;
-            lastCreateErrorTimeMillis = System.currentTimeMillis();
+            setCreateError(ex);
             throw ex;
         } catch (RuntimeException ex) {
-            createErrorCount.incrementAndGet();
-            createError = ex;
-            lastCreateError = ex;
-            lastCreateErrorTimeMillis = System.currentTimeMillis();
+            setCreateError(ex);
             throw ex;
         } catch (Error ex) {
             createErrorCount.incrementAndGet();
@@ -1474,6 +1469,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         return new PhysicalConnectionInfo(conn, connectStartNanos, connectedNanos, initedNanos, validatedNanos);
+    }
+
+    protected void setCreateError(Throwable ex) {
+        createErrorCount.incrementAndGet();
+        long now = System.currentTimeMillis();
+        lock.lock();
+        try {
+            createError = ex;
+            lastCreateError = ex;
+            lastCreateErrorTimeMillis = now;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void initPhysicalConnection(Connection conn) throws SQLException {
@@ -1758,7 +1766,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.maxCreateTaskCount = maxCreateTaskCount;
     }
     
-    static class PhysicalConnectionInfo {
+    public boolean isFailFast() {
+        return failFast;
+    }
+    
+    public void setFailFast(boolean failFast) {
+        this.failFast = failFast;
+    }
+
+    public static class PhysicalConnectionInfo {
         private Connection connection;
         private long connectStartNanos;
         private long connectedNanos;
