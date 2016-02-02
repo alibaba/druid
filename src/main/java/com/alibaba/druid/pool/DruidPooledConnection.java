@@ -1182,4 +1182,16 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     public void abandond() {
         this.abandoned = true;
     }
+    
+    public long getPhysicalConnectNanoSpan() {
+        return this.holder.getCreateNanoSpan();
+    }
+    
+    public long getPhysicalConnectionUsedCount() {
+        return this.holder.getUseCount();
+    }
+    
+    public long getConnectNotEmptyWaitNanos() {
+        return this.holder.getLastNotEmptyWaitNanos();
+    }
 }
