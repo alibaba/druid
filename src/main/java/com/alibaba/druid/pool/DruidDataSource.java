@@ -277,6 +277,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
             }
         }
+        {
+            Boolean value = getBoolean(properties, "druid.failFast");
+            if (value != null) {
+                this.setFailFast(value);
+            }
+        }
     }
 
     public boolean isUseGlobalDataSourceStat() {
@@ -1450,6 +1456,10 @@ public class DruidDataSource extends DruidAbstractDataSource
     DruidConnectionHolder takeLast() throws InterruptedException, SQLException {
         try {
             while (poolingCount == 0) {
+                if (failFast && createError != null) {
+                    throw new DataSourceNotAvailableException(createError);
+                }
+                
                 emptySignal(); // send signal to CreateThread create connection
                 notEmptyWaitThreadCount++;
                 if (notEmptyWaitThreadCount > notEmptyWaitThreadPeak) {
@@ -1461,7 +1471,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                     notEmptyWaitThreadCount--;
                 }
                 notEmptyWaitCount++;
-
+                
                 if (!enable) {
                     connectErrorCount.incrementAndGet();
                     throw new DataSourceDisableException();
@@ -1485,6 +1495,10 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         for (;;) {
             if (poolingCount == 0) {
+                if (failFast && createError != null) {
+                    throw new DataSourceNotAvailableException(createError);
+                }
+                
                 emptySignal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {
@@ -1810,6 +1824,15 @@ public class DruidDataSource extends DruidAbstractDataSource
                     LOG.error("create connection error, url: " + jdbcUrl, e);
 
                     errorCount++;
+                    
+                    if (failFast) {
+                        lock.lock();
+                        try {
+                            notEmpty.signalAll();
+                        } finally {
+                            lock.lock();
+                        }
+                    }
 
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
                         if (breakAfterAcquireFailure) {
@@ -1897,6 +1920,15 @@ public class DruidDataSource extends DruidAbstractDataSource
                     LOG.error("create connection error, url: " + jdbcUrl, e);
 
                     errorCount++;
+                    
+                    if (failFast) {
+                        lock.lock();
+                        try {
+                            notEmpty.signalAll();
+                        } finally {
+                            lock.unlock();
+                        }
+                    }
 
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
                         if (breakAfterAcquireFailure) {
