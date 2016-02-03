@@ -1454,6 +1454,10 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     DruidConnectionHolder takeLast() throws InterruptedException, SQLException {
+        if (failFast && createError != null) {
+            throw new DataSourceNotAvailableException(createError);
+        }
+        
         try {
             while (poolingCount == 0) {
                 if (failFast && createError != null) {
@@ -1494,11 +1498,11 @@ public class DruidDataSource extends DruidAbstractDataSource
         long estimate = nanos;
 
         for (;;) {
+            if (failFast && createError != null) {
+                throw new DataSourceNotAvailableException(createError);
+            }
+            
             if (poolingCount == 0) {
-                if (failFast && createError != null) {
-                    throw new DataSourceNotAvailableException(createError);
-                }
-                
                 emptySignal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {

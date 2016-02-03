@@ -1453,7 +1453,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             validateConnection(conn);
             validatedNanos = System.nanoTime();
             
-            createError = null;
+            setCreateError(null);
         } catch (SQLException ex) {
             setCreateError(ex);
             throw ex;
@@ -1472,6 +1472,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     protected void setCreateError(Throwable ex) {
+        if (ex == null) {
+            lock.lock();
+            try {
+                createError = null;
+            } finally {
+                lock.unlock();
+            }
+            return;
+        }
+        
         createErrorCount.incrementAndGet();
         long now = System.currentTimeMillis();
         lock.lock();

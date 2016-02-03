@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
 
@@ -48,6 +49,7 @@ public class FailFastTest extends TestCase {
     public void testDefault() throws Exception {
         Assert.assertTrue(dataSource.isFailFast());
 
+        final AtomicReference<SQLException> errorHolder = new AtomicReference<SQLException>(null);
         final CountDownLatch connectStartLatch = new CountDownLatch(1);
         final CountDownLatch connectEndLatch = new CountDownLatch(1);
         Thread connectThread = new Thread() {
@@ -56,8 +58,7 @@ public class FailFastTest extends TestCase {
                 try {
                     dataSource.getConnection();
                 } catch (SQLException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    errorHolder.set(e);
                 } finally {
                     connectEndLatch.countDown();
                 }
