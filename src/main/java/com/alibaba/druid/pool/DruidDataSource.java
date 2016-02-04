@@ -1834,7 +1834,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                         try {
                             notEmpty.signalAll();
                         } finally {
-                            lock.lock();
+                            lock.unlock();
                         }
                     }
 
