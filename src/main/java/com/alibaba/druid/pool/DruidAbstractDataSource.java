@@ -1475,7 +1475,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (ex == null) {
             lock.lock();
             try {
-                createError = null;
+                if (createError != null) {
+                    createError = null;
+                }
             } finally {
                 lock.unlock();
             }

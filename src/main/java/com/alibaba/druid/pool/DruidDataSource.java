@@ -1460,11 +1460,12 @@ public class DruidDataSource extends DruidAbstractDataSource
         
         try {
             while (poolingCount == 0) {
+                emptySignal(); // send signal to CreateThread create connection
+                
                 if (failFast && createError != null) {
                     throw new DataSourceNotAvailableException(createError);
                 }
                 
-                emptySignal(); // send signal to CreateThread create connection
                 notEmptyWaitThreadCount++;
                 if (notEmptyWaitThreadCount > notEmptyWaitThreadPeak) {
                     notEmptyWaitThreadPeak = notEmptyWaitThreadCount;
@@ -1498,12 +1499,12 @@ public class DruidDataSource extends DruidAbstractDataSource
         long estimate = nanos;
 
         for (;;) {
-            if (failFast && createError != null) {
-                throw new DataSourceNotAvailableException(createError);
-            }
-            
             if (poolingCount == 0) {
                 emptySignal(); // send signal to CreateThread create connection
+                
+                if (failFast && createError != null) {
+                    throw new DataSourceNotAvailableException(createError);
+                }
 
                 if (estimate <= 0) {
                     waitNanosLocal.set(nanos - estimate);
@@ -1897,15 +1898,23 @@ public class DruidDataSource extends DruidAbstractDataSource
                 }
 
                 try {
-                    // 必须存在线程等待，才创建连接
-                    if (poolingCount >= notEmptyWaitThreadCount) {
-                        empty.await();
+                    boolean emptyWait = true;
+                    
+                    if (createError != null && poolingCount == 0) {
+                        emptyWait = false;
                     }
-
-                    // 防止创建超过maxActive数量的连接
-                    if (activeCount + poolingCount >= maxActive) {
-                        empty.await();
-                        continue;
+                    
+                    if (emptyWait) {
+                        // 必须存在线程等待，才创建连接
+                        if (poolingCount >= notEmptyWaitThreadCount) {
+                            empty.await();
+                        }
+    
+                        // 防止创建超过maxActive数量的连接
+                        if (activeCount + poolingCount >= maxActive) {
+                            empty.await();
+                            continue;
+                        }
                     }
 
                 } catch (InterruptedException e) {
