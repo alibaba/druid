@@ -1802,25 +1802,33 @@ public class DruidDataSource extends DruidAbstractDataSource
       
         private void runInternal() {
             for (;;) {
+                
                 // addLast
                 lock.lock();
-
                 try {
-                    // 必须存在线程等待，才创建连接
-                    if (poolingCount >= notEmptyWaitThreadCount) {
-                        createTaskCount--;
-                        return;
+                    boolean emptyWait = true;
+                    
+                    if (createError != null && poolingCount == 0) {
+                        emptyWait = false;
                     }
-
-                    // 防止创建超过maxActive数量的连接
-                    if (activeCount + poolingCount >= maxActive) {
-                        createTaskCount--;
-                        return;
+                    
+                    if (emptyWait) {
+                        // 必须存在线程等待，才创建连接
+                        if (poolingCount >= notEmptyWaitThreadCount) {
+                            createTaskCount--;
+                            return;
+                        }
+    
+                        // 防止创建超过maxActive数量的连接
+                        if (activeCount + poolingCount >= maxActive) {
+                            createTaskCount--;
+                            return;
+                        }
                     }
                 } finally {
                     lock.unlock();
                 }
-
+           
                 PhysicalConnectionInfo physicalConnection = null;
 
                 try {
