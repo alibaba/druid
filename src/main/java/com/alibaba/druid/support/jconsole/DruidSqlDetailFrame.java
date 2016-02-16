@@ -133,7 +133,7 @@ import com.alibaba.druid.support.logging.LogFactory;
         }
     }
  * </pre>
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny [yunnysunny@gmail.com]
  * */
 public class DruidSqlDetailFrame extends JFrame {
 

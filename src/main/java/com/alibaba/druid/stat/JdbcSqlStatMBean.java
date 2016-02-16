@@ -18,7 +18,7 @@ package com.alibaba.druid.stat;
 import java.util.Date;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface JdbcSqlStatMBean {
 

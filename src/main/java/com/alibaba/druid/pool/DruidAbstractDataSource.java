@@ -68,8 +68,8 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.druid.util.Utils;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
- * @author ljw<ljw2083@alibaba-inc.com>
+ * @author wenshao [szujobs@hotmail.com]
+ * @author ljw [ljw2083@alibaba-inc.com]
  */
 public abstract class DruidAbstractDataSource extends WrapperAdapter implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
 
@@ -842,7 +842,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
      * is exceeded, a <code>SQLException</code> is thrown.
      * 
      * @return the current query timeout limit in seconds; zero means there is no limit
-     * @exception SQLException if a database access error occurs or this method is called on a closed
      * <code>Statement</code>
      * @see #setQueryTimeout
      */
@@ -858,8 +857,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
      * documentation for details).
      * 
      * @param seconds the new query timeout limit in seconds; zero means there is no limit
-     * @exception SQLException if a database access error occurs, this method is called on a closed
-     * <code>Statement</code> or the condition seconds >= 0 is not satisfied
      * @see #getQueryTimeout
      */
     public void setQueryTimeout(int seconds) {

@@ -45,10 +45,7 @@ import com.alibaba.druid.sql.parser.Token;
 
 /**
  * 
- * @Description: parse select into statement
- * @author zz email:455910092@qq.com
- * @date 2015-9-14
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public class MySqlSelectIntoParser extends SQLSelectParser {
 	private List<SQLExpr> argsList;

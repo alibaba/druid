@@ -26,9 +26,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 /**
  * 
- * @Description: MySql procedure Case statement
- * @author zz email:455910092@qq.com
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public class MySqlCaseStatement extends MySqlStatementImpl{
 

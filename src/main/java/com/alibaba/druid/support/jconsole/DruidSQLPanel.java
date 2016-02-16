@@ -82,7 +82,7 @@ import java.util.Map.Entry;
   }
   </pre>
   
-  @author yunnysunny<yunnysunny@gmail.com>
+  @author yunnysunny [yunnysunny@gmail.com]
  * */
 public class DruidSQLPanel extends DruidPanel {
 

@@ -19,7 +19,6 @@ package com.alibaba.druid.sql.ast.expr;
  * 
  * 二元操作符
  * @author wenshao 2011-5-20 下午12:32:02
- * @formatter:off
  */
 public enum SQLBinaryOperator {
     Union("UNION", 0), 

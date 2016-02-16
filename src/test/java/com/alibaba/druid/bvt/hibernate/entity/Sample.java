@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * @author yinheli <yinheli@gmail.com>
+ * @author yinheli [yinheli@gmail.com]
  */
 @Entity
 @Table(name = "SAMPLE")

@@ -19,10 +19,7 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 /**
  * 
- * @Description: MySql cursor open statement
- * @author zz email:455910092@qq.com
- * @date 2015-9-14
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public class SQLOpenStatement extends SQLStatementImpl{
 	

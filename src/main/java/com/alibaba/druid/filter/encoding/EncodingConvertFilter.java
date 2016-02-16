@@ -35,7 +35,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.Utils;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class EncodingConvertFilter extends FilterAdapter {
 

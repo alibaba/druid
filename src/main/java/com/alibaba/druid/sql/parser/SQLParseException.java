@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.DruidRuntimeException;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 @SuppressWarnings("serial")
 @Deprecated

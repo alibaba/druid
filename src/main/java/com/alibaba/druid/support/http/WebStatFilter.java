@@ -48,8 +48,8 @@ import java.util.Set;
 /**
  * 用于配置Web和Druid数据源之间的管理关联监控统计
  * 
- * @author wenshao <szujobs@htomail.com>
- * @author Zhangming Qi <qizhanming@gmail.com>
+ * @author wenshao [szujobs@htomail.com]
+ * @author Zhangming Qi [qizhanming@gmail.com]
  */
 public class WebStatFilter extends AbstractWebStatImpl implements Filter {
 

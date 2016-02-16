@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public final class JdbcUtils implements JdbcConstants {
 

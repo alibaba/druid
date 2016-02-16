@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import java.sql.Wrapper;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class PoolableWrapper implements Wrapper {
 

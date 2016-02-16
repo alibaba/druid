@@ -16,7 +16,7 @@
 package com.alibaba.druid.proxy;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface DruidDriverMBean {
     String getDruidVersion();

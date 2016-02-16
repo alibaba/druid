@@ -40,7 +40,7 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionProxy {
 

@@ -42,7 +42,7 @@ import com.alibaba.druid.util.StringUtils;
 /**
  * 注意：避免直接调用Druid相关对象例如DruidDataSource等，相关调用要到DruidStatManagerFacade里用反射实现
  * 
- * @author sandzhang<sandzhangtoo@gmail.com>
+ * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public final class DruidStatService implements DruidStatServiceMBean {
 

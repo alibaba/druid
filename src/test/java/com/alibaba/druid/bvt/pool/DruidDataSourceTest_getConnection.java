@@ -11,7 +11,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 /**
  * 这个场景测试defaultAutoCommit
  * 
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_getConnection extends TestCase {
 
