@@ -1454,10 +1454,6 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     DruidConnectionHolder takeLast() throws InterruptedException, SQLException {
-        if (failFast && createError != null) {
-            throw new DataSourceNotAvailableException(createError);
-        }
-        
         try {
             while (poolingCount == 0) {
                 emptySignal(); // send signal to CreateThread create connection
