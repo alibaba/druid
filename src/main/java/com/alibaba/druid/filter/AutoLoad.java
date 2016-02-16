@@ -21,7 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author sandzhang<sandzhagntoo@gmail.com>
+ * @author sandzhang [sandzhagntoo@gmail.com]
  */
 
 @Retention(RetentionPolicy.RUNTIME)

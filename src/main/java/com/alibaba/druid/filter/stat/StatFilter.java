@@ -53,7 +53,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.profile.Profiler;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 

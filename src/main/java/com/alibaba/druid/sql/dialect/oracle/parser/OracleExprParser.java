@@ -91,9 +91,6 @@ public class OracleExprParser extends SQLExprParser {
 
     public boolean                allowStringAdditive = false;
 
-    /**
-     * @formatter:off
-     */
     public static final String[] AGGREGATE_FUNCTIONS = {
                                                           "AVG", // 
                                                           "CORR", // 

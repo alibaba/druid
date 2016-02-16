@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface ConnectionProxy extends Connection, WrapperProxy {
 

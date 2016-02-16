@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface LayoutCharacters {
 
@@ -46,7 +46,6 @@ public interface LayoutCharacters {
     final static byte CR     = 0xD;
 
     /**
-     * QS_TODO 为什么不是0x0？<br/>
      * End of input character. Used as a sentinel to denote the character one beyond the last defined character in a
      * source file.
      */

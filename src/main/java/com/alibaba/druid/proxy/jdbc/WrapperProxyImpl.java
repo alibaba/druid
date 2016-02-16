@@ -23,7 +23,7 @@ import java.util.Map;
 import com.alibaba.druid.filter.FilterChain;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public abstract class WrapperProxyImpl implements WrapperProxy {
 

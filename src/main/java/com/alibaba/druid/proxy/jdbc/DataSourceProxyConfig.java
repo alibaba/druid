@@ -24,7 +24,7 @@ import javax.security.auth.callback.PasswordCallback;
 import com.alibaba.druid.filter.Filter;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DataSourceProxyConfig {
 

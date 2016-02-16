@@ -128,40 +128,36 @@ public class SQLServerStatementParser extends SQLStatementParser {
     }
     /**
      * SQLServer parse Parameter statement support out type
-     * @author zz email:455910092@qq.com
-     * @date 2015-9-20
+     * @author zz [455910092@qq.com]
      */
-    public void parseExecParameter(Collection<SQLServerParameter> exprCol, SQLObject parent)
-    {
-    	if (lexer.token() == Token.RPAREN || lexer.token() == Token.RBRACKET) {
+    public void parseExecParameter(Collection<SQLServerParameter> exprCol, SQLObject parent) {
+        if (lexer.token() == Token.RPAREN || lexer.token() == Token.RBRACKET) {
             return;
         }
 
         if (lexer.token() == Token.EOF) {
             return;
         }
-    	SQLServerParameter param=new SQLServerParameter();
-        SQLExpr expr=this.exprParser.expr();
+        SQLServerParameter param = new SQLServerParameter();
+        SQLExpr expr = this.exprParser.expr();
         expr.setParent(parent);
         param.setExpr(expr);
-        if(lexer.token()==Token.OUT)
-    	{
-        	param.setType(true);
-    		accept(Token.OUT);
-    	}
+        if (lexer.token() == Token.OUT) {
+            param.setType(true);
+            accept(Token.OUT);
+        }
         exprCol.add(param);
         while (lexer.token() == Token.COMMA) {
-        	lexer.nextToken();
-        	param=new SQLServerParameter();
-        	expr=this.exprParser.expr();
+            lexer.nextToken();
+            param = new SQLServerParameter();
+            expr = this.exprParser.expr();
             expr.setParent(parent);
             param.setExpr(expr);
-        	if(lexer.token()==Token.OUT)
-        	{
-        		param.setType(true);
-        		accept(Token.OUT);
-        	}
-        	exprCol.add(param);
+            if (lexer.token() == Token.OUT) {
+                param.setType(true);
+                accept(Token.OUT);
+            }
+            exprCol.add(param);
         }
     }
     

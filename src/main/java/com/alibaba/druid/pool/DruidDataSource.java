@@ -96,8 +96,8 @@ import com.alibaba.druid.wall.WallFilter;
 import com.alibaba.druid.wall.WallProviderStatValue;
 
 /**
- * @author ljw<ljw2083@alibaba-inc.com>
- * @author wenshao<szujobs@hotmail.com>
+ * @author ljw [ljw2083@alibaba-inc.com]
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSource extends DruidAbstractDataSource 
     implements DruidDataSourceMBean
@@ -1050,7 +1050,6 @@ public class DruidDataSource extends DruidAbstractDataSource
      * 抛弃连接，不进行回收，而是抛弃
      * 
      * @param realConnection
-     * @throws SQLException
      */
     public void discardConnection(Connection realConnection) {
         JdbcUtils.close(realConnection);

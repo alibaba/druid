@@ -43,7 +43,7 @@ import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetProxy {
 

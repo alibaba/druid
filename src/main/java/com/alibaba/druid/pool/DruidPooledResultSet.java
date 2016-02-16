@@ -34,7 +34,7 @@ import java.sql.Statement;
 import java.util.Calendar;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public final class DruidPooledResultSet extends PoolableWrapper implements ResultSet {
 

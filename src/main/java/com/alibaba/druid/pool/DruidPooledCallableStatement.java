@@ -35,7 +35,7 @@ import java.util.Calendar;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledCallableStatement extends DruidPooledPreparedStatement implements CallableStatement {
 

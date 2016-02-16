@@ -26,10 +26,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 
 /**
  * 
- * @Description: MySql procedure statement type
- * @author zz email:455910092@qq.com
- * @date 2015-9-14
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public enum MySqlStatementType {
 	//select statement
