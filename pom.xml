@@ -1,11 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!-- <parent> <groupId>com.alibaba</groupId> <artifactId>parent-pom</artifactId> <version>1.0.0-SNAPSHOT</version> </parent> -->
+
+<!--  	
+	<parent>
+		<groupId>com.alibaba</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+-->
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.17-SNAPSHOT</version>
+	<version>1.0.17</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -17,8 +24,8 @@
 		<spring.version>3.2.3.RELEASE</spring.version>
 		<junit.version>4.11</junit.version>
 
-		<gpg.skip>true</gpg.skip>
-		<javadoc.skip>true</javadoc.skip>
+		<gpg.skip>false</gpg.skip>
+		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
@@ -32,9 +39,6 @@
 		</repository>
 	</repositories>
 
-	<!-- <distributionManagement> <repository> <id>opensesame</id> <url>dav:http://code.alibabatech.com/mvn/releases/</url>
-		</repository> <snapshotRepository> <id>opensesame</id> <url>dav:http://code.alibabatech.com/mvn/snapshots/</url> </snapshotRepository>
-		</distributionManagement> -->
 	<developers>
 		<developer>
 			<id>wenshao</id>
