@@ -35,13 +35,11 @@ public class SQLInListExpr extends SQLExprImpl implements Serializable {
     }
 
     public SQLInListExpr(SQLExpr expr){
-
-        this.expr = expr;
+        this.setExpr(expr);
     }
 
     public SQLInListExpr(SQLExpr expr, boolean not){
-
-        this.expr = expr;
+        this.setExpr(expr);
         this.not = not;
     }
 
