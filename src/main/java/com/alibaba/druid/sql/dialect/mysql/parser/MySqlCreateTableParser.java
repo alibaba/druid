@@ -422,10 +422,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                     partitionClause = clause;
 
-                    if (identifierEquals("PARTITIONS")) {
-                        lexer.nextToken();
-                        clause.setPartitionCount(this.exprParser.expr());
-                    }
+                    partitionClauseRest(clause);
                 } else if (identifierEquals("HASH")) {
                     lexer.nextToken();
                     MySqlPartitionByHash clause = new MySqlPartitionByHash();
@@ -433,16 +430,18 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     if (linera) {
                         clause.setLinear(true);
                     }
+                    
+                    if (lexer.token() == Token.KEY) {
+                        lexer.nextToken();
+                        clause.setKey(true);
+                    }
 
                     accept(Token.LPAREN);
                     clause.setExpr(this.exprParser.expr());
                     accept(Token.RPAREN);
                     partitionClause = clause;
 
-                    if (identifierEquals("PARTITIONS")) {
-                        lexer.nextToken();
-                        clause.setPartitionCount(this.exprParser.expr());
-                    }
+                    partitionClauseRest(clause);
 
                 } else if (identifierEquals("RANGE")) {
                     lexer.nextToken();
@@ -467,11 +466,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     partitionClause = clause;
 
-                    if (identifierEquals("PARTITIONS")) {
-                        lexer.nextToken();
-                        clause.setPartitionCount(this.exprParser.expr());
-                    }
-                    //
+                    partitionClauseRest(clause);
 
                 } else if (identifierEquals("LIST")) {
                     lexer.nextToken();
@@ -496,10 +491,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     partitionClause = clause;
 
-                    if (identifierEquals("PARTITIONS")) {
-                        lexer.nextToken();
-                        clause.setPartitionCount(this.exprParser.expr());
-                    }
+                    partitionClauseRest(clause);
                 } else {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 }
@@ -591,6 +583,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             this.exprParser.parseHints(stmt.getOptionHints());
         }
         return stmt;
+    }
+
+    protected void partitionClauseRest(MySqlPartitioningClause clause) {
+        if (identifierEquals("PARTITIONS")) {
+            lexer.nextToken();
+            clause.setPartitionCount(this.exprParser.expr());
+        }
     }
 
     private boolean parseTableOptionCharsetOrCollate(MySqlCreateTableStatement stmt) {

@@ -22,9 +22,8 @@ public class MySqlPartitionByHash extends MySqlPartitioningClause {
 
     private SQLExpr expr;
 
-    private SQLExpr partitionCount;
-
-    private boolean linear;
+    // for aliyun ads
+    private boolean key;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
@@ -36,14 +35,6 @@ public class MySqlPartitionByHash extends MySqlPartitioningClause {
         visitor.endVisit(this);
     }
 
-    public SQLExpr getPartitionCount() {
-        return partitionCount;
-    }
-
-    public void setPartitionCount(SQLExpr partitionCount) {
-        this.partitionCount = partitionCount;
-    }
-
     public SQLExpr getExpr() {
         return expr;
     }
@@ -52,12 +43,11 @@ public class MySqlPartitionByHash extends MySqlPartitioningClause {
         this.expr = expr;
     }
 
-    public boolean isLinear() {
-        return linear;
+    public boolean isKey() {
+        return key;
     }
 
-    public void setLinear(boolean linear) {
-        this.linear = linear;
+    public void setKey(boolean key) {
+        this.key = key;
     }
-
 }

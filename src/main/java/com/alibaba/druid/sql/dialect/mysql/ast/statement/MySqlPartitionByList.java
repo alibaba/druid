@@ -28,8 +28,6 @@ public class MySqlPartitionByList extends MySqlPartitioningClause {
 
     private List<SQLName> columns = new ArrayList<SQLName>();
 
-    private SQLExpr       partitionCount;
-
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -50,14 +48,6 @@ public class MySqlPartitionByList extends MySqlPartitioningClause {
             expr.setParent(this);
         }
         this.expr = expr;
-    }
-
-    public SQLExpr getPartitionCount() {
-        return partitionCount;
-    }
-
-    public void setPartitionCount(SQLExpr partitionCount) {
-        this.partitionCount = partitionCount;
     }
 
     public List<SQLName> getColumns() {

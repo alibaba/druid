@@ -32,8 +32,12 @@ public class ExportConditions extends UDF {
     public String evaluate(String sql) {
         return evaluate(sql, null);
     }
-
+    
     public String evaluate(String sql, String dbType) {
+        return evaluate(sql, dbType, null);
+    }
+
+    public String evaluate(String sql, String dbType, Boolean compactValues) {
         try {
             List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
             SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
@@ -57,7 +61,11 @@ public class ExportConditions extends UDF {
                 if (values.size() == 0) {
                     row.add(null);
                 } else if (values.size() == 1) {
-                    row.add(values.get(0));
+                    if (compactValues != null && compactValues.booleanValue()) {
+                        row.add(values);                        
+                    } else {
+                        row.add(values.get(0));
+                    }
                 } else {
                     row.add(values);
                 }

@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 
@@ -25,6 +26,10 @@ public abstract class MySqlPartitioningClause extends MySqlObjectImpl implements
 
     private List<MySqlPartitioningDef> partitions = new ArrayList<MySqlPartitioningDef>();
 
+    protected SQLExpr                  partitionCount;
+
+    protected boolean                  linear;
+    
     public List<MySqlPartitioningDef> getPartitions() {
         return partitions;
     }
@@ -33,4 +38,19 @@ public abstract class MySqlPartitioningClause extends MySqlObjectImpl implements
         this.partitions = partitions;
     }
 
+    public SQLExpr getPartitionCount() {
+        return partitionCount;
+    }
+
+    public void setPartitionCount(SQLExpr partitionCount) {
+        this.partitionCount = partitionCount;
+    }
+
+    public boolean isLinear() {
+        return linear;
+    }
+
+    public void setLinear(boolean linear) {
+        this.linear = linear;
+    }
 }

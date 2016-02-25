@@ -28,8 +28,6 @@ public class MySqlPartitionByRange extends MySqlPartitioningClause {
 
     private List<SQLName> columns = new ArrayList<SQLName>();
 
-    private SQLExpr       partitionCount;
-
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
