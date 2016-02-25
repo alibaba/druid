@@ -1595,7 +1595,7 @@ public class SQLExprParser extends SQLParser {
         return parseColumnRest(column);
     }
 
-    protected SQLColumnDefinition createColumnDefinition() {
+    public SQLColumnDefinition createColumnDefinition() {
         SQLColumnDefinition column = new SQLColumnDefinition();
         return column;
     }

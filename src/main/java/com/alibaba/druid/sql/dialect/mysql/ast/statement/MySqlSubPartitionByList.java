@@ -19,23 +19,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByList extends MySqlPartitionByClause {
+public class MySqlSubPartitionByList extends MySqlSubPartitionByClause {
 
     private SQLExpr       expr;
 
-    private List<SQLName> columns = new ArrayList<SQLName>();
+    private List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, expr);
             acceptChild(visitor, columns);
-            acceptChild(visitor, partitionsCount);
-            acceptChild(visitor, getPartitions());
-            acceptChild(visitor, subPartitionBy);
+            acceptChild(visitor, subPartitionsCount);
         }
         visitor.endVisit(this);
     }
@@ -51,11 +49,11 @@ public class MySqlPartitionByList extends MySqlPartitionByClause {
         this.expr = expr;
     }
 
-    public List<SQLName> getColumns() {
+    public List<SQLColumnDefinition> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<SQLName> columns) {
+    public void setColumns(List<SQLColumnDefinition> columns) {
         this.columns = columns;
     }
 

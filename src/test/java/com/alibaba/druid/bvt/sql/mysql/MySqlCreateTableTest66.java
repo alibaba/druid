@@ -34,10 +34,10 @@ public class MySqlCreateTableTest66 extends MysqlTest {
                 + " counter          bigint,"
                 + " durationtime     bigint"
                 + ") "
-                + "PARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
-                + "SUBPARTITION BY LIST(bdt bigint)"
-                + "SUBPARTITION OPTIONS(available_Partition_Num=90)"
-                + "TABLEGROUP g20_test_group;";
+                + "\nPARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
+                + "\nSUBPARTITION BY LIST(bdt bigint)"
+                + "\nSUBPARTITION OPTIONS(available_Partition_Num=90)"
+                + "\nTABLEGROUP g20_test_group;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -51,7 +51,10 @@ public class MySqlCreateTableTest66 extends MysqlTest {
                 + "\n\tb_iden_string varchar, "
                 + "\n\tcounter bigint, "
                 + "\n\tdurationtime bigint"
-                + "\n) PARTITION BY HASH KEY(a_iden_string)", output);
+                + "\n) PARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
+                + "\nSUBPARTITION BY LIST (bdt bigint)"
+                + "\nSUBPARTITION OPTIONS (available_Partition_Num = 90)"
+                + "\nTABLEGROUP g20_test_group", output);
 
     }
 }

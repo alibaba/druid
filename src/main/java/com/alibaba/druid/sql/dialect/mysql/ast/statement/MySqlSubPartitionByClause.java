@@ -20,30 +20,23 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 
-public abstract class MySqlPartitioningClause extends MySqlObjectImpl implements SQLPartitioningClause {
+public abstract class MySqlSubPartitionByClause extends MySqlObjectImpl implements SQLPartitioningClause {
 
-    private List<MySqlPartitioningDef> partitions = new ArrayList<MySqlPartitioningDef>();
+    protected SQLExpr             subPartitionsCount;
 
-    protected SQLExpr                  partitionCount;
+    protected boolean             linear;
 
-    protected boolean                  linear;
-    
-    public List<MySqlPartitioningDef> getPartitions() {
-        return partitions;
+    protected List<SQLAssignItem> options = new ArrayList<SQLAssignItem>();
+
+    public SQLExpr getSubPartitionsCount() {
+        return subPartitionsCount;
     }
 
-    public void setPartitions(List<MySqlPartitioningDef> partitions) {
-        this.partitions = partitions;
-    }
-
-    public SQLExpr getPartitionCount() {
-        return partitionCount;
-    }
-
-    public void setPartitionCount(SQLExpr partitionCount) {
-        this.partitionCount = partitionCount;
+    public void setSubPartitionsCount(SQLExpr subPartitionsCount) {
+        this.subPartitionsCount = subPartitionsCount;
     }
 
     public boolean isLinear() {
@@ -53,4 +46,9 @@ public abstract class MySqlPartitioningClause extends MySqlObjectImpl implements
     public void setLinear(boolean linear) {
         this.linear = linear;
     }
+
+    public List<SQLAssignItem> getOptions() {
+        return options;
+    }
+
 }

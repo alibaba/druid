@@ -191,7 +191,7 @@ public class SQLServerExprParser extends SQLExprParser {
         return new SQLSelectItem(expr, alias);
     }
 
-    protected SQLColumnDefinition createColumnDefinition() {
+    public SQLColumnDefinition createColumnDefinition() {
         SQLColumnDefinition column = new SQLServerColumnDefinition();
         return column;
     }

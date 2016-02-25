@@ -21,7 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByKey extends MySqlPartitioningClause {
+public class MySqlPartitionByKey extends MySqlPartitionByClause {
 
     private List<SQLName> columns = new ArrayList<SQLName>();
 
@@ -29,8 +29,9 @@ public class MySqlPartitionByKey extends MySqlPartitioningClause {
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, columns);
-            acceptChild(visitor, partitionCount);
+            acceptChild(visitor, partitionsCount);
             acceptChild(visitor, getPartitions());
+            acceptChild(visitor, subPartitionBy);
         }
         visitor.endVisit(this);
     }

@@ -44,6 +44,8 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     private List<SQLCommentHint>   optionHints  = new ArrayList<SQLCommentHint>();
 
     private SQLExprTableSource     like;
+    
+    private SQLName                tableGroup;
 
     public MySqlCreateTableStatement(){
         super (JdbcConstants.MYSQL);
@@ -156,5 +158,15 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setOptionHints(List<SQLCommentHint> optionHints) {
         this.optionHints = optionHints;
+    }
+
+    
+    public SQLName getTableGroup() {
+        return tableGroup;
+    }
+
+    
+    public void setTableGroup(SQLName tableGroup) {
+        this.tableGroup = tableGroup;
     }
 }

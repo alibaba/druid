@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByHash extends MySqlPartitioningClause {
+public class MySqlPartitionByHash extends MySqlPartitionByClause {
 
     private SQLExpr expr;
 
@@ -29,8 +29,9 @@ public class MySqlPartitionByHash extends MySqlPartitioningClause {
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, expr);
-            acceptChild(visitor, partitionCount);
+            acceptChild(visitor, partitionsCount);
             acceptChild(visitor, getPartitions());
+            acceptChild(visitor, subPartitionBy);
         }
         visitor.endVisit(this);
     }
