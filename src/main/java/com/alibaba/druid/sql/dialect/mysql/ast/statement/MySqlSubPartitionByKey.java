@@ -18,37 +18,20 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByList extends MySqlPartitionByClause {
-
-    private SQLExpr       expr;
+public class MySqlSubPartitionByKey extends MySqlSubPartitionByClause {
 
     private List<SQLName> columns = new ArrayList<SQLName>();
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, expr);
             acceptChild(visitor, columns);
-            acceptChild(visitor, partitionsCount);
-            acceptChild(visitor, getPartitions());
-            acceptChild(visitor, subPartitionBy);
+            acceptChild(visitor, subPartitionsCount);
         }
         visitor.endVisit(this);
-    }
-
-    public SQLExpr getExpr() {
-        return expr;
-    }
-
-    public void setExpr(SQLExpr expr) {
-        if (expr != null) {
-            expr.setParent(this);
-        }
-        this.expr = expr;
     }
 
     public List<SQLName> getColumns() {

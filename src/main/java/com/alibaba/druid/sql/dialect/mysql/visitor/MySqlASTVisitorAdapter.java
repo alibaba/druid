@@ -33,9 +33,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
@@ -127,6 +127,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByHash;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
@@ -135,6 +138,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySqlASTVisitor {
+
     @Override
     public boolean visit(Limit x) {
         return true;
@@ -1209,9 +1213,9 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 
     @Override
     public void endVisit(MySqlHintStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlOrderingExpr x) {
         return true;
@@ -1222,98 +1226,98 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 
     }
 
-	@Override
-	public boolean visit(MySqlWhileStatement x) {
-		return true;
-	}
+    @Override
+    public boolean visit(MySqlWhileStatement x) {
+        return true;
+    }
 
-	@Override
-	public void endVisit(MySqlWhileStatement x) {
-		
-	}
+    @Override
+    public void endVisit(MySqlWhileStatement x) {
 
-	@Override
-	public boolean visit(MySqlCaseStatement x) {
-		return true;
-	}
+    }
 
-	@Override
-	public void endVisit(MySqlCaseStatement x) {
-		
-	}
+    @Override
+    public boolean visit(MySqlCaseStatement x) {
+        return true;
+    }
 
-	@Override
-	public boolean visit(MySqlDeclareStatement x) {
-		return true;
-	}
+    @Override
+    public void endVisit(MySqlCaseStatement x) {
 
-	@Override
-	public void endVisit(MySqlDeclareStatement x) {
-		
-	}
+    }
 
-	@Override
-	public boolean visit(MySqlSelectIntoStatement x) {
-		return true;
-	}
+    @Override
+    public boolean visit(MySqlDeclareStatement x) {
+        return true;
+    }
 
-	@Override
-	public void endVisit(MySqlSelectIntoStatement x) {
-		
-	}
+    @Override
+    public void endVisit(MySqlDeclareStatement x) {
 
-	@Override
-	public boolean visit(MySqlWhenStatement x) {
-		return true;
-	}
+    }
 
-	@Override
-	public void endVisit(MySqlWhenStatement x) {
-		
-	}
-	//add:end
+    @Override
+    public boolean visit(MySqlSelectIntoStatement x) {
+        return true;
+    }
 
-	@Override
-	public boolean visit(MySqlLeaveStatement x) {
-		return false;
-	}
+    @Override
+    public void endVisit(MySqlSelectIntoStatement x) {
 
-	@Override
-	public void endVisit(MySqlLeaveStatement x) {
-		
-	}
+    }
 
-	@Override
-	public boolean visit(MySqlIterateStatement x) {
-		return false;
-	}
+    @Override
+    public boolean visit(MySqlWhenStatement x) {
+        return true;
+    }
 
-	@Override
-	public void endVisit(MySqlIterateStatement x) {
-		
-	}
+    @Override
+    public void endVisit(MySqlWhenStatement x) {
 
-	@Override
-	public boolean visit(MySqlRepeatStatement x) {
-		return false;
-	}
+    }
+    // add:end
 
-	@Override
-	public void endVisit(MySqlRepeatStatement x) {
-		
-	}
+    @Override
+    public boolean visit(MySqlLeaveStatement x) {
+        return false;
+    }
 
-	@Override
-	public boolean visit(MySqlCursorDeclareStatement x) {
-		return false;
-	}
+    @Override
+    public void endVisit(MySqlLeaveStatement x) {
 
-	@Override
-	public void endVisit(MySqlCursorDeclareStatement x) {
-		
-	}
-	
-	@Override
+    }
+
+    @Override
+    public boolean visit(MySqlIterateStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlIterateStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlRepeatStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlRepeatStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlCursorDeclareStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCursorDeclareStatement x) {
+
+    }
+
+    @Override
     public boolean visit(MySqlUpdateTableSource x) {
         return true;
     }
@@ -1330,7 +1334,35 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
 
     @Override
     public void endVisit(MySqlAlterTableAlterColumn x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(MySqlSubPartitionByKey x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlSubPartitionByKey x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlSubPartitionByHash x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlSubPartitionByHash x) {
+    }
+    
+    @Override
+    public boolean visit(MySqlSubPartitionByList x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(MySqlSubPartitionByList x) {
     }
 
 } //

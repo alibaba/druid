@@ -1933,7 +1933,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 try {
                     connection = createPhysicalConnection();
                 } catch (SQLException e) {
-                    LOG.error("create connection error, url: " + jdbcUrl, e);
+                    LOG.error("create connection error, url: " + jdbcUrl + ", errorCode " + e.getErrorCode() + ", state " + e.getSQLState(), e);
 
                     errorCount++;
                     

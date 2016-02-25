@@ -22,21 +22,20 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByRange extends MySqlPartitioningClause {
+public class MySqlPartitionByRange extends MySqlPartitionByClause {
 
     private SQLExpr       expr;
 
     private List<SQLName> columns = new ArrayList<SQLName>();
-
-    private SQLExpr       partitionCount;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, expr);
             acceptChild(visitor, columns);
-            acceptChild(visitor, partitionCount);
+            acceptChild(visitor, partitionsCount);
             acceptChild(visitor, getPartitions());
+            acceptChild(visitor, subPartitionBy);
         }
         visitor.endVisit(this);
     }
@@ -50,14 +49,6 @@ public class MySqlPartitionByRange extends MySqlPartitioningClause {
             expr.setParent(this);
         }
         this.expr = expr;
-    }
-
-    public SQLExpr getPartitionCount() {
-        return partitionCount;
-    }
-
-    public void setPartitionCount(SQLExpr partitionCount) {
-        this.partitionCount = partitionCount;
     }
 
     public List<SQLName> getColumns() {

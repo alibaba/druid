@@ -18,34 +18,22 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByKey extends MySqlPartitioningClause {
+public class MySqlPartitionByKey extends MySqlPartitionByClause {
 
     private List<SQLName> columns = new ArrayList<SQLName>();
-
-    private SQLExpr       partitionCount;
-
-    private boolean       linear;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, columns);
-            acceptChild(visitor, partitionCount);
+            acceptChild(visitor, partitionsCount);
             acceptChild(visitor, getPartitions());
+            acceptChild(visitor, subPartitionBy);
         }
         visitor.endVisit(this);
-    }
-
-    public SQLExpr getPartitionCount() {
-        return partitionCount;
-    }
-
-    public void setPartitionCount(SQLExpr partitionCount) {
-        this.partitionCount = partitionCount;
     }
 
     public List<SQLName> getColumns() {
@@ -54,14 +42,6 @@ public class MySqlPartitionByKey extends MySqlPartitioningClause {
 
     public void setColumns(List<SQLName> columns) {
         this.columns = columns;
-    }
-
-    public boolean isLinear() {
-        return linear;
-    }
-
-    public void setLinear(boolean linear) {
-        this.linear = linear;
     }
 
 }

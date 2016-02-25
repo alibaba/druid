@@ -18,30 +18,22 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByHash extends MySqlPartitioningClause {
+public class MySqlPartitionByHash extends MySqlPartitionByClause {
 
     private SQLExpr expr;
 
-    private SQLExpr partitionCount;
-
-    private boolean linear;
+    // for aliyun ads
+    private boolean key;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, expr);
-            acceptChild(visitor, partitionCount);
+            acceptChild(visitor, partitionsCount);
             acceptChild(visitor, getPartitions());
+            acceptChild(visitor, subPartitionBy);
         }
         visitor.endVisit(this);
-    }
-
-    public SQLExpr getPartitionCount() {
-        return partitionCount;
-    }
-
-    public void setPartitionCount(SQLExpr partitionCount) {
-        this.partitionCount = partitionCount;
     }
 
     public SQLExpr getExpr() {
@@ -52,12 +44,11 @@ public class MySqlPartitionByHash extends MySqlPartitioningClause {
         this.expr = expr;
     }
 
-    public boolean isLinear() {
-        return linear;
+    public boolean isKey() {
+        return key;
     }
 
-    public void setLinear(boolean linear) {
-        this.linear = linear;
+    public void setKey(boolean key) {
+        this.key = key;
     }
-
 }
