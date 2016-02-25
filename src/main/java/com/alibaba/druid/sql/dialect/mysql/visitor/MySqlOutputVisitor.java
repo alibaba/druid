@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -524,7 +525,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (x.getPartitioning() != null) {
-            print(' ');
+            println();
             x.getPartitioning().accept(this);
         }
         
@@ -1568,7 +1569,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         List<MySqlPartitioningDef> partitions = x.getPartitions();
         int partitionsSize = partitions.size();
         if (partitionsSize > 0) {
-            print('(');
+            print0(" (");
             incrementIndent();
             for (int i = 0; i < partitionsSize; ++i) {
                 println();
@@ -3001,12 +3002,38 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getDataDirectory().accept(this);
             decrementIndent();
         }
+        
         if (x.getIndexDirectory() != null) {
             incrementIndent();
             println();
             print0(ucase ? "INDEX DIRECTORY " : "index directory ");
             x.getIndexDirectory().accept(this);
             decrementIndent();
+        }
+        
+        if (x.getTableSpace() != null) {
+            print0(ucase ? " TABLESPACE " : " tablespace ");
+            x.getTableSpace().accept(this);
+        }
+        
+        if (x.getEngine() != null) {
+            print0(ucase ? " STORAGE ENGINE " : " storage engine ");
+            x.getEngine().accept(this);
+        }
+        
+        if (x.getMaxRows() != null) {
+            print0(ucase ? " MAX_ROWS " : " max_rows ");
+            x.getMaxRows().accept(this);
+        }
+        
+        if (x.getMinRows() != null) {
+            print0(ucase ? " MIN_ROWS " : " min_rows ");
+            x.getMinRows().accept(this);
+        }
+        
+        if (x.getComment() != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            x.getComment().accept(this);
         }
 
         return false;
@@ -3019,6 +3046,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(LessThanValues x) {
+        if (x.getItems().size() == 1 && x.getItems().get(0) instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr ident = (SQLIdentifierExpr) x.getItems().get(0);
+            if ("MAXVALUE".equalsIgnoreCase(ident.getName())) {
+                print0(ucase ? "VALUES LESS THAN MAXVALUE" : "values less than maxvalue");
+                return false;
+            }
+        }
         print0(ucase ? "VALUES LESS THAN (" : "values less than (");
         printAndAccept(x.getItems(), ", ");
         print(')');

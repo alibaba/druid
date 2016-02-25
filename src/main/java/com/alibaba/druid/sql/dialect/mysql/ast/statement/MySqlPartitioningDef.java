@@ -31,6 +31,11 @@ public class MySqlPartitioningDef extends MySqlObjectImpl {
 
     private SQLExpr dataDirectory;
     private SQLExpr indexDirectory;
+    private SQLName tableSpace;
+    private SQLExpr maxRows;
+    private SQLExpr minRows;
+    private SQLExpr engine;
+    private SQLExpr comment;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
@@ -39,6 +44,11 @@ public class MySqlPartitioningDef extends MySqlObjectImpl {
             acceptChild(visitor, values);
             acceptChild(visitor, dataDirectory);
             acceptChild(visitor, indexDirectory);
+            acceptChild(visitor, tableSpace);
+            acceptChild(visitor, maxRows);
+            acceptChild(visitor, minRows);
+            acceptChild(visitor, engine);
+            acceptChild(visitor, comment);
         }
         visitor.endVisit(this);
     }
@@ -48,6 +58,9 @@ public class MySqlPartitioningDef extends MySqlObjectImpl {
     }
 
     public void setIndexDirectory(SQLExpr indexDirectory) {
+        if (indexDirectory != null) {
+            indexDirectory.setParent(this);
+        }
         this.indexDirectory = indexDirectory;
     }
 
@@ -56,6 +69,9 @@ public class MySqlPartitioningDef extends MySqlObjectImpl {
     }
 
     public void setDataDirectory(SQLExpr dataDirectory) {
+        if (dataDirectory != null) {
+            dataDirectory.setParent(this);
+        }
         this.dataDirectory = dataDirectory;
     }
 
@@ -72,7 +88,65 @@ public class MySqlPartitioningDef extends MySqlObjectImpl {
     }
 
     public void setName(SQLName name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
+    }
+
+    public SQLName getTableSpace() {
+        return tableSpace;
+    }
+
+    public void setTableSpace(SQLName tableSpace) {
+        if (tableSpace != null) {
+            tableSpace.setParent(this);
+        }
+        this.tableSpace = tableSpace;
+    }
+
+    public SQLExpr getMaxRows() {
+        return maxRows;
+    }
+
+    public void setMaxRows(SQLExpr maxRows) {
+        if (maxRows != null) {
+            maxRows.setParent(this);
+        }
+        this.maxRows = maxRows;
+    }
+
+    public SQLExpr getMinRows() {
+        return minRows;
+    }
+
+    public void setMinRows(SQLExpr minRows) {
+        if (minRows != null) {
+            minRows.setParent(this);
+        }
+        this.minRows = minRows;
+    }
+
+    public SQLExpr getEngine() {
+        return engine;
+    }
+
+    public void setEngine(SQLExpr engine) {
+        if (engine != null) {
+            engine.setParent(this);
+        }
+        this.engine = engine;
+    }
+
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
+        this.comment = comment;
     }
 
     public static abstract class Values extends MySqlObjectImpl {

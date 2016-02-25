@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -536,14 +537,22 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                                 MySqlPartitioningDef.LessThanValues values = new MySqlPartitioningDef.LessThanValues();
 
-                                accept(Token.LPAREN);
-                                this.exprParser.exprList(values.getItems(), values);
-                                accept(Token.RPAREN);
+                                if (identifierEquals("MAXVALUE")) {
+                                    SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
+                                    lexer.nextToken();
+                                    maxValue.setParent(values);
+                                    values.getItems().add(maxValue);
+                                } else {
+                                    accept(Token.LPAREN);
+                                    this.exprParser.exprList(values.getItems(), values);
+                                    accept(Token.RPAREN);
+                                }
                                 partitionDef.setValues(values);
                             }
                         }
 
                         for (;;) {
+                            boolean storage = false;
                             if (identifierEquals("DATA")) {
                                 lexer.nextToken();
                                 acceptIdentifier("DIRECTORY");
@@ -551,6 +560,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                                     lexer.nextToken();
                                 }
                                 partitionDef.setDataDirectory(this.exprParser.expr());
+                            } else if (lexer.token() == Token.TABLESPACE) {
+                                lexer.nextToken();
+                                if (lexer.token() == Token.EQ) {
+                                    lexer.nextToken();
+                                }
+                                SQLName tableSpace = this.exprParser.name();
+                                partitionDef.setTableSpace(tableSpace);
                             } else if (lexer.token() == Token.INDEX) {
                                 lexer.nextToken();
                                 acceptIdentifier("DIRECTORY");
@@ -558,6 +574,41 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                                     lexer.nextToken();
                                 }
                                 partitionDef.setIndexDirectory(this.exprParser.expr());
+                            } else if (identifierEquals("MAX_ROWS")) {
+                                lexer.nextToken();
+                                if (lexer.token() == Token.EQ) {
+                                    lexer.nextToken();
+                                }
+                                SQLExpr maxRows = this.exprParser.primary();
+                                partitionDef.setMaxRows(maxRows);
+                            } else if (identifierEquals("MIN_ROWS")) {
+                                lexer.nextToken();
+                                if (lexer.token() == Token.EQ) {
+                                    lexer.nextToken();
+                                }
+                                SQLExpr minRows = this.exprParser.primary();
+                                partitionDef.setMaxRows(minRows);
+                            } else if (identifierEquals("ENGINE") || //
+                                    (storage = (lexer.token() == Token.STORAGE || identifierEquals("STORAGE")))
+                                    ) {
+                                if (storage) {
+                                    lexer.nextToken();
+                                }
+                                acceptIdentifier("ENGINE");
+                                
+                                if (lexer.token() == Token.EQ) {
+                                    lexer.nextToken();
+                                }
+                                
+                                SQLName engine = this.exprParser.name();
+                                partitionDef.setEngine(engine);
+                            } else if (lexer.token() == Token.COMMENT) {
+                                lexer.nextToken();
+                                if (lexer.token() == Token.EQ) {
+                                    lexer.nextToken();
+                                }
+                                SQLExpr comment = this.exprParser.primary();
+                                partitionDef.setComment(comment);
                             } else {
                                 break;
                             }
@@ -605,7 +656,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
     protected void partitionClauseRest(MySqlPartitionByClause clause) {
         if (identifierEquals("PARTITIONS")) {
             lexer.nextToken();
-            clause.setPartitionsCount(this.exprParser.expr());
+            
+            SQLIntegerExpr countExpr = new SQLIntegerExpr(lexer.integerValue());
+            accept(Token.LITERAL_INT);
+            clause.setPartitionsCount(countExpr);
         }
         
         if (identifierEquals("PARTITION")) {
