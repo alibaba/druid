@@ -26,9 +26,9 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLSubPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -97,14 +97,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByClause;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.InValues;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.LessThanValues;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
@@ -160,8 +153,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByClause;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
@@ -665,7 +656,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 
                 boolean subPartitionOption = false;
                 if (x.getParent() != null) {
-                    subPartitionOption = x.getParent().getParent() instanceof MySqlSubPartitionByClause;
+                    subPartitionOption = x.getParent().getParent() instanceof SQLSubPartitionBy;
                 }
                 
                 if (!subPartitionOption) {
@@ -1546,129 +1537,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    @Override
-    public void endVisit(MySqlPartitionByRange x) {
 
-    }
-
-    @Override
-    public boolean visit(MySqlPartitionByRange x) {
-        print0(ucase ? "PARTITION BY RANGE" : "partition by range");
-        if (x.getExpr() != null) {
-            print0(" (");
-            x.getExpr().accept(this);
-            print(')');
-        } else {
-            print0(ucase ? " COLUMNS (" : " columns (");
-            printAndAccept(x.getColumns(), ", ");
-            print(')');
-        }
-
-        printPartitionsCountAndSubPartitions(x);
-
-        List<MySqlPartitioningDef> partitions = x.getPartitions();
-        int partitionsSize = partitions.size();
-        if (partitionsSize > 0) {
-            print0(" (");
-            incrementIndent();
-            for (int i = 0; i < partitionsSize; ++i) {
-                println();
-                partitions.get(i).accept(this);
-                if (i != partitionsSize - 1) {
-                    print0(", ");
-                }
-            }
-            decrementIndent();
-            println();
-            print(')');
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitionByList x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitionByList x) {
-        print0(ucase ? "PARTITION BY LIST " : "partition by list ");
-        if (x.getExpr() != null) {
-            print('(');
-            x.getExpr().accept(this);
-            print0(") ");
-        } else {
-            print0(ucase ? "COLUMNS (" : "columns (");
-            printAndAccept(x.getColumns(), ", ");
-            print0(") ");
-        }
-
-        printPartitionsCountAndSubPartitions(x);
-
-        List<MySqlPartitioningDef> partitions = x.getPartitions();
-        int partitionsSize = partitions.size();
-        if (partitionsSize > 0) {
-            print('(');
-            incrementIndent();
-            for (int i = 0; i < partitionsSize; ++i) {
-                println();
-                partitions.get(i).accept(this);
-                if (i != partitionsSize - 1) {
-                    print0(", ");
-                }
-            }
-            decrementIndent();
-            println();
-            print(')');
-        }
-        return false;
-    }
+    
 
     //
-
-    @Override
-    public void endVisit(MySqlPartitionByHash x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitionByHash x) {
-        if (x.isLinear()) {
-            print0(ucase ? "PARTITION BY LINEAR HASH " : "partition by linear hash ");
-        } else {
-            print0(ucase ? "PARTITION BY HASH " : "partition by hash ");
-        }
-
-        if (x.isKey()) {
-            print0(ucase ? "KEY" : "key");
-        }
-
-        print('(');
-        x.getExpr().accept(this);
-        print(')');
-
-        printPartitionsCountAndSubPartitions(x);
-
-        return false;
-    }
-
-    protected void printPartitionsCountAndSubPartitions(MySqlPartitionByClause x) {
-        if (x.getPartitionsCount() != null) {
-
-            if (Boolean.TRUE.equals(x.getAttribute("ads.partition"))) {
-                print0(ucase ? " PARTITION NUM " : " partition num ");
-            } else {
-                print0(ucase ? " PARTITIONS " : " partitions ");
-            }
-
-            x.getPartitionsCount().accept(this);
-        }
-       
-        if (x.getSubPartitionBy() != null) {
-            println();
-            x.getSubPartitionBy().accept(this);
-        }
-    }
 
     @Override
     public void endVisit(MySqlSelectQueryBlock x) {
@@ -2986,97 +2858,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     }
 
-    @Override
-    public boolean visit(MySqlPartitioningDef x) {
-        print0(ucase ? "PARTITION " : "partition ");
-        x.getName().accept(this);
-        if (x.getValues() != null) {
-            print(' ');
-            x.getValues().accept(this);
-        }
-
-        if (x.getDataDirectory() != null) {
-            incrementIndent();
-            println();
-            print0(ucase ? "DATA DIRECTORY " : "data directory ");
-            x.getDataDirectory().accept(this);
-            decrementIndent();
-        }
-        
-        if (x.getIndexDirectory() != null) {
-            incrementIndent();
-            println();
-            print0(ucase ? "INDEX DIRECTORY " : "index directory ");
-            x.getIndexDirectory().accept(this);
-            decrementIndent();
-        }
-        
-        if (x.getTableSpace() != null) {
-            print0(ucase ? " TABLESPACE " : " tablespace ");
-            x.getTableSpace().accept(this);
-        }
-        
-        if (x.getEngine() != null) {
-            print0(ucase ? " STORAGE ENGINE " : " storage engine ");
-            x.getEngine().accept(this);
-        }
-        
-        if (x.getMaxRows() != null) {
-            print0(ucase ? " MAX_ROWS " : " max_rows ");
-            x.getMaxRows().accept(this);
-        }
-        
-        if (x.getMinRows() != null) {
-            print0(ucase ? " MIN_ROWS " : " min_rows ");
-            x.getMinRows().accept(this);
-        }
-        
-        if (x.getComment() != null) {
-            print0(ucase ? " COMMENT " : " comment ");
-            x.getComment().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitioningDef x) {
-
-    }
-
-    @Override
-    public boolean visit(LessThanValues x) {
-        if (x.getItems().size() == 1 && x.getItems().get(0) instanceof SQLIdentifierExpr) {
-            SQLIdentifierExpr ident = (SQLIdentifierExpr) x.getItems().get(0);
-            if ("MAXVALUE".equalsIgnoreCase(ident.getName())) {
-                print0(ucase ? "VALUES LESS THAN MAXVALUE" : "values less than maxvalue");
-                return false;
-            }
-        }
-        print0(ucase ? "VALUES LESS THAN (" : "values less than (");
-        printAndAccept(x.getItems(), ", ");
-        print(')');
-        return false;
-    }
-
-    @Override
-    public void endVisit(LessThanValues x) {
-
-    }
-
-    @Override
-    public boolean visit(InValues x) {
-        print0(ucase ? "VALUES IN (" : "values in (");
-        printAndAccept(x.getItems(), ", ");
-        print(')');
-        return false;
-    }
-
-    @Override
-    public void endVisit(InValues x) {
-
-    }
-
     protected void visitAggreateRest(SQLAggregateExpr aggregateExpr) {
         {
             SQLOrderBy value = (SQLOrderBy) aggregateExpr.getAttribute("ORDER BY");
@@ -3563,35 +3344,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlAlterTableAlterColumn x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlSubPartitionByHash x) {
-        if (x.isLinear()) {
-            print0(ucase ? "SUBPARTITION BY LINEAR HASH " : "subpartition by linear hash ");
-        } else {
-            print0(ucase ? "SUBPARTITION BY HASH " : "subpartition by hash ");
-        }
-
-        if (x.isKey()) {
-            print0(ucase ? "KEY" : "key");
-        }
-
-        print('(');
-        x.getExpr().accept(this);
-        print(')');
-
-        if (x.getSubPartitionsCount() != null) {
-            print0(ucase ? " PARTITIONS " : " partitions ");
-            x.getSubPartitionsCount().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlSubPartitionByHash x) {
 
     }
 

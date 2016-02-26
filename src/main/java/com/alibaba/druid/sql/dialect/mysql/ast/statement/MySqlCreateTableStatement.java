@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitioningClause;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -37,7 +37,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
-    private SQLPartitioningClause  partitioning;
+    private SQLPartitionBy  partitioning;
 
     private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
 
@@ -78,11 +78,11 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         this.tableOptions = tableOptions;
     }
 
-    public SQLPartitioningClause getPartitioning() {
+    public SQLPartitionBy getPartitioning() {
         return partitioning;
     }
 
-    public void setPartitioning(SQLPartitioningClause partitioning) {
+    public void setPartitioning(SQLPartitionBy partitioning) {
         this.partitioning = partitioning;
     }
 

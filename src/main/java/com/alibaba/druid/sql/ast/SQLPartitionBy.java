@@ -13,31 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+package com.alibaba.druid.sql.ast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLPartitioningClause;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
+public abstract class SQLPartitionBy extends SQLObjectImpl {
 
-public abstract class MySqlPartitionByClause extends MySqlObjectImpl implements SQLPartitioningClause {
+    protected SQLSubPartitionBy  subPartitionBy;
 
-    private List<MySqlPartitioningDef>  partitions = new ArrayList<MySqlPartitioningDef>();
+    protected SQLExpr            partitionsCount;
 
-    protected SQLExpr                   partitionsCount;
+    protected boolean            linear;
 
-    protected boolean                   linear;
+    protected List<SQLPartition> partitions = new ArrayList<SQLPartition>();
 
-    protected MySqlSubPartitionByClause subPartitionBy;
+    protected List<SQLName>      storeIn    = new ArrayList<SQLName>();
 
-    public List<MySqlPartitioningDef> getPartitions() {
+    public List<SQLPartition> getPartitions() {
         return partitions;
     }
 
-    public void setPartitions(List<MySqlPartitioningDef> partitions) {
-        this.partitions = partitions;
+    public SQLSubPartitionBy getSubPartitionBy() {
+        return subPartitionBy;
+    }
+
+    public void setSubPartitionBy(SQLSubPartitionBy subPartitionBy) {
+        if (subPartitionBy != null) {
+            subPartitionBy.setParent(this);
+        }
+        this.subPartitionBy = subPartitionBy;
     }
 
     public SQLExpr getPartitionsCount() {
@@ -45,6 +50,9 @@ public abstract class MySqlPartitionByClause extends MySqlObjectImpl implements 
     }
 
     public void setPartitionsCount(SQLExpr partitionsCount) {
+        if (partitionsCount != null) {
+            partitionsCount.setParent(this);
+        }
         this.partitionsCount = partitionsCount;
     }
 
@@ -56,12 +64,7 @@ public abstract class MySqlPartitionByClause extends MySqlObjectImpl implements 
         this.linear = linear;
     }
 
-    public MySqlSubPartitionByClause getSubPartitionBy() {
-        return subPartitionBy;
+    public List<SQLName> getStoreIn() {
+        return storeIn;
     }
-
-    public void setSubPartitionBy(MySqlSubPartitionByClause subPartitionBy) {
-        this.subPartitionBy = subPartitionBy;
-    }
-
 }

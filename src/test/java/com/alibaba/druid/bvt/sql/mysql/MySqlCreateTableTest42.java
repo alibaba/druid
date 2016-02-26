@@ -66,10 +66,11 @@ public class MySqlCreateTableTest42 extends MysqlTest {
                             "\n\ta INT NOT NULL, " + //
                             "\n\tb INT NOT NULL" + //
                             "\n)"
-                            + "\nPARTITION BY RANGE COLUMNS (a, b) (" + //
-                            "\n\tPARTITION p0 VALUES LESS THAN (10, 5), " + //
-                            "\n\tPARTITION p1 VALUES LESS THAN (20, 10), " + //
-                            "\n\tPARTITION p2 VALUES LESS THAN (MAXVALUE, 15), " + //
+                            + "\nPARTITION BY RANGE COLUMNS (a, b)"
+                            + "\n(" + //
+                            "\n\tPARTITION p0 VALUES LESS THAN (10, 5)," + //
+                            "\n\tPARTITION p1 VALUES LESS THAN (20, 10)," + //
+                            "\n\tPARTITION p2 VALUES LESS THAN (MAXVALUE, 15)," + //
                             "\n\tPARTITION p3 VALUES LESS THAN (MAXVALUE, MAXVALUE)" + //
                             "\n)", output);
 

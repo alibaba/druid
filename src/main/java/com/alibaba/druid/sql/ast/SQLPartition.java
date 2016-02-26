@@ -13,44 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+package com.alibaba.druid.sql.ast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlPartitioningDef extends MySqlObjectImpl {
+public class SQLPartition extends SQLObjectImpl {
 
-    private SQLName name;
+    protected SQLName               name;
 
-    private Values  values;
+    protected SQLExpr               subPartitionsCount;
 
-    private SQLExpr dataDirectory;
-    private SQLExpr indexDirectory;
-    private SQLName tableSpace;
-    private SQLExpr maxRows;
-    private SQLExpr minRows;
-    private SQLExpr engine;
-    private SQLExpr comment;
+    protected List<SQLSubPartition> subPartitions = new ArrayList<SQLSubPartition>();
 
-    @Override
-    public void accept0(MySqlASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, name);
-            acceptChild(visitor, values);
-            acceptChild(visitor, dataDirectory);
-            acceptChild(visitor, indexDirectory);
-            acceptChild(visitor, tableSpace);
-            acceptChild(visitor, maxRows);
-            acceptChild(visitor, minRows);
-            acceptChild(visitor, engine);
-            acceptChild(visitor, comment);
+    protected SQLPartitionValue     values;
+    
+    // for mysql
+    protected SQLExpr           dataDirectory;
+    protected SQLExpr           indexDirectory;
+    protected SQLName           tableSpace;
+    protected SQLExpr           maxRows;
+    protected SQLExpr           minRows;
+    protected SQLExpr           engine;
+    protected SQLExpr           comment;
+
+
+    public SQLName getName() {
+        return name;
+    }
+
+    public void setName(SQLName name) {
+        if (name != null) {
+            name.setParent(this);
         }
-        visitor.endVisit(this);
+        this.name = name;
+    }
+
+    public SQLExpr getSubPartitionsCount() {
+        return subPartitionsCount;
+    }
+
+    public void setSubPartitionsCount(SQLExpr subPartitionsCount) {
+        if (subPartitionsCount != null) {
+            subPartitionsCount.setParent(this);
+        }
+        this.subPartitionsCount = subPartitionsCount;
+    }
+
+    public SQLPartitionValue getValues() {
+        return values;
+    }
+
+    public void setValues(SQLPartitionValue values) {
+        if (values != null) {
+            values.setParent(this);
+        }
+        this.values = values;
+    }
+
+    public List<SQLSubPartition> getSubPartitions() {
+        return subPartitions;
     }
 
     public SQLExpr getIndexDirectory() {
@@ -75,24 +99,7 @@ public class MySqlPartitioningDef extends MySqlObjectImpl {
         this.dataDirectory = dataDirectory;
     }
 
-    public Values getValues() {
-        return values;
-    }
-
-    public void setValues(Values values) {
-        this.values = values;
-    }
-
-    public SQLName getName() {
-        return name;
-    }
-
-    public void setName(SQLName name) {
-        if (name != null) {
-            name.setParent(this);
-        }
-        this.name = name;
-    }
+ 
 
     public SQLName getTableSpace() {
         return tableSpace;
@@ -148,37 +155,19 @@ public class MySqlPartitioningDef extends MySqlObjectImpl {
         }
         this.comment = comment;
     }
-
-    public static abstract class Values extends MySqlObjectImpl {
-
-        private final List<SQLExpr> items = new ArrayList<SQLExpr>();
-
-        public List<SQLExpr> getItems() {
-            return items;
+    
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, name);
+            acceptChild(visitor, values);
+            acceptChild(visitor, dataDirectory);
+            acceptChild(visitor, indexDirectory);
+            acceptChild(visitor, tableSpace);
+            acceptChild(visitor, maxRows);
+            acceptChild(visitor, minRows);
+            acceptChild(visitor, engine);
+            acceptChild(visitor, comment);
         }
-    }
-
-    public static class LessThanValues extends Values {
-
-        @Override
-        public void accept0(MySqlASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, getItems());
-            }
-            visitor.endVisit(this);
-        }
-
-    }
-
-    public static class InValues extends Values {
-
-        @Override
-        public void accept0(MySqlASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, getItems());
-            }
-            visitor.endVisit(this);
-        }
-
+        visitor.endVisit(this);
     }
 }

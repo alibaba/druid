@@ -26,8 +26,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
@@ -132,8 +130,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleAlterTablespaceAddDataFile().accept(adapter);
         new OracleAlterTablespaceStatement().accept(adapter);
         new OracleCreateSequenceStatement().accept(adapter);
-        new OracleRangeValuesClause().accept(adapter);
-        new OraclePartitionByRangeClause().accept(adapter);
         new SQLLoopStatement().accept(adapter);
         new OracleIntervalExpr().accept(adapter);
         new OracleDeleteStatement().accept(adapter);

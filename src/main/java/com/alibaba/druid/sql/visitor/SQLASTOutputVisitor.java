@@ -34,8 +34,17 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.ast.SQLPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLPartitionByList;
+import com.alibaba.druid.sql.ast.SQLPartitionByRange;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLSubPartition;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
@@ -2673,6 +2682,31 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         return false;
     }
     
+    @Override
+    public boolean visit(SQLPartitionValue x) {
+        if (x.getOperator() == SQLPartitionValue.Operator.LessThan //
+                && (!JdbcConstants.ORACLE.equals(getDbType()))
+                && x.getItems().size() == 1 // 
+                && x.getItems().get(0) instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr ident = (SQLIdentifierExpr) x.getItems().get(0);
+            if ("MAXVALUE".equalsIgnoreCase(ident.getName())) {
+                print0(ucase ? "VALUES LESS THAN MAXVALUE" : "values less than maxvalue");
+                return false;
+            }
+        }
+        
+        if (x.getOperator() == SQLPartitionValue.Operator.LessThan) {
+            print0(ucase ? "VALUES LESS THAN (" : "values less than (");
+        } else if (x.getOperator() == SQLPartitionValue.Operator.In) {
+            print0(ucase ? "VALUES IN (" : "values in (");
+        } else {
+            print(ucase ? "VALUES (" : "values (");
+        }
+        printAndAccept(x.getItems(), ", ");
+        print(')');
+        return false;
+    }
+    
     public String getDbType() {
         return dbType;
     }
@@ -2683,5 +2717,274 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     
     public void setUppCase(boolean val) {
         this.ucase = val;
+    }
+    
+    @Override
+    public boolean visit(SQLPartition x) {
+        print0(ucase ? "PARTITION " : "partition ");
+        x.getName().accept(this);
+        if (x.getValues() != null) {
+            print(' ');
+            x.getValues().accept(this);
+        }
+
+        if (x.getDataDirectory() != null) {
+            incrementIndent();
+            println();
+            print0(ucase ? "DATA DIRECTORY " : "data directory ");
+            x.getDataDirectory().accept(this);
+            decrementIndent();
+        }
+        
+        if (x.getIndexDirectory() != null) {
+            incrementIndent();
+            println();
+            print0(ucase ? "INDEX DIRECTORY " : "index directory ");
+            x.getIndexDirectory().accept(this);
+            decrementIndent();
+        }
+        
+        if (x.getTableSpace() != null) {
+            print0(ucase ? " TABLESPACE " : " tablespace ");
+            x.getTableSpace().accept(this);
+        }
+        
+        if (x.getEngine() != null) {
+            print0(ucase ? " STORAGE ENGINE " : " storage engine ");
+            x.getEngine().accept(this);
+        }
+        
+        if (x.getMaxRows() != null) {
+            print0(ucase ? " MAX_ROWS " : " max_rows ");
+            x.getMaxRows().accept(this);
+        }
+        
+        if (x.getMinRows() != null) {
+            print0(ucase ? " MIN_ROWS " : " min_rows ");
+            x.getMinRows().accept(this);
+        }
+        
+        if (x.getComment() != null) {
+            print0(ucase ? " COMMENT " : " comment ");
+            x.getComment().accept(this);
+        }
+        
+        if (x.getSubPartitionsCount() != null) {
+            incrementIndent();
+            println();
+            print0(ucase ? "SUBPARTITIONS " : "subpartitions ");
+            x.getSubPartitionsCount().accept(this);
+            decrementIndent();
+        }
+        
+        if (x.getSubPartitions().size() > 0) {
+            println();
+            print('(');
+            incrementIndent();
+            for (int i = 0; i < x.getSubPartitions().size(); ++i) {
+                if (i != 0) {
+                    print(',');
+                }
+                println();
+                x.getSubPartitions().get(i).accept(this);
+            }
+            decrementIndent();
+            println();
+            print(')');
+        }
+
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByRange x) {
+        print0(ucase ? "PARTITION BY RANGE" : "partition by range");
+        if (x.getExpr() != null) {
+            print0(" (");
+            x.getExpr().accept(this);
+            print(')');
+        } else {
+            if (JdbcConstants.MYSQL.equals(getDbType())) {
+                print0(ucase ? " COLUMNS (" : " columns (");
+            } else {
+                print0(" (");
+            }
+            printAndAccept(x.getColumns(), ", ");
+            print(')');
+        }
+
+        if (x.getInterval() != null) {
+            print0(ucase ? " INTERVAL " : " interval ");
+            x.getInterval().accept(this);
+        }
+
+        printPartitionsCountAndSubPartitions(x);
+        
+        println();
+        print('(');
+        incrementIndent();
+        for (int i = 0, size = x.getPartitions().size(); i < size; ++i) {
+            if (i != 0) {
+                print(',');
+            }
+            println();
+            x.getPartitions().get(i).accept(this);
+        }
+        decrementIndent();
+        println();
+        print(')');
+        
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByList x) {
+        print0(ucase ? "PARTITION BY LIST " : "partition by list ");
+        if (x.getExpr() != null) {
+            print('(');
+            x.getExpr().accept(this);
+            print0(")");
+        } else {
+            print0(ucase ? "COLUMNS (" : "columns (");
+            printAndAccept(x.getColumns(), ", ");
+            print0(")");
+        }
+
+        printPartitionsCountAndSubPartitions(x);
+
+        List<SQLPartition> partitions = x.getPartitions();
+        int partitionsSize = partitions.size();
+        if (partitionsSize > 0) {
+            println();
+            incrementIndent();
+            print('(');
+            for (int i = 0; i < partitionsSize; ++i) {
+                println();
+                partitions.get(i).accept(this);
+                if (i != partitionsSize - 1) {
+                    print0(", ");
+                }
+            }
+            decrementIndent();
+            println();
+            print(')');
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByHash x) {
+        if (x.isLinear()) {
+            print0(ucase ? "PARTITION BY LINEAR HASH " : "partition by linear hash ");
+        } else {
+            print0(ucase ? "PARTITION BY HASH " : "partition by hash ");
+        }
+
+        if (x.isKey()) {
+            print0(ucase ? "KEY" : "key");
+        }
+
+        print('(');
+        x.getExpr().accept(this);
+        print(')');
+
+        printPartitionsCountAndSubPartitions(x);
+
+        return false;
+    }
+    
+    protected void printPartitionsCountAndSubPartitions(SQLPartitionBy x) {
+        if (x.getPartitionsCount() != null) {
+
+            if (Boolean.TRUE.equals(x.getAttribute("ads.partition"))) {
+                print0(ucase ? " PARTITION NUM " : " partition num ");
+            } else {
+                print0(ucase ? " PARTITIONS " : " partitions ");
+            }
+
+            x.getPartitionsCount().accept(this);
+        }
+       
+        if (x.getSubPartitionBy() != null) {
+            println();
+            x.getSubPartitionBy().accept(this);
+        }
+        
+        if (x.getStoreIn().size() > 0) {
+            println();
+            print0(ucase ? "STORE IN (" : "store in (");
+            printAndAccept(x.getStoreIn(), ", ");
+            print(')');
+        }
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartitionByHash x) {
+        if (x.isLinear()) {
+            print0(ucase ? "SUBPARTITION BY LINEAR HASH " : "subpartition by linear hash ");
+        } else {
+            print0(ucase ? "SUBPARTITION BY HASH " : "subpartition by hash ");
+        }
+
+        if (x.isKey()) {
+            print0(ucase ? "KEY" : "key");
+        }
+
+        print('(');
+        x.getExpr().accept(this);
+        print(')');
+
+        if (x.getSubPartitionsCount() != null) {
+            print0(ucase ? " SUBPARTITIONS " : " subpartitions ");
+            x.getSubPartitionsCount().accept(this);
+        }
+
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartitionByList x) {
+        if (x.isLinear()) {
+            print0(ucase ? "SUBPARTITION BY LINEAR HASH " : "subpartition by linear hash ");
+        } else {
+            print0(ucase ? "SUBPARTITION BY HASH " : "subpartition by hash ");
+        }
+        
+        print('(');
+        x.getColumn().accept(this);
+        print(')');
+        
+        if (x.getSubPartitionsCount() != null) {
+            print0(ucase ? " SUBPARTITIONS " : " subpartitions ");
+            x.getSubPartitionsCount().accept(this);
+        }
+        
+        if (x.getSubPartitionTemplate().size() > 0) {
+            incrementIndent();
+            println();
+            print0(ucase ? "SUBPARTITION TEMPLATE (" : "subpartition template (");
+            incrementIndent();
+            println();
+            printlnAndAccept(x.getSubPartitionTemplate(), ",");
+            decrementIndent();
+            println();
+            print(')');
+            decrementIndent();
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartition x) {
+        print0(ucase ? "SUBPARTITION " : "subpartition ");
+        x.getName().accept(this);
+        
+        if (x.getValues() != null) {
+            print(' ');
+            x.getValues().accept(this);
+        }
+        
+        return false;
     }
 }
