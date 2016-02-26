@@ -65,7 +65,9 @@ public class MySqlCreateTableTest44 extends MysqlTest {
         Assert.assertEquals("CREATE TABLE lc (" + //
                             "\n\ta INT NULL, " + //
                             "\n\tb INT NULL" + //
-                            "\n) PARTITION BY LIST COLUMNS (a, b) (" + //
+                            "\n)" + //
+                            "\nPARTITION BY LIST COLUMNS (a, b)"
+                            + "\n(" + //
                             "\n\tPARTITION p0 VALUES IN ((0, 0), (NULL, NULL)), " + //
                             "\n\tPARTITION p1 VALUES IN ((0, 1), (0, 2), (0, 3), (1, 1), (1, 2)), " + //
                             "\n\tPARTITION p2 VALUES IN ((1, 0), (2, 0), (2, 1), (3, 0), (3, 1)), " + //

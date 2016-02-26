@@ -19,15 +19,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLSubPartitionBy;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlSubPartitionByList extends MySqlSubPartitionByClause {
+public class MySqlSubPartitionByList extends SQLSubPartitionBy implements MySqlObject {
 
     private SQLExpr       expr;
 
     private List<SQLColumnDefinition> columns = new ArrayList<SQLColumnDefinition>();
 
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
+    }
+    
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

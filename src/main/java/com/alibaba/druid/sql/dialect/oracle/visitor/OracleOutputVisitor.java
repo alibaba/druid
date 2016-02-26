@@ -66,8 +66,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceMode
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
@@ -156,10 +154,14 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleASTVisitor {
 
     private final boolean printPostSemi;
+    {
+        this.dbType = JdbcConstants.ORACLE;
+    }
 
     public OracleOutputVisitor(Appendable appender){
         this(appender, true);
@@ -2773,59 +2775,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleCreateSequenceStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleRangeValuesClause x) {
-        print0(ucase ? "PARTITION " : "partition ");
-        x.getName().accept(this);
-        print0(ucase ? " VALUES LESS THAN (" : " values less than (");
-        printAndAccept(x.getValues(), ", ");
-        print(')');
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleRangeValuesClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OraclePartitionByRangeClause x) {
-        print0(ucase ? "PARTITION BY RANGE (" : "partition by range (");
-        printAndAccept(x.getColumns(), ", ");
-        print(')');
-
-        if (x.getInterval() != null) {
-            print0(ucase ? " INTERVAL " : " interval ");
-            x.getInterval().accept(this);
-        }
-
-        if (x.getStoreIn().size() > 0) {
-            print0(ucase ? " STORE IN (" : " store in (");
-            printAndAccept(x.getStoreIn(), ", ");
-            print(')');
-        }
-
-        println();
-        print('(');
-        incrementIndent();
-        for (int i = 0, size = x.getRanges().size(); i < size; ++i) {
-            if (i != 0) {
-                print(',');
-            }
-            println();
-            x.getRanges().get(i).accept(this);
-        }
-        decrementIndent();
-        println();
-        print(')');
-        return false;
-    }
-
-    @Override
-    public void endVisit(OraclePartitionByRangeClause x) {
 
     }
 

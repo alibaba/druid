@@ -22,6 +22,14 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLPartitionByList;
+import com.alibaba.druid.sql.ast.SQLPartitionByRange;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.SQLSubPartition;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
@@ -686,4 +694,36 @@ public interface SQLASTVisitor {
     boolean visit(SQLDeclareItem x);
     
     void endVisit(SQLDeclareItem x);
+    
+    boolean visit(SQLPartitionValue x);
+    
+    void endVisit(SQLPartitionValue x);
+    
+    boolean visit(SQLPartition x);
+    
+    void endVisit(SQLPartition x);
+    
+    boolean visit(SQLPartitionByRange x);
+    
+    void endVisit(SQLPartitionByRange x);
+    
+    boolean visit(SQLPartitionByHash x);
+    
+    void endVisit(SQLPartitionByHash x);
+    
+    boolean visit(SQLPartitionByList x);
+    
+    void endVisit(SQLPartitionByList x);
+    
+    boolean visit(SQLSubPartition x);
+    
+    void endVisit(SQLSubPartition x);
+    
+    boolean visit(SQLSubPartitionByHash x);
+    
+    void endVisit(SQLSubPartitionByHash x);
+    
+    boolean visit(SQLSubPartitionByList x);
+    
+    void endVisit(SQLSubPartitionByList x);
 }

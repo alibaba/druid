@@ -30,6 +30,13 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLPartitionByList;
+import com.alibaba.druid.sql.ast.SQLPartitionByRange;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.SQLSubPartition;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
@@ -1458,6 +1465,41 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     
     @Override
     public boolean visit(SQLDeclareItem x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByHash x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByRange x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByList x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartitionByHash x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionValue x) {
         return false;
     }
 }

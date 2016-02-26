@@ -59,7 +59,8 @@ public class MySqlCreateTableTest41 extends MysqlTest {
                             "\n\tcol1 INT, " + //
                             "\n\tcol2 CHAR(5), " + //
                             "\n\tcol3 DATE" + //
-                            "\n) PARTITION BY LINEAR KEY (col3) PARTITIONS 5", output);
+                            "\n)"
+                            + "\nPARTITION BY LINEAR KEY (col3) PARTITIONS 5", output);
 
     }
 }

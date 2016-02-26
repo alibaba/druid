@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartitioningClause;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -53,7 +53,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     private Boolean                 cache;
 
-    private SQLPartitioningClause   partitioning;
+    private SQLPartitionBy   partitioning;
 
     private DeferredSegmentCreation deferredSegmentCreation;
     
@@ -77,11 +77,11 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.deferredSegmentCreation = deferredSegmentCreation;
     }
 
-    public SQLPartitioningClause getPartitioning() {
+    public SQLPartitionBy getPartitioning() {
         return partitioning;
     }
 
-    public void setPartitioning(SQLPartitioningClause partitioning) {
+    public void setPartitioning(SQLPartitionBy partitioning) {
         this.partitioning = partitioning;
     }
 

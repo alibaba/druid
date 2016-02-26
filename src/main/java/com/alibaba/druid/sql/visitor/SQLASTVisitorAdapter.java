@@ -23,6 +23,14 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLPartitionByList;
+import com.alibaba.druid.sql.ast.SQLPartitionByRange;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.SQLSubPartition;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
@@ -1374,6 +1382,86 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLDeclareItem x) {
+    }
+
+    @Override
+    public boolean visit(SQLPartitionValue x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLPartitionValue x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLPartition x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLPartition x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByRange x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLPartitionByRange x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByHash x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLPartitionByHash x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByList x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLPartitionByList x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartition x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLSubPartition x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartitionByHash x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLSubPartitionByHash x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartitionByList x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLSubPartitionByList x) {
+        
     }
     
 }

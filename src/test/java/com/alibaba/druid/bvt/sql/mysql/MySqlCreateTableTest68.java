@@ -24,20 +24,22 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-public class MySqlCreateTableTest66 extends MysqlTest {
+public class MySqlCreateTableTest68 extends MysqlTest {
 
     @Test
     public void test_one() throws Exception {
-        String sql = "create table hp_db.g20_relationship_communication_daily(                   "
-                + " a_iden_string    varchar,"
-                + " b_iden_string    varchar,"
-                + " counter          bigint,"
-                + " durationtime     bigint"
-                + ") "
-                + "\nPARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
-                + "\nSUBPARTITION BY LIST(bdt bigint)"
-                + "\nSUBPARTITION OPTIONS(available_Partition_Num=90)"
-                + "\nTABLEGROUP g20_test_group;";
+        String sql = "CREATE TABLE t1 ("
+                + "\n\tyear_col  INT,"
+                + "\n\tsome_data INT"
+                + "\n)"
+                + "\nPARTITION BY RANGE (year_col) ("
+                + "    PARTITION p0 VALUES LESS THAN (1991),"
+                + "    PARTITION p1 VALUES LESS THAN (1995),"
+                + "    PARTITION p2 VALUES LESS THAN (1999),"
+                + "    PARTITION p3 VALUES LESS THAN (2002),"
+                + "    PARTITION p4 VALUES LESS THAN (2006),"
+                + "    PARTITION p5 VALUES LESS THAN MAXVALUE"
+                + ");";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -46,16 +48,19 @@ public class MySqlCreateTableTest66 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE hp_db.g20_relationship_communication_daily ("
-                + "\n\ta_iden_string varchar, "
-                + "\n\tb_iden_string varchar, "
-                + "\n\tcounter bigint, "
-                + "\n\tdurationtime bigint"
-                + "\n)" 
-                + "\nPARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
-                + "\nSUBPARTITION BY LIST (bdt bigint)"
-                + "\nSUBPARTITION OPTIONS (available_Partition_Num = 90)"
-                + "\nTABLEGROUP g20_test_group", output);
+        Assert.assertEquals("CREATE TABLE t1 ("
+                + "\n\tyear_col INT, "
+                + "\n\tsome_data INT"
+                + "\n)"
+                + "\nPARTITION BY RANGE (year_col)"
+                + "\n("
+                + "\n\tPARTITION p0 VALUES LESS THAN (1991),"
+                + "\n\tPARTITION p1 VALUES LESS THAN (1995),"
+                + "\n\tPARTITION p2 VALUES LESS THAN (1999),"
+                + "\n\tPARTITION p3 VALUES LESS THAN (2002),"
+                + "\n\tPARTITION p4 VALUES LESS THAN (2006),"
+                + "\n\tPARTITION p5 VALUES LESS THAN MAXVALUE"
+                + "\n)", output);
 
     }
 }

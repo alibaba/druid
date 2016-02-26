@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+package com.alibaba.druid.sql.ast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 
-public abstract class MySqlSubPartitionByClause extends MySqlObjectImpl implements SQLPartitioningClause {
+public abstract class SQLSubPartitionBy extends SQLObjectImpl {
 
-    protected SQLExpr             subPartitionsCount;
+    protected SQLExpr                 subPartitionsCount;
+    protected boolean                 linear;
 
-    protected boolean             linear;
+    protected List<SQLAssignItem>     options              = new ArrayList<SQLAssignItem>();
 
-    protected List<SQLAssignItem> options = new ArrayList<SQLAssignItem>();
+    protected List<SQLSubPartition> subPartitionTemplate = new ArrayList<SQLSubPartition>();
 
     public SQLExpr getSubPartitionsCount() {
         return subPartitionsCount;
     }
 
     public void setSubPartitionsCount(SQLExpr subPartitionsCount) {
+        if (subPartitionsCount != null) {
+            subPartitionsCount.setParent(this);
+        }
+
         this.subPartitionsCount = subPartitionsCount;
     }
 
@@ -49,6 +51,10 @@ public abstract class MySqlSubPartitionByClause extends MySqlObjectImpl implemen
 
     public List<SQLAssignItem> getOptions() {
         return options;
+    }
+
+    public List<SQLSubPartition> getSubPartitionTemplate() {
+        return subPartitionTemplate;
     }
 
 }

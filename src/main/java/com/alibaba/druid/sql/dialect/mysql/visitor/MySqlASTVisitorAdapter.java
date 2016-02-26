@@ -66,13 +66,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.InValues;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.LessThanValues;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
@@ -127,7 +121,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
@@ -1107,66 +1100,6 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     }
 
     @Override
-    public boolean visit(MySqlPartitionByHash x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitionByHash x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitionByRange x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitionByRange x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitioningDef x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitioningDef x) {
-
-    }
-
-    @Override
-    public boolean visit(LessThanValues x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(LessThanValues x) {
-
-    }
-
-    @Override
-    public boolean visit(InValues x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(InValues x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitionByList x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitionByList x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlAnalyzeStatement x) {
         return true;
     }
@@ -1345,15 +1278,6 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     @Override
     public void endVisit(MySqlSubPartitionByKey x) {
 
-    }
-
-    @Override
-    public boolean visit(MySqlSubPartitionByHash x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlSubPartitionByHash x) {
     }
     
     @Override

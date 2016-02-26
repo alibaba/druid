@@ -55,8 +55,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitio
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
@@ -1455,26 +1453,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleCreateSequenceStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleRangeValuesClause x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleRangeValuesClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OraclePartitionByRangeClause x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OraclePartitionByRangeClause x) {
 
     }
 

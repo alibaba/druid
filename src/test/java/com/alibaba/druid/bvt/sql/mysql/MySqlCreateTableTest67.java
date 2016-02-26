@@ -24,20 +24,16 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-public class MySqlCreateTableTest66 extends MysqlTest {
+public class MySqlCreateTableTest67 extends MysqlTest {
 
     @Test
     public void test_one() throws Exception {
-        String sql = "create table hp_db.g20_relationship_communication_daily(                   "
-                + " a_iden_string    varchar,"
-                + " b_iden_string    varchar,"
-                + " counter          bigint,"
-                + " durationtime     bigint"
-                + ") "
-                + "\nPARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
-                + "\nSUBPARTITION BY LIST(bdt bigint)"
-                + "\nSUBPARTITION OPTIONS(available_Partition_Num=90)"
-                + "\nTABLEGROUP g20_test_group;";
+        String sql = "CREATE TABLE t1 ( a INT NOT NULL, PRIMARY KEY (a))"
+                + " ENGINE=InnoDB TABLESPACE ts1                            "
+                + " PARTITION BY RANGE (a) PARTITIONS 3 ("
+                + " PARTITION P1 VALUES LESS THAN (2),"
+                + " PARTITION P2 VALUES LESS THAN (4) TABLESPACE ts2,"
+                + " PARTITION P3 VALUES LESS THAN (6) TABLESPACE ts3);";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -46,16 +42,16 @@ public class MySqlCreateTableTest66 extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE hp_db.g20_relationship_communication_daily ("
-                + "\n\ta_iden_string varchar, "
-                + "\n\tb_iden_string varchar, "
-                + "\n\tcounter bigint, "
-                + "\n\tdurationtime bigint"
-                + "\n)" 
-                + "\nPARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
-                + "\nSUBPARTITION BY LIST (bdt bigint)"
-                + "\nSUBPARTITION OPTIONS (available_Partition_Num = 90)"
-                + "\nTABLEGROUP g20_test_group", output);
+        Assert.assertEquals("CREATE TABLE t1 ("
+                + "\n\ta INT NOT NULL, "
+                + "\n\tPRIMARY KEY (a)"
+                + "\n) ENGINE = InnoDB TABLESPACE ts1"
+                + "\nPARTITION BY RANGE (a) PARTITIONS 3"
+                + "\n("
+                + "\n\tPARTITION P1 VALUES LESS THAN (2),"
+                + "\n\tPARTITION P2 VALUES LESS THAN (4) TABLESPACE ts2,"
+                + "\n\tPARTITION P3 VALUES LESS THAN (6) TABLESPACE ts3"
+                + "\n)", output);
 
     }
 }
