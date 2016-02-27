@@ -76,6 +76,13 @@ public class SQLPartition extends SQLObjectImpl {
     public List<SQLSubPartition> getSubPartitions() {
         return subPartitions;
     }
+    
+    public void addSubPartition(SQLSubPartition partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+        this.subPartitions.add(partition);
+    }
 
     public SQLExpr getIndexDirectory() {
         return indexDirectory;

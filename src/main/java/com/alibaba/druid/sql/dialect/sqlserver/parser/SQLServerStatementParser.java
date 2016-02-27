@@ -168,7 +168,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         
         for (;;) {
             SQLDeclareItem item = new  SQLDeclareItem();
-            declareStatement.getItems().add(item);
+            declareStatement.addItem(item);
             
             item.setName(this.exprParser.name());
 

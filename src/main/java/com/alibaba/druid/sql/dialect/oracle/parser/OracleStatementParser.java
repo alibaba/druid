@@ -67,7 +67,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.TableSpaceItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.UpdateIndexesClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
@@ -573,7 +572,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleStatement parserAlter() {
+    public SQLStatement parserAlter() {
         accept(Token.ALTER);
         if (lexer.token() == Token.SESSION) {
             lexer.nextToken();
@@ -775,9 +774,9 @@ public class OracleStatementParser extends SQLStatementParser {
         throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
     }
 
-    private OracleStatement parseAlterTable() {
+    private SQLStatement parseAlterTable() {
         lexer.nextToken();
-        OracleAlterTableStatement stmt = new OracleAlterTableStatement();
+        SQLAlterTableStatement stmt = new SQLAlterTableStatement(getDbType());
         stmt.setName(this.exprParser.name());
 
         for (;;) {
@@ -789,7 +788,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                     SQLAlterTableAddColumn item = parseAlterTableAddColumn();
 
-                    stmt.getItems().add(item);
+                    stmt.addItem(item);
 
                     accept(Token.RPAREN);
                 } else if (lexer.token() == Token.CONSTRAINT) {
@@ -798,10 +797,10 @@ public class OracleStatementParser extends SQLStatementParser {
                     constraint.setParent(item);
                     item.setParent(stmt);
                     item.setConstraint(constraint);
-                    stmt.getItems().add(item);
+                    stmt.addItem(item);
                 } else if (lexer.token() == Token.IDENTIFIER) {
                     SQLAlterTableAddColumn item = parseAlterTableAddColumn();
-                    stmt.getItems().add(item);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
                 }
@@ -816,12 +815,12 @@ public class OracleStatementParser extends SQLStatementParser {
                     OracleAlterTableMoveTablespace item = new OracleAlterTableMoveTablespace();
                     item.setName(this.exprParser.name());
 
-                    stmt.getItems().add(item);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
                 }
             } else if (identifierEquals("RENAME")) {
-                stmt.getItems().add(parseAlterTableRename());
+                stmt.addItem(parseAlterTableRename());
             } else if (identifierEquals("MODIFY")) {
                 lexer.nextToken();
 
@@ -831,7 +830,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                     for (;;) {
                         SQLColumnDefinition columnDef = this.exprParser.parseColumn();
-                        item.getColumns().add(columnDef);
+                        item.addColumn(columnDef);
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();
                             continue;
@@ -842,10 +841,10 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 } else {
                     SQLColumnDefinition columnDef = this.exprParser.parseColumn();
-                    item.getColumns().add(columnDef);
+                    item.addColumn(columnDef);
                 }
 
-                stmt.getItems().add(item);
+                stmt.addItem(item);
                 continue;
             } else if (identifierEquals("SPLIT")) {
                 parseAlterTableSplit(stmt);
@@ -856,7 +855,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     OracleAlterTableTruncatePartition item = new OracleAlterTableTruncatePartition();
                     item.setName(this.exprParser.name());
-                    stmt.getItems().add(item);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
                 }
@@ -870,7 +869,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     SQLAlterTableEnableConstraint item = new SQLAlterTableEnableConstraint();
                     item.setConstraintName(this.exprParser.name());
-                    stmt.getItems().add(item);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
                 }
@@ -880,7 +879,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     SQLAlterTableDisableConstraint item = new SQLAlterTableDisableConstraint();
                     item.setConstraintName(this.exprParser.name());
-                    stmt.getItems().add(item);
+                    stmt.addItem(item);
                 } else {
                     throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
                 }
@@ -910,29 +909,29 @@ public class OracleStatementParser extends SQLStatementParser {
             lexer.nextToken();
             SQLAlterTableDropConstraint item = new SQLAlterTableDropConstraint();
             item.setConstraintName(this.exprParser.name());
-            stmt.getItems().add(item);
+            stmt.addItem(item);
         } else if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
             this.exprParser.names(item.getColumns());
-            stmt.getItems().add(item);
+            stmt.addItem(item);
             accept(Token.RPAREN);
         } else if (lexer.token() == Token.COLUMN) {
             lexer.nextToken();
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
             this.exprParser.names(item.getColumns());
-            stmt.getItems().add(item);
+            stmt.addItem(item);
         } else if (identifierEquals("PARTITION")) {
             lexer.nextToken();
             OracleAlterTableDropPartition item = new OracleAlterTableDropPartition();
             item.setName(this.exprParser.name());
-            stmt.getItems().add(item);
+            stmt.addItem(item);
         } else {
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
     }
 
-    private void parseAlterTableSplit(OracleAlterTableStatement stmt) {
+    private void parseAlterTableSplit(SQLAlterTableStatement stmt) {
         lexer.nextToken();
         if (identifierEquals("PARTITION")) {
             lexer.nextToken();
@@ -1002,7 +1001,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 UpdateIndexesClause updateIndexes = new UpdateIndexesClause();
                 item.setUpdateIndexes(updateIndexes);
             }
-            stmt.getItems().add(item);
+            stmt.addItem(item);
         } else {
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
@@ -1132,7 +1131,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 for (;;) {
                     SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
 
-                    updateClause.getItems().add(item);
+                    updateClause.addItem(item);
                     item.setParent(updateClause);
 
                     if (lexer.token() == (Token.COMMA)) {
@@ -1256,7 +1255,7 @@ public class OracleStatementParser extends SQLStatementParser {
             clause.setReturning(parseReturningClause());
             clause.setErrorLogging(parseErrorLoggingClause());
 
-            stmt.getEntries().add(clause);
+            stmt.addEntry(clause);
         }
 
         if (lexer.token() == Token.WHEN) {
@@ -1273,7 +1272,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 parseInsert0(insertInto);
                 item.setThen(insertInto);
 
-                clause.getItems().add(item);
+                clause.addItem(item);
             }
 
             if (lexer.token() == Token.ELSE) {
@@ -1283,7 +1282,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 parseInsert0(insertInto, false);
                 clause.setElseItem(insertInto);
             }
-            stmt.getEntries().add(clause);
+            stmt.addEntry(clause);
         }
 
         SQLSelect subQuery = this.createSQLSelectParser().select();
@@ -1303,7 +1302,7 @@ public class OracleStatementParser extends SQLStatementParser {
             accept(Token.THEN);
             parseStatementList(item.getStatements());
 
-            stmt.getItems().add(item);
+            stmt.addItem(item);
 
             if (lexer.token() != Token.WHEN) {
                 break;
@@ -1349,7 +1348,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
             for (;;) {
                 SQLExpr item = exprParser.expr();
-                clause.getItems().add(item);
+                clause.addItem(item);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -1359,7 +1358,7 @@ public class OracleStatementParser extends SQLStatementParser {
             accept(Token.INTO);
             for (;;) {
                 SQLExpr item = exprParser.expr();
-                clause.getValues().add(item);
+                clause.addValue(item);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -1524,7 +1523,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         for (;;) {
             SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
-            stmt.getItems().add(item);
+            stmt.addItem(item);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;

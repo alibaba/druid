@@ -187,11 +187,11 @@ public class OracleSelectParser extends SQLSelectParser {
                     acceptIdentifier("FIRST");
                     accept(Token.BY);
 
-                    searchClause.getItems().add(exprParser.parseSelectOrderByItem());
+                    searchClause.addItem(exprParser.parseSelectOrderByItem());
 
                     while (lexer.token() == (Token.COMMA)) {
                         lexer.nextToken();
-                        searchClause.getItems().add(exprParser.parseSelectOrderByItem());
+                        searchClause.addItem(exprParser.parseSelectOrderByItem());
                     }
 
                     accept(Token.SET);
@@ -214,7 +214,7 @@ public class OracleSelectParser extends SQLSelectParser {
                     entry.setCycleClause(cycleClause);
                 }
 
-                subqueryFactoringClause.getEntries().add(entry);
+                subqueryFactoringClause.addEntry(entry);
 
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
@@ -915,7 +915,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 item = new OracleSelectPivot.Item();
                 item.setExpr((SQLAggregateExpr) this.exprParser.expr());
                 item.setAlias(as());
-                pivot.getItems().add(item);
+                pivot.addItem(item);
 
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
@@ -992,7 +992,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 this.exprParser.exprList(unPivot.getItems(), unPivot);
                 accept(Token.RPAREN);
             } else {
-                unPivot.getItems().add(this.exprParser.expr());
+                unPivot.addItem(this.exprParser.expr());
             }
 
             accept(Token.FOR);
@@ -1055,10 +1055,10 @@ public class OracleSelectParser extends SQLSelectParser {
                 return;
             }
             SQLListExpr list = new SQLListExpr();
-            list.getItems().add(expr);
+            list.addItem(expr);
             while (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
-                list.getItems().add(expr());
+                list.addItem(expr());
             }
             x.setInto(list);
         }

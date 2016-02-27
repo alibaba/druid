@@ -48,6 +48,13 @@ public class OracleSelectUnPivot extends OracleSelectPivotBase {
     public List<SQLExpr> getItems() {
         return this.items;
     }
+    
+    public void addItem(SQLExpr item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
 
     public NullsIncludeType getNullsIncludeType() {
         return this.nullsIncludeType;

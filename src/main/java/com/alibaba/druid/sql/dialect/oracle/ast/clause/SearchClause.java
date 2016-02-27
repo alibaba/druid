@@ -46,6 +46,13 @@ public class SearchClause extends OracleSQLObjectImpl {
     public List<SQLSelectOrderByItem> getItems() {
         return items;
     }
+    
+    public void addItem(SQLSelectOrderByItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
 
     public SQLIdentifierExpr getOrderingColumn() {
         return orderingColumn;

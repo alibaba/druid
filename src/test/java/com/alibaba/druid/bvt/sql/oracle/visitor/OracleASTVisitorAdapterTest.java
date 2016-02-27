@@ -54,7 +54,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartiti
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
@@ -185,7 +184,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleAlterProcedureStatement().accept(adapter);
         new OracleAlterTableDropPartition().accept(adapter);
         new OracleAlterTableTruncatePartition().accept(adapter);
-        new OracleAlterTableStatement().accept(adapter);
         new OracleAlterTableSplitPartition.TableSpaceItem().accept(adapter);
         new OracleAlterTableSplitPartition.UpdateIndexesClause().accept(adapter);
         new OracleAlterTableSplitPartition.NestedTablePartitionSpec().accept(adapter);

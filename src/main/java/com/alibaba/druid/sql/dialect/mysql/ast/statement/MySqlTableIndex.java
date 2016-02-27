@@ -53,6 +53,13 @@ public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement 
     public List<SQLExpr> getColumns() {
         return columns;
     }
+    
+    public void addColumn(SQLExpr column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

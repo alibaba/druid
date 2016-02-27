@@ -118,7 +118,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 }
                 
                 SQLColumnDefinition column = this.exprParser.parseColumn();
-                stmt.getPartitionColumns().add(column);
+                stmt.addPartitionColumn(column);
                 
                 if (lexer.isKeepComments() && lexer.hasComment()) {
                     column.addAfterComment(lexer.readAndResetComments());

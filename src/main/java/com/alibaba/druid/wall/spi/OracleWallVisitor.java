@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -38,7 +41,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
@@ -55,9 +57,6 @@ import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVisitor {
 
@@ -318,12 +317,6 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLAlterTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleAlterTableStatement x) {
         WallVisitorUtils.check(this, x);
         return true;
     }

@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
@@ -85,7 +86,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartiti
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
@@ -1151,23 +1151,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleAlterTableStatement x) {
-        String tableName = x.getName().toString();
-        TableStat stat = getTableStat(tableName);
-        stat.incrementAlterCount();
-
-        setCurrentTable(x, tableName);
-
-        for (SQLObject item : x.getItems()) {
-            item.setParent(x);
-            item.accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableStatement x) {
+    public void endVisit(SQLAlterTableStatement x) {
         restoreCurrentTable(x);
     }
 
@@ -1213,7 +1197,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleAlterTableModify x) {
-        OracleAlterTableStatement stmt = (OracleAlterTableStatement) x.getParent();
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
         String table = stmt.getName().toString();
 
         for (SQLColumnDefinition column : x.getColumns()) {

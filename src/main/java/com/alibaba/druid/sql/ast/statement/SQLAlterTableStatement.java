@@ -25,22 +25,55 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private SQLExprTableSource      tableSource;
-    private List<SQLAlterTableItem> items = new ArrayList<SQLAlterTableItem>();
-    
-    public SQLAlterTableStatement() {
-        
+    private List<SQLAlterTableItem> items                   = new ArrayList<SQLAlterTableItem>();
+
+    // for mysql
+    private boolean                 ignore                  = false;
+
+    private boolean                 updateGlobalIndexes     = false;
+    private boolean                 invalidateGlobalIndexes = false;
+
+    public SQLAlterTableStatement(){
+
     }
-    
-    public SQLAlterTableStatement(String dbType) {
-        super (dbType);
+
+    public SQLAlterTableStatement(String dbType){
+        super(dbType);
+    }
+
+    public boolean isIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
+    }
+
+    public boolean isUpdateGlobalIndexes() {
+        return updateGlobalIndexes;
+    }
+
+    public void setUpdateGlobalIndexes(boolean updateGlobalIndexes) {
+        this.updateGlobalIndexes = updateGlobalIndexes;
+    }
+
+    public boolean isInvalidateGlobalIndexes() {
+        return invalidateGlobalIndexes;
+    }
+
+    public void setInvalidateGlobalIndexes(boolean invalidateGlobalIndexes) {
+        this.invalidateGlobalIndexes = invalidateGlobalIndexes;
     }
 
     public List<SQLAlterTableItem> getItems() {
         return items;
     }
 
-    public void setItems(List<SQLAlterTableItem> items) {
-        this.items = items;
+    public void addItem(SQLAlterTableItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public SQLExprTableSource getTableSource() {

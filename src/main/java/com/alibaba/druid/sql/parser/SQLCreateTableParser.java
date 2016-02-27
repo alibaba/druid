@@ -154,7 +154,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 maxValue.setParent(values);
-                values.getItems().add(maxValue);
+                values.addItem(maxValue);
             } else {
                 accept(Token.LPAREN);
                 this.exprParser.exprList(values.getItems(), values);

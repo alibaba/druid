@@ -30,8 +30,11 @@ public class MySqlRenameTableStatement extends MySqlStatementImpl {
         return items;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void addItem(Item item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public void accept0(MySqlASTVisitor visitor) {

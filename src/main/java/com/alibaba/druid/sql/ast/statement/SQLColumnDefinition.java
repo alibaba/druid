@@ -99,6 +99,13 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     public List<SQLColumnConstraint> getConstraints() {
         return constraints;
     }
+    
+    public void addConstraint(SQLColumnConstraint constraint) {
+        if (constraint != null) {
+            constraint.setParent(this);
+        }
+        this.constraints.add(constraint);
+    }
 
     @Override
     public void output(StringBuffer buf) {

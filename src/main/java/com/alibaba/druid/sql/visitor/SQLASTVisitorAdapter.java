@@ -65,11 +65,13 @@ import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableConvertCharSet;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableLifecycle;
@@ -1468,6 +1470,26 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     
     @Override
     public void endVisit(SQLSubPartitionByList x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLAlterDatabaseStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterDatabaseStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableConvertCharSet x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableConvertCharSet x) {
         
     }
     

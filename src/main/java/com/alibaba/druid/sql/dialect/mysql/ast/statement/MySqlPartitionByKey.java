@@ -51,9 +51,12 @@ public class MySqlPartitionByKey extends SQLPartitionBy implements MySqlObject {
     public List<SQLName> getColumns() {
         return columns;
     }
-
-    public void setColumns(List<SQLName> columns) {
-        this.columns = columns;
+    
+    public void addColumn(SQLName column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
     }
 
 }

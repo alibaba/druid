@@ -46,7 +46,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardT
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
@@ -431,10 +430,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlShowVariantsStatement x);
 
     void endVisit(MySqlShowVariantsStatement x);
-
-    boolean visit(MySqlAlterTableStatement x);
-
-    void endVisit(MySqlAlterTableStatement x);
 
     boolean visit(MySqlRenameTableStatement.Item x);
 

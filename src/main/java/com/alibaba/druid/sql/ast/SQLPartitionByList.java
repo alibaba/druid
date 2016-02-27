@@ -53,4 +53,10 @@ public class SQLPartitionByList extends SQLPartitionBy {
         return columns;
     }
 
+    public void addColumn(SQLName column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
 }

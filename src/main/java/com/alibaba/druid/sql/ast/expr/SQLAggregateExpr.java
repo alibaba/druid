@@ -75,6 +75,13 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     public List<SQLExpr> getArguments() {
         return this.arguments;
     }
+    
+    public void addArgument(SQLExpr argument) {
+        if (argument != null) {
+            argument.setParent(this);
+        }
+        this.arguments.add(argument);
+    }
 
     public SQLOver getOver() {
         return over;

@@ -59,8 +59,11 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
         return items;
     }
 
-    public void setItems(List<SQLSelectOrderByItem> items) {
-        this.items = items;
+    public void addItem(SQLSelectOrderByItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public SQLName getName() {

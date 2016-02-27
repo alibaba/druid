@@ -741,7 +741,7 @@ public class MySqlExprParser extends SQLExprParser {
 
         accept(Token.LPAREN);
         for (;;) {
-            primaryKey.getColumns().add(this.expr());
+            primaryKey.addColumn(this.expr());
             if (!(lexer.token() == (Token.COMMA))) {
                 break;
             } else {
@@ -780,7 +780,7 @@ public class MySqlExprParser extends SQLExprParser {
 
         accept(Token.LPAREN);
         for (;;) {
-            unique.getColumns().add(this.expr());
+            unique.addColumn(this.expr());
             if (!(lexer.token() == (Token.COMMA))) {
                 break;
             } else {
