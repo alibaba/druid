@@ -65,8 +65,11 @@ public class MySqlSubPartitionByList extends SQLSubPartitionBy implements MySqlO
         return columns;
     }
 
-    public void setColumns(List<SQLColumnDefinition> columns) {
-        this.columns = columns;
+    public void addColumn(SQLColumnDefinition column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
     }
 
 }

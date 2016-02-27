@@ -222,7 +222,7 @@ public class SQLSelectParser extends SQLParser {
                 entry.setSubQuery(select());
                 accept(Token.RPAREN);
 
-                withQueryClause.getEntries().add(entry);
+                withQueryClause.addEntry(entry);
 
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();

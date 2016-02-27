@@ -48,6 +48,13 @@ public class PGWithQuery extends PGSQLObjectImpl {
         return columns;
     }
 
+    public void addColumn(SQLExpr column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
+    
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {

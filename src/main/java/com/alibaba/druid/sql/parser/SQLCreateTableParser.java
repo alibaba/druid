@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.ast.SQLPartitionValue;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -155,7 +154,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 maxValue.setParent(values);
-                values.getItems().add(maxValue);
+                values.addItem(maxValue);
             } else {
                 accept(Token.LPAREN);
                 this.exprParser.exprList(values.getItems(), values);

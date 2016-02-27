@@ -29,6 +29,13 @@ public class SQLGroupingSetExpr extends SQLExprImpl {
     public List<SQLExpr> getParameters() {
         return parameters;
     }
+    
+    public void addParameter(SQLExpr parameter) {
+        if (parameter != null) {
+            parameter.setParent(this);
+        }
+        this.parameters.add(parameter);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

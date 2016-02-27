@@ -175,7 +175,7 @@ public class OracleExprParser extends SQLExprParser {
                 
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
-                    interval.getArguments().add(this.expr());
+                    interval.addArgument(this.expr());
                     accept(Token.RPAREN);
                 }
                 
@@ -188,7 +188,7 @@ public class OracleExprParser extends SQLExprParser {
                 OracleDataTypeIntervalDay interval = new OracleDataTypeIntervalDay();
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
-                    interval.getArguments().add(this.expr());
+                    interval.addArgument(this.expr());
                     accept(Token.RPAREN);
                 }
                 
@@ -220,7 +220,7 @@ public class OracleExprParser extends SQLExprParser {
             
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
-                timestamp.getArguments().add(this.expr());
+                timestamp.addArgument(this.expr());
                 accept(Token.RPAREN);
             }
             
@@ -247,7 +247,7 @@ public class OracleExprParser extends SQLExprParser {
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
                 
-                charType.getArguments().add(this.expr());
+                charType.addArgument(this.expr());
                 
                 if (identifierEquals("CHAR")) {
                     lexer.nextToken();

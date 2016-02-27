@@ -341,7 +341,7 @@ public class PagerUtils {
             if (option == SQLSetQuantifier.DISTINCT && queryBlock.getSelectList().size() == 1) {
                 SQLSelectItem firstItem = queryBlock.getSelectList().get(0);
                 SQLAggregateExpr exp = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
-                exp.getArguments().add(firstItem.getExpr());
+                exp.addArgument(firstItem.getExpr());
                 firstItem.setExpr(exp);
                 queryBlock.setDistionOption(0);
             } else {
@@ -407,7 +407,7 @@ public class PagerUtils {
     private static SQLSelectItem createCountItem(String dbType) {
         SQLAggregateExpr countExpr = new SQLAggregateExpr("COUNT");
 
-        countExpr.getArguments().add(new SQLAllColumnExpr());
+        countExpr.addArgument(new SQLAllColumnExpr());
 
         SQLSelectItem countItem = new SQLSelectItem(countExpr);
         return countItem;

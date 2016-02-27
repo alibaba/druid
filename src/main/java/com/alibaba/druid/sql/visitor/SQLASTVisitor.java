@@ -64,11 +64,13 @@ import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableConvertCharSet;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableLifecycle;
@@ -286,6 +288,10 @@ public interface SQLASTVisitor {
     boolean visit(SQLColumnDefinition x);
 
     void endVisit(SQLColumnDefinition x);
+    
+    boolean visit(SQLColumnDefinition.Identity x);
+    
+    void endVisit(SQLColumnDefinition.Identity x);
 
     boolean visit(SQLDataType x);
 
@@ -726,4 +732,12 @@ public interface SQLASTVisitor {
     boolean visit(SQLSubPartitionByList x);
     
     void endVisit(SQLSubPartitionByList x);
+    
+    boolean visit(SQLAlterDatabaseStatement x);
+    
+    void endVisit(SQLAlterDatabaseStatement x);
+    
+    boolean visit(SQLAlterTableConvertCharSet x);
+    
+    void endVisit(SQLAlterTableConvertCharSet x);
 }

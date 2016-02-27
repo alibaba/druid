@@ -57,6 +57,13 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
     public List<SQLSelectOrderByItem> getItems() {
         return items;
     }
+    
+    public void addItem(SQLSelectOrderByItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
 
     public SQLName getName() {
         return name;

@@ -55,7 +55,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartiti
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
@@ -365,10 +364,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleAlterTableTruncatePartition x);
 
     void endVisit(OracleAlterTableTruncatePartition x);
-
-    boolean visit(OracleAlterTableStatement x);
-
-    void endVisit(OracleAlterTableStatement x);
 
     boolean visit(OracleAlterTableSplitPartition.TableSpaceItem x);
 

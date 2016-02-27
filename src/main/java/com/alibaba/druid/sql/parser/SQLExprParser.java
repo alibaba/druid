@@ -203,10 +203,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = expr();
                 if (lexer.token() == Token.COMMA) {
                     SQLListExpr listExpr = new SQLListExpr();
-                    listExpr.getItems().add(sqlExpr);
+                    listExpr.addItem(sqlExpr);
                     do {
                         lexer.nextToken();
-                        listExpr.getItems().add(expr());
+                        listExpr.addItem(expr());
                     } while (lexer.token() == Token.COMMA);
 
                     sqlExpr = listExpr;
@@ -358,7 +358,7 @@ public class SQLExprParser extends SQLParser {
                     accept(Token.THEN);
                     valueExpr = expr();
                     caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
-                    caseExpr.getItems().add(caseItem);
+                    caseExpr.addItem(caseItem);
                 }
 
                 if (lexer.token() == Token.ELSE) {
@@ -701,7 +701,7 @@ public class SQLExprParser extends SQLParser {
                 }
                 
                 item.setParent(groupingSets);
-                groupingSets.getParameters().add(item);
+                groupingSets.addParameter(item);
                 
                 if (lexer.token() == Token.RPAREN) {
                     break;
@@ -1502,7 +1502,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 SQLExpr arg = this.expr();
                 arg.setParent(charType);
-                charType.getArguments().add(arg);
+                charType.addArgument(arg);
                 accept(Token.RPAREN);
             }
 
@@ -1610,7 +1610,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.NOT) {
             lexer.nextToken();
             accept(Token.NULL);
-            column.getConstraints().add(new NotNullConstraint());
+            column.addConstraint(new NotNullConstraint());
             return parseColumnRest(column);
         }
 
@@ -1623,7 +1623,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token == Token.PRIMARY) {
             lexer.nextToken();
             accept(Token.KEY);
-            column.getConstraints().add(new SQLColumnPrimaryKey());
+            column.addConstraint(new SQLColumnPrimaryKey());
             return parseColumnRest(column);
         }
 
@@ -1632,7 +1632,7 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token() == Token.KEY) {
                 lexer.nextToken();
             }
-            column.getConstraints().add(new SQLColumnUniqueKey());
+            column.addConstraint(new SQLColumnUniqueKey());
             return parseColumnRest(column);
         }
 
@@ -1646,7 +1646,7 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.KEY);
                 SQLColumnPrimaryKey pk = new SQLColumnPrimaryKey();
                 pk.setName(name);
-                column.getConstraints().add(pk);
+                column.addConstraint(pk);
                 return parseColumnRest(column);
             }
 
@@ -1654,7 +1654,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 SQLColumnUniqueKey uk = new SQLColumnUniqueKey();
                 uk.setName(name);
-                column.getConstraints().add(uk);
+                column.addConstraint(uk);
                 return parseColumnRest(column);
             }
 
@@ -1666,7 +1666,7 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.LPAREN);
                 this.names(ref.getColumns(), ref);
                 accept(Token.RPAREN);
-                column.getConstraints().add(ref);
+                column.addConstraint(ref);
                 return parseColumnRest(column);
             }
 
@@ -1675,7 +1675,7 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.NULL);
                 NotNullConstraint notNull = new NotNullConstraint();
                 notNull.setName(name);
-                column.getConstraints().add(notNull);
+                column.addConstraint(notNull);
                 return parseColumnRest(column);
             }
 
@@ -1683,7 +1683,7 @@ public class SQLExprParser extends SQLParser {
                 SQLColumnCheck check = parseColumnCheck();
                 check.setName(name);
                 check.setParent(column);
-                column.getConstraints().add(check);
+                column.addConstraint(check);
                 return parseColumnRest(column);
             }
 
@@ -1699,7 +1699,7 @@ public class SQLExprParser extends SQLParser {
 
         if (lexer.token == Token.CHECK) {
             SQLColumnCheck check = parseColumnCheck();
-            column.getConstraints().add(check);
+            column.addConstraint(check);
             return parseColumnRest(column);
         }
 

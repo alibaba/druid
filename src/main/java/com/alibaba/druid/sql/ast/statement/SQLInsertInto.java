@@ -77,6 +77,13 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     public List<SQLExpr> getColumns() {
         return columns;
     }
+    
+    public void addColumn(SQLExpr column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
 
     public ValuesClause getValues() {
         return values;

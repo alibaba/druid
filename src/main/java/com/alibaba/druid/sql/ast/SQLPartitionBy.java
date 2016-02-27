@@ -33,6 +33,13 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     public List<SQLPartition> getPartitions() {
         return partitions;
     }
+    
+    public void addPartition(SQLPartition partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+        this.partitions.add(partition);
+    }
 
     public SQLSubPartitionBy getSubPartitionBy() {
         return subPartitionBy;

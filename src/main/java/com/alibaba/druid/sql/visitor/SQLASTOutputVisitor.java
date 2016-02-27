@@ -80,11 +80,13 @@ import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableConvertCharSet;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableLifecycle;
@@ -1081,6 +1083,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getComment().accept(this);
         }
         
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLColumnDefinition.Identity x) {
+        print0(ucase ? "IDENTITY (" : "identity (");
+        print(x.getSeed());
+        print0(", ");
+        print(x.getIncrement());
+        print(')');
         return false;
     }
 
@@ -2985,6 +2997,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getValues().accept(this);
         }
         
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterDatabaseStatement x) {
+        print0(ucase ? "ALTER DATABASE " : "alter database ");
+        x.getName().accept(this);
+        if (x.isUpgradeDataDirectoryName()) {
+            print0(ucase ? " UPGRADE DATA DIRECTORY NAME" : " upgrade data directory name");    
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableConvertCharSet x) {
+        print0(ucase ? "CONVERT TO CHARACTER SET " : "convert to character set ");
+        x.getCharset().accept(this);
+        
+        if (x.getCollate() != null) {
+            print0(ucase ? "COLLATE " : "collate ");
+            x.getCollate().accept(this);
+        }
         return false;
     }
 }

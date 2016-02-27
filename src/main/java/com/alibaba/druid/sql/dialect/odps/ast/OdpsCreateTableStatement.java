@@ -64,6 +64,13 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
     public List<SQLColumnDefinition> getPartitionColumns() {
         return partitionColumns;
     }
+    
+    public void addPartitionColumn(SQLColumnDefinition column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.partitionColumns.add(column);
+    }
 
     public SQLExpr getLifecycle() {
         return lifecycle;

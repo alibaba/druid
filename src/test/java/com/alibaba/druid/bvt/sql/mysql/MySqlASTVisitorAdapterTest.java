@@ -19,7 +19,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardT
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
@@ -160,7 +159,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlShowSlaveStatusStatement().accept(adapter);
         new MySqlShowTableStatusStatement().accept(adapter);
         new MySqlShowTriggersStatement().accept(adapter);
-        new MySqlAlterTableStatement().accept(adapter);
         new MySqlRenameTableStatement().accept(adapter);
         new MySqlUnionQuery().accept(adapter);
         new MySqlUseIndexHint().accept(adapter);

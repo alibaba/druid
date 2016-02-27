@@ -32,9 +32,12 @@ public class SQLPartitionByRange extends SQLPartitionBy {
     public List<SQLName> getColumns() {
         return columns;
     }
-
-    public void setColumns(List<SQLName> columns) {
-        this.columns = columns;
+    
+    public void addColumn(SQLName column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
     }
 
     public SQLExpr getInterval() {

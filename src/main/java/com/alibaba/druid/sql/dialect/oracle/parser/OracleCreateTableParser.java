@@ -213,7 +213,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         SQLPartitionByRange clause = new SQLPartitionByRange();
         for (;;) {
             SQLName column = this.exprParser.name();
-            clause.getColumns().add(column);
+            clause.addColumn(column);
 
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
@@ -278,7 +278,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 for (;;) {
                     SQLSubPartition subPartition = parseSubPartition();
 
-                    range.getSubPartitions().add(subPartition);
+                    range.addSubPartition(subPartition);
 
                     if (lexer.token() == Token.COMMA) {
                         lexer.nextToken();
@@ -295,7 +295,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 range.setSubPartitionsCount(subPartitionsCount);
             }
 
-            clause.getPartitions().add(range);
+            clause.addPartition(range);
 
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();

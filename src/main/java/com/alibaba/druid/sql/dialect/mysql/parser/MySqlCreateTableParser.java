@@ -136,7 +136,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                         accept(Token.LPAREN);
                         for (;;) {
-                            idx.getColumns().add(this.exprParser.expr());
+                            idx.addColumn(this.exprParser.expr());
                             if (!(lexer.token() == (Token.COMMA))) {
                                 break;
                             } else {
@@ -428,7 +428,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                     accept(Token.LPAREN);
                     for (;;) {
-                        clause.getColumns().add(this.exprParser.name());
+                        clause.addColumn(this.exprParser.name());
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();
                             continue;
@@ -478,7 +478,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         acceptIdentifier("COLUMNS");
                         accept(Token.LPAREN);
                         for (;;) {
-                            clause.getColumns().add(this.exprParser.name());
+                            clause.addColumn(this.exprParser.name());
                             if (lexer.token() == Token.COMMA) {
                                 lexer.nextToken();
                                 continue;
@@ -571,7 +571,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                             }
                         }
 
-                        partitionClause.getPartitions().add(partitionDef);
+                        partitionClause.addPartition(partitionDef);
 
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();
@@ -623,7 +623,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             acceptIdentifier("COLUMNS");
             accept(Token.LPAREN);
             for (;;) {
-                clause.getColumns().add(this.exprParser.name());
+                clause.addColumn(this.exprParser.name());
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -678,7 +678,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                 accept(Token.LPAREN);
                 for (;;) {
-                    subPartitionKey.getColumns().add(this.exprParser.name());
+                    subPartitionKey.addColumn(this.exprParser.name());
                     if (lexer.token() == Token.COMMA) {
                         lexer.nextToken();
                         continue;
@@ -722,7 +722,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         SQLColumnDefinition column = this.exprParser.createColumnDefinition();
                         column.setName((SQLIdentifierExpr) expr);
                         column.setDataType(new SQLDataTypeImpl(dataType));
-                        subPartitionList.getColumns().add(column);
+                        subPartitionList.addColumn(column);
 
                         subPartitionList.putAttribute("ads.subPartitionList", Boolean.TRUE);
                     } else {
@@ -733,7 +733,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     acceptIdentifier("COLUMNS");
                     accept(Token.LPAREN);
                     for (;;) {
-                        subPartitionList.getColumns().add(this.exprParser.parseColumn());
+                        subPartitionList.addColumn(this.exprParser.parseColumn());
                         if (lexer.token() == Token.COMMA) {
                             lexer.nextToken();
                             continue;
@@ -847,7 +847,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     expr = new MySqlOrderingExpr(expr, SQLOrderingSpecification.DESC);
                 }
 
-                key.getColumns().add(expr);
+                key.addColumn(expr);
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 } else {

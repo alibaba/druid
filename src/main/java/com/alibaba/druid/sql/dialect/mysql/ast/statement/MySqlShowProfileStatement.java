@@ -39,10 +39,6 @@ public class MySqlShowProfileStatement extends MySqlStatementImpl implements MyS
         return types;
     }
 
-    public void setTypes(List<Type> types) {
-        this.types = types;
-    }
-
     public SQLExpr getForQuery() {
         return forQuery;
     }

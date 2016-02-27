@@ -41,8 +41,11 @@ public class SQLServerDeclareStatement extends SQLServerObjectImpl implements SQ
         return items;
     }
 
-    public void setItems(List<SQLDeclareItem> items) {
-        this.items = items;
+    public void addItem(SQLDeclareItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public String getDbType() {

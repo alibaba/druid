@@ -243,7 +243,7 @@ public class OdpsStatementParser extends SQLStatementParser {
 
         for (;;) {
             OdpsInsert insert = parseOdpsInsert();
-            stmt.getItems().add(insert);
+            stmt.addItem(insert);
 
             if (lexer.token() != Token.INSERT) {
                 break;
@@ -285,7 +285,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                     SQLExpr ptValue = this.exprParser.expr();
                     ptExpr.setValue(ptValue);
                 }
-                insert.getPartitions().add(ptExpr);
+                insert.addPartition(ptExpr);
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 } else {

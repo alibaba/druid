@@ -13,49 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.ast;
+package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLPartitionValue extends SQLObjectImpl {
+public class SQLAlterTableConvertCharSet extends SQLObjectImpl implements SQLAlterTableItem {
 
-    protected Operator            operator;
-    protected final List<SQLExpr> items = new ArrayList<SQLExpr>();
-
-    public SQLPartitionValue(Operator operator){
-        super();
-        this.operator = operator;
-    }
-
-    public List<SQLExpr> getItems() {
-        return items;
-    }
+    private SQLExpr charset;
+    private SQLExpr collate;
     
-    public void addItem(SQLExpr item) {
-        if (item != null) {
-            item.setParent(this);
+    public SQLAlterTableConvertCharSet() {
+        
+    }
+
+    public SQLExpr getCharset() {
+        return charset;
+    }
+
+    public void setCharset(SQLExpr charset) {
+        if (charset != null) {
+            charset.setParent(this);
         }
-        this.items.add(item);
+        this.charset = charset;
     }
 
-    public Operator getOperator() {
-        return operator;
+    public SQLExpr getCollate() {
+        return collate;
     }
 
-    public static enum Operator {
-                                 LessThan, //
-                                 In, //
-                                 List
+    public void setCollate(SQLExpr collate) {
+        if (collate != null) {
+            collate.setParent(this);
+        }
+        this.collate = collate;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, getItems());
+            acceptChild(visitor, charset);
+            acceptChild(visitor, collate);
         }
         visitor.endVisit(this);
     }
+
 }

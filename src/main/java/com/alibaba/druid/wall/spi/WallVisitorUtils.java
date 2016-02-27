@@ -635,7 +635,7 @@ public class WallVisitorUtils {
         updateSetItem.setColumn(item);
         updateSetItem.setValue(value);
 
-        x.getItems().add(updateSetItem);
+        x.addItem(updateSetItem);
         visitor.setSqlModified(true);
     }
 
