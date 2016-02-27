@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
@@ -192,7 +191,7 @@ public class SQLServerExprParser extends SQLExprParser {
     }
 
     public SQLColumnDefinition createColumnDefinition() {
-        SQLColumnDefinition column = new SQLServerColumnDefinition();
+        SQLColumnDefinition column = new SQLColumnDefinition();
         return column;
     }
 
@@ -206,7 +205,7 @@ public class SQLServerExprParser extends SQLExprParser {
             SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
             accept(Token.RPAREN);
 
-            SQLServerColumnDefinition.Identity identity = new SQLServerColumnDefinition.Identity();
+            SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
             identity.setSeed((Integer) seed.getNumber());
             identity.setIncrement((Integer) increment.getNumber());
 
@@ -223,8 +222,7 @@ public class SQLServerExprParser extends SQLExprParser {
                 }
             }
 
-            SQLServerColumnDefinition sqlSreverColumn = (SQLServerColumnDefinition) column;
-            sqlSreverColumn.setIdentity(identity);
+            column.setIdentity(identity);
         }
 
         return super.parseColumnRest(column);

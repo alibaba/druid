@@ -286,6 +286,10 @@ public interface SQLASTVisitor {
     boolean visit(SQLColumnDefinition x);
 
     void endVisit(SQLColumnDefinition x);
+    
+    boolean visit(SQLColumnDefinition.Identity x);
+    
+    void endVisit(SQLColumnDefinition.Identity x);
 
     boolean visit(SQLDataType x);
 

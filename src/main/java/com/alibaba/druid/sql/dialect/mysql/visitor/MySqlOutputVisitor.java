@@ -103,7 +103,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
@@ -295,19 +294,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLColumnDefinition x) {
-        MySqlSQLColumnDefinition mysqlColumn = null;
-
-        if (x instanceof MySqlSQLColumnDefinition) {
-            mysqlColumn = (MySqlSQLColumnDefinition) x;
-        }
-
         x.getName().accept(this);
         print(' ');
         x.getDataType().accept(this);
 
-        if (mysqlColumn != null && mysqlColumn.getCharsetExpr() != null) {
+        if (x.getCharsetExpr() != null) {
             print0(ucase ? " CHARSET " : " charset ");
-            mysqlColumn.getCharsetExpr().accept(this);
+            x.getCharsetExpr().accept(this);
         }
 
         for (SQLColumnConstraint item : x.getConstraints()) {
@@ -324,24 +317,34 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         }
 
-        if (mysqlColumn != null && mysqlColumn.getStorage() != null) {
+        if (x.getStorage() != null) {
             print0(ucase ? " STORAGE " : " storage ");
-            mysqlColumn.getStorage().accept(this);
+            x.getStorage().accept(this);
         }
 
-        if (mysqlColumn != null && mysqlColumn.getOnUpdate() != null) {
+        if (x.getOnUpdate() != null) {
             print0(ucase ? " ON UPDATE " : " on update ");
 
-            mysqlColumn.getOnUpdate().accept(this);
+            x.getOnUpdate().accept(this);
         }
 
-        if (mysqlColumn != null && mysqlColumn.isAutoIncrement()) {
+        if (x.isAutoIncrement()) {
             print0(ucase ? " AUTO_INCREMENT" : " auto_increment");
         }
 
         if (x.getComment() != null) {
             print0(ucase ? " COMMENT " : " comment ");
             x.getComment().accept(this);
+        }
+        
+        if (x.getAsExpr() != null) {
+            print0(ucase ? " AS (" : " as (");
+            x.getAsExpr().accept(this);
+            print(')');
+        }
+        
+        if (x.isSorted()) {
+            print0(ucase ? " SORTED" : " sorted"); 
         }
 
         return false;

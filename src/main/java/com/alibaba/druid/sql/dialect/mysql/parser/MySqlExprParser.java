@@ -20,8 +20,8 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -45,11 +45,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalUnit;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr.SearchModifier;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -517,7 +516,7 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     public SQLColumnDefinition parseColumn() {
-        MySqlSQLColumnDefinition column = new MySqlSQLColumnDefinition();
+        SQLColumnDefinition column = new SQLColumnDefinition();
         column.setName(name());
         column.setDataType(parseDataType());
 
@@ -529,7 +528,7 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
             accept(Token.UPDATE);
             SQLExpr expr = this.expr();
-            ((MySqlSQLColumnDefinition) column).setOnUpdate(expr);
+            column.setOnUpdate(expr);
         }
         if (identifierEquals("CHARSET")) {
             lexer.nextToken();
@@ -541,14 +540,12 @@ public class MySqlExprParser extends SQLExprParser {
                 charSetCollateExpr.setCollate(lexer.stringVal());
                 lexer.nextToken();
             }
-            ((MySqlSQLColumnDefinition) column).setCharsetExpr(charSetCollateExpr);
+            column.setCharsetExpr(charSetCollateExpr);
             return parseColumnRest(column);
         }
         if (identifierEquals("AUTO_INCREMENT")) {
             lexer.nextToken();
-            if (column instanceof MySqlSQLColumnDefinition) {
-                ((MySqlSQLColumnDefinition) column).setAutoIncrement(true);
-            }
+            column.setAutoIncrement(true);
             return parseColumnRest(column);
         }
 
@@ -563,9 +560,25 @@ public class MySqlExprParser extends SQLExprParser {
         if (identifierEquals("STORAGE")) {
             lexer.nextToken();
             SQLExpr expr = expr();
-            if (column instanceof MySqlSQLColumnDefinition) {
-                ((MySqlSQLColumnDefinition) column).setStorage(expr);
-            }
+            column.setStorage(expr);
+        }
+        
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            SQLExpr expr = expr();
+            column.setAsExpr(expr);
+            accept(Token.RPAREN);
+        }
+        
+        if (identifierEquals("STORED")) {
+            lexer.nextToken();
+            column.setSorted(true);
+        }
+        
+        if (identifierEquals("VIRTUAL")) {
+            lexer.nextToken();
+            column.setVirtual(true);
         }
 
         super.parseColumnRest(column);

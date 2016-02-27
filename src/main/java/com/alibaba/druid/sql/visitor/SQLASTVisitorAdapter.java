@@ -372,6 +372,13 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     public void endVisit(SQLColumnDefinition x) {
     }
+    
+    public boolean visit(SQLColumnDefinition.Identity x) {
+        return true;
+    }
+    
+    public void endVisit(SQLColumnDefinition.Identity x) {
+    }
 
     public boolean visit(SQLDataType x) {
         return true;

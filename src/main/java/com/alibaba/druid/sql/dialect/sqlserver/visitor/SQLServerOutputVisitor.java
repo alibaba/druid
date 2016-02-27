@@ -24,8 +24,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -275,22 +273,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public boolean visit(Identity x) {
-        print0(ucase ? "IDENTITY (" : "identity (");
-        print(x.getSeed());
-        print0(", ");
-        print(x.getIncrement());
-        print(')');
-        return false;
-    }
-
-    @Override
-    public void endVisit(Identity x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLServerColumnDefinition x) {
+    public boolean visit(SQLColumnDefinition x) {
         x.getName().accept(this);
 
         if (x.getDataType() != null) {
@@ -319,18 +302,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
 
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerColumnDefinition x) {
-
-    }
-
-    public boolean visit(SQLColumnDefinition x) {
-        if (x instanceof SQLServerColumnDefinition) {
-            return visit((SQLServerColumnDefinition) x);
-        }
-        return super.visit(x);
     }
 
     @Override
