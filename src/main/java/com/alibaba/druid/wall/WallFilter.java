@@ -98,6 +98,12 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 this.throwException = value;
             }
         }
+        {
+            String tenantColumn = properties.getProperty("druid.wall.tenantColumn");
+            if (tenantColumn != null) {
+                this.config.setTenantColumn(tenantColumn);
+            }
+        }
     }
 
     @Override
@@ -209,6 +215,14 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     public void setConfig(WallConfig config) {
         this.config = config;
+    }
+    
+    public void setTenantColumn(String tenantColumn) {
+        this.config.setTenantColumn(tenantColumn);
+    }
+    
+    public String getTenantColumn() {
+        return this.config.getTenantColumn();
     }
 
     public boolean isInited() {
