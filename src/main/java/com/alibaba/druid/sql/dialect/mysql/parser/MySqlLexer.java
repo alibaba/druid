@@ -53,6 +53,9 @@ public class MySqlLexer extends Lexer {
         map.put("ROW", Token.ROW);
         map.put("BEGIN", Token.BEGIN);
         map.put("END", Token.END);
+        
+        // for oceanbase & mysql 5.7
+        map.put("PARTITION", Token.PARTITION);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }
@@ -420,7 +423,9 @@ public class MySqlLexer extends Lexer {
 
             boolean isHint = false;
             int startHintSp = bufPos + 1;
-            if (ch == '!') {
+            if (ch == '!' //
+                    || ch == '+' // oceanbase hints
+                    ) {
                 isHint = true;
                 scanChar();
                 bufPos++;

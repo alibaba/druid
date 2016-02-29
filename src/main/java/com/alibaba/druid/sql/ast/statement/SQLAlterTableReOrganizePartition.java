@@ -18,22 +18,21 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAlterTableDropPartition extends SQLObjectImpl implements SQLAlterTableItem {
+public class SQLAlterTableReOrganizePartition extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private boolean ifNotExists = false;
+    private final List<SQLName>   names       = new ArrayList<SQLName>();
 
-    private boolean purge;
-
-    private final List<SQLObject> partitions = new ArrayList<SQLObject>(4);
+    private final List<SQLObject> partitions  = new ArrayList<SQLObject>(4);
 
     public List<SQLObject> getPartitions() {
         return partitions;
     }
-    
+
     public void addPartition(SQLObject partition) {
         if (partition != null) {
             partition.setParent(this);
@@ -41,20 +40,8 @@ public class SQLAlterTableDropPartition extends SQLObjectImpl implements SQLAlte
         this.partitions.add(partition);
     }
 
-    public boolean isIfNotExists() {
-        return ifNotExists;
-    }
-
-    public void setIfNotExists(boolean ifNotExists) {
-        this.ifNotExists = ifNotExists;
-    }
-
-    public boolean isPurge() {
-        return purge;
-    }
-
-    public void setPurge(boolean purge) {
-        this.purge = purge;
+    public List<SQLName> getNames() {
+        return names;
     }
 
     @Override

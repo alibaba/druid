@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
@@ -86,6 +87,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableCoalescePartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableConvertCharSet;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
@@ -101,6 +103,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableLifecycle;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableReOrganizePartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenamePartition;
@@ -272,7 +275,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public void print(String text) {
         print0(text);
     }
-    
+
     protected void print0(String text) {
         try {
             this.appender.append(text);
@@ -343,7 +346,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(text);
         println();
     }
-    
+
     protected void println0(String text) {
         print0(text);
         println();
@@ -392,29 +395,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         for (int i = groupList.size() - 1; i >= 0; --i) {
             SQLExpr item = groupList.get(i);
-            
+
             if (relational) {
                 if (isPrettyFormat() && item.hasBeforeComment()) {
                     printlnComments(item.getBeforeCommentsDirect());
                 }
             }
-            
+
             if (isPrettyFormat() && item.hasBeforeComment()) {
                 printlnComments(item.getBeforeCommentsDirect());
             }
-            
+
             visitBinaryLeft(item, x.getOperator());
 
             if (isPrettyFormat() && item.hasAfterComment()) {
                 print(' ');
                 printComment(item.getAfterCommentsDirect(), "\n");
             }
-            
+
             if (i != groupList.size() - 1 && isPrettyFormat() && item.getParent().hasAfterComment()) {
                 print(' ');
                 printComment(item.getParent().getAfterCommentsDirect(), "\n");
             }
-            
+
             if (relational) {
                 println();
             } else {
@@ -437,7 +440,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         if (isPrettyFormat() && x.getRight().hasBeforeComment()) {
             printlnComments(x.getRight().getBeforeCommentsDirect());
         }
-        
+
         if (x.getRight() instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr right = (SQLBinaryOpExpr) x.getRight();
             boolean rightRational = right.getOperator() == SQLBinaryOperator.BooleanAnd
@@ -461,7 +464,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         } else {
             x.getRight().accept(this);
         }
-        
+
         if (x.getRight().hasAfterComment() && isPrettyFormat()) {
             print(' ');
             printlnComments(x.getRight().getAfterCommentsDirect());
@@ -587,7 +590,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         final List<SQLExpr> list = x.getTargetList();
-        
+
         boolean printLn = false;
         if (list.size() > 5) {
             printLn = true;
@@ -598,7 +601,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
                 }
             }
         }
-        
+
         if (printLn) {
             incrementIndent();
             println();
@@ -634,7 +637,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(')');
         return false;
     }
-    
+
     protected void printFunctionName(String name) {
         print0(name);
     }
@@ -764,7 +767,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             for (int i = 0; i < itemSize; ++i) {
                 if (i != 0) {
                     if (groupItemSingleLine) {
-                        println(", ");                        
+                        println(", ");
                     } else {
                         print(", ");
                     }
@@ -779,15 +782,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print0(ucase ? "HAVING " : "having ");
             x.getHaving().accept(this);
         }
-        
+
         if (x.isWithRollUp()) {
             print0(ucase ? " WITH ROLLUP" : " with rollup");
         }
-        
+
         if (x.isWithCube()) {
             print0(ucase ? " WITH CUBE" : " with cube");
         }
-        
+
         return false;
     }
 
@@ -817,7 +820,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         if (isPrettyFormat() && x.hasBeforeComment()) {
             printComment(x.getBeforeCommentsDirect(), "\n");
         }
-        
+
         print0(ucase ? "SELECT " : "select ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
@@ -876,7 +879,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             if (x.isSibings()) {
                 print0(ucase ? "ORDER SIBLINGS BY " : "order siblings by ");
             } else {
-                print0(ucase ? "ORDER BY " : "order by ");    
+                print0(ucase ? "ORDER BY " : "order by ");
             }
 
             printAndAccept(x.getItems(), ", ");
@@ -901,12 +904,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     public boolean visit(SQLExprTableSource x) {
         x.getExpr().accept(this);
-        
+
         if (x.getAlias() != null) {
             print(' ');
             print0(x.getAlias());
         }
-        
+
         if (isPrettyFormat() && x.hasAfterComment()) {
             print(' ');
             printComment(x.getAfterCommentsDirect(), "\n");
@@ -1016,7 +1019,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     protected void printCascade() {
-        print0(ucase ? " CASCADE": " cascade");
+        print0(ucase ? " CASCADE" : " cascade");
     }
 
     public boolean visit(SQLDropViewStatement x) {
@@ -1084,10 +1087,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print0(ucase ? " COMMENT " : " comment ");
             x.getComment().accept(this);
         }
-        
+
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLColumnDefinition.Identity x) {
         print0(ucase ? "IDENTITY (" : "identity (");
@@ -1629,20 +1632,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLCreateDatabaseStatement x) {
         print0(ucase ? "CREATE DATABASE " : "create database ");
         if (x.isIfNotExists()) {
-            print0(ucase ? "IF NOT EXISTS " : "if not exists ");    
+            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
         }
         x.getName().accept(this);
-        
+
         if (x.getCharacterSet() != null) {
             print0(ucase ? " CHARACTER SET " : " character set ");
             print0(x.getCharacterSet());
         }
-        
+
         if (x.getCollate() != null) {
             print0(ucase ? " COLLATE " : " collate ");
             print0(x.getCollate());
         }
-        
+
         return false;
     }
 
@@ -1852,7 +1855,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(ucase ? "DROP PRIMARY KEY" : "drop primary key");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropKey x) {
         print0(ucase ? "DROP KEY " : "drop key ");
@@ -1930,10 +1933,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(" (");
         printAndAccept(x.getItems(), ", ");
         print(')');
-        
+
         // for mysql
         if (x.getUsing() != null) {
-            print0(ucase ? " USING " : " using ");;
+            print0(ucase ? " USING " : " using ");
+            ;
             print0(x.getUsing());
         }
 
@@ -2353,7 +2357,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         x.getTo().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLShowTablesStatement x) {
         print0(ucase ? "SHOW TABLES" : "show tables");
@@ -2361,14 +2365,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print0(ucase ? " FROM " : " from ");
             x.getDatabase().accept(this);
         }
-        
+
         if (x.getLike() != null) {
             print0(ucase ? " LIKE " : " like ");
             x.getLike().accept(this);
         }
         return false;
     }
-    
+
     protected void printComment(List<String> comments, String seperator) {
         if (comments != null) {
             for (int i = 0; i < comments.size(); ++i) {
@@ -2380,7 +2384,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
         }
     }
-    
+
     protected void printlnComments(List<String> comments) {
         if (comments != null) {
             for (int i = 0; i < comments.size(); ++i) {
@@ -2390,7 +2394,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
         }
     }
-    
+
     @Override
     public boolean visit(SQLAlterViewRenameStatement x) {
         print0(ucase ? "ALTER VIEW " : "alter view ");
@@ -2399,35 +2403,62 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         x.getTo().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableAddPartition x) {
         print0(ucase ? "ADD " : "add ");
         if (x.isIfNotExists()) {
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
         }
-        print0(ucase ? "PARTITION (" : "partition (");
-        printAndAccept(x.getPartition(), ", ");
+        
+        if (x.getPartitionCount() != null) {
+            print0(ucase ? "PARTITION PARTITIONS " : "partition partitions ");
+            x.getPartitionCount().accept(this);
+        }
+
+        if (x.getPartitions().size() > 0) {
+            print0(ucase ? "PARTITION (" : "partition (");
+            printAndAccept(x.getPartitions(), ", ");
+            print(')');
+        }
+        
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableReOrganizePartition x) {
+        print0(ucase ? "REORGANIZE " : "reorganize ");
+
+        printAndAccept(x.getNames(), ", ");
+
+        print0(ucase ? " INTO (" : " into (");
+        printAndAccept(x.getPartitions(), ", ");
         print(')');
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropPartition x) {
         print0(ucase ? "DROP " : "drop ");
         if (x.isIfNotExists()) {
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
         }
-        print0(ucase ? "PARTITION (" : "partition (");
-        printAndAccept(x.getPartition(), ", ");
-        print(')');
-        
+        print0(ucase ? "PARTITION " : "partition ");
+
+        if (x.getPartitions().size() == 1 && x.getPartitions().get(0) instanceof SQLName) {
+            x.getPartitions().get(0).accept(this);
+        } else {
+            print('(');
+            printAndAccept(x.getPartitions(), ", ");
+            print(')');
+        }
+
         if (x.isPurge()) {
             print0(ucase ? " PURGE" : " purge");
         }
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableRenamePartition x) {
         print0(ucase ? "PARTITION (" : "partition (");
@@ -2437,21 +2468,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(')');
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableSetComment x) {
         print0(ucase ? "SET COMMENT " : "set comment ");
         x.getComment().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableSetLifecycle x) {
         print0(ucase ? "SET LIFECYCLE " : "set lifecycle ");
         x.getLifecycle().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableEnableLifecycle x) {
         if (x.getPartition().size() != 0) {
@@ -2459,11 +2490,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             printAndAccept(x.getPartition(), ", ");
             print0(") ");
         }
-        
+
         print0(ucase ? "ENABLE LIFECYCLE" : "enable lifecycle");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDisableLifecycle x) {
         if (x.getPartition().size() != 0) {
@@ -2471,11 +2502,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             printAndAccept(x.getPartition(), ", ");
             print0(") ");
         }
-        
+
         print0(ucase ? "DISABLE LIFECYCLE" : "disable lifecycle");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableTouch x) {
         print0(ucase ? "TOUCH" : "touch");
@@ -2495,7 +2526,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(']');
         return false;
     }
-    
 
     @Override
     public boolean visit(SQLOpenStatement x) {
@@ -2503,7 +2533,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(x.getCursorName());
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLFetchStatement x) {
         print0(ucase ? "FETCH " : "fetch ");
@@ -2512,14 +2542,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         printAndAccept(x.getInto(), ", ");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLCloseStatement x) {
         print0(ucase ? "CLOSE " : "close ");
         print0(x.getCursorName());
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLGroupingSetExpr x) {
         print0(ucase ? "GROUPING SETS" : "grouping sets");
@@ -2528,7 +2558,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(')');
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLIfStatement x) {
         print0(ucase ? "IF " : "if ");
@@ -2544,7 +2574,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             }
         }
         decrementIndent();
-        
+
         for (SQLIfStatement.ElseIf elseIf : x.getElseIfList()) {
             println();
             elseIf.accept(this);
@@ -2556,7 +2586,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLIfStatement.Else x) {
         print0(ucase ? "ELSE" : "else");
@@ -2575,7 +2605,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         decrementIndent();
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLIfStatement.ElseIf x) {
         print0(ucase ? "ELSE IF" : "else if");
@@ -2583,7 +2613,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(ucase ? " THEN" : " then");
         incrementIndent();
         println();
-        
+
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             if (i != 0) {
                 println();
@@ -2592,11 +2622,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             item.setParent(x);
             item.accept(this);
         }
-        
+
         decrementIndent();
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLLoopStatement x) {
         print0(ucase ? "LOOP" : "loop");
@@ -2617,7 +2647,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(ucase ? "END LOOP" : "end loop");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLParameter x) {
         if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
@@ -2652,12 +2682,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLDeclareItem x) {
         x.getName().accept(this);
-        
-        if(x.getType() == SQLDeclareItem.Type.TABLE) {
+
+        if (x.getType() == SQLDeclareItem.Type.TABLE) {
             print0(ucase ? " TABLE" : " table");
             int size = x.getTableElementList().size();
 
@@ -2692,23 +2722,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
                 x.getValue().accept(this);
             }
         }
-        
+
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLPartitionValue x) {
         if (x.getOperator() == SQLPartitionValue.Operator.LessThan //
-                && (!JdbcConstants.ORACLE.equals(getDbType()))
-                && x.getItems().size() == 1 // 
-                && x.getItems().get(0) instanceof SQLIdentifierExpr) {
+            && (!JdbcConstants.ORACLE.equals(getDbType())) && x.getItems().size() == 1 //
+            && x.getItems().get(0) instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr ident = (SQLIdentifierExpr) x.getItems().get(0);
             if ("MAXVALUE".equalsIgnoreCase(ident.getName())) {
                 print0(ucase ? "VALUES LESS THAN MAXVALUE" : "values less than maxvalue");
                 return false;
             }
         }
-        
+
         if (x.getOperator() == SQLPartitionValue.Operator.LessThan) {
             print0(ucase ? "VALUES LESS THAN (" : "values less than (");
         } else if (x.getOperator() == SQLPartitionValue.Operator.In) {
@@ -2720,7 +2749,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print(')');
         return false;
     }
-    
+
     public String getDbType() {
         return dbType;
     }
@@ -2728,11 +2757,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean isUppCase() {
         return ucase;
     }
-    
+
     public void setUppCase(boolean val) {
         this.ucase = val;
     }
-    
+
     @Override
     public boolean visit(SQLPartition x) {
         print0(ucase ? "PARTITION " : "partition ");
@@ -2749,7 +2778,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getDataDirectory().accept(this);
             decrementIndent();
         }
-        
+
         if (x.getIndexDirectory() != null) {
             incrementIndent();
             println();
@@ -2757,32 +2786,32 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getIndexDirectory().accept(this);
             decrementIndent();
         }
-        
+
         if (x.getTableSpace() != null) {
             print0(ucase ? " TABLESPACE " : " tablespace ");
             x.getTableSpace().accept(this);
         }
-        
+
         if (x.getEngine() != null) {
             print0(ucase ? " STORAGE ENGINE " : " storage engine ");
             x.getEngine().accept(this);
         }
-        
+
         if (x.getMaxRows() != null) {
             print0(ucase ? " MAX_ROWS " : " max_rows ");
             x.getMaxRows().accept(this);
         }
-        
+
         if (x.getMinRows() != null) {
             print0(ucase ? " MIN_ROWS " : " min_rows ");
             x.getMinRows().accept(this);
         }
-        
+
         if (x.getComment() != null) {
             print0(ucase ? " COMMENT " : " comment ");
             x.getComment().accept(this);
         }
-        
+
         if (x.getSubPartitionsCount() != null) {
             incrementIndent();
             println();
@@ -2790,7 +2819,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getSubPartitionsCount().accept(this);
             decrementIndent();
         }
-        
+
         if (x.getSubPartitions().size() > 0) {
             println();
             print('(');
@@ -2809,7 +2838,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLPartitionByRange x) {
         print0(ucase ? "PARTITION BY RANGE" : "partition by range");
@@ -2833,7 +2862,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         printPartitionsCountAndSubPartitions(x);
-        
+
         println();
         print('(');
         incrementIndent();
@@ -2847,10 +2876,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         decrementIndent();
         println();
         print(')');
-        
+
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLPartitionByList x) {
         print0(ucase ? "PARTITION BY LIST " : "partition by list ");
@@ -2885,7 +2914,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLPartitionByHash x) {
         if (x.isLinear()) {
@@ -2906,7 +2935,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     protected void printPartitionsCountAndSubPartitions(SQLPartitionBy x) {
         if (x.getPartitionsCount() != null) {
 
@@ -2918,12 +2947,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
             x.getPartitionsCount().accept(this);
         }
-       
+
         if (x.getSubPartitionBy() != null) {
             println();
             x.getSubPartitionBy().accept(this);
         }
-        
+
         if (x.getStoreIn().size() > 0) {
             println();
             print0(ucase ? "STORE IN (" : "store in (");
@@ -2931,7 +2960,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(')');
         }
     }
-    
+
     @Override
     public boolean visit(SQLSubPartitionByHash x) {
         if (x.isLinear()) {
@@ -2955,7 +2984,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLSubPartitionByList x) {
         if (x.isLinear()) {
@@ -2963,16 +2992,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         } else {
             print0(ucase ? "SUBPARTITION BY HASH " : "subpartition by hash ");
         }
-        
+
         print('(');
         x.getColumn().accept(this);
         print(')');
-        
+
         if (x.getSubPartitionsCount() != null) {
             print0(ucase ? " SUBPARTITIONS " : " subpartitions ");
             x.getSubPartitionsCount().accept(this);
         }
-        
+
         if (x.getSubPartitionTemplate().size() > 0) {
             incrementIndent();
             println();
@@ -2985,42 +3014,49 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print(')');
             decrementIndent();
         }
-        
+
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLSubPartition x) {
         print0(ucase ? "SUBPARTITION " : "subpartition ");
         x.getName().accept(this);
-        
+
         if (x.getValues() != null) {
             print(' ');
             x.getValues().accept(this);
         }
-        
+
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterDatabaseStatement x) {
         print0(ucase ? "ALTER DATABASE " : "alter database ");
         x.getName().accept(this);
         if (x.isUpgradeDataDirectoryName()) {
-            print0(ucase ? " UPGRADE DATA DIRECTORY NAME" : " upgrade data directory name");    
+            print0(ucase ? " UPGRADE DATA DIRECTORY NAME" : " upgrade data directory name");
         }
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableConvertCharSet x) {
         print0(ucase ? "CONVERT TO CHARACTER SET " : "convert to character set ");
         x.getCharset().accept(this);
-        
+
         if (x.getCollate() != null) {
             print0(ucase ? "COLLATE " : "collate ");
             x.getCollate().accept(this);
         }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableCoalescePartition x) {
+        print0(ucase ? "COALESCE PARTITION " : "coalesce partition ");
+        x.getCount().accept(this);
         return false;
     }
 }

@@ -263,39 +263,9 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         accept(Token.LPAREN);
 
         for (;;) {
-            acceptIdentifier("PARTITION");
-            SQLPartition range = new SQLPartition();
-            range.setName(this.exprParser.name());
+            SQLPartition partition = parsePartition();
 
-            SQLPartitionValue values = parsePartitionValues();
-            if (values != null) {
-                range.setValues(values);
-            }
-
-            if (lexer.token() == Token.LPAREN) {
-                lexer.nextToken();
-
-                for (;;) {
-                    SQLSubPartition subPartition = parseSubPartition();
-
-                    range.addSubPartition(subPartition);
-
-                    if (lexer.token() == Token.COMMA) {
-                        lexer.nextToken();
-                        continue;
-                    }
-
-                    break;
-                }
-
-                accept(Token.RPAREN);
-            } else if (identifierEquals("SUBPARTITIONS")) {
-                lexer.nextToken();
-                SQLExpr subPartitionsCount = this.exprParser.primary();
-                range.setSubPartitionsCount(subPartitionsCount);
-            }
-
-            clause.addPartition(range);
+            clause.addPartition(partition);
 
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
@@ -308,6 +278,41 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         accept(Token.RPAREN);
     }
 
+    protected SQLPartition parsePartition() {
+        acceptIdentifier("PARTITION");
+        SQLPartition partition = new SQLPartition();
+        partition.setName(this.exprParser.name());
+
+        SQLPartitionValue values = this.exprParser.parsePartitionValues();
+        if (values != null) {
+            partition.setValues(values);
+        }
+
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+
+            for (;;) {
+                SQLSubPartition subPartition = parseSubPartition();
+
+                partition.addSubPartition(subPartition);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+
+                break;
+            }
+
+            accept(Token.RPAREN);
+        } else if (identifierEquals("SUBPARTITIONS")) {
+            lexer.nextToken();
+            SQLExpr subPartitionsCount = this.exprParser.primary();
+            partition.setSubPartitionsCount(subPartitionsCount);
+        }
+        return partition;
+    }
+
     protected SQLSubPartition parseSubPartition() {
         acceptIdentifier("SUBPARTITION");
 
@@ -315,7 +320,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         SQLName name = this.exprParser.name();
         subPartition.setName(name);
         
-        SQLPartitionValue values = parsePartitionValues();
+        SQLPartitionValue values = this.exprParser.parsePartitionValues();
         if (values != null) {
             subPartition.setValues(values);
         }
@@ -327,8 +332,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         if (identifierEquals("PARTITIONS")) {
             lexer.nextToken();
 
-            SQLIntegerExpr countExpr = new SQLIntegerExpr(lexer.integerValue());
-            accept(Token.LITERAL_INT);
+            SQLIntegerExpr countExpr = this.exprParser.integerExpr();
             clause.setPartitionsCount(countExpr);
         }
 

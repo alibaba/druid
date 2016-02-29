@@ -342,6 +342,13 @@ public class MySqlSelectParser extends SQLSelectParser {
             parseIndexHint(hint);
             tableSource.getHints().add(hint);
         }
+        
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            this.exprParser.names(((SQLExprTableSource) tableSource).getPartitions(), tableSource);
+            accept(Token.RPAREN);
+        }
 
         return super.parseTableSourceRest(tableSource);
     }
