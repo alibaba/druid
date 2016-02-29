@@ -564,7 +564,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print0(ucase ? "EXISTS (" : "exists (");
         }
         incrementIndent();
+        println();
         x.getSubQuery().accept(this);
+        println();
         decrementIndent();
         print(')');
         return false;

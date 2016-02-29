@@ -79,7 +79,8 @@ public class SQLServerSelectTest7 extends TestCase {
 				"\nWHERE 1 = 1" +
 				"\n\tAND t.deleted = 0" +
 				"\n\tAND t.link_type IN ('simple', 'link')" +
-				"\n\tAND (EXISTS (SELECT p.entity_code" +
+				"\n\tAND (EXISTS (" + 
+				"\n\t\t\tSELECT p.entity_code" +
 				"\n\t\t\tFROM sec_role_auth p" +
 				"\n\t\t\tWHERE p.entity_code = t.menu_id" +
 				"\n\t\t\t\tAND p.entity_type = 'menu'" +
@@ -89,7 +90,8 @@ public class SQLServerSelectTest7 extends TestCase {
 				"\n\t\t\t\t\t\tAND entity_code = ?" +
 				"\n\t\t\t\t\t\tAND r.role_id = rm.role_id" +
 				"\n\t\t\t\t\t\tAND r.enabled = 1" +
-				"\n\t\t\t\t\t\tAND r.deleted = 0))" +
+				"\n\t\t\t\t\t\tAND r.deleted = 0)"+ 
+				"\n\t\t\t)" +
 				"\n\t\tOR '1' = ?" +
 				"\n\t\tOR t.need_control = 0)" +
 				"\n\tAND (t.enabled = 1" +
