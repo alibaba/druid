@@ -71,6 +71,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableCoalescePartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableConvertCharSet;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
@@ -85,6 +86,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableLifecycle;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableReOrganizePartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenamePartition;
@@ -1490,6 +1492,26 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     
     @Override
     public void endVisit(SQLAlterTableConvertCharSet x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableReOrganizePartition x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableReOrganizePartition x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableCoalescePartition x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableCoalescePartition x) {
         
     }
     

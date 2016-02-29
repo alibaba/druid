@@ -2575,6 +2575,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
             x.getHints().get(i).accept(this);
         }
+        
+        if (x.getPartitionSize() > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printlnAndAccept(x.getPartitions(), ", ");
+            print(')');
+        }
 
         return false;
     }

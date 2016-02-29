@@ -16,8 +16,6 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -129,44 +127,4 @@ public class SQLCreateTableParser extends SQLDDLParser {
         return new SQLCreateTableStatement(getDbType());
     }
 
-    protected SQLPartitionValue parsePartitionValues() {
-        if (lexer.token() != Token.VALUES) {
-            return null;
-        }
-        lexer.nextToken();
-
-        SQLPartitionValue values = null;
-
-        if (lexer.token() == Token.IN) {
-            lexer.nextToken();
-            values = new SQLPartitionValue(SQLPartitionValue.Operator.In);
-
-            accept(Token.LPAREN);
-            this.exprParser.exprList(values.getItems(), values);
-            accept(Token.RPAREN);
-        } else if (identifierEquals("LESS")) {
-            lexer.nextToken();
-            acceptIdentifier("THAN");
-
-            values = new SQLPartitionValue(SQLPartitionValue.Operator.LessThan);
-
-            if (identifierEquals("MAXVALUE")) {
-                SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
-                lexer.nextToken();
-                maxValue.setParent(values);
-                values.addItem(maxValue);
-            } else {
-                accept(Token.LPAREN);
-                this.exprParser.exprList(values.getItems(), values);
-                accept(Token.RPAREN);
-            }
-        } else if (lexer.token() == Token.LPAREN) {
-            values = new SQLPartitionValue(SQLPartitionValue.Operator.List);
-            lexer.nextToken();
-            this.exprParser.exprList(values.getItems(), values);
-            accept(Token.RPAREN);
-        }
-
-        return values;
-    }
 }

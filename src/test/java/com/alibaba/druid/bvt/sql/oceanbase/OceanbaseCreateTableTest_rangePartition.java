@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.mysql;
+package com.alibaba.druid.bvt.sql.oceanbase;
 
 import java.util.List;
 
@@ -25,18 +25,42 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-public class OceanbaseHintTest_parallel extends MysqlTest {
+public class OceanbaseCreateTableTest_rangePartition extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "select /*+ parallel(5) */ count(*) from t1;";
+        String sql = "CREATE TABLE employees (" //
+                     + " id INT NOT NULL, fname VARCHAR(30)," //
+                     + " lname VARCHAR(30), hired DATE NOT NULL DEFAULT '1970-01-01'," //
+                     + " separated DATE NOT NULL DEFAULT '9999-12-31', job_code INT NOT NULL,"
+                     + " store_id INT NOT NULL" //
+                     + " ) PARTITION BY RANGE (store_id) " //
+                     + "( PARTITION p0 VALUES LESS THAN (6), " //
+                     + "PARTITION p1 VALUES LESS THAN (11), " //
+                     + "PARTITION p2 VALUES LESS THAN (16), " //
+                     + "PARTITION p3 VALUES LESS THAN (21) )";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT /*+ parallel(5) */ COUNT(*)"
-                + "\nFROM t1", result);
+        Assert.assertEquals("CREATE TABLE employees ("
+                + "\n\tid INT NOT NULL, "
+                + "\n\tfname VARCHAR(30), "
+                + "\n\tlname VARCHAR(30), "
+                + "\n\thired DATE NOT NULL DEFAULT '1970-01-01', "
+                + "\n\tseparated DATE NOT NULL DEFAULT '9999-12-31', "
+                + "\n\tjob_code INT NOT NULL, "
+                + "\n\tstore_id INT NOT NULL"
+                + "\n)"
+                + "\nPARTITION BY RANGE (store_id)"
+                + "\n("
+                + "\n\tPARTITION p0 VALUES LESS THAN (6),"
+                + "\n\tPARTITION p1 VALUES LESS THAN (11),"
+                + "\n\tPARTITION p2 VALUES LESS THAN (16),"
+                + "\n\tPARTITION p3 VALUES LESS THAN (21)"
+                + "\n)",
+                            result);
         print(stmtList);
 
         Assert.assertEquals(1, stmtList.size());
@@ -50,10 +74,10 @@ public class OceanbaseHintTest_parallel extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(7, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 
     }
 }

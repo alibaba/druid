@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
@@ -184,6 +185,12 @@ public class SQLExprParser extends SQLParser {
             expr = multiplicativeRest(expr);
         }
         return expr;
+    }
+    
+    public SQLIntegerExpr integerExpr() {
+        SQLIntegerExpr intExpr = new SQLIntegerExpr(lexer.integerValue());
+        accept(Token.LITERAL_INT);
+        return intExpr;
     }
 
     public SQLExpr primary() {
@@ -1901,5 +1908,46 @@ public class SQLExprParser extends SQLParser {
         accept(Token.RPAREN);
 
         return expr;
+    }
+    
+    public SQLPartitionValue parsePartitionValues() {
+        if (lexer.token() != Token.VALUES) {
+            return null;
+        }
+        lexer.nextToken();
+
+        SQLPartitionValue values = null;
+
+        if (lexer.token() == Token.IN) {
+            lexer.nextToken();
+            values = new SQLPartitionValue(SQLPartitionValue.Operator.In);
+
+            accept(Token.LPAREN);
+            this.exprList(values.getItems(), values);
+            accept(Token.RPAREN);
+        } else if (identifierEquals("LESS")) {
+            lexer.nextToken();
+            acceptIdentifier("THAN");
+
+            values = new SQLPartitionValue(SQLPartitionValue.Operator.LessThan);
+
+            if (identifierEquals("MAXVALUE")) {
+                SQLIdentifierExpr maxValue = new SQLIdentifierExpr(lexer.stringVal());
+                lexer.nextToken();
+                maxValue.setParent(values);
+                values.addItem(maxValue);
+            } else {
+                accept(Token.LPAREN);
+                this.exprList(values.getItems(), values);
+                accept(Token.RPAREN);
+            }
+        } else if (lexer.token() == Token.LPAREN) {
+            values = new SQLPartitionValue(SQLPartitionValue.Operator.List);
+            lexer.nextToken();
+            this.exprList(values.getItems(), values);
+            accept(Token.RPAREN);
+        }
+
+        return values;
     }
 }

@@ -20,6 +20,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.SQLSubPartition;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -553,7 +556,7 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
         }
 
-        if (identifierEquals("PARTITION")) {
+        if (lexer.token() == Token.PARTITION) {
             throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
         }
 
@@ -893,5 +896,103 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         return item;
+    }
+    
+    public SQLPartition parsePartition() {
+        accept(Token.PARTITION);
+
+        SQLPartition partitionDef = new SQLPartition();
+
+        partitionDef.setName(this.name());
+
+        SQLPartitionValue values = this.parsePartitionValues();
+        if (values != null) {
+            partitionDef.setValues(values);
+        }
+
+        for (;;) {
+            boolean storage = false;
+            if (identifierEquals("DATA")) {
+                lexer.nextToken();
+                acceptIdentifier("DIRECTORY");
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                partitionDef.setDataDirectory(this.expr());
+            } else if (lexer.token() == Token.TABLESPACE) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLName tableSpace = this.name();
+                partitionDef.setTableSpace(tableSpace);
+            } else if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+                acceptIdentifier("DIRECTORY");
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                partitionDef.setIndexDirectory(this.expr());
+            } else if (identifierEquals("MAX_ROWS")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLExpr maxRows = this.primary();
+                partitionDef.setMaxRows(maxRows);
+            } else if (identifierEquals("MIN_ROWS")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLExpr minRows = this.primary();
+                partitionDef.setMaxRows(minRows);
+            } else if (identifierEquals("ENGINE") || //
+                       (storage = (lexer.token() == Token.STORAGE || identifierEquals("STORAGE")))) {
+                if (storage) {
+                    lexer.nextToken();
+                }
+                acceptIdentifier("ENGINE");
+
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                SQLName engine = this.name();
+                partitionDef.setEngine(engine);
+            } else if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+                SQLExpr comment = this.primary();
+                partitionDef.setComment(comment);
+            } else {
+                break;
+            }
+        }
+        
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            
+            for (;;) {
+                acceptIdentifier("SUBPARTITION");
+                
+                SQLName subPartitionName = this.name();
+                SQLSubPartition subPartition = new SQLSubPartition();
+                subPartition.setName(subPartitionName);
+                
+                partitionDef.addSubPartition(subPartition);
+                
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            
+            accept(Token.RPAREN);
+        }
+        return partitionDef;
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.mysql;
+package com.alibaba.druid.bvt.sql.oceanbase;
 
 import java.util.List;
 
@@ -25,21 +25,43 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-public class OceanbaseHintTest_Topk extends MysqlTest {
+public class OceanbaseCreateTableTest_rangePartition3 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "select /*+ topk(90 1000) */ sum(c2), c1 from t1 group by c1 order by sum(c2) limit 10 ";
+        String sql = "CREATE TABLE employees ( " //
+                + "id INT NOT NULL, " //
+                + "fname VARCHAR(30), " //
+                + "lname VARCHAR(30), " //
+                + "hired DATE NOT NULL DEFAULT '1970-01-01', " //
+                + "separated DATE NOT NULL DEFAULT '9999-12-31', " //
+                + "job_code INT NOT NULL, store_id INT NOT NULL " //
+                + ") PARTITION BY RANGE (job_code) " //
+                + "( PARTITION p0 VALUES LESS THAN (100), " //
+                + "PARTITION p1 VALUES LESS THAN (1000), " //
+                + "PARTITION p2 VALUES LESS THAN (10000) "
+                + ")"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
-        
+
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT /*+ topk(90 1000) */ SUM(c2), c1"
-                + "\nFROM t1"
-                + "\nGROUP BY c1"
-                + "\nORDER BY SUM(c2)"
-                + "\nLIMIT 10", result);
+        Assert.assertEquals("CREATE TABLE employees ("
+                + "\n\tid INT NOT NULL, "
+                + "\n\tfname VARCHAR(30), "
+                + "\n\tlname VARCHAR(30), "
+                + "\n\thired DATE NOT NULL DEFAULT '1970-01-01', "
+                + "\n\tseparated DATE NOT NULL DEFAULT '9999-12-31', "
+                + "\n\tjob_code INT NOT NULL, "
+                + "\n\tstore_id INT NOT NULL"
+                + "\n)"
+                + "\nPARTITION BY RANGE (job_code)"
+                + "\n("
+                + "\n\tPARTITION p0 VALUES LESS THAN (100),"
+                + "\n\tPARTITION p1 VALUES LESS THAN (1000),"
+                + "\n\tPARTITION p2 VALUES LESS THAN (10000)"
+                + "\n)",
+                            result);
         print(stmtList);
 
         Assert.assertEquals(1, stmtList.size());
@@ -53,10 +75,10 @@ public class OceanbaseHintTest_Topk extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(7, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 
     }
 }
