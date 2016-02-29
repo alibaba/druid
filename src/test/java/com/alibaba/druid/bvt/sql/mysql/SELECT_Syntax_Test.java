@@ -113,7 +113,12 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT column1\nFROM t1\nWHERE EXISTS (SELECT *\n\tFROM t2);", text);
+        Assert.assertEquals("SELECT column1" //
+                + "\nFROM t1" //
+                + "\nWHERE EXISTS (" //
+                + "\n\tSELECT *" //
+                + "\n\tFROM t2"
+                + "\n\t);", text);
     }
 
     public void test_8() throws Exception {
@@ -124,7 +129,13 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DISTINCT store_type\nFROM stores\nWHERE NOT EXISTS (SELECT *\n\tFROM cities_stores\n\tWHERE cities_stores.store_type = stores.store_type);",
+        Assert.assertEquals("SELECT DISTINCT store_type" //
+                + "\nFROM stores" //
+                + "\nWHERE NOT EXISTS (" //
+                + "\n\tSELECT *"
+                + "\n\tFROM cities_stores"
+                + "\n\tWHERE cities_stores.store_type = stores.store_type"
+                + "\n\t);",
                             text);
     }
 
