@@ -70,6 +70,7 @@ public interface JdbcConstants {
      * 阿里云odps
      */
     public static final String ODPS              = "odps";
+    public static final String ODPS_DRIVER       = "com.aliyun.odps.jdbc.OdpsDriver";
 
     /**
      * Log4JDBC
