@@ -262,6 +262,10 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
             }
+            
+            if (lexer.token() == Token.HINT) {
+                this.getExprParser().parseHints(deleteStatement.getHints());
+            }
 
             if (identifierEquals(LOW_PRIORITY)) {
                 deleteStatement.setLowPriority(true);

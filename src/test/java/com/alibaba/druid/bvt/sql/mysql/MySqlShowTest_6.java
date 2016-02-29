@@ -20,18 +20,22 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-public class MySqlShowTest_3 extends MysqlTest {
+public class MySqlShowTest_6 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "SHOW FULL COLUMNS FROM `sonar`.`action_plans`";
+        String sql = "SHOW INDEX FROM tblname";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
+        
+        String result = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("SHOW INDEX FROM tblname", result);
         print(stmtList);
 
         Assert.assertEquals(1, stmtList.size());

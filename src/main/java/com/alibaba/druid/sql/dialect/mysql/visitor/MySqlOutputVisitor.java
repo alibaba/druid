@@ -857,6 +857,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlDeleteStatement x) {
         print0(ucase ? "DELETE " : "delete ");
+        
+        for (int i = 0, size = x.getHintsSize(); i < size; ++i) {
+            SQLCommentHint hint = x.getHints().get(i);
+            hint.accept(this);
+            print(' ');
+        }
 
         if (x.isLowPriority()) {
             print0(ucase ? "LOW_PRIORITY " : "low_priority ");

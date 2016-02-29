@@ -420,7 +420,9 @@ public class MySqlLexer extends Lexer {
 
             boolean isHint = false;
             int startHintSp = bufPos + 1;
-            if (ch == '!') {
+            if (ch == '!' //
+                    || ch == '+' // oceanbase hints
+                    ) {
                 isHint = true;
                 scanChar();
                 bufPos++;
