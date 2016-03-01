@@ -2413,6 +2413,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             println();
             item.accept(this);
         }
+        
+        if (x.isRemovePatiting()) {
+            println();
+            print0(ucase ? "REMOVE PARTITIONING" : "remove partitioning");
+        }
+        
+        if (x.isUpgradePatiting()) {
+            println();
+            print0(ucase ? "UPGRADE PARTITIONING" : "upgrade partitioning");
+        }
+        
         decrementIndent();
         return false;
     }
