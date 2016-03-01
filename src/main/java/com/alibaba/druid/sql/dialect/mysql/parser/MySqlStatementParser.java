@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -41,10 +42,13 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAnalyzePartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableCheckPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableCoalescePartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableConvertCharSet;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDiscardPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeignKey;
@@ -54,8 +58,13 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableImportPartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableOptimizePartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableReOrganizePartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRebuildPartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRepairPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableTruncatePartition;
 import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
@@ -2309,6 +2318,18 @@ public class MySqlStatementParser extends SQLStatementParser {
         for (;;) {
             if (lexer.token() == Token.DROP) {
                 parseAlterDrop(stmt);
+            } else if (lexer.token() == Token.TRUNCATE) {
+                lexer.nextToken();
+                accept(Token.PARTITION);
+
+                SQLAlterTableTruncatePartition item = new SQLAlterTableTruncatePartition();
+                if (lexer.token() == Token.ALL) {
+                    item.getPartitions().add(new SQLIdentifierExpr("ALL"));
+                    lexer.nextToken();
+                } else {
+                    this.exprParser.names(item.getPartitions(), item);
+                }
+                stmt.addItem(item);
             } else if (identifierEquals("ADD")) {
                 lexer.nextToken();
 
@@ -2359,21 +2380,20 @@ public class MySqlStatementParser extends SQLStatementParser {
                     }
                 } else if (lexer.token() == Token.PARTITION) {
                     lexer.nextToken();
-                    
+
                     SQLAlterTableAddPartition item = new SQLAlterTableAddPartition();
-                    
+
                     if (identifierEquals("PARTITIONS")) {
                         lexer.nextToken();
                         item.setPartitionCount(this.exprParser.integerExpr());
                     }
-                    
+
                     if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
                         SQLPartition partition = this.getExprParser().parsePartition();
                         accept(Token.RPAREN);
                         item.addPartition(partition);
                     }
-
 
                     stmt.addItem(item);
                 } else if (identifierEquals(FULLTEXT)) {
@@ -2503,17 +2523,73 @@ public class MySqlStatementParser extends SQLStatementParser {
                 throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
             } else if (identifierEquals("DISCARD")) {
                 lexer.nextToken();
-                accept(Token.TABLESPACE);
-                MySqlAlterTableDiscardTablespace item = new MySqlAlterTableDiscardTablespace();
+
+                if (lexer.token() == Token.PARTITION) {
+                    lexer.nextToken();
+                    SQLAlterTableDiscardPartition item = new SQLAlterTableDiscardPartition();
+
+                    if (lexer.token() == Token.ALL) {
+                        lexer.nextToken();
+                        item.getPartitions().add(new SQLIdentifierExpr("ALL"));
+                    } else {
+                        this.exprParser.names(item.getPartitions(), item);
+                    }
+
+                    stmt.addItem(item);
+                } else {
+                    accept(Token.TABLESPACE);
+                    MySqlAlterTableDiscardTablespace item = new MySqlAlterTableDiscardTablespace();
+                    stmt.addItem(item);
+                }
+            } else if (lexer.token() == Token.CHECK) {
+                lexer.nextToken();
+                accept(Token.PARTITION);
+
+                SQLAlterTableCheckPartition item = new SQLAlterTableCheckPartition();
+
+                if (lexer.token() == Token.ALL) {
+                    lexer.nextToken();
+                    item.getPartitions().add(new SQLIdentifierExpr("ALL"));
+                } else {
+                    this.exprParser.names(item.getPartitions(), item);
+                }
+
                 stmt.addItem(item);
+
             } else if (identifierEquals("IMPORT")) {
                 lexer.nextToken();
-                accept(Token.TABLESPACE);
-                MySqlAlterTableImportTablespace item = new MySqlAlterTableImportTablespace();
+
+                if (lexer.token() == Token.PARTITION) {
+                    lexer.nextToken();
+                    SQLAlterTableImportPartition item = new SQLAlterTableImportPartition();
+
+                    if (lexer.token() == Token.ALL) {
+                        lexer.nextToken();
+                        item.getPartitions().add(new SQLIdentifierExpr("ALL"));
+                    } else {
+                        this.exprParser.names(item.getPartitions(), item);
+                    }
+
+                    stmt.addItem(item);
+                } else {
+                    accept(Token.TABLESPACE);
+                    MySqlAlterTableImportTablespace item = new MySqlAlterTableImportTablespace();
+                    stmt.addItem(item);
+                }
+            } else if (lexer.token() == Token.ANALYZE) {
+                lexer.nextToken();
+                accept(Token.PARTITION);
+
+                SQLAlterTableAnalyzePartition item = new SQLAlterTableAnalyzePartition();
+
+                if (lexer.token() == Token.ALL) {
+                    lexer.nextToken();
+                    item.getPartitions().add(new SQLIdentifierExpr("ALL"));
+                } else {
+                    this.exprParser.names(item.getPartitions(), item);
+                }
                 stmt.addItem(item);
             } else if (identifierEquals("FORCE")) {
-                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
-            } else if (identifierEquals("TRUNCATE")) {
                 throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
             } else if (identifierEquals("COALESCE")) {
                 lexer.nextToken();
@@ -2549,18 +2625,59 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.addItem(item);
             } else if (identifierEquals("EXCHANGE")) {
                 throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
-            } else if (identifierEquals("ANALYZE")) {
-                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
-            } else if (identifierEquals("CHECK")) {
-                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
             } else if (lexer.token() == Token.OPTIMIZE) {
-                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                lexer.nextToken();
+
+                accept(Token.PARTITION);
+
+                SQLAlterTableOptimizePartition item = new SQLAlterTableOptimizePartition();
+
+                if (lexer.token() == Token.ALL) {
+                    lexer.nextToken();
+                    item.getPartitions().add(new SQLIdentifierExpr("ALL"));
+                } else {
+                    this.exprParser.names(item.getPartitions(), item);
+                }
+                
+                stmt.addItem(item);
             } else if (identifierEquals("REBUILD")) {
-                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                lexer.nextToken();
+
+                accept(Token.PARTITION);
+
+                SQLAlterTableRebuildPartition item = new SQLAlterTableRebuildPartition();
+
+                if (lexer.token() == Token.ALL) {
+                    lexer.nextToken();
+                    item.getPartitions().add(new SQLIdentifierExpr("ALL"));
+                } else {
+                    this.exprParser.names(item.getPartitions(), item);
+                }
+                
+                stmt.addItem(item);
             } else if (identifierEquals("REPAIR")) {
-                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                lexer.nextToken();
+
+                accept(Token.PARTITION);
+
+                SQLAlterTableRepairPartition item = new SQLAlterTableRepairPartition();
+
+                if (lexer.token() == Token.ALL) {
+                    lexer.nextToken();
+                    item.getPartitions().add(new SQLIdentifierExpr("ALL"));
+                } else {
+                    this.exprParser.names(item.getPartitions(), item);
+                }
+                
+                stmt.addItem(item);
             } else if (identifierEquals("REMOVE")) {
-                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                lexer.nextToken();
+                acceptIdentifier("PARTITIONING");
+                stmt.setRemovePatiting(true);
+            } else if (identifierEquals("UPGRADE")) {
+                lexer.nextToken();
+                acceptIdentifier("PARTITIONING");
+                stmt.setUpgradePatiting(true);
             } else if (identifierEquals("ALGORITHM")) {
                 lexer.nextToken();
                 accept(Token.EQ);

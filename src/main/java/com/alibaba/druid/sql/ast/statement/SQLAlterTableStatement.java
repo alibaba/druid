@@ -33,6 +33,9 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
     private boolean                 updateGlobalIndexes     = false;
     private boolean                 invalidateGlobalIndexes = false;
 
+    private boolean                 removePatiting          = false;
+    private boolean                 upgradePatiting         = false;
+
     public SQLAlterTableStatement(){
 
     }
@@ -47,6 +50,22 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setIgnore(boolean ignore) {
         this.ignore = ignore;
+    }
+
+    public boolean isRemovePatiting() {
+        return removePatiting;
+    }
+
+    public void setRemovePatiting(boolean removePatiting) {
+        this.removePatiting = removePatiting;
+    }
+
+    public boolean isUpgradePatiting() {
+        return upgradePatiting;
+    }
+
+    public void setUpgradePatiting(boolean upgradePatiting) {
+        this.upgradePatiting = upgradePatiting;
     }
 
     public boolean isUpdateGlobalIndexes() {
