@@ -63,7 +63,7 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
         }
 
         try {
-            if (conn.isClosed()) {
+            if (conn.isClosed() || conn.isValid(timeout)) {
                 return false;
             }
         } catch (SQLException ex) {
