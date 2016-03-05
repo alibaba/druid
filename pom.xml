@@ -2,13 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-<!--  	
 	<parent>
 		<groupId>com.alibaba</groupId>
 		<artifactId>parent-pom</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
--->
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
@@ -21,8 +19,8 @@
 	<inceptionYear>2013</inceptionYear>
 
 	<properties>
-		<spring.version>3.2.3.RELEASE</spring.version>
-		<junit.version>4.11</junit.version>
+		<spring.version>4.2.5.RELEASE</spring.version>
+		<junit.version>4.12</junit.version>
 
 		<gpg.skip>true</gpg.skip>
 		<javadoc.skip>true</javadoc.skip>
@@ -337,15 +335,15 @@
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
+			<version>1.2</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -395,18 +393,17 @@
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
-			<version>3.3.0</version>
+			<version>3.3.1</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis-spring</artifactId>
-			<version>1.2.2</version>
+			<version>1.2.4</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
-
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -416,41 +413,40 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-			<version>2.3</version>
+			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.3</version>
+			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.35</version>
+			<version>5.1.38</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.jtds</groupId>
 			<artifactId>jtds</artifactId>
-			<version>1.3.0</version>
+			<version>1.3.1</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -468,7 +464,7 @@
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
-			<version>2.2.1</version>
+			<version>2.2.2</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -484,7 +480,7 @@
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
-			<version>10.9.1.0</version>
+			<version>10.12.1.1</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -495,15 +491,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp</artifactId>
-			<version>0.7.1.RELEASE</version>
+			<version>0.8.0.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp-spring</artifactId>
-			<version>0.7.1.RELEASE</version>
+			<version>0.8.0.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -529,7 +531,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>8.0.12</version>
+			<version>8.0.32</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -543,21 +545,27 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.3.170</version>
+			<version>1.4.191</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.1.9.Final</version>
+			<version>5.1.0.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>5.1.0.Final</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.b.52</version>
+			<version>1.r.55</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -577,28 +585,27 @@
 		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-spring</artifactId>
-			<version>3.3.0</version>
+			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.javasimon</groupId>
-			<artifactId>javasimon-jdbc4</artifactId>
-			<version>3.3.0</version>
+			<artifactId>javasimon-jdbc41</artifactId>
+			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-javaee</artifactId>
-			<version>3.3.0</version>
+			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>14.0.1</version>
+			<version>19.0</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.aliyun.odps</groupId>
 			<artifactId>odps-sdk-udf</artifactId>
