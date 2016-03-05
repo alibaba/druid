@@ -55,7 +55,7 @@ public class WrapImplTest extends TestCase {
         Assert.assertEquals(url, dataSource.getUrl());
         Assert.assertEquals("jdbc:derby:classpath:petstore-db", dataSource.getRawUrl());
         Assert.assertEquals(10, dataSource.getRawDriverMajorVersion());
-        Assert.assertEquals(9, dataSource.getRawDriverMinorVersion());
+        Assert.assertEquals(12, dataSource.getRawDriverMinorVersion());
 
         Assert.assertFalse(connection.isWrapperFor(com.mysql.jdbc.Connection.class));
         Assert.assertTrue(connection.isWrapperFor(ConnectionProxyImpl.class));
