@@ -58,7 +58,7 @@ public class OracleMergeTest6 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("console_stb_ipstatus")));
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

@@ -24,11 +24,15 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlSelectTest_20 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "select bsvariety,max(bsh) as bsh,min(bsl) as bsl from   exchange_market_info  where bsdate>date_sub(now(),interval 1 day) group by bsvariety desc;";
+        String sql = "select bsvariety, max(bsh) as bsh, min(bsl) as bsl "
+                + " from   exchange_market_info "
+                + " where bsdate>date_sub(now(),interval 1 day)"
+                + " group by bsvariety desc;";
 
         
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -45,6 +49,11 @@ public class MySqlSelectTest_20 extends MysqlTest {
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
+        
+        Assert.assertTrue(visitor.getColumns().contains(new Column("exchange_market_info", "bsvariety")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("exchange_market_info", "bsh")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("exchange_market_info", "bsl")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("exchange_market_info", "bsdate")));
         
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(4, visitor.getColumns().size());
