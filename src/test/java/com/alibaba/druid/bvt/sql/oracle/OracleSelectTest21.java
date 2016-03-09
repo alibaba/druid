@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.stat.TableStat.Column;
 
 public class OracleSelectTest21 extends OracleTest {
 
@@ -66,7 +67,16 @@ public class OracleSelectTest21 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("DBA_HIST_SYSTEM_EVENT")));
 
-        Assert.assertEquals(13, visitor.getColumns().size());
+        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "EVENT_NAME")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "TOTAL_WAITS")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "TIME_WAITED_MICRO")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "SNAP_ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "INSTANCE_NUMBER")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "DBID")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "WAIT_CLASS")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("DBA_HIST_SYSTEM_EVENT", "EVENT_ID")));
+        
+        Assert.assertEquals(9, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

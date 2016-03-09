@@ -61,7 +61,7 @@ public class OracleSelectTest19 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.dba_data_files")));
 
-        Assert.assertEquals(17, visitor.getColumns().size());
+        Assert.assertEquals(18, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

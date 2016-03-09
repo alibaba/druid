@@ -79,7 +79,7 @@ public class OracleSelectTest38 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("acduser.vw_acd_info")));
 
-        Assert.assertEquals(15, visitor.getColumns().size());
+        Assert.assertEquals(12, visitor.getColumns().size());
 
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "sglx")));
