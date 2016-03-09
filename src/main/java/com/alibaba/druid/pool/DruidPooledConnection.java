@@ -174,8 +174,16 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
             stmt.setClosed(true); // soft set close
         } else {
-            stmt.closeInternal();
-            holder.getDataSource().incrementClosedPreparedStatementCount();
+            try {
+                //Connection behind the statement may be in invalid state, which will throw a SQLException.
+                //In this case, the exception is desired to be properly handled to remove the unusable connection from the pool.
+                stmt.closeInternal();
+            } catch (SQLException ex) {
+                this.handleException(ex);
+                throw ex;
+            } finally {
+                holder.getDataSource().incrementClosedPreparedStatementCount();
+            }
         }
     }
 
