@@ -20,6 +20,8 @@ import java.math.BigInteger;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLKeep;
+import com.alibaba.druid.sql.ast.SQLKeep.DenseRank;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
@@ -751,6 +753,28 @@ public class OracleExprParser extends SQLExprParser {
             accept(Token.LPAREN);
             SQLOrderBy withinGroup = this.parseOrderBy();
             aggregateExpr.setWithinGroup(withinGroup);
+            accept(Token.RPAREN);
+        }
+        
+        if (lexer.token() == Token.KEEP) {
+            lexer.nextToken();
+            
+            SQLKeep keep = new SQLKeep();
+            accept(Token.LPAREN);
+            acceptIdentifier("DENSE_RANK");
+            if (identifierEquals("FIRST")) {
+                lexer.nextToken();
+                keep.setDenseRank(DenseRank.FIRST);
+            } else {
+                acceptIdentifier("LAST");
+                keep.setDenseRank(DenseRank.LAST);
+            }
+            
+            SQLOrderBy orderBy = this.parseOrderBy();
+            keep.setOrderBy(orderBy);
+            
+            aggregateExpr.setKeep(keep);
+            
             accept(Token.RPAREN);
         }
 

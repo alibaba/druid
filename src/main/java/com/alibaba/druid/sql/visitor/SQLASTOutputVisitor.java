@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLKeep;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -566,9 +567,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getWithinGroup().accept(this);
             print(')');
         }
+        
+        if (x.getKeep() != null) {
+            print(' ');
+            x.getKeep().accept(this);
+        }
 
         if (x.getOver() != null) {
-            print0(" ");
+            print(' ');
             x.getOver().accept(this);
         }
         return false;
@@ -1628,6 +1634,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getOrderBy().accept(this);
         }
         print(')');
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLKeep x) {
+        if (x.getDenseRank() == SQLKeep.DenseRank.FIRST) {
+            print0(ucase ? "KEEP (DENSE_RANK FIRST " : "keep (dense_rank first ");    
+        } else {
+            print0(ucase ? "KEEP (DENSE_RANK LAST " : "keep (dense_rank last ");
+        }
+        
+        x.getOrderBy().accept(this);
+        print(')');
+        
         return false;
     }
 

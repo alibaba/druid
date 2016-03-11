@@ -24,13 +24,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.sql.test.TestUtils;
 
-public class OracleSelectTest52 extends OracleTest {
+public class OracleSelectTest53 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-                "select 1 interval from dual"; //
+                "SELECT MIN(t.deptno) KEEP(DENSE_RANK FIRST ORDER BY t.sal) a FROM emp t"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -48,24 +47,23 @@ public class OracleSelectTest52 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
 
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            Assert.assertEquals("SELECT 1 AS INTERVAL" //
-                                + "\nFROM dual", text);
-        }
-        
-        {
-            String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            
-            Assert.assertEquals("select 1 as INTERVAL" //
-                                + "\nfrom dual", text);
+            Assert.assertEquals("SELECT MIN(t.deptno) KEEP (DENSE_RANK FIRST ORDER BY t.sal) AS a" //
+                                + "\nFROM emp t", text);
         }
 
+        {
+            String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+
+            Assert.assertEquals("select min(t.deptno) keep (dense_rank first order by t.sal) as a" //
+                                + "\nfrom emp t", text);
+        }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
         // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));

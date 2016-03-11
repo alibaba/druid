@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
@@ -29,7 +30,7 @@ public class OracleSelectTest51 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "select TRIM(TRAILING 'M' FROM RTRIM('  testM')) from dual;"; //
+                "select TRIM(TRAILING 'M' FROM RTRIM('  testM')) from dual;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -51,11 +52,19 @@ public class OracleSelectTest51 extends OracleTest {
 
         Assert.assertEquals(0, visitor.getColumns().size());
 
-        String text = TestUtils.outputOracle(stmt);
+        {
+            String text = SQLUtils.toOracleString(stmt);
 
-        Assert.assertEquals("SELECT TRIM(TRAILING 'M' FROM RTRIM('  testM'))" //
-                            + "\nFROM dual;"//
-                            + "\n", text);
+            Assert.assertEquals("SELECT TRIM(TRAILING 'M' FROM RTRIM('  testM'))" //
+                                + "\nFROM dual", text);
+        }
+        
+        {
+            String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            
+            Assert.assertEquals("select TRIM(TRAILING 'M' from RTRIM('  testM'))" //
+                                + "\nfrom dual", text);
+        }
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
