@@ -537,7 +537,7 @@ public class MySqlLexer extends Lexer {
         if (c <= identifierFlags.length) {
             return identifierFlags[c];
         }
-        return false;
+        return c != '　' && c != '，';
     }
 
     public void scanNumber() {
