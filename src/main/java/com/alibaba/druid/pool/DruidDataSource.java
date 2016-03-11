@@ -53,6 +53,8 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
+import org.apache.ibatis.jdbc.SQL;
+
 import com.alibaba.druid.Constants;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
@@ -281,6 +283,39 @@ public class DruidDataSource extends DruidAbstractDataSource
             Boolean value = getBoolean(properties, "druid.failFast");
             if (value != null) {
                 this.setFailFast(value);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.phyTimeoutMillis");
+            if (property != null && property.length() > 0) {
+                try {
+                    long value = Long.parseLong(property);
+                    this.setPhyTimeoutMillis(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.phyTimeoutMillis'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty("druid.minEvictableIdleTimeMillis");
+            if (property != null && property.length() > 0) {
+                try {
+                    long value = Long.parseLong(property);
+                    this.setMinEvictableIdleTimeMillis(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.minEvictableIdleTimeMillis'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty("druid.maxEvictableIdleTimeMillis");
+            if (property != null && property.length() > 0) {
+                try {
+                    long value = Long.parseLong(property);
+                    this.setMaxEvictableIdleTimeMillis(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.maxEvictableIdleTimeMillis'", e);
+                }
             }
         }
     }
@@ -541,8 +576,6 @@ public class DruidDataSource extends DruidAbstractDataSource
                 return;
             }
 
-            init = true;
-
             initStackTrace = Utils.toString(Thread.currentThread().getStackTrace());
 
             this.id = DruidDriver.createDataSourceId();
@@ -589,12 +622,15 @@ public class DruidDataSource extends DruidAbstractDataSource
             }
 
             if (getInitialSize() > maxActive) {
-                throw new IllegalArgumentException("illegal initialSize " + this.initialSize + ", maxActieve "
-                                                   + maxActive);
+                throw new IllegalArgumentException("illegal initialSize " + this.initialSize + ", maxActieve " + maxActive);
             }
 
             if (timeBetweenLogStatsMillis > 0 && useGlobalDataSourceStat) {
                 throw new IllegalArgumentException("timeBetweenLogStatsMillis not support useGlobalDataSourceStat=true");
+            }
+            
+            if (maxEvictableIdleTimeMillis < minEvictableIdleTimeMillis) {
+                throw new SQLException("maxEvictableIdleTimeMillis must be grater than minEvictableIdleTimeMillis");
             }
 
             if (this.driverClass != null) {
@@ -666,6 +702,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             createAndStartDestroyThread();
 
             initedLatch.await();
+            init = true;
 
             initedTime = new Date();
             registerMbean();
@@ -674,7 +711,7 @@ public class DruidDataSource extends DruidAbstractDataSource
                 throw connectError;
             }
         } catch (SQLException e) {
-            LOG.error("dataSource init error", e);
+            LOG.error("{dataSource-" + this.getID() + "} init error", e);
             throw e;
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
@@ -2185,24 +2222,33 @@ public class DruidDataSource extends DruidAbstractDataSource
         try {
             final int checkCount = poolingCount - minIdle;
             final long currentTimeMillis = System.currentTimeMillis();
-            for (int i = 0; i < checkCount; ++i) {
+            for (int i = 0; i < poolingCount; ++i) {
                 DruidConnectionHolder connection = connections[i];
 
-                long phyConnectTimeMillis = connection.getTimeMillis() - currentTimeMillis;//physical connection connected time
-                if( phyConnectTimeMillis  > phyTimeoutMillis  ){
-                    evictList.add(connection);//if physical connection connected greater than phyTimeoutMillis, close the connection, for mysql 8 hours timeout
-                    continue;
-                }
-
                 if (checkTime) {
+                    long phyConnectTimeMillis = connection.getTimeMillis() - currentTimeMillis;//physical connection connected time
+                    if (phyTimeoutMillis > 0 && phyConnectTimeMillis > phyTimeoutMillis) {
+                        evictList.add(connection);
+                        continue;
+                    }
+                    
                     long idleMillis = currentTimeMillis - connection.getLastActiveTimeMillis();
-                    if (idleMillis >= minEvictableIdleTimeMillis) {
+                    
+                    if (idleMillis < minEvictableIdleTimeMillis) {
+                        break;
+                    }
+                    
+                    if (checkTime && i < checkCount) {
+                        evictList.add(connection);
+                    } else if (idleMillis > maxEvictableIdleTimeMillis) {
+                        evictList.add(connection);
+                    }
+                } else {
+                    if (i < checkCount) {
                         evictList.add(connection);
                     } else {
                         break;
                     }
-                } else {
-                    evictList.add(connection);
                 }
             }
 

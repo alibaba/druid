@@ -97,7 +97,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
      * @see #setMinEvictableIdleTimeMillis
      */
     public static final long                           DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 30L;
-    public static final long                           DEFAULT_PHY_TIMEOUT_MILLIS                = 1000L * 60L * 60L * 7;
+    public static final long                           DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 60L * 7;
+    public static final long                           DEFAULT_PHY_TIMEOUT_MILLIS                = -1;
 
     protected volatile boolean                         defaultAutoCommit                         = true;
     protected volatile Boolean                         defaultReadOnly;
@@ -159,6 +160,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                             numTestsPerEvictionRun                    = DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
 
     protected volatile long                            minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
+    protected volatile long                            maxEvictableIdleTimeMillis                = DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS;
 
     protected volatile long                            phyTimeoutMillis                          = DEFAULT_PHY_TIMEOUT_MILLIS;
 
@@ -692,7 +694,25 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (minEvictableIdleTimeMillis < 1000 * 30) {
             LOG.error("minEvictableIdleTimeMillis should be greater than 30000");
         }
+        
         this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
+    }
+    
+    public long getMaxEvictableIdleTimeMillis() {
+        return maxEvictableIdleTimeMillis;
+    }
+    
+
+    public void setMaxEvictableIdleTimeMillis(long maxEvictableIdleTimeMillis) {
+        if (maxEvictableIdleTimeMillis < 1000 * 30) {
+            LOG.error("maxEvictableIdleTimeMillis should be greater than 30000");
+        }
+        
+        if (maxEvictableIdleTimeMillis < minEvictableIdleTimeMillis) {
+            throw new IllegalArgumentException("maxEvictableIdleTimeMillis must be grater than minEvictableIdleTimeMillis");
+        }
+        
+        this.maxEvictableIdleTimeMillis = maxEvictableIdleTimeMillis;
     }
 
     public long getPhyTimeoutMillis() {
