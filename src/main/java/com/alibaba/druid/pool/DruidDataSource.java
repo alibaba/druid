@@ -1059,7 +1059,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             activeCount--;
             discardCount++;
 
-            if (activeCount <= 0) {
+            if (activeCount <= minIdle) {
                 emptySignal();
             }
         } finally {

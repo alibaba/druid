@@ -931,6 +931,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (inited && value > this.maxActive) {
             throw new IllegalArgumentException("minIdle greater than maxActive, " + maxActive + " < " + this.minIdle);
         }
+        
+        if (minIdle < 0) {
+            throw new IllegalArgumentException("minIdle must > 0");
+        }
 
         this.minIdle = value;
     }
