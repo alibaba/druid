@@ -15,10 +15,17 @@ public class DruidDataSourceConverterTest extends TestCase {
 	private DruidDataSource dataSource;
 
 	protected void setUp() throws Exception {
+	    String osName = System.getProperty("os.name");
+	    
 		String root = DruidDataSourceConverterTest.class
 				.getResource("/com/alibaba/druid/pool/simplejndi/").toString();
-		if (root.startsWith("file:/"))
+		if (root.startsWith("file:/")) {
 			root = root.substring("file://".length() - 1);
+		}
+		
+		if (osName.toLowerCase().indexOf("win") == -1) {
+		    root = "/" + root;
+		}
 		Properties props = new Properties();
 		props.put("org.osjava.sj.root", root);
 		props.put("java.naming.factory.initial",
