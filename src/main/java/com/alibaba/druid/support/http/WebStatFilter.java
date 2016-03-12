@@ -327,6 +327,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
             this.status = statusCode;
         }
 
+        @SuppressWarnings("deprecation")
         public void setStatus(int statusCode, String statusMessage) {
             super.setStatus(statusCode, statusMessage);
             this.status = statusCode;
