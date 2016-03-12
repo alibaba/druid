@@ -31,8 +31,9 @@ public class MySqlAlterDbTest0 extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER DATABASE `#mysql50#a-b-c` UPGRADE DATA DIRECTORY NAME", output);
+        
+        Assert.assertEquals("ALTER DATABASE `#mysql50#a-b-c` UPGRADE DATA DIRECTORY NAME", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("alter database `#mysql50#a-b-c` upgrade data directory name", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

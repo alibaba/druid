@@ -31,9 +31,12 @@ public class MySqlAlterTableAlterColumnSetDefaultTest extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
+        
         Assert.assertEquals("ALTER TABLE tabelname" + //
-                            "\n\tALTER COLUMN operateVersion SET DEFAULT 0", output);
+                            "\n\tALTER COLUMN operateVersion SET DEFAULT 0", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table tabelname" + //
+                "\n\talter column operateVersion set default 0", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

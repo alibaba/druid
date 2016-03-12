@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
@@ -31,19 +32,25 @@ public class PGSelectTest23 extends PGTest {
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals("SELECT id, login_name, name, password, salt"
                 + "\n\t, roles, register_date"
                 + "\nFROM user"
                 + "\nWHERE name LIKE ?"
-                + "\nLIMIT ? OFFSET ?", output(statementList));
+                + "\nLIMIT ? OFFSET ?", SQLUtils.toPGString(stmt));
+        
+        Assert.assertEquals("select id, login_name, name, password, salt"
+                + "\n\t, roles, register_date"
+                + "\nfrom user"
+                + "\nwhere name like ?"
+                + "\nlimit ? offset ?", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

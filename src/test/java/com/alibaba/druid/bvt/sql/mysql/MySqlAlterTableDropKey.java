@@ -31,9 +31,12 @@ public class MySqlAlterTableDropKey extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
+        
         Assert.assertEquals("ALTER TABLE t6" + //
-                            "\n\tDROP KEY v", output);
+                            "\n\tDROP KEY v", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table t6" + //
+                "\n\tdrop key v", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

@@ -31,9 +31,12 @@ public class MySqlAlterTableAddPrimaryKey_1 extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
+        
         Assert.assertEquals("ALTER TABLE tabelname" + //
-                            "\n\tADD CONSTRAINT mYconstraint PRIMARY KEY (id)", output);
+                            "\n\tADD CONSTRAINT mYconstraint PRIMARY KEY (id)", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table tabelname" + //
+                "\n\tadd constraint mYconstraint primary key (id)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

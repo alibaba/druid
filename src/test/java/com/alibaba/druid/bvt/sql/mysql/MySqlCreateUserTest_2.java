@@ -40,9 +40,10 @@ public class MySqlCreateUserTest_2 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
         
-        String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'mypass'", //
-                            output);
+                            SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("create user 'jeffrey'@'localhost' identified by 'mypass'", //
+                            SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

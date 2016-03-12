@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTableItem {
@@ -35,7 +34,7 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
 
     private String                           using;
     
-    private String                           keyOrIndex = Token.INDEX.name;
+    private boolean                          key = false;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -89,11 +88,11 @@ public class SQLAlterTableAddIndex extends SQLObjectImpl implements SQLAlterTabl
         this.using = using;
     }
 
-    public String getKeyOrIndex() {
-        return keyOrIndex;
+    public boolean isKey() {
+        return key;
     }
 
-    public void setKeyOrIndex(String keyOrIndex) {
-        this.keyOrIndex = keyOrIndex;
+    public void setKey(boolean key) {
+        this.key = key;
     }
 }

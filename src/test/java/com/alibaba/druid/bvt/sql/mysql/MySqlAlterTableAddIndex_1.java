@@ -30,9 +30,12 @@ public class MySqlAlterTableAddIndex_1 extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
+        
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD UNIQUE INDEX `ix2` (`fid` ASC)", output);
+                            "\n\tADD UNIQUE INDEX `ix2` (`fid` ASC)", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table `test`.`tb1`" + //
+                "\n\tadd unique index `ix2` (`fid` asc)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

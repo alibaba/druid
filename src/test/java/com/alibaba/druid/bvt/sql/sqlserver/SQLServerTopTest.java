@@ -16,26 +16,24 @@
 package com.alibaba.druid.bvt.sql.sqlserver;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
-import com.alibaba.druid.sql.test.TestUtils;
+
+import junit.framework.TestCase;
 
 public class SQLServerTopTest extends TestCase {
 
     public void test_isEmpty() throws Exception {
         String sql = "SELECT TOP 10 * FROM T";
 
-        String expect = "SELECT TOP 10 *\nFROM T";
-
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
-        String text = TestUtils.outputSqlServer(stmt);
 
-        Assert.assertEquals(expect, text);
+        Assert.assertEquals("SELECT TOP 10 *\nFROM T", SQLUtils.toSQLServerString(stmt));
+        Assert.assertEquals("select top 10 *\nfrom T", SQLUtils.toSQLServerString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        System.out.println(text);
     }
 }

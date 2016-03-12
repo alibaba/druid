@@ -41,10 +41,12 @@ public class MySqlAlterTableDisableKeys extends TestCase {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE tableName" + //
-                            "\n\tDISABLE KEYS", output);
+                            "\n\tDISABLE KEYS", SQLUtils.toMySqlString(stmt));
 
+        Assert.assertEquals("alter table tableName" + //
+                "\n\tdisable keys", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
     }
