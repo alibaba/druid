@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Option;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
@@ -605,7 +606,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getIndexType() != null) {
             print0(ucase ? " USING " : " using ");
-            ;
             print0(x.getIndexType());
         }
 
@@ -2810,17 +2810,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         printAndAccept(x.getReferencedColumns(), ", ");
         print(')');
 
-        if (x.getReferenceMatch() != null) {
+        MysqlForeignKey.Match match = x.getReferenceMatch();
+        if (match != null) {
             print0(ucase ? " MATCH " : " match ");
-            print0(x.getReferenceMatch().name());
+            print0(ucase ? match.name : match.name_lcase);
         }
 
-        if (x.getReferenceOn() != null) {
+        MysqlForeignKey.On on = x.getReferenceOn();
+        if (on != null) {
             print0(ucase ? " ON " : " on ");
-            print0(x.getReferenceOn().name());
+            print0(ucase ? on.name : on.name_lcase);
             print(' ');
-            if (x.getReferenceOption() != null) {
-                print0(x.getReferenceOption().getText());
+            Option option = x.getReferenceOption();
+            if (option != null) {
+                print0(ucase ? option.name : option.name_lcase);
             }
         }
         return false;

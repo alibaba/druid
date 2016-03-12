@@ -2055,8 +2055,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         if (x.getOn() != null) {
             print0(ucase ? " ON " : " on ");
 
-            if (x.getObjectType() != null) {
-                print0(x.getObjectType().name());
+            SQLObjectType objectType = x.getObjectType();
+            if (objectType != null) {
+                print0(ucase ? objectType.name : objectType.name_lcase);
                 print(' ');
             }
 
