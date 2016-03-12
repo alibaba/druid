@@ -34,14 +34,24 @@ public class OceanbaseCreateTableTest_partitionByKey extends MysqlTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE k2 ("
-                + "\n\tid int PRIMARY KEY, "
-                + "\n\tname varchar(20)"
-                + "\n)"
-                + "\nPARTITION BY KEY () PARTITIONS 2",
-                            result);
-        print(stmtList);
+        {
+            String result = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("CREATE TABLE k2 ("
+                    + "\n\tid int PRIMARY KEY, "
+                    + "\n\tname varchar(20)"
+                    + "\n)"
+                    + "\nPARTITION BY KEY () PARTITIONS 2",
+                                result);
+        }
+        {
+            String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("create table k2 ("
+                    + "\n\tid int primary key, "
+                    + "\n\tname varchar(20)"
+                    + "\n)"
+                    + "\npartition by key () partitions 2",
+                                result);
+        }
 
         Assert.assertEquals(1, stmtList.size());
 

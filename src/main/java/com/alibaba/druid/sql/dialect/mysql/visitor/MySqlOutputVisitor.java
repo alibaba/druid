@@ -500,7 +500,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             String key = option.getKey();
 
             print(' ');
-            print0(key);
+            print0(ucase ? key : key.toLowerCase());
 
             if ("TABLESPACE".equals(key)) {
                 print(' ');
@@ -812,7 +812,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         x.getAgainst().accept(this);
         if (x.getSearchModifier() != null) {
             print(' ');
-            print0(x.getSearchModifier().name);
+            print0(ucase ? x.getSearchModifier().name : x.getSearchModifier().name_lcase);
         }
         print(')');
 
@@ -2999,7 +2999,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         x.getExpr().accept(this);
         if (x.getType() != null) {
             print(' ');
-            print0(x.getType().name());
+            print0(ucase ? x.getType().name : x.getType().name_lcase);
         }
 
         return false;

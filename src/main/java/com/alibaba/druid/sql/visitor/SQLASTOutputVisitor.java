@@ -2989,56 +2989,65 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     @Override
     public boolean visit(SQLAlterTableTruncatePartition x) {
         print0(ucase ? "TRUNCATE PARTITION " : "truncate partition ");
-        printlnAndAccept(x.getPartitions(), ",");
+        printPartitions(x.getPartitions());
         return false;
     }
     
     @Override
     public boolean visit(SQLAlterTableDiscardPartition x) {
         print0(ucase ? "DISCARD PARTITION " : "discard partition ");
-        printlnAndAccept(x.getPartitions(), ",");
+        printPartitions(x.getPartitions());
         return false;
     }
     
     @Override
     public boolean visit(SQLAlterTableImportPartition x) {
         print0(ucase ? "IMPORT PARTITION " : "import partition ");
-        printlnAndAccept(x.getPartitions(), ",");
+        printPartitions(x.getPartitions());
         return false;
     }
     
     @Override
     public boolean visit(SQLAlterTableAnalyzePartition x) {
         print0(ucase ? "ANALYZE PARTITION " : "analyze partition ");
-        printlnAndAccept(x.getPartitions(), ",");
+        
+        printPartitions(x.getPartitions());
         return false;
+    }
+    
+    protected void printPartitions(List<SQLName> partitions) {
+        if (partitions.size() == 1 && "ALL".equalsIgnoreCase(partitions.get(0).getSimpleName())) {
+            print0(ucase ? "ALL" : "all");    
+        } else {
+            printAndAccept(partitions, ", ");
+        }
     }
     
     @Override
     public boolean visit(SQLAlterTableCheckPartition x) {
         print0(ucase ? "CHECK PARTITION " : "check partition ");
-        printlnAndAccept(x.getPartitions(), ",");
+        printPartitions(x.getPartitions());
         return false;
     }
     
     @Override
     public boolean visit(SQLAlterTableOptimizePartition x) {
         print0(ucase ? "OPTIMIZE PARTITION " : "optimize partition ");
-        printlnAndAccept(x.getPartitions(), ",");
+        printPartitions(x.getPartitions());
         return false;
     }
     
     @Override
     public boolean visit(SQLAlterTableRebuildPartition x) {
         print0(ucase ? "REBUILD PARTITION " : "rebuild partition ");
-        printlnAndAccept(x.getPartitions(), ",");
+        printPartitions(x.getPartitions());
         return false;
     }
     
     @Override
     public boolean visit(SQLAlterTableRepairPartition x) {
         print0(ucase ? "REPAIR PARTITION " : "repair partition ");
-        printlnAndAccept(x.getPartitions(), ",");
+        printPartitions(x.getPartitions());
         return false;
     }
 }

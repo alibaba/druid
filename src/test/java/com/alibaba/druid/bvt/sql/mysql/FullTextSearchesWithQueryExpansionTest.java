@@ -18,12 +18,13 @@ package com.alibaba.druid.bvt.sql.mysql;
 import java.util.List;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+
+import junit.framework.TestCase;
 
 public class FullTextSearchesWithQueryExpansionTest extends TestCase {
 
@@ -32,21 +33,24 @@ public class FullTextSearchesWithQueryExpansionTest extends TestCase {
 
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
+        SQLStatement stmt = stmtList.get(0);
 
-        String text = output(stmtList);
-
-        Assert.assertEquals("SELECT *\nFROM articles\nWHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE);",
-                            text);
-    }
-
-    private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
+        {
+            String text = SQLUtils.toMySqlString(stmt);
+    
+            Assert.assertEquals("SELECT *" //
+                    + "\nFROM articles" //
+                    + "\nWHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE)",
+                                text);
         }
-
-        return out.toString();
+        {
+            String text = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+    
+            Assert.assertEquals("select *" //
+                    + "\nfrom articles" //
+                    + "\nwhere match (title, body) against ('database' in natural language mode)",
+                                text);
+        }
     }
+
 }

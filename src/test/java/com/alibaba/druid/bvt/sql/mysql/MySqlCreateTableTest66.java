@@ -45,17 +45,31 @@ public class MySqlCreateTableTest66 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE hp_db.g20_relationship_communication_daily ("
-                + "\n\ta_iden_string varchar, "
-                + "\n\tb_iden_string varchar, "
-                + "\n\tcounter bigint, "
-                + "\n\tdurationtime bigint"
-                + "\n)" 
-                + "\nPARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
-                + "\nSUBPARTITION BY LIST (bdt bigint)"
-                + "\nSUBPARTITION OPTIONS (available_Partition_Num = 90)"
-                + "\nTABLEGROUP g20_test_group", output);
-
+        {
+            String output = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("CREATE TABLE hp_db.g20_relationship_communication_daily ("
+                    + "\n\ta_iden_string varchar, "
+                    + "\n\tb_iden_string varchar, "
+                    + "\n\tcounter bigint, "
+                    + "\n\tdurationtime bigint"
+                    + "\n)" 
+                    + "\nPARTITION BY HASH KEY(a_iden_string) PARTITION NUM 100"
+                    + "\nSUBPARTITION BY LIST (bdt bigint)"
+                    + "\nSUBPARTITION OPTIONS (available_Partition_Num = 90)"
+                    + "\nTABLEGROUP g20_test_group", output);
+        }
+        {
+            String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("create table hp_db.g20_relationship_communication_daily ("
+                    + "\n\ta_iden_string varchar, "
+                    + "\n\tb_iden_string varchar, "
+                    + "\n\tcounter bigint, "
+                    + "\n\tdurationtime bigint"
+                    + "\n)" 
+                    + "\npartition by hash key(a_iden_string) partition num 100"
+                    + "\nsubpartition by list (bdt bigint)"
+                    + "\nsubpartition options (available_Partition_Num = 90)"
+                    + "\ntablegroup g20_test_group", output);
+        }
     }
 }

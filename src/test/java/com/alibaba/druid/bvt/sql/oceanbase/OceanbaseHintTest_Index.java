@@ -34,11 +34,18 @@ public class OceanbaseHintTest_Index extends MysqlTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
         
-        String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
-                + "\nFROM t1, t2"
-                + "\nWHERE t1.c1 = t2.c1", result);
-        print(stmtList);
+        {
+            String result = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("SELECT /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
+                    + "\nFROM t1, t2"
+                    + "\nWHERE t1.c1 = t2.c1", result);
+        }
+        {
+            String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("select /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
+                    + "\nfrom t1, t2"
+                    + "\nwhere t1.c1 = t2.c1", result);
+        }
 
         Assert.assertEquals(1, stmtList.size());
 
