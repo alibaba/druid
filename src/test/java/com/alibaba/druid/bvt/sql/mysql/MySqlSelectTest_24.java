@@ -51,13 +51,24 @@ public class MySqlSelectTest_24 extends MysqlTest {
         Assert.assertEquals(3, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
         
-        String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT *"
-                + "\nFROM company"
-                + "\nWHERE id = 1"
-                + "\n\tAND NOT name = 'e'"
-                + "\n\tAND addr = 'a'", //
-                            output);
+        {
+            String output = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("SELECT *"
+                    + "\nFROM company"
+                    + "\nWHERE id = 1"
+                    + "\n\tAND NOT name = 'e'"
+                    + "\n\tAND addr = 'a'", //
+                                output);
+        }
+        {
+            String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("select *"
+                    + "\nfrom company"
+                    + "\nwhere id = 1"
+                    + "\n\tand not name = 'e'"
+                    + "\n\tand addr = 'a'", //
+                                output);
+        }
     }
     
     

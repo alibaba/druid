@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.ast.SQLKeep;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLPartition;
@@ -801,7 +802,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         x.getExpr().accept(this);
         if (x.getType() != null) {
             print(' ');
-            print0(x.getType().name().toUpperCase());
+            SQLOrderingSpecification type = x.getType();
+            print0(ucase ? type.name : type.name_lcase);
         }
 
         if (x.getCollate() != null) {
@@ -1179,7 +1181,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLUnionQuery x) {
         x.getLeft().accept(this);
         println();
-        print0(x.getOperator().name);
+        print0(ucase ? x.getOperator().name : x.getOperator().name_lcase);
         println();
 
         boolean needParen = false;

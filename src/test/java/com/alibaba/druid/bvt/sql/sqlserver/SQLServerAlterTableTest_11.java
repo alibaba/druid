@@ -43,10 +43,16 @@ public class SQLServerAlterTableTest_11 extends TestCase {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
-        Assert.assertEquals("ALTER TABLE dbo.doc_exd" //
-                            + "\n\tWITH NOCHECK ADD CONSTRAINT exd_check CHECK (column_a > 1)", output);
-
+        {
+            String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
+            Assert.assertEquals("ALTER TABLE dbo.doc_exd" //
+                                + "\n\tWITH NOCHECK ADD CONSTRAINT exd_check CHECK (column_a > 1)", output);
+        }
+        {
+            String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("alter table dbo.doc_exd" //
+                                + "\n\twith nocheck add constraint exd_check check (column_a > 1)", output);
+        }
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
     }
