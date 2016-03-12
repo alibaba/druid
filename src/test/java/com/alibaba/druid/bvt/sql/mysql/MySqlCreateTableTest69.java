@@ -42,15 +42,28 @@ public class MySqlCreateTableTest69 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE t1 ("
-                + "\n\ts1 INT, "
-                + "\n\ts2 INT AS (EXP(s1)) SORTED"
-                + "\n)"
-                + "\nPARTITION BY LIST (s2)"
-                + "\n("
-                + "\n\tPARTITION p1 VALUES IN (1)"
-                + "\n)", output);
-
+        {
+            String output = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("CREATE TABLE t1 ("
+                    + "\n\ts1 INT, "
+                    + "\n\ts2 INT AS (EXP(s1)) SORTED"
+                    + "\n)"
+                    + "\nPARTITION BY LIST (s2)"
+                    + "\n("
+                    + "\n\tPARTITION p1 VALUES IN (1)"
+                    + "\n)", output);
+        }
+        
+        {
+            String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("create table t1 ("
+                    + "\n\ts1 INT, "
+                    + "\n\ts2 INT as (EXP(s1)) sorted"
+                    + "\n)"
+                    + "\npartition by list (s2)"
+                    + "\n("
+                    + "\n\tpartition p1 values in (1)"
+                    + "\n)", output);
+            }
     }
 }

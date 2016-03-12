@@ -15,31 +15,37 @@
  */
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
-import com.alibaba.druid.sql.test.TestUtils;
+
+import junit.framework.TestCase;
 
 public class SQLServerSelectTest21 extends TestCase {
 
     public void test_simple() throws Exception {
         String sql = "SELECT First_Name + ' ' + Last Name FROM Employees ORDER BY First_Name OFFSET 10 ROWS FETCH NEXT 5 ROWS ONLY;"; //
 
-        String expect = "SELECT First_Name + ' ' + Last AS Name" //
-                        + "\nFROM Employees" //
-                        + "\nORDER BY First_Name" //
-                        + "\nOFFSET 10 ROWS FETCH NEXT 5 ROWS ONLY";
-
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
-        String text = TestUtils.outputSqlServer(stmt);
+        {
+            String text = SQLUtils.toSQLServerString(stmt);
 
-        Assert.assertEquals(expect, text);
+            Assert.assertEquals("SELECT First_Name + ' ' + Last AS Name" //
+                                + "\nFROM Employees" //
+                                + "\nORDER BY First_Name" //
+                                + "\nOFFSET 10 ROWS FETCH NEXT 5 ROWS ONLY", text);
+        }
+        {
+            String text = SQLUtils.toSQLServerString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-        System.out.println(text);
+            Assert.assertEquals("select First_Name + ' ' + Last as Name" //
+                                + "\nfrom Employees" //
+                                + "\norder by First_Name" //
+                                + "\noffset 10 rows fetch next 5 rows only", text);
+        }
     }
 }

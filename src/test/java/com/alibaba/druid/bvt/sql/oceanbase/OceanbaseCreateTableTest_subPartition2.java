@@ -42,33 +42,61 @@ public class OceanbaseCreateTableTest_subPartition2 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
-
-        String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE ts ("
-                + "\n\tid INT, "
-                + "\n\tpurchased DATE"
-                + "\n)"
-                + "\nPARTITION BY RANGE (YEAR(purchased))"
-                + "\nSUBPARTITION BY HASH (TO_DAYS(purchased))"
-                + "\n("
-                + "\n\tPARTITION p0 VALUES LESS THAN (1990)"
-                + "\n\t("
-                + "\n\t\tSUBPARTITION s0,"
-                + "\n\t\tSUBPARTITION s1"
-                + "\n\t),"
-                + "\n\tPARTITION p1 VALUES LESS THAN (2000)"
-                + "\n\t("
-                + "\n\t\tSUBPARTITION s2,"
-                + "\n\t\tSUBPARTITION s3"
-                + "\n\t),"
-                + "\n\tPARTITION p2 VALUES LESS THAN MAXVALUE"
-                + "\n\t("
-                + "\n\t\tSUBPARTITION s4,"
-                + "\n\t\tSUBPARTITION s5"
-                + "\n\t)"
-                + "\n)",
-                            result);
-        print(stmtList);
+        {
+            String result = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("CREATE TABLE ts (" + //
+                                "\n\tid INT, " + //
+                                "\n\tpurchased DATE" + //
+                                "\n)" + //
+                                "\nPARTITION BY RANGE (YEAR(purchased))" + //
+                                "\nSUBPARTITION BY HASH (TO_DAYS(purchased))" + //
+                                "\n(" + //
+                                "\n\tPARTITION p0 VALUES LESS THAN (1990)" + //
+                                "\n\t(" + //
+                                "\n\t\tSUBPARTITION s0," + //
+                                "\n\t\tSUBPARTITION s1" + //
+                                "\n\t)," + //
+                                "\n\tPARTITION p1 VALUES LESS THAN (2000)" + //
+                                "\n\t(" + //
+                                "\n\t\tSUBPARTITION s2," + //
+                                "\n\t\tSUBPARTITION s3" + //
+                                "\n\t)," + //
+                                "\n\tPARTITION p2 VALUES LESS THAN MAXVALUE" + //
+                                "\n\t(" + //
+                                "\n\t\tSUBPARTITION s4," + //
+                                "\n\t\tSUBPARTITION s5" + //
+                                "\n\t)" + //
+                                "\n)",
+                                result);
+        }
+        {
+            String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("create table ts (" + //
+                                "\n\tid INT, " + //
+                                "\n\tpurchased DATE" + //
+                                "\n)" + //
+                                "\npartition by range (YEAR(purchased))" + //
+                                "\nsubpartition by hash (TO_DAYS(purchased))" + //
+                                "\n(" + //
+                                "\n\tpartition p0 values less than (1990)" + //
+                                "\n\t(" + //
+                                "\n\t\tsubpartition s0," + //
+                                "\n\t\tsubpartition s1" + //
+                                "\n\t)," + //
+                                "\n\tpartition p1 values less than (2000)" + //
+                                "\n\t(" + //
+                                "\n\t\tsubpartition s2," + //
+                                "\n\t\tsubpartition s3" + //
+                                "\n\t)," + //
+                                "\n\tpartition p2 values less than maxvalue" + //
+                                "\n\t(" + //
+                                "\n\t\tsubpartition s4," + //
+                                "\n\t\tsubpartition s5" + //
+                                "\n\t)" + //
+                                "\n)",
+                                result);
+            System.out.println(result);
+        }
 
         Assert.assertEquals(1, stmtList.size());
 
