@@ -53,8 +53,6 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 
-import org.apache.ibatis.jdbc.SQL;
-
 import com.alibaba.druid.Constants;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
@@ -2226,10 +2224,12 @@ public class DruidDataSource extends DruidAbstractDataSource
                 DruidConnectionHolder connection = connections[i];
 
                 if (checkTime) {
-                    long phyConnectTimeMillis = connection.getTimeMillis() - currentTimeMillis;//physical connection connected time
-                    if (phyTimeoutMillis > 0 && phyConnectTimeMillis > phyTimeoutMillis) {
-                        evictList.add(connection);
-                        continue;
+                    if (phyTimeoutMillis > 0) {
+                        long phyConnectTimeMillis = currentTimeMillis - connection.getTimeMillis();
+                        if (phyConnectTimeMillis > phyTimeoutMillis) {
+                            evictList.add(connection);
+                            continue;
+                        }
                     }
                     
                     long idleMillis = currentTimeMillis - connection.getLastActiveTimeMillis();
