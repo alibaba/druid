@@ -34,12 +34,18 @@ public class OceanbaseAlterTableReOrganizePartitionTest extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
-
-        String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE members"
-                + "\n\tREORGANIZE p0 INTO (PARTITION s0 VALUES LESS THAN (1960), PARTITION s1 VALUES LESS THAN (1970))",
-                            result);
-        print(stmtList);
+        {
+            String result = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("ALTER TABLE members" //
+                    + "\n\tREORGANIZE p0 INTO (PARTITION s0 VALUES LESS THAN (1960), PARTITION s1 VALUES LESS THAN (1970))",
+                                result);
+        }
+        {
+            String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("alter table members" //
+                    + "\n\treorganize p0 into (partition s0 values less than (1960), partition s1 values less than (1970))",
+                                result);
+        }
 
         Assert.assertEquals(1, stmtList.size());
 

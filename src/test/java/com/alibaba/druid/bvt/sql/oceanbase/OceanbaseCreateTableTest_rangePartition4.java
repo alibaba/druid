@@ -45,25 +45,46 @@ public class OceanbaseCreateTableTest_rangePartition4 extends MysqlTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE employees ("
-                + "\n\tid INT NOT NULL, "
-                + "\n\tfname VARCHAR(30), "
-                + "\n\tlname VARCHAR(30), "
-                + "\n\thired DATE NOT NULL DEFAULT '1970-01-01', "
-                + "\n\tseparated DATE NOT NULL DEFAULT '9999-12-31', "
-                + "\n\tjob_code INT, "
-                + "\n\tstore_id INT"
-                + "\n)"
-                + "\nPARTITION BY RANGE (YEAR(separated))"
-                + "\n("
-                + "\n\tPARTITION p0 VALUES LESS THAN (1991),"
-                + "\n\tPARTITION p1 VALUES LESS THAN (1996),"
-                + "\n\tPARTITION p2 VALUES LESS THAN (2001),"
-                + "\n\tPARTITION p3 VALUES LESS THAN MAXVALUE"
-                + "\n)",
-                            result);
-        print(stmtList);
+        {
+            String result = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("CREATE TABLE employees ("
+                    + "\n\tid INT NOT NULL, "
+                    + "\n\tfname VARCHAR(30), "
+                    + "\n\tlname VARCHAR(30), "
+                    + "\n\thired DATE NOT NULL DEFAULT '1970-01-01', "
+                    + "\n\tseparated DATE NOT NULL DEFAULT '9999-12-31', "
+                    + "\n\tjob_code INT, "
+                    + "\n\tstore_id INT"
+                    + "\n)"
+                    + "\nPARTITION BY RANGE (YEAR(separated))"
+                    + "\n("
+                    + "\n\tPARTITION p0 VALUES LESS THAN (1991),"
+                    + "\n\tPARTITION p1 VALUES LESS THAN (1996),"
+                    + "\n\tPARTITION p2 VALUES LESS THAN (2001),"
+                    + "\n\tPARTITION p3 VALUES LESS THAN MAXVALUE"
+                    + "\n)",
+                                result);
+        }
+        {
+            String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("create table employees ("
+                    + "\n\tid INT not null, "
+                    + "\n\tfname VARCHAR(30), "
+                    + "\n\tlname VARCHAR(30), "
+                    + "\n\thired DATE not null default '1970-01-01', "
+                    + "\n\tseparated DATE not null default '9999-12-31', "
+                    + "\n\tjob_code INT, "
+                    + "\n\tstore_id INT"
+                    + "\n)"
+                    + "\npartition by range (YEAR(separated))"
+                    + "\n("
+                    + "\n\tpartition p0 values less than (1991),"
+                    + "\n\tpartition p1 values less than (1996),"
+                    + "\n\tpartition p2 values less than (2001),"
+                    + "\n\tpartition p3 values less than maxvalue"
+                    + "\n)",
+                                result);
+        }
 
         Assert.assertEquals(1, stmtList.size());
 

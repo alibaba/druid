@@ -34,11 +34,18 @@ public class OceanbaseAlterTableCoalescePartitionTest extends MysqlTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE clients"
-                + "\n\tCOALESCE PARTITION 6",
-                            result);
-        print(stmtList);
+        {
+            String result = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("ALTER TABLE clients"
+                    + "\n\tCOALESCE PARTITION 6",
+                                result);
+        }
+        {
+            String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("alter table clients"
+                    + "\n\tcoalesce partition 6",
+                                result);
+        }
 
         Assert.assertEquals(1, stmtList.size());
 

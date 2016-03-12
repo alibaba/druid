@@ -34,10 +34,18 @@ public class OceanbaseAlterTableAddPartitionTest extends MysqlTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE members"
-                + "\n\tADD PARTITION (PARTITION p3 VALUES LESS THAN (2000))",
-                            result);
+        {
+            String result = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("ALTER TABLE members"
+                    + "\n\tADD PARTITION (PARTITION p3 VALUES LESS THAN (2000))",
+                                result);
+        }
+        {
+            String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("alter table members"
+                    + "\n\tadd partition (partition p3 values less than (2000))",
+                                result);
+        }
         print(stmtList);
 
         Assert.assertEquals(1, stmtList.size());
