@@ -1986,18 +1986,16 @@ public class SQLStatementParser extends SQLParser {
             item.setUnique(true);
             lexer.nextToken();
             if (lexer.token() == Token.INDEX) {
-                item.setKeyOrIndex(Token.INDEX.name);
                 lexer.nextToken();
             } else if (lexer.token() == Token.KEY) {
-                item.setKeyOrIndex(Token.KEY.name);
+                item.setKey(true);
                 lexer.nextToken();
             }
         } else {
             if (lexer.token() == Token.INDEX) {
-                item.setKeyOrIndex(Token.INDEX.name);
                 accept(Token.INDEX);
             } else if (lexer.token() == Token.KEY) {
-                item.setKeyOrIndex(Token.KEY.name);
+                item.setKey(true);
                 accept(Token.KEY);
             }
         }

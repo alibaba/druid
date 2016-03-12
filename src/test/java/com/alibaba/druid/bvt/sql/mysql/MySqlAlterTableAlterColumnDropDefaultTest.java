@@ -31,9 +31,12 @@ public class MySqlAlterTableAlterColumnDropDefaultTest extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
+        
         Assert.assertEquals("ALTER TABLE tabelname" + //
-                            "\n\tALTER COLUMN operateVersion DROP DEFAULT", output);
+                            "\n\tALTER COLUMN operateVersion DROP DEFAULT", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table tabelname" + //
+                "\n\talter column operateVersion drop default", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

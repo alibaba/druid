@@ -16,14 +16,14 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.stat.TableStat.Column;
+
+import junit.framework.TestCase;
 
 public class MySqlAlterTableEnableKeys extends TestCase {
 
@@ -41,9 +41,11 @@ public class MySqlAlterTableEnableKeys extends TestCase {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE tableName" + //
-                            "\n\tENABLE KEYS", output);
+                            "\n\tENABLE KEYS", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table tableName" + //
+                "\n\tenable keys", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

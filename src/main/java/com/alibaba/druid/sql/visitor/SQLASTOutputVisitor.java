@@ -2152,9 +2152,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print0(ucase ? "UNIQUE " : "unique ");
         }
 
-        print0(x.getKeyOrIndex());
-        print(' ');
-
+        if (x.isKey()) {
+            print0(ucase ? "KEY " : "key ");    
+        } else {
+            print0(ucase ? "INDEX " : "index ");
+        }
+        
         if (x.getName() != null) {
             x.getName().accept(this);
             print(' ');
