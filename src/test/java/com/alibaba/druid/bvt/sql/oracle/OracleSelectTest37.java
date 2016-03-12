@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
@@ -38,8 +39,29 @@ public class OracleSelectTest37 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+        
+        Assert.assertEquals("SELECT resource_value, COUNT(resource_value) AS nums, http_method"
+                + "\nFROM ("
+                + "\n\tSELECT *"
+                + "\n\tFROM audit_url_log"
+                + "\n\tWHERE project_id = ?"
+                + "\n\t\tAND to_char(begin_time, 'yyyy-MM-dd') >= ?"
+                + "\n\t\tAND to_char(begin_time, 'yyyy-MM-dd') <= ?"
+                + "\n)"
+                + "\nGROUP BY resource_value, http_method"
+                + "\nHAVING COUNT(resource_value) >= ?", SQLUtils.toOracleString(stmt));
 
+        Assert.assertEquals("select resource_value, count(resource_value) as nums, http_method"
+                + "\nfrom ("
+                + "\n\tselect *"
+                + "\n\tfrom audit_url_log"
+                + "\n\twhere project_id = ?"
+                + "\n\t\tand to_char(begin_time, 'yyyy-MM-dd') >= ?"
+                + "\n\t\tand to_char(begin_time, 'yyyy-MM-dd') <= ?"
+                + "\n)"
+                + "\ngroup by resource_value, http_method"
+                + "\nhaving count(resource_value) >= ?", SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
