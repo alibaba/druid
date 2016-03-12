@@ -903,6 +903,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (subQueryMap.containsKey(currentTable)) {
             return false;
         }
+        
+        if (x.getParent() instanceof SQLAggregateExpr) {
+            SQLAggregateExpr aggregateExpr = (SQLAggregateExpr) x.getParent();
+            if ("count".equalsIgnoreCase(aggregateExpr.getMethodName())) {
+                return false;
+            }
+        }
 
         if (currentTable != null) {
             Column column = addColumn(currentTable, "*");
