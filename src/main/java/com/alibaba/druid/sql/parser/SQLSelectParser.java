@@ -288,9 +288,14 @@ public class SQLSelectParser extends SQLParser {
             
             if (lexer.token() == Token.WITH) {
                 lexer.nextToken();
-                acceptIdentifier("ROLLUP");
-
-                groupBy.setWithRollUp(true);
+                
+                if (identifierEquals("CUBE")) {
+                    lexer.nextToken();
+                    groupBy.setWithCube(true);
+                } else {
+                    acceptIdentifier("ROLLUP");
+                    groupBy.setWithRollUp(true);
+                }
             }
             
             queryBlock.setGroupBy(groupBy);
