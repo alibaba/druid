@@ -25,7 +25,7 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
 /**
- * 支持simple-jndi <br/>
+ * 支持simple-jndi
  * <h1>配置示例：</h1>
  * <pre>
 pgDruidTest/converter=com.alibaba.druid.pool.DruidDataSourceConverter
@@ -45,7 +45,7 @@ pgDruidTest/logabandoned=false
 pgDruidTest/filters=stat,config,log4j
 pgDruidTest/connectionProperties=druid.log.stmt.executableSql=true
    </pre>
- * date: 2016年1月31日 下午12:54:10 <br/>
+ * date: 2016年1月31日 下午12:54:10 
  * @author jinjuma@yeah.net
  */
 public class DruidDataSourceConverter implements Converter {
