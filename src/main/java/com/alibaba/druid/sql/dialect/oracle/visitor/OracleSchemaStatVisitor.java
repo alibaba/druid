@@ -229,12 +229,8 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                     break;
             }
 
-            if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
-                }
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, x.getAlias(), ident);
+            putAliasMap(aliasMap, ident, ident);
             return false;
         }
 
@@ -653,7 +649,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             }
 
             if (alias != null) {
-                aliasMap.put(alias, null);
+                putAliasMap(aliasMap, alias, null);
                 subQueryMap.put(alias, x.getSubQuery());
             }
         }
@@ -851,9 +847,9 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
             if (x.getAlias() != null) {
-                aliasMap.put(x.getAlias(), ident);
+                putAliasMap(aliasMap, x.getAlias(), ident);
             }
-            aliasMap.put(ident, ident);
+            putAliasMap(aliasMap, ident, ident);
         }
 
         x.getOn().accept(this);
@@ -936,9 +932,9 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             Map<String, String> aliasMap = getAliasMap();
             if (aliasMap != null) {
                 if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
+                    putAliasMap(aliasMap, x.getAlias(), ident);
                 }
-                aliasMap.put(ident, ident);
+                putAliasMap(aliasMap, ident, ident);
             }
         }
 

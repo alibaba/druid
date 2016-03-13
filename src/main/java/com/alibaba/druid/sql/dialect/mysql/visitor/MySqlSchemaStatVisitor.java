@@ -210,12 +210,8 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
-                }
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, x.getAlias(), ident);
+            putAliasMap(aliasMap, ident, ident);
         }
 
         accept(x.getColumns());

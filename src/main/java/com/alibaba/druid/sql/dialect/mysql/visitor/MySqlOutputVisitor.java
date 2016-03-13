@@ -274,7 +274,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getProcedureName() != null) {
             print0(ucase ? " PROCEDURE " : " procedure ");
             x.getProcedureName().accept(this);
-            if (x.getProcedureArgumentList().size() > 0) {
+            if (!x.getProcedureArgumentList().isEmpty()) {
                 print('(');
                 printAndAccept(x.getProcedureArgumentList(), ", ");
                 print(')');
@@ -364,7 +364,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     public boolean visit(SQLDataType x) {
         print0(x.getName());
-        if (x.getArguments().size() > 0) {
+        if (!x.getArguments().isEmpty()) {
             print('(');
             printAndAccept(x.getArguments(), ", ");
             print(')');
@@ -393,9 +393,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
+    @Override
     public boolean visit(SQLCharacterDataType x) {
         print0(x.getName());
-        if (x.getArguments().size() > 0) {
+        if (!x.getArguments().isEmpty()) {
             print('(');
             printAndAccept(x.getArguments(), ", ");
             print(')');
@@ -758,7 +759,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             String charset = (String) x.getAttribute("USING");
             if (charset != null) {
                 print0(ucase ? " USING " : " using ");
-                ;
                 print0(charset);
             }
             print(')');
@@ -960,7 +960,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             decrementIndent();
         }
 
-        if (x.getValuesList().size() != 0) {
+        if (!x.getValuesList().isEmpty()) {
             println();
             printValuesList(x);
         }

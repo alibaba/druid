@@ -394,6 +394,8 @@ public class TableStat {
         private boolean             join;
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
+        
+        private transient String    fullName;
 
         public Column(){
 
@@ -410,6 +412,19 @@ public class TableStat {
 
         public void setTable(String table) {
             this.table = table;
+            this.fullName = null;
+        }
+        
+        public String getFullName() {
+            if (fullName == null) {
+                if (table != null) {
+                    fullName = name;
+                } else {
+                    fullName = table + '.' + name;
+                }
+            }
+            
+            return fullName;
         }
 
         public boolean isWhere() {
@@ -458,6 +473,7 @@ public class TableStat {
 
         public void setName(String name) {
             this.name = name;
+            this.fullName = null;
         }
 
         public Map<String, Object> getAttributes() {
