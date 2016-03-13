@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.visitor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -121,12 +122,11 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
-import com.alibaba.druid.util.StringUtils;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected final HashMap<TableStat.Name, TableStat> tableStats     = new LinkedHashMap<TableStat.Name, TableStat>();
-    protected final Set<Column>                        columns        = new LinkedHashSet<Column>();
+    protected final Map<Column, Column>                columns        = new LinkedHashMap<Column, Column>();
     protected final List<Condition>                    conditions     = new ArrayList<Condition>();
     protected final Set<Relationship>                  relationships  = new LinkedHashSet<Relationship>();
     protected final List<Column>                       orderByColumns = new ArrayList<Column>();
@@ -174,7 +174,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Column column = this.getColumn(tableName, columnName);
         if (column == null && columnName != null) {
             column = new Column(tableName, columnName);
-            columns.add(column);
+            columns.put(column, column);
         }
         return column;
     }
@@ -189,9 +189,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (stat == null) {
             stat = new TableStat();
             tableStats.put(new TableStat.Name(tableName), stat);
-            if (alias != null) {
-                aliasMap.put(alias, tableName);
-            }
+            putAliasMap(aliasMap, alias, tableName);
         }
         return stat;
     }
@@ -567,9 +565,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementDeleteCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, ident, ident);
         }
 
         return false;
@@ -599,9 +595,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementDropCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, ident, ident);
         }
 
         return false;
@@ -624,18 +618,21 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
-                }
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, x.getAlias(), ident);
+            putAliasMap(aliasMap, ident, ident);
         }
 
         accept(x.getColumns());
         accept(x.getQuery());
 
         return false;
+    }
+    
+    protected static void putAliasMap(Map<String, String> aliasMap, String name, String value) {
+        if (aliasMap == null || name == null) {
+            return;
+        }
+        aliasMap.put(name.toLowerCase(), value);
     }
 
     protected void accept(SQLObject x) {
@@ -752,14 +749,23 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Map<String, String> aliasMap = getAliasMap();
 
         if (aliasMap != null) {
-            for (Map.Entry<String, String> entry : aliasMap.entrySet()) {
-                if (entry.getKey() == null) {
-                    continue;
-                }
-                if (entry.getKey().equalsIgnoreCase(name)) {
-                    return entry.getValue();
-                }
+            if (aliasMap.containsKey(name)) {
+                return aliasMap.get(name);
             }
+            
+            String name_lcase = name.toLowerCase();
+            if (name_lcase != name && aliasMap.containsKey(name_lcase)) {
+                return aliasMap.get(name_lcase);
+            }
+            
+//            for (Map.Entry<String, String> entry : aliasMap.entrySet()) {
+//                if (entry.getKey() == null) {
+//                    continue;
+//                }
+//                if (entry.getKey().equalsIgnoreCase(name)) {
+//                    return entry.getValue();
+//                }
+//            }
         }
 
         return name;
@@ -928,22 +934,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return tableStats.containsKey(new TableStat.Name(tableName));
     }
 
-    public Set<Column> getColumns() {
-        return columns;
+    public Collection<Column> getColumns() {
+        return columns.values();
     }
 
     public Column getColumn(String tableName, String columnName) {
-        for (Column column : this.columns) {
-            if (aliasMap != null && aliasMap.containsKey(columnName) && aliasMap.get(columnName) == null) {
-                return null;
-            }
-            
-            if (StringUtils.equalsIgnoreCase(tableName, column.getTable())
-                && StringUtils.equalsIgnoreCase(columnName, column.getName())) {
-                return column;
-            }
+        if (aliasMap != null && aliasMap.containsKey(columnName) && aliasMap.get(columnName) == null) {
+            return null;
         }
-        return null;
+        
+        Column column = new Column(tableName, columnName);
+        
+        return this.columns.get(column);
     }
 
     public boolean visit(SQLSelectStatement x) {
@@ -963,7 +965,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (Boolean.TRUE == with.getRecursive()) {
 
             if (aliasMap != null && alias != null) {
-                aliasMap.put(alias, null);
+                putAliasMap(aliasMap, alias, null);
                 subQueryMap.put(alias, x.getSubQuery().getQuery());
             }
 
@@ -972,7 +974,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.getSubQuery().accept(this);
 
             if (aliasMap != null && alias != null) {
-                aliasMap.put(alias, null);
+                putAliasMap(aliasMap, alias, null);
                 subQueryMap.put(alias, x.getSubQuery().getQuery());
             }
         }
@@ -987,7 +989,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null && x.getAlias() != null) {
-            aliasMap.put(x.getAlias(), null);
+            putAliasMap(aliasMap, x.getAlias(), null);
             subQueryMap.put(x.getAlias(), query);
         }
         return false;
@@ -1042,10 +1044,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (aliasMap != null) {
                 String alias = x.getAlias();
                 if (alias != null && !aliasMap.containsKey(alias)) {
-                    aliasMap.put(alias, ident);
+                    putAliasMap(aliasMap, alias, ident);
                 }
                 if (!aliasMap.containsKey(ident)) {
-                    aliasMap.put(ident, ident);
+                    putAliasMap(aliasMap, ident, ident);
                 }
             }
         } else {
@@ -1063,9 +1065,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Map<String, String> aliasMap = this.getAliasMap();
         if (alias != null && (!alias.isEmpty()) && aliasMap != null) {
             if (x.getExpr() instanceof SQLName) {
-                aliasMap.put(alias, x.getExpr().toString());
+                putAliasMap(aliasMap, alias, x.getExpr().toString());
             } else {
-                aliasMap.put(alias, null);
+                putAliasMap(aliasMap, alias, null);
             }
         }
         
@@ -1124,7 +1126,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementUpdateCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            aliasMap.put(ident, ident);
+            putAliasMap(aliasMap, ident, ident);
         } else {
             x.getTableSource().accept(this);
         }
@@ -1144,7 +1146,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         setCurrentTable(tableName);
 
         if (x.getAlias() != null) {
-            this.aliasMap.put(x.getAlias(), tableName);
+            putAliasMap(this.aliasMap, x.getAlias(), tableName);
         }
 
         TableStat stat = getTableStat(tableName);
@@ -1328,9 +1330,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementDropIndexCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, ident, ident);
         }
         return false;
     }
@@ -1348,9 +1348,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         stat.incrementDropIndexCount();
 
         Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null) {
-            aliasMap.put(table, table);
-        }
+        putAliasMap(aliasMap, table, table);
 
         for (SQLSelectOrderByItem item : x.getItems()) {
             SQLExpr expr = item.getExpr();

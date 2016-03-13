@@ -40,8 +40,9 @@ public class MySqlAlterTableTest extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHARACTER SET = utf8, COLLATE = utf8_general_ci", output);
+        
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHARACTER SET = utf8, COLLATE = utf8_general_ci", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("alter table `test`.`tb1`\n\tcharacter set = utf8, collate = utf8_general_ci", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_alter_2() throws Exception {
