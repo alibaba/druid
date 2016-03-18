@@ -1632,9 +1632,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             printAndAccept(x.getPartitionBy(), ", ");
             print(' ');
         }
+        
         if (x.getOrderBy() != null) {
             x.getOrderBy().accept(this);
         }
+        
+        if (x.getOf() != null) {
+            print0(ucase ? " OF " : " of ");
+            x.getOf().accept(this);
+        }
+        
         print(')');
         return false;
     }

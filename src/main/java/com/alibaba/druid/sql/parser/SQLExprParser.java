@@ -1036,6 +1036,12 @@ public class SQLExprParser extends SQLParser {
         }
 
         over.setOrderBy(parseOrderBy());
+        
+        if (lexer.token() == Token.OF) {
+            lexer.nextToken();
+            SQLExpr of = this.expr();
+            over.setOf(of);
+        }
 
         accept(Token.RPAREN);
         aggregateExpr.setOver(over);
