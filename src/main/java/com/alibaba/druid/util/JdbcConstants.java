@@ -71,6 +71,9 @@ public interface JdbcConstants {
      */
     public static final String ODPS              = "odps";
     public static final String ODPS_DRIVER       = "com.aliyun.odps.jdbc.OdpsDriver";
+    
+    public static final String TERADATA          = "teradata";
+    public static final String TERADATA_DRIVER   = "com.teradata.jdbc.TeraDriver";
 
     /**
      * Log4JDBC
