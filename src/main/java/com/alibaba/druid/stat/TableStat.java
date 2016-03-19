@@ -217,6 +217,10 @@ public class TableStat {
         private Column right;
         private String operator;
 
+        public Relationship(){
+
+        }
+
         public Column getLeft() {
             return left;
         }
@@ -394,7 +398,7 @@ public class TableStat {
         private boolean             join;
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
-        
+
         private transient String    fullName;
 
         public Column(){
@@ -414,7 +418,7 @@ public class TableStat {
             this.table = table;
             this.fullName = null;
         }
-        
+
         public String getFullName() {
             if (fullName == null) {
                 if (table != null) {
@@ -423,7 +427,7 @@ public class TableStat {
                     fullName = table + '.' + name;
                 }
             }
-            
+
             return fullName;
         }
 
@@ -501,7 +505,7 @@ public class TableStat {
 
         public boolean equals(Object obj) {
 
-            if (!(obj instanceof  Column)) {
+            if (!(obj instanceof Column)) {
                 return false;
             }
 
@@ -532,16 +536,16 @@ public class TableStat {
     }
 
     public static enum Mode {
-        Insert(1), //
-        Update(2), //
-        Delete(4), //
-        Select(8), //
-        Merge(16), //
-        Truncate(32), //
-        Alter(64), //
-        Drop(128), //
-        DropIndex(256), //
-        CreateIndex(512)//
+                             Insert(1), //
+                             Update(2), //
+                             Delete(4), //
+                             Select(8), //
+                             Merge(16), //
+                             Truncate(32), //
+                             Alter(64), //
+                             Drop(128), //
+                             DropIndex(256), //
+                             CreateIndex(512)//
         ; //
 
         public final int mark;

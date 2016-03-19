@@ -25,15 +25,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  */
 public class MysqlForeignKey extends SQLForeignKeyImpl {
 
-    private SQLName indexName;
+    private SQLName  indexName;
 
-    private boolean hasConstraint;
+    private boolean  hasConstraint;
 
-    private Match   referenceMatch;
+    private Match    referenceMatch;
 
-    private On      referenceOn;
-
-    private Option  referenceOption;
+    protected Option onUpdate;
+    protected Option onDelete;
 
     public SQLName getIndexName() {
         return indexName;
@@ -78,25 +77,25 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
         this.referenceMatch = referenceMatch;
     }
 
-    public On getReferenceOn() {
-        return referenceOn;
+    public Option getOnUpdate() {
+        return onUpdate;
     }
 
-    public void setReferenceOn(On referenceOn) {
-        this.referenceOn = referenceOn;
+    public void setOnUpdate(Option onUpdate) {
+        this.onUpdate = onUpdate;
     }
 
-    public Option getReferenceOption() {
-        return referenceOption;
+    public Option getOnDelete() {
+        return onDelete;
     }
 
-    public void setReferenceOption(Option referenceOption) {
-        this.referenceOption = referenceOption;
+    public void setOnDelete(Option onDelete) {
+        this.onDelete = onDelete;
     }
 
     public static enum Option {
 
-        RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION");
+                               RESTRICT("RESTRICT"), CASCADE("CASCADE"), SET_NULL("SET NULL"), NO_ACTION("NO ACTION");
 
         public final String name;
         public final String name_lcase;
@@ -113,27 +112,25 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
     }
 
     public static enum Match {
-        FULL("FULL"), 
-        PARTIAL("PARTIAL"), 
-        SIMPLE("SIMPLE");
-        
+                              FULL("FULL"), PARTIAL("PARTIAL"), SIMPLE("SIMPLE");
+
         public final String name;
         public final String name_lcase;
-        
-        Match(String name) {
+
+        Match(String name){
             this.name = name;
             this.name_lcase = name.toLowerCase();
         }
     }
 
     public static enum On {
-        DELETE("DELETE"), // 
-        UPDATE("UPDATE");
-        
+                           DELETE("DELETE"), //
+                           UPDATE("UPDATE");
+
         public final String name;
         public final String name_lcase;
-        
-        On(String name) {
+
+        On(String name){
             this.name = name;
             this.name_lcase = name.toLowerCase();
         }

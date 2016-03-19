@@ -54,7 +54,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Option;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
@@ -2816,15 +2815,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? match.name : match.name_lcase);
         }
 
-        MysqlForeignKey.On on = x.getReferenceOn();
-        if (on != null) {
-            print0(ucase ? " ON " : " on ");
-            print0(ucase ? on.name : on.name_lcase);
-            print(' ');
-            Option option = x.getReferenceOption();
-            if (option != null) {
-                print0(ucase ? option.name : option.name_lcase);
-            }
+        if (x.getOnDelete() != null) {
+            print0(ucase ? " ON DELETE " : " on delete ");
+            print0(ucase ? x.getOnDelete().name : x.getOnDelete().name_lcase);
+        }
+        
+        if (x.getOnDelete() != null) {
+            print0(ucase ? " ON UPDATE " : " on update ");
+            print0(ucase ? x.getOnDelete().name : x.getOnDelete().name_lcase);
         }
         return false;
     }

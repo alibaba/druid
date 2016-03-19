@@ -107,7 +107,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
             if (alias != null) {
                 aliasMap.put(alias, null);
-                subQueryMap.put(alias, x.getQuery());
+                addSubQuery(alias, x.getQuery());
             }
         }
         

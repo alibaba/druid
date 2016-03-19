@@ -196,7 +196,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                 ident = expr.toString();
             }
 
-            if (subQueryMap.containsKey(ident)) {
+            if (containsSubQuery(ident)) {
                 return false;
             }
 
@@ -575,7 +575,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             if (table != null) {
                 this.aliasMap.put(x.getAlias(), table);
             }
-            this.subQueryMap.put(x.getAlias(), x.getSelect());
+            addSubQuery(x.getAlias(), x.getSelect());
             this.setCurrentTable(x.getAlias());
         }
 
@@ -650,7 +650,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
             if (alias != null) {
                 putAliasMap(aliasMap, alias, null);
-                subQueryMap.put(alias, x.getSubQuery());
+                addSubQuery(alias, x.getSubQuery());
             }
         }
         x.getSubQuery().accept(this);
