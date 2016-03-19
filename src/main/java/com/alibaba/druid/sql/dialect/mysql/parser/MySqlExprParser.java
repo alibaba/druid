@@ -41,7 +41,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Match;
-import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.On;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey.Option;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
@@ -834,37 +833,54 @@ public class MySqlExprParser extends SQLExprParser {
             }
         }
 
-        if (lexer.token() == Token.ON) {
+        while (lexer.token() == Token.ON) {
             lexer.nextToken();
+            
             if (lexer.token() == Token.DELETE) {
-                fk.setReferenceOn(On.DELETE);
+                lexer.nextToken();
+                
+                Option option = parseReferenceOption();
+                fk.setOnDelete(option);
             } else if (lexer.token() == Token.UPDATE) {
-                fk.setReferenceOn(On.UPDATE);
+                lexer.nextToken();
+                
+                Option option = parseReferenceOption();
+                fk.setOnUpdate(option);
             } else {
                 throw new ParserException("syntax error, expect DELETE or UPDATE, actual " + lexer.token() + " "
                                           + lexer.stringVal());
             }
-            lexer.nextToken();
-
-            if (lexer.token() == Token.RESTRICT) {
-                fk.setReferenceOption(Option.RESTRICT);
-            } else if (identifierEquals("CASCADE")) {
-                fk.setReferenceOption(Option.CASCADE);
-            } else if (lexer.token() == Token.SET) {
-                accept(Token.NULL);
-                fk.setReferenceOption(Option.SET_NULL);
-            } else if (identifierEquals("ON")) {
-                lexer.nextToken();
-                if (identifierEquals("ACTION")) {
-                    fk.setReferenceOption(Option.NO_ACTION);
-                } else {
-                    throw new ParserException("syntax error, expect ACTION, actual " + lexer.token() + " "
-                                              + lexer.stringVal());
-                }
-            }
-            lexer.nextToken();
         }
         return fk;
+    }
+
+    protected Option parseReferenceOption() {
+        Option option;
+        if (lexer.token() == Token.RESTRICT || identifierEquals("RESTRICT")) {
+            option = Option.RESTRICT;
+            lexer.nextToken();
+        } else if (identifierEquals("CASCADE")) {
+            option = Option.CASCADE;
+            lexer.nextToken();
+        } else if (lexer.token() == Token.SET) {
+            lexer.nextToken();
+            accept(Token.NULL);
+            option = Option.SET_NULL;
+        } else if (identifierEquals("ON")) {
+            lexer.nextToken();
+            if (identifierEquals("ACTION")) {
+                option = Option.NO_ACTION;
+                lexer.nextToken();
+            } else {
+                throw new ParserException("syntax error, expect ACTION, actual " + lexer.token() + " "
+                                          + lexer.stringVal());
+            }
+        } else {
+            throw new ParserException("syntax error, expect ACTION, actual " + lexer.token() + " "
+                                      + lexer.stringVal());
+        }
+        
+        return option;
     }
 
     protected SQLAggregateExpr parseAggregateExprRest(SQLAggregateExpr aggregateExpr) {

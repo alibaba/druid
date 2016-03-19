@@ -116,7 +116,8 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     } else if (lexer.token() == Token.CONSTRAINT //
                                || lexer.token() == Token.PRIMARY //
                                || lexer.token() == Token.UNIQUE) {
-                        stmt.getTableElementList().add(parseConstraint());
+                        SQLTableConstraint constraint = this.parseConstraint();
+                        stmt.getTableElementList().add(constraint);
                     } else if (lexer.token() == (Token.INDEX)) {
                         lexer.nextToken();
 
@@ -144,6 +145,12 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                             }
                         }
                         accept(Token.RPAREN);
+                        
+                        if (identifierEquals("USING")) {
+                            lexer.nextToken();
+                            idx.setIndexType(lexer.stringVal());
+                            lexer.nextToken();
+                        }
 
                         stmt.getTableElementList().add(idx);
                     } else if (lexer.token() == (Token.KEY)) {
