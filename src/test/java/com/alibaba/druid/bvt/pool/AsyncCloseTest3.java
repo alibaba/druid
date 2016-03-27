@@ -23,6 +23,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.Log4jImpl;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.support.logging.NoLoggingImpl;
 
 import junit.framework.TestCase;
 
@@ -34,40 +35,44 @@ public class AsyncCloseTest3 extends TestCase {
 
     final AtomicInteger       errorCount = new AtomicInteger();
 
-    private Logger            log;
-    private Level             oldLevel;
-    
-    long xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m
+    private Logger            log4jLog;
+    private Level             log4jOldLevel;
+
+    private NoLoggingImpl     noLoggingImpl;
+
+    long                      xmx;
 
     protected void setUp() throws Exception {
+        xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m;
+
         System.gc();
-        
-        LogFactory.selectLog4JLogging();
-        log = ((Log4jImpl) LogFactory.getLog(DruidDataSource.class)).getLog();
-        oldLevel = log.getLevel();
-        log.setLevel(Level.FATAL);
-        
+
+        log4jLog = ((Log4jImpl) LogFactory.getLog(DruidDataSource.class)).getLog();
+
         Field logField = DruidDataSource.class.getDeclaredField("LOG");
         logField.setAccessible(true);
         Log dataSourceLog = (Log) logField.get(null);
         if (dataSourceLog instanceof Log4jImpl) {
-            this.log = ((Log4jImpl) dataSourceLog).getLog();
-            this.oldLevel = this.log.getLevel();
-            this.log.setLevel(Level.FATAL);
+            this.log4jLog = ((Log4jImpl) dataSourceLog).getLog();
+            this.log4jOldLevel = this.log4jLog.getLevel();
+            this.log4jLog.setLevel(Level.FATAL);
+        } else if (dataSourceLog instanceof NoLoggingImpl) {
+            noLoggingImpl =  (NoLoggingImpl) dataSourceLog;
+            noLoggingImpl.setErrorEnabled(false);
         }
 
         dataSource = new DruidDataSource();
-        
+
         dataSource.setUrl("jdbc:mock:");
-//        dataSource.setAsyncCloseConnectionEnable(true);
+        // dataSource.setAsyncCloseConnectionEnable(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setMaxActive(16);
 
         dataSource.getProxyFilters().add(new FilterAdapter() {
 
             @Override
-            public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql)
-                                                                                                     throws SQLException {
+            public boolean statement_execute(FilterChain chain, StatementProxy statement,
+                                             String sql) throws SQLException {
                 throw new SQLException();
             }
         });
@@ -79,11 +84,13 @@ public class AsyncCloseTest3 extends TestCase {
         closeExecutor = Executors.newFixedThreadPool(2);
 
     }
-    
+
     protected void tearDown() throws Exception {
         dataSource.close();
-        if (log != null) {
-            log.setLevel(oldLevel);
+        if (log4jLog != null) {
+            log4jLog.setLevel(log4jOldLevel);
+        } else if (noLoggingImpl != null) {
+            noLoggingImpl.setErrorEnabled(true);
         }
     }
 
@@ -131,7 +138,7 @@ public class AsyncCloseTest3 extends TestCase {
         Assert.assertEquals(0, dataSource.getPoolingCount());
 
         final int COUNT;
-        
+
         if (xmx <= 256) {
             COUNT = 1024 * 8;
         } else if (xmx <= 512) {
@@ -143,7 +150,7 @@ public class AsyncCloseTest3 extends TestCase {
         } else {
             COUNT = 1024 * 128;
         }
-        
+
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
         final CountDownLatch execLatch = new CountDownLatch(COUNT);
 
@@ -162,14 +169,14 @@ public class AsyncCloseTest3 extends TestCase {
                     } finally {
                         closeExecutor.submit(closeTask);
                         closeExecutor.submit(closeTask); // dup close
-                        
+
                         stmt.close();
                         conn.close();
                     }
                 } catch (SQLException e) {
                     errorCount.incrementAndGet();
                 } finally {
-                    execLatch.countDown();   
+                    execLatch.countDown();
                 }
             }
         };

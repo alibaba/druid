@@ -357,6 +357,10 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static String getDriverClassName(String rawUrl) throws SQLException {
+        if (rawUrl == null) {
+            return null;
+        }
+        
         if (rawUrl.startsWith("jdbc:derby:")) {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
