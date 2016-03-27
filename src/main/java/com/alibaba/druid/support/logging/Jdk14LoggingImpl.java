@@ -111,4 +111,9 @@ public class Jdk14LoggingImpl implements Log {
         return debugCount;
     }
 
+    @Override
+    public boolean isErrorEnabled() {
+        return log.isLoggable(Level.SEVERE);
+    }
+
 }
