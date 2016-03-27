@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,8 +34,12 @@ public class AsyncCloseTest3 extends TestCase {
 
     private Logger            log;
     private Level             oldLevel;
+    
+    long xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m
 
     protected void setUp() throws Exception {
+        System.gc();
+        
         LogFactory.selectLog4JLogging();
         log = ((Log4jImpl) LogFactory.getLog(DruidDataSource.class)).getLog();
         oldLevel = log.getLevel();
@@ -111,7 +116,18 @@ public class AsyncCloseTest3 extends TestCase {
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getPoolingCount());
 
-        final int COUNT = 1024 * 128;
+        final int COUNT;
+        
+        if (xmx <= 256) {
+            COUNT = 1024 * 16;
+        } else if (xmx <= 512) {
+            COUNT = 1024 * 32;
+        } else if (xmx <= 1024) {
+            COUNT = 1024 * 64;
+        } else {
+            COUNT = 1024 * 128;
+        }
+        
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
         final CountDownLatch execLatch = new CountDownLatch(COUNT);
 
