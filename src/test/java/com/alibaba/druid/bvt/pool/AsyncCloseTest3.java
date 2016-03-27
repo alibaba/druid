@@ -35,6 +35,7 @@ public class AsyncCloseTest3 extends TestCase {
     private Level             oldLevel;
 
     protected void setUp() throws Exception {
+        LogFactory.selectLog4JLogging();
         log = ((Log4jImpl) LogFactory.getLog(DruidDataSource.class)).getLog();
         oldLevel = log.getLevel();
         log.setLevel(Level.FATAL);
