@@ -20,13 +20,19 @@ public class Large10KTest extends TestCase {
         long xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m
         
         final int dataSourceCount;
-        if (xmx <= 500) {
-            dataSourceCount = 500;
-        } else if (xmx <= 1000) {
-            dataSourceCount = 1000;
+
+        if (xmx <= 256) {
+            dataSourceCount = 1024 * 1;
+        } else if (xmx <= 512) {
+            dataSourceCount = 1024 * 2;
+        } else if (xmx <= 1024) {
+            dataSourceCount = 1024 * 4;
+        } else if (xmx <= 2048) {
+            dataSourceCount = 1024 * 8;
         } else {
-            dataSourceCount = 10000;
+            dataSourceCount = 1024 * 16;
         }
+        
         dataSources = new DruidDataSource[dataSourceCount];
         
         scheduler = Executors.newScheduledThreadPool(10);
