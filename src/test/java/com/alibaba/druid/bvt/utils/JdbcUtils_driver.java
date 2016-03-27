@@ -10,6 +10,10 @@ import com.alibaba.druid.util.JdbcUtils;
 import junit.framework.TestCase;
 
 public class JdbcUtils_driver extends TestCase {
+    
+    public void test_null() throws Exception {
+        Assert.assertNull(JdbcUtils.getDriverClassName(null));
+    }
 
     public void test_driver() throws Exception {
         String url = "jdbc:odps:xxx";
