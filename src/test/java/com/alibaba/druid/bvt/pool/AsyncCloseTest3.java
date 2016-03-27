@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,8 +9,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import junit.framework.TestCase;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -21,8 +20,11 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.Log4jImpl;
 import com.alibaba.druid.support.logging.LogFactory;
+
+import junit.framework.TestCase;
 
 public class AsyncCloseTest3 extends TestCase {
 
@@ -44,8 +46,18 @@ public class AsyncCloseTest3 extends TestCase {
         log = ((Log4jImpl) LogFactory.getLog(DruidDataSource.class)).getLog();
         oldLevel = log.getLevel();
         log.setLevel(Level.FATAL);
+        
+        Field logField = DruidDataSource.class.getDeclaredField("LOG");
+        logField.setAccessible(true);
+        Log dataSourceLog = (Log) logField.get(null);
+        if (dataSourceLog instanceof Log4jImpl) {
+            this.log = ((Log4jImpl) dataSourceLog).getLog();
+            this.oldLevel = this.log.getLevel();
+            this.log.setLevel(Level.FATAL);
+        }
 
         dataSource = new DruidDataSource();
+        
         dataSource.setUrl("jdbc:mock:");
 //        dataSource.setAsyncCloseConnectionEnable(true);
         dataSource.setTestOnBorrow(false);
@@ -70,7 +82,9 @@ public class AsyncCloseTest3 extends TestCase {
     
     protected void tearDown() throws Exception {
         dataSource.close();
-        log.setLevel(oldLevel);
+        if (log != null) {
+            log.setLevel(oldLevel);
+        }
     }
 
     public void test_0() throws Exception {
@@ -119,10 +133,12 @@ public class AsyncCloseTest3 extends TestCase {
         final int COUNT;
         
         if (xmx <= 256) {
-            COUNT = 1024 * 16;
+            COUNT = 1024 * 8;
         } else if (xmx <= 512) {
-            COUNT = 1024 * 32;
+            COUNT = 1024 * 16;
         } else if (xmx <= 1024) {
+            COUNT = 1024 * 32;
+        } else if (xmx <= 2048) {
             COUNT = 1024 * 64;
         } else {
             COUNT = 1024 * 128;
