@@ -125,12 +125,12 @@ public class AsyncCloseTest3 extends TestCase {
 
                     CloseTask closeTask = new CloseTask(conn, closeLatch);
 
-                    closeExecutor.submit(closeTask);
-                    closeExecutor.submit(closeTask); // dup close
-
                     try {
                         stmt.execute("select 1");
                     } finally {
+                        closeExecutor.submit(closeTask);
+                        closeExecutor.submit(closeTask); // dup close
+                        
                         stmt.close();
                         conn.close();
                     }
