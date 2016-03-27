@@ -22,7 +22,6 @@ import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.Log4jImpl;
-import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.logging.NoLoggingImpl;
 
 import junit.framework.TestCase;
@@ -46,8 +45,6 @@ public class AsyncCloseTest3 extends TestCase {
         xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m;
 
         System.gc();
-
-        log4jLog = ((Log4jImpl) LogFactory.getLog(DruidDataSource.class)).getLog();
 
         Field logField = DruidDataSource.class.getDeclaredField("LOG");
         logField.setAccessible(true);
