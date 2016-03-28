@@ -15,8 +15,15 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.parser;
 
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class TeradataStatementParser extends SQLStatementParser {
 
@@ -26,6 +33,59 @@ public class TeradataStatementParser extends SQLStatementParser {
 
     public TeradataStatementParser(Lexer lexer){
         super(new TeradataExprParser(lexer));
+    }
+    
+    public TeradataExprParser getExprParser() {
+    	return (TeradataExprParser) exprParser;
+    }
+    
+    public TeradataSelectParser createSQLSelectParser() {
+    	return new TeradataSelectParser(this.exprParser);
+    }
+    
+    public SQLSelectStatement parseSelect() {
+    	TeradataSelectParser selectParser = new TeradataSelectParser(this.exprParser);
+    	return new SQLSelectStatement(selectParser.select(), JdbcConstants.TERADATA);
+    }
+    
+    public void parseStatementList(List<SQLStatement> statementList, int max) {
+    	for (;;) {
+            if (max != -1) {
+                if (statementList.size() >= max) {
+                    return;
+                }
+            }
+
+            if (lexer.token() == Token.EOF) {
+                return;
+            }
+            if (lexer.token() == Token.END) {
+                return;
+            }
+            if (lexer.token() == Token.ELSE) {
+                return;
+            }
+
+            if (lexer.token() == (Token.SEMI)) {
+                lexer.nextToken();
+                continue;
+            }
+
+            if (lexer.token() == (Token.SELECT)) {
+                statementList.add(parseSelect());
+                continue;
+            } else {
+                super.parseStatementList(statementList, max);	
+            }
+    	}
+    }
+    
+    public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.token() == Token.SEL) {
+        	statementList.add(parseSelect());
+            return true;
+        }
+        return false;
     }
 
 }
