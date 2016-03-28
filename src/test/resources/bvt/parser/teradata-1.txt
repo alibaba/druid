@@ -1,0 +1,36 @@
+sel
+  w.cal_dt,
+  w.nt_login,
+  case when ldap.uid is not null then 2
+       else 1 end as user_batch_ind,
+  case when user_batch_ind=1 then 8
+       else coalesce(p.user_persona_id,1) end as user_persona_id,
+  asset.fe_asset_id,
+  asset.fe_asset_name,
+  asset.fe_asset_alias_name,
+  1 as fe_asset_type_cd,
+  asset.prdctn_ind,
+  6  as pltfrm_id,  --tableau
+  w.prjct_id,
+  asset.leaf_team_id,
+  asset.cert_ind,
+  asset.cert_dt,
+  asset.prdct_id,
+  asset.src_cre_nt_login,
+  w.access_cnt
+from ddm_data_assets_w.ds_tableau_rpt_usage_dtl_w w
+join (select a.*,row_number() over (partition by lctn_txt order by src_cre_dt desc) as rn from ddm_data_assets_t.ds_fe_asset a) asset
+on w.lctn_txt=asset.lctn_txt
+and asset.pltfrm_id=6  --tableau
+and asset.rn=1
+left join 
+ ( select uid from corp_hr_v.ldap_emply
+   group by 1) ldap
+on w.nt_login=ldap.uid
+left join ddm_ram_t.ds_user_persona_info_hist p
+on w.nt_login=p.nt_login
+and w.cal_dt>=p.start_dt
+and w.cal_dt<p.end_dt
+where w.cal_dt>=cast('20151023' as date format 'yyyymmdd')-5
+and w.cal_dt<cast('20151024' as date format 'yyyymmdd')
+;
