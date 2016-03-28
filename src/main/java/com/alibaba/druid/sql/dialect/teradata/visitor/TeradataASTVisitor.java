@@ -15,8 +15,21 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface TeradataASTVisitor extends SQLASTVisitor {
 
+	boolean visit(TeradataAnalyticWindowing x);
+
+	void endVisit(TeradataAnalyticWindowing x);
+
+	boolean visit(TeradataAnalytic x);
+	
+	boolean visit(SQLSelectQueryBlock x);
+	
+	boolean visit(SQLSelect x);
 }
