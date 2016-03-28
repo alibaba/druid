@@ -261,6 +261,16 @@ public enum Token {
     PARTITION,
     PARTITIONED,
     OVERWRITE,
+    
+    // Teradata
+    SEL("SEL"),
+    LOCKING("LOCKING"),
+    ACCESS("ACCESS"),
+    VOLATILE("VOLATILE"),
+    MULTISET("MULTISET"),
+    POSITION("POSITION"),
+    RANGE_N("RANGE_N"),
+    FORMAT("FORMAT"),
 
     LPAREN("("), 
     RPAREN(")"), 
