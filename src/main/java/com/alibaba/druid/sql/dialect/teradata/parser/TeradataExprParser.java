@@ -15,13 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.parser;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLKeep;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLKeep.DenseRank;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
@@ -29,6 +26,8 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalUnit;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -256,6 +255,29 @@ public class TeradataExprParser extends SQLExprParser {
             aggregateExpr.setOver(over);
         }
         return aggregateExpr;
+    }
+    
+    protected SQLExpr parseInterval() {
+        accept(Token.INTERVAL);
+
+        if (lexer.token() == Token.LITERAL_CHARS) {
+        	SQLExpr value = expr();
+
+            if (lexer.token() != Token.IDENTIFIER) {
+                throw new ParserException("Syntax error");
+            }
+
+            String unit = lexer.stringVal();
+            lexer.nextToken();
+
+            TeradataIntervalExpr intervalExpr = new TeradataIntervalExpr();
+            intervalExpr.setValue(value);
+            intervalExpr.setUnit(TeradataIntervalUnit.valueOf(unit.toUpperCase()));
+
+            return intervalExpr;
+        } else {
+            throw new ParserException("TODO with other interval");
+        }
     }
     
 }

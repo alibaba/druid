@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
+import com.alibaba.druid.sql.dialect.teradata.visitor.TeradataEvalVisitor;
 import com.alibaba.druid.sql.visitor.functions.Ascii;
 import com.alibaba.druid.sql.visitor.functions.Bin;
 import com.alibaba.druid.sql.visitor.functions.BitLength;
@@ -177,6 +178,10 @@ public class SQLEvalVisitorUtils {
 
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2EvalVisitor();
+        }
+        
+        if (JdbcUtils.TERADATA.equals(dbType)) {
+        	return new TeradataEvalVisitor();
         }
 
         return new SQLEvalVisitorImpl();

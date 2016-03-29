@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.stmt.TeradataSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -158,4 +159,18 @@ public class TeradataOutputVisitor extends SQLASTOutputVisitor implements Terada
             }
         }
     }
+
+	@Override
+	public boolean visit(TeradataIntervalExpr x) {
+		print0(ucase ? "INTERVAL " : "interval ");
+		x.getValue().accept(this);
+        print(' ');
+        print0(ucase ? x.getUnit().name() : x.getUnit().name_lcase);
+        return false;
+	}
+
+	@Override
+	public void endVisit(TeradataIntervalExpr x) {
+
+	}
 }
