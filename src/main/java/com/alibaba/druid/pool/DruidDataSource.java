@@ -67,6 +67,7 @@ import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.PGExceptionSorter;
@@ -952,7 +953,11 @@ public class DruidDataSource extends DruidAbstractDataSource
     }
 
     private void initExceptionSorter() {
-        if (this.exceptionSorter != null) {
+        if (exceptionSorter instanceof NullExceptionSorter) {
+            if (driver instanceof MockDriver) {
+                return;
+            }
+        } else if (this.exceptionSorter != null) {
             return;
         }
 

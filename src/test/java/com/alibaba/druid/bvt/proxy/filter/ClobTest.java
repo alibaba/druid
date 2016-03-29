@@ -32,12 +32,14 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class ClobTest extends TestCase {
 
+    protected int dataSourceListSize;
+    
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        dataSourceListSize = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        Assert.assertEquals(dataSourceListSize, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_clob() throws Exception {
