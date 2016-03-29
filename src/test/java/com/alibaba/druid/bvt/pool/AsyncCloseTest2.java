@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -7,8 +8,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import junit.framework.TestCase;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -19,8 +18,11 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.Log4jImpl;
-import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.support.logging.NoLoggingImpl;
+
+import junit.framework.TestCase;
 
 public class AsyncCloseTest2 extends TestCase {
 
@@ -30,14 +32,25 @@ public class AsyncCloseTest2 extends TestCase {
 
     final AtomicInteger       errorCount = new AtomicInteger();
 
-    private Logger            log;
-    private Level             oldLevel;
+    private Logger            log4jLog;
+    private Level             log4jOldLevel;
+
+    private NoLoggingImpl     noLoggingImpl;
 
     protected void setUp() throws Exception {
-        log = ((Log4jImpl) LogFactory.getLog(DruidDataSource.class)).getLog();
-        oldLevel = log.getLevel();
-        log.setLevel(Level.FATAL);
-
+        Field logField = DruidDataSource.class.getDeclaredField("LOG");
+        logField.setAccessible(true);
+        Log dataSourceLog = (Log) logField.get(null);
+        if (dataSourceLog instanceof Log4jImpl) {
+            this.log4jLog = ((Log4jImpl) dataSourceLog).getLog();
+            this.log4jOldLevel = this.log4jLog.getLevel();
+            this.log4jLog.setLevel(Level.FATAL);
+        } else if (dataSourceLog instanceof NoLoggingImpl) {
+            noLoggingImpl =  (NoLoggingImpl) dataSourceLog;
+            noLoggingImpl.setErrorEnabled(false);
+        }
+        
+        
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
         dataSource.setAsyncCloseConnectionEnable(true);
@@ -63,7 +76,11 @@ public class AsyncCloseTest2 extends TestCase {
     
     protected void tearDown() throws Exception {
         dataSource.close();
-        log.setLevel(oldLevel);
+        if (log4jLog != null) {
+            log4jLog.setLevel(log4jOldLevel);
+        } else if (noLoggingImpl != null) {
+            noLoggingImpl.setErrorEnabled(true);
+        }
     }
 
     public void test_0() throws Exception {
