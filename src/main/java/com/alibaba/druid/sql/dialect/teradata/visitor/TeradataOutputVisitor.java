@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.visitor;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
@@ -172,5 +174,33 @@ public class TeradataOutputVisitor extends SQLASTOutputVisitor implements Terada
 	@Override
 	public void endVisit(TeradataIntervalExpr x) {
 
+	}
+	
+	public void endVisit(SQLMethodInvokeExpr x) {
+		
+	}
+	
+	public boolean visit(SQLMethodInvokeExpr x) {
+		if ("trim".equalsIgnoreCase(x.getMethodName())) {
+			SQLExpr trim_character = (SQLExpr) x.getAttribute("trim_character");
+			
+			print0(x.getMethodName());
+			print('(');
+            String trim_option = (String) x.getAttribute("trim_option");
+            if (trim_option != null && trim_option.length() != 0) {
+                print0(trim_option);
+                print(' ');
+            }
+			if (trim_character != null) {
+                trim_character.accept(this);
+			} 
+			if (x.getParameters().size() > 0) {
+                print0(ucase ? " FROM " : " from ");
+                x.getParameters().get(0).accept(this);
+            }
+            print(')');
+            return false;
+		}
+		return super.visit(x);
 	}
 }

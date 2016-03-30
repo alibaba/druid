@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.teradata.ast.stmt;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.teradata.visitor.TeradataASTVisitor;
@@ -40,5 +41,9 @@ public class TeradataSelectQueryBlock extends SQLSelectQueryBlock {
 
     public void setOrderBy(SQLOrderBy orderBy) {
         this.orderBy = orderBy;
+    }
+    
+    public String toString() {
+    	return SQLUtils.toTeradataString(this);
     }
 }

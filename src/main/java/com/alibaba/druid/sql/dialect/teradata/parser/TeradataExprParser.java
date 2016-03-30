@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
@@ -79,6 +80,44 @@ public class TeradataExprParser extends SQLExprParser {
     		default:
     			return super.primary();
     	}
+    }
+    
+    protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
+    	if (acceptLPAREN) {
+    		accept(Token.LPAREN);
+    	}
+    	
+    	if (expr instanceof SQLIdentifierExpr) {
+    		String methodName = ((SQLIdentifierExpr) expr).getName();
+    		SQLMethodInvokeExpr methodExpr = new SQLMethodInvokeExpr(methodName);
+    		if ("trim".equalsIgnoreCase(methodName)) {
+    			if (identifierEquals("LEADING")
+    					|| identifierEquals("TRAILING")
+    					|| identifierEquals("BOTH")) {
+    				methodExpr.putAttribute("trim_option", lexer.stringVal());
+    				lexer.nextToken();
+    				if (lexer.token() == Token.LITERAL_CHARS) {
+    				    SQLExpr trim_character = this.primary();
+    					trim_character.setParent(methodExpr);
+            			methodExpr.putAttribute("trim_character", trim_character);	
+    				} 
+    			} else {
+    				SQLExpr trim_character = this.primary();
+        			trim_character.setParent(methodExpr);
+        			methodExpr.putAttribute("trim_character", trim_character);	
+    			}
+    			
+    			if (lexer.token() == Token.FROM) {
+    				lexer.nextToken();
+    				SQLExpr trim_source = this.expr();
+    				methodExpr.addParameter(trim_source);
+    			}
+    			
+    			accept(Token.RPAREN);
+    			return primaryRest(methodExpr);
+    		}
+    	}
+    	return super.methodRest(expr, false);
     }
     
     protected SQLAggregateExpr parseAggregateExpr(String methodName) {

@@ -172,6 +172,14 @@ public class SQLUtils {
     public static String toSQLServerString(SQLObject sqlObject, FormatOption option) {
         return toSQLString(sqlObject, JdbcConstants.SQL_SERVER, option);
     }
+    
+    public static String toTeradataString(SQLObject sqlObject) {
+        return toTeradataString(sqlObject, null);
+    }
+    
+    public static String toTeradataString(SQLObject sqlObject, FormatOption option) {
+        return toSQLString(sqlObject, JdbcConstants.TERADATA, option);
+    }
 
     public static String formatPGSql(String sql, FormatOption option) {
         return format(sql, JdbcConstants.POSTGRESQL, option);
