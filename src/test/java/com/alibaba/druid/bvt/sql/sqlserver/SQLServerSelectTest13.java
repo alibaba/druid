@@ -63,7 +63,7 @@ public class SQLServerSelectTest13 extends TestCase {
                 "        AND a.time_add <= ? " + //
                 "    ) a " + //
                 "WHERE " + //
-                "    a. ROW BETWEEN (?+ 1) " + //
+                "    a. ROW NOT BETWEEN (?+ 1) " + //
                 "AND (?+?)"; //
 
         String expect = "SELECT a.*" +
@@ -81,7 +81,7 @@ public class SQLServerSelectTest13 extends TestCase {
         		"\n\t\tAND a.time_add >= ?" +
         		"\n\t\tAND a.time_add <= ?" +
         		"\n\t) a" +
-        		"\nWHERE a.ROW BETWEEN ? + 1 AND ? + ?";
+        		"\nWHERE a.ROW NOT BETWEEN ? + 1 AND ? + ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

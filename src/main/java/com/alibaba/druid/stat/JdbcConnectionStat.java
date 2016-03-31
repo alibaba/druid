@@ -34,7 +34,7 @@ import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JMXUtils;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 

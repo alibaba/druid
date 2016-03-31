@@ -18,15 +18,17 @@ package com.alibaba.druid.sql.dialect.odps.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OdpsSelectParser extends SQLSelectParser {
-
     public OdpsSelectParser(SQLExprParser exprParser){
         super(exprParser.getLexer());
         this.exprParser = exprParser;
@@ -121,6 +123,40 @@ public class OdpsSelectParser extends SQLSelectParser {
         }
 
         return queryRest(queryBlock);
+    }
+    
+    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
+        tableSource = super.parseTableSourceRest(tableSource);
+        
+        if ("LATERAL".equalsIgnoreCase(tableSource.getAlias()) && lexer.token() == Token.VIEW) {
+            return parseLateralView(tableSource);
+        }
+        
+        if (identifierEquals("LATERAL")) {
+            lexer.nextToken();
+            return parseLateralView(tableSource);
+        }
+        
+        return tableSource;
+    }
+
+    protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
+        accept(Token.VIEW);
+        tableSource.setAlias(null);
+        OdpsLateralViewTableSource lateralViewTabSrc = new OdpsLateralViewTableSource();
+        lateralViewTabSrc.setTableSource(tableSource);
+        
+        SQLMethodInvokeExpr udtf = (SQLMethodInvokeExpr) this.exprParser.expr();
+        lateralViewTabSrc.setMethod(udtf);
+        
+        String alias = as();
+        lateralViewTabSrc.setAlias(alias);
+        
+        accept(Token.AS);
+        
+        this.exprParser.names(lateralViewTabSrc.getColumns());
+        
+        return parseTableSourceRest(lateralViewTabSrc);
     }
 
 }

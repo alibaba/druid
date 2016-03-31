@@ -54,5 +54,13 @@ public class MySqlInsertTest_6 extends MysqlTest {
                                     "\n\t, ?)" + //
                                     "\nON DUPLICATE KEY UPDATE Gmt_modify = VALUES(Gmt_modify), Expired_time = VALUES(Expired_time), the_value = VALUES(the_value)",
                             SQLUtils.toMySqlString(insertStmt));
+        
+
+        Assert.assertEquals("insert into document (the_key, the_namespace, Gmt_create, Gmt_modify, Expired_time" + //
+                                    "\n\t, the_value)" + //
+                                    "\nvalues (?, ?, now(), now(), date_add(now(), interval ? second)" + //
+                                    "\n\t, ?)" + //
+                                    "\non duplicate key update Gmt_modify = VALUES(Gmt_modify), Expired_time = VALUES(Expired_time), the_value = VALUES(the_value)",
+                            SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

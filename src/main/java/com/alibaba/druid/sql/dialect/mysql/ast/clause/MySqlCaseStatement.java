@@ -20,14 +20,13 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 /**
  * 
- * @Description: MySql procedure Case statement
- * @author zz email:455910092@qq.com
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public class MySqlCaseStatement extends MySqlStatementImpl{
 
@@ -36,7 +35,7 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 	//when statement list
 	private List<MySqlWhenStatement> whenList=new ArrayList<MySqlCaseStatement.MySqlWhenStatement>();
 	//else statement
-	private MySqlElseStatement        elseItem;
+	private SQLIfStatement.Else        elseItem;
 	
 	public SQLExpr getCondition() {
 		return condition;
@@ -59,11 +58,11 @@ public class MySqlCaseStatement extends MySqlStatementImpl{
 		this.whenList.add(stmt);
 	}
 
-	public MySqlElseStatement getElseItem() {
+	public SQLIfStatement.Else getElseItem() {
 		return elseItem;
 	}
 
-	public void setElseItem(MySqlElseStatement elseItem) {
+	public void setElseItem(SQLIfStatement.Else elseItem) {
 		this.elseItem = elseItem;
 	}
 

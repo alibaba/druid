@@ -26,7 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * @author sandzhang<sandzhangtoo@gmail.com>
+ * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public class HttpClientUtils {
 

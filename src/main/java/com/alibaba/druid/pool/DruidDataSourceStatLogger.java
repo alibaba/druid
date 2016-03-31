@@ -20,7 +20,7 @@ import java.util.Properties;
 import com.alibaba.druid.support.logging.Log;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  * @since 0.2.19
  */
 public interface DruidDataSourceStatLogger {

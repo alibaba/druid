@@ -15,7 +15,7 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 /**
  * 这个场景测试minIdle > maxActive
  * 
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidDataSourceTest_lastCreateError extends TestCase {
 

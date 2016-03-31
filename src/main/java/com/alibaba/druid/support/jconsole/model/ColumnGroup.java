@@ -125,7 +125,7 @@ public class ColumnGroup {
     }
 
     /**
-     * 取得合并后的单元格的大小,这个方法需要计算,首先 是取得一个没有合并的最小单元格的JTableHeader 的大小,<br/>
+     * 取得合并后的单元格的大小,这个方法需要计算,首先 是取得一个没有合并的最小单元格的JTableHeader 的大小
      * 通过Renderer取得组件
      * 
      * @return

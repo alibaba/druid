@@ -254,7 +254,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
             for (;;) {
                 SQLExpr expr = this.exprParser.expr();
-                withQuery.getColumns().add(expr);
+                withQuery.addColumn(expr);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;

@@ -47,7 +47,6 @@ public class SQLServerCreateTableTest_3 extends TestCase {
 
         Assert.assertEquals(1, statementList.size());
 
-        String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("CREATE TABLE dbo.cwd_directory (" //
                 + "\n\tID NUMERIC NOT NULL,"//
                 + "\n\tdirectory_name NVARCHAR(255),"//
@@ -61,7 +60,23 @@ public class SQLServerCreateTableTest_3 extends TestCase {
                 + "\n\tdirectory_type NVARCHAR(60),"//
                 + "\n\tdirectory_position NUMERIC,"//
                 + "\n\tCONSTRAINT PK_cwd_directory PRIMARY KEY (ID)"//
-                + "\n)", output);
+                + "\n)", SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER));
+        
+        
+        Assert.assertEquals("create table dbo.cwd_directory (" //
+                            + "\n\tID NUMERIC not null,"//
+                            + "\n\tdirectory_name NVARCHAR(255),"//
+                            + "\n\tlower_directory_name NVARCHAR(255),"//
+                            + "\n\tcreated_date DATETIME,"//
+                            + "\n\tupdated_date DATETIME,"//
+                            + "\n\tactive int,"//
+                            + "\n\tdescription NVARCHAR(255),"//
+                            + "\n\timpl_class NVARCHAR(255),"//
+                            + "\n\tlower_impl_class NVARCHAR(255),"//
+                            + "\n\tdirectory_type NVARCHAR(60),"//
+                            + "\n\tdirectory_position NUMERIC,"//
+                            + "\n\tconstraint PK_cwd_directory primary key (ID)"//
+                            + "\n)", SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class SearchClause extends OracleSQLObjectImpl {
@@ -31,7 +31,7 @@ public class SearchClause extends OracleSQLObjectImpl {
 
     private Type                          type;
 
-    private final List<OracleOrderByItem> items = new ArrayList<OracleOrderByItem>();
+    private final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
 
     private SQLIdentifierExpr             orderingColumn;
 
@@ -43,8 +43,15 @@ public class SearchClause extends OracleSQLObjectImpl {
         this.type = type;
     }
 
-    public List<OracleOrderByItem> getItems() {
+    public List<SQLSelectOrderByItem> getItems() {
         return items;
+    }
+    
+    public void addItem(SQLSelectOrderByItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public SQLIdentifierExpr getOrderingColumn() {

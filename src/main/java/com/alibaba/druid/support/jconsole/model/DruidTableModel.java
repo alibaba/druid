@@ -24,7 +24,7 @@ import javax.swing.table.TableModel;
 /**
  * 自定义duird监控数据表格模板类
  * 
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny[yunnysunny@gmail.com]
  */
 public class DruidTableModel implements TableModel {
 

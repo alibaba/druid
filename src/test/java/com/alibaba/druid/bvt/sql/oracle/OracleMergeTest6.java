@@ -28,14 +28,11 @@ import com.alibaba.druid.stat.TableStat;
 public class OracleMergeTest6 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "MERGE INTO console_stb_ipstatus T1 "
-                     + //
-                     "USING (SELECT '02222601005592002863423471' AS stbid  FROM dual) T2 "
-                     + //
-                     "ON ( T1.stbid=T2.stbid) "
-                     + //
-                     "WHEN MATCHED THEN update set t1.ip='10.104.131.175',t1.port='6666',t1.status = 1, t1.time = to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss')  "
-                     + //
+        String sql = "MERGE INTO console_stb_ipstatus T1 " + //
+                     "USING (SELECT '02222601005592002863423471' AS stbid  FROM dual) T2 " + //
+                     "ON ( T1.stbid=T2.stbid) " + //
+                     "WHEN MATCHED THEN " + //
+                     "update set t1.ip='10.104.131.175',t1.port='6666',t1.status = 1, t1.time = to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss')  " + //
                      "WHEN NOT MATCHED THEN  insert (id, stbid, ip, port, time, firsttime, status) " + //
                      "values (CONSOLE_SEQ.nextval,'02222601005592002863423471','10.104.131.175','6666',to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss'),to_char(sysdate, 'yyyy-MM-dd HH24:mi:ss'),1) ";
 
@@ -58,7 +55,7 @@ public class OracleMergeTest6 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("console_stb_ipstatus")));
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

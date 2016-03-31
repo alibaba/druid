@@ -18,7 +18,7 @@ package com.alibaba.druid.proxy.jdbc;
 import java.util.Calendar;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface JdbcParameter {
 

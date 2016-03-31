@@ -41,12 +41,10 @@ import com.alibaba.druid.util.Utils;
 /**
  * 监控相关的对外数据暴露
  * 
- * <pre>
- * 1. 为了支持jndi数据源本类内部调用druid相关对象均需要反射调用,返回值也应该是Object,List<Object>,Map<String,Object>等无关于druid的类型
+ * 1. 为了支持jndi数据源本类内部调用druid相关对象均需要反射调用,返回值也应该是Object,List&lt;Object&gt;,Map&lt;String,Object&gt;等无关于druid的类型
  * 2. 对外暴露的public方法都应该先调用init()，应该有更好的方式，暂时没想到
- * </pre>
  * 
- * @author sandzhang<sandzhangtoo@gmail.com>
+ * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public final class DruidStatManagerFacade {
 

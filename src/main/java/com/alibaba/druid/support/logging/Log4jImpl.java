@@ -110,6 +110,10 @@ public class Log4jImpl implements Log {
     public boolean isWarnEnabled() {
         return log.isEnabledFor(Level.WARN);
     }
+    
+    public boolean isErrorEnabled() {
+        return log.isEnabledFor(Level.ERROR);
+    }
 
     public int getInfoCount() {
         return infoCount;

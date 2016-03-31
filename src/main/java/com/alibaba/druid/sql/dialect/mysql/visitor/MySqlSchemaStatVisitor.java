@@ -17,12 +17,11 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -39,16 +38,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlElseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIfStatement.MySqlElseIfStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLoopStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlParameter;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
@@ -56,24 +49,21 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlSelectGroupByExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAlterColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
@@ -89,19 +79,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.InValues;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.LessThanValues;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
@@ -147,11 +130,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
@@ -226,12 +210,8 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
-                }
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, x.getAlias(), ident);
+            putAliasMap(aliasMap, ident, ident);
         }
 
         accept(x.getColumns());
@@ -376,17 +356,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public void endVisit(MySqlSelectGroupBy x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlSelectGroupBy x) {
-
-        return true;
-    }
-
-    @Override
     public void endVisit(MySqlStartTransactionStatement x) {
 
     }
@@ -426,16 +395,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlShowColumnsStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlShowTablesStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlShowTablesStatement x) {
         return false;
     }
 
@@ -1006,36 +965,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlAlterTableStatement x) {
-        return visit((SQLAlterTableStatement) x);
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlAlterTableAddColumn x) {
-        return visit((SQLAlterTableAddColumn) x);
-    }
-
-    @Override
-    public void endVisit(MySqlAlterTableAddColumn x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlCreateIndexStatement x) {
-        return visit((SQLCreateIndexStatement) x);
-    }
-
-    @Override
-    public void endVisit(MySqlCreateIndexStatement x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlRenameTableStatement.Item x) {
         return false;
     }
@@ -1250,67 +1179,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(TableSpaceOption x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitionByHash x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitionByHash x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitionByRange x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitionByRange x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitioningDef x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitioningDef x) {
-
-    }
-
-    @Override
-    public boolean visit(LessThanValues x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(LessThanValues x) {
-
-    }
-
-    @Override
-    public boolean visit(InValues x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(InValues x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlPartitionByList x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlPartitionByList x) {
-
     }
 
     @Override
@@ -1364,215 +1232,131 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlSelectGroupByExpr x) {
+    public boolean visit(MySqlOrderingExpr x) {
         return true;
     }
 
     @Override
-    public void endVisit(MySqlSelectGroupByExpr x) {
-        
+    public void endVisit(MySqlOrderingExpr x) {
+
     }
 
     @Override
-    public boolean visit(MySqlBlockStatement x) {
-        return true;
+    public boolean visit(MySqlAlterTableAlterColumn x) {
+        return false;
     }
 
     @Override
-    public void endVisit(MySqlBlockStatement x) {
-        
+    public void endVisit(MySqlAlterTableAlterColumn x) {
+
     }
 
     /**
      * support procedure
      */
-	@Override
-	public boolean visit(MySqlCreateProcedureStatement x) {
-		// TODO Auto-generated method stub
-		String name = x.getName().toString();
-        this.variants.put(name, x);
-        accept(x.getBlock());
+    @Override
+    public boolean visit(MySqlWhileStatement x) {
+        accept(x.getStatements());
         return false;
-	}
+    }
 
-	@Override
-	public void endVisit(MySqlCreateProcedureStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void endVisit(MySqlWhileStatement x) {
 
-	@Override
-	public boolean visit(MySqlParameter x) {
-		// TODO Auto-generated method stub
-		return true;
-	}
+    }
 
-	@Override
-	public void endVisit(MySqlParameter x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public boolean visit(MySqlCaseStatement x) {
+        accept(x.getWhenList());
+        return false;
+    }
 
-	@Override
-	public boolean visit(MySqlWhileStatement x) {
-		accept(x.getStatements());
-		return false;
-	}
+    @Override
+    public void endVisit(MySqlCaseStatement x) {
 
-	@Override
-	public void endVisit(MySqlWhileStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public boolean visit(MySqlIfStatement x) {
-		accept(x.getStatements());
-		accept(x.getElseIfList());
-		accept(x.getElseItem());
-		return false;
-	}
+    @Override
+    public boolean visit(MySqlDeclareStatement x) {
+        for (SQLDeclareItem item : x.getVarList()) {
+            item.setParent(x);
 
-	@Override
-	public void endVisit(MySqlIfStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+            SQLName var = (SQLName) item.getName();
+            this.variants.put(var.toString(), var);
+        }
 
-	@Override
-	public boolean visit(MySqlElseIfStatement x) {
-		accept(x.getStatements());
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public void endVisit(MySqlElseIfStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void endVisit(MySqlDeclareStatement x) {
 
-	@Override
-	public boolean visit(MySqlElseStatement x) {
-		accept(x.getStatements());
-		return false;
-	}
+    }
 
-	@Override
-	public void endVisit(MySqlElseStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public boolean visit(MySqlSelectIntoStatement x) {
+        return false;
+    }
 
-	@Override
-	public boolean visit(MySqlCaseStatement x) {
-		accept(x.getWhenList());
-		return false;
-	}
+    @Override
+    public void endVisit(MySqlSelectIntoStatement x) {
 
-	@Override
-	public void endVisit(MySqlCaseStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public boolean visit(MySqlDeclareStatement x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean visit(MySqlWhenStatement x) {
+        accept(x.getStatements());
+        return false;
+    }
 
-	@Override
-	public void endVisit(MySqlDeclareStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void endVisit(MySqlWhenStatement x) {
 
-	@Override
-	public boolean visit(MySqlSelectIntoStatement x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    }
 
-	@Override
-	public void endVisit(MySqlSelectIntoStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public boolean visit(MySqlLeaveStatement x) {
+        return false;
+    }
 
-	@Override
-	public boolean visit(MySqlWhenStatement x) {
-		accept(x.getStatements());
-		return false;
-	}
+    @Override
+    public void endVisit(MySqlLeaveStatement x) {
 
-	@Override
-	public void endVisit(MySqlWhenStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public boolean visit(MySqlLoopStatement x) {
-		accept(x.getStatements());
-		return false;
-	}
+    @Override
+    public boolean visit(MySqlIterateStatement x) {
+        return false;
+    }
 
-	@Override
-	public void endVisit(MySqlLoopStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void endVisit(MySqlIterateStatement x) {
 
-	@Override
-	public boolean visit(MySqlLeaveStatement x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    }
 
-	@Override
-	public void endVisit(MySqlLeaveStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public boolean visit(MySqlRepeatStatement x) {
+        accept(x.getStatements());
+        return false;
+    }
 
-	@Override
-	public boolean visit(MySqlIterateStatement x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public void endVisit(MySqlRepeatStatement x) {
 
-	@Override
-	public void endVisit(MySqlIterateStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public boolean visit(MySqlRepeatStatement x) {
-		// TODO Auto-generated method stub
-		accept(x.getStatements());
-		return false;
-	}
+    @Override
+    public boolean visit(MySqlCursorDeclareStatement x) {
+        accept(x.getSelect());
+        return false;
+    }
 
-	@Override
-	public void endVisit(MySqlRepeatStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void endVisit(MySqlCursorDeclareStatement x) {
 
-	@Override
-	public boolean visit(MySqlCursorDeclareStatement x) {
-		accept(x.getSelect());
-		return false;
-	}
+    }
 
-	@Override
-	public void endVisit(MySqlCursorDeclareStatement x) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
+    @Override
     public boolean visit(MySqlUpdateTableSource x) {
         if (x.getUpdate() != null) {
             return this.visit(x.getUpdate());
@@ -1585,4 +1369,23 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     }
 
+    @Override
+    public boolean visit(MySqlSubPartitionByKey x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSubPartitionByKey x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlSubPartitionByList x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSubPartitionByList x) {
+
+    }
 }

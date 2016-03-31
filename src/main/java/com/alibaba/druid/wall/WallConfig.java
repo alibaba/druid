@@ -324,7 +324,6 @@ public class WallConfig implements WallConfigMBean {
      * set allow mysql describe statement
      * 
      * @since 0.2.10
-     * @return
      */
     public void setDescribeAllow(boolean describeAllow) {
         this.describeAllow = describeAllow;
@@ -677,7 +676,6 @@ public class WallConfig implements WallConfigMBean {
          * 返回resultset隐藏列名
          * 
          * @param tableName
-         * @return
          */
         String getHiddenColumn(String tableName);
 

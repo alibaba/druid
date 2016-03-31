@@ -20,8 +20,10 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -334,9 +336,18 @@ public class PagerUtils {
             if (queryBlock.getGroupBy() != null && queryBlock.getGroupBy().getItems().size() > 0) {
                 return createCountUseSubQuery(select, dbType);
             }
-
-            queryBlock.getSelectList().clear();
-            queryBlock.getSelectList().add(countItem);
+            
+            int option = queryBlock.getDistionOption();
+            if (option == SQLSetQuantifier.DISTINCT && queryBlock.getSelectList().size() == 1) {
+                SQLSelectItem firstItem = queryBlock.getSelectList().get(0);
+                SQLAggregateExpr exp = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
+                exp.addArgument(firstItem.getExpr());
+                firstItem.setExpr(exp);
+                queryBlock.setDistionOption(0);
+            } else {
+                queryBlock.getSelectList().clear();
+                queryBlock.getSelectList().add(countItem);
+            }
             return SQLUtils.toSQLString(select, dbType);
         } else if (query instanceof SQLUnionQuery) {
             return createCountUseSubQuery(select, dbType);
@@ -396,7 +407,7 @@ public class PagerUtils {
     private static SQLSelectItem createCountItem(String dbType) {
         SQLAggregateExpr countExpr = new SQLAggregateExpr("COUNT");
 
-        countExpr.getArguments().add(new SQLAllColumnExpr());
+        countExpr.addArgument(new SQLAllColumnExpr());
 
         SQLSelectItem countItem = new SQLSelectItem(countExpr);
         return countItem;

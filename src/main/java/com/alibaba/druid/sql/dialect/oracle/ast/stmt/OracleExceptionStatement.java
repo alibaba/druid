@@ -31,8 +31,12 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
         return items;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void addItem(Item item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        
+        this.items.add(item);
     }
 
     public static class Item extends OracleSQLObjectImpl {

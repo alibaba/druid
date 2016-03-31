@@ -55,4 +55,10 @@ public class MySqlAnalyzeStatement extends MySqlStatementImpl {
         return tableSources;
     }
 
+    public void addTableSource(SQLExprTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
+        this.tableSources.add(tableSource);
+    }
 }

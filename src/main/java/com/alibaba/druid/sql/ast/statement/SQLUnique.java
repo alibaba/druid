@@ -32,6 +32,13 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     public List<SQLExpr> getColumns() {
         return columns;
     }
+    
+    public void addColumn(SQLExpr column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

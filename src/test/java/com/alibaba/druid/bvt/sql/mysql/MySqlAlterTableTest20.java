@@ -31,8 +31,10 @@ public class MySqlAlterTableTest20 extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE score1"
-                + "\n\tADD COLUMN (test3 int(11), test4 int(11))", output);
+                + "\n\tADD COLUMN (test3 int(11), test4 int(11))", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table score1"
+                + "\n\tadd column (test3 int(11), test4 int(11))", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

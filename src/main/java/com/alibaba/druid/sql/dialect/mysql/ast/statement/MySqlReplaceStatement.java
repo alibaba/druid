@@ -61,6 +61,13 @@ public class MySqlReplaceStatement extends MySqlStatementImpl {
     public List<SQLExpr> getColumns() {
         return columns;
     }
+    
+    public void addColumn(SQLExpr column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
 
     public boolean isLowPriority() {
         return lowPriority;

@@ -48,6 +48,13 @@ public class OracleSelectUnPivot extends OracleSelectPivotBase {
     public List<SQLExpr> getItems() {
         return this.items;
     }
+    
+    public void addItem(SQLExpr item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
 
     public NullsIncludeType getNullsIncludeType() {
         return this.nullsIncludeType;
@@ -60,12 +67,12 @@ public class OracleSelectUnPivot extends OracleSelectPivotBase {
     public static enum NullsIncludeType {
         INCLUDE_NULLS, EXCLUDE_NULLS;
 
-        public static String toString(NullsIncludeType type) {
+        public static String toString(NullsIncludeType type, boolean ucase) {
             if (INCLUDE_NULLS.equals(type)) {
-                return "INCLUDE NULLS";
+                return ucase ? "INCLUDE NULLS" : "include nulls";
             }
             if (EXCLUDE_NULLS.equals(type)) {
-                return "EXCLUDE NULLS";
+                return ucase ? "EXCLUDE NULLS" : "exclude nulls";
             }
 
             throw new IllegalArgumentException();

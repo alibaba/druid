@@ -16,7 +16,7 @@
 package com.alibaba.druid.filter.stat;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface StatFilterMBean {
     boolean isMergeSql();

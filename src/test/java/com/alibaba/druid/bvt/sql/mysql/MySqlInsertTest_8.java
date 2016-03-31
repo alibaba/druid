@@ -54,5 +54,10 @@ public class MySqlInsertTest_8 extends MysqlTest {
                             + "\nSELECT *" //
                             + "\nFROM bb.table3", //
                             SQLUtils.toMySqlString(insertStmt));
+        
+        Assert.assertEquals("insert into dd.table1 (d, e)" //
+                            + "\nselect *" //
+                            + "\nfrom bb.table3", //
+                            SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

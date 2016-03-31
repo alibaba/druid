@@ -18,8 +18,7 @@ package com.alibaba.druid.sql.parser;
 /**
  * 
  * SQL Token 
- * @author wenshao 2011-5-18 下午05:16:49
- * @formatter:off
+ * @author wenshao [szujobs@hotmail.com]
  */
 public enum Token {
     SELECT("SELECT"), 

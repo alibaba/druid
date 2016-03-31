@@ -72,7 +72,9 @@ public class MySqlCreateTableTest45 extends MysqlTest {
                             "\n\tid INT, " + //
                             "\n\tname VARCHAR(30), " + //
                             "\n\tadate DATE" + //
-                            "\n) PARTITION BY LIST (YEAR(adate)) (" + //
+                            "\n)" + //
+                            "\nPARTITION BY LIST (YEAR(adate))" + // 
+                            "\n(" + //
                             "\n\tPARTITION p1999 VALUES IN (1995, 1999, 2003)" + //
                             "\n\t\tDATA DIRECTORY '/var/appdata/95/data'" + //
                             "\n\t\tINDEX DIRECTORY '/var/appdata/95/idx', " + //

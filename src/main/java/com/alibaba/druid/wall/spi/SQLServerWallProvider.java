@@ -29,7 +29,6 @@ import com.alibaba.druid.wall.WallVisitor;
  * 
  * @author RaymondXiu
  * @version 1.0, 2012-3-17
- * @see
  */
 public class SQLServerWallProvider extends WallProvider {
 

@@ -65,7 +65,9 @@ public class MySqlCreateTableTest43 extends MysqlTest {
         Assert.assertEquals("CREATE TABLE client_firms (" + //
                             "\n\tid INT, " + //
                             "\n\tname VARCHAR(35)" + //
-                            "\n) PARTITION BY LIST (id) (" + //
+                            "\n)"
+                            + "\nPARTITION BY LIST (id)"
+                            + "\n(" + //
                             "\n\tPARTITION r0 VALUES IN (1, 5, 9, 13, 17, 21), " + //
                             "\n\tPARTITION r1 VALUES IN (2, 6, 10, 14, 18, 22), " + //
                             "\n\tPARTITION r2 VALUES IN (3, 7, 11, 15, 19, 23), " + //

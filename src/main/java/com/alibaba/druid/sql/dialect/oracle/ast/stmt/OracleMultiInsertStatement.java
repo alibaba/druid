@@ -52,8 +52,11 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
         return entries;
     }
 
-    public void setEntries(List<Entry> entries) {
-        this.entries = entries;
+    public void addEntry(Entry entry) {
+        if (entry != null) {
+            entry.setParent(this);
+        }
+        this.entries.add(entry);
     }
 
     public Option getOption() {
@@ -102,8 +105,11 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
             return items;
         }
 
-        public void setItems(List<ConditionalInsertClauseItem> items) {
-            this.items = items;
+        public void addItem(ConditionalInsertClauseItem item) {
+            if (item != null) {
+                item.setParent(this);
+            }
+            this.items.add(item);
         }
 
         @Override

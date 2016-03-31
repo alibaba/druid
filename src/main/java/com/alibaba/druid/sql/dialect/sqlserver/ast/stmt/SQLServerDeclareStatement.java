@@ -18,14 +18,14 @@ package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
 public class SQLServerDeclareStatement extends SQLServerObjectImpl implements SQLServerStatement {
 
-    protected List<SQLServerDeclareItem> items = new ArrayList<SQLServerDeclareItem>();
+    protected List<SQLDeclareItem> items = new ArrayList<SQLDeclareItem>();
     
     private String dbType;
 
@@ -37,12 +37,15 @@ public class SQLServerDeclareStatement extends SQLServerObjectImpl implements SQ
         visitor.endVisit(this);
     }
 
-    public List<SQLServerDeclareItem> getItems() {
+    public List<SQLDeclareItem> getItems() {
         return items;
     }
 
-    public void setItems(List<SQLServerDeclareItem> items) {
-        this.items = items;
+    public void addItem(SQLDeclareItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public String getDbType() {

@@ -57,7 +57,8 @@ public class MySqlCreateTableTest40 extends MysqlTest {
         Assert.assertEquals("CREATE TABLE t1 (" + //
                             "\n\tcol1 INT, " + //
                             "\n\tcol2 CHAR(5)" + //
-                            "\n) PARTITION BY HASH (col1)", output);
+                            "\n)"
+                            + "\nPARTITION BY HASH (col1)", output);
 
     }
 }

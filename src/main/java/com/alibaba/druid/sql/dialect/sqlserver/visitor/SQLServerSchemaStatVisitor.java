@@ -17,25 +17,19 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition.Identity;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerBlockStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerIfStatement.Else;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
@@ -120,26 +114,6 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     }
 
     @Override
-    public boolean visit(Identity x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(Identity x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLServerColumnDefinition x) {
-        return visit((SQLColumnDefinition) x);
-    }
-
-    @Override
-    public void endVisit(SQLServerColumnDefinition x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerExecStatement x) {
         return false;
     }
@@ -180,18 +154,8 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     }
 
     @Override
-    public boolean visit(SQLServerDeclareItem x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerDeclareItem x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerDeclareStatement x) {
-        for (SQLServerDeclareItem item : x.getItems()) {
+        for (SQLDeclareItem item : x.getItems()) {
             item.setParent(x);
 
             SQLExpr name = item.getName();
@@ -202,36 +166,6 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerDeclareStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(Else x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(Else x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLServerIfStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerIfStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLServerBlockStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerBlockStatement x) {
 
     }
 

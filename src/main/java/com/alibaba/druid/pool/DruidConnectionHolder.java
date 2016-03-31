@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public final class DruidConnectionHolder {
 
@@ -47,6 +48,10 @@ public final class DruidConnectionHolder {
     private final long                          connectTimeMillis;
     private transient long                      lastActiveTimeMillis;
     private long                                useCount                 = 0;
+    
+    private long                                lastNotEmptyWaitNanos;
+    
+    private final long                          createNanoSpan;
 
     private PreparedStatementPool               statementPool;
 
@@ -65,11 +70,16 @@ public final class DruidConnectionHolder {
     private boolean                             discard                  = false;
     
     public static boolean                       holdabilityUnsupported   = false;
+    
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo) throws SQLException {
+        this(dataSource, pyConnectInfo.getPhysicalConnection(), pyConnectInfo.getConnectNanoSpan());
+    }
 
-    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan) throws SQLException{
 
         this.dataSource = dataSource;
         this.conn = conn;
+        this.createNanoSpan = connectNanoSpan;
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;
 
@@ -255,6 +265,20 @@ public final class DruidConnectionHolder {
 
     public void setDiscard(boolean discard) {
         this.discard = discard;
+    }
+    
+    
+    public long getCreateNanoSpan() {
+        return createNanoSpan;
+    }
+    
+    
+    public long getLastNotEmptyWaitNanos() {
+        return lastNotEmptyWaitNanos;
+    }
+
+    protected void setLastNotEmptyWaitNanos(long lastNotEmptyWaitNanos) {
+        this.lastNotEmptyWaitNanos = lastNotEmptyWaitNanos;
     }
 
     public String toString() {

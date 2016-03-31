@@ -15,13 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
@@ -35,11 +33,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHintImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -320,49 +317,6 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
     }
 
-    protected void parseGroupBy(SQLSelectQueryBlock queryBlock) {
-        SQLSelectGroupByClause groupBy = null;
-
-        if (lexer.token() == Token.GROUP) {
-            groupBy = new SQLSelectGroupByClause();
-
-            lexer.nextToken();
-            accept(Token.BY);
-
-            while (true) {
-                groupBy.addItem(this.getExprParser().parseSelectGroupByItem());
-                if (!(lexer.token() == (Token.COMMA))) {
-                    break;
-                }
-                lexer.nextToken();
-            }
-
-            if (lexer.token() == Token.WITH) {
-                lexer.nextToken();
-                acceptIdentifier("ROLLUP");
-
-                MySqlSelectGroupBy mySqlGroupBy = new MySqlSelectGroupBy();
-                for (SQLExpr sqlExpr : groupBy.getItems()) {
-                    mySqlGroupBy.addItem(sqlExpr);
-                }
-                mySqlGroupBy.setRollUp(true);
-
-                groupBy = mySqlGroupBy;
-            }
-        }
-
-        if (lexer.token() == Token.HAVING) {
-            lexer.nextToken();
-
-            if (groupBy == null) {
-                groupBy = new SQLSelectGroupByClause();
-            }
-            groupBy.setHaving(this.exprParser.expr());
-        }
-
-        queryBlock.setGroupBy(groupBy);
-    }
-
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (identifierEquals("USING")) {
             return tableSource;
@@ -387,6 +341,13 @@ public class MySqlSelectParser extends SQLSelectParser {
             MySqlForceIndexHint hint = new MySqlForceIndexHint();
             parseIndexHint(hint);
             tableSource.getHints().add(hint);
+        }
+        
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            this.exprParser.names(((SQLExprTableSource) tableSource).getPartitions(), tableSource);
+            accept(Token.RPAREN);
         }
 
         return super.parseTableSourceRest(tableSource);

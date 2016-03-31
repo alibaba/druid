@@ -56,7 +56,7 @@ import java.util.Calendar;
 import java.util.Properties;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface Filter extends Wrapper {
 

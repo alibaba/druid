@@ -90,7 +90,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
-                    
+
                     if (lexer.token() == Token.RPAREN) { // compatible for sql server
                         break;
                     }
@@ -126,4 +126,5 @@ public class SQLCreateTableParser extends SQLDDLParser {
     protected SQLCreateTableStatement newCreateStatement() {
         return new SQLCreateTableStatement(getDbType());
     }
+
 }

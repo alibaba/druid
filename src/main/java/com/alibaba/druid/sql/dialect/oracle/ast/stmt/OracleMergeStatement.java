@@ -121,8 +121,11 @@ public class OracleMergeStatement extends OracleStatementImpl {
             return items;
         }
 
-        public void setItems(List<SQLUpdateSetItem> items) {
-            this.items = items;
+        public void addItem(SQLUpdateSetItem item) {
+            if (item != null) {
+                item.setParent(this);
+            }
+            this.items.add(item);
         }
 
         public SQLExpr getWhere() {

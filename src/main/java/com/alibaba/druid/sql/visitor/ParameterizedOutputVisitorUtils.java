@@ -116,9 +116,9 @@ public class ParameterizedOutputVisitorUtils {
         x.getExpr().accept(v);
 
         if (x.isNot()) {
-            v.print(" NOT IN (?)");
+            v.print(v.isUppCase() ? " NOT IN (?)" : " not in (?)");
         } else {
-            v.print(" IN (?)");
+            v.print(v.isUppCase() ? " IN (?)" : " in (?)");
         }
 
         if (changed) {

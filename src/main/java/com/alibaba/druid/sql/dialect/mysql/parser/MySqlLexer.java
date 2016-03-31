@@ -22,7 +22,6 @@ import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.CharTypes;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
@@ -54,6 +53,9 @@ public class MySqlLexer extends Lexer {
         map.put("ROW", Token.ROW);
         map.put("BEGIN", Token.BEGIN);
         map.put("END", Token.END);
+        
+        // for oceanbase & mysql 5.7
+        map.put("PARTITION", Token.PARTITION);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }
@@ -421,7 +423,9 @@ public class MySqlLexer extends Lexer {
 
             boolean isHint = false;
             int startHintSp = bufPos + 1;
-            if (ch == '!') {
+            if (ch == '!' //
+                    || ch == '+' // oceanbase hints
+                    ) {
                 isHint = true;
                 scanChar();
                 bufPos++;
@@ -512,9 +516,28 @@ public class MySqlLexer extends Lexer {
             return;
         }
     }
+    
+    private final static boolean[] identifierFlags = new boolean[256];
+    static {
+        for (char c = 0; c < identifierFlags.length; ++c) {
+            if (c >= 'A' && c <= 'Z') {
+                identifierFlags[c] = true;
+            } else if (c >= 'a' && c <= 'z') {
+                identifierFlags[c] = true;
+            } else if (c >= '0' && c <= '9') {
+                identifierFlags[c] = true;
+            }
+        }
+        // identifierFlags['`'] = true;
+        identifierFlags['_'] = true;
+        identifierFlags['-'] = true; // mysql
+    }
 
-    private boolean isIdentifierChar(char c) {
-        return c != '#' && CharTypes.isIdentifierChar(c);
+    public static boolean isIdentifierChar(char c) {
+        if (c <= identifierFlags.length) {
+            return identifierFlags[c];
+        }
+        return c != '　' && c != '，';
     }
 
     public void scanNumber() {

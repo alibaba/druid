@@ -62,11 +62,18 @@ public interface JdbcConstants {
     
     public static final String KINGBASE          = "kingbase";
     public static final String KINGBASE_DRIVER   = "com.kingbase.Driver";
+
+    public static final String OCEANBASE         = "oceanbase";
+    public static final String OCEANBASE_DRIVER  = "com.mysql.jdbc.Driver";
     
     /**
      * 阿里云odps
      */
     public static final String ODPS              = "odps";
+    public static final String ODPS_DRIVER       = "com.aliyun.odps.jdbc.OdpsDriver";
+    
+    public static final String TERADATA          = "teradata";
+    public static final String TERADATA_DRIVER   = "com.teradata.jdbc.TeraDriver";
 
     /**
      * Log4JDBC

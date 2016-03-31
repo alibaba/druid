@@ -23,11 +23,26 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlSelectTest_18 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "SELECT host.id as id, host.item_id as itemId, host.node_id as nodeId,   host.node_type as nodeType,   host.begin_time as beginTime,   host.end_time as endTime,   host.gmt_create as gmtCreate,   host.gmt_modify as gmtModify,   host.reason as reason,   host.creator_id as creatorId,   host.modifier_id as modifierId,   user.name as creator,   user.name as modifier,   user.nick_name as nickName    FROM notice_close_node host left join sys_user user on user.id = host.modifier_id";
+        String sql = "SELECT host.id as id" //
+                + ",   host.item_id as itemId" //
+                + ",   host.node_id as nodeId" //
+                + ",   host.node_type as nodeType" //
+                + ",   host.begin_time as beginTime" //
+                + ",   host.end_time as endTime" //
+                + ",   host.gmt_create as gmtCreate" //
+                + ",   host.gmt_modify as gmtModify" //
+                + ",   host.reason as reason" //
+                + ",   host.creator_id as creatorId" //
+                + ",   host.modifier_id as modifierId" //
+                + ",   user.name as creator" //
+                + ",   user.name as modifier" //
+                + ",   user.nick_name as nickName   " //
+                + " FROM notice_close_node host left join sys_user user on user.id = host.modifier_id";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -45,8 +60,10 @@ public class MySqlSelectTest_18 extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(14, visitor.getColumns().size());
+        Assert.assertEquals(15, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());
 
+        Assert.assertTrue(visitor.getColumns().contains(new Column("sys_user", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("notice_close_node", "modifier_id")));
     }
 }

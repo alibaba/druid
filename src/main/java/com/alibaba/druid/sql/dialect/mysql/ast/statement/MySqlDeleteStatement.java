@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -26,17 +30,34 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlDeleteStatement extends SQLDeleteStatement {
 
-    private boolean        lowPriority = false;
-    private boolean        quick       = false;
-    private boolean        ignore      = false;
+    private boolean              lowPriority = false;
+    private boolean              quick       = false;
+    private boolean              ignore      = false;
 
-    private SQLTableSource from;
-    private SQLTableSource using;
-    private SQLOrderBy     orderBy;
-    private Limit          limit;
+    private SQLTableSource       from;
+    private SQLTableSource       using;
+    private SQLOrderBy           orderBy;
+    private Limit                limit;
+
+    private List<SQLCommentHint> hints;
+
+    public MySqlDeleteStatement(){
+        super(JdbcConstants.MYSQL);
+    }
+
+    public List<SQLCommentHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLCommentHint>();
+        }
+        return hints;
+    }
     
-    public MySqlDeleteStatement() {
-        super (JdbcConstants.MYSQL);
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+        
+        return hints.size();
     }
 
     public boolean isLowPriority() {

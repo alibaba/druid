@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLKeep;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -31,6 +32,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     protected String              methodName;
     protected SQLAggregateOption  option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
+    protected SQLKeep             keep;
     protected SQLOver             over;
     protected SQLOrderBy          withinGroup;
     protected boolean             ignoreNulls      = false;
@@ -75,13 +77,34 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     public List<SQLExpr> getArguments() {
         return this.arguments;
     }
+    
+    public void addArgument(SQLExpr argument) {
+        if (argument != null) {
+            argument.setParent(this);
+        }
+        this.arguments.add(argument);
+    }
 
     public SQLOver getOver() {
         return over;
     }
 
     public void setOver(SQLOver over) {
+        if (over != null) {
+            over.setParent(this);
+        }
         this.over = over;
+    }
+    
+    public SQLKeep getKeep() {
+        return keep;
+    }
+
+    public void setKeep(SQLKeep keep) {
+        if (keep != null) {
+            keep.setParent(this);
+        }
+        this.keep = keep;
     }
     
     public boolean isIgnoreNulls() {

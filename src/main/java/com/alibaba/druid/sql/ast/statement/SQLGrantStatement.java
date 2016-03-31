@@ -25,10 +25,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLGrantStatement extends SQLStatementImpl {
 
-    private final List<SQLExpr> privileges = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> privileges = new ArrayList<SQLExpr>();
 
-    private SQLObject           on;
-    private SQLExpr             to;
+    protected SQLObject           on;
+    protected SQLExpr             to;
 
     public SQLGrantStatement(){
 
@@ -39,15 +39,15 @@ public class SQLGrantStatement extends SQLStatementImpl {
     }
 
     // mysql
-    private SQLObjectType objectType;
-    private SQLExpr       maxQueriesPerHour;
-    private SQLExpr       maxUpdatesPerHour;
-    private SQLExpr       maxConnectionsPerHour;
-    private SQLExpr       maxUserConnections;
+    protected SQLObjectType objectType;
+    private SQLExpr         maxQueriesPerHour;
+    private SQLExpr         maxUpdatesPerHour;
+    private SQLExpr         maxConnectionsPerHour;
+    private SQLExpr         maxUserConnections;
 
-    private boolean       adminOption;
+    private boolean         adminOption;
 
-    private SQLExpr       identifiedBy;
+    private SQLExpr         identifiedBy;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

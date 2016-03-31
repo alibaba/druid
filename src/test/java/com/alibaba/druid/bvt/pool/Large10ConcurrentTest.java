@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
@@ -10,21 +11,39 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
 
-import junit.framework.TestCase;
-
 import org.junit.Assert;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
+import junit.framework.TestCase;
+
 public class Large10ConcurrentTest extends TestCase {
 
-    private DruidDataSource[]        dataSources = new DruidDataSource[10000];
+    private DruidDataSource[]        dataSources;
     private ScheduledExecutorService scheduler;
 
     private ExecutorService          executor;
 
     protected void setUp() throws Exception {
+        long xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m
+        
+        final int dataSourceCount;
+
+        if (xmx <= 256) {
+            dataSourceCount = 1024 * 1;
+        } else if (xmx <= 512) {
+            dataSourceCount = 1024 * 2;
+        } else if (xmx <= 1024) {
+            dataSourceCount = 1024 * 4;
+        } else if (xmx <= 2048) {
+            dataSourceCount = 1024 * 8;
+        } else {
+            dataSourceCount = 1024 * 16;
+        }
+        
+        dataSources = new DruidDataSource[dataSourceCount];
+        
         executor = Executors.newFixedThreadPool(100);
         scheduler = Executors.newScheduledThreadPool(10);
         for (int i = 0; i < dataSources.length; ++i) {
