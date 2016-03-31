@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalUnit;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -80,6 +81,10 @@ public class TeradataExprParser extends SQLExprParser {
     		default:
     			return super.primary();
     	}
+    }
+    
+    public SQLSelectParser createSelectParser() {
+    	return new TeradataSelectParser(this);
     }
     
     protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
