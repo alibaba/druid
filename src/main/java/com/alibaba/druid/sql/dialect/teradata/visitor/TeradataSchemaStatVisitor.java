@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.visitor;
 
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -22,7 +25,34 @@ public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements Tera
 
     @Override
     public String getDbType() {
-        return JdbcUtils.POSTGRESQL;
+        return JdbcUtils.TERADATA;
     }
+
+	@Override
+	public boolean visit(TeradataAnalyticWindowing x) {
+		return true;
+	}
+
+	@Override
+	public void endVisit(TeradataAnalyticWindowing x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(TeradataAnalytic x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean visit(TeradataIntervalExpr x) {
+		return true;
+	}
+
+	@Override
+	public void endVisit(TeradataIntervalExpr x) {
+
+	}
 
 }

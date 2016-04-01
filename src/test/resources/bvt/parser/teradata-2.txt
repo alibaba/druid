@@ -1,0 +1,10 @@
+ select
+    cal_dt,
+    lctn_txt,
+    fe_asset_rfrnc_id,
+    nt_login,
+    max(csum_access_cnt) over (partition by lctn_txt,nt_login order by cal_dt,csum_access_cnt asc rows unbounded preceding ) as prev_cnt,
+    case when csum_access_cnt - coalesce(prev_cnt,0)<0 then csum_access_cnt 
+         else csum_access_cnt - coalesce(prev_cnt,0) end as access_cnt
+ from ddm_data_assets_w.ds_tableau_rpt_usage_dtl_w 
+ ;
