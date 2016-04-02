@@ -51,6 +51,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -94,6 +95,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -1106,8 +1108,17 @@ public class OracleStatementParser extends SQLStatementParser {
         parseHints(stmt.getHints());
 
         accept(Token.INTO);
-        stmt.setInto(exprParser.name());
-
+        
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            OracleSelect select = this.createSQLSelectParser().select();
+            SQLSubqueryTableSource tableSource = new SQLSubqueryTableSource(select);
+            stmt.setInto(tableSource);
+            accept(Token.RPAREN);
+        } else {
+            stmt.setInto(exprParser.name());
+        }
+        
         stmt.setAlias(as());
 
         accept(Token.USING);
