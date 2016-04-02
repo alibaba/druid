@@ -27,7 +27,7 @@ import com.mysql.jdbc.jdbc2.optional.SuspendableXAConnection;
 public class MySqlUtils {
 
     public static XAConnection createXAConnection(Connection physicalConn) throws SQLException {
-    	com.mysql.jdbc.ConnectionImpl mysqlConn = (com.mysql.jdbc.ConnectionImpl)physicalConn;
+        com.mysql.jdbc.Connection mysqlConn = (com.mysql.jdbc.Connection)physicalConn;
     	if(mysqlConn.getPinGlobalTxToPhysicalConnection()) {
 
     		if (!Util.isJdbc4()) {
