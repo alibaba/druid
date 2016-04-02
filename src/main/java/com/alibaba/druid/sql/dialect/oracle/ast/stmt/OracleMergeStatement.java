@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
@@ -31,7 +32,7 @@ public class OracleMergeStatement extends OracleStatementImpl {
 
     private final List<SQLHint>      hints = new ArrayList<SQLHint>();
 
-    private SQLName                  into;
+    private SQLTableSource           into;
     private String                   alias;
     private SQLTableSource           using;
     private SQLExpr                  on;
@@ -59,11 +60,18 @@ public class OracleMergeStatement extends OracleStatementImpl {
         this.alias = alias;
     }
 
-    public SQLName getInto() {
+    public SQLTableSource getInto() {
         return into;
     }
-
+    
     public void setInto(SQLName into) {
+        this.setInto(new SQLExprTableSource(into));
+    }
+
+    public void setInto(SQLTableSource into) {
+        if (into != null) {
+            into.setParent(this);
+        }
         this.into = into;
     }
 
