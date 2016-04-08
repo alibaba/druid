@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.visitor;
 
+import java.util.Map;
+
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
@@ -54,5 +58,31 @@ public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements Tera
 	public void endVisit(TeradataIntervalExpr x) {
 
 	}
+	
+	@Override
+	public boolean visit(SQLSubqueryTableSource x) {
+		accept(x.getSelect());
+		
+		String table = (String) x.getSelect().getAttribute(ATTR_TABLE);
+		if (aliasMap != null && x.getAlias() != null) {
+			if (table != null) {
+				this.aliasMap.put(x.getAlias(), table);
+			}
+			addSubQuery(x.getAlias(), x.getSelect());
+			this.setCurrentTable(x.getAlias());
+		}
+		
+		if (table != null) {
+			x.putAttribute(ATTR_TABLE, table);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void endVisit(SQLSubqueryTableSource x) {
+		
+	}
+	
 
 }
