@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.AbstractDocument.LeafElement;
+
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
@@ -86,10 +88,14 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue.ConditionType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareHandlerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlHandlerType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
@@ -3243,10 +3249,15 @@ public class MySqlStatementParser extends SQLStatementParser {
                 int markBp = lexer.bp();
                 lexer.nextToken();
                 lexer.nextToken();
+                System.out.println(lexer.token());
                 if (lexer.token() == Token.CURSOR)// cursor declare statement
                 {
                     lexer.reset(markBp, markChar, Token.DECLARE);
                     statementList.add(this.parseCursorDeclare());
+                } else if (lexer.token() == Token.HANDLER) {
+                	//DECLARE处理程序 [add by zhujun 2016-04-16]
+                	lexer.reset(markBp, markChar, Token.DECLARE);
+                	statementList.add(this.parseDeclareHandler());
                 } else {
                     lexer.reset(markBp, markChar, Token.DECLARE);
                     statementList.add(this.parseDeclare());
@@ -3657,4 +3668,94 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    /**
+     * 定义异常处理程序
+     * @author zhujun [455910092@qq.com]
+     * 2016-04-16
+     * @return
+     */
+    public MySqlDeclareHandlerStatement parseDeclareHandler() {
+    	//DECLARE handler_type HANDLER FOR condition_value[,...] sp_statement
+    	//handler_type 取值为 CONTINUE | EXIT | UNDO 
+    	//condition_value 取值为 SQLWARNING | NOT FOUND | SQLEXCEPTION | SQLSTATE value(异常码 e.g 1062)
+    	
+    	MySqlDeclareHandlerStatement stmt = new MySqlDeclareHandlerStatement();
+        accept(Token.DECLARE);
+
+        //String handlerType = exprParser.name().getSimpleName();
+        if(lexer.token() == Token.CONTINUE) {
+        	stmt.setHandleType(MySqlHandlerType.CONTINUE);
+        } else if(lexer.token() == Token.EXIT) {
+        	stmt.setHandleType(MySqlHandlerType.CONTINUE);
+        } else if(lexer.token() == Token.UNDO) {
+        	stmt.setHandleType(MySqlHandlerType.CONTINUE);
+        } else {
+        	throw new ParserException("unkown handle type");
+        }
+        lexer.nextToken();
+        
+        accept(Token.HANDLER);
+
+        accept(Token.FOR);
+
+        for (;;) {
+        	String tokenName = lexer.stringVal();
+        	ConditionValue condition = new ConditionValue();
+        	
+        	if (tokenName.equalsIgnoreCase("NOT")) {//for 'NOT FOUND'
+        		lexer.nextToken();
+        		accept(Token.FOUND);
+        		condition.setType(ConditionType.SYSTEM);
+        		condition.setValue("NOT FOUND");
+        		
+			} else if(tokenName.equalsIgnoreCase("SQLSTATE")) { //for SQLSTATE (SQLSTATE '10001') 
+				condition.setType(ConditionType.SQLSTATE);
+        		condition.setValue(lexer.stringVal());
+        		lexer.nextToken();
+			} else if(lexer.token() == Token.SQLEXCEPTION) { //for SQLEXCEPTION
+				condition.setType(ConditionType.SYSTEM);
+        		condition.setValue(lexer.stringVal());
+        		lexer.nextToken();
+			} else if(lexer.token() == Token.SQLWARNING) { //for SQLWARNING
+				condition.setType(ConditionType.SYSTEM);
+        		condition.setValue(lexer.stringVal());
+        		lexer.nextToken();
+			} else { //for condition_name or mysql_error_code
+				if (lexer.token() == Token.LITERAL_INT) {
+					condition.setType(ConditionType.MYSQL_ERROR_CODE);
+					condition.setValue(lexer.integerValue().toString());
+				} else {
+					condition.setType(ConditionType.SELF);
+					condition.setValue(tokenName);
+				}
+				lexer.nextToken();
+			}
+        	stmt.getConditionValues().add(condition);
+            if (lexer.token() == Token.COMMA) {
+                accept(Token.COMMA);
+                continue;
+            } else if (lexer.token() != Token.EOF) {
+            	//TODO
+                break;
+            } else {
+                throw new ParserException("declare handle not eof");
+            }
+        }
+        
+        stmt.setSpStatement(parseBlock());
+
+        accept(Token.SEMI);
+
+        return stmt;
+    }
+    /**
+     * 定义异常
+     * @author zhujun [455910092@qq.com]
+     * 2016-04-16
+     * @return
+     */
+    public MySqlDeclareHandlerStatement parseDeclareCondition() {
+    	//TODO
+    	return null;
+    }
 }
