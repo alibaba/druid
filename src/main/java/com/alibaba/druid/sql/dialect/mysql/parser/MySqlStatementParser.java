@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.AbstractDocument.LeafElement;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
@@ -180,6 +179,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -3669,6 +3669,59 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     /**
+     * zhujun [455910092@qq.com]
+     * parse spstatement
+     * @return
+     */
+    public SQLStatement parseSpStatement() {
+    	
+        // update
+        if (lexer.token() == (Token.UPDATE)) {
+            return parseUpdateStatement();
+        }
+
+        // create
+        if (lexer.token() == (Token.CREATE)) {
+            return parseCreate();
+        }
+
+        // insert
+        if (lexer.token() == Token.INSERT) {
+            return parseInsert();
+        }
+
+        // delete
+        if (lexer.token() == (Token.DELETE)) {
+            return parseDeleteStatement();
+        }
+
+        // begin
+        if (lexer.token() == Token.BEGIN) {
+            return this.parseBlock();
+        }
+
+        // select
+        if (lexer.token() == Token.LPAREN) {
+            char ch = lexer.current();
+            int bp = lexer.bp();
+            lexer.nextToken();
+
+            if (lexer.token() == Token.SELECT) {
+                lexer.reset(bp, ch, Token.LPAREN);
+                return this.parseSelect();
+            } else {
+                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+            }
+        }
+        // assign statement
+        if (lexer.token() == Token.SET) {
+            return parseAssign();
+        }
+
+        throw new ParserException("error sp_statement");
+    }
+    
+    /**
      * 定义异常处理程序
      * @author zhujun [455910092@qq.com]
      * 2016-04-16
@@ -3681,7 +3734,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     	
     	MySqlDeclareHandlerStatement stmt = new MySqlDeclareHandlerStatement();
         accept(Token.DECLARE);
-
         //String handlerType = exprParser.name().getSimpleName();
         if(lexer.token() == Token.CONTINUE) {
         	stmt.setHandleType(MySqlHandlerType.CONTINUE);
@@ -3710,8 +3762,10 @@ public class MySqlStatementParser extends SQLStatementParser {
         		
 			} else if(tokenName.equalsIgnoreCase("SQLSTATE")) { //for SQLSTATE (SQLSTATE '10001') 
 				condition.setType(ConditionType.SQLSTATE);
-        		condition.setValue(lexer.stringVal());
-        		lexer.nextToken();
+				lexer.nextToken();
+        		//condition.setValue(lexer.stringVal());
+        		//lexer.nextToken();
+				condition.setValue(exprParser.name().toString());
 			} else if(lexer.token() == Token.SQLEXCEPTION) { //for SQLEXCEPTION
 				condition.setType(ConditionType.SYSTEM);
         		condition.setValue(lexer.stringVal());
@@ -3742,20 +3796,13 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
         }
         
-        stmt.setSpStatement(parseBlock());
+        stmt.setSpStatement(parseSpStatement());
 
-        accept(Token.SEMI);
+        if (!(stmt.getSpStatement() instanceof SQLBlockStatement)) {
+        	accept(Token.SEMI);
+		}
+        
 
         return stmt;
-    }
-    /**
-     * 定义异常
-     * @author zhujun [455910092@qq.com]
-     * 2016-04-16
-     * @return
-     */
-    public MySqlDeclareHandlerStatement parseDeclareCondition() {
-    	//TODO
-    	return null;
     }
 }

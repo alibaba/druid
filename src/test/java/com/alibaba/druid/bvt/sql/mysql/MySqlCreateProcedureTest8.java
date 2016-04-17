@@ -46,7 +46,7 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
     			+" declare pass varchar(20);"  
     			+" declare done int;"  
     			+" declare cur_test CURSOR for select user_name,user_pass from test;"  
-//    			+" declare continue handler FOR SQLSTATE '02000' SET done = 1;"  
+    			+" declare continue handler FOR SQLSTATE '02000' SET done = 1;"  
     			+" if param then"  
     			+" 		select concat_ws(',',user_name,user_pass) into result from test.users where id=param;"  
     			+" else"  
@@ -58,12 +58,132 @@ public class MySqlCreateProcedureTest8 extends MysqlTest {
     			+" 		close cur_test;"  
     			+" end if;"  
     			+" end;";
-    	
-    	sql="create or replace procedure sp_name(level int,age int)"+
-				" begin"+
-				" declare continue handler FOR SQLEXCEPTION,SQLWARNING begin SET done = 1; end;"+
-				" end";
 	
+    	MySqlStatementParser parser=new MySqlStatementParser(sql);
+    	List<SQLStatement> statementList = parser.parseStatementList();
+    	SQLStatement statemen = statementList.get(0);
+    	print(statementList);
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        
+        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getConditions().size());
+    }
+    
+    public void test_1() throws Exception {
+    	String sql = "create or replace procedure sp_name(level int,age int)"+
+				" begin"+
+				" declare continue handler FOR SQLSTATE '02000' SET done = 1;"+
+				" end";
+    	
+    	MySqlStatementParser parser=new MySqlStatementParser(sql);
+    	List<SQLStatement> statementList = parser.parseStatementList();
+    	SQLStatement statemen = statementList.get(0);
+    	print(statementList);
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        
+        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getConditions().size());
+    }
+    
+    public void test_2() throws Exception {
+    	String sql = "create or replace procedure sp_name(level int,age int)"+
+				" begin"+
+				" declare continue handler FOR SQLEXCEPTION,SQLWARNING SET done = 1;"+
+				" end";
+    	
+    	MySqlStatementParser parser=new MySqlStatementParser(sql);
+    	List<SQLStatement> statementList = parser.parseStatementList();
+    	SQLStatement statemen = statementList.get(0);
+    	print(statementList);
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        
+        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getConditions().size());
+    }
+    
+    public void test_3() throws Exception {
+    	String sql = "create or replace procedure sp_name(level int,age int)"+
+				" begin"+
+				" declare continue handler FOR 1002 SET done = 1;"+
+				" end";
+    	
+    	MySqlStatementParser parser=new MySqlStatementParser(sql);
+    	List<SQLStatement> statementList = parser.parseStatementList();
+    	SQLStatement statemen = statementList.get(0);
+    	print(statementList);
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        
+        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getConditions().size());
+    }
+    
+    public void test_4() throws Exception {
+    	String sql = "create or replace procedure sp_name(level int,age int)"+
+				" begin"+
+				" declare continue handler FOR SQLWARNING begin set done = 1; end"+
+				" end";
+    	
+    	MySqlStatementParser parser=new MySqlStatementParser(sql);
+    	List<SQLStatement> statementList = parser.parseStatementList();
+    	SQLStatement statemen = statementList.get(0);
+    	print(statementList);
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        
+        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getConditions().size());
+    }
+    
+    public void test_5() throws Exception {
+    	String sql = "create or replace procedure sp_name(level int,age int)"+
+				" begin"+
+				" declare continue handler FOR SQLWARNING begin set done = 1; end;"+
+				" end";
+    	
     	MySqlStatementParser parser=new MySqlStatementParser(sql);
     	List<SQLStatement> statementList = parser.parseStatementList();
     	SQLStatement statemen = statementList.get(0);
