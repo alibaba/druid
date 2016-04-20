@@ -77,6 +77,17 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 return true;
             }
         }
+        
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        for (int i = 0; i < stackTrace.length; ++i) {
+            StackTraceElement element = stackTrace[i];
+            if ("com.mysql.jdbc.RowDataDynamic".equals(element.getClassName()) //
+                    && "close".equals(element.getMethodName())
+                    ) {
+                return true;
+            }
+        }
+        
         return false;
     }
 
