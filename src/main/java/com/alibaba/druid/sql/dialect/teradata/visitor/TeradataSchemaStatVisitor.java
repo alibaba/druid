@@ -15,10 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.visitor;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
@@ -32,6 +35,8 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements TeradataASTVisitor {
 
+	protected final Map<String, SQLObject> aliasQueryMap = new LinkedHashMap<String, SQLObject>();
+	
     @Override
     public String getDbType() {
         return JdbcUtils.TERADATA;
@@ -98,25 +103,34 @@ public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements Tera
         if (alias != null && (!alias.isEmpty()) && aliasMap != null) {
             if (x.getExpr() instanceof SQLName) {
                 putAliasMap(aliasMap, alias, x.getExpr().toString());
-            } else if (x.getExpr() instanceof SQLAggregateExpr 
-            		|| x.getExpr() instanceof SQLMethodInvokeExpr) {
+            } else {
             	TeradataSchemaStatVisitor visitor = new TeradataSchemaStatVisitor(); 
             	x.getExpr().accept(visitor);
-            	for (Column col : visitor.getColumns()) {
-            		if (col.getTable().equalsIgnoreCase("unknown") 
-            				|| this.getCurrentTable() != null) {
-            			col.setTable(this.currentTable);
-            		}
-            		putAliasMap(aliasMap, alias, col.toString());
-            	}            	
-            } 
-            else {
-                putAliasMap(aliasMap, alias, null);
+            	putAliasMap(aliasMap, alias, null);
+            	// Add expression alias into aliasQuery map
+            	// in order to retrieve column info from aliasQueryMap
+            	// if aliasMap value is null 
+            	String uniqueAliasName = this.getCurrentTable() == null ?
+            			alias : this.getCurrentTable() + "." + alias;
+            	addAliasQuery(uniqueAliasName, x.getExpr());
             }
         }
         
         return false;
 	}
 	
+	protected void addAliasQuery(String alias, SQLObject query) {
+		String alias_lcase = alias.toLowerCase();
+		aliasQueryMap.put(alias_lcase, query);
+	}
+	
+	public SQLObject getAliasQuery(String alias) {
+		String alias_lcase = alias.toLowerCase();
+		return aliasQueryMap.get(alias_lcase);
+	}
+	
+	public Map<String, SQLObject> getAliasQueryMap() {
+		return aliasQueryMap;
+	}
 
 }
