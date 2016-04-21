@@ -272,6 +272,7 @@ public enum Token {
     RANGE_N("RANGE_N"),
     FORMAT("FORMAT"),
     QUALIFY("QUALIFY"),
+    MOD("MOD"),
 
     LPAREN("("), 
     RPAREN(")"), 

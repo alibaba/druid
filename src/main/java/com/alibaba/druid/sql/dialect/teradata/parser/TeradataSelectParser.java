@@ -1,9 +1,17 @@
 package com.alibaba.druid.sql.dialect.teradata.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.teradata.ast.stmt.TeradataSelectQueryBlock;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -54,9 +62,49 @@ public class TeradataSelectParser extends SQLSelectParser{
 
         parseGroupBy(queryBlock);
         
+        parserQualify(queryBlock);
+        
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
 
         return queryRest(queryBlock);
+	}
+
+	private void parserQualify(TeradataSelectQueryBlock queryBlock) {
+		if (lexer.token() != Token.QUALIFY) {
+			return;
+		}
+		
+		lexer.nextToken();
+		if (lexer.token() == Token.LITERAL_INT) {
+			lexer.nextToken();
+			// possibly =, >=, <=
+			// ignore this for now
+			lexer.nextToken();
+			
+			if (lexer.token() == Token.IDENTIFIER) {
+				SQLExpr expr = new SQLIdentifierExpr(lexer.stringVal());
+				lexer.nextToken();
+				if (lexer.token() != Token.COMMA) {
+					expr = this.exprParser.primaryRest(expr);	
+				}
+				// TODO: add qualify clause into queryBlock
+				queryBlock.setQualifyClause(expr);
+			} else {
+				throw new ParserException("not support token:" + lexer.token());
+			}
+		} else if (lexer.token() == Token.IDENTIFIER) {
+			SQLExpr expr = new SQLIdentifierExpr(lexer.stringVal());
+			lexer.nextToken();
+			if (lexer.token() != Token.COMMA) {
+				expr = this.exprParser.primaryRest(expr);	
+			}
+			lexer.nextToken();
+			lexer.nextToken();
+			// TODO: add qualify clause into queryBlock
+			queryBlock.setQualifyClause(expr);
+		} else {
+			throw new ParserException("not support token:" + lexer.token());
+		}
 	}
 
 }
