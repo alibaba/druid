@@ -150,6 +150,13 @@ public class Keywords {
         map.put("FETCH", Token.FETCH);
         map.put("OUT", Token.OUT);
         map.put("INOUT", Token.INOUT);
+        map.put("HANDLER", Token.HANDLER);
+        map.put("CONTINUE", Token.CONTINUE);
+        map.put("UNDO", Token.UNDO);
+        map.put("SQLSTATE", Token.SQLSTATE);
+        map.put("SQLWARNING", Token.SQLWARNING);
+        map.put("SQLEXCEPTION", Token.SQLEXCEPTION);
+        map.put("FOUND", Token.FOUND);
         
         DEFAULT_KEYWORDS = new Keywords(map);
     }

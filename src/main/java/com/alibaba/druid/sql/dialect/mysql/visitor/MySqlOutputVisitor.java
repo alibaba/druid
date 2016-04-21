@@ -54,9 +54,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue.ConditionType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareHandlerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
@@ -3422,4 +3425,40 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlSubPartitionByList x) {
 
     }
+
+
+	@Override
+	public boolean visit(MySqlDeclareHandlerStatement x) {
+		// TODO Auto-generated method stub
+		
+		print0(ucase ? "DECLARE " : "declare ");
+        print0(ucase ? x.getHandleType().toString().toUpperCase() : x.getHandleType().toString().toLowerCase());
+        print0(ucase ? " HANDLER FOR " : " handler for ");
+        for (int i = 0; i < x.getConditionValues().size(); i++) {
+			ConditionValue cv = x.getConditionValues().get(i);
+			if (cv.getType() == ConditionType.SQLSTATE) {
+				print0(ucase ? " SQLSTATE " : " sqlstate ");
+				print0(cv.getValue());
+			} else if (cv.getType() == ConditionType.MYSQL_ERROR_CODE) {
+				print0(cv.getValue());
+			} else if (cv.getType() == ConditionType.SELF) {
+				print0(cv.getValue());
+			} else if (cv.getType() == ConditionType.SYSTEM){
+				print0(ucase ? cv.getValue().toUpperCase() : cv.getValue().toLowerCase());
+			}
+			
+			if (i != x.getConditionValues().size() - 1) {
+				print0(", ");
+			}
+			
+		}
+        println();
+        return true;
+	}
+
+	@Override
+	public void endVisit(MySqlDeclareHandlerStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
 } //
