@@ -21,6 +21,10 @@ import com.alibaba.druid.sql.ast.SQLKeep.DenseRank;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
+import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -63,7 +67,6 @@ public class TeradataExprParser extends SQLExprParser {
     			sqlExpr = queryExpr;
                 return primaryRest(sqlExpr);
     		case CAST:
-    			System.out.println("cast test!");
     			lexer.nextToken();
     			accept(Token.LPAREN);
     			SQLCastExpr cast = new SQLCastExpr();
@@ -85,6 +88,27 @@ public class TeradataExprParser extends SQLExprParser {
     
     public SQLSelectParser createSelectParser() {
     	return new TeradataSelectParser(this);
+    }
+    
+    // for cases like: between DATE '2010-01-01' and DATE '2011-01-01'
+    public SQLExpr relationalRest(SQLExpr expr) {
+    	if (lexer.token() == Token.BETWEEN) {
+            lexer.nextToken();
+            SQLExpr beginExpr = bitOr();
+            SQLExpr endExpr;
+            if (lexer.token() != Token.AND) {
+            	lexer.nextToken();
+            	accept(Token.AND);
+            	endExpr = bitOr();
+            	lexer.nextToken();
+            } else {
+            	accept(Token.AND);
+            	endExpr = bitOr();
+            }
+            expr =  new SQLBetweenExpr(expr, beginExpr, endExpr);
+            return expr;
+        }
+    	return super.relationalRest(expr);
     }
     
     protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
@@ -121,8 +145,23 @@ public class TeradataExprParser extends SQLExprParser {
     			accept(Token.RPAREN);
     			return primaryRest(methodExpr);
     		}
+    	} else if (expr instanceof SQLCaseExpr) {
+    		lexer.nextToken();
+    		accept(Token.RPAREN);
+    		return primaryRest(expr);
     	}
     	return super.methodRest(expr, false);
+    }
+    
+    public SQLExpr multiplicativeRest(SQLExpr expr) {
+    	if (lexer.token() == Token.MOD) {
+    		lexer.nextToken();
+    		SQLExpr rightExp = bitXor();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Mod, rightExp, getDbType());
+            expr = multiplicativeRest(expr);
+            return expr;
+    	}
+    	return super.multiplicativeRest(expr);
     }
     
     protected SQLAggregateExpr parseAggregateExpr(String methodName) {
