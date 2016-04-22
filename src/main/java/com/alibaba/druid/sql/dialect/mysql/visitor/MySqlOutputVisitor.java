@@ -59,6 +59,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue.ConditionTy
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareConditionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareHandlerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
@@ -3429,7 +3430,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public boolean visit(MySqlDeclareHandlerStatement x) {
-		// TODO Auto-generated method stub
 		
 		print0(ucase ? "DECLARE " : "declare ");
         print0(ucase ? x.getHandleType().toString().toUpperCase() : x.getHandleType().toString().toLowerCase());
@@ -3458,7 +3458,28 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
 	@Override
 	public void endVisit(MySqlDeclareHandlerStatement x) {
-		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlDeclareConditionStatement x) {
+		print0(ucase ? "DECLARE " : "declare ");
+        print0(x.getConditionName());
+        print0(ucase ? " CONDITION FOR " : " condition for ");
+        
+        if (x.getConditionValue().getType() == ConditionType.SQLSTATE) {
+			print0(ucase ? "SQLSTATE " : "sqlstate ");
+			print0(x.getConditionValue().getValue());
+		} else {
+			print0(x.getConditionValue().getValue());
+		}
+        
+        println();
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlDeclareConditionStatement x) {
 		
 	}
 } //
