@@ -1,6 +1,7 @@
 package com.alibaba.druid.sql.dialect.teradata.ast.stmt;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.teradata.visitor.TeradataASTVisitor;
@@ -8,6 +9,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class TeradataSelectQueryBlock extends SQLSelectQueryBlock {
 	private SQLOrderBy    orderBy;
+	private SQLExpr qualifyClause;
 	
 	public TeradataSelectQueryBlock() {
 		
@@ -30,6 +32,7 @@ public class TeradataSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.qualifyClause);
             acceptChild(visitor, this.orderBy);
         }
         visitor.endVisit(this);
@@ -41,6 +44,17 @@ public class TeradataSelectQueryBlock extends SQLSelectQueryBlock {
 
     public void setOrderBy(SQLOrderBy orderBy) {
         this.orderBy = orderBy;
+    }
+    
+    public SQLExpr getQualifyClause() {
+    	return qualifyClause;
+    }
+    
+    public void setQualifyClause(SQLExpr qualify) {
+    	if (qualify != null) {
+    		qualify.setParent(this);
+    	}
+    	this.qualifyClause = qualify;
     }
     
     public String toString() {

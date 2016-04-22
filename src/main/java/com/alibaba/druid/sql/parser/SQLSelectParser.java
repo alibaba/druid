@@ -382,7 +382,8 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             SQLTableSource tableSource;
-            if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
+            if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH
+            		|| lexer.token == Token.SEL) {
                 SQLSelect select = select();
                 accept(Token.RPAREN);
                 SQLSelectQuery query = queryRest(select.getQuery());

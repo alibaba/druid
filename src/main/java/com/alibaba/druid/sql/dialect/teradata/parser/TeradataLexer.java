@@ -45,6 +45,10 @@ public class TeradataLexer extends Lexer {
         
         map.put("FORMAT", Token.FORMAT);
         
+        map.put("QUALIFY", Token.QUALIFY);
+        
+        map.put("MOD", Token.MOD);
+        
         DEFAULT_TD_KEYWORDS = new Keywords(map);
     }
     

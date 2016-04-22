@@ -28,6 +28,7 @@ public enum SQLBinaryOperator {
     Multiply("*", 60), 
     Divide("/", 60), 
     Modulus("%", 60), 
+    Mod("MOD", 60),
     
     Add("+", 70), 
     Subtract("-", 70), 

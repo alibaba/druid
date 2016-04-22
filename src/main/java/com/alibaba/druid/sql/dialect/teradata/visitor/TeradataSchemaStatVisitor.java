@@ -15,14 +15,28 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.visitor;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements TeradataASTVisitor {
 
+	protected final Map<String, SQLObject> aliasQueryMap = new LinkedHashMap<String, SQLObject>();
+	
     @Override
     public String getDbType() {
         return JdbcUtils.TERADATA;
@@ -53,6 +67,70 @@ public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements Tera
 	@Override
 	public void endVisit(TeradataIntervalExpr x) {
 
+	}
+	
+	@Override
+	public boolean visit(SQLSubqueryTableSource x) {
+		accept(x.getSelect());
+		
+		String table = (String) x.getSelect().getAttribute(ATTR_TABLE);
+		if (aliasMap != null && x.getAlias() != null) {
+			if (table != null) {
+				this.aliasMap.put(x.getAlias(), table);
+			}
+			addSubQuery(x.getAlias(), x.getSelect());
+			this.setCurrentTable(x.getAlias());
+		}
+		
+		if (table != null) {
+			x.putAttribute(ATTR_TABLE, table);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void endVisit(SQLSubqueryTableSource x) {
+		
+	}
+	
+	public boolean visit(SQLSelectItem x) {
+		x.getExpr().accept(this);
+        
+        String alias = x.getAlias();
+        
+        Map<String, String> aliasMap = this.getAliasMap();
+        if (alias != null && (!alias.isEmpty()) && aliasMap != null) {
+            if (x.getExpr() instanceof SQLName) {
+                putAliasMap(aliasMap, alias, x.getExpr().toString());
+            } else {
+            	TeradataSchemaStatVisitor visitor = new TeradataSchemaStatVisitor(); 
+            	x.getExpr().accept(visitor);
+            	putAliasMap(aliasMap, alias, null);
+            	// Add expression alias into aliasQuery map
+            	// in order to retrieve column info from aliasQueryMap
+            	// if aliasMap value is null 
+            	String uniqueAliasName = this.getCurrentTable() == null ?
+            			alias : this.getCurrentTable() + "." + alias;
+            	addAliasQuery(uniqueAliasName, x.getExpr());
+            }
+        }
+        
+        return false;
+	}
+	
+	protected void addAliasQuery(String alias, SQLObject query) {
+		String alias_lcase = alias.toLowerCase();
+		aliasQueryMap.put(alias_lcase, query);
+	}
+	
+	public SQLObject getAliasQuery(String alias) {
+		String alias_lcase = alias.toLowerCase();
+		return aliasQueryMap.get(alias_lcase);
+	}
+	
+	public Map<String, SQLObject> getAliasQueryMap() {
+		return aliasQueryMap;
 	}
 
 }

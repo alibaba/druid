@@ -118,7 +118,8 @@ public class TeradataStatementParser extends SQLStatementParser {
                 break;
             }
 
-        } else if (lexer.token() == (Token.SELECT)) {
+        } else if (lexer.token() == (Token.SELECT) 
+        		|| lexer.token() == (Token.SEL)) {
             SQLSelect select = this.exprParser.createSelectParser().select();
             select.setParent(insertStatement);
             insertStatement.setQuery(select);
