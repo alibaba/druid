@@ -1,0 +1,10 @@
+language: java
+jdk:
+  - oraclejdk8
+before_install:
+  - pip install --user codecov
+after_success:
+  - codecov
+branches:
+  except:
+    - appveyor
