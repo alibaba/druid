@@ -157,6 +157,7 @@ public class Keywords {
         map.put("SQLWARNING", Token.SQLWARNING);
         map.put("SQLEXCEPTION", Token.SQLEXCEPTION);
         map.put("FOUND", Token.FOUND);
+        map.put("CONDITION", Token.CONDITION);
         
         DEFAULT_KEYWORDS = new Keywords(map);
     }

@@ -92,6 +92,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue.ConditionTy
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareConditionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareHandlerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlHandlerType;
@@ -179,7 +180,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -3249,15 +3249,18 @@ public class MySqlStatementParser extends SQLStatementParser {
                 int markBp = lexer.bp();
                 lexer.nextToken();
                 lexer.nextToken();
-                System.out.println(lexer.token());
                 if (lexer.token() == Token.CURSOR)// cursor declare statement
                 {
                     lexer.reset(markBp, markChar, Token.DECLARE);
                     statementList.add(this.parseCursorDeclare());
                 } else if (lexer.token() == Token.HANDLER) {
-                	//DECLARE处理程序 [add by zhujun 2016-04-16]
+                	//DECLARE异常处理程序 [add by zhujun 2016-04-16]
                 	lexer.reset(markBp, markChar, Token.DECLARE);
                 	statementList.add(this.parseDeclareHandler());
+                } else if (lexer.token() == Token.CONDITION) {
+                	//DECLARE异常 [add by zhujun 2016-04-17]
+                	lexer.reset(markBp, markChar, Token.DECLARE);
+                	statementList.add(this.parseDeclareCondition());
                 } else {
                     lexer.reset(markBp, markChar, Token.DECLARE);
                     statementList.add(this.parseDeclare());
@@ -3789,7 +3792,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                 accept(Token.COMMA);
                 continue;
             } else if (lexer.token() != Token.EOF) {
-            	//TODO
                 break;
             } else {
                 throw new ParserException("declare handle not eof");
@@ -3804,5 +3806,49 @@ public class MySqlStatementParser extends SQLStatementParser {
         
 
         return stmt;
+    }
+    
+    /**
+     * zhujun [455910092@qq.com]
+     * 2016-04-17
+     * 定义条件
+     * @return
+     */
+    public MySqlDeclareConditionStatement parseDeclareCondition() {
+    	/*
+    	DECLARE condition_name CONDITION FOR condition_value
+
+    	condition_value:
+    	    SQLSTATE [VALUE] sqlstate_value
+    	  | mysql_error_code
+    	*/
+    	MySqlDeclareConditionStatement stmt = new MySqlDeclareConditionStatement();
+        accept(Token.DECLARE);
+
+        stmt.setConditionName(exprParser.name().toString());
+        
+        accept(Token.CONDITION);
+
+        accept(Token.FOR);
+        
+        String tokenName = lexer.stringVal();
+        ConditionValue condition = new ConditionValue();
+        if(tokenName.equalsIgnoreCase("SQLSTATE")) { //for SQLSTATE (SQLSTATE '10001') 
+			condition.setType(ConditionType.SQLSTATE);
+			lexer.nextToken();
+			condition.setValue(exprParser.name().toString());
+		} else if (lexer.token() == Token.LITERAL_INT) {
+			condition.setType(ConditionType.MYSQL_ERROR_CODE);
+			condition.setValue(lexer.integerValue().toString());
+			lexer.nextToken();
+		} else {
+			 throw new ParserException("declare condition grammer error.");
+		}
+        
+        stmt.setConditionValue(condition);
+
+        accept(Token.SEMI);
+    	
+    	return stmt;
     }
 }

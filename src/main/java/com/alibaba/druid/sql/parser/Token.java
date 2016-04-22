@@ -145,6 +145,7 @@ public enum Token {
     SQLWARNING("SQLWARNING"),
     SQLEXCEPTION("SQLEXCEPTION"),
     FOUND("FOUND"),
+    CONDITION("CONDITION"),
     
     //postgresql
     WINDOW("WINDOW"),

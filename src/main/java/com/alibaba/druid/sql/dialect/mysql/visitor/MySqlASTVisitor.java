@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareConditionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareHandlerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
@@ -586,5 +587,9 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlDeclareHandlerStatement x);
 
     void endVisit(MySqlDeclareHandlerStatement x);
+    
+    boolean visit(MySqlDeclareConditionStatement x);
+
+    void endVisit(MySqlDeclareConditionStatement x);
 
 } //
