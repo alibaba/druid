@@ -2898,4 +2898,9 @@ public class DruidDataSource extends DruidAbstractDataSource
     public void postDeregister() {
         
     }
+    
+    public boolean isClosed() {
+        return this.closed;
+    }
+    }
 }
