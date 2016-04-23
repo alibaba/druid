@@ -2902,5 +2902,4 @@ public class DruidDataSource extends DruidAbstractDataSource
     public boolean isClosed() {
         return this.closed;
     }
-    }
 }
