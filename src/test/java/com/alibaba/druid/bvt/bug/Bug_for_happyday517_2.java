@@ -36,8 +36,11 @@ public class Bug_for_happyday517_2 extends TestCase {
     private MockDriver      driver;
 
     final DataTruncation    exception = new java.sql.DataTruncation(0, true, true, 0, 0);
+    
+    private int originalDataSourceCount = 0;
 
     protected void setUp() throws Exception {
+        originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
 
         final MockPreparedStatement mockStatement = new MockPreparedStatement(null, null) {
 
@@ -67,7 +70,7 @@ public class Bug_for_happyday517_2 extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        Assert.assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_bug() throws Exception {
