@@ -138,13 +138,9 @@ public enum Token {
     CLOSE("CLOSE"),
     OUT("OUT"),
     INOUT("INOUT"),
-    HANDLER("HANDLER"),
     EXIT("EXIT"),
     UNDO("UNDO"),
     SQLSTATE("SQLSTATE"),
-    SQLWARNING("SQLWARNING"),
-    SQLEXCEPTION("SQLEXCEPTION"),
-    FOUND("FOUND"),
     CONDITION("CONDITION"),
     
     //postgresql
