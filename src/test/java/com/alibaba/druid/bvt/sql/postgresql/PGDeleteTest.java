@@ -34,16 +34,16 @@ public class PGDeleteTest extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("producers")));
@@ -56,7 +56,7 @@ public class PGDeleteTest extends PGTest {
 		PGSQLStatementParser parser = new PGSQLStatementParser(sql);
 		List<SQLStatement> statementList = parser.parseStatementList();
 		SQLStatement statemen = statementList.get(0);
-		print(statementList);
+//		print(statementList);
 		assertTrue(statementList.size() == 1);
 		assertTrue(statemen instanceof PGDeleteStatement);
 		PGDeleteStatement delete = (PGDeleteStatement) statemen;
