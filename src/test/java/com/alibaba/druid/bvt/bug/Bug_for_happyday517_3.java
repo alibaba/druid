@@ -29,7 +29,11 @@ public class Bug_for_happyday517_3 extends TestCase {
     private DruidDataSource dataSource;
     private MockDriver      driver;
 
+    private int originalDataSourceCount = 0;
+    
     protected void setUp() throws Exception {
+        originalDataSourceCount = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
+        
         driver = new MockDriver();
         dataSource = new DruidDataSource();
         dataSource.setDriver(driver);
@@ -40,7 +44,7 @@ public class Bug_for_happyday517_3 extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        Assert.assertEquals(originalDataSourceCount, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_bug() throws Exception {
