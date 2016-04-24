@@ -48,17 +48,17 @@ public class SQLServerSelectTest_outer_apply extends TestCase {
 
         String fomatSQL = SQLUtils.toSQLString(statementList, JdbcUtils.SQL_SERVER);
 
-        System.out.println(fomatSQL);
+//        System.out.println(fomatSQL);
 
         Assert.assertEquals(1, statementList.size());
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(7, visitor.getColumns().size());

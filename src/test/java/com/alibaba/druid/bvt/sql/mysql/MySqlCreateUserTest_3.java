@@ -34,7 +34,7 @@ public class MySqlCreateUserTest_3 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -47,10 +47,10 @@ public class MySqlCreateUserTest_3 extends MysqlTest {
         Assert.assertEquals("create user 'jeffrey'@'localhost' identified by password '*90E462C37378CED12064BB3388827D2BA3A9B689'", //
                             SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

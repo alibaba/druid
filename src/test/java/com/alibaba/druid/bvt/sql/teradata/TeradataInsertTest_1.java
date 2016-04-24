@@ -40,9 +40,9 @@ public class TeradataInsertTest_1 extends TeradataTest {
         
         TeradataSchemaStatVisitor visitor = new TeradataSchemaStatVisitor();
         insertStmt.accept(visitor);
-        System.out.println(visitor.getColumns());
-        System.out.println(visitor.getTables());
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println(visitor.getColumns());
+//        System.out.println(visitor.getTables());
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
 	}
 	
 	public void test_select() throws Exception {
@@ -75,21 +75,21 @@ public class TeradataInsertTest_1 extends TeradataTest {
 		Assert.assertEquals("c1", insertBlock.getSelectList().get(0).toString());
 		Assert.assertEquals("c2", insertBlock.getSelectList().get(1).toString());
         
-        System.out.println("***********below is useful info **********");
-        System.out.println("target table: " + insertStmt.getTableSource());
-        System.out.println("target columns: " + insertStmt.getColumns());
-        System.out.println("source from: " + insertBlock.getFrom());
-        System.out.println("source columns : " + insertBlock.getSelectList());
-        System.out.println("source condition: " + insertBlock.getWhere());
-        System.out.println("********");
+//        System.out.println("***********below is useful info **********");
+//        System.out.println("target table: " + insertStmt.getTableSource());
+//        System.out.println("target columns: " + insertStmt.getColumns());
+//        System.out.println("source from: " + insertBlock.getFrom());
+//        System.out.println("source columns : " + insertBlock.getSelectList());
+//        System.out.println("source condition: " + insertBlock.getWhere());
+//        System.out.println("********");
 		
         TeradataSchemaStatVisitor visitor = new TeradataSchemaStatVisitor();
         stmt.accept(visitor);
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
-        
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
 	}
 }

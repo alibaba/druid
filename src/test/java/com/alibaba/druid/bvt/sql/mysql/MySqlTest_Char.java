@@ -29,14 +29,14 @@ public class MySqlTest_Char extends MysqlTest {
         String sql = "SELECT char(888 using utf8)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        print(statementList);
+//        print(statementList);
         assertEquals(output(statementList),"SELECT char(888 USING utf8)");
     }
     public void test_1() throws Exception {
         String sql = "SELECT char('abc8a9b10c' using utf8)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        print(statementList);
+//        print(statementList);
         assertEquals(output(statementList),"SELECT char('abc8a9b10c' USING utf8)");
     }
 
@@ -44,7 +44,7 @@ public class MySqlTest_Char extends MysqlTest {
         String sql = "SELECT char(12,321,'lq9s9f','abc8a9b10c' using utf8)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        print(statementList);
+//        print(statementList);
         assertEquals(output(statementList),"SELECT char(12, 321, 'lq9s9f', 'abc8a9b10c' USING utf8)");
     }
 
@@ -52,7 +52,7 @@ public class MySqlTest_Char extends MysqlTest {
         String sql = "SELECT char(12,321,'lq9s9f','abc8a9b10c')";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        print(statementList);
+//        print(statementList);
         assertEquals(output(statementList),"SELECT char(12, 321, 'lq9s9f', 'abc8a9b10c')");
     }
 
@@ -60,7 +60,7 @@ public class MySqlTest_Char extends MysqlTest {
         String sql = "SELECT CHAR(77,121,83,81,'76' using utf8)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        print(statementList);
+//        print(statementList);
         assertEquals(output(statementList),"SELECT CHAR(77, 121, 83, 81, '76' USING utf8)");
     }
 }
