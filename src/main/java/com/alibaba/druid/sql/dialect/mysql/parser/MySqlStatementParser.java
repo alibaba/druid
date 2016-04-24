@@ -3253,7 +3253,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 {
                     lexer.reset(markBp, markChar, Token.DECLARE);
                     statementList.add(this.parseCursorDeclare());
-                } else if (lexer.token() == Token.HANDLER) {
+                } else if (identifierEquals("HANDLER")) {
                 	//DECLARE异常处理程序 [add by zhujun 2016-04-16]
                 	lexer.reset(markBp, markChar, Token.DECLARE);
                 	statementList.add(this.parseDeclareHandler());
@@ -3749,7 +3749,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
         lexer.nextToken();
         
-        accept(Token.HANDLER);
+        acceptIdentifier("HANDLER");
 
         accept(Token.FOR);
 
@@ -3759,7 +3759,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         	
         	if (tokenName.equalsIgnoreCase("NOT")) {//for 'NOT FOUND'
         		lexer.nextToken();
-        		accept(Token.FOUND);
+        		acceptIdentifier("HANDLE");
         		condition.setType(ConditionType.SYSTEM);
         		condition.setValue("NOT FOUND");
         		
@@ -3769,11 +3769,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         		//condition.setValue(lexer.stringVal());
         		//lexer.nextToken();
 				condition.setValue(exprParser.name().toString());
-			} else if(lexer.token() == Token.SQLEXCEPTION) { //for SQLEXCEPTION
+			} else if(identifierEquals("SQLEXCEPTION")) { //for SQLEXCEPTION
 				condition.setType(ConditionType.SYSTEM);
         		condition.setValue(lexer.stringVal());
         		lexer.nextToken();
-			} else if(lexer.token() == Token.SQLWARNING) { //for SQLWARNING
+			} else if(identifierEquals("SQLWARNING")) { //for SQLWARNING
 				condition.setType(ConditionType.SYSTEM);
         		condition.setValue(lexer.stringVal());
         		lexer.nextToken();

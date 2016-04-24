@@ -760,14 +760,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Map<String, String> aliasMap = getAliasMap();
 
         if (aliasMap != null) {
-            if (aliasMap.containsKey(name)
-            		&& aliasMap.get(name) != null) {
+            if (aliasMap.containsKey(name)) {
                 return aliasMap.get(name);
             }
             
             String name_lcase = name.toLowerCase();
-            if (name_lcase != name && aliasMap.containsKey(name_lcase)
-            		&& aliasMap.get(name_lcase) != null) {
+            if (name_lcase != name && aliasMap.containsKey(name_lcase)) {
                 return aliasMap.get(name_lcase);
             }
             
