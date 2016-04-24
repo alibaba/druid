@@ -33,7 +33,7 @@ public class MySqlGrantTest_7 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -44,10 +44,10 @@ public class MySqlGrantTest_7 extends MysqlTest {
         Assert.assertEquals("GRANT SELECT(col1), INSERT(col1, col2) ON mydb.mytbl TO 'someuser'@'somehost'", //
                             output);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

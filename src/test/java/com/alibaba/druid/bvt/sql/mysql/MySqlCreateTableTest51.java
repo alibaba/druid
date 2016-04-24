@@ -38,10 +38,10 @@ public class MySqlCreateTableTest51 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
@@ -50,7 +50,7 @@ public class MySqlCreateTableTest51 extends MysqlTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        System.out.println(output);
+//        System.out.println(output);
         Assert.assertEquals("CREATE TABLE `test` (" //
                             + "\n\t`Id` int(11) NOT NULL, "//
                             + "\n\t`text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL"//

@@ -26,17 +26,17 @@ public class TeradataSelectTest_1 extends TeradataTest{
 		TeradataStatementParser parser = new TeradataStatementParser(sql);
 		List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
         
         Assert.assertEquals(1, statementList.size());
         
         TeradataSchemaStatVisitor visitor = new TeradataSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
@@ -48,7 +48,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         Assert.assertTrue(visitor.getColumns().contains(new Column("employee", "name")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("info", "name")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("info", "salary")));
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
 	}
 	
 	// case #2: test ORDER BY...ASC/DESC
@@ -66,9 +66,9 @@ public class TeradataSelectTest_1 extends TeradataTest{
         TeradataSelectQueryBlock queryBlock = (TeradataSelectQueryBlock) select.getQuery();
 
         Assert.assertNotNull(queryBlock.getOrderBy());
-        System.out.println("select order by: " + queryBlock.getOrderBy().getItems().get(0).getExpr());
+//        System.out.println("select order by: " + queryBlock.getOrderBy().getItems().get(0).getExpr());
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -76,16 +76,16 @@ public class TeradataSelectTest_1 extends TeradataTest{
 
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
         Assert.assertEquals(2, visitor.getOrderByColumns().size());
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
 	}
 	// case #3: test SELECT CONCAT...
 	public void test_concat() throws Exception {
@@ -95,7 +95,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
-        print(statementList);
+//        print(statementList);
         Assert.assertEquals(1, statementList.size());
         
         SQLSelectStatement selectStmt = (SQLSelectStatement) statemen;
@@ -104,16 +104,16 @@ public class TeradataSelectTest_1 extends TeradataTest{
         TeradataSelectQueryBlock queryBlock = (TeradataSelectQueryBlock) select.getQuery();
 
         Assert.assertNotNull(queryBlock.getOrderBy());
-        System.out.println("select order by: " + queryBlock.getOrderBy().getItems().get(0).getExpr());
+//        System.out.println("select order by: " + queryBlock.getOrderBy().getItems().get(0).getExpr());
 
 
         TeradataSchemaStatVisitor visitor = new TeradataSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
@@ -123,7 +123,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
 
         Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
     }
 	// case #4: test constant
 	public void test_constant() throws Exception {
@@ -140,7 +140,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         TeradataSelectQueryBlock queryBlock = (TeradataSelectQueryBlock) select.getQuery();
         Assert.assertNull(queryBlock.getOrderBy());
         
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -151,7 +151,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
     }
 	// case #5: test sub-query
 	public void test_subQuery() throws Exception {
@@ -175,7 +175,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
             Assert.assertNotNull(subBlock.getOrderBy());	
         }
         
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -188,7 +188,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         Assert.assertEquals(1, visitor.getOrderByColumns().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ub_userdiscuss")));
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
     }
 
 	public void test_comment() throws Exception {
@@ -205,7 +205,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         TeradataSelectQueryBlock queryBlock = (TeradataSelectQueryBlock) select.getQuery();
         Assert.assertNull(queryBlock.getOrderBy());
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -218,7 +218,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
     }
 
 	public void test_not() throws Exception {
@@ -243,10 +243,10 @@ public class TeradataSelectTest_1 extends TeradataTest{
 
             Assert.assertTrue(binaryWhere.getLeft() instanceof SQLNotExpr);
             Assert.assertTrue(binaryWhere.getRight() instanceof SQLNotExpr);
-            System.out.println("left expr: " + ((SQLNotExpr)binaryWhere.getLeft()).getExpr());
+//            System.out.println("left expr: " + ((SQLNotExpr)binaryWhere.getLeft()).getExpr());
         }
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -259,7 +259,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t")));
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
     }
 	
 	public void test_interval() throws Exception {
@@ -271,7 +271,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         TeradataStatementParser parser = new TeradataStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -287,7 +287,7 @@ public class TeradataSelectTest_1 extends TeradataTest{
         Assert.assertEquals(5, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
+//        System.out.println("------ end of " + new Object(){}.getClass().getEnclosingMethod().getName() + " ------");
 
     }
 	

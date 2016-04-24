@@ -30,7 +30,7 @@ public class MySqlCreateTriggerTest extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
     }
@@ -42,7 +42,7 @@ public class MySqlCreateTriggerTest extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
     }
