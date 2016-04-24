@@ -74,9 +74,9 @@ public class PGSelectTest18 extends PGTest {
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getTables().size());

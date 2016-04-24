@@ -50,8 +50,8 @@ public class PGCreateTableTest_5 extends PGTest {
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("products")));
 

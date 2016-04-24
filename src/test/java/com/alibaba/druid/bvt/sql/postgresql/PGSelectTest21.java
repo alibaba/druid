@@ -33,7 +33,7 @@ public class PGSelectTest21 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals("SELECT DISTINCT type\nFROM dbmis2_databases", output(statementList));
 
@@ -42,9 +42,9 @@ public class PGSelectTest21 extends PGTest {
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getTables().size());
@@ -56,7 +56,7 @@ public class PGSelectTest21 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
         
         assertTrue(statemen instanceof PGSelectStatement);
         assertTrue(((PGSelectStatement)statemen).getWith().getWithQuery().size()==1);

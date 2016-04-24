@@ -38,16 +38,16 @@ public class PGInsertTest5 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees_log")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
