@@ -62,6 +62,8 @@ public class TeradataSelectParser extends SQLSelectParser{
 
         parseGroupBy(queryBlock);
         
+        parseWhere(queryBlock);
+        
         parserQualify(queryBlock);
         
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
