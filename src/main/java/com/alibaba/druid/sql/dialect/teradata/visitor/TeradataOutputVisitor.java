@@ -25,6 +25,9 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataDateExpr;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataExtractExpr;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataFormatExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.stmt.TeradataSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -202,5 +205,49 @@ public class TeradataOutputVisitor extends SQLASTOutputVisitor implements Terada
             return false;
 		}
 		return super.visit(x);
+	}
+
+	@Override
+	public boolean visit(TeradataDateExpr x) {
+        print0(ucase ? "DATE '" : "date '");
+        print0(x.getLiteral());
+        print('\'');
+        return false;
+	}
+
+	@Override
+	public void endVisit(TeradataDateExpr x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(TeradataFormatExpr x) {
+		print0(ucase ? "FORMAT '" : "format '");
+        print0(x.getLiteral());
+        print('\'');
+        return false;
+	}
+
+	@Override
+	public void endVisit(TeradataFormatExpr x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(TeradataExtractExpr x) {
+		print0(ucase ? "EXTRACT(" : "extract(");
+        print0(x.getUnit().name());
+        print0(ucase ? " FROM " : " from ");
+        x.getFrom().accept(this);
+        print(')');
+        return false;
+	}
+
+	@Override
+	public void endVisit(TeradataExtractExpr x) {
+		// TODO Auto-generated method stub
+		
 	}
 }

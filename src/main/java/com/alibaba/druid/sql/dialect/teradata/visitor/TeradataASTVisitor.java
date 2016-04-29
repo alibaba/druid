@@ -20,6 +20,9 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataDateExpr;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataExtractExpr;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataFormatExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -42,4 +45,16 @@ public interface TeradataASTVisitor extends SQLASTVisitor {
 	boolean visit(SQLSubqueryTableSource x);
 	
 	void endVisit(SQLSubqueryTableSource x);
+
+	boolean visit(TeradataDateExpr x);
+
+	void endVisit(TeradataDateExpr x);
+
+	boolean visit(TeradataFormatExpr x);
+
+	void endVisit(TeradataFormatExpr x);
+
+	boolean visit(TeradataExtractExpr x);
+
+	void endVisit(TeradataExtractExpr x);
 }
