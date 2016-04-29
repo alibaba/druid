@@ -44,6 +44,7 @@ public class TeradataLexer extends Lexer {
         map.put("MULTISET", Token.MULTISET);
         
         map.put("FORMAT", Token.FORMAT);
+        map.put("EXTRACT", Token.EXTRACT);
         
         map.put("QUALIFY", Token.QUALIFY);
         
