@@ -45,6 +45,9 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlSelectParser extends SQLSelectParser {
 
+    protected boolean              returningFlag = false;
+    protected MySqlUpdateStatement updateStmt;
+
     public MySqlSelectParser(SQLExprParser exprParser){
         super(exprParser);
     }
@@ -52,7 +55,25 @@ public class MySqlSelectParser extends SQLSelectParser {
     public MySqlSelectParser(String sql){
         this(new MySqlExprParser(sql));
     }
+    
+    public void parseFrom(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token() != Token.FROM) {
+            return;
+        }
+        
+        lexer.nextToken();
+        
+        if (lexer.token() == Token.UPDATE) { // taobao returning to urgly syntax
+            updateStmt = this.parseUpdateStatment();
+            updateStmt.addReturning(queryBlock.getSelectList());
+            returningFlag = true;
+            return;
+        }
+        
+        queryBlock.setFrom(parseTableSource());
+    }
 
+  
     @Override
     public SQLSelectQuery query() {
         if (lexer.token() == (Token.LPAREN)) {

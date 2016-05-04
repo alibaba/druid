@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
@@ -230,9 +229,16 @@ public class MySqlStatementParser extends SQLStatementParser {
         return parser.parseCrateTable();
     }
 
-    public SQLSelectStatement parseSelect() {
+    public SQLStatement parseSelect() {
         MySqlSelectParser selectParser = new MySqlSelectParser(this.exprParser);
-        return new SQLSelectStatement(selectParser.select(), JdbcConstants.MYSQL);
+        
+        SQLSelect select = selectParser.select();
+        
+        if (selectParser.returningFlag) {
+            return selectParser.updateStmt;
+        }
+        
+        return new SQLSelectStatement(select, JdbcConstants.MYSQL);
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
@@ -3664,7 +3670,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.FOR);
 
-        stmt.setSelect(parseSelect());
+        SQLSelectStatement selelctStmt = (SQLSelectStatement)parseSelect();
+        stmt.setSelect(selelctStmt);
 
         accept(Token.SEMI);
 
