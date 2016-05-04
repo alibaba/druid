@@ -1629,6 +1629,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
+        if (x.getReturning() != null && x.getReturning().size() > 0) {
+            print0(ucase ? "SELECT " : "select ");
+            printAndAccept(x.getReturning(), ", ");
+            println();
+            print0(ucase ? "FROM " : "from ");
+        }
+        
         print0(ucase ? "UPDATE " : "update ");
 
         if (x.isLowPriority()) {

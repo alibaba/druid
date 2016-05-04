@@ -23,8 +23,9 @@ import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
@@ -41,14 +42,9 @@ public class MySqlSelectTest_update extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
+        MySqlUpdateStatement updateStmt = (MySqlUpdateStatement) stmt;
 
-        SQLSelect select = selectStmt.getSelect();
-        Assert.assertNotNull(select.getQuery());
-        MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
-        Assert.assertNull(queryBlock.getOrderBy());
-
-//        print(statementList);
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
         
