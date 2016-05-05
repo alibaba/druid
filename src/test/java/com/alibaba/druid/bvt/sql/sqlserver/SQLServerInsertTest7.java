@@ -30,34 +30,16 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisito
 public class SQLServerInsertTest7 extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "INSERT Production.ScrapReason OUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate INTO @MyTableVar VALUES (N'Operator error', GETDATE());";
-
-        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
-        parser.setParseCompleteValues(false);
-        parser.setParseValuesSize(3);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement stmt = statementList.get(0);
-
-        SQLServerInsertStatement insertStmt = (SQLServerInsertStatement) stmt;
-
-        Assert.assertEquals(1, insertStmt.getValuesList().size());
-        Assert.assertEquals(2, insertStmt.getValues().getValues().size());
-        Assert.assertEquals(0, insertStmt.getColumns().size());
-        Assert.assertEquals(1, statementList.size());
-
-        SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
-        stmt.accept(visitor);
-
-        String formatSql = "INSERT INTO Production.ScrapReason"//
-                           + "\nOUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate"//
-                           + "\n\tINTO @MyTableVar"//
-                           + "\nVALUES"//
-                           + "\n(N'Operator error', GETDATE())";
-        Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
-    }
-
-    public void test_1() throws Exception {
-        String sql = "INSERT TOP(5)INTO dbo.EmployeeSales  OUTPUT inserted.EmployeeID, inserted.FirstName, inserted.LastName, inserted.YearlySales SELECT sp.BusinessEntityID, c.LastName, c.FirstName, sp.SalesYTD FROM Sales.SalesPerson AS sp INNER JOIN Person.Person AS c ON sp.BusinessEntityID = c.BusinessEntityID WHERE sp.SalesYTD > 250000.00 ORDER BY sp.SalesYTD DESC;";
+        String sql = "INSERT INTO MMS_SETTLEMENT_COM(handler,handleTime,MID,MERCHANTNAME,TOTALAMT,ACTUALAMT,"
+                + "     paymentMoney,STATUS,SERIAL_NUM,REMARKS)"
+                + "SELECT 'admin',getdate(),MID,MERCHANTNAME,SUM(CONVERT(DECIMAL(18,2),isnull(TOTALAMT,0))) "
+                + " TOTALAMT,SUM(CONVERT(DECIMAL(18,2),isnull(ACTUALAMT,0))) ACTUALAMT,SUM(CONVERT(DECIMAL(18,2),"
+                + " isnull(paymentMoney,0))) paymentMoney,2,126,("
+                + " SELECT REMARKS+'' "
+                + " FROM MMS_SETTLEMENT_COM "
+                + " WHERE MID=A.MID "
+                + " FOR XML PATH('')"
+                + ") AS REMARKS FROM MMS_SETTLEMENT_COM A WHERE ID IN (304,305,306,297,108,184) GROUP BY MID ,MERCHANTNAME";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         parser.setParseCompleteValues(false);
@@ -68,20 +50,27 @@ public class SQLServerInsertTest7 extends TestCase {
         SQLServerInsertStatement insertStmt = (SQLServerInsertStatement) stmt;
 
         Assert.assertEquals(0, insertStmt.getValuesList().size());
-        Assert.assertEquals(0, insertStmt.getColumns().size());
+        Assert.assertEquals(10, insertStmt.getColumns().size());
         Assert.assertEquals(1, statementList.size());
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String formatSql = "INSERT TOP (5) INTO dbo.EmployeeSales"//
-                           + "\nOUTPUT inserted.EmployeeID, inserted.FirstName, inserted.LastName, inserted.YearlySales"//
-                           + "\nSELECT sp.BusinessEntityID, c.LastName, c.FirstName, sp.SalesYTD"//
-                           + "\nFROM Sales.SalesPerson sp"//
-                           + "\nINNER JOIN Person.Person c ON sp.BusinessEntityID = c.BusinessEntityID"//
-                           + "\nWHERE sp.SalesYTD > 250000.00"//
-                           + "\nORDER BY sp.SalesYTD DESC";
+        String formatSql = "INSERT INTO MMS_SETTLEMENT_COM"
+                + "\n\t(handler, handleTime, MID, MERCHANTNAME, TOTALAMT"
+                + "\n\t, ACTUALAMT, paymentMoney, STATUS, SERIAL_NUM, REMARKS)"
+                + "\nSELECT 'admin', getdate(), MID, MERCHANTNAME, SUM(CONVERT(DECIMAL(18, 2), isnull(TOTALAMT, 0))) AS TOTALAMT"
+                + "\n\t, SUM(CONVERT(DECIMAL(18, 2), isnull(ACTUALAMT, 0))) AS ACTUALAMT, SUM(CONVERT(DECIMAL(18, 2), isnull(paymentMoney, 0))) AS paymentMoney, 2, 126, ("
+                + "\n\t\tSELECT REMARKS + ''"
+                + "\n\t\tFROM MMS_SETTLEMENT_COM"
+                + "\n\t\tWHERE MID = A.MID"
+                + "\n\t\tFOR XML PATH('')"
+                + "\n\t\t) AS REMARKS"
+                + "\nFROM MMS_SETTLEMENT_COM A"
+                + "\nWHERE ID IN (304, 305, 306, 297, 108, 184)"
+                + "\nGROUP BY MID, MERCHANTNAME";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
+
 
 }

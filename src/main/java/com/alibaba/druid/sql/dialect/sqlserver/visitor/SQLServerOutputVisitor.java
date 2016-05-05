@@ -469,6 +469,12 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             }
         }
         
+        if (x.getXmlPath() != null) {
+            println();
+            print0(ucase ? "FOR XML " : "for xml ");
+            x.getXmlPath().accept(this);
+        }
+        
         if (x.getOffset() != null) {
             println();
             print0(ucase ? "OFFSET " : "offset ");
