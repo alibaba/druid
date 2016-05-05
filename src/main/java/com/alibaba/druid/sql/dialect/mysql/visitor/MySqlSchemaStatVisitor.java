@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -538,7 +539,13 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
-        return visit((SQLUpdateStatement) x);
+        
+        visit((SQLUpdateStatement) x);
+        for (SQLSelectItem item : x.getReturning()) {
+            item.accept(this);
+        }
+        
+        return false;
     }
 
     @Override

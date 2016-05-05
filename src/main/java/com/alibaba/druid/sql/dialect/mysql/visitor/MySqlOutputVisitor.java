@@ -1645,6 +1645,24 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.isIgnore()) {
             print0(ucase ? "IGNORE " : "ignore ");
         }
+        
+        if (x.isCommitOnSuccess()) {
+            print0(ucase ? "COMMIT_ON_SUCCESS " : "commit_on_success ");
+        }
+        
+        if (x.isRollBackOnFail()) {
+            print0(ucase ? "ROLLBACK_ON_FAIL " : "rollback_on_fail ");
+        }
+        
+        if (x.isQueryOnPk()) {
+            print0(ucase ? "QUEUE_ON_PK " : "queue_on_pk ");
+        }
+        
+        if (x.getTargetAffectRow() != null) {
+            print0(ucase ? "TARGET_AFFECT_ROW " : "target_affect_row ");
+            x.getTargetAffectRow().accept(this);
+            print(' ');
+        }
 
         x.getTableSource().accept(this);
 

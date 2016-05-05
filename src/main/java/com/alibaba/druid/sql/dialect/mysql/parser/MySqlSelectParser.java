@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
@@ -250,6 +251,27 @@ public class MySqlSelectParser extends SQLSelectParser {
         if (identifierEquals("IGNORE")) {
             lexer.nextToken();
             update.setIgnore(true);
+        }
+        
+        if (identifierEquals("COMMIT_ON_SUCCESS")) {
+            lexer.nextToken();
+            update.setCommitOnSuccess(true);
+        }
+        
+        if (identifierEquals("ROLLBACK_ON_FAIL")) {
+            lexer.nextToken();
+            update.setRollBackOnFail(true);
+        }
+        
+        if (identifierEquals("QUEUE_ON_PK")) {
+            lexer.nextToken();
+            update.setQueryOnPk(true);
+        }
+        
+        if (identifierEquals("TARGET_AFFECT_ROW")) {
+            lexer.nextToken();
+            SQLExpr targetAffectRow = this.exprParser.expr();
+            update.setTargetAffectRow(targetAffectRow);
         }
 
         SQLTableSource updateTableSource = this.exprParser.createSelectParser().parseTableSource();
