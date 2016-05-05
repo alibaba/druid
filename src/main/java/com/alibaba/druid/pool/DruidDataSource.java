@@ -2879,8 +2879,15 @@ public class DruidDataSource extends DruidAbstractDataSource
     
     @Override
     public ObjectName preRegister(MBeanServer server, ObjectName name) throws Exception {
-        //do nothing
-        //return original name to avoid NullPointerException
+        if (server != null) {
+            try {
+                if (server.isRegistered(name)) {
+                    server.unregisterMBean(name);
+                }
+            } catch (Exception ex) {
+                LOG.warn("DruidDataSource preRegister error", ex);
+            }
+        }
         return name;
     }
 
