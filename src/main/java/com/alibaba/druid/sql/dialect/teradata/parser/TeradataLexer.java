@@ -50,6 +50,8 @@ public class TeradataLexer extends Lexer {
         
         map.put("MOD", Token.MOD);
         
+        map.put("USING", Token.USING);
+        
         DEFAULT_TD_KEYWORDS = new Keywords(map);
     }
     

@@ -106,7 +106,10 @@ public class TeradataExprParser extends SQLExprParser {
     	    		} else {
     	    			throw new ParserException("error " + lexer.toString());
     	    		}
-    			}
+    			} else if (lexer.token() == Token.NOT) {
+	        		accept(Token.NOT);
+	        		accept(Token.IDENTIFIER);
+	    		}
     			
     			accept(Token.RPAREN);
     			return primaryRest(cast);
@@ -180,6 +183,81 @@ public class TeradataExprParser extends SQLExprParser {
             	}
             }
         }
+    	
+    	if (lexer.token() == Token.LPAREN && expr instanceof SQLIdentifierExpr) {
+    		SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+    		String ident = identExpr.getName();
+    		
+    		if ("TRANSLATE".equalsIgnoreCase(ident)
+    				|| "TRANSLATE_CHK".equalsIgnoreCase(ident)) {
+    			lexer.nextToken();
+    			SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(ident);
+    			for (;;) {
+    				StringBuilder param = new StringBuilder();
+    				SQLExpr transExpr = expr();
+    				param.append(transExpr.toString());
+
+    				if (lexer.token() == Token.USING) {
+    					lexer.nextToken();
+    					SQLExpr using = expr();
+    					param.append(" USING ").append(using.toString());
+
+    					if (lexer.token() == Token.WITH) {
+    						lexer.nextToken();
+    						SQLExpr withExpr = expr();
+    						param.append(" WITH ").append(withExpr.toString());
+    					}
+    					methodInvokeExpr.addParameter(new SQLIdentifierExpr(param.toString()));
+    					break;
+    				} else if (lexer.token() == Token.RPAREN) {
+    					break;
+    				}
+    			}
+    			accept(Token.RPAREN);
+    		    expr = methodInvokeExpr;	
+    		    return primaryRest(expr);
+    		} else if ("SUBSTRING".equalsIgnoreCase(ident)) {
+    			// TODO: output as normal
+    			// currently like substring('abc',  FROM 1 FOR 10)
+    			lexer.nextToken();
+                SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(ident);
+                for (;;) {
+                	StringBuilder param = new StringBuilder();
+                    SQLExpr originExpr = expr();
+//                    param.append(originExpr);
+                    methodInvokeExpr.addParameter(originExpr);
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    } else if (lexer.token() == Token.FROM) {
+                        lexer.nextToken();
+                        SQLExpr from = expr();
+                        param.append(" FROM ").append(from.toString());
+//                        methodInvokeExpr.addParameter(from);
+
+                        if (lexer.token() == Token.FOR) {
+                            lexer.nextToken();
+                            SQLExpr forExpr = expr();
+                            param.append(" FOR ").append(forExpr.toString());
+//                            methodInvokeExpr.addParameter(forExpr);
+                        }
+                        methodInvokeExpr.addParameter(new SQLIdentifierExpr(param.toString()));
+                        break;
+                    } else if (lexer.token() == Token.RPAREN) {
+                        break;
+                    } else {
+                        throw new ParserException("syntax error");
+                    }
+                }
+
+                accept(Token.RPAREN);
+                expr = methodInvokeExpr;
+
+                return primaryRest(expr);
+    		}    			
+    		
+    	}
     	return super.primaryRest(expr);
     }
     
@@ -226,6 +304,16 @@ public class TeradataExprParser extends SQLExprParser {
         return sqlExpr;
     }
     
+    public SQLDataType parseDataType() {
+    	if (lexer.token() == Token.NOT) {
+    		SQLName typeExpr = name();
+            String typeName = typeExpr.toString();
+            SQLDataType dataType = new SQLDataTypeImpl(typeName);
+            return parseDataTypeRest(dataType);
+    	}
+		return super.parseDataType();
+    }
+    
     public SQLName name() {
     	String literal;
     	if (lexer.token() == Token.FORMAT) {
@@ -243,13 +331,12 @@ public class TeradataExprParser extends SQLExprParser {
     		} else {
     			throw new ParserException("error " + lexer.toString());
     		}
+    	} else if (lexer.token() == Token.NOT) {
+    		lexer.nextToken();
+    		SQLName name = new SQLIdentifierExpr("NOT " + lexer.stringVal());
+    		lexer.nextToken();
+    		return name;
     	} 
-//    	else if (lexer.stringVal().equalsIgnoreCase("date")) {
-//    		lexer.nextToken();
-//    		String restName = "date " + name();
-//    		SQLName name = new SQLIdentifierExpr(restName);
-//    		return name;
-//    	}
     	return super.name();
     }
     
@@ -489,7 +576,6 @@ public class TeradataExprParser extends SQLExprParser {
 	                        lexer.nextToken();
 	                        if (lexer.stringVal().equalsIgnoreCase("PRECEDING")) {
 	                            lexer.nextToken();
-	                            System.out.println("yes, inside!!");
 	                            windowing.setExpr(new SQLIdentifierExpr("UNBOUNDED PRECEDING"));
 	                        } else {
 	                            throw new ParserException("syntax error");

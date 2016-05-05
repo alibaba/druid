@@ -66,6 +66,8 @@ public class TeradataSelectParser extends SQLSelectParser{
         
         parserQualify(queryBlock);
         
+        parseWhere(queryBlock);
+        
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
 
         return queryRest(queryBlock);
@@ -77,17 +79,27 @@ public class TeradataSelectParser extends SQLSelectParser{
 		}
 		
 		lexer.nextToken();
+		
+		if (lexer.token() == Token.LPAREN) {
+			accept(Token.LPAREN);
+		}
 		if (lexer.token() == Token.LITERAL_INT) {
 			lexer.nextToken();
 			// possibly =, >=, <=
 			// ignore this for now
 			lexer.nextToken();
 			
+			if (lexer.token() == Token.LPAREN) {
+				accept(Token.LPAREN);
+			}
 			if (lexer.token() == Token.IDENTIFIER) {
 				SQLExpr expr = new SQLIdentifierExpr(lexer.stringVal());
 				lexer.nextToken();
 				if (lexer.token() != Token.COMMA) {
 					expr = this.exprParser.primaryRest(expr);	
+				}
+				if (lexer.token() == Token.RPAREN) {
+					accept(Token.RPAREN);
 				}
 				// TODO: add qualify clause into queryBlock
 				queryBlock.setQualifyClause(expr);
@@ -100,6 +112,9 @@ public class TeradataSelectParser extends SQLSelectParser{
 			if (lexer.token() != Token.COMMA) {
 				expr = this.exprParser.primaryRest(expr);	
 			}
+			if (lexer.token() == Token.RPAREN) {
+				accept(Token.RPAREN);
+			}
 			lexer.nextToken();
 			lexer.nextToken();
 			// TODO: add qualify clause into queryBlock
@@ -107,6 +122,8 @@ public class TeradataSelectParser extends SQLSelectParser{
 		} else {
 			throw new ParserException("not support token:" + lexer.token());
 		}
+		
+		
 	}
 
 }
