@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.alibaba.druid.pool;
+package com.alibaba.druid.support.simplejndi;
 
 import java.sql.SQLException;
 import java.util.Properties;
 
 import org.osjava.sj.loader.convert.Converter;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
@@ -28,7 +30,7 @@ import com.alibaba.druid.support.logging.LogFactory;
  * 支持simple-jndi
  * <h1>配置示例：</h1>
  * <pre>
-pgDruidTest/converter=com.alibaba.druid.pool.DruidDataSourceConverter
+pgDruidTest/converter=com.alibaba.druid.support.simplejndi.DruidDataSourceConverter
 pgDruidTest/type=javax.sql.DataSource
 pgDruidTest/driverClassName=org.postgresql.Driver
 pgDruidTest/url=jdbc:postgresql://127.0.0.1:5432/kettleRep
@@ -50,7 +52,7 @@ pgDruidTest/connectionProperties=druid.log.stmt.executableSql=true
  */
 public class DruidDataSourceConverter implements Converter {
 
-    private final static Log      LOG                                      = LogFactory.getLog(DruidDataSourceConverter.class);
+    private final static Log LOG = LogFactory.getLog(DruidDataSourceConverter.class);
 	/**
 	 * 
 	 * @see org.osjava.sj.loader.convert.Converter#convert(java.util.Properties, java.lang.String)

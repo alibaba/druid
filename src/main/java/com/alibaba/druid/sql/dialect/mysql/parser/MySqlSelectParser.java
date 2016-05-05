@@ -238,7 +238,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         return tableSrc;
     }
     
-    private MySqlUpdateStatement parseUpdateStatment() {
+    protected MySqlUpdateStatement parseUpdateStatment() {
         MySqlUpdateStatement update = new MySqlUpdateStatement();
 
         lexer.nextToken();

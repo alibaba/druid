@@ -242,37 +242,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
-        MySqlUpdateStatement stmt = createUpdateStatement();
-
-        if (lexer.token() == Token.UPDATE) {
-            lexer.nextToken();
-
-            if (identifierEquals(LOW_PRIORITY)) {
-                lexer.nextToken();
-                stmt.setLowPriority(true);
-            }
-
-            if (identifierEquals(IGNORE)) {
-                lexer.nextToken();
-                stmt.setIgnore(true);
-            }
-
-            SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
-            stmt.setTableSource(tableSource);
-        }
-
-        parseUpdateSet(stmt);
-
-        if (lexer.token() == (Token.WHERE)) {
-            lexer.nextToken();
-            stmt.setWhere(this.exprParser.expr());
-        }
-
-        stmt.setOrderBy(this.exprParser.parseOrderBy());
-
-        stmt.setLimit(parseLimit());
-
-        return stmt;
+        return new MySqlSelectParser(this.exprParser).parseUpdateStatment();
     }
 
     protected MySqlUpdateStatement createUpdateStatement() {

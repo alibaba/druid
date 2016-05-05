@@ -30,7 +30,7 @@ import com.alibaba.druid.stat.TableStat.Column;
 public class MySqlUpdateTest_6 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "/* 6445c36514623747244871009d62f9/0//sub_order_id:1462374729595/order_id:1462374729594/ */"
+        String sql = "/* 6445c36514623747244871009d62f9/0//sub_order_id:1234567890/order_id:123456/ */"
                 + "SELECT id, user_id, item_id, sku_id, flag"
                 + " , sellable_quantity, fff03, status, feature, feature_lock"
                 + " , version, gmt_create, gmt_modified, root_id, parent_id, dist_type, dist_id"
