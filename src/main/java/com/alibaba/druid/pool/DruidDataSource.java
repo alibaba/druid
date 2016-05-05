@@ -1333,16 +1333,22 @@ public class DruidDataSource extends DruidAbstractDataSource
                 return;
             }
 
+            boolean result;
             final long lastActiveTimeMillis = System.currentTimeMillis();
             lock.lockInterruptibly();
             try {
                 activeCount--;
                 closeCount++;
 
-                putLast(holder, lastActiveTimeMillis);
+                result = putLast(holder, lastActiveTimeMillis);
                 recycleCount++;
             } finally {
                 lock.unlock();
+            }
+            
+            if (!result) {
+                JdbcUtils.close(holder.getConnection());
+                LOG.info("connection recyle failed.");
             }
         } catch (Throwable e) {
             holder.clearStatementCache();
@@ -1478,7 +1484,11 @@ public class DruidDataSource extends DruidAbstractDataSource
         return mbeanRegistered;
     }
 
-    void putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
+    boolean putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
+        if (poolingCount >= maxActive) {
+            return false;
+        }
+        
         e.setLastActiveTimeMillis(lastActiveTimeMillis);
         connections[poolingCount] = e;
         incrementPoolingCount();
@@ -1490,6 +1500,8 @@ public class DruidDataSource extends DruidAbstractDataSource
 
         notEmpty.signal();
         notEmptySignalCount++;
+        
+        return true;
     }
 
     DruidConnectionHolder takeLast() throws InterruptedException, SQLException {
@@ -1783,7 +1795,7 @@ public class DruidDataSource extends DruidAbstractDataSource
         return removeAbandonedCount;
     }
 
-    protected void put(PhysicalConnectionInfo physicalConnectionInfo) {
+    protected boolean put(PhysicalConnectionInfo physicalConnectionInfo) {
         DruidConnectionHolder holder = null;
         try {
             holder = new DruidConnectionHolder(DruidDataSource.this, physicalConnectionInfo);
@@ -1797,11 +1809,14 @@ public class DruidDataSource extends DruidAbstractDataSource
                 lock.unlock();
             }
             LOG.error("create connection holder error", ex);
-            return;
+            return false;
         }
 
         lock.lock();
         try {
+            if (poolingCount >= maxActive) {
+                return false;
+            }
             connections[poolingCount] = holder;
             incrementPoolingCount();
 
@@ -1824,6 +1839,8 @@ public class DruidDataSource extends DruidAbstractDataSource
         } finally {
             lock.unlock();
         }
+        
+        return true;
     }
 
     public class CreateConnectionTask implements Runnable {
@@ -1915,7 +1932,11 @@ public class DruidDataSource extends DruidAbstractDataSource
                     continue;
                 }
 
-                put(physicalConnection);
+                boolean result = put(physicalConnection);
+                if (!result) {
+                    JdbcUtils.close(physicalConnection.getPhysicalConnection());
+                    LOG.info("put physical connection to pool failed.");
+                }
                 break;
             }
         }
@@ -2009,7 +2030,11 @@ public class DruidDataSource extends DruidAbstractDataSource
                     continue;
                 }
 
-                put(connection);
+                boolean result = put(connection);
+                if (!result) {
+                    JdbcUtils.close(connection.getPhysicalConnection());
+                    LOG.info("put physical connection to pool failed.");
+                }
 
                 errorCount = 0; // reset errorCount
             }
@@ -2824,6 +2849,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             try {
                 if (!this.isFillable(toCount)) {
                     JdbcUtils.close(holder.getConnection());
+                    LOG.info("fill connections skip.");
                     break;
                 }
                 this.putLast(holder, System.currentTimeMillis());
