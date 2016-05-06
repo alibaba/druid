@@ -590,13 +590,13 @@ public class DruidDataSource extends DruidAbstractDataSource
                 this.jdbcUrl = this.jdbcUrl.trim();
                 initFromWrapDriverUrl();
             }
+            
+            for (Filter filter : filters) {
+                filter.init(this);
+            }
 
             if (this.dbType == null || this.dbType.length() == 0) {
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
-            }
-
-            for (Filter filter : filters) {
-                filter.init(this);
             }
 
             if (JdbcConstants.MYSQL.equals(this.dbType) || //
