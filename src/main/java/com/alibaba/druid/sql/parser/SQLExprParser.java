@@ -1223,7 +1223,7 @@ public class SQLExprParser extends SQLParser {
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Add, rightExp, getDbType());
             expr = additiveRest(expr);
-        } else if (lexer.token() == Token.BARBAR) {
+        } else if (lexer.token() == Token.BARBAR || lexer.token() == Token.CONCAT) {
             lexer.nextToken();
             SQLExpr rightExp = multiplicative();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Concat, rightExp, getDbType());
