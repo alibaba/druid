@@ -65,6 +65,10 @@ public class PGExprParser extends SQLExprParser {
         }
         return super.parseDataType();
     }
+    
+    public PGSelectParser createSelectParser() {
+        return new PGSelectParser(this);
+    }
 
     public SQLExpr primary() {
         if (lexer.token() == Token.ARRAY) {
