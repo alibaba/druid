@@ -41,7 +41,7 @@ public class OdpsListResourcesTest extends TestCase {
     }
 
     public void exec_test(String resource) throws Exception {
-        System.out.println(resource);
+//        System.out.println(resource);
         InputStream is = null;
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
@@ -61,13 +61,13 @@ public class OdpsListResourcesTest extends TestCase {
         SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println(sql);
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-
-        System.out.println();
-        System.out.println("---------------------------");
-        System.out.println(SQLUtils.toOdpsString(stmt));
+//        System.out.println(sql);
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//
+//        System.out.println();
+//        System.out.println("---------------------------");
+//        System.out.println(SQLUtils.toOdpsString(stmt));
     }
 
     void mergValidate(String sql, String expect) {
