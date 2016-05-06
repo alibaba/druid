@@ -26,15 +26,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
 		init-method="init" destroy-method="close">
-		<property name="url">
-			<value>jdbc:derby:memory:spring-test;create=true</value>
-		</property>
-		<property name="initialSize">
-			<value>1</value>
-		</property>
-		<property name="maxActive">
-			<value>20</value>
-		</property>
+		<property name="url" value="jdbc:derby:memory:spring-test;create=true" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="20" />
 		<property name="proxyFilters">
 			<list>
 				<ref bean="test-filter" />
