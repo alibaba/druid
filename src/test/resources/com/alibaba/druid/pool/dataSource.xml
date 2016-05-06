@@ -7,10 +7,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
 	default-lazy-init="false">
 
-	<bean id="test-filter" class="com.alibaba.druid.bvt.pool.SpringIbatisFilterTest$TestFilter">
-	</bean>
-	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
-	</bean>
+	<bean id="test-filter" class="com.alibaba.druid.bvt.pool.SpringIbatisFilterTest$TestFilter" />
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter" />
 
 	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
 		init-method="init">
