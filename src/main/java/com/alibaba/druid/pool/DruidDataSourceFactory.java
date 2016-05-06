@@ -73,6 +73,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
     public final static String    PROP_FILTERS                             = "filters";
     public final static String    PROP_EXCEPTION_SORTER                    = "exceptionSorter";
     public final static String    PROP_EXCEPTION_SORTER_CLASS_NAME         = "exception-sorter-class-name";
+    public final static String    PROP_NAME                                = "name";
 
     public final static String    PROP_INIT                                = "init";
 
@@ -84,7 +85,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
             PROP_VALIDATIONQUERY, PROP_VALIDATIONQUERY_TIMEOUT, PROP_INITCONNECTIONSQLS,
             PROP_ACCESSTOUNDERLYINGCONNECTIONALLOWED, PROP_REMOVEABANDONED, PROP_REMOVEABANDONEDTIMEOUT,
             PROP_LOGABANDONED, PROP_POOLPREPAREDSTATEMENTS, PROP_MAXOPENPREPAREDSTATEMENTS, PROP_CONNECTIONPROPERTIES,
-            PROP_FILTERS, PROP_EXCEPTION_SORTER, PROP_EXCEPTION_SORTER_CLASS_NAME, PROP_INIT };
+            PROP_FILTERS, PROP_EXCEPTION_SORTER, PROP_EXCEPTION_SORTER_CLASS_NAME, PROP_INIT, PROP_NAME };
 
     @Override
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment)
