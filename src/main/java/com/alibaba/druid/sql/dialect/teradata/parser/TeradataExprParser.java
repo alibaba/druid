@@ -30,17 +30,17 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
+import com.alibaba.druid.sql.dialect.teradata.ast.TeradataDateTimeDataType;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataDateExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataDateTimeUnit;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataDateType;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataExtractExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataFormatExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
@@ -113,21 +113,6 @@ public class TeradataExprParser extends SQLExprParser {
     			
     			accept(Token.RPAREN);
     			return primaryRest(cast);
-    		case IDENTIFIER:
-	            String ident = lexer.stringVal();
-	            
-	            if ("DATE".equalsIgnoreCase(ident)) {
-	                if (lexer.token() == Token.LITERAL_CHARS) {
-	                	lexer.nextToken();
-		                TeradataDateExpr timestamp = new TeradataDateExpr();
-
-		                String literal = lexer.stringVal();
-	                	timestamp.setLiteral(literal);
-	                	accept(Token.LITERAL_CHARS);	
-	                	return primaryRest(timestamp);
-	                } 
-	            }
-    			return super.primary();
     		case FORMAT:
     			TeradataFormatExpr formatExpr = new TeradataFormatExpr();    		
 	    		lexer.nextToken();
@@ -157,6 +142,16 @@ public class TeradataExprParser extends SQLExprParser {
     			accept(Token.RPAREN);
     			
     			return primaryRest(extract);
+    		case LITERAL_CHARS:
+    			sqlExpr = new SQLCharExpr(lexer.stringVal());
+    			lexer.nextToken();
+    			if (identifierEquals("XB") || identifierEquals("XC")) {
+    				SQLExpr expr = new SQLIdentifierExpr(sqlExpr.toString() + lexer.stringVal());
+    				lexer.nextToken();
+    				return primaryRest(expr);
+    			} else {
+    				return primaryRest(sqlExpr);
+    			}    			
     		default:
     			return super.primary();
     	}
@@ -171,12 +166,16 @@ public class TeradataExprParser extends SQLExprParser {
     	if (expr.getClass() == SQLIdentifierExpr.class) {
             String ident = ((SQLIdentifierExpr)expr).getName();
             
-            if ("DATE".equalsIgnoreCase(ident)) {
+            if ("DATE".equalsIgnoreCase(ident)
+            		|| "TIME".equalsIgnoreCase(ident)
+            		|| "TIMESTAMP".equalsIgnoreCase(ident)) {
             	if (lexer.token() == Token.LITERAL_CHARS) { 
             		TeradataDateExpr timestamp = new TeradataDateExpr();
 
                     String literal = lexer.stringVal();
+                    TeradataDateType type = TeradataDateType.valueOf(ident.toUpperCase());
                     timestamp.setLiteral(literal);
+                    timestamp.setType(type);
                     accept(Token.LITERAL_CHARS);
                     
                     return primaryRest(timestamp);   
@@ -217,15 +216,11 @@ public class TeradataExprParser extends SQLExprParser {
     		    expr = methodInvokeExpr;	
     		    return primaryRest(expr);
     		} else if ("SUBSTRING".equalsIgnoreCase(ident)) {
-    			// TODO: output as normal
-    			// currently like substring('abc',  FROM 1 FOR 10)
     			lexer.nextToken();
                 SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(ident);
                 for (;;) {
-                	StringBuilder param = new StringBuilder();
                     SQLExpr originExpr = expr();
-//                    param.append(originExpr);
-                    methodInvokeExpr.addParameter(originExpr);
+                    methodInvokeExpr.getAttributes().put("ORIGIN_STRING", originExpr);
 
                     if (lexer.token() == Token.COMMA) {
                         lexer.nextToken();
@@ -233,16 +228,13 @@ public class TeradataExprParser extends SQLExprParser {
                     } else if (lexer.token() == Token.FROM) {
                         lexer.nextToken();
                         SQLExpr from = expr();
-                        param.append(" FROM ").append(from.toString());
-//                        methodInvokeExpr.addParameter(from);
+                        methodInvokeExpr.getAttributes().put("FROM_INDEX", from);
 
                         if (lexer.token() == Token.FOR) {
                             lexer.nextToken();
                             SQLExpr forExpr = expr();
-                            param.append(" FOR ").append(forExpr.toString());
-//                            methodInvokeExpr.addParameter(forExpr);
+                            methodInvokeExpr.getAttributes().put("FOR_INDEX", forExpr);
                         }
-                        methodInvokeExpr.addParameter(new SQLIdentifierExpr(param.toString()));
                         break;
                     } else if (lexer.token() == Token.RPAREN) {
                         break;
@@ -257,6 +249,57 @@ public class TeradataExprParser extends SQLExprParser {
                 return primaryRest(expr);
     		}    			
     		
+    	}
+    	
+    	if (identifierEquals("YEAR") ||
+    			identifierEquals("DAY") ||
+    			identifierEquals("HOUR") ||
+    			identifierEquals("MINUTE")) {
+    		String name = lexer.stringVal();
+    		lexer.nextToken();
+    		
+    		TeradataIntervalExpr interval = new TeradataIntervalExpr();
+    		interval.setValue(expr);
+    		TeradataIntervalUnit type = TeradataIntervalUnit.valueOf(name.toUpperCase());
+            interval.setType(type);
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                if (lexer.token() != Token.LITERAL_INT) {
+                    throw new ParserException("syntax error");
+                }
+                interval.setPrecision(lexer.integerValue().intValue());
+                lexer.nextToken();
+                accept(Token.RPAREN);
+            }
+            
+            accept(Token.TO);
+            
+            if (identifierEquals("SECOND")) {
+                lexer.nextToken();
+                interval.setToType(TeradataIntervalUnit.SECOND);
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    if (lexer.token() != Token.LITERAL_INT) {
+                        throw new ParserException("syntax error");
+                    }
+                    interval.setFactionalSecondsPrecision(lexer.integerValue().intValue());
+                    lexer.nextToken();
+                    accept(Token.RPAREN);
+                }
+            } else {
+                interval.setToType(TeradataIntervalUnit.MONTH);
+                lexer.nextToken();
+            }
+    	} else if (identifierEquals("MONTH") ||
+    			   identifierEquals("SECOND")) {
+    		String name = lexer.stringVal();
+    		lexer.nextToken();
+    		
+    		TeradataIntervalExpr interval = new TeradataIntervalExpr();
+    		interval.setValue(expr);
+    		TeradataIntervalUnit type = TeradataIntervalUnit.valueOf(name.toUpperCase());
+            interval.setType(type);
     	}
     	return super.primaryRest(expr);
     }
@@ -304,6 +347,49 @@ public class TeradataExprParser extends SQLExprParser {
         return sqlExpr;
     }
     
+    public SQLExpr parseAll() {
+    	SQLExpr sqlExpr;
+    	lexer.nextToken();
+    	
+    	if (lexer.token() == Token.LPAREN) {
+            accept(Token.LPAREN);
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                SQLExpr expr = this.expr();
+                SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr("ALL");
+                methodInvokeExpr.addParameter(expr);
+                accept(Token.RPAREN);
+                return methodInvokeExpr;
+            }
+            
+            if (lexer.token() == Token.LITERAL_CHARS) {
+            	SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr("ALL");
+            	while (lexer.token() != Token.RPAREN) {
+            		if (lexer.token() == Token.COMMA) {
+            			lexer.nextToken();
+            		}
+            		SQLExpr expr = this.expr();
+            		methodInvokeExpr.addParameter(expr);
+            	}
+            	accept(Token.RPAREN);
+            	return methodInvokeExpr;
+            }
+
+            SQLAnyExpr allExpr = new SQLAnyExpr();
+            SQLSelect allSubQuery = createSelectParser().select();
+            allExpr.setSubQuery(allSubQuery);
+            
+            accept(Token.RPAREN);
+
+            allSubQuery.setParent(allExpr);
+
+            sqlExpr = allExpr;
+        } else {
+            sqlExpr = new SQLIdentifierExpr("ALL");
+        }
+        return sqlExpr;
+    }
+    
     public SQLDataType parseDataType() {
     	if (lexer.token() == Token.NOT) {
     		SQLName typeExpr = name();
@@ -311,6 +397,33 @@ public class TeradataExprParser extends SQLExprParser {
             SQLDataType dataType = new SQLDataTypeImpl(typeName);
             return parseDataTypeRest(dataType);
     	}
+    	
+    	if("DATE".equalsIgnoreCase(lexer.stringVal()) ||
+    			"TIME".equalsIgnoreCase(lexer.stringVal()) ||
+    			"TIMESTAMP".equalsIgnoreCase(lexer.stringVal())) {
+        	String typeName = name().toString();
+    		TeradataDateTimeDataType tData = new TeradataDateTimeDataType(typeName);
+    		
+    		if (lexer.token() == Token.LPAREN) {
+    			lexer.nextToken();
+    			tData.addArgument(this.expr());
+    			accept(Token.RPAREN);
+    		}
+    		
+    		if (lexer.token() == Token.WITH) {
+    			if (!"DATE".equalsIgnoreCase(typeName)) {
+    				lexer.nextToken();
+        			tData.setWithTimeZone(true);
+        			acceptIdentifier("TIME");
+                    acceptIdentifier("ZONE");
+    			} else {
+    				throw new ParserException("DATE cannot followed by WITH.");
+    			}
+    		} 
+    		
+    		return parseDataTypeRest(tData);
+    	}
+    	
 		return super.parseDataType();
     }
     
@@ -336,7 +449,12 @@ public class TeradataExprParser extends SQLExprParser {
     		SQLName name = new SQLIdentifierExpr("NOT " + lexer.stringVal());
     		lexer.nextToken();
     		return name;
-    	} 
+    	} else if (lexer.token() == Token.INTERVAL) {
+    		SQLExpr interval = parseInterval();
+    		SQLName name = new SQLIdentifierExpr("INTREVAL " + 
+    		                                     ((TeradataIntervalExpr) interval).getType());
+    		return name;
+    	}
     	return super.name();
     }
     
@@ -480,7 +598,7 @@ public class TeradataExprParser extends SQLExprParser {
             }
 
             over.setOrderBy(parseOrderBy());
-            if (over.getOrderBy() != null) {
+//            if (over.getOrderBy() != null) {
             	TeradataAnalyticWindowing windowing = null;
                 if (lexer.stringVal().equalsIgnoreCase("ROWS")) {
                     lexer.nextToken();
@@ -584,7 +702,7 @@ public class TeradataExprParser extends SQLExprParser {
                 	}
                     over.setWindowing(windowing);
                 }
-            }
+//            }
 
             accept(Token.RPAREN);
 
@@ -595,25 +713,72 @@ public class TeradataExprParser extends SQLExprParser {
     
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
-
-        if (lexer.token() == Token.LITERAL_CHARS) {
-        	SQLExpr value = expr();
-
-            if (lexer.token() != Token.IDENTIFIER) {
-                throw new ParserException("Syntax error");
-            }
-
-            String unit = lexer.stringVal();
-            lexer.nextToken();
-
-            TeradataIntervalExpr intervalExpr = new TeradataIntervalExpr();
-            intervalExpr.setValue(value);
-            intervalExpr.setUnit(TeradataIntervalUnit.valueOf(unit.toUpperCase()));
-
-            return intervalExpr;
-        } else {
-            throw new ParserException("TODO with other interval");
+        
+        TeradataIntervalExpr interval = new TeradataIntervalExpr();
+        // for case like 'AS INTERVAL HOUR'
+        if (lexer.token() != Token.LITERAL_CHARS) {
+        	if (identifierEquals(TeradataIntervalUnit.YEAR.name()) ||
+        		identifierEquals(TeradataIntervalUnit.MONTH.name()) ||
+        		identifierEquals(TeradataIntervalUnit.DAY.name()) || 
+        		identifierEquals(TeradataIntervalUnit.HOUR.name()) ||
+        		identifierEquals(TeradataIntervalUnit.MINUTE.name()) ||
+        		identifierEquals(TeradataIntervalUnit.SECOND.name())) {
+        		TeradataIntervalUnit type = TeradataIntervalUnit.valueOf(lexer.stringVal().toUpperCase());
+                interval.setType(type);
+                lexer.nextToken();
+                return interval;
+        	} else {
+        		return new SQLIdentifierExpr("INTERVAL");	
+        	}            
         }
+        interval.setValue(new SQLCharExpr(lexer.stringVal()));
+        lexer.nextToken();
+
+        
+        TeradataIntervalUnit type = TeradataIntervalUnit.valueOf(lexer.stringVal().toUpperCase());
+        interval.setType(type);
+        lexer.nextToken();
+        
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            if (lexer.token() != Token.LITERAL_INT) {
+                throw new ParserException("syntax error");
+            }
+            interval.setPrecision(lexer.integerValue().intValue());
+            lexer.nextToken();
+            
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                if (lexer.token() != Token.LITERAL_INT) {
+                    throw new ParserException("syntax error");
+                }
+                interval.setFactionalSecondsPrecision(lexer.integerValue().intValue());
+                lexer.nextToken();
+            }
+            accept(Token.RPAREN);
+        }
+        
+        if (lexer.token() == Token.TO) {
+            lexer.nextToken();
+            if (identifierEquals("SECOND")) {
+                lexer.nextToken();
+                interval.setToType(TeradataIntervalUnit.SECOND);
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    if (lexer.token() != Token.LITERAL_INT) {
+                        throw new ParserException("syntax error");
+                    }
+                    interval.setToFactionalSecondsPrecision(lexer.integerValue().intValue());
+                    lexer.nextToken();
+                    accept(Token.RPAREN);
+                }
+            } else {
+                interval.setToType(TeradataIntervalUnit.MONTH);
+                lexer.nextToken();
+            }
+        }
+        
+        return interval;  
     }
     
 }
