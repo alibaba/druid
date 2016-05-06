@@ -7,10 +7,19 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class TeradataDateExpr extends SQLExprImpl implements SQLLiteralExpr, TeradataExpr{
 	
-	private String literal;
+	private String           literal;
+	private TeradataDateType type;
 	
 	public TeradataDateExpr() {
 		
+	}
+	
+	public TeradataDateType getType() {
+		return this.type;
+	}
+	
+	public void setType(TeradataDateType type) {
+		this.type = type;
 	}
 	
 	public String getLiteral() {
@@ -51,6 +60,10 @@ public class TeradataDateExpr extends SQLExprImpl implements SQLLiteralExpr, Ter
         } else if (!literal.equals(other.literal)) {
             return false;
         }
+        
+        if (type != other.type) {
+        	return false;
+        }
         return true;
 	}
 
@@ -59,6 +72,7 @@ public class TeradataDateExpr extends SQLExprImpl implements SQLLiteralExpr, Ter
 		final int prime = 31;
         int result = 1;
         result = prime * result + ((literal == null) ? 0 : literal.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
 	}
 }
