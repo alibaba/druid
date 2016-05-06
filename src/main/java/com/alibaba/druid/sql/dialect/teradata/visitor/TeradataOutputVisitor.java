@@ -20,9 +20,12 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.teradata.ast.TeradataDateTimeDataType;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataDateExpr;
@@ -167,10 +170,38 @@ public class TeradataOutputVisitor extends SQLASTOutputVisitor implements Terada
 
 	@Override
 	public boolean visit(TeradataIntervalExpr x) {
-		print0(ucase ? "INTERVAL " : "interval ");
-		x.getValue().accept(this);
-        print(' ');
-        print0(ucase ? x.getUnit().name() : x.getUnit().name_lcase);
+		if (x.getValue() instanceof SQLLiteralExpr) {
+            print0(ucase ? "INTERVAL " : "interval ");
+            x.getValue().accept(this);
+            print(' ');
+        } else {
+            print('(');
+            x.getValue().accept(this);
+            print0(") ");
+        }
+
+        print0(x.getType().name());
+
+        if (x.getPrecision() != null) {
+            print('(');
+            print(x.getPrecision().intValue());
+            if (x.getFactionalSecondsPrecision() != null) {
+                print0(", ");
+                print(x.getFactionalSecondsPrecision().intValue());
+            }
+            print(')');
+        }
+
+        if (x.getToType() != null) {
+            print0(ucase ? " TO " : " to ");
+            print0(x.getToType().name());
+            if (x.getToFactionalSecondsPrecision() != null) {
+                print('(');
+                print(x.getToFactionalSecondsPrecision().intValue());
+                print(')');
+            }
+        }
+
         return false;
 	}
 
@@ -203,13 +234,39 @@ public class TeradataOutputVisitor extends SQLASTOutputVisitor implements Terada
             }
             print(')');
             return false;
+		} else if ("SUBSTRING".equalsIgnoreCase(x.getMethodName())) {
+			SQLExpr origin_string = (SQLExpr) x.getAttribute("ORIGIN_STRING");
+			
+			print0(x.getMethodName());
+			print('(');
+
+			if (origin_string != null) {
+				origin_string.accept(this);
+			}
+			print0(ucase ? " FROM " : " from ");
+			if(x.getAttribute("FROM_INDEX") instanceof SQLIntegerExpr) {
+				int from_index = ((SQLIntegerExpr) x.getAttribute("FROM_INDEX")).getNumber().intValue();
+				print(from_index);
+			} else {
+				print(x.getAttribute("FROM_INDEX").toString());
+			}
+			
+			if (x.getAttribute("FOR_INDEX") != null) {
+				print0(ucase ? " FOR " : " for ");
+				int for_index = ((SQLIntegerExpr) x.getAttribute("FOR_INDEX")).getNumber().intValue();
+				print(for_index);
+			}
+			
+			print(')');
+			return false;
 		}
 		return super.visit(x);
 	}
 
 	@Override
-	public boolean visit(TeradataDateExpr x) {
-        print0(ucase ? "DATE '" : "date '");
+	public boolean visit(TeradataDateExpr x) {	
+        print0(ucase ? x.getType().toString().toUpperCase() + " '" 
+        		: x.getType().toString().toLowerCase() + " '");
         print0(x.getLiteral());
         print('\'');
         return false;
@@ -248,6 +305,28 @@ public class TeradataOutputVisitor extends SQLASTOutputVisitor implements Terada
 	@Override
 	public void endVisit(TeradataExtractExpr x) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(TeradataDateTimeDataType x) {
+		print0(x.getName()); 
+		
+		if (x.getArguments().size() > 0) {
+			print('(');
+			x.getArguments().get(0).accept(this);
+			print(')');
+		}
+		
+		if (x.isWithTimeZone()) {
+			print0(ucase ? " WITH TIME ZONE" : " with time zone");
+		}
+		
+		return false;
+	}
+
+	@Override
+	public void endVisit(TeradataDateTimeDataType x) {
 		
 	}
 }

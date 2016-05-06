@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.teradata.visitor;
 
+import com.alibaba.druid.sql.dialect.teradata.ast.TeradataDateTimeDataType;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataDateExpr;
@@ -87,6 +88,18 @@ public class TeradataASTVisitorAdapter extends SQLASTVisitorAdapter implements T
 
 	@Override
 	public void endVisit(TeradataExtractExpr x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(TeradataDateTimeDataType x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(TeradataDateTimeDataType x) {
 		// TODO Auto-generated method stub
 		
 	}
