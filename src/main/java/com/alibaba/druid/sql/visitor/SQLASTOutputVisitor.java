@@ -329,7 +329,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             } else {
                 print0(" ");
             }
-            print0(ucase ? x.getOperator().name : x.getOperator().name_lcase);
+            printOperator(x.getOperator());
             print0(" ");
         }
 
@@ -340,6 +340,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         return false;
+    }
+
+    protected void printOperator(SQLBinaryOperator operator) {
+        print0(ucase ? operator.name : operator.name_lcase);
     }
 
     private void visitorBinaryRight(SQLBinaryOpExpr x) {
