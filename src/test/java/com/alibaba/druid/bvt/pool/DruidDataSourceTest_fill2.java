@@ -84,8 +84,8 @@ public class DruidDataSourceTest_fill2 extends TestCase {
                 break;
             }
         }
-        Assert.assertEquals(true, dataSource.isFull());
-        Assert.assertEquals(true, fillCount.get() > 0);
+        Assert.assertTrue("not full", dataSource.isFull());
+        Assert.assertTrue("fillCount zero", fillCount.get() > 0);
 
     }
 }

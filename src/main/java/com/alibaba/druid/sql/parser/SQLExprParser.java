@@ -343,6 +343,7 @@ public class SQLExprParser extends SQLParser {
             case REPEAT:
             case TABLE:
             case TRUNCATE:
+            case EXCEPTION:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
