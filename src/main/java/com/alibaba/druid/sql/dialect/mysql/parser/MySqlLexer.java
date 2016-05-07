@@ -56,6 +56,11 @@ public class MySqlLexer extends Lexer {
         
         // for oceanbase & mysql 5.7
         map.put("PARTITION", Token.PARTITION);
+        
+        map.put("CONTINUE", Token.CONTINUE);
+        map.put("UNDO", Token.UNDO);
+        map.put("SQLSTATE", Token.SQLSTATE);
+        map.put("CONDITION", Token.CONDITION);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }

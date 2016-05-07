@@ -695,4 +695,5 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableRepairPartition x);
     
     void endVisit(SQLAlterTableRepairPartition x);
+    
 }

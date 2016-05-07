@@ -59,7 +59,7 @@ public class MySqlSelectTest_16 extends MysqlTest {
             Assert.assertTrue(binaryWhere.getRight() instanceof SQLNotExpr);
         }
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
@@ -45,6 +46,9 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlSelectParser extends SQLSelectParser {
 
+    protected boolean              returningFlag = false;
+    protected MySqlUpdateStatement updateStmt;
+
     public MySqlSelectParser(SQLExprParser exprParser){
         super(exprParser);
     }
@@ -52,7 +56,25 @@ public class MySqlSelectParser extends SQLSelectParser {
     public MySqlSelectParser(String sql){
         this(new MySqlExprParser(sql));
     }
+    
+    public void parseFrom(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token() != Token.FROM) {
+            return;
+        }
+        
+        lexer.nextToken();
+        
+        if (lexer.token() == Token.UPDATE) { // taobao returning to urgly syntax
+            updateStmt = this.parseUpdateStatment();
+            updateStmt.addReturning(queryBlock.getSelectList());
+            returningFlag = true;
+            return;
+        }
+        
+        queryBlock.setFrom(parseTableSource());
+    }
 
+  
     @Override
     public SQLSelectQuery query() {
         if (lexer.token() == (Token.LPAREN)) {
@@ -216,7 +238,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         return tableSrc;
     }
     
-    private MySqlUpdateStatement parseUpdateStatment() {
+    protected MySqlUpdateStatement parseUpdateStatment() {
         MySqlUpdateStatement update = new MySqlUpdateStatement();
 
         lexer.nextToken();
@@ -229,6 +251,27 @@ public class MySqlSelectParser extends SQLSelectParser {
         if (identifierEquals("IGNORE")) {
             lexer.nextToken();
             update.setIgnore(true);
+        }
+        
+        if (identifierEquals("COMMIT_ON_SUCCESS")) {
+            lexer.nextToken();
+            update.setCommitOnSuccess(true);
+        }
+        
+        if (identifierEquals("ROLLBACK_ON_FAIL")) {
+            lexer.nextToken();
+            update.setRollBackOnFail(true);
+        }
+        
+        if (identifierEquals("QUEUE_ON_PK")) {
+            lexer.nextToken();
+            update.setQueryOnPk(true);
+        }
+        
+        if (identifierEquals("TARGET_AFFECT_ROW")) {
+            lexer.nextToken();
+            SQLExpr targetAffectRow = this.exprParser.expr();
+            update.setTargetAffectRow(targetAffectRow);
         }
 
         SQLTableSource updateTableSource = this.exprParser.createSelectParser().parseTableSource();

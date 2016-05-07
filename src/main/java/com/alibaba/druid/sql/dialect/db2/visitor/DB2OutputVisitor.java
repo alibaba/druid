@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.db2.visitor;
 
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
@@ -90,5 +91,13 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
     @Override
     public void endVisit(DB2ValuesStatement x) {
 
+    }
+    
+    protected void printOperator(SQLBinaryOperator operator) {
+        if (operator == SQLBinaryOperator.Concat) {
+            print0(ucase ? "CONCAT" : "concat");
+        } else {
+            print0(ucase ? operator.name : operator.name_lcase);
+        }
     }
 }

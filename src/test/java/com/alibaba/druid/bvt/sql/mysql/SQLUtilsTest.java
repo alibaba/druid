@@ -26,8 +26,15 @@ public class SQLUtilsTest extends TestCase {
     }
     
     public void test_format_2() throws Exception {
-        String sql = "begin\n" + " if (a=10) then\n" + " null;\n" + " else\n" + " null;\n" + " end if;\n" + "end;";
-        System.out.println(SQLUtils.formatOracle(sql));
+        String sql = "begin\n"// 
+    + " if (a=10) then\n" + " null;\n" + " else\n" + " null;\n" + " end if;\n" + "end;";
+        Assert.assertEquals("BEGIN"
+                + "\n\tIF a = 10 THEN"
+                + "\n\t\tNULL;"
+                + "\n\tELSE"
+                + "\n\t\tNULL;"
+                + "\n\tEND IF;"
+                + "\nEND", SQLUtils.formatOracle(sql));
     }
     
     public void test_format_3() throws Exception {

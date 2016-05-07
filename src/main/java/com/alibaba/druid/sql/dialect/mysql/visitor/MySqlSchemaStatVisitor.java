@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -39,6 +40,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareConditionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareHandlerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
@@ -536,7 +539,13 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
-        return visit((SQLUpdateStatement) x);
+        
+        visit((SQLUpdateStatement) x);
+        for (SQLSelectItem item : x.getReturning()) {
+            item.accept(this);
+        }
+        
+        return false;
     }
 
     @Override
@@ -1388,4 +1397,28 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlSubPartitionByList x) {
 
     }
+
+	@Override
+	public boolean visit(MySqlDeclareHandlerStatement x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlDeclareHandlerStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(MySqlDeclareConditionStatement x) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlDeclareConditionStatement x) {
+		// TODO Auto-generated method stub
+		
+	}
 }

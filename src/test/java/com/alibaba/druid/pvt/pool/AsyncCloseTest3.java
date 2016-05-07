@@ -1,5 +1,6 @@
-package com.alibaba.druid.bvt.pool;
+package com.alibaba.druid.pvt.pool;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,6 +17,7 @@ import org.junit.Assert;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
@@ -24,7 +26,7 @@ import com.alibaba.druid.support.logging.NoLoggingImpl;
 
 import junit.framework.TestCase;
 
-public class AsyncCloseTest2 extends TestCase {
+public class AsyncCloseTest3 extends TestCase {
 
     protected DruidDataSource dataSource;
     private ExecutorService   connExecutor;
@@ -37,7 +39,13 @@ public class AsyncCloseTest2 extends TestCase {
 
     private NoLoggingImpl     noLoggingImpl;
 
+    long                      xmx;
+
     protected void setUp() throws Exception {
+        xmx = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1000 * 1000); // m;
+
+        System.gc();
+
         Field logField = DruidDataSource.class.getDeclaredField("LOG");
         logField.setAccessible(true);
         Log dataSourceLog = (Log) logField.get(null);
@@ -49,19 +57,19 @@ public class AsyncCloseTest2 extends TestCase {
             noLoggingImpl =  (NoLoggingImpl) dataSourceLog;
             noLoggingImpl.setErrorEnabled(false);
         }
-        
-        
+
         dataSource = new DruidDataSource();
+
         dataSource.setUrl("jdbc:mock:");
-        dataSource.setAsyncCloseConnectionEnable(true);
+        // dataSource.setAsyncCloseConnectionEnable(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setMaxActive(16);
 
         dataSource.getProxyFilters().add(new FilterAdapter() {
 
             @Override
-            public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql)
-                                                                                                     throws SQLException {
+            public boolean statement_execute(FilterChain chain, StatementProxy statement,
+                                             String sql) throws SQLException {
                 throw new SQLException();
             }
         });
@@ -69,11 +77,11 @@ public class AsyncCloseTest2 extends TestCase {
         dataSource.setExceptionSorter(new MyExceptionSorter());
         dataSource.init();
 
-        connExecutor = Executors.newFixedThreadPool(128);
-        closeExecutor = Executors.newFixedThreadPool(128);
+        connExecutor = Executors.newFixedThreadPool(2);
+        closeExecutor = Executors.newFixedThreadPool(2);
 
     }
-    
+
     protected void tearDown() throws Exception {
         dataSource.close();
         if (log4jLog != null) {
@@ -126,30 +134,46 @@ public class AsyncCloseTest2 extends TestCase {
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getPoolingCount());
 
-        final int COUNT = 1024 * 128;
+        final int COUNT;
+
+        if (xmx <= 256) {
+            COUNT = 1024 * 8;
+        } else if (xmx <= 512) {
+            COUNT = 1024 * 16;
+        } else if (xmx <= 1024) {
+            COUNT = 1024 * 32;
+        } else if (xmx <= 2048) {
+            COUNT = 1024 * 64;
+        } else {
+            COUNT = 1024 * 128;
+        }
+
         final CountDownLatch closeLatch = new CountDownLatch(COUNT * 2);
+        final CountDownLatch execLatch = new CountDownLatch(COUNT);
 
         Runnable connTask = new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    Connection conn = dataSource.getConnection();
+                    DruidPooledConnection conn = dataSource.getConnection();
                     Statement stmt = conn.createStatement();
 
                     CloseTask closeTask = new CloseTask(conn, closeLatch);
 
-                    closeExecutor.submit(closeTask);
-                    closeExecutor.submit(closeTask); // dup close
-
                     try {
                         stmt.execute("select 1");
                     } finally {
+                        closeExecutor.submit(closeTask);
+                        closeExecutor.submit(closeTask); // dup close
+
                         stmt.close();
                         conn.close();
                     }
                 } catch (SQLException e) {
                     errorCount.incrementAndGet();
+                } finally {
+                    execLatch.countDown();
                 }
             }
         };
@@ -158,7 +182,8 @@ public class AsyncCloseTest2 extends TestCase {
             connExecutor.submit(connTask);
         }
 
+        execLatch.await();
         closeLatch.await();
-        Assert.assertEquals("expect activeCount zero", 0, dataSource.getActiveCount());
+        Assert.assertEquals(0, dataSource.getActiveCount());
     }
 }

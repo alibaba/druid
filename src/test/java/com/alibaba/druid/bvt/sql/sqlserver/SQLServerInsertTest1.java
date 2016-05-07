@@ -40,6 +40,6 @@ public class SQLServerInsertTest1 extends TestCase {
 
         Assert.assertEquals(expect, text);
 
-        System.out.println(text);
+//        System.out.println(text);
     }
 }

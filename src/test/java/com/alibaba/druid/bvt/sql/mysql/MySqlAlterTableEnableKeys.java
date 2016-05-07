@@ -36,10 +36,10 @@ public class MySqlAlterTableEnableKeys extends TestCase {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE tableName" + //
                             "\n\tENABLE KEYS", SQLUtils.toMySqlString(stmt));

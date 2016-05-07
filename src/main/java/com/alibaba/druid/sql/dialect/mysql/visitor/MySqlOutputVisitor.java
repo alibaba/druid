@@ -54,9 +54,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.ConditionValue.ConditionType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCaseStatement.MySqlWhenStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareConditionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareHandlerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
@@ -1625,6 +1629,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
+        if (x.getReturning() != null && x.getReturning().size() > 0) {
+            print0(ucase ? "SELECT " : "select ");
+            printAndAccept(x.getReturning(), ", ");
+            println();
+            print0(ucase ? "FROM " : "from ");
+        }
+        
         print0(ucase ? "UPDATE " : "update ");
 
         if (x.isLowPriority()) {
@@ -1633,6 +1644,24 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.isIgnore()) {
             print0(ucase ? "IGNORE " : "ignore ");
+        }
+        
+        if (x.isCommitOnSuccess()) {
+            print0(ucase ? "COMMIT_ON_SUCCESS " : "commit_on_success ");
+        }
+        
+        if (x.isRollBackOnFail()) {
+            print0(ucase ? "ROLLBACK_ON_FAIL " : "rollback_on_fail ");
+        }
+        
+        if (x.isQueryOnPk()) {
+            print0(ucase ? "QUEUE_ON_PK " : "queue_on_pk ");
+        }
+        
+        if (x.getTargetAffectRow() != null) {
+            print0(ucase ? "TARGET_AFFECT_ROW " : "target_affect_row ");
+            x.getTargetAffectRow().accept(this);
+            print(' ');
         }
 
         x.getTableSource().accept(this);
@@ -3422,4 +3451,60 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlSubPartitionByList x) {
 
     }
+
+
+	@Override
+	public boolean visit(MySqlDeclareHandlerStatement x) {
+		
+		print0(ucase ? "DECLARE " : "declare ");
+        print0(ucase ? x.getHandleType().toString().toUpperCase() : x.getHandleType().toString().toLowerCase());
+        print0(ucase ? " HANDLER FOR " : " handler for ");
+        for (int i = 0; i < x.getConditionValues().size(); i++) {
+			ConditionValue cv = x.getConditionValues().get(i);
+			if (cv.getType() == ConditionType.SQLSTATE) {
+				print0(ucase ? " SQLSTATE " : " sqlstate ");
+				print0(cv.getValue());
+			} else if (cv.getType() == ConditionType.MYSQL_ERROR_CODE) {
+				print0(cv.getValue());
+			} else if (cv.getType() == ConditionType.SELF) {
+				print0(cv.getValue());
+			} else if (cv.getType() == ConditionType.SYSTEM){
+				print0(ucase ? cv.getValue().toUpperCase() : cv.getValue().toLowerCase());
+			}
+			
+			if (i != x.getConditionValues().size() - 1) {
+				print0(", ");
+			}
+			
+		}
+        println();
+        return true;
+	}
+
+	@Override
+	public void endVisit(MySqlDeclareHandlerStatement x) {
+		
+	}
+
+	@Override
+	public boolean visit(MySqlDeclareConditionStatement x) {
+		print0(ucase ? "DECLARE " : "declare ");
+        print0(x.getConditionName());
+        print0(ucase ? " CONDITION FOR " : " condition for ");
+        
+        if (x.getConditionValue().getType() == ConditionType.SQLSTATE) {
+			print0(ucase ? "SQLSTATE " : "sqlstate ");
+			print0(x.getConditionValue().getValue());
+		} else {
+			print0(x.getConditionValue().getValue());
+		}
+        
+        println();
+		return false;
+	}
+
+	@Override
+	public void endVisit(MySqlDeclareConditionStatement x) {
+		
+	}
 } //

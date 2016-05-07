@@ -21,11 +21,7 @@ import java.util.Map;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.teradata.ast.TeradataDateTimeDataType;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
@@ -35,7 +31,6 @@ import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataExtractExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataFormatExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements TeradataASTVisitor {

@@ -33,7 +33,7 @@ public class MySqlUseTest_0 extends MysqlTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 

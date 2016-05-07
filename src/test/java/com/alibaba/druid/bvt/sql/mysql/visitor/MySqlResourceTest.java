@@ -52,7 +52,7 @@ public class MySqlResourceTest extends TestCase {
     }
 
     public void exec_test(String resource) throws Exception {
-        System.out.println(resource);
+//        System.out.println(resource);
         InputStream is = null;
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
@@ -72,12 +72,12 @@ public class MySqlResourceTest extends TestCase {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println(sql);
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-
-        System.out.println();
-        System.out.println();
+//        System.out.println(sql);
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//
+//        System.out.println();
+//        System.out.println();
     }
 
     void mergValidate(String sql, String expect) {

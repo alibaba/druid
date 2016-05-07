@@ -51,10 +51,10 @@ public class SQLServerCreateTableTest_2 extends TestCase {
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(3, visitor.getColumns().size());

@@ -138,6 +138,10 @@ public enum Token {
     CLOSE("CLOSE"),
     OUT("OUT"),
     INOUT("INOUT"),
+    EXIT("EXIT"),
+    UNDO("UNDO"),
+    SQLSTATE("SQLSTATE"),
+    CONDITION("CONDITION"),
     
     //postgresql
     WINDOW("WINDOW"),
@@ -273,6 +277,8 @@ public enum Token {
     FORMAT("FORMAT"),
     QUALIFY("QUALIFY"),
     MOD("MOD"),
+    
+    CONCAT("CONCAT"), // DB2
 
     LPAREN("("), 
     RPAREN(")"), 

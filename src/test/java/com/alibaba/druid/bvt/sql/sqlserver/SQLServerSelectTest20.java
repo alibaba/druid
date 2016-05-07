@@ -40,6 +40,6 @@ public class SQLServerSelectTest20 extends TestCase {
 
         Assert.assertEquals(expect, text);
 
-        System.out.println(text);
+//        System.out.println(text);
     }
 }
