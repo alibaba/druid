@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.mysql.ast.clause;
 /**
  * 
  * @author zhujun [zhujunxxxxx@163.com]
- * @date 2016-04-14
  */
 public enum MySqlHandlerType {
 	//DECLARE处理程序handler_type

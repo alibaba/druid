@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 /**
  * 
  * @author zhujun [455910092@qq.com]
- * @date 2016-04-14
  */
 public class MySqlDeclareConditionStatement extends MySqlStatementImpl{
 	
