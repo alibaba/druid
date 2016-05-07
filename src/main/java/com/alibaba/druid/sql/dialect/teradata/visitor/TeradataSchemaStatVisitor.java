@@ -18,12 +18,18 @@ package com.alibaba.druid.sql.dialect.teradata.visitor;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.dialect.teradata.ast.TeradataDateTimeDataType;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalytic;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataDateExpr;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataExtractExpr;
+import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataFormatExpr;
 import com.alibaba.druid.sql.dialect.teradata.ast.expr.TeradataIntervalExpr;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
@@ -62,6 +68,14 @@ public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements Tera
 	@Override
 	public void endVisit(TeradataIntervalExpr x) {
 
+	}
+	
+	public boolean visit(SQLMethodInvokeExpr x) {
+		if ("trim".equalsIgnoreCase(x.getMethodName())) {
+			SQLExpr trim_character = (SQLExpr) x.getAttribute("trim_character");
+			accept(trim_character);
+		}
+		return super.visit(x);
 	}
 	
 	@Override
@@ -126,6 +140,54 @@ public class TeradataSchemaStatVisitor extends SchemaStatVisitor implements Tera
 	
 	public Map<String, SQLObject> getAliasQueryMap() {
 		return aliasQueryMap;
+	}
+
+	@Override
+	public boolean visit(TeradataDateExpr x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(TeradataDateExpr x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(TeradataFormatExpr x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(TeradataFormatExpr x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(TeradataExtractExpr x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(TeradataExtractExpr x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean visit(TeradataDateTimeDataType x) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void endVisit(TeradataDateTimeDataType x) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
