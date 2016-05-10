@@ -1508,6 +1508,11 @@ public class SQLExprParser extends SQLParser {
                 ) {
             typeName += (' ' + lexer.stringVal());
             lexer.nextToken();
+        } else if ("double".equalsIgnoreCase(typeName)
+                && JdbcConstants.POSTGRESQL.equals(getDbType()) //
+                ) {
+            typeName += (' ' + lexer.stringVal());
+            lexer.nextToken();
         }
 
         if (isCharType(typeName)) {
