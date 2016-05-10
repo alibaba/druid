@@ -22,8 +22,8 @@
 		<spring.version>4.2.5.RELEASE</spring.version>
 		<junit.version>4.12</junit.version>
 
-		<gpg.skip>false</gpg.skip>
-		<javadoc.skip>false</javadoc.skip>
+		<gpg.skip>true</gpg.skip>
+		<javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
