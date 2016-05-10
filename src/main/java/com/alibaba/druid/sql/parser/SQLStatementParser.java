@@ -1766,7 +1766,7 @@ public class SQLStatementParser extends SQLParser {
         return new SQLCreateTableParser(this.exprParser);
     }
 
-    public SQLSelectStatement parseSelect() {
+    public SQLStatement parseSelect() {
         SQLSelectParser selectParser = createSQLSelectParser();
         SQLSelect select = selectParser.select();
         return new SQLSelectStatement(select);

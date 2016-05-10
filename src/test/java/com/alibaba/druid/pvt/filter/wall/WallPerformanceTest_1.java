@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.filter.wall;
+package com.alibaba.druid.pvt.filter.wall;
 
 import junit.framework.TestCase;
 

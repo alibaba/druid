@@ -59,7 +59,7 @@ public class MySqlInsertTest_0 extends MysqlTest {
         Assert.assertEquals('1', text.charAt(charExpr.getText().length() - 1));
         Assert.assertEquals('\\', text.charAt(charExpr.getText().length() - 2));
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 

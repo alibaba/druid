@@ -372,9 +372,9 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token() != Token.FROM) {
             return;
         }
-
+        
         lexer.nextToken();
-
+        
         queryBlock.setFrom(parseTableSource());
     }
 

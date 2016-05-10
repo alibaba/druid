@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.pool;
+package com.alibaba.druid.pvt.pool;
 
 import java.sql.Connection;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 import junit.framework.TestCase;
@@ -26,39 +27,37 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class TestIdle3_Concurrent_MaxActive extends TestCase {
-
-    private MockDriver      driver;
-    private DruidDataSource dataSource;
+public class TestIdle3_Concurrent extends TestCase {
 
     protected void setUp() throws Exception {
         DruidDataSourceStatManager.clear();
+    }
 
-        driver = new MockDriver();
+    protected void tearDown() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
 
-        dataSource = new DruidDataSource();
+    public void test_idle2() throws Exception {
+        MockDriver driver = new MockDriver();
+
+        DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(14);
         dataSource.setMaxIdle(14);
         dataSource.setMinIdle(1);
-        dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
-        dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
+        dataSource.setMinEvictableIdleTimeMillis(30 * 10); // 300 / 10
+        dataSource.setTimeBetweenEvictionRunsMillis(18 * 10); // 180 / 10
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
 
-    }
+        // ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new
+        // ObjectName("com.alibaba:type=DataSource"));
 
-    protected void tearDown() throws Exception {
-        dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-    }
-
-    public void test_idle2() throws Exception {
-        // first connect
+        // 第一次创建连接
         {
             Assert.assertEquals(0, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
@@ -76,40 +75,50 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
 
-        for (int i = 0; i < 10; ++i) {
-            concurrent(200);
-            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getPoolingCount());
-            dataSource.shrink();
-            Assert.assertEquals(dataSource.getMinIdle(), dataSource.getPoolingCount());
+        {
+            // 并发创建14个
+            concurrent(driver, dataSource, 30);
         }
 
         // 连续打开关闭单个连接
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 1000; ++i) {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 
             Assert.assertEquals(1, dataSource.getActiveCount());
             conn.close();
         }
-        // Assert.assertEquals(2, dataSource.getPoolingCount());
+        Thread.sleep(1000);
+        Assert.assertEquals(1, dataSource.getPoolingCount());
 
+        dataSource.close();
     }
 
-    private void concurrent(final int threadCount) throws Exception {
-        Thread[] threads = new Thread[threadCount];
-        final CountDownLatch startLatch = new CountDownLatch(1);
-        final CountDownLatch endLatch = new CountDownLatch(threadCount);
-
-        for (int i = 0; i < threadCount; ++i) {
+    private void concurrent(final MockDriver driver, final DruidDataSource dataSource, final int count)
+                                                                                                       throws Exception {
+        final int LOOP_COUNT = 1000;
+        Thread[] threads = new Thread[count];
+        final CyclicBarrier barrier = new CyclicBarrier(count);
+        final CountDownLatch endLatch = new CountDownLatch(count);
+        for (int i = 0; i < count; ++i) {
             threads[i] = new Thread("thread-" + i) {
 
                 public void run() {
                     try {
-                        startLatch.await();
-                        Connection conn = dataSource.getConnection();
-                        long millis = new Random().nextInt(5) + 10;
-                        Thread.sleep(millis);
-                        conn.close();
+                        for (int i = 0; i < LOOP_COUNT; ++i) {
+                            barrier.await();
+
+                            Connection conn = dataSource.getConnection();
+                            {
+                                AtomicInteger c = new AtomicInteger();
+                                for (int j = 0; j < 1000 * 1; ++j) {
+                                    c.incrementAndGet();
+                                }
+                                c.set(0);
+                                Thread.sleep(1);
+                            }
+                            conn.close();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -119,14 +128,15 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
             };
         }
 
-        startLatch.countDown();
-        for (int i = 0; i < threadCount; ++i) {
+        for (int i = 0; i < count; ++i) {
             threads[i].start();
         }
 
         endLatch.await();
+        System.out.println("concurrent end");
 
-        // int max = count > dataSource.getMaxActive() ? dataSource.getMaxActive() : count;
-        // Assert.assertEquals(max, driver.getConnections().size());
+        int max = count > dataSource.getMaxActive() ? dataSource.getMaxActive() : count;
+        Assert.assertEquals(max, driver.getConnections().size());
+
     }
 }

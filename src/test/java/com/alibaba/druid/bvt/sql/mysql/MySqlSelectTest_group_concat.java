@@ -49,7 +49,7 @@ public class MySqlSelectTest_group_concat extends MysqlTest {
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
         Assert.assertNotNull(queryBlock.getOrderBy());
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 

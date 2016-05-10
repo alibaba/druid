@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
@@ -230,43 +229,20 @@ public class MySqlStatementParser extends SQLStatementParser {
         return parser.parseCrateTable();
     }
 
-    public SQLSelectStatement parseSelect() {
+    public SQLStatement parseSelect() {
         MySqlSelectParser selectParser = new MySqlSelectParser(this.exprParser);
-        return new SQLSelectStatement(selectParser.select(), JdbcConstants.MYSQL);
+        
+        SQLSelect select = selectParser.select();
+        
+        if (selectParser.returningFlag) {
+            return selectParser.updateStmt;
+        }
+        
+        return new SQLSelectStatement(select, JdbcConstants.MYSQL);
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
-        MySqlUpdateStatement stmt = createUpdateStatement();
-
-        if (lexer.token() == Token.UPDATE) {
-            lexer.nextToken();
-
-            if (identifierEquals(LOW_PRIORITY)) {
-                lexer.nextToken();
-                stmt.setLowPriority(true);
-            }
-
-            if (identifierEquals(IGNORE)) {
-                lexer.nextToken();
-                stmt.setIgnore(true);
-            }
-
-            SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
-            stmt.setTableSource(tableSource);
-        }
-
-        parseUpdateSet(stmt);
-
-        if (lexer.token() == (Token.WHERE)) {
-            lexer.nextToken();
-            stmt.setWhere(this.exprParser.expr());
-        }
-
-        stmt.setOrderBy(this.exprParser.parseOrderBy());
-
-        stmt.setLimit(parseLimit());
-
-        return stmt;
+        return new MySqlSelectParser(this.exprParser).parseUpdateStatment();
     }
 
     protected MySqlUpdateStatement createUpdateStatement() {
@@ -3253,7 +3229,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 {
                     lexer.reset(markBp, markChar, Token.DECLARE);
                     statementList.add(this.parseCursorDeclare());
-                } else if (lexer.token() == Token.HANDLER) {
+                } else if (identifierEquals("HANDLER")) {
                 	//DECLARE异常处理程序 [add by zhujun 2016-04-16]
                 	lexer.reset(markBp, markChar, Token.DECLARE);
                 	statementList.add(this.parseDeclareHandler());
@@ -3664,7 +3640,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.FOR);
 
-        stmt.setSelect(parseSelect());
+        SQLSelectStatement selelctStmt = (SQLSelectStatement)parseSelect();
+        stmt.setSelect(selelctStmt);
 
         accept(Token.SEMI);
 
@@ -3749,7 +3726,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
         lexer.nextToken();
         
-        accept(Token.HANDLER);
+        acceptIdentifier("HANDLER");
 
         accept(Token.FOR);
 
@@ -3759,7 +3736,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         	
         	if (tokenName.equalsIgnoreCase("NOT")) {//for 'NOT FOUND'
         		lexer.nextToken();
-        		accept(Token.FOUND);
+        		acceptIdentifier("HANDLE");
         		condition.setType(ConditionType.SYSTEM);
         		condition.setValue("NOT FOUND");
         		
@@ -3769,11 +3746,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         		//condition.setValue(lexer.stringVal());
         		//lexer.nextToken();
 				condition.setValue(exprParser.name().toString());
-			} else if(lexer.token() == Token.SQLEXCEPTION) { //for SQLEXCEPTION
+			} else if(identifierEquals("SQLEXCEPTION")) { //for SQLEXCEPTION
 				condition.setType(ConditionType.SYSTEM);
         		condition.setValue(lexer.stringVal());
         		lexer.nextToken();
-			} else if(lexer.token() == Token.SQLWARNING) { //for SQLWARNING
+			} else if(identifierEquals("SQLWARNING")) { //for SQLWARNING
 				condition.setType(ConditionType.SYSTEM);
         		condition.setValue(lexer.stringVal());
         		lexer.nextToken();

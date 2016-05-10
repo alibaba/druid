@@ -46,7 +46,7 @@ public class PGSelectTest22 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals("SELECT i.relname, d.indisunique, a.attname"
                 + "\nFROM pg_class t, pg_class i, pg_index d, pg_attribute"
@@ -73,9 +73,9 @@ public class PGSelectTest22 extends PGTest {
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(11, visitor.getColumns().size());
         Assert.assertEquals(3, visitor.getTables().size());

@@ -1629,6 +1629,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
+        if (x.getReturning() != null && x.getReturning().size() > 0) {
+            print0(ucase ? "SELECT " : "select ");
+            printAndAccept(x.getReturning(), ", ");
+            println();
+            print0(ucase ? "FROM " : "from ");
+        }
+        
         print0(ucase ? "UPDATE " : "update ");
 
         if (x.isLowPriority()) {
@@ -1637,6 +1644,24 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.isIgnore()) {
             print0(ucase ? "IGNORE " : "ignore ");
+        }
+        
+        if (x.isCommitOnSuccess()) {
+            print0(ucase ? "COMMIT_ON_SUCCESS " : "commit_on_success ");
+        }
+        
+        if (x.isRollBackOnFail()) {
+            print0(ucase ? "ROLLBACK_ON_FAIL " : "rollback_on_fail ");
+        }
+        
+        if (x.isQueryOnPk()) {
+            print0(ucase ? "QUEUE_ON_PK " : "queue_on_pk ");
+        }
+        
+        if (x.getTargetAffectRow() != null) {
+            print0(ucase ? "TARGET_AFFECT_ROW " : "target_affect_row ");
+            x.getTargetAffectRow().accept(this);
+            print(' ');
         }
 
         x.getTableSource().accept(this);

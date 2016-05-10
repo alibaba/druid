@@ -138,13 +138,9 @@ public enum Token {
     CLOSE("CLOSE"),
     OUT("OUT"),
     INOUT("INOUT"),
-    HANDLER("HANDLER"),
     EXIT("EXIT"),
     UNDO("UNDO"),
     SQLSTATE("SQLSTATE"),
-    SQLWARNING("SQLWARNING"),
-    SQLEXCEPTION("SQLEXCEPTION"),
-    FOUND("FOUND"),
     CONDITION("CONDITION"),
     
     //postgresql
@@ -281,6 +277,8 @@ public enum Token {
     FORMAT("FORMAT"),
     QUALIFY("QUALIFY"),
     MOD("MOD"),
+    
+    CONCAT("CONCAT"), // DB2
 
     LPAREN("("), 
     RPAREN(")"), 

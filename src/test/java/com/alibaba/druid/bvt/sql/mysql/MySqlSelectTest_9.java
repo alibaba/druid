@@ -44,7 +44,7 @@ public class MySqlSelectTest_9 extends MysqlTest {
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
         Assert.assertNull(queryBlock.getOrderBy());
         
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
