@@ -98,11 +98,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 this.throwException = value;
             }
         }
-        {
-            String tenantColumn = properties.getProperty("druid.wall.tenantColumn");
-            if (tenantColumn != null) {
-                this.config.setTenantColumn(tenantColumn);
-            }
+        
+        if (this.config != null) {
+            this.config.configFromProperties(properties);
         }
     }
 
@@ -161,7 +159,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
-
+        
         provider.setName(dataSource.getName());
 
         this.inited = true;
