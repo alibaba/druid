@@ -202,6 +202,14 @@ public class TableStat {
             }
 
             Name other = (Name) o;
+            
+            if (this.name == other.name) {
+                return true;
+            }
+            
+            if (this.name == null | other.name == null) {
+                return false;
+            }
 
             return this.name.equalsIgnoreCase(other.name);
         }
