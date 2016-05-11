@@ -17,9 +17,11 @@ package com.alibaba.druid.wall;
 
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import static com.alibaba.druid.util.Utils.getBoolean;
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
 public class WallConfig implements WallConfigMBean {
@@ -124,7 +126,7 @@ public class WallConfig implements WallConfigMBean {
     private int                 insertValuesCheckSize       = 3;
 
     public WallConfig(){
-
+        this.configFromProperties(System.getProperties());
     }
 
     public boolean isCaseConditionConstAllow() {
@@ -787,4 +789,36 @@ public class WallConfig implements WallConfigMBean {
         this.insertValuesCheckSize = insertValuesCheckSize;
     }
 
+    public void configFromProperties(Properties properties) {
+        {
+            String tenantColumn = properties.getProperty("druid.wall.tenantColumn");
+            if (tenantColumn != null) {
+                this.setTenantColumn(tenantColumn);
+            }
+        }
+        {
+            Boolean selelctAllow = getBoolean(properties, "druid.wall.selelctAllow");
+            if (selelctAllow != null) {
+                this.setSelelctAllow(selelctAllow);
+            }
+        }
+        {
+            Boolean updateAllow = getBoolean(properties, "druid.wall.updateAllow");
+            if (updateAllow != null) {
+                this.setUpdateAllow(updateAllow);
+            }
+        }
+        {
+            Boolean deleteAllow = getBoolean(properties, "druid.wall.deleteAllow");
+            if (deleteAllow != null) {
+                this.setDeleteAllow(deleteAllow);
+            }
+        }
+        {
+            Boolean insertAllow = getBoolean(properties, "druid.wall.insertAllow");
+            if (insertAllow != null) {
+                this.setInsertAllow(insertAllow);
+            }
+        }
+    }
 }
