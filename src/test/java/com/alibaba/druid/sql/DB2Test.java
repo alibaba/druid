@@ -40,6 +40,6 @@ public class DB2Test extends TestCase {
 	        if ("false".equals(outputProperty)) {
 	            return;
 	        }
-	        System.out.println(text);
+//	        System.out.println(text);
 	    }
 }
