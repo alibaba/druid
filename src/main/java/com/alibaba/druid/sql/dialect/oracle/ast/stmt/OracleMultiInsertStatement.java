@@ -190,7 +190,7 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
             if (visitor.visit(this)) {
                 this.acceptChild(visitor, tableSource);
                 this.acceptChild(visitor, columns);
-                this.acceptChild(visitor, values);
+                this.acceptChild(visitor, valuesList);
                 this.acceptChild(visitor, query);
                 this.acceptChild(visitor, returning);
                 this.acceptChild(visitor, errorLogging);

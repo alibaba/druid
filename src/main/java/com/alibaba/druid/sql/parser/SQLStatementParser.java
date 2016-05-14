@@ -1474,11 +1474,20 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token() == Token.VALUES) {
             lexer.nextToken();
-            accept(Token.LPAREN);
-            SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-            this.exprParser.exprList(values.getValues(), values);
-            insertStatement.setValues(values);
-            accept(Token.RPAREN);
+            for (;;) {
+                accept(Token.LPAREN);
+                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+                this.exprParser.exprList(values.getValues(), values);
+                insertStatement.getValuesList().add(values);
+                accept(Token.RPAREN);
+                
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                } else {
+                    break;
+                }
+            }
         } else if (acceptSubQuery && (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN)) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             insertStatement.setQuery(queryExpr.getSubQuery());

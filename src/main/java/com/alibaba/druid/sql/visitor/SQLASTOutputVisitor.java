@@ -1067,11 +1067,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             decrementIndent();
         }
 
-        if (x.getValues() != null) {
+        if (!x.getValuesList().isEmpty()) {
             println();
             print0(ucase ? "VALUES" : "values");
             println();
-            x.getValues().accept(this);
+            printAndAccept(x.getValuesList(), ", ");
         } else {
             if (x.getQuery() != null) {
                 println();
