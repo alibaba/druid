@@ -31,38 +31,13 @@ public class MySqlInsertStatement extends SQLInsertStatement {
     private boolean             highPriority       = false;
     private boolean             ignore             = false;
 
-    private List<ValuesClause>  valuesList         = new ArrayList<ValuesClause>();
-
     private final List<SQLExpr> duplicateKeyUpdate = new ArrayList<SQLExpr>();
 
     public List<SQLExpr> getDuplicateKeyUpdate() {
         return duplicateKeyUpdate;
     }
 
-    public ValuesClause getValues() {
-        if (valuesList.size() == 0) {
-            return null;
-        }
-        return valuesList.get(0);
-    }
-
-    public void setValues(ValuesClause values) {
-        if (valuesList.size() == 0) {
-            valuesList.add(values);
-        } else {
-            valuesList.set(0, values);
-        }
-    }
-
-    public List<ValuesClause> getValuesList() {
-        return valuesList;
-    }
-
-    public void setValuesList(List<ValuesClause> valuesList) {
-		this.valuesList = valuesList;
-	}
-
-	public boolean isLowPriority() {
+    public boolean isLowPriority() {
         return lowPriority;
     }
 
