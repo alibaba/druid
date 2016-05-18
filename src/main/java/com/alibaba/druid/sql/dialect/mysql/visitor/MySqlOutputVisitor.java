@@ -941,6 +941,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.isIgnore()) {
             print0(ucase ? "IGNORE " : "ignore ");
         }
+        
+        if (x.isRollbackOnFail()) {
+            print0(ucase ? "ROLLBACK_ON_FAIL " : "rollback_on_fail ");
+        }
 
         print0(ucase ? "INTO " : "into ");
 

@@ -30,6 +30,7 @@ public class MySqlInsertStatement extends SQLInsertStatement {
     private boolean             delayed            = false;
     private boolean             highPriority       = false;
     private boolean             ignore             = false;
+    private boolean             rollbackOnFail     = false;
 
     private final List<SQLExpr> duplicateKeyUpdate = new ArrayList<SQLExpr>();
 
@@ -67,6 +68,14 @@ public class MySqlInsertStatement extends SQLInsertStatement {
 
     public void setIgnore(boolean ignore) {
         this.ignore = ignore;
+    }
+
+    public boolean isRollbackOnFail() {
+        return rollbackOnFail;
+    }
+
+    public void setRollbackOnFail(boolean rollbackOnFail) {
+        this.rollbackOnFail = rollbackOnFail;
     }
 
     @Override
