@@ -249,11 +249,17 @@ public class MySqlLexer extends Lexer {
 
             mark = pos;
             bufPos = 1;
-            char ch;
+            char ch = '\0', last_ch;
             for (;;) {
+                last_ch = ch;
                 ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
+                    if (last_ch == '-' && charAt(pos-2) != '-') {
+                        ch = last_ch;
+                        bufPos--;
+                        pos--;
+                    }
                     break;
                 }
 

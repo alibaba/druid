@@ -1936,24 +1936,38 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.INSERT) {
             lexer.nextToken();
 
-            if (identifierEquals(LOW_PRIORITY)) {
-                insertStatement.setLowPriority(true);
-                lexer.nextToken();
-            }
+            for (;;) {
+                if (identifierEquals(LOW_PRIORITY)) {
+                    insertStatement.setLowPriority(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (identifierEquals(DELAYED)) {
-                insertStatement.setDelayed(true);
-                lexer.nextToken();
-            }
+                if (identifierEquals(DELAYED)) {
+                    insertStatement.setDelayed(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (identifierEquals("HIGH_PRIORITY")) {
-                insertStatement.setHighPriority(true);
-                lexer.nextToken();
-            }
+                if (identifierEquals("HIGH_PRIORITY")) {
+                    insertStatement.setHighPriority(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (identifierEquals(IGNORE)) {
-                insertStatement.setIgnore(true);
-                lexer.nextToken();
+                if (identifierEquals(IGNORE)) {
+                    insertStatement.setIgnore(true);
+                    lexer.nextToken();
+                    continue;
+                }
+
+                if (identifierEquals("ROLLBACK_ON_FAIL")) {
+                    insertStatement.setRollbackOnFail(true);
+                    lexer.nextToken();
+                    continue;
+                }
+                
+                break;
             }
 
             if (lexer.token() == Token.INTO) {
