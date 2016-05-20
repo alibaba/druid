@@ -1291,7 +1291,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         String columnName = x.getName().toString();
-        addColumn(tableName, columnName);
+        Column column = addColumn(tableName, columnName);
+        column.setDataType(x.getDataType().getName());
 
         return false;
     }
