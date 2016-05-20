@@ -630,8 +630,26 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print('\'');
 
         String text = x.getText();
-        text = text.replaceAll("'", "''");
-        text = text.replace("\\", "\\\\");
+        
+        StringBuilder buf = new StringBuilder(text.length());
+        for (int i = 0; i < text.length(); ++i) {
+            char ch = text.charAt(i);
+            if (ch == '\'') {
+                buf.append('\'');
+                buf.append('\'');
+            } else if (ch == '\\') {
+                buf.append('\\');
+                buf.append('\\');
+            } else if (ch == '\0') {
+                buf.append('\\');
+                buf.append('0');
+            } else {
+                buf.append(ch);
+            }
+        }
+        if (buf.length() != text.length()) {
+            text = buf.toString();
+        }
 
         print0(text);
 

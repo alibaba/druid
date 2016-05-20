@@ -335,8 +335,8 @@ public class MySqlLexer extends Lexer {
                 }
 
                 switch (ch) {
-                    case '\0':
-                        putChar(ch = '\0');
+                    case '0':
+                        putChar('\0');
                         break;
                     case '\'':
                         putChar('\'');
