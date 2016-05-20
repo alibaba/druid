@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlCreateTableTest70 extends MysqlTest {
 
@@ -53,6 +54,10 @@ public class MySqlCreateTableTest70 extends MysqlTest {
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
+        
+        Column column = visitor.getColumn("app_customer_license", "version");
+        Assert.assertNotNull(column);
+        Assert.assertEquals("bigint", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
