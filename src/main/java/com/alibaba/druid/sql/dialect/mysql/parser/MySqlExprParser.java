@@ -497,8 +497,22 @@ public class MySqlExprParser extends SQLExprParser {
             }
 
             accept(Token.RPAREN);
-
-            return primaryRest(methodInvokeExpr);
+            
+            // 
+            
+            if (methodInvokeExpr.getParameters().size() == 1 // 
+                    && lexer.token() == Token.IDENTIFIER) {
+                SQLExpr value = methodInvokeExpr.getParameters().get(0);
+                String unit = lexer.stringVal();
+                lexer.nextToken();
+                
+                MySqlIntervalExpr intervalExpr = new MySqlIntervalExpr();
+                intervalExpr.setValue(value);
+                intervalExpr.setUnit(MySqlIntervalUnit.valueOf(unit.toUpperCase()));
+                return intervalExpr;
+            } else {
+                return primaryRest(methodInvokeExpr);
+            }
         } else {
             SQLExpr value = expr();
 
