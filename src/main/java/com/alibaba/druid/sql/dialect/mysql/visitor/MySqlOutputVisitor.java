@@ -299,8 +299,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     public boolean visit(SQLColumnDefinition x) {
         x.getName().accept(this);
-        print(' ');
-        x.getDataType().accept(this);
+        
+        SQLDataType dataType = x.getDataType();
+		if (dataType != null) {
+	        print(' ');
+	        dataType.accept(this);
+        }
 
         if (x.getCharsetExpr() != null) {
             print0(ucase ? " CHARSET " : " charset ");
