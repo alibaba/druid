@@ -1509,7 +1509,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             while (poolingCount == 0) {
                 emptySignal(); // send signal to CreateThread create connection
                 
-                if (failFast && createError != null) {
+                if (failFast && failContinuous.get()) {
                     throw new DataSourceNotAvailableException(createError);
                 }
                 
@@ -1549,7 +1549,7 @@ public class DruidDataSource extends DruidAbstractDataSource
             if (poolingCount == 0) {
                 emptySignal(); // send signal to CreateThread create connection
                 
-                if (failFast && createError != null) {
+                if (failFast && failContinuous.get()) {
                     throw new DataSourceNotAvailableException(createError);
                 }
 
@@ -1885,21 +1885,23 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                 try {
                     physicalConnection = createPhysicalConnection();
+                    setFailContinuous(false);
                 } catch (SQLException e) {
                     LOG.error("create connection error, url: " + jdbcUrl, e);
 
                     errorCount++;
-                    
-                    if (failFast) {
-                        lock.lock();
-                        try {
-                            notEmpty.signalAll();
-                        } finally {
-                            lock.unlock();
-                        }
-                    }
-
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
+                        // fail over retry attempts
+                        setFailContinuous(true);
+                        if (failFast) {
+                            lock.lock();
+                            try {
+                                notEmpty.signalAll();
+                            } finally {
+                                lock.unlock();
+                            }
+                        }
+                        
                         if (breakAfterAcquireFailure) {
                             lock.lock();
                             try {
@@ -1916,6 +1918,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                     }
                 } catch (RuntimeException e) {
                     LOG.error("create connection error", e);
+                    // unknow fatal exception
+                    setFailContinuous(true);
                     continue;
                 } catch (Error e) {
                     lock.lock();
@@ -1925,6 +1929,8 @@ public class DruidDataSource extends DruidAbstractDataSource
                         lock.unlock();
                     }
                     LOG.error("create connection error", e);
+                    // unknow fatal exception
+                    setFailContinuous(true);
                     break;
                 }
 
@@ -1993,21 +1999,23 @@ public class DruidDataSource extends DruidAbstractDataSource
 
                 try {
                     connection = createPhysicalConnection();
+                    setFailContinuous(false);
                 } catch (SQLException e) {
                     LOG.error("create connection error, url: " + jdbcUrl + ", errorCode " + e.getErrorCode() + ", state " + e.getSQLState(), e);
 
                     errorCount++;
-                    
-                    if (failFast) {
-                        lock.lock();
-                        try {
-                            notEmpty.signalAll();
-                        } finally {
-                            lock.unlock();
-                        }
-                    }
-
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
+                        // fail over retry attempts
+                        setFailContinuous(true);
+                        if (failFast) {
+                            lock.lock();
+                            try {
+                                notEmpty.signalAll();
+                            } finally {
+                                lock.unlock();
+                            }
+                        }
+                        
                         if (breakAfterAcquireFailure) {
                             break;
                         }
@@ -2020,9 +2028,11 @@ public class DruidDataSource extends DruidAbstractDataSource
                     }
                 } catch (RuntimeException e) {
                     LOG.error("create connection error", e);
+                    setFailContinuous(true);
                     continue;
                 } catch (Error e) {
                     LOG.error("create connection error", e);
+                    setFailContinuous(true);
                     break;
                 }
 
