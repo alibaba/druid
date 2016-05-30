@@ -37,6 +37,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -247,6 +248,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     private boolean                                    asyncCloseConnectionEnable                = false;
     protected int                                      maxCreateTaskCount                        = 3;
     protected boolean                                  failFast                                  = false;
+    protected AtomicBoolean                            failContinuous                            = new AtomicBoolean(false);
     protected ScheduledExecutorService                 destroyScheduler;
     protected ScheduledExecutorService                 createScheduler;
 
@@ -1515,6 +1517,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         } finally {
             lock.unlock();
         }
+    }
+    
+    protected void setFailContinuous(boolean fail) {
+        failContinuous.set(fail);
     }
 
     public void initPhysicalConnection(Connection conn) throws SQLException {

@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.pool.DataSourceNotAvailableException;
 import com.alibaba.druid.pool.DruidDataSource;
 
 import junit.framework.TestCase;
@@ -70,8 +71,9 @@ public class FailFastTest extends TestCase {
         connectStartLatch.await();
         
         latch.countDown();
-        
         connectEndLatch.await(3, TimeUnit.SECONDS);
+        SQLException ex = errorHolder.get();
+        Assert.assertTrue(ex instanceof DataSourceNotAvailableException);
     }
 
 }

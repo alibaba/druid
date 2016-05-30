@@ -2442,23 +2442,43 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.addItem(item);
             } else if (identifierEquals("MODIFY")) {
                 lexer.nextToken();
+                
                 if (lexer.token() == Token.COLUMN) {
                     lexer.nextToken();
                 }
-                MySqlAlterTableModifyColumn item = new MySqlAlterTableModifyColumn();
-                item.setNewColumnDefinition(this.exprParser.parseColumn());
-                if (identifierEquals("AFTER")) {
-                    lexer.nextToken();
-                    item.setAfterColumn(this.exprParser.name());
-                } else if (identifierEquals("FIRST")) {
-                    lexer.nextToken();
-                    if (lexer.token() == Token.IDENTIFIER) {
-                        item.setFirstColumn(this.exprParser.name());
-                    } else {
-                        item.setFirst(true);
-                    }
+                
+                boolean paren = false;
+                if (lexer.token() == Token.LPAREN) {
+                	paren = true;
+                	lexer.nextToken();
                 }
-                stmt.addItem(item);
+                
+                for (;;) {
+					MySqlAlterTableModifyColumn item = new MySqlAlterTableModifyColumn();
+					item.setNewColumnDefinition(this.exprParser.parseColumn());
+					if (identifierEquals("AFTER")) {
+						lexer.nextToken();
+						item.setAfterColumn(this.exprParser.name());
+					} else if (identifierEquals("FIRST")) {
+						lexer.nextToken();
+						if (lexer.token() == Token.IDENTIFIER) {
+							item.setFirstColumn(this.exprParser.name());
+						} else {
+							item.setFirst(true);
+						}
+					}
+					stmt.addItem(item);
+					
+					if (paren && lexer.token() == Token.COMMA) {
+						lexer.nextToken();
+						continue;
+					}
+					break;
+                }
+                
+                if (paren) {
+                	accept(Token.RPAREN);
+                }
             } else if (lexer.token() == Token.DISABLE) {
                 lexer.nextToken();
 
