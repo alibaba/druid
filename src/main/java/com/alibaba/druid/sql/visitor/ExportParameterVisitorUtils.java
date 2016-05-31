@@ -25,8 +25,49 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2ExportParameterVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
+import com.alibaba.druid.util.JdbcUtils;
 
-public class ExportParameterVisitorUtils {
+public final class ExportParameterVisitorUtils {
+    
+    //private for util class not need new instance
+    private ExportParameterVisitorUtils() {
+        super();
+    }
+
+    public static ExportParameterVisitor createExportParameterVisitor(final  Appendable out ,final String dbType) {
+        
+        if (JdbcUtils.MYSQL.equals(dbType)) {
+            return new MySqlExportParameterVisitor(out);
+        }
+        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
+            return new OracleExportParameterVisitor(out);
+        }
+        if (JdbcUtils.DB2.equals(dbType)) {
+            return new DB2ExportParameterVisitor(out);
+        }
+        
+        if (JdbcUtils.MARIADB.equals(dbType)) {
+            return new MySqlExportParameterVisitor(out);
+        }
+        
+        if (JdbcUtils.H2.equals(dbType)) {
+            return new MySqlExportParameterVisitor(out);
+        }
+        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+            return new PGExportParameterVisitor(out);
+        }
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+            return new MSSQLServerExportParameterVisitor(out);
+        }
+       return new ExportParameterizedOutputVisitor(out);
+    }
+
+    
 
     public static boolean exportParamterAndAccept(final List<Object> parameters, List<SQLExpr> list) {
         for (int i = 0, size = list.size(); i < size; ++i) {

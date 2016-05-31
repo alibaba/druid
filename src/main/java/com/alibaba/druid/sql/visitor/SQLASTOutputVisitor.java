@@ -100,7 +100,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     protected boolean          groupItemSingleLine    = false;
 
-    private List<Object>       parameters;
+    protected List<Object>       parameters;
 
     protected String           dbType;
 
