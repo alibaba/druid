@@ -46,7 +46,7 @@ public class MSSQLServerExportParameterVisitor extends SQLServerParameterizedOut
     }
 
     public MSSQLServerExportParameterVisitor(final List<Object> parameters){
-        this(parameters,new StringBuilder(),false);
+        this(parameters,new StringBuilder(),true);
     }
 
     public MSSQLServerExportParameterVisitor(final Appendable appender) {

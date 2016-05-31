@@ -46,7 +46,7 @@ public class PGExportParameterVisitor extends PGParameterizedOutputVisitor imple
     }
 
     public PGExportParameterVisitor(final List<Object> parameters){
-        this(parameters,new StringBuilder(),false);
+        this(parameters,new StringBuilder(),true);
     }
 
     public PGExportParameterVisitor(final Appendable appender) {
