@@ -15,6 +15,13 @@
  */
 package com.alibaba.druid.pool.vendor;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Properties;
+
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
@@ -23,15 +30,6 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
-
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
 
 public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
@@ -76,13 +74,8 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
         this.usePingMethod = usePingMethod;
     }
 
-    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) {
-        try {
-            if (conn.isClosed()) {
-                return false;
-            }
-        } catch (SQLException ex) {
-            // skip
+    public boolean validConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+        if (conn.isClosed()) {
             return false;
         }
 
@@ -100,21 +93,8 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                     validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
                 }
 
-                try {
-                    ping.invoke(conn, true, validationQueryTimeout);
-                    return true;
-                } catch (InvocationTargetException e) {
-                    Throwable cause = e.getCause();
-                    if (cause instanceof SQLException) {
-                        return false;
-                    }
-
-                    LOG.warn("Unexpected error in ping", e);
-                    return false;
-                } catch (Exception e) {
-                    LOG.warn("Unexpected error in ping", e);
-                    return false;
-                }
+                ping.invoke(conn, true, validationQueryTimeout);
+                return true;
             }
         }
 
@@ -127,11 +107,6 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
             }
             rs = stmt.executeQuery(validateQuery);
             return true;
-        } catch (SQLException e) {
-            return false;
-        } catch (Exception e) {
-            LOG.warn("Unexpected error in ping", e);
-            return false;
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);

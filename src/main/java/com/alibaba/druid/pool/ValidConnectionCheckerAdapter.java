@@ -25,7 +25,7 @@ import java.util.Properties;
 public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
 
     @Override
-    public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) {
+    public boolean isValidConnection(Connection c, String query, int validationQueryTimeout) throws Exception {
         return true;
     }
 
@@ -33,5 +33,6 @@ public class ValidConnectionCheckerAdapter implements ValidConnectionChecker {
     public void configFromProperties(Properties properties) {
         
     }
+
 
 }

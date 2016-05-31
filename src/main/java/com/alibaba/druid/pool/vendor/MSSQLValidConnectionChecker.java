@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.pool.vendor;
 
-import com.alibaba.druid.pool.ValidConnectionChecker;
-import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcUtils;
-
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * A MSSQLValidConnectionChecker.
@@ -33,19 +31,12 @@ public class MSSQLValidConnectionChecker extends ValidConnectionCheckerAdapter i
 
     private static final long serialVersionUID = 1L;
 
-    private static final Log  LOG              = LogFactory.getLog(MSSQLValidConnectionChecker.class);
-
     public MSSQLValidConnectionChecker(){
 
     }
 
-    public boolean isValidConnection(final Connection c, String validateQuery, int validationQueryTimeout) {
-        try {
-            if (c.isClosed()) {
-                return false;
-            }
-        } catch (SQLException ex) {
-            // skip
+    public boolean isValidConnection(final Connection c, String validateQuery, int validationQueryTimeout) throws Exception {
+        if (c.isClosed()) {
             return false;
         }
 
@@ -57,10 +48,7 @@ public class MSSQLValidConnectionChecker extends ValidConnectionCheckerAdapter i
             stmt.execute(validateQuery);
             return true;
         } catch (SQLException e) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn("warning: connection validation failed for current managed connection.");
-            }
-            return false;
+            throw e;
         } finally {
             JdbcUtils.close(stmt);
         }
