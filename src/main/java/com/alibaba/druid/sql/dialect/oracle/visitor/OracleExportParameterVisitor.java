@@ -46,7 +46,7 @@ public class OracleExportParameterVisitor extends OracleParameterizedOutputVisit
     }
 
     public OracleExportParameterVisitor(List<Object> parameters){
-        this(parameters,new StringBuilder(),true);
+        this(parameters,new StringBuilder(),false);
     }
 
     public OracleExportParameterVisitor(final Appendable appender) {

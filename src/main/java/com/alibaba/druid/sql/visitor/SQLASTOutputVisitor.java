@@ -845,7 +845,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLVariantRefExpr x) {
         int index = x.getIndex();
 
-        if (parameters == null || index >= parameters.size()) {
+        if (index < 0 || parameters == null || index >= parameters.size()) {
             print0(x.getName());
             return false;
         }
