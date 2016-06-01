@@ -29,51 +29,83 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.L
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
-public class MySqlExportParameterVisitor extends MySqlASTVisitorAdapter implements ExportParameterVisitor {
+public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor implements ExportParameterVisitor {
 
-    private final List<Object> parameters;
-    
+    /**
+     * true= if require parameterized sql output
+     */
+    private final boolean requireParameterizedOutput;
+
+    public MySqlExportParameterVisitor(final List<Object> parameters,final Appendable appender,final boolean wantParameterizedOutput){
+        super(appender);
+        this.parameters = parameters;
+        this.requireParameterizedOutput = wantParameterizedOutput;
+    }
+
     public MySqlExportParameterVisitor() {
         this(new ArrayList<Object>());
     }
 
-    public MySqlExportParameterVisitor(List<Object> parameters){
-        this.parameters = parameters;
+    public MySqlExportParameterVisitor(final List<Object> parameters){
+        this(parameters,new StringBuilder(),false);
+    }
+
+    public MySqlExportParameterVisitor(final Appendable appender) {
+        this(new ArrayList<Object>(),appender,true);
     }
 
     public List<Object> getParameters() {
         return parameters;
     }
+    
 
     @Override
-    public boolean visit(SQLSelectItem x) {
+    public boolean visit(final SQLSelectItem x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+        }
         return false;
     }
 
     @Override
     public boolean visit(Limit x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+        }
         return false;
     }
 
     @Override
     public boolean visit(SQLOrderBy x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+        }
         return false;
     }
 
     @Override
     public boolean visit(SQLSelectGroupByClause x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+        }
         return false;
     }
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
+        if(requireParameterizedOutput){
+           return super.visit(x);
+        }
+        
         ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getParameters());
-
         return true;
     }
 
     @Override
     public boolean visit(SQLInListExpr x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+         }
         ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getTargetList());
 
         return true;
@@ -81,13 +113,18 @@ public class MySqlExportParameterVisitor extends MySqlASTVisitorAdapter implemen
 
     @Override
     public boolean visit(SQLBetweenExpr x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+         }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
         return true;
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+         }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
         return true;
     }
-
 }
