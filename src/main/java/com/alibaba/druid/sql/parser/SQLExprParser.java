@@ -1727,6 +1727,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
             column.setComment(primary());
+            return parseColumnRest(column);
         }
 
         return column;
