@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.util.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
@@ -1150,7 +1151,7 @@ public class Lexer {
 
     public BigDecimal decimalValue() {
         String value = subString(mark, bufPos);
-        if (!StringUtils.isNumeric(value)){
+        if (!NumberUtils.isNumber(value)){
             throw new ParserException(value+" is not a number!");
         }
         return new BigDecimal(value.toCharArray());
