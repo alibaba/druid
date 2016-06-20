@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.util.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+
 import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
@@ -1147,7 +1150,11 @@ public class Lexer {
     }
 
     public BigDecimal decimalValue() {
-        return new BigDecimal(subString(mark, bufPos).toCharArray());
+        String value = subString(mark, bufPos);
+        if (!NumberUtils.isNumber(value)){
+            throw new ParserException(value+" is not a number!");
+        }
+        return new BigDecimal(value.toCharArray());
     }
 
     public static interface CommentHandler {
