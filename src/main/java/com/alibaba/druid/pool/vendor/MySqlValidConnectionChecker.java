@@ -93,7 +93,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                     validationQueryTimeout = DEFAULT_VALIDATION_QUERY_TIMEOUT;
                 }
 
-                ping.invoke(conn, true, validationQueryTimeout);
+                ping.invoke(conn, true, validationQueryTimeout * 1000);
                 return true;
             }
         }
