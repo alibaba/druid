@@ -95,7 +95,7 @@ public class StringUtils {
         return a.equalsIgnoreCase(b);
     }
 
-    public static boolean isEmpty(String value) {
+    public static boolean isEmpty(CharSequence value) {
         if (value == null || value.length() == 0) {
             return true;
         }
