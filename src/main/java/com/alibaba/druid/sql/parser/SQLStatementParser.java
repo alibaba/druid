@@ -306,6 +306,15 @@ public class SQLStatementParser extends SQLParser {
 
                     statementList.add(stmt);
                     continue;
+                } else if (lexer.token() == Token.SEQUENCE) {
+                    SQLStatement stmt =  parseDropSequece(false);
+
+                    if (beforeComments != null) {
+                        stmt.addBeforeComment(beforeComments);
+                    }
+
+                    statementList.add(stmt);
+                    continue;
                 } else {
                     throw new ParserException("TODO " + lexer.token());
                 }
