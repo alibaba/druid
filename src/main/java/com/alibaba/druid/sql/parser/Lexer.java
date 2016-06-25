@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.util.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-
 import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
@@ -41,6 +38,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -639,6 +638,131 @@ public class Lexer {
 
             ch = charAt(++pos);
 
+            if (ch == '\'') {
+                scanChar();
+                if (ch != '\'') {
+                    token = LITERAL_CHARS;
+                    break;
+                } else {
+                    if (!hasSpecial) {
+                        initBuff(bufPos);
+                        arraycopy(mark + 1, buf, 0, bufPos);
+                        hasSpecial = true;
+                    }
+                    putChar('\'');
+                    continue;
+                }
+            }
+
+            if (!hasSpecial) {
+                bufPos++;
+                continue;
+            }
+
+            if (bufPos == buf.length) {
+                putChar(ch);
+            } else {
+                buf[bufPos++] = ch;
+            }
+        }
+
+        if (!hasSpecial) {
+            stringVal = subString(mark + 1, bufPos);
+        } else {
+            stringVal = new String(buf, 0, bufPos);
+        }
+    }
+    
+    protected final void scanString2() {
+        {
+            boolean hasSpecial = false;
+            int startIndex = pos + 1;
+            int endIndex = -1; // text.indexOf('\'', startIndex);
+            for (int i = startIndex; i < text.length(); ++i) {
+                final char ch = text.charAt(i);
+                if (ch == '\\') {
+                    hasSpecial = true;
+                    continue;
+                }
+                if (ch == '\'') {
+                    endIndex = i;
+                    break;
+                }
+            }
+
+            if (endIndex == -1) {
+                throw new ParserException("unclosed str");
+            }
+
+            String stringVal = subString(startIndex, endIndex - startIndex);
+            // hasSpecial = stringVal.indexOf('\\') != -1;
+
+            if (!hasSpecial) {
+                this.stringVal = stringVal;
+                int pos = endIndex + 1;
+                char ch = charAt(pos);
+                if (ch != '\'') {
+                    this.pos = pos;
+                    this.ch = ch;
+                    token = LITERAL_CHARS;
+                    return;
+                }
+            }
+        }
+
+        mark = pos;
+        boolean hasSpecial = false;
+        for (;;) {
+            if (isEOF()) {
+                lexError("unclosed.str.lit");
+                return;
+            }
+
+            ch = charAt(++pos);
+
+            if (ch == '\\') {
+                scanChar();
+                if (!hasSpecial) {
+                    initBuff(bufPos);
+                    arraycopy(mark + 1, buf, 0, bufPos);
+                    hasSpecial = true;
+                }
+
+                switch (ch) {
+                    case '0':
+                        putChar('\0');
+                        break;
+                    case '\'':
+                        putChar('\'');
+                        break;
+                    case '"':
+                        putChar('"');
+                        break;
+                    case 'b':
+                        putChar('\b');
+                        break;
+                    case 'n':
+                        putChar('\n');
+                        break;
+                    case 'r':
+                        putChar('\r');
+                        break;
+                    case 't':
+                        putChar('\t');
+                        break;
+                    case '\\':
+                        putChar('\\');
+                        break;
+                    case 'Z':
+                        putChar((char) 0x1A); // ctrl + Z
+                        break;
+                    default:
+                        putChar(ch);
+                        break;
+                }
+
+                continue;
+            }
             if (ch == '\'') {
                 scanChar();
                 if (ch != '\'') {

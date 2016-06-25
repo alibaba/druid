@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -872,6 +873,20 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         print0(ucase ? " AS " : " as ");
         printAndAccept(x.getColumns(), ", ");
         decrementIndent();
+        return false;
+    }
+    
+    public boolean visit(SQLCharExpr x) {
+        String text = x.getText();
+        if (text == null) {
+            print0(ucase ? "NULL" : "null");
+        } else {
+            print('\'');
+            String text2 = text.replaceAll("\\'", "\\\\'");
+            print0(text2);
+            print('\'');
+        }
+
         return false;
     }
 }
