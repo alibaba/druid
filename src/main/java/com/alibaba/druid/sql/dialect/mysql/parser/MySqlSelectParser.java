@@ -179,6 +179,15 @@ public class MySqlSelectParser extends SQLSelectParser {
             accept(Token.UPDATE);
 
             queryBlock.setForUpdate(true);
+            
+            if (identifierEquals("NO_WAIT")) {
+                lexer.nextToken();
+                queryBlock.setNoWait(true);
+            } else if (identifierEquals("WAIT")) {
+                lexer.nextToken();
+                SQLExpr waitTime = this.exprParser.primary();
+                queryBlock.setWaitTime(waitTime);
+            }
         }
 
         if (lexer.token() == Token.LOCK) {

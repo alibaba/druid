@@ -47,6 +47,8 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private List<SQLExpr>        procedureArgumentList;
 
     private boolean              forUpdate       = false;
+    private boolean              noWait          = false;
+    private SQLExpr              waitTime;
     private boolean              lockInShareMode = false;
 
     private List<SQLCommentHint> hints;
@@ -80,6 +82,22 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setForUpdate(boolean forUpdate) {
         this.forUpdate = forUpdate;
+    }
+    
+    public boolean isNoWait() {
+        return noWait;
+    }
+
+    public void setNoWait(boolean noWait) {
+        this.noWait = noWait;
+    }
+    
+    public SQLExpr getWaitTime() {
+        return waitTime;
+    }
+    
+    public void setWaitTime(SQLExpr waitTime) {
+        this.waitTime = waitTime;
     }
 
     public boolean isLockInShareMode() {
