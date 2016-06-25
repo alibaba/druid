@@ -45,6 +45,8 @@ public class OdpsLexer extends Lexer {
         map.put("LIMIT", Token.LIMIT);
         map.put("IF", Token.IF);
         map.put("DISTRIBUTE", Token.DISTRIBUTE);
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
         
         DEFAULT_ODPS_KEYWORDS = new Keywords(map);
     }
