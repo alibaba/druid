@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
@@ -449,11 +450,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     protected void handleCondition(SQLExpr expr, String operator, SQLExpr... valueExprs) {
+        if (expr instanceof SQLCastExpr) {
+            expr = ((SQLCastExpr) expr).getExpr();
+        }
+        
         Column column = getColumn(expr);
         if (column == null) {
             return;
         }
-
+        
         Condition condition = null;
         for (Condition item : this.getConditions()) {
             if (item.getColumn().equals(column) && item.getOperator().equals(operator)) {
