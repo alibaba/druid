@@ -765,6 +765,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             println();
             x.getGroupBy().accept(this);
         }
+        
+        if (x.getOrderBy() != null) {
+            println();
+            x.getOrderBy().accept(this);
+        }
 
         return false;
     }

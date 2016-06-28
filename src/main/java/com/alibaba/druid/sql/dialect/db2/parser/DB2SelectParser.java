@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.db2.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
@@ -76,6 +77,11 @@ public class DB2SelectParser extends SQLSelectParser {
         parseWhere(queryBlock);
 
         parseGroupBy(queryBlock);
+        
+        if (lexer.token() == Token.ORDER) {
+            SQLOrderBy orderBy = parseOrderBy();
+            queryBlock.setOrderBy(orderBy);
+        }
 
 
         for (;;) {

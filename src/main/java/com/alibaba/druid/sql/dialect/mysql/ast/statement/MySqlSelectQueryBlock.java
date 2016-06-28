@@ -39,8 +39,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private Boolean              cache;
     private boolean              calcFoundRows;
 
-    private SQLOrderBy           orderBy;
-
     private Limit                limit;
 
     private SQLName              procedureName;
@@ -181,14 +179,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setCalcFoundRows(boolean calcFoundRows) {
         this.calcFoundRows = calcFoundRows;
-    }
-
-    public SQLOrderBy getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(SQLOrderBy orderBy) {
-        this.orderBy = orderBy;
     }
 
     public Limit getLimit() {

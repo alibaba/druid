@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery {
@@ -31,6 +32,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected SQLExprTableSource        into;
     protected SQLExpr                   where;
     protected SQLSelectGroupByClause    groupBy;
+    protected SQLOrderBy                orderBy;
     protected boolean parenthesized = false;
 
     public SQLSelectQueryBlock(){
@@ -69,6 +71,18 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             where.setParent(this);
         }
         this.where = where;
+    }
+    
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
+        
+        this.orderBy = orderBy;
     }
 
     public int getDistionOption() {
