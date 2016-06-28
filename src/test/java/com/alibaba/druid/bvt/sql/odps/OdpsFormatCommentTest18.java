@@ -18,7 +18,7 @@ public class OdpsFormatCommentTest18 extends TestCase {
     public void test_column_comment_2() throws Exception {
         String sql = "create table t (f1 string comment \"xxx's\")";
         Assert.assertEquals("CREATE TABLE t ("
-                + "\n\tf1 STRING COMMENT 'xxx''s'"
+                + "\n\tf1 STRING COMMENT 'xxx\\'s'"
                 + "\n)", SQLUtils.formatOdps(sql));
     }
 }
