@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -41,6 +42,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLimit;
@@ -446,5 +448,59 @@ public class PagerUtils {
             clearOrderBy(union.getLeft());
             clearOrderBy(union.getRight());
         }
+    }
+    
+    /**
+     * 
+     * @param sql
+     * @param dbType
+     * @return if not exists limit, return -1;
+     */
+    public static int getLimit(String sql, String dbType) {
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+
+        if (stmtList.size() != 1) {
+            return -1;
+        }
+
+        SQLStatement stmt = stmtList.get(0);
+
+        if (stmt instanceof SQLSelectStatement) {
+            SQLSelectStatement selectStmt = (SQLSelectStatement) stmt;
+            SQLSelectQuery query = selectStmt.getSelect().getQuery();
+            if (query instanceof SQLSelectQueryBlock) {
+                if (query instanceof MySqlSelectQueryBlock) {
+                    MySqlSelectQueryBlock.Limit limit = ((MySqlSelectQueryBlock) query).getLimit();
+
+                    if (limit == null) {
+                        return -1;
+                    }
+
+                    SQLExpr rowCountExpr = limit.getRowCount();
+
+                    if (rowCountExpr instanceof SQLNumericLiteralExpr) {
+                        int rowCount = ((SQLNumericLiteralExpr) rowCountExpr).getNumber().intValue();
+                        return rowCount;
+                    }
+
+                    return Integer.MAX_VALUE;
+                }
+
+                if (query instanceof OdpsSelectQueryBlock) {
+                    SQLExpr rowCountExpr = ((OdpsSelectQueryBlock) query).getLimit();
+
+                    if (rowCountExpr instanceof SQLNumericLiteralExpr) {
+                        int rowCount = ((SQLNumericLiteralExpr) rowCountExpr).getNumber().intValue();
+                        return rowCount;
+                    }
+
+                    return Integer.MAX_VALUE;
+                }
+
+                return -1;
+            }
+        }
+        
+        return -1;
     }
 }

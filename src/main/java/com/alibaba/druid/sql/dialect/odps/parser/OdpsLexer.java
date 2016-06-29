@@ -181,6 +181,34 @@ public class OdpsLexer extends Lexer {
 
     public void scanIdentifier() {
         final char first = ch;
+        
+        if (first == '`') {
+
+            mark = pos;
+            bufPos = 1;
+            char ch;
+            for (;;) {
+                ch = charAt(++pos);
+
+                if (ch == '`') {
+                    bufPos++;
+                    ch = charAt(++pos);
+                    break;
+                } else if (ch == EOI) {
+                    throw new ParserException("illegal identifier");
+                }
+
+                bufPos++;
+                continue;
+            }
+
+            this.ch = charAt(pos);
+
+            stringVal = subString(mark, bufPos);
+            token = Token.IDENTIFIER;
+            
+            return;
+        }
 
         final boolean firstFlag = isFirstIdentifierChar(first);
         if (!firstFlag) {

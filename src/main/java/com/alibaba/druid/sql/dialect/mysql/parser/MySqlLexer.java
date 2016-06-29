@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 import java.util.HashMap;
 import java.util.Map;
