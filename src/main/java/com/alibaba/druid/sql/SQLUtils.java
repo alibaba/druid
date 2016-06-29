@@ -46,8 +46,6 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
-import com.alibaba.druid.sql.dialect.teradata.visitor.TeradataOutputVisitor;
-import com.alibaba.druid.sql.dialect.teradata.visitor.TeradataSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -173,14 +171,6 @@ public class SQLUtils {
         return toSQLString(sqlObject, JdbcConstants.SQL_SERVER, option);
     }
     
-    public static String toTeradataString(SQLObject sqlObject) {
-        return toTeradataString(sqlObject, null);
-    }
-    
-    public static String toTeradataString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, JdbcConstants.TERADATA, option);
-    }
-
     public static String formatPGSql(String sql, FormatOption option) {
         return format(sql, JdbcConstants.POSTGRESQL, option);
     }
@@ -383,10 +373,6 @@ public class SQLUtils {
             return new OdpsOutputVisitor(out);
         }
         
-        if (JdbcConstants.TERADATA.equals(dbType)) {
-            return new TeradataOutputVisitor(out);
-        }
-
         return new SQLASTOutputVisitor(out);
     }
     
@@ -420,10 +406,6 @@ public class SQLUtils {
         
         if (JdbcConstants.ODPS.equals(dbType)) {
             return new OdpsSchemaStatVisitor();
-        }
-        
-        if (JdbcConstants.TERADATA.equals(dbType)) {
-            return new TeradataSchemaStatVisitor();
         }
 
         return new SchemaStatVisitor();

@@ -15,12 +15,29 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
@@ -44,7 +61,6 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
-import com.alibaba.druid.sql.dialect.teradata.visitor.TeradataEvalVisitor;
 import com.alibaba.druid.sql.visitor.functions.Ascii;
 import com.alibaba.druid.sql.visitor.functions.Bin;
 import com.alibaba.druid.sql.visitor.functions.BitLength;
@@ -78,23 +94,6 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_ERROR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
 public class SQLEvalVisitorUtils {
 
@@ -180,10 +179,6 @@ public class SQLEvalVisitorUtils {
             return new DB2EvalVisitor();
         }
         
-        if (JdbcUtils.TERADATA.equals(dbType)) {
-        	return new TeradataEvalVisitor();
-        }
-
         return new SQLEvalVisitorImpl();
     }
 
