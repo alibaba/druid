@@ -958,6 +958,7 @@ public class SQLExprParser extends SQLParser {
                 case REVOKE:
                     // binary有很多含义，lexer识别了这个token，实际上应该当做普通IDENTIFIER
                 case BINARY:
+                case OVER:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
