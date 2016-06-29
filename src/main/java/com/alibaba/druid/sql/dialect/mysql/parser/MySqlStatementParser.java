@@ -2920,16 +2920,35 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setHints(this.exprParser.parseHints());
         }
 
+        if (lexer.token() == Token.DEFAULT) {
+            lexer.nextToken();
+        }
+        
         if (identifierEquals("CHARACTER")) {
             lexer.nextToken();
             accept(Token.SET);
             String charset = lexer.stringVal();
             accept(Token.IDENTIFIER);
             stmt.setCharacterSet(charset);
+        } else if (identifierEquals("CHARSET")) {
+            lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
+            String charset = lexer.stringVal();
+            accept(Token.IDENTIFIER);
+            stmt.setCharacterSet(charset);
+        }
+        
+        if (lexer.token() == Token.DEFAULT) {
+            lexer.nextToken();
         }
 
         if (identifierEquals("COLLATE")) {
             lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
             String collate = lexer.stringVal();
             accept(Token.IDENTIFIER);
             stmt.setCollate(collate);
