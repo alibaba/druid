@@ -198,16 +198,19 @@ public class SQLServerExprParser extends SQLExprParser {
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.token() == Token.IDENTITY) {
             lexer.nextToken();
-            accept(Token.LPAREN);
-
-            SQLIntegerExpr seed = (SQLIntegerExpr) this.primary();
-            accept(Token.COMMA);
-            SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
-            accept(Token.RPAREN);
 
             SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
-            identity.setSeed((Integer) seed.getNumber());
-            identity.setIncrement((Integer) increment.getNumber());
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+    
+                SQLIntegerExpr seed = (SQLIntegerExpr) this.primary();
+                accept(Token.COMMA);
+                SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
+                accept(Token.RPAREN);
+                
+                identity.setSeed((Integer) seed.getNumber());
+                identity.setIncrement((Integer) increment.getNumber());
+            }
 
             if (lexer.token() == Token.NOT) {
                 lexer.nextToken();

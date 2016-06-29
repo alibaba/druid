@@ -1014,11 +1014,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     @Override
     public boolean visit(SQLColumnDefinition.Identity x) {
-        print0(ucase ? "IDENTITY (" : "identity (");
-        print(x.getSeed());
-        print0(", ");
-        print(x.getIncrement());
-        print(')');
+        print0(ucase ? "IDENTITY" : "identity");
+        if (x.getSeed() != null) {
+            print0(" (");
+            print(x.getSeed());
+            print0(", ");
+            print(x.getIncrement());
+            print(')');
+        }
         return false;
     }
 
