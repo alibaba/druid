@@ -33,6 +33,11 @@ public enum SQLBinaryOperator {
     Add("+", 70), 
     Subtract("-", 70), 
     
+    SubGt("->", 20), 
+    SubGtGt("->>", 20), 
+    PoundGt("#>", 20), 
+    PoundGtGt("#>>", 20), 
+    
     LeftShift("<<", 80), 
     RightShift(">>", 80), 
 

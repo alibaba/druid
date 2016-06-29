@@ -315,6 +315,8 @@ public enum Token {
     BARSLASH("|/"), 
     PLUS("+"), 
     SUB("-"), 
+    SUBGT("->"), 
+    SUBGTGT("->>"), 
     STAR("*"), 
     SLASH("/"), 
     AMP("&"), 
@@ -324,7 +326,9 @@ public enum Token {
     LTLT("<<"), 
     GTGT(">>"),
     MONKEYS_AT("@"),
-    POUND("#")
+    POUND("#"),
+    POUNDGT("#>"),
+    POUNDGTGT("#>>")
     ;
 
     public final String name;

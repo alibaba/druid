@@ -510,7 +510,17 @@ public class Lexer {
                 break;
             case '-':
                 scanChar();
-                token = Token.SUB;
+                if (ch == '>') {
+                    scanChar();
+                    if (ch == '>') {
+                        scanChar();
+                        token = Token.SUBGTGT;
+                    } else {
+                        token = Token.SUBGT;
+                    }
+                } else {
+                    token = Token.SUB;    
+                }
                 break;
             case '*':
                 scanChar();

@@ -152,10 +152,31 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLExpr bitXorRest(SQLExpr expr) {
-        if (lexer.token() == Token.CARET) {
+        Token token = lexer.token;
+        if (token == Token.CARET) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseXor, rightExp, getDbType());
+            expr = bitXorRest(expr);
+        } else if (token == Token.SUBGT) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGt, rightExp, getDbType());
+            expr = bitXorRest(expr);
+        } else if (token == Token.SUBGTGT) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGtGt, rightExp, getDbType());
+            expr = bitXorRest(expr);
+        } else if (token == Token.POUNDGT) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGt, rightExp, getDbType());
+            expr = bitXorRest(expr);
+        } else if (token == Token.POUNDGTGT) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGtGt, rightExp, getDbType());
             expr = bitXorRest(expr);
         }
 
