@@ -61,6 +61,33 @@ public class StringUtils {
     }
 
     /**
+     * Example: subString("abcdc","a","c",true)="bcd"
+     * 
+     * @param src
+     * @param start null while start from index=0
+     * @param to null while to index=src.length
+     * @param toLast true while to index=src.lastIndexOf(to)
+     * @return
+     */
+    public static String subString(String src, String start, String to, boolean toLast) {
+        if(!toLast) {
+            return subString(src, start, to);
+        }
+        int indexFrom = start == null ? 0 : src.indexOf(start);
+        int indexTo = to == null ? src.length() : src.lastIndexOf(to);
+        if (indexFrom < 0 || indexTo < 0 || indexFrom > indexTo) {
+            return null;
+        }
+
+        if (null != start) {
+            indexFrom += start.length();
+        }
+
+        return src.substring(indexFrom, indexTo);
+
+    }
+
+    /**
      * @param in
      * @return
      */
