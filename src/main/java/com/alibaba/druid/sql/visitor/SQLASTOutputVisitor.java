@@ -78,6 +78,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
@@ -3071,6 +3072,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLAlterTableRepairPartition x) {
         print0(ucase ? "REPAIR PARTITION " : "repair partition ");
         printPartitions(x.getPartitions());
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSequenceExpr x) {
+        x.getSequence().accept(this);
+        print('.');
+        print0(ucase ? x.getFunction().name : x.getFunction().name_lcase);
         return false;
     }
 }

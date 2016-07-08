@@ -59,6 +59,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
@@ -688,7 +689,8 @@ public class SQLExprParser extends SQLParser {
             throw new IllegalArgumentException("expr");
         }
 
-        if (lexer.token() == Token.OF) {
+        Token token = lexer.token;
+        if (token == Token.OF) {
             if (expr instanceof SQLIdentifierExpr) {
                 String name = ((SQLIdentifierExpr) expr).getName();
                 if ("CURRENT".equalsIgnoreCase(name)) {
@@ -697,9 +699,30 @@ public class SQLExprParser extends SQLParser {
                     return new SQLCurrentOfCursorExpr(cursorName);
                 }
             }
+        } else if (token == Token.FOR) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr idenExpr = (SQLIdentifierExpr) expr;
+                String name = idenExpr.getName();
+                if ("NEXTVAL".equalsIgnoreCase(name)) {
+                    lexer.nextToken();
+                    SQLName seqName = this.name();
+                    SQLSequenceExpr seqExpr = new SQLSequenceExpr(seqName, SQLSequenceExpr.Function.NextVal);
+                    return seqExpr;
+                } else if ("CURRVAL".equalsIgnoreCase(name)) {
+                    lexer.nextToken();
+                    SQLName seqName = this.name();
+                    SQLSequenceExpr seqExpr = new SQLSequenceExpr(seqName, SQLSequenceExpr.Function.CurrVal);
+                    return seqExpr;
+                } else if ("PREVVAL".equalsIgnoreCase(name)) {
+                    lexer.nextToken();
+                    SQLName seqName = this.name();
+                    SQLSequenceExpr seqExpr = new SQLSequenceExpr(seqName, SQLSequenceExpr.Function.PrevVal);
+                    return seqExpr;
+                }
+            }
         }
 
-        if (lexer.token() == Token.DOT) {
+        if (token == Token.DOT) {
             lexer.nextToken();
 
             if (expr instanceof SQLCharExpr) {

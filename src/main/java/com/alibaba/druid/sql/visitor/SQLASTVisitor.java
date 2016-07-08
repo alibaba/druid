@@ -60,6 +60,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
@@ -695,5 +696,9 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableRepairPartition x);
     
     void endVisit(SQLAlterTableRepairPartition x);
+    
+    boolean visit(SQLSequenceExpr x);
+    
+    void endVisit(SQLSequenceExpr x);
     
 }
