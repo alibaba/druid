@@ -33,7 +33,10 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected SQLExpr                   where;
     protected SQLSelectGroupByClause    groupBy;
     protected SQLOrderBy                orderBy;
-    protected boolean parenthesized = false;
+    protected boolean                   parenthesized = false;
+    protected boolean                   forUpdate     = false;
+    protected boolean                   noWait        = false;
+    protected SQLExpr                   waitTime;
 
     public SQLSelectQueryBlock(){
 
@@ -117,6 +120,30 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
 	public void setParenthesized(boolean parenthesized) {
 		this.parenthesized = parenthesized;
 	}
+	
+    public boolean isForUpdate() {
+        return forUpdate;
+    }
+
+    public void setForUpdate(boolean forUpdate) {
+        this.forUpdate = forUpdate;
+    }
+    
+    public boolean isNoWait() {
+        return noWait;
+    }
+
+    public void setNoWait(boolean noWait) {
+        this.noWait = noWait;
+    }
+    
+    public SQLExpr getWaitTime() {
+        return waitTime;
+    }
+    
+    public void setWaitTime(SQLExpr waitTime) {
+        this.waitTime = waitTime;
+    }
 
 	@Override
     protected void accept0(SQLASTVisitor visitor) {

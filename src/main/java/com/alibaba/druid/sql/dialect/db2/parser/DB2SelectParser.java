@@ -116,9 +116,15 @@ public class DB2SelectParser extends SQLSelectParser {
             
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
-                acceptIdentifier("READ");
-                accept(Token.ONLY);
-                queryBlock.setForReadOnly(true);
+                
+                if (lexer.token() == Token.UPDATE) {
+                    queryBlock.setForUpdate(true);
+                    lexer.nextToken();
+                } else {
+                    acceptIdentifier("READ");
+                    accept(Token.ONLY);
+                    queryBlock.setForReadOnly(true);
+                }
             }
             
             if (lexer.token() == Token.OPTIMIZE) {
