@@ -24,41 +24,48 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleInsertTest16 extends OracleTest {
+public class OracleSelectTest54 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "INSERT INTO departments " //
-                     + "   VALUES  (departments_seq.nextval, 'Entertainment', 162, 1400); ";
+        String sql = //
+                "SELECT orderseq.currval FROM emp t"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-//        print(statementList);
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-
-        Assert.assertEquals("INSERT INTO departments" //
-                            + "\nVALUES"//
-                            + "\n(departments_seq.NEXTVAL, 'Entertainment', 162, 1400)",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("relationships : " + visitor.getRelationships());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
+
         Assert.assertEquals(0, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
+        {
+            String text = SQLUtils.toOracleString(stmt);
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+            Assert.assertEquals("SELECT orderseq.CURRVAL" //
+                                + "\nFROM emp t", text);
+        }
+
+        {
+            String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+
+            Assert.assertEquals("select orderseq.currval" //
+                                + "\nfrom emp t", text);
+        }
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+
+        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
-
 }
