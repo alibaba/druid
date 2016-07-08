@@ -2010,4 +2010,12 @@ public class SQLExprParser extends SQLParser {
 
         return values;
     }
+    
+    protected static boolean isIdent(SQLExpr expr, String name) {
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+            return identExpr.getName().equalsIgnoreCase(name);
+        }
+        return false;
+    }
 }
