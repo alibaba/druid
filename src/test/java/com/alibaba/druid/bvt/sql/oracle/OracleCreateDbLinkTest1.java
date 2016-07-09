@@ -24,16 +24,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleInsertTest19 extends OracleTest {
+public class OracleCreateDbLinkTest1 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "insert into TB_DUOBAO_PARTICIPATE_NUMBER ( PARTICIPATE_NUMBER, PERIOD_ID, PRODUCT_ID,number_index)"
-                + "         (SELECT ?,?,?,?  FROM DUAL)"
-                + "       union all "
-                + "           (SELECT ?,?,?,?  FROM DUAL)";
+        String sql = //
+                "create database link db_link connect to \"xxx\" identified by \"xxx\" using '(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = orcl)))'"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -42,15 +38,6 @@ public class OracleInsertTest19 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO TB_DUOBAO_PARTICIPATE_NUMBER"
-                + "\n\t(PARTICIPATE_NUMBER, PERIOD_ID, PRODUCT_ID, number_index)"
-                + "\nSELECT ?, ?, ?, ?"
-                + "\nFROM DUAL"
-                + "\nUNION ALL"
-                + "\nSELECT ?, ?, ?, ?"
-                + "\nFROM DUAL",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
-
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
@@ -58,16 +45,25 @@ public class OracleInsertTest19 extends OracleTest {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("relationships : " + visitor.getRelationships());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("TB_DUOBAO_PARTICIPATE_NUMBER")));
+        Assert.assertEquals(0, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PARTICIPATE_NUMBER")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PERIOD_ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PRODUCT_ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "number_index ")));
+        {
+            String text = SQLUtils.toOracleString(stmt);
+
+            Assert.assertEquals("CREATE DATABASE LINK db_link CONNECT TO \"xxx\" IDENTIFIED BY xxx USING '(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = orcl)))'", text);
+        }
+
+        {
+            String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+
+            Assert.assertEquals("create database link db_link connect to \"xxx\" identified by xxx using '(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))) (CONNECT_DATA = (SERVICE_NAME = orcl)))'", text);
+        }
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+
+        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
-
 }

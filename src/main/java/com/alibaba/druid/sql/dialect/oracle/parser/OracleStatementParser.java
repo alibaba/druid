@@ -1334,7 +1334,12 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 accept(Token.BY);
                 dbLink.setPassword(lexer.stringVal());
-                accept(Token.IDENTIFIER);
+                
+                if (lexer.token() == Token.IDENTIFIER) {
+                    lexer.nextToken();
+                } else {
+                    accept(Token.LITERAL_ALIAS);
+                }
             }
         }
 
