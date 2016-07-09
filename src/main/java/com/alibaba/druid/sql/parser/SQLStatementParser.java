@@ -1549,8 +1549,8 @@ public class SQLStatementParser extends SQLParser {
                 }
             }
         } else if (acceptSubQuery && (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN)) {
-            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
-            insertStatement.setQuery(queryExpr.getSubQuery());
+            SQLSelect select = this.createSQLSelectParser().select();
+            insertStatement.setQuery(select);
         }
     }
 
