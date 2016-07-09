@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +21,11 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleMergeStatement extends OracleStatementImpl {
+public class SQLMergeStatement extends SQLStatementImpl {
 
     private final List<SQLHint>      hints = new ArrayList<SQLHint>();
 
@@ -38,9 +35,9 @@ public class OracleMergeStatement extends OracleStatementImpl {
     private SQLExpr                  on;
     private MergeUpdateClause        updateClause;
     private MergeInsertClause        insertClause;
-    private OracleErrorLoggingClause errorLoggingClause;
+    private SQLErrorLoggingClause errorLoggingClause;
 
-    public void accept0(OracleASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, into);
             acceptChild(visitor, using);
@@ -107,11 +104,11 @@ public class OracleMergeStatement extends OracleStatementImpl {
         this.insertClause = insertClause;
     }
 
-    public OracleErrorLoggingClause getErrorLoggingClause() {
+    public SQLErrorLoggingClause getErrorLoggingClause() {
         return errorLoggingClause;
     }
 
-    public void setErrorLoggingClause(OracleErrorLoggingClause errorLoggingClause) {
+    public void setErrorLoggingClause(SQLErrorLoggingClause errorLoggingClause) {
         this.errorLoggingClause = errorLoggingClause;
     }
 
@@ -119,7 +116,7 @@ public class OracleMergeStatement extends OracleStatementImpl {
         return hints;
     }
 
-    public static class MergeUpdateClause extends OracleSQLObjectImpl {
+    public static class MergeUpdateClause extends SQLObjectImpl {
 
         private List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
         private SQLExpr                where;
@@ -153,7 +150,7 @@ public class OracleMergeStatement extends OracleStatementImpl {
         }
 
         @Override
-        public void accept0(OracleASTVisitor visitor) {
+        public void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, items);
                 acceptChild(visitor, where);
@@ -164,14 +161,14 @@ public class OracleMergeStatement extends OracleStatementImpl {
 
     }
 
-    public static class MergeInsertClause extends OracleSQLObjectImpl {
+    public static class MergeInsertClause extends SQLObjectImpl {
 
         private List<SQLExpr> columns = new ArrayList<SQLExpr>();
         private List<SQLExpr> values  = new ArrayList<SQLExpr>();
         private SQLExpr       where;
 
         @Override
-        public void accept0(OracleASTVisitor visitor) {
+        public void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, columns);
                 acceptChild(visitor, columns);

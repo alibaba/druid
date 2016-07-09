@@ -68,6 +68,8 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
@@ -1523,5 +1525,44 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLSequenceExpr x) {
         
     }
-    
+
+    @Override
+    public boolean visit(SQLMergeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLMergeStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MergeUpdateClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MergeUpdateClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(MergeInsertClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MergeInsertClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLErrorLoggingClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLErrorLoggingClause x) {
+
+    }
 }

@@ -34,6 +34,8 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -54,7 +56,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumnCl
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -110,9 +111,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -827,49 +825,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleMergeStatement x) {
-        setAliasMap();
-
-        String originalTable = getCurrentTable();
-
-        setMode(x.getUsing(), Mode.Select);
-        x.getUsing().accept(this);
-
-        setMode(x, Mode.Merge);
-
-        String ident = x.getInto().toString();
-        setCurrentTable(x, ident);
-        x.putAttribute("_old_local_", originalTable);
-
-        TableStat stat = getTableStat(ident);
-        stat.incrementMergeCount();
-
-        Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null) {
-            if (x.getAlias() != null) {
-                putAliasMap(aliasMap, x.getAlias(), ident);
-            }
-            putAliasMap(aliasMap, ident, ident);
-        }
-
-        x.getOn().accept(this);
-
-        if (x.getUpdateClause() != null) {
-            x.getUpdateClause().accept(this);
-        }
-
-        if (x.getInsertClause() != null) {
-            x.getInsertClause().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleMergeStatement x) {
-    }
-
-    @Override
     public boolean visit(MergeUpdateClause x) {
         return true;
     }
@@ -886,16 +841,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(MergeInsertClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleErrorLoggingClause x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleErrorLoggingClause x) {
 
     }
 

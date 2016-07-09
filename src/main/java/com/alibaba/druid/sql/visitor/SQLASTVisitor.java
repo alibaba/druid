@@ -700,5 +700,20 @@ public interface SQLASTVisitor {
     boolean visit(SQLSequenceExpr x);
     
     void endVisit(SQLSequenceExpr x);
+
+    boolean visit(SQLMergeStatement x);
+
+    void endVisit(SQLMergeStatement x);
+
+    boolean visit(SQLMergeStatement.MergeUpdateClause x);
+
+    void endVisit(SQLMergeStatement.MergeUpdateClause x);
+
+    boolean visit(SQLMergeStatement.MergeInsertClause x);
+
+    void endVisit(SQLMergeStatement.MergeInsertClause x);
     
+    boolean visit(SQLErrorLoggingClause x);
+
+    void endVisit(SQLErrorLoggingClause x);
 }

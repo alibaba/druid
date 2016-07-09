@@ -101,6 +101,7 @@ import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.ast.statement.SQLObjectType;
 import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
@@ -1687,6 +1688,45 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
     
     public boolean visit(SQLSequenceExpr x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLMergeStatement x) {
+        setAliasMap();
+
+        String originalTable = getCurrentTable();
+
+        setMode(x.getUsing(), Mode.Select);
+        x.getUsing().accept(this);
+
+        setMode(x, Mode.Merge);
+
+        String ident = x.getInto().toString();
+        setCurrentTable(x, ident);
+        x.putAttribute("_old_local_", originalTable);
+
+        TableStat stat = getTableStat(ident);
+        stat.incrementMergeCount();
+
+        Map<String, String> aliasMap = getAliasMap();
+        if (aliasMap != null) {
+            if (x.getAlias() != null) {
+                putAliasMap(aliasMap, x.getAlias(), ident);
+            }
+            putAliasMap(aliasMap, ident, ident);
+        }
+
+        x.getOn().accept(this);
+
+        if (x.getUpdateClause() != null) {
+            x.getUpdateClause().accept(this);
+        }
+
+        if (x.getInsertClause() != null) {
+            x.getInsertClause().accept(this);
+        }
+
         return false;
     }
 }

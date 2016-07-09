@@ -88,6 +88,8 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEven
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements PrintableVisitor {
@@ -3107,4 +3109,116 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(ucase ? x.getFunction().name : x.getFunction().name_lcase);
         return false;
     }
+    
+    @Override
+    public boolean visit(SQLMergeStatement x) {
+        print0(ucase ? "MERGE " : "merge ");
+        if (x.getHints().size() > 0) {
+            printAndAccept(x.getHints(), ", ");
+            print(' ');
+        }
+
+        print0(ucase ? "INTO " : "into ");
+        x.getInto().accept(this);
+
+        if (x.getAlias() != null) {
+            print(' ');
+            print0(x.getAlias());
+        }
+
+        println();
+        print0(ucase ? "USING " : "using ");
+        x.getUsing().accept(this);
+
+        print0(ucase ? " ON (" : " on (");
+        x.getOn().accept(this);
+        print0(") ");
+
+        if (x.getUpdateClause() != null) {
+            println();
+            x.getUpdateClause().accept(this);
+        }
+
+        if (x.getInsertClause() != null) {
+            println();
+            x.getInsertClause().accept(this);
+        }
+
+        if (x.getErrorLoggingClause() != null) {
+            println();
+            x.getErrorLoggingClause().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(MergeUpdateClause x) {
+        print0(ucase ? "WHEN MATCHED THEN UPDATE SET " : "when matched then update set ");
+        printAndAccept(x.getItems(), ", ");
+        if (x.getWhere() != null) {
+            incrementIndent();
+            println();
+            print0(ucase ? "WHERE " : "where ");
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
+            decrementIndent();
+        }
+
+        if (x.getDeleteWhere() != null) {
+            incrementIndent();
+            println();
+            print0(ucase ? "DELETE WHERE " : "delete where ");
+            x.getDeleteWhere().setParent(x);
+            x.getDeleteWhere().accept(this);
+            decrementIndent();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(MergeInsertClause x) {
+        print0(ucase ? "WHEN NOT MATCHED THEN INSERT" : "when not matched then insert");
+        if (x.getColumns().size() > 0) {
+            print(' ');
+            printAndAccept(x.getColumns(), ", ");
+        }
+        print0(ucase ? " VALUES (" : " values (");
+        printAndAccept(x.getValues(), ", ");
+        print(')');
+        if (x.getWhere() != null) {
+            incrementIndent();
+            println();
+            print0(ucase ? "WHERE " : "where ");
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
+            decrementIndent();
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLErrorLoggingClause x) {
+        print0(ucase ? "LOG ERRORS " : "log errors ");
+        if (x.getInto() != null) {
+            print0(ucase ? "INTO " : "into ");
+            x.getInto().accept(this);
+            print(' ');
+        }
+
+        if (x.getSimpleExpression() != null) {
+            print('(');
+            x.getSimpleExpression().accept(this);
+            print(')');
+        }
+
+        if (x.getLimit() != null) {
+            print0(ucase ? " REJECT LIMIT " : " reject limit ");
+            x.getLimit().accept(this);
+        }
+
+        return false;
+    }    
 }
