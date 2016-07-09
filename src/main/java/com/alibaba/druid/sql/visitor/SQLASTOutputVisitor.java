@@ -1449,6 +1449,31 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     public boolean visit(SQLTruncateStatement x) {
         print0(ucase ? "TRUNCATE TABLE " : "truncate table ");
         printAndAccept(x.getTableSources(), ", ");
+        
+        if (x.isDropStorage()) {
+            print0(ucase ? " DROP STORAGE" : " drop storage");    
+        }
+        
+        if (x.isReuseStorage()) {
+            print0(ucase ? " REUSE STORAGE" : " reuse storage");    
+        }
+        
+        if (x.isIgnoreDeleteTriggers()) {
+            print0(ucase ? " IGNORE DELETE TRIGGERS" : " ignore delete triggers");    
+        }
+        
+        if (x.isRestrictWhenDeleteTriggers()) {
+            print0(ucase ? " RESTRICT WHEN DELETE TRIGGERS" : " restrict when delete triggers");    
+        }
+        
+        if (x.isContinueIdentity()) {
+            print0(ucase ? " CONTINUE IDENTITY" : " continue identity");
+        }
+        
+        if (x.isImmediate()) {
+            print0(ucase ? " IMMEDIATE" : " immediate");    
+        }
+        
         return false;
     }
 

@@ -1430,6 +1430,49 @@ public class SQLStatementParser extends SQLParser {
                 stmt.setCascade(Boolean.FALSE);
                 continue;
             }
+            
+            if (lexer.token() == Token.DROP) {
+                lexer.nextToken();
+                acceptIdentifier("STORAGE");
+                stmt.setDropStorage(true);
+                continue;
+            }
+            
+            if (identifierEquals("REUSE")) {
+                lexer.nextToken();
+                acceptIdentifier("STORAGE");
+                stmt.setReuseStorage(true);
+                continue;
+            }
+            
+            if (identifierEquals("IGNORE")) {
+                lexer.nextToken();
+                accept(Token.DELETE);
+                acceptIdentifier("TRIGGERS");
+                stmt.setIgnoreDeleteTriggers(true);
+                continue;
+            }
+            
+            if (identifierEquals("RESTRICT")) {
+                lexer.nextToken();
+                accept(Token.WHEN);
+                accept(Token.DELETE);
+                acceptIdentifier("TRIGGERS");
+                stmt.setRestrictWhenDeleteTriggers(true);
+                continue;
+            }
+            
+            if (lexer.token() == Token.CONTINUE) {
+                lexer.nextToken();
+                accept(Token.IDENTITY);
+                continue;
+            }
+            
+            if (identifierEquals("IMMEDIATE")) {
+                lexer.nextToken();
+                stmt.setImmediate(true);
+                continue;
+            }
 
             break;
         }
