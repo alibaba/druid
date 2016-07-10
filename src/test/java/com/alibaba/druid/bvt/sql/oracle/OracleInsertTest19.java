@@ -67,7 +67,7 @@ public class OracleInsertTest19 extends OracleTest {
          Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PARTICIPATE_NUMBER")));
          Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PERIOD_ID")));
          Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "PRODUCT_ID")));
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "number_index ")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("TB_DUOBAO_PARTICIPATE_NUMBER", "number_index")));
     }
 
 }
