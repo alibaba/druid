@@ -1590,6 +1590,11 @@ public class SQLExprParser extends SQLParser {
             exprList(dataType.getArguments(), dataType);
             accept(Token.RPAREN);
         }
+        
+        if (identifierEquals("PRECISION") && dataType.getName().equalsIgnoreCase("DOUBLE")) {
+            lexer.nextToken();
+            dataType.setName("DOUBLE PRECISION");
+        }
 
         return dataType;
     }
