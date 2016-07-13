@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -508,13 +509,13 @@ public class MySqlStatementParser extends SQLStatementParser {
         } else if (identifierEquals("QUERY")) {
             stmt.setType(MySqlKillStatement.Type.QUERY);
             lexer.nextToken();
+        } else if (lexer.token() == Token.LITERAL_INT) {
+            // skip
         } else {
             throw new ParserException("not support kill type " + lexer.token());
         }
 
-        SQLExpr threadId = this.exprParser.expr();
-        stmt.setThreadId(threadId);
-
+        this.exprParser.exprList(stmt.getThreadIds(), stmt);
         return stmt;
     }
 

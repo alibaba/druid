@@ -1492,8 +1492,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "KILL CONNECTION " : "kill connection ");
         } else if (MySqlKillStatement.Type.QUERY.equals(x.getType())) {
             print0(ucase ? "KILL QUERY " : "kill query ");
+        } else {
+            print0(ucase ? "KILL " : "kill ");
         }
-        x.getThreadId().accept(this);
+        
+        printAndAccept(x.getThreadIds(), ", ");
         return false;
     }
 
