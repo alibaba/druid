@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
@@ -190,6 +189,7 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (lexer.token() == (Token.CREATE)) {
+                
                 statementList.add(parseCreate());
                 continue;
             }
@@ -1648,6 +1648,11 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseCreate() {
         char markChar = lexer.current();
         int markBp = lexer.bp();
+        
+        List<String> comments = null;
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            comments = lexer.readAndResetComments();
+        }
 
         accept(Token.CREATE);
 
@@ -1655,7 +1660,13 @@ public class SQLStatementParser extends SQLParser {
 
         if (token == Token.TABLE || identifierEquals("GLOBAL")) {
             SQLCreateTableParser createTableParser = getSQLCreateTableParser();
-            return createTableParser.parseCrateTable(false);
+            SQLCreateTableStatement stmt = createTableParser.parseCrateTable(false);
+            
+            if (comments != null) {
+                stmt.addBeforeComment(comments);
+            }
+            
+            return stmt;
         } else if (token == Token.INDEX //
                    || token == Token.UNIQUE //
                    || identifierEquals("NONCLUSTERED") // sql server

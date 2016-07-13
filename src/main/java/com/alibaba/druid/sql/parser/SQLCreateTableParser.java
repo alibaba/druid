@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLConstraint;
@@ -33,7 +35,17 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     public SQLCreateTableStatement parseCrateTable() {
-        return parseCrateTable(true);
+        List<String> comments = null;
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            comments = lexer.readAndResetComments();
+        }
+        
+        SQLCreateTableStatement stmt = parseCrateTable(true);
+        if (comments != null) {
+            stmt.addBeforeComment(comments);
+        }
+        
+        return stmt;
     }
 
     public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) {
