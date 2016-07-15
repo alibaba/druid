@@ -367,6 +367,7 @@ public class SQLExprParser extends SQLParser {
             case TRUNCATE:
             case EXCEPTION:
             case FUNCTION:
+            case IDENTITY:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
