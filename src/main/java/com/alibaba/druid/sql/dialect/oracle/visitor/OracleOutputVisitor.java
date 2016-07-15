@@ -480,7 +480,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getExpr().accept(this);
         if (x.getType() != null) {
             print(' ');
-            print0(x.getType().name().toUpperCase());
+
+            String typeName = x.getType().name();
+            print0(ucase ? typeName.toUpperCase() : typeName.toLowerCase());
         }
 
         if (x.getNullsOrderType() != null) {

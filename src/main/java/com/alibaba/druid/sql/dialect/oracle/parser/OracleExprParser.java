@@ -508,9 +508,13 @@ public class OracleExprParser extends SQLExprParser {
                     methodExpr.putAttribute("trim_option", lexer.stringVal());
                     lexer.nextToken();
                 }
-                SQLExpr trim_character = this.primary();
-                trim_character.setParent(methodExpr);
-                methodExpr.putAttribute("trim_character", trim_character);
+                
+                if (lexer.token() != Token.FROM) {
+                    SQLExpr trim_character = this.primary();
+                    trim_character.setParent(methodExpr);
+                    methodExpr.putAttribute("trim_character", trim_character);    
+                }
+                
                 if (lexer.token() == Token.FROM) {
                     lexer.nextToken();
                     SQLExpr trim_source = this.expr();
