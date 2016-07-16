@@ -34,6 +34,8 @@ public interface JdbcConstants {
 
     public static final String SQL_SERVER        = "sqlserver";
     public static final String SQL_SERVER_DRIVER = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+    public static final String SQL_SERVER_DRIVER_SQLJDBC4 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    public static final String SQL_SERVER_DRIVER_JTDS = "net.sourceforge.jtds.jdbc.Driver";
 
     public static final String ORACLE            = "oracle";
     public static final String ORACLE_DRIVER     = "oracle.jdbc.OracleDriver";
