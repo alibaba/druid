@@ -945,7 +945,9 @@ public class DruidDataSource extends DruidAbstractDataSource
             this.validConnectionChecker = new MySqlValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)) {
             this.validConnectionChecker = new OracleValidConnectionChecker();
-        } else if (realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER)) {
+        } else if (realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER)
+        		||realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER_SQLJDBC4)
+        		||realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER_JTDS)) {
             this.validConnectionChecker = new MSSQLValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
