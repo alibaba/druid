@@ -84,6 +84,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
@@ -2371,6 +2372,10 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
 
+                        stmt.addItem(item);
+                    } else if (lexer.token() == Token.UNIQUE) {
+                        SQLUnique unique = this.exprParser.parseUnique();
+                        SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(unique);
                         stmt.addItem(item);
                     } else {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
