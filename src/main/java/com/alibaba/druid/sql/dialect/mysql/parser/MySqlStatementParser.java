@@ -33,7 +33,6 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -2751,6 +2750,16 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
                 stmt.addItem(new MySqlAlterTableOption("COMMENT", '\'' + lexer.stringVal() + '\''));
                 lexer.nextToken();
+            } else if (lexer.token() == Token.UNION) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                accept(Token.LPAREN);
+                SQLTableSource tableSrc = this.createSQLSelectParser().parseTableSource();
+                stmt.getTableOptions().put("UNION", tableSrc);
+                accept(Token.RPAREN);
             } else {
                 break;
             }
