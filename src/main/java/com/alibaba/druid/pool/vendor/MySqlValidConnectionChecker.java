@@ -50,7 +50,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                 usePingMethod = true;
             }
         } catch (Exception e) {
-            LOG.warn("Cannot resolve com.mysq.jdbc.Connection.ping method.  Will use 'SELECT 1' instead.", e);
+            LOG.warn("Cannot resolve com.mysql.jdbc.Connection.ping method.  Will use 'SELECT 1' instead.", e);
         }
 
         configFromProperties(System.getProperties());
