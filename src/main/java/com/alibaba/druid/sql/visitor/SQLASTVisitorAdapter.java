@@ -1565,4 +1565,13 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLErrorLoggingClause x) {
 
     }
+
+    @Override
+    public boolean visit(NullConstraint x) {
+	return true;
+    }
+
+    @Override
+    public void endVisit(NullConstraint x) {
+    }
 }

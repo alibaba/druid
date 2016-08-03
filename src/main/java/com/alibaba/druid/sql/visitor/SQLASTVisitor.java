@@ -716,4 +716,9 @@ public interface SQLASTVisitor {
     boolean visit(SQLErrorLoggingClause x);
 
     void endVisit(SQLErrorLoggingClause x);
+
+    boolean visit(NullConstraint x);
+
+    void endVisit(NullConstraint x);
+
 }

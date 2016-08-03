@@ -1192,6 +1192,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         return false;
     }
 
+    public boolean visit(NullConstraint x) {
+    	if (x.getName() != null) {
+    		print0(ucase ? "CONSTRAINT " : "constraint ");
+    		x.getName().accept(this);
+    		print(' ');
+    	}
+    	print0(ucase ? "NULL" : "null");
+    	return false;
+    }
+
     @Override
     public boolean visit(SQLUnionQuery x) {
         x.getLeft().accept(this);
