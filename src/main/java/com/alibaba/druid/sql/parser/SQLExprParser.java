@@ -64,8 +64,8 @@ import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
-import com.alibaba.druid.sql.ast.statement.NullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
@@ -1683,13 +1683,13 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.NOT) {
             lexer.nextToken();
             accept(Token.NULL);
-            column.addConstraint(new NotNullConstraint());
+            column.addConstraint(new SQLNotNullConstraint());
             return parseColumnRest(column);
         }
 
         if (lexer.token() == Token.NULL) {
             lexer.nextToken();
-            column.getConstraints().add(new NullConstraint());
+            column.getConstraints().add(new SQLNullConstraint());
             return parseColumnRest(column);
         }
 
@@ -1746,7 +1746,7 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token() == Token.NOT) {
                 lexer.nextToken();
                 accept(Token.NULL);
-                NotNullConstraint notNull = new NotNullConstraint();
+                SQLNotNullConstraint notNull = new SQLNotNullConstraint();
                 notNull.setName(name);
                 column.addConstraint(notNull);
                 return parseColumnRest(column);

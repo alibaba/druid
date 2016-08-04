@@ -245,9 +245,9 @@ public interface SQLASTVisitor {
     
     void endVisit(SQLCreateViewStatement.Column x);
 
-    boolean visit(NotNullConstraint x);
+    boolean visit(SQLNotNullConstraint x);
 
-    void endVisit(NotNullConstraint x);
+    void endVisit(SQLNotNullConstraint x);
 
     void endVisit(SQLMethodInvokeExpr x);
 
@@ -717,8 +717,8 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLErrorLoggingClause x);
 
-    boolean visit(NullConstraint x);
+    boolean visit(SQLNullConstraint x);
 
-    void endVisit(NullConstraint x);
+    void endVisit(SQLNullConstraint x);
 
 }

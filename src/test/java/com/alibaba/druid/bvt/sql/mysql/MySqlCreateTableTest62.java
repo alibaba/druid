@@ -39,13 +39,13 @@ public class MySqlCreateTableTest62 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE a ("
-                    + "\n\tb varchar(15) CHARACTER SET latin1 NULL"
+                    + "\n\tb varchar(15) CHARACTER SET latin1 DEFAULT NULL"
                     + "\n)", output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table a ("
-                    + "\n\tb varchar(15) character set latin1 null"
+                    + "\n\tb varchar(15) character set latin1 default null"
                     + "\n)", output);
         }
     }

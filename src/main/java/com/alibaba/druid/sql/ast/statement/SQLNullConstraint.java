@@ -17,9 +17,9 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class NullConstraint extends SQLConstraintImpl implements SQLColumnConstraint {
+public class SQLNullConstraint extends SQLConstraintImpl implements SQLColumnConstraint {
 
-    public NullConstraint(){
+    public SQLNullConstraint(){
     }
 
     @Override

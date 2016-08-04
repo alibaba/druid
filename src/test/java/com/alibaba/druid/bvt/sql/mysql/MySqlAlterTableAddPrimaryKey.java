@@ -32,11 +32,11 @@ public class MySqlAlterTableAddPrimaryKey extends TestCase {
         parser.match(Token.EOF);
         
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tCHANGE COLUMN `fid` `fid` INT(11) NOT NULL NULL,\n\t" + //
+                            "\n\tCHANGE COLUMN `fid` `fid` INT(11) NOT NULL DEFAULT NULL,\n\t" + //
                             "ADD PRIMARY KEY (`fid`)", SQLUtils.toMySqlString(stmt));
         
         Assert.assertEquals("alter table `test`.`tb1`" + //
-                "\n\tchange column `fid` `fid` INT(11) not null null,\n\t" + //
+                "\n\tchange column `fid` `fid` INT(11) not null default null,\n\t" + //
                 "add primary key (`fid`)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 

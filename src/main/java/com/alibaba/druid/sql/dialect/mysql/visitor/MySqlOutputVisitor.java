@@ -323,12 +323,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (x.getDefaultExpr() != null) {
-            if (x.getDefaultExpr() instanceof SQLNullExpr) {
-                print0(ucase ? " NULL" : " null");
-            } else {
-                print0(ucase ? " DEFAULT " : " default ");
-                x.getDefaultExpr().accept(this);
-            }
+            print0(ucase ? " DEFAULT " : " default ");
+            x.getDefaultExpr().accept(this);
         }
 
         if (x.getStorage() != null) {

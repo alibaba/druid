@@ -1182,7 +1182,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         return false;
     }
 
-    public boolean visit(NotNullConstraint x) {
+    public boolean visit(SQLNotNullConstraint x) {
         if (x.getName() != null) {
             print0(ucase ? "CONSTRAINT " : "constraint ");
             x.getName().accept(this);
@@ -1192,7 +1192,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         return false;
     }
 
-    public boolean visit(NullConstraint x) {
+    public boolean visit(SQLNullConstraint x) {
     	if (x.getName() != null) {
     		print0(ucase ? "CONSTRAINT " : "constraint ");
     		x.getName().accept(this);

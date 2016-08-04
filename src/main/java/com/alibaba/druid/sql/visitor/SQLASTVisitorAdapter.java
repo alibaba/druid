@@ -352,11 +352,11 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLCreateViewStatement.Column x) {
     }
 
-    public boolean visit(NotNullConstraint x) {
+    public boolean visit(SQLNotNullConstraint x) {
         return true;
     }
 
-    public void endVisit(NotNullConstraint x) {
+    public void endVisit(SQLNotNullConstraint x) {
     }
 
     @Override
@@ -1567,11 +1567,11 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
-    public boolean visit(NullConstraint x) {
+    public boolean visit(SQLNullConstraint x) {
 	return true;
     }
 
     @Override
-    public void endVisit(NullConstraint x) {
+    public void endVisit(SQLNullConstraint x) {
     }
 }
