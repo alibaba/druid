@@ -69,6 +69,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
@@ -2434,6 +2435,7 @@ public class WallVisitorUtils {
                    || x instanceof SQLDropViewStatement //
                    || x instanceof SQLDropTriggerStatement //
                    || x instanceof SQLDropSequenceStatement //
+                   || x instanceof SQLDropProcedureStatement //
         ) {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";

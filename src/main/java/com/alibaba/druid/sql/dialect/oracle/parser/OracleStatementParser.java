@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
@@ -456,6 +457,12 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 if (lexer.token() == Token.USER) {
                     SQLDropUserStatement stmt = parseDropUser();
+                    statementList.add(stmt);
+                    continue;
+                }
+                
+                if (lexer.token() == Token.PROCEDURE) {
+                    SQLDropProcedureStatement stmt = parseDropProcedure(false);
                     statementList.add(stmt);
                     continue;
                 }
