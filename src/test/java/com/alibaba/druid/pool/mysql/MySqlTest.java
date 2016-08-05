@@ -13,9 +13,9 @@ public class MySqlTest extends TestCase {
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mysql://100.69.167.129:3906/");
-        dataSource.setUsername("pyson");
-        dataSource.setPassword("pyson");
+        dataSource.setUrl("jdbc:mysql://a.b.c.e:3906/");
+        dataSource.setUsername("a");
+        dataSource.setPassword("b");
         dataSource.setFilters("log4j");
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setTestOnBorrow(false);
