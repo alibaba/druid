@@ -1,17 +1,25 @@
 package com.alibaba.druid.bvt.utils;
 
-import java.lang.reflect.Constructor;
-
 import com.alibaba.druid.util.MySqlUtils;
-import com.mysql.jdbc.ConnectionImpl;
-
+import com.mysql.jdbc.Driver;
 import junit.framework.TestCase;
+
+import java.lang.reflect.Constructor;
+import java.sql.Connection;
 
 public class MySqlUtilsTest extends TestCase {
     public void test_() throws Exception {
-        Constructor<ConnectionImpl> constructor = ConnectionImpl.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        ConnectionImpl conn = constructor.newInstance();
-        MySqlUtils.createXAConnection(conn);
+        Driver driver = new Driver();
+        int majorVersion = driver.getMajorVersion();
+
+        if (majorVersion == 5) {
+            Class<?> clazz_ConnectionImpl = Class.forName("com.mysql.jdbc.ConnectionImpl");
+            Constructor<?> constructor = clazz_ConnectionImpl.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            Connection conn = (Connection) constructor.newInstance();
+            MySqlUtils.createXAConnection(driver, conn);
+        } else if (majorVersion == 6) {
+
+        }
     }
 }
