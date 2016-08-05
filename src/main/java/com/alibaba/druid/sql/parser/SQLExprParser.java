@@ -785,7 +785,7 @@ public class SQLExprParser extends SQLParser {
             accept(Token.LPAREN);
         }
 
-        if (expr instanceof SQLName || expr instanceof SQLDefaultExpr) {
+        if (expr instanceof SQLName || expr instanceof SQLDefaultExpr || expr instanceof SQLCharExpr) {
             String methodName;
 
             SQLMethodInvokeExpr methodInvokeExpr;
