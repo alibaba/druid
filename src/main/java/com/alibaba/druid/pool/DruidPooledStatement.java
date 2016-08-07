@@ -456,13 +456,11 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         try {
             boolean moreResults = stmt.getMoreResults();
 
-            if (moreResults) {
-                if (resultSetTrace != null) {
-                    ResultSet lastResultSet = resultSetTrace.get(resultSetTrace.size() - 1);
-                    if (lastResultSet instanceof DruidPooledResultSet) {
-                        DruidPooledResultSet pooledResultSet = ((DruidPooledResultSet) lastResultSet);
-                        pooledResultSet.closed = true;
-                    }
+            if (resultSetTrace != null && resultSetTrace.size() > 0) {
+                ResultSet lastResultSet = resultSetTrace.get(resultSetTrace.size() - 1);
+                if (lastResultSet instanceof DruidPooledResultSet) {
+                    DruidPooledResultSet pooledResultSet = ((DruidPooledResultSet) lastResultSet);
+                    pooledResultSet.closed = true;
                 }
             }
 
