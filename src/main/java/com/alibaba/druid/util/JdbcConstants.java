@@ -45,6 +45,7 @@ public interface JdbcConstants {
 
     public static final String MYSQL             = "mysql";
     public static final String MYSQL_DRIVER      = "com.mysql.jdbc.Driver";
+    public static final String MYSQL_DRIVER_6    = "com.mysql.cj.jdbc.Driver";
 
     public static final String MARIADB           = "mariadb";
     public static final String MARIADB_DRIVER    = "org.mariadb.jdbc.Driver";
