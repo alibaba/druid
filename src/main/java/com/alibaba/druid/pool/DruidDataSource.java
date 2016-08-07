@@ -941,7 +941,8 @@ public class DruidDataSource extends DruidAbstractDataSource
 
     private void initValidConnectionChecker() {
         String realDriverClassName = driver.getClass().getName();
-        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER)) {
+        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
+                || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
             this.validConnectionChecker = new MySqlValidConnectionChecker();
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)) {
             this.validConnectionChecker = new OracleValidConnectionChecker();
@@ -964,7 +965,8 @@ public class DruidDataSource extends DruidAbstractDataSource
         }
 
         String realDriverClassName = driver.getClass().getName();
-        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER)) {
+        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
+                || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
             this.exceptionSorter = new MySqlExceptionSorter();
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)) {
             this.exceptionSorter = new OracleExceptionSorter();

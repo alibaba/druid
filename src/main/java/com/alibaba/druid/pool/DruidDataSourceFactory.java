@@ -355,7 +355,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
                 dataSource.configFromPropety(dataSourceProperties);
             }
         }
-        
+
         value = (String) properties.get(PROP_INIT);
         if ("true".equals(value)) {
             dataSource.init();
