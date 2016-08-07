@@ -45,6 +45,10 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
     public MySqlValidConnectionChecker(){
         try {
             clazz = Utils.loadClass("com.mysql.jdbc.MySQLConnection");
+            if (clazz == null) {
+                clazz = Utils.loadClass("com.mysql.cj.jdbc.ConnectionImpl");
+            }
+
             if (clazz != null) {
                 ping = clazz.getMethod("pingInternal", boolean.class, int.class);
             }
