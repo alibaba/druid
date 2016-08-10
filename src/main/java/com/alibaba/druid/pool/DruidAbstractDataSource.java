@@ -1496,6 +1496,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw ex;
         } catch (Error ex) {
             createErrorCount.incrementAndGet();
+            setCreateError(ex);
             throw ex;
         } finally {
             long nano = System.nanoTime() - connectStartNanos;
