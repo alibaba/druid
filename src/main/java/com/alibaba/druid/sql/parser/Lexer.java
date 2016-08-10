@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.druid.util.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 /**
@@ -1285,7 +1286,7 @@ public class Lexer {
 
     public BigDecimal decimalValue() {
         String value = subString(mark, bufPos);
-        if (!NumberUtils.isNumber(value)){
+        if (!StringUtils.isNumber(value)){
             throw new ParserException(value+" is not a number!");
         }
         return new BigDecimal(value.toCharArray());
