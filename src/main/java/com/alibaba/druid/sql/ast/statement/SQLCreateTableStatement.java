@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
@@ -24,14 +25,16 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    protected boolean               ifNotExiists     = false;
-    protected Type                  type;
-    protected SQLExprTableSource    tableSource;
+    protected boolean            ifNotExiists = false;
+    protected Type               type;
+    protected SQLExprTableSource tableSource;
 
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
     // for postgresql
-    private SQLExprTableSource      inherits;
+    private SQLExprTableSource inherits;
+
+    protected SQLSelect select;
 
     public SQLCreateTableStatement(){
 
@@ -73,7 +76,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public static enum Type {
-        GLOBAL_TEMPORARY, LOCAL_TEMPORARY
+                             GLOBAL_TEMPORARY, LOCAL_TEMPORARY
     }
 
     public List<SQLTableElement> getTableElementList() {
@@ -99,13 +102,55 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         this.inherits = inherits;
     }
 
+    public SQLSelect getSelect() {
+        return select;
+    }
+
+    public void setSelect(SQLSelect select) {
+        this.select = select;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, inherits);
+            this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
     }
+    
+    @SuppressWarnings("unchecked")
+    public void addBodyBeforeComment(List<String> comments) {
+        if (attributes == null) {
+            attributes = new HashMap<String, Object>(1);
+        }
+        
+        List<String> attrComments = (List<String>) attributes.get("format.body_before_comment");
+        if (attrComments == null) {
+            attributes.put("format.body_before_comment", comments);
+        } else {
+            attrComments.addAll(comments);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<String> getBodyBeforeCommentsDirect() {
+        if (attributes == null) {
+            return null;
+        }
+        
+        return (List<String>) attributes.get("format.body_before_comment");
+    }
+    
+    public boolean hasBodyBeforeComment() {
+        List<String> comments = getBodyBeforeCommentsDirect();
+        if (comments == null) {
+            return false;
+        }
+        
+        return !comments.isEmpty();
+    }
+    
 }

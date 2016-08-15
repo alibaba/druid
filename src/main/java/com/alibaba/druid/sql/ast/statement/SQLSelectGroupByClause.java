@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
 
     private final List<SQLExpr> items = new ArrayList<SQLExpr>();
     private SQLExpr             having;
+    private boolean             withRollUp = false;
+    private boolean             withCube = false;
 
     public SQLSelectGroupByClause(){
 
@@ -39,12 +41,33 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
 
         visitor.endVisit(this);
     }
+    
+    public boolean isWithRollUp() {
+        return withRollUp;
+    }
+
+    public void setWithRollUp(boolean withRollUp) {
+        this.withRollUp = withRollUp;
+    }
+    
+    
+    public boolean isWithCube() {
+        return withCube;
+    }
+
+    public void setWithCube(boolean withCube) {
+        this.withCube = withCube;
+    }
 
     public SQLExpr getHaving() {
         return this.having;
     }
 
     public void setHaving(SQLExpr having) {
+        if (having != null) {
+            having.setParent(this);
+        }
+        
         this.having = having;
     }
 

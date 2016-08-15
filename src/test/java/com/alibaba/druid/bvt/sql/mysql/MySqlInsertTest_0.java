@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class MySqlInsertTest_0 extends MysqlTest {
         Assert.assertEquals('1', text.charAt(charExpr.getText().length() - 1));
         Assert.assertEquals('\\', text.charAt(charExpr.getText().length() - 2));
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 

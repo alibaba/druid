@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
+import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
@@ -26,6 +27,7 @@ import javax.sql.StatementEventListener;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +35,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public final class DruidConnectionHolder {
 
@@ -46,6 +48,10 @@ public final class DruidConnectionHolder {
     private final long                          connectTimeMillis;
     private transient long                      lastActiveTimeMillis;
     private long                                useCount                 = 0;
+    
+    private long                                lastNotEmptyWaitNanos;
+    
+    private final long                          createNanoSpan;
 
     private PreparedStatementPool               statementPool;
 
@@ -64,11 +70,16 @@ public final class DruidConnectionHolder {
     private boolean                             discard                  = false;
     
     public static boolean                       holdabilityUnsupported   = false;
+    
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo) throws SQLException {
+        this(dataSource, pyConnectInfo.getPhysicalConnection(), pyConnectInfo.getConnectNanoSpan());
+    }
 
-    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan) throws SQLException{
 
         this.dataSource = dataSource;
         this.conn = conn;
+        this.createNanoSpan = connectNanoSpan;
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;
 
@@ -87,7 +98,14 @@ public final class DruidConnectionHolder {
                 } catch (UnsupportedOperationException e) {
                     holdabilityUnsupported = true;
                     LOG.warn("getHoldability unsupported", e);
+                } catch (SQLFeatureNotSupportedException e) {
+                    holdabilityUnsupported = true;
+                    LOG.warn("getHoldability unsupported", e);
                 } catch (SQLException e) {
+                    // bug fixed for hive jdbc-driver
+                    if ("Method not supported".equals(e.getMessage())) {
+                        holdabilityUnsupported = true;
+                    }
                     LOG.warn("getHoldability error", e);
                 }
             }
@@ -247,6 +265,20 @@ public final class DruidConnectionHolder {
 
     public void setDiscard(boolean discard) {
         this.discard = discard;
+    }
+    
+    
+    public long getCreateNanoSpan() {
+        return createNanoSpan;
+    }
+    
+    
+    public long getLastNotEmptyWaitNanos() {
+        return lastNotEmptyWaitNanos;
+    }
+
+    protected void setLastNotEmptyWaitNanos(long lastNotEmptyWaitNanos) {
+        this.lastNotEmptyWaitNanos = lastNotEmptyWaitNanos;
     }
 
     public String toString() {

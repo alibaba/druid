@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OdpsUDTFSQLSelectItem extends SQLSelectItem {
+public class OdpsUDTFSQLSelectItem extends SQLSelectItem implements OdpsObject {
 
     private final List<String> aliasList = new ArrayList<String>();
 
@@ -34,6 +36,17 @@ public class OdpsUDTFSQLSelectItem extends SQLSelectItem {
 
     public List<String> getAliasList() {
         return aliasList;
+    }
+
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OdpsASTVisitor) visitor);
+    }
+    
+    public void accept0(OdpsASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.expr);
+        }
+        visitor.endVisit(this);
     }
 
 }

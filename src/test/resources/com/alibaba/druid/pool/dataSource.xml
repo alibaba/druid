@@ -7,10 +7,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
 	default-lazy-init="false">
 
-	<bean id="test-filter" class="com.alibaba.druid.bvt.pool.SpringIbatisFilterTest$TestFilter">
-	</bean>
-	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
-	</bean>
+	<bean id="test-filter" class="com.alibaba.druid.bvt.pool.SpringIbatisFilterTest$TestFilter" />
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter" />
 
 	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
 		init-method="init">
@@ -26,15 +24,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
 		init-method="init" destroy-method="close">
-		<property name="url">
-			<value>jdbc:derby:memory:spring-test;create=true</value>
-		</property>
-		<property name="initialSize">
-			<value>1</value>
-		</property>
-		<property name="maxActive">
-			<value>20</value>
-		</property>
+		<property name="url" value="jdbc:derby:memory:spring-test;create=true" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="20" />
 		<property name="proxyFilters">
 			<list>
 				<ref bean="test-filter" />

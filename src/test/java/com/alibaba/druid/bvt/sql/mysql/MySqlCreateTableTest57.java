@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,16 +41,16 @@ public class MySqlCreateTableTest57 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(10, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `t_cpi_driskconfig_bak` (" + "\n\t`Sequence` bigint(20) AUTO_INCREMENT NOT NULL, "
+        Assert.assertEquals("CREATE TABLE `t_cpi_driskconfig_bak` (" + "\n\t`Sequence` bigint(20) NOT NULL AUTO_INCREMENT, "
                 + "\n\t`comcode` varchar(20) BINARY  NOT NULL, " + "\n\t`riskcode` varchar(10) BINARY  NOT NULL, "
                 + "\n\t`configcodehead` varchar(30) BINARY  NOT NULL, " + "\n\t`configcodebody` varchar(100) BINARY , "
                 + "\n\t`configvalue` varchar(200) BINARY , " + "\n\t`inputdate` datetime NOT NULL, "
@@ -74,16 +74,16 @@ public class MySqlCreateTableTest57 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(10, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE `t_cpi_driskconfig_bak` (" + "\n\t`Sequence` bigint(20) AUTO_INCREMENT NOT NULL, "
+        Assert.assertEquals("CREATE TABLE `t_cpi_driskconfig_bak` (" + "\n\t`Sequence` bigint(20) NOT NULL AUTO_INCREMENT, "
                 + "\n\t`comcode` binary(20) NOT NULL, " + "\n\t`riskcode` varchar(10) BINARY  NOT NULL, "
                 + "\n\t`configcodehead` varchar(30) BINARY  NOT NULL, " + "\n\t`configcodebody` varchar(100) BINARY , "
                 + "\n\t`configvalue` varchar(200) BINARY , " + "\n\t`inputdate` datetime NOT NULL, "

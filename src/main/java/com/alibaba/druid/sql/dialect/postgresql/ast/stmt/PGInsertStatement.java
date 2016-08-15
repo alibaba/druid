@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
     private PGWithClause       with;
     private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
     private SQLExpr            returning;
+    private boolean			   defaultValues = false;
 
     public SQLExpr getReturning() {
         return returning;
@@ -70,7 +71,15 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         valuesList.add(valueClause);
     }
 
-    protected void accept0(SQLASTVisitor visitor) {
+    public boolean isDefaultValues() {
+		return defaultValues;
+	}
+
+	public void setDefaultValues(boolean defaultValues) {
+		this.defaultValues = defaultValues;
+	}
+
+	protected void accept0(SQLASTVisitor visitor) {
         accept0((PGASTVisitor) visitor);
     }
 

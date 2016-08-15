@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,14 +45,19 @@ public class MySqlInsertTest_8 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
         
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("INSERT INTO dd.table1 (d, e)" //
                             + "\nSELECT *" //
                             + "\nFROM bb.table3", //
                             SQLUtils.toMySqlString(insertStmt));
+        
+        Assert.assertEquals("insert into dd.table1 (d, e)" //
+                            + "\nselect *" //
+                            + "\nfrom bb.table3", //
+                            SQLUtils.toMySqlString(insertStmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class PoolablePreparedStatementTest extends TestCase {
     protected void setUp() throws Exception {
         DruidDataSource                dataSource = new DruidDataSource();
         MockConnection mockConn = new MockConnection();
-        DruidConnectionHolder connHolder = new DruidConnectionHolder(dataSource, mockConn);
+        DruidConnectionHolder connHolder = new DruidConnectionHolder(dataSource, mockConn, 0);
         DruidPooledConnection conn = new DruidPooledConnection(connHolder);
 
         raw = new MockPreparedStatement(null, null);

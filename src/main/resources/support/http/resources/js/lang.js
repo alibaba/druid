@@ -13,7 +13,8 @@ druid.lang = function() {
 		'Spring' : ['Spring' , 'spring监控'],
 		'JSON API' : ['JSON API' , 'JSON API'],
 		'ResetAll' : ['Reset All' , '重置'],
-		
+		'LogAndReset' : ['Log And Reset' , '记录日志并重置'],
+
 		'StatIndex' : ['Stat Index', '统计索引'],
 		'ViewJSONAPI' : ['View JSON API','查看JSON API'],
 		'Version' : ['Version' , '版本'],

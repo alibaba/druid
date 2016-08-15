@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlDescribeStatement extends MySqlStatementImpl {
-
-    private SQLName object;
+public class MySqlDescribeStatement extends SQLDescribeStatement implements MySqlStatement {
 
     private SQLName colName;
 
@@ -32,12 +32,13 @@ public class MySqlDescribeStatement extends MySqlStatementImpl {
         visitor.endVisit(this);
     }
 
-    public SQLName getObject() {
-        return object;
-    }
-
-    public void setObject(SQLName object) {
-        this.object = object;
+    @Override
+    public void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
     }
 
     public SQLName getColName() {

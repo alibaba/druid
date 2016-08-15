@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,16 @@ package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerDeclareItem;
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
 public class SQLServerDeclareStatement extends SQLServerObjectImpl implements SQLServerStatement {
 
-    protected List<SQLServerDeclareItem> items = new ArrayList<SQLServerDeclareItem>();
+    protected List<SQLDeclareItem> items = new ArrayList<SQLDeclareItem>();
+    
+    private String dbType;
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
@@ -35,12 +37,22 @@ public class SQLServerDeclareStatement extends SQLServerObjectImpl implements SQ
         visitor.endVisit(this);
     }
 
-    public List<SQLServerDeclareItem> getItems() {
+    public List<SQLDeclareItem> getItems() {
         return items;
     }
 
-    public void setItems(List<SQLServerDeclareItem> items) {
-        this.items = items;
+    public void addItem(SQLDeclareItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 }

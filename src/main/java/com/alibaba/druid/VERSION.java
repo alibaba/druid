@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ public final class VERSION {
 
     public final static int MajorVersion    = 1;
     public final static int MinorVersion    = 0;
-    public final static int RevisionVersion = 14;
+    public final static int RevisionVersion = 25;
 
     public static String getVersionNumber() {
         return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;

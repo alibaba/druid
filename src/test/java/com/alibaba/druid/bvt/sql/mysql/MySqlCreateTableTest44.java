@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,17 +43,17 @@ public class MySqlCreateTableTest44 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
@@ -65,7 +65,9 @@ public class MySqlCreateTableTest44 extends MysqlTest {
         Assert.assertEquals("CREATE TABLE lc (" + //
                             "\n\ta INT NULL, " + //
                             "\n\tb INT NULL" + //
-                            "\n) PARTITION BY LIST COLUMNS (a, b) (" + //
+                            "\n)" + //
+                            "\nPARTITION BY LIST COLUMNS (a, b)"
+                            + "\n(" + //
                             "\n\tPARTITION p0 VALUES IN ((0, 0), (NULL, NULL)), " + //
                             "\n\tPARTITION p1 VALUES IN ((0, 1), (0, 2), (0, 3), (1, 1), (1, 2)), " + //
                             "\n\tPARTITION p2 VALUES IN ((1, 0), (2, 0), (2, 1), (3, 0), (3, 1)), " + //

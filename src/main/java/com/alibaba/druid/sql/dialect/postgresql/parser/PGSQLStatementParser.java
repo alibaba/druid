@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -33,6 +34,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -100,6 +102,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
 
         }
+        
+        if (lexer.token() == Token.DEFAULT) {
+        	lexer.nextToken();
+        	accept(Token.VALUES);
+        	stmt.setDefaultValues(true);
+        }
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
@@ -151,6 +159,14 @@ public class PGSQLStatementParser extends SQLStatementParser {
         SQLName tableName = exprParser.name();
 
         deleteStatement.setTableName(tableName);
+        
+        if (lexer.token() == Token.AS) {
+			accept(Token.AS);
+		}
+		if (lexer.token() == Token.IDENTIFIER) {
+			deleteStatement.setAlias(lexer.stringVal());
+			lexer.nextToken();
+		}
 
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
@@ -224,14 +240,21 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     private PGWithQuery withQuery() {
         PGWithQuery withQuery = new PGWithQuery();
-        withQuery.setName(this.exprParser.expr());
+        
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+			withQuery.setName(new SQLIdentifierExpr("\"" + lexer.stringVal()
+					+ "\""));
+		} else {
+			withQuery.setName(new SQLIdentifierExpr(lexer.stringVal()));
+		}
+		lexer.nextToken();
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
             for (;;) {
                 SQLExpr expr = this.exprParser.expr();
-                withQuery.getColumns().add(expr);
+                withQuery.addColumn(expr);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
@@ -299,7 +322,9 @@ public class PGSQLStatementParser extends SQLStatementParser {
     }
 
     protected SQLAlterTableAlterColumn parseAlterColumn() {
-        accept(Token.COLUMN);
+        if (lexer.token() == Token.COLUMN) {
+            lexer.nextToken();
+        }
 
         SQLColumnDefinition column = this.exprParser.parseColumn();
 
@@ -331,5 +356,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
             }
         }
         return alterColumn;
+    }
+    
+    public SQLStatement parseShow() {
+        accept(Token.SHOW);
+        PGShowStatement stmt = new PGShowStatement();
+        stmt.setExpr(this.exprParser.expr());
+        return stmt;
     }
 }

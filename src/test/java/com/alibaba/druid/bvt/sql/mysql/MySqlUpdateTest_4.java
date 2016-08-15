@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,17 +35,17 @@ public class MySqlUpdateTest_4 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(6, visitor.getColumns().size());
@@ -56,11 +56,21 @@ public class MySqlUpdateTest_4 extends MysqlTest {
         Assert.assertTrue(visitor.getColumns().contains(new Column("darenai_stat_url", "user")));
         Assert.assertTrue(visitor.getColumns().contains(new Column("darenai_stat_url", "ip")));
 
-        String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("INSERT INTO darenai_stat_url (user, ip, reffer, url, shopnick"
-                + "\n\t, time)"
-                + "\nVALUES ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
-                + "\n\t, NOW())", //
-                            output);
+        {
+            String output = SQLUtils.toMySqlString(stmt);
+            Assert.assertEquals("INSERT INTO darenai_stat_url (user, ip, reffer, url, shopnick"
+                    + "\n\t, time)"
+                    + "\nVALUES ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
+                    + "\n\t, NOW())", //
+                                output);
+        }
+        {
+            String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("insert into darenai_stat_url (user, ip, reffer, url, shopnick"
+                    + "\n\t, time)"
+                    + "\nvalues ('nologin', '58.101.223.183', 'http://item.taobao.com/item.htm?spm=a230r.1.14.419.KDVewC&amp;id=17052767689', '/d/jingpinhui?spm=2013.1.0.0.zr4nLz&amp;ac=shop&amp;imageid=1019937265&amp;s=1259538&amp;s=1259538', '零利润3232'"
+                    + "\n\t, NOW())", //
+                                output);
+        }
     }
 }

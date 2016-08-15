@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -34,6 +35,21 @@ public interface SQLObject {
     void putAttribute(String name, Object value);
 
     Map<String, Object> getAttributesDirect();
+    
+    void addBeforeComment(String comment);
+    void addBeforeComment(List<String> comments);
+    
+    List<String> getBeforeCommentsDirect();
+    
+    void addAfterComment(String comment);
+    
+    void addAfterComment(List<String> comments);
+    
+    List<String> getAfterCommentsDirect();
+    
+    boolean hasBeforeComment();
+    
+    boolean hasAfterComment();
 
     void output(StringBuffer buf);
 }

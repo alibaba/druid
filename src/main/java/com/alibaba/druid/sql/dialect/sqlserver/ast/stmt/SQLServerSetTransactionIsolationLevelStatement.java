@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerObjectImpl implements SQLServerStatement {
 
     private String level;
+    private String dbType;
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
@@ -37,4 +38,11 @@ public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerObj
         this.level = level;
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 }

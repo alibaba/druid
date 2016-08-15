@@ -1,0 +1,77 @@
+/*
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.druid.sql.ast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class SQLPartitionBy extends SQLObjectImpl {
+
+    protected SQLSubPartitionBy  subPartitionBy;
+
+    protected SQLExpr            partitionsCount;
+
+    protected boolean            linear;
+
+    protected List<SQLPartition> partitions = new ArrayList<SQLPartition>();
+
+    protected List<SQLName>      storeIn    = new ArrayList<SQLName>();
+
+    public List<SQLPartition> getPartitions() {
+        return partitions;
+    }
+    
+    public void addPartition(SQLPartition partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+        this.partitions.add(partition);
+    }
+
+    public SQLSubPartitionBy getSubPartitionBy() {
+        return subPartitionBy;
+    }
+
+    public void setSubPartitionBy(SQLSubPartitionBy subPartitionBy) {
+        if (subPartitionBy != null) {
+            subPartitionBy.setParent(this);
+        }
+        this.subPartitionBy = subPartitionBy;
+    }
+
+    public SQLExpr getPartitionsCount() {
+        return partitionsCount;
+    }
+
+    public void setPartitionsCount(SQLExpr partitionsCount) {
+        if (partitionsCount != null) {
+            partitionsCount.setParent(this);
+        }
+        this.partitionsCount = partitionsCount;
+    }
+
+    public boolean isLinear() {
+        return linear;
+    }
+
+    public void setLinear(boolean linear) {
+        this.linear = linear;
+    }
+
+    public List<SQLName> getStoreIn() {
+        return storeIn;
+    }
+}

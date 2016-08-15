@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectItem extends SQLObjectImpl {
 
-    private SQLExpr expr;
-    private String  alias;
-    private boolean connectByRoot = false;
+    protected SQLExpr expr;
+    protected String  alias;
+    protected boolean connectByRoot = false;
 
     public SQLSelectItem(){
 

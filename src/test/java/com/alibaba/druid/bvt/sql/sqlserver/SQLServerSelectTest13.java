@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+// * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class SQLServerSelectTest13 extends TestCase {
                 "        AND a.time_add <= ? " + //
                 "    ) a " + //
                 "WHERE " + //
-                "    a. ROW BETWEEN (?+ 1) " + //
+                "    a. ROW NOT BETWEEN (?+ 1) " + //
                 "AND (?+?)"; //
 
         String expect = "SELECT a.*" +
@@ -81,7 +81,7 @@ public class SQLServerSelectTest13 extends TestCase {
         		"\n\t\tAND a.time_add >= ?" +
         		"\n\t\tAND a.time_add <= ?" +
         		"\n\t) a" +
-        		"\nWHERE a.ROW BETWEEN ? + 1 AND ? + ?";
+        		"\nWHERE a.ROW NOT BETWEEN ? + 1 AND ? + ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
@@ -90,6 +90,6 @@ public class SQLServerSelectTest13 extends TestCase {
 
         Assert.assertEquals(expect, text);
 
-        System.out.println(text);
+//        System.out.println(text);
     }
 }

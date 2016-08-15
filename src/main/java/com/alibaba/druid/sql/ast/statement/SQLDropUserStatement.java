@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,11 @@ public class SQLDropUserStatement extends SQLStatementImpl implements SQLDDLStat
         return users;
     }
 
-    public void setUsers(List<SQLExpr> users) {
-        this.users = users;
+    public void addUser(SQLExpr user) {
+        if (user != null) {
+            user.setParent(this);
+        }
+        this.users.add(user);
     }
 
     protected void accept0(SQLASTVisitor visitor) {

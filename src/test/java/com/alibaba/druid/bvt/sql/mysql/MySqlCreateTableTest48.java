@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,10 +42,10 @@ public class MySqlCreateTableTest48 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(3, visitor.getTables().size());
         Assert.assertEquals(6, visitor.getColumns().size());
@@ -56,7 +56,7 @@ public class MySqlCreateTableTest48 extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE AO_E8B6CC_REPO_TO_CHANGESET ("//
                                     + "\n\tCHANGESET_ID INTEGER, "//
-                                    + "\n\tID INTEGER AUTO_INCREMENT NOT NULL, "//
+                                    + "\n\tID INTEGER NOT NULL AUTO_INCREMENT, "//
                                     + "\n\tREPOSITORY_ID INTEGER, "//
                                     + "\n\tCONSTRAINT fk_ao_e8b6cc_repo_to_changeset_repository_id FOREIGN KEY (REPOSITORY_ID) REFERENCES AO_E8B6CC_REPOSITORY_MAPPING (ID), "//
                                     + "\n\tCONSTRAINT fk_ao_e8b6cc_repo_to_changeset_changeset_id FOREIGN KEY (CHANGESET_ID) REFERENCES AO_E8B6CC_CHANGESET_MAPPING (ID), "//

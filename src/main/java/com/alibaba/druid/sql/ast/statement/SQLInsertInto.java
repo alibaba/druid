@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,9 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     protected SQLExprTableSource  tableSource;
 
     protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
-    protected ValuesClause        values;
     protected SQLSelect           query;
+    
+    protected List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
 
     public SQLInsertInto(){
 
@@ -77,12 +78,34 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     public List<SQLExpr> getColumns() {
         return columns;
     }
+    
+    public void addColumn(SQLExpr column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
 
     public ValuesClause getValues() {
-        return values;
+        if (valuesList.size() == 0) {
+            return null;
+        }
+        return valuesList.get(0);
     }
 
     public void setValues(ValuesClause values) {
-        this.values = values;
+        if (valuesList.size() == 0) {
+            valuesList.add(values);
+        } else {
+            valuesList.set(0, values);
+        }
+    }
+    
+    public List<ValuesClause> getValuesList() {
+        return valuesList;
+    }
+
+    public void setValuesList(List<ValuesClause> valuesList) {
+        this.valuesList = valuesList;
     }
 }

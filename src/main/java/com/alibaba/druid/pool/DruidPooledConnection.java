@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledConnection extends PoolableWrapper implements javax.sql.PooledConnection, Connection {
 
@@ -65,7 +65,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     private boolean                          disable              = false;
     private boolean                          closed               = false;
     private final Thread                     ownerThread;
-
+    private long                             connectedTimeMillis;
     private long                             connectedTimeNano;
     private volatile boolean                 running              = false;
 
@@ -82,6 +82,11 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         this.holder = holder;
         dupCloseLogEnable = holder.getDataSource().isDupCloseLogEnable();
         ownerThread = Thread.currentThread();
+        connectedTimeMillis = System.currentTimeMillis();
+    }
+
+    public long getConnectedTimeMillis() {
+        return connectedTimeMillis;
     }
 
     public Thread getOwnerThread() {
@@ -169,8 +174,16 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
             stmt.setClosed(true); // soft set close
         } else {
-            stmt.closeInternal();
-            holder.getDataSource().incrementClosedPreparedStatementCount();
+            try {
+                //Connection behind the statement may be in invalid state, which will throw a SQLException.
+                //In this case, the exception is desired to be properly handled to remove the unusable connection from the pool.
+                stmt.closeInternal();
+            } catch (SQLException ex) {
+                this.handleException(ex);
+                throw ex;
+            } finally {
+                holder.getDataSource().incrementClosedPreparedStatementCount();
+            }
         }
     }
 
@@ -1176,5 +1189,26 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     public void abandond() {
         this.abandoned = true;
+    }
+    
+    /**
+     * @since 1.1.17
+     */
+    public long getPhysicalConnectNanoSpan() {
+        return this.holder.getCreateNanoSpan();
+    }
+    
+    /**
+     * @since 1.1.17
+     */
+    public long getPhysicalConnectionUsedCount() {
+        return this.holder.getUseCount();
+    }
+    
+    /**
+     * @since 1.1.17
+     */
+    public long getConnectNotEmptyWaitNanos() {
+        return this.holder.getLastNotEmptyWaitNanos();
     }
 }

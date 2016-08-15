@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -38,11 +39,25 @@ public class OracleSelectTest36 extends OracleTest {
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
         
+        String result = SQLUtils.toOracleString(stmt);
+        String result_lcase = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+        Assert.assertEquals("SELECT ID, name"
+                + "\nFROM druid_test"
+                + "\nWHERE (name >= ?"
+                + "\n\t\tOR name IS NULL)"
+                + "\n\tAND card_id < ?", result);
+        
+        Assert.assertEquals("select ID, name"
+                + "\nfrom druid_test"
+                + "\nwhere (name >= ?"
+                + "\n\t\tor name is null)"
+                + "\n\tand card_id < ?", result_lcase);
+        
         {
-            SQLSelect select = ((SQLSelectStatement) statemen).getSelect();
+            SQLSelect select = ((SQLSelectStatement) stmt).getSelect();
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) select.getQuery();
             SQLBinaryOpExpr where = (SQLBinaryOpExpr) queryBlock.getWhere();
             Assert.assertEquals(SQLBinaryOperator.BooleanAnd, where.getOperator());
@@ -60,7 +75,7 @@ public class OracleSelectTest36 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

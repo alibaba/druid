@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartitioningClause;
+import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -37,15 +37,15 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     private Map<String, SQLObject> tableOptions = new LinkedHashMap<String, SQLObject>();
 
-    protected SQLSelect            query;
-
-    private SQLPartitioningClause  partitioning;
+    private SQLPartitionBy  partitioning;
 
     private List<SQLCommentHint>   hints        = new ArrayList<SQLCommentHint>();
 
     private List<SQLCommentHint>   optionHints  = new ArrayList<SQLCommentHint>();
 
     private SQLExprTableSource     like;
+    
+    private SQLName                tableGroup;
 
     public MySqlCreateTableStatement(){
         super (JdbcConstants.MYSQL);
@@ -78,11 +78,11 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         this.tableOptions = tableOptions;
     }
 
-    public SQLPartitioningClause getPartitioning() {
+    public SQLPartitionBy getPartitioning() {
         return partitioning;
     }
 
-    public void setPartitioning(SQLPartitioningClause partitioning) {
+    public void setPartitioning(SQLPartitionBy partitioning) {
         this.partitioning = partitioning;
     }
 
@@ -90,12 +90,14 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         return tableOptions;
     }
 
+    @Deprecated
     public SQLSelect getQuery() {
-        return query;
+        return select;
     }
 
+    @Deprecated
     public void setQuery(SQLSelect query) {
-        this.query = query;
+        this.select = query;
     }
 
     @Override
@@ -113,7 +115,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             this.acceptChild(visitor, getTableSource());
             this.acceptChild(visitor, getTableElementList());
             this.acceptChild(visitor, getLike());
-            this.acceptChild(visitor, getQuery());
+            this.acceptChild(visitor, getSelect());
         }
         visitor.endVisit(this);
     }
@@ -156,5 +158,15 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     public void setOptionHints(List<SQLCommentHint> optionHints) {
         this.optionHints = optionHints;
+    }
+
+    
+    public SQLName getTableGroup() {
+        return tableGroup;
+    }
+
+    
+    public void setTableGroup(SQLName tableGroup) {
+        this.tableGroup = tableGroup;
     }
 }

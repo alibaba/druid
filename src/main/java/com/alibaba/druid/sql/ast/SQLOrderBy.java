@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import java.util.List;
 public class SQLOrderBy extends SQLObjectImpl {
 
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
+    
+    // for postgres
+    private boolean                            sibings;
 
     public SQLOrderBy(){
 
@@ -31,8 +34,7 @@ public class SQLOrderBy extends SQLObjectImpl {
 
     public SQLOrderBy(SQLExpr expr){
         SQLSelectOrderByItem item = new SQLSelectOrderByItem(expr);
-        item.setParent(this);
-        this.items.add(item);
+        addItem(item);
     }
 
     public void addItem(SQLSelectOrderByItem item) {
@@ -44,6 +46,14 @@ public class SQLOrderBy extends SQLObjectImpl {
 
     public List<SQLSelectOrderByItem> getItems() {
         return this.items;
+    }
+    
+    public boolean isSibings() {
+        return this.sibings;
+    }
+
+    public void setSibings(boolean sibings) {
+        this.sibings = sibings;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -58,7 +68,8 @@ public class SQLOrderBy extends SQLObjectImpl {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + items.hashCode();
+        result = prime * result + ((items == null) ? 0 : items.hashCode());
+        result = prime * result + (sibings ? 1231 : 1237);
         return result;
     }
 
@@ -68,8 +79,21 @@ public class SQLOrderBy extends SQLObjectImpl {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         SQLOrderBy other = (SQLOrderBy) obj;
-        return items.equals(other.items);
+        if (items == null) {
+            if (other.items != null) return false;
+        } else if (!items.equals(other.items)) return false;
+        if (sibings != other.sibings) return false;
+        return true;
     }
 
+    public void addItem(SQLExpr expr, SQLOrderingSpecification type) {
+        SQLSelectOrderByItem item = createItem();
+        item.setExpr(expr);
+        item.setType(type);
+        addItem(item);
+    }
 
+    protected SQLSelectOrderByItem createItem() {
+        return new SQLSelectOrderByItem();
+    }
 }

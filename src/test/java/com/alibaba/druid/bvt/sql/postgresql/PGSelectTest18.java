@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
@@ -36,17 +37,46 @@ public class PGSelectTest18 extends PGTest {
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-        print(statementList);
-
+        SQLStatement stmt = statementList.get(0);
+        {
+            String result = SQLUtils.toPGString(stmt);
+            Assert.assertEquals("WITH RECURSIVE "
+                    + "\n\tt (n)"
+                    + "\n\tAS"
+                    + "\n\t("
+                    + "\n\t\tSELECT 1"
+                    + "\n\t\tUNION ALL"
+                    + "\n\t\tSELECT n + 1"
+                    + "\n\t\tFROM t"
+                    + "\n\t)"
+                    + "\nSELECT n"
+                    + "\nFROM t"
+                    + "\nLIMIT 100", result);
+        }
+        {
+            String result = SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+            Assert.assertEquals("with recursive "
+                    + "\n\tt (n)"
+                    + "\n\tas"
+                    + "\n\t("
+                    + "\n\t\tselect 1"
+                    + "\n\t\tunion all"
+                    + "\n\t\tselect n + 1"
+                    + "\n\t\tfrom t"
+                    + "\n\t)"
+                    + "\nselect n"
+                    + "\nfrom t"
+                    + "\nlimit 100", result);
+        }
+        
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getTables().size());

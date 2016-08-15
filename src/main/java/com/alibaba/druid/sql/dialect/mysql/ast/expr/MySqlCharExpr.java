@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,8 +53,9 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
             buf.append(charset);
             buf.append(' ');
         }
-
-        super.output(buf);
+        if (super.text!=null){
+            super.output(buf);
+        }
 
         if (collate != null) {
             buf.append(" COLLATE ");
@@ -75,5 +76,11 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
+    }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        output(buf);
+        return buf.toString();
     }
 }

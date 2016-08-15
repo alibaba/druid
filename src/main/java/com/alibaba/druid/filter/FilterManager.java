@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class FilterManager {
                     aliasMap.put(name, (String) entry.getValue());
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOG.error("load filter config error", e);
         }
     }

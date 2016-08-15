@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,8 @@ import java.util.Set;
 /**
  * 用于配置Web和Druid数据源之间的管理关联监控统计
  * 
- * @author wenshao <szujobs@htomail.com>
- * @author Zhangming Qi <qizhanming@gmail.com>
+ * @author wenshao [szujobs@htomail.com]
+ * @author Zhangming Qi [qizhanming@gmail.com]
  */
 public class WebStatFilter extends AbstractWebStatImpl implements Filter {
 
@@ -327,6 +327,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
             this.status = statusCode;
         }
 
+        @SuppressWarnings("deprecation")
         public void setStatus(int statusCode, String statusMessage) {
             super.setStatus(statusCode, statusMessage);
             this.status = statusCode;

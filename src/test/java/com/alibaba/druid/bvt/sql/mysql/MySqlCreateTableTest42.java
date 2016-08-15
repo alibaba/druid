@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,17 +43,17 @@ public class MySqlCreateTableTest42 extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
@@ -65,10 +65,12 @@ public class MySqlCreateTableTest42 extends MysqlTest {
         Assert.assertEquals("CREATE TABLE rc (" + //
                             "\n\ta INT NOT NULL, " + //
                             "\n\tb INT NOT NULL" + //
-                            "\n) PARTITION BY RANGE COLUMNS (a, b)(" + //
-                            "\n\tPARTITION p0 VALUES LESS THAN (10, 5), " + //
-                            "\n\tPARTITION p1 VALUES LESS THAN (20, 10), " + //
-                            "\n\tPARTITION p2 VALUES LESS THAN (MAXVALUE, 15), " + //
+                            "\n)"
+                            + "\nPARTITION BY RANGE COLUMNS (a, b)"
+                            + "\n(" + //
+                            "\n\tPARTITION p0 VALUES LESS THAN (10, 5)," + //
+                            "\n\tPARTITION p1 VALUES LESS THAN (20, 10)," + //
+                            "\n\tPARTITION p2 VALUES LESS THAN (MAXVALUE, 15)," + //
                             "\n\tPARTITION p3 VALUES LESS THAN (MAXVALUE, MAXVALUE)" + //
                             "\n)", output);
 

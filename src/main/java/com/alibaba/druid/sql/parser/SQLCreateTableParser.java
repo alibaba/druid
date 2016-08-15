@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.alibaba.druid.sql.parser;
+
+import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -33,7 +35,17 @@ public class SQLCreateTableParser extends SQLDDLParser {
     }
 
     public SQLCreateTableStatement parseCrateTable() {
-        return parseCrateTable(true);
+        List<String> comments = null;
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            comments = lexer.readAndResetComments();
+        }
+        
+        SQLCreateTableStatement stmt = parseCrateTable(true);
+        if (comments != null) {
+            stmt.addBeforeComment(comments);
+        }
+        
+        return stmt;
     }
 
     public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) {
@@ -90,7 +102,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
-                    
+
                     if (lexer.token() == Token.RPAREN) { // compatible for sql server
                         break;
                     }
@@ -126,4 +138,5 @@ public class SQLCreateTableParser extends SQLDDLParser {
     protected SQLCreateTableStatement newCreateStatement() {
         return new SQLCreateTableStatement(getDbType());
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,9 @@ public class DruidStatServiceTest extends TestCase {
 
     private DruidDataSource dataSource;
 
+    @Override
     protected void setUp() throws Exception {
+        DruidStatService.getInstance().setResetEnable(true); 
         // DruidStatService is singleton, reset all for other testcase.
         DruidStatService.getInstance().service("/reset-all.json");
         // clear web app.
@@ -127,6 +129,10 @@ public class DruidStatServiceTest extends TestCase {
     }
 
     public void test_statService_getDataSourceList() throws Exception {
+        {
+            DruidStatService.getInstance().service("/reset-all.json");
+        }
+        
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
 

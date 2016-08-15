@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,17 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 public class OracleSelectTest40 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
         "WITH a AS (" + //
-                "   SELECT TO_CHAR(csl.create_time,'yyyyMMdd') create_time, cwl.client_key ck, csl.src_id src_id " + //
+                "   SELECT to_char(csl.create_time,'yyyyMMdd') create_time, cwl.client_key ck, csl.src_id src_id " + //
                 "   FROM xxxx csl, xxxx cwl " + //
                 "   WHERE 1 =1 AND csl.src_id = cwl.src_id AND csl.curr_url = cwl.curr_url " + //
-                "       AND TO_CHAR(csl.create_time,'yyyyMMdd') BETWEEN ? " + //
-                "       AND ? AND cwl.day = TO_CHAR(csl.create_time,'yyyyMMdd') " + //
+                "       AND to_char(csl.create_time,'yyyyMMdd') BETWEEN ? " + //
+                "       AND ? AND cwl.day = to_char(csl.create_time,'yyyyMMdd') " + //
                 "   GROUP BY cwl.client_key, csl.src_id, csl.create_time ORDER BY csl.src_id )" + //
                 ", b AS (" + //
                 "   SELECT itn.buyerpaytime, itn.esc_orderid, itn.oldck, " + //
@@ -47,18 +46,18 @@ public class OracleSelectTest40 extends OracleTest {
                 "SELECT MAX(cos.location) AS position , a.src_id AS srcid , " + //
                 "   COUNT(DISTINCT b.esc_orderid) AS orders , SUM(b.gmv) AS uvGmv, " + //
                 "   COUNT(DISTINCT buyer) AS buyers FROM a, b, cp_operate_statistics cos " + //
-                "WHERE a.ck = b.oldck(+) AND TO_CHAR(cos.day,'yyyyMMdd') = a.create_time " + //
+                "WHERE a.ck = b.oldck(+) AND to_char(cos.day,'yyyyMMdd') = a.create_time " + //
                 "   AND a.create_time = b.buyerpaytime AND a.src_id = cos.src_id GROUP BY a.src_id ORDER BY a.src_id"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
-
+        
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

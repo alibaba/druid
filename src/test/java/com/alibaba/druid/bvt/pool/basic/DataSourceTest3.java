@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -325,16 +325,8 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setValidationQuery(null);
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
 
-        {
-            Exception error = null;
-            try {
-                DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
-                dataSource.validateConnection(conn);
-            } catch (SQLException ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
-        
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+        dataSource.validateConnection(conn);
+
     }
 }

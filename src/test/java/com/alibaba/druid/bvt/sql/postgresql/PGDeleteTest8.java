@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,22 +41,24 @@ public class PGDeleteTest8 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("parts")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("included_parts")));
 
-        Assert.assertTrue(visitor.getColumns().size() == 4);
+        Assert.assertTrue(visitor.getColumns().size() == 3);
         
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("parts", "sub_part")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("included_parts", "sub_part")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("parts", "part")));
     }
 

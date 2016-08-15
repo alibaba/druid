@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,14 @@ public class MySqlAlterTableAddPrimaryKey extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
+        
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tCHANGE COLUMN `fid` `fid` INT(11) NULL NOT NULL,\n\t" + //
-                            "ADD PRIMARY KEY (`fid`)", output);
+                            "\n\tCHANGE COLUMN `fid` `fid` INT(11) NOT NULL DEFAULT NULL,\n\t" + //
+                            "ADD PRIMARY KEY (`fid`)", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table `test`.`tb1`" + //
+                "\n\tchange column `fid` `fid` INT(11) not null default null,\n\t" + //
+                "add primary key (`fid`)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

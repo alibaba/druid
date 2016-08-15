@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * @author sandzhang<sandzhangtoo@gmail.com>
+ * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public class MapComparator<K extends Object, V extends Object> implements Comparator<Map<K, V>> {
 

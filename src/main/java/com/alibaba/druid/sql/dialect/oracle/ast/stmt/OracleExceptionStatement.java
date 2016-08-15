@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,12 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
         return items;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void addItem(Item item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        
+        this.items.add(item);
     }
 
     public static class Item extends OracleSQLObjectImpl {

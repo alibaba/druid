@@ -38,7 +38,8 @@ from (
 
 ---------------------------
 SELECT COUNT(*)
-FROM (SELECT a.activity_offer_id AS adResourceId, a.title AS adResourceName, a.b2boffer_url AS adResourceURL, a.custid, b.memberid
+FROM (
+	SELECT a.activity_offer_id AS adResourceId, a.title AS adResourceName, a.b2boffer_url AS adResourceURL, a.custid, b.memberid
 		, c.position_name AS positionName, c.charge_setting AS feeRegulation, a.priority_weight AS priorityWeight, a.audit_state AS adResourceState, 0 AS adResourceType
 		, a.gmt_create, a.refuse_remark
 	FROM q_activity_offer_enroll a, q_custinfo b, q_activity_position c
@@ -53,4 +54,4 @@ FROM (SELECT a.activity_offer_id AS adResourceId, a.title AS adResourceName, a.b
 	WHERE a.custid = b.custid
 		AND a.activity_position_id = c.activity_position_id
 		AND c.activity_id = ?
-	) a
+) a

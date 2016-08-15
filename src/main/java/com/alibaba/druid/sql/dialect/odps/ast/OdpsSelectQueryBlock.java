@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.odps.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -25,7 +31,12 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     private SQLOrderBy orderBy;
 
-    private SQLExpr    limit;
+    private SQLExpr limit;
+
+    protected List<SQLHint> hints;
+
+    protected SQLExpr                    distributeBy;
+    protected List<SQLSelectOrderByItem> sortBy = new ArrayList<SQLSelectOrderByItem>(2);
 
     public OdpsSelectQueryBlock(){
 
@@ -37,6 +48,18 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     public void setOrderBy(SQLOrderBy orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public SQLExpr getDistributeBy() {
+        return distributeBy;
+    }
+
+    public void setDistributeBy(SQLExpr distributeBy) {
+        this.distributeBy = distributeBy;
+    }
+
+    public List<SQLSelectOrderByItem> getSortBy() {
+        return sortBy;
     }
 
     public SQLExpr getLimit() {
@@ -70,6 +93,21 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
         return true;
     }
 
+    public List<SQLHint> getHintsDirect() {
+        return hints;
+    }
+
+    public List<SQLHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLHint>(2);
+        }
+        return hints;
+    }
+
+    public void setHints(List<SQLHint> hints) {
+        this.hints = hints;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof OdpsASTVisitor) {
@@ -82,11 +120,14 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     public void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.hints);
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.groupBy);
             acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.distributeBy);
+            acceptChild(visitor, this.sortBy);
             acceptChild(visitor, this.limit);
             acceptChild(visitor, this.into);
         }
@@ -94,4 +135,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
         visitor.endVisit(this);
     }
 
+    public String toString() {
+        return SQLUtils.toOdpsString(this);
+    }
 }

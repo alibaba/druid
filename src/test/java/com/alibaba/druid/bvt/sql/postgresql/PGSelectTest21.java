@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import org.junit.Assert;
 
 import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 
@@ -32,7 +33,7 @@ public class PGSelectTest21 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals("SELECT DISTINCT type\nFROM dbmis2_databases", output(statementList));
 
@@ -41,11 +42,27 @@ public class PGSelectTest21 extends PGTest {
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getTables().size());
+    }
+    
+    public void test_1() throws Exception {
+    	String sql = "with a(a1,b1) as (select * from b) select * from a";
+
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
+//        print(statementList);
+        
+        assertTrue(statemen instanceof PGSelectStatement);
+        assertTrue(((PGSelectStatement)statemen).getWith().getWithQuery().size()==1);
+        StringBuffer sb = new StringBuffer();
+        ((PGSelectStatement)statemen).getWith().getWithQuery().get(0).getName().output(sb);
+        assertTrue("a".equals(sb.toString()));
+        assertTrue(((PGSelectStatement)statemen).getWith().getWithQuery().get(0).getColumns().size()==2);
     }
 }

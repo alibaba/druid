@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class OdpsResourceTest extends TestCase {
     }
 
     public void exec_test(String resource) throws Exception {
-        System.out.println(resource);
+//        System.out.println(resource);
         InputStream is = null;
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
@@ -50,8 +50,12 @@ public class OdpsResourceTest extends TestCase {
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
-        String expect = items[1].trim();
-
+        String expect = null;
+        
+        if (items.length > 1) {
+            expect = items[1].trim();
+        }
+        
         OdpsStatementParser parser = new OdpsStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
@@ -61,13 +65,13 @@ public class OdpsResourceTest extends TestCase {
         SchemaStatVisitor visitor = new OdpsSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println(sql);
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-
-        System.out.println();
-        System.out.println("---------------------------");
-        System.out.println(SQLUtils.toOdpsString(stmt));
+//        System.out.println(sql);
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//
+//        System.out.println();
+//        System.out.println("---------------------------");
+//        System.out.println(SQLUtils.toOdpsString(stmt));
     }
 
     void mergValidate(String sql, String expect) {

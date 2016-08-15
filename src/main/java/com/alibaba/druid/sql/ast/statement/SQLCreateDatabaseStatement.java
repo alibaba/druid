@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ public class SQLCreateDatabaseStatement extends SQLStatementImpl {
     private String               collate;
 
     private List<SQLCommentHint> hints;
+    
+    protected boolean            ifNotExists = false;
 
     public SQLCreateDatabaseStatement(){
     }
@@ -76,6 +78,14 @@ public class SQLCreateDatabaseStatement extends SQLStatementImpl {
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
+    }
+    
+    public boolean isIfNotExists() {
+        return ifNotExists;
+    }
+    
+    public void setIfNotExists(boolean ifNotExists) {
+        this.ifNotExists = ifNotExists;
     }
 
 }

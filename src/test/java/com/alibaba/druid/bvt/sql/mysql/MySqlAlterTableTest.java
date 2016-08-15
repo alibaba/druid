@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class MySqlAlterTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHANGE COLUMN `fname` `fname1` VARCHAR(45) NULL", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHANGE COLUMN `fname` `fname1` VARCHAR(45) NULL DEFAULT NULL", output);
     }
     
     public void test_alter_1() throws Exception {
@@ -40,8 +40,9 @@ public class MySqlAlterTableTest extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHARACTER SET = utf8, COLLATE = utf8_general_ci", output);
+        
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHARACTER SET = utf8, COLLATE = utf8_general_ci", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("alter table `test`.`tb1`\n\tcharacter set = utf8, collate = utf8_general_ci", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_alter_2() throws Exception {

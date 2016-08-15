@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,16 +29,16 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
-    private SQLExprTableSource          like;
+    private SQLExprTableSource like;
 
-    protected SQLExpr                   comment;
+    protected SQLExpr comment;
 
     protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
 
-    protected SQLExpr                   lifecycle;
-    
-    public OdpsCreateTableStatement() {
-        super (JdbcConstants.ODPS);
+    protected SQLExpr lifecycle;
+
+    public OdpsCreateTableStatement(){
+        super(JdbcConstants.ODPS);
     }
 
     public SQLExprTableSource getLike() {
@@ -64,6 +64,13 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
     public List<SQLColumnDefinition> getPartitionColumns() {
         return partitionColumns;
     }
+    
+    public void addPartitionColumn(SQLColumnDefinition column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.partitionColumns.add(column);
+    }
 
     public SQLExpr getLifecycle() {
         return lifecycle;
@@ -84,6 +91,7 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, partitionColumns);
             this.acceptChild(visitor, lifecycle);
+            this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
     }

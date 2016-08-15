@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
+    private String dbType;
 
     public SQLInsertStatement(){
 
@@ -34,7 +35,7 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         if (visitor.visit(this)) {
             this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, columns);
-            this.acceptChild(visitor, values);
+            this.acceptChild(visitor, valuesList);
             this.acceptChild(visitor, query);
         }
 
@@ -84,5 +85,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
             visitor.endVisit(this);
         }
+    }
+
+    @Override
+    public String getDbType() {
+        return dbType;
+    }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 }

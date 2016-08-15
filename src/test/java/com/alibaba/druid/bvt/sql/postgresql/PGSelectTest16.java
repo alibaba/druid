@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 
 public class PGSelectTest16 extends PGTest {
 
@@ -44,19 +45,29 @@ public class PGSelectTest16 extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(8, visitor.getColumns().size());
+        Assert.assertEquals(9, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getTables().size());
+        
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "link")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "data")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("search_graph", "depth")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "path")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("search_graph", "link")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "cycle")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sg", "depth")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("sg", "link")));
     }
 }
 

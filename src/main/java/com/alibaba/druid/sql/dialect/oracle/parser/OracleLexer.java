@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -230,7 +230,9 @@ public class OracleLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
-                hasComment = true;
+                if (keepComments) {
+                    addComment(stringVal);
+                }
             }
 
             if (token != Token.HINT && !isAllowComment()) {
@@ -273,7 +275,9 @@ public class OracleLexer extends Lexer {
 
             stringVal = subString(mark + 1, bufPos);
             token = Token.LINE_COMMENT;
-            hasComment = true;
+            if (keepComments) {
+                addComment(stringVal);
+            }
             endOfComment = isEOF();
             return;
         }

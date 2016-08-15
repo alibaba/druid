@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,6 +98,10 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 this.throwException = value;
             }
         }
+        
+        if (this.config != null) {
+            this.config.configFromProperties(properties);
+        }
     }
 
     @Override
@@ -155,7 +159,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
-
+        
         provider.setName(dataSource.getName());
 
         this.inited = true;
@@ -209,6 +213,14 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     public void setConfig(WallConfig config) {
         this.config = config;
+    }
+    
+    public void setTenantColumn(String tenantColumn) {
+        this.config.setTenantColumn(tenantColumn);
+    }
+    
+    public String getTenantColumn() {
+        return this.config.getTenantColumn();
     }
 
     public boolean isInited() {

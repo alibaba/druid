@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,10 +37,6 @@ public class MySqlShowProfileStatement extends MySqlStatementImpl implements MyS
 
     public List<Type> getTypes() {
         return types;
-    }
-
-    public void setTypes(List<Type> types) {
-        this.types = types;
     }
 
     public SQLExpr getForQuery() {

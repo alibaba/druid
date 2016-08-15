@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -162,7 +162,7 @@ public class PreparedStatementKeyTest extends TestCase {
         MockConnection conn = new MockConnection();
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
 
-        PreparedStatementPool pool = new PreparedStatementPool(new DruidConnectionHolder(dataSource, conn));
+        PreparedStatementPool pool = new PreparedStatementPool(new DruidConnectionHolder(dataSource, conn, 0));
         MockPreparedStatement raw = new MockPreparedStatement(null, null);
         pool.put(new PreparedStatementHolder(k1, raw));
 

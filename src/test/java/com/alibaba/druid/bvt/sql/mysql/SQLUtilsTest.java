@@ -26,8 +26,15 @@ public class SQLUtilsTest extends TestCase {
     }
     
     public void test_format_2() throws Exception {
-        String sql = "begin\n" + " if (a=10) then\n" + " null;\n" + " else\n" + " null;\n" + " end if;\n" + "end;";
-        System.out.println(SQLUtils.formatOracle(sql));
+        String sql = "begin\n"// 
+    + " if (a=10) then\n" + " null;\n" + " else\n" + " null;\n" + " end if;\n" + "end;";
+        Assert.assertEquals("BEGIN"
+                + "\n\tIF a = 10 THEN"
+                + "\n\t\tNULL;"
+                + "\n\tELSE"
+                + "\n\t\tNULL;"
+                + "\n\tEND IF;"
+                + "\nEND", SQLUtils.formatOracle(sql));
     }
     
     public void test_format_3() throws Exception {
@@ -36,7 +43,8 @@ public class SQLUtilsTest extends TestCase {
         String expected = "SELECT lottery_notice_issue, lottery_notice_date, lottery_notice_result"
                           + "\nFROM tb_lottery_notice" + "\nWHERE lottery_type_id = 8"
                           + "\n\tAND lottery_notice_issue <= 2014066" + "\nUNION ALL"
-                          + "\nSELECT NULL, NULL, NULL, NULL, NULL" + "\n\t, NULL";
+                          + "\nSELECT NULL, NULL, NULL, NULL, NULL" // 
+                          + "\n\t, NULL# and lottery_notice_issue>=2014062 order by lottery_notice_issue desc";
         Assert.assertEquals(expected, formattedSql);
     }
 }

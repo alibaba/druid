@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ public class SQLServerSelect extends SQLSelect implements SQLServerObject {
 
     private boolean      forBrowse;
     private List<String> forXmlOptions = new ArrayList<String>(4);
+    private SQLExpr      xmlPath;
 
     private SQLExpr      rowCount;
     private SQLExpr      offset;
@@ -68,6 +69,17 @@ public class SQLServerSelect extends SQLSelect implements SQLServerObject {
             offset.setParent(this);
         }
         this.offset = offset;
+    }
+    
+    public SQLExpr getXmlPath() {
+        return xmlPath;
+    }
+
+    public void setXmlPath(SQLExpr xmlPath) {
+        if (xmlPath != null) {
+            xmlPath.setParent(this);
+        }
+        this.xmlPath = xmlPath;
     }
 
     @Override

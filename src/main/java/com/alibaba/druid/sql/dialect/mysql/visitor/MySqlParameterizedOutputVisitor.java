@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
                 }
                 if (isNumber) {
                     String realName = name.substring(0, pos);
-                    print(realName);
+                    print0(realName);
                     incrementReplaceCunt();
                     return false;
                 }
@@ -127,12 +127,12 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
             if (numberCount > 1) {
                 int numPos = name.length() - numberCount;
                 String realName = name.substring(0, numPos);
-                print(realName);
+                print0(realName);
                 incrementReplaceCunt();
                 return false;
             }
         }
-        print(name);
+        print0(name);
         return false;
     }
 
@@ -200,7 +200,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor implemen
 
     protected void printValuesList(MySqlInsertStatement x) {
         List<ValuesClause> valuesList = x.getValuesList();
-        print("VALUES ");
+        print0(ucase ? "VALUES " : "values ");
         incrementIndent();
         valuesList.get(0).accept(this);
         decrementIndent();

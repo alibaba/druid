@@ -1,7 +1,5 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
@@ -21,7 +19,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardT
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
@@ -32,19 +29,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByList;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.InValues;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef.LessThanValues;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
@@ -87,7 +77,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
@@ -96,6 +85,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
+
+import junit.framework.TestCase;
 
 public class MySqlASTVisitorAdapterTest extends TestCase {
 
@@ -114,11 +105,9 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlInsertStatement().accept(adapter);
         new MySqlLoadXmlStatement().accept(adapter);
         new MySqlReplaceStatement().accept(adapter);
-        new MySqlSelectGroupBy().accept(adapter);
         new MySqlStartTransactionStatement().accept(adapter);
         new MySqlRollbackStatement().accept(adapter);
         new MySqlShowColumnsStatement().accept(adapter);
-        new MySqlShowTablesStatement().accept(adapter);
         new MySqlShowDatabasesStatement().accept(adapter);
         new MySqlShowWarningsStatement().accept(adapter);
         new MySqlShowStatusStatement().accept(adapter);
@@ -170,7 +159,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlShowSlaveStatusStatement().accept(adapter);
         new MySqlShowTableStatusStatement().accept(adapter);
         new MySqlShowTriggersStatement().accept(adapter);
-        new MySqlAlterTableStatement().accept(adapter);
         new MySqlRenameTableStatement().accept(adapter);
         new MySqlUnionQuery().accept(adapter);
         new MySqlUseIndexHint().accept(adapter);
@@ -188,11 +176,5 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlAlterTableDiscardTablespace().accept(adapter);
         new MySqlAlterTableImportTablespace().accept(adapter);
         new TableSpaceOption().accept(adapter);
-        new MySqlPartitionByHash ().accept(adapter);
-        new MySqlPartitionByRange ().accept(adapter);
-        new MySqlPartitioningDef ().accept(adapter);
-        new LessThanValues ().accept(adapter);
-        new InValues ().accept(adapter);
-        new MySqlPartitionByList ().accept(adapter);
     }
 }

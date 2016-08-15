@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerColumnDefinition;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
@@ -174,7 +173,7 @@ public class SQLServerExprParser extends SQLExprParser {
         return null;
     }
 
-    protected SQLSelectItem parseSelectItem() {
+    public SQLSelectItem parseSelectItem() {
         SQLExpr expr;
         if (lexer.token() == Token.IDENTIFIER) {
             expr = new SQLIdentifierExpr(lexer.stringVal());
@@ -191,24 +190,27 @@ public class SQLServerExprParser extends SQLExprParser {
         return new SQLSelectItem(expr, alias);
     }
 
-    protected SQLColumnDefinition createColumnDefinition() {
-        SQLColumnDefinition column = new SQLServerColumnDefinition();
+    public SQLColumnDefinition createColumnDefinition() {
+        SQLColumnDefinition column = new SQLColumnDefinition();
         return column;
     }
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.token() == Token.IDENTITY) {
             lexer.nextToken();
-            accept(Token.LPAREN);
 
-            SQLIntegerExpr seed = (SQLIntegerExpr) this.primary();
-            accept(Token.COMMA);
-            SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
-            accept(Token.RPAREN);
-
-            SQLServerColumnDefinition.Identity identity = new SQLServerColumnDefinition.Identity();
-            identity.setSeed((Integer) seed.getNumber());
-            identity.setIncrement((Integer) increment.getNumber());
+            SQLColumnDefinition.Identity identity = new SQLColumnDefinition.Identity();
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+    
+                SQLIntegerExpr seed = (SQLIntegerExpr) this.primary();
+                accept(Token.COMMA);
+                SQLIntegerExpr increment = (SQLIntegerExpr) this.primary();
+                accept(Token.RPAREN);
+                
+                identity.setSeed((Integer) seed.getNumber());
+                identity.setIncrement((Integer) increment.getNumber());
+            }
 
             if (lexer.token() == Token.NOT) {
                 lexer.nextToken();
@@ -223,8 +225,7 @@ public class SQLServerExprParser extends SQLExprParser {
                 }
             }
 
-            SQLServerColumnDefinition sqlSreverColumn = (SQLServerColumnDefinition) column;
-            sqlSreverColumn.setIdentity(identity);
+            column.setIdentity(identity);
         }
 
         return super.parseColumnRest(column);

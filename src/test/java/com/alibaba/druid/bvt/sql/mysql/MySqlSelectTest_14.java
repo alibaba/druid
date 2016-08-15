@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class MySqlSelectTest_14 extends MysqlTest {
         MySqlSelectQueryBlock queryBlock = (MySqlSelectQueryBlock) select.getQuery();
         Assert.assertNull(queryBlock.getOrderBy());
 
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -68,5 +68,14 @@ public class MySqlSelectTest_14 extends MysqlTest {
                             + "\n\tFROM t2"//
                             + "\n\t)", //
                             output);
+        
+        String output_lcase = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+        Assert.assertEquals("select *" //
+                            + "\nfrom t1"//
+                            + "\nwhere column1 = ("//
+                            + "\n\tselect column1"//
+                            + "\n\tfrom t2"//
+                            + "\n\t)", //
+                            output_lcase);
     }
 }

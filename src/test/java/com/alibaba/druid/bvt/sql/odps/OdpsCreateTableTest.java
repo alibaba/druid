@@ -25,13 +25,16 @@ public class OdpsCreateTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE TABLE IF NOT EXISTS sale_detailsale_detail ("//
-                + "\n\tshop_name STRING, "//
-                + "\n\tcustomer_id STRING, "//
+        Assert.assertEquals("CREATE TABLE IF NOT EXISTS sale_detail ("//
+                + "\n\tshop_name STRING,"//
+                + "\n\tcustomer_id STRING,"//
                 + "\n\ttotal_price DOUBLE"//
                 + "\n)"//
                 + "\nCOMMENT 'xxxx'"//
-                + "\nPARTITIONED (sale_date STRING, region STRING)"//
+                + "\nPARTITIONED BY ("
+                + "\n\tsale_date STRING,"
+                + "\n\tregion STRING"
+                + "\n)"//
                 + "\nLIFECYCLE 5", output);
     }
 }

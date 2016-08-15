@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLGrantStatement extends SQLStatementImpl {
 
-    private final List<SQLExpr> privileges = new ArrayList<SQLExpr>();
+    protected final List<SQLExpr> privileges = new ArrayList<SQLExpr>();
 
-    private SQLObject           on;
-    private SQLExpr             to;
+    protected SQLObject           on;
+    protected SQLExpr             to;
 
     public SQLGrantStatement(){
 
@@ -39,15 +39,15 @@ public class SQLGrantStatement extends SQLStatementImpl {
     }
 
     // mysql
-    private SQLObjectType objectType;
-    private SQLExpr       maxQueriesPerHour;
-    private SQLExpr       maxUpdatesPerHour;
-    private SQLExpr       maxConnectionsPerHour;
-    private SQLExpr       maxUserConnections;
+    protected SQLObjectType objectType;
+    private SQLExpr         maxQueriesPerHour;
+    private SQLExpr         maxUpdatesPerHour;
+    private SQLExpr         maxConnectionsPerHour;
+    private SQLExpr         maxUserConnections;
 
-    private boolean       adminOption;
+    private boolean         adminOption;
 
-    private SQLExpr       identifiedBy;
+    private SQLExpr         identifiedBy;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

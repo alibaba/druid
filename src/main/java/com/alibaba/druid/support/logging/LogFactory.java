@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,24 @@ public class LogFactory {
     private static Constructor logConstructor;
 
     static {
-        // TODO add slf4j logging
-
+        String logType= System.getProperty("druid.logType");
+        if(logType != null){
+            if(logType.equalsIgnoreCase("slf4j")){
+                tryImplementation("org.slf4j.Logger", "com.alibaba.druid.support.logging.SLF4JImpl");
+            }else if(logType.equalsIgnoreCase("log4j")){
+                tryImplementation("org.apache.log4j.Logger", "com.alibaba.druid.support.logging.Log4jImpl");
+            }else if(logType.equalsIgnoreCase("log4j2")){
+                tryImplementation("org.apache.logging.log4j.Logger", "com.alibaba.druid.support.logging.Log4j2Impl");
+            }else if(logType.equalsIgnoreCase("commonsLog")){
+                tryImplementation("org.apache.commons.logging.LogFactory",
+                        "com.alibaba.druid.support.logging.JakartaCommonsLoggingImpl");
+            }else if(logType.equalsIgnoreCase("jdkLog")){
+                tryImplementation("java.util.logging.Logger", "com.alibaba.druid.support.logging.Jdk14LoggingImpl");
+            }
+        }
         // 优先选择log4j,而非Apache Common Logging. 因为后者无法设置真实Log调用者的信息
         tryImplementation("org.apache.log4j.Logger", "com.alibaba.druid.support.logging.Log4jImpl");
+        tryImplementation("org.apache.logging.log4j.Logger", "com.alibaba.druid.support.logging.Log4j2Impl");
         tryImplementation("org.slf4j.Logger", "com.alibaba.druid.support.logging.SLF4JImpl");
         tryImplementation("org.apache.commons.logging.LogFactory",
                           "com.alibaba.druid.support.logging.JakartaCommonsLoggingImpl");

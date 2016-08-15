@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.stat.TableStat.Column;
+
+import junit.framework.TestCase;
 
 public class MySqlAlterTableDropPrimaryKey extends TestCase {
 
@@ -36,14 +36,16 @@ public class MySqlAlterTableDropPrimaryKey extends TestCase {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE tableName" + //
-                            "\n\tDROP PRIMARY KEY", output);
+                            "\n\tDROP PRIMARY KEY", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table tableName" + //
+                "\n\tdrop primary key", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

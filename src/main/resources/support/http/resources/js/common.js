@@ -50,6 +50,23 @@ druid.common = function () {
 				dataType: "json"
 			});
 		},
+
+		ajaxRequestForLogAndReset : function() {
+			if(!confirm("Are you sure to reset data source stat? It'll clear and log all stat data !")){
+				return;
+			}
+
+			$.ajax({
+				type: 'POST',
+				url: "log-and-reset.json",
+				success: function(data) {
+					if (data.ResultCode == 1) {
+						alert("already reset all stat");
+					}
+				},
+				dataType: "json"
+			});
+		},
 		
 		getAjaxUrl : function(uri) {
 			var result = uri;

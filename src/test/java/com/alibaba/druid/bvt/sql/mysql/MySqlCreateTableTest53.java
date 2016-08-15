@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,10 +45,10 @@ public class MySqlCreateTableTest53 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(7, visitor.getColumns().size());
@@ -58,7 +58,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE `ins_ebay_auth` ("//
-    +"\n\t`auth_id` int(10) AUTO_INCREMENT NOT NULL COMMENT '主键id', " //
+    +"\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id', " //
     +"\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表', "//
     +"\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效', "//
     +"\n\t`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码', "// 
@@ -87,10 +87,10 @@ public class MySqlCreateTableTest53 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(7, visitor.getColumns().size());
@@ -100,7 +100,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE `ins_ebay_auth` ("//
-    +"\n\t`auth_id` int(10) AUTO_INCREMENT NOT NULL COMMENT '主键id', " //
+    +"\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id', " //
     +"\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表', "//
     +"\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效', "//
     +"\n\t`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码', "// 
@@ -130,10 +130,10 @@ public class MySqlCreateTableTest53 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(7, visitor.getColumns().size());
@@ -143,7 +143,7 @@ public class MySqlCreateTableTest53 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE `ins_ebay_auth` ("//
-    +"\n\t`auth_id` int(10) AUTO_INCREMENT NOT NULL COMMENT '主键id', " //
+    +"\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id', " //
     +"\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表', "//
     +"\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效', "//
     +"\n\t`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码', "// 

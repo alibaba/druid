@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public abstract class LogFilter extends FilterEventAdapter implements LogFilterMBean {
 
@@ -345,6 +345,10 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected abstract void resultSetLogError(String message, Throwable error);
 
     public void connection_connectAfter(ConnectionProxy connection) {
+        if (connection == null) {
+            return;
+        }
+        
         if (connectionConnectAfterLogEnable && isConnectionLogEnabled()) {
             connectionLog("{conn-" + connection.getId() + "} connected");
         }

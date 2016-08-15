@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,13 +42,15 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public final class JdbcUtils implements JdbcConstants {
 
     private final static Log        LOG                = LogFactory.getLog(JdbcUtils.class);
 
     private static final Properties DRIVER_URL_MAPPING = new Properties();
+
+    private static Boolean mysql_driver_version_6      = null;
 
     static {
         try {
@@ -123,15 +125,21 @@ public final class JdbcUtils implements JdbcConstants {
     public static void printResultSet(ResultSet rs) throws SQLException {
         printResultSet(rs, System.out);
     }
-
+    
     public static void printResultSet(ResultSet rs, PrintStream out) throws SQLException {
+        printResultSet(rs, out, true, "\t");
+    }
+
+    public static void printResultSet(ResultSet rs, PrintStream out, boolean printHeader, String seperator) throws SQLException {
         ResultSetMetaData metadata = rs.getMetaData();
         int columnCount = metadata.getColumnCount();
-        for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
-            if (columnIndex != 1) {
-                out.print('\t');
+        if (printHeader) {
+            for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
+                if (columnIndex != 1) {
+                    out.print(seperator);
+                }
+                out.print(metadata.getColumnName(columnIndex));
             }
-            out.print(metadata.getColumnName(columnIndex));
         }
 
         out.println();
@@ -140,7 +148,7 @@ public final class JdbcUtils implements JdbcConstants {
 
             for (int columnIndex = 1; columnIndex <= columnCount; ++columnIndex) {
                 if (columnIndex != 1) {
-                    out.print('\t');
+                    out.print(seperator);
                 }
 
                 int type = metadata.getColumnType(columnIndex);
@@ -351,10 +359,22 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static String getDriverClassName(String rawUrl) throws SQLException {
+        if (rawUrl == null) {
+            return null;
+        }
+        
         if (rawUrl.startsWith("jdbc:derby:")) {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
-            return MYSQL_DRIVER;
+            if (mysql_driver_version_6 == null) {
+                mysql_driver_version_6 = Utils.loadClass("com.mysql.cj.jdbc.Driver") != null;
+            }
+
+            if (mysql_driver_version_6) {
+                return MYSQL_DRIVER_6;
+            } else {
+                return MYSQL_DRIVER;
+            }
         } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
             return LOG4JDBC_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
@@ -375,7 +395,9 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:fake:") || rawUrl.startsWith("jdbc:mock:")) {
             return "com.alibaba.druid.mock.MockDriver";
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
-            return "org.postgresql.Driver";
+            return POSTGRESQL_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:odps:")) {
+            return ODPS_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
             return "org.hsqldb.jdbcDriver";
         } else if (rawUrl.startsWith("jdbc:db2:")) {
@@ -416,6 +438,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.DM_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kingbase:")) {
             return JdbcConstants.KINGBASE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:hive:")) {
+            return JdbcConstants.HIVE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:hive2:")) {
+            return JdbcConstants.HIVE_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -451,6 +477,8 @@ public final class JdbcUtils implements JdbcConstants {
             return POSTGRESQL;
         } else if (rawUrl.startsWith("jdbc:hsqldb:") || rawUrl.startsWith("jdbc:log4jdbc:hsqldb:")) {
             return HSQL;
+        } else if (rawUrl.startsWith("jdbc:odps:")) {
+            return ODPS;
         } else if (rawUrl.startsWith("jdbc:db2:")) {
             return DB2;
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
@@ -491,6 +519,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.KINGBASE;
         } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
             return LOG4JDBC;
+        } else if (rawUrl.startsWith("jdbc:hive:")) {
+            return HIVE;
+        } else if (rawUrl.startsWith("jdbc:hive2:")) {
+            return HIVE;
         } else {
             return null;
         }

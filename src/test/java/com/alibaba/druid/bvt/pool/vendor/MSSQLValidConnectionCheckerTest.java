@@ -35,6 +35,13 @@ public class MSSQLValidConnectionCheckerTest extends TestCase {
         MockConnection conn = new MockConnection();
         conn.setError(new SQLException());
 
-        Assert.assertFalse(checker.isValidConnection(conn, "select 1", 10));
+        SQLException error = null;
+        try {
+            checker.isValidConnection(conn, "select 1", 10);
+        } catch (SQLException ex) {
+            error = ex;
+        }
+        Assert.assertNotNull(error);
+        Assert.assertSame(error, conn.getError());
     }
 }

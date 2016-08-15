@@ -16,9 +16,13 @@ public class MySql57Test extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
+        
         Assert.assertEquals("ALTER TABLE t1" //
                 + "\n\tALGORITHM = INPLACE," //
-                + "\n\tCHANGE COLUMN c1 c1 VARCHAR(255)", output);
+                + "\n\tCHANGE COLUMN c1 c1 VARCHAR(255)", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table t1" //
+                            + "\n\tALGORITHM = INPLACE," //
+                            + "\n\tchange column c1 c1 VARCHAR(255)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

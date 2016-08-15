@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.odps.parser;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -52,13 +53,29 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         }
 
         stmt.setName(this.exprParser.name());
+        
+        if (identifierEquals("LIFECYCLE")) {
+            lexer.nextToken();
+            stmt.setLifecycle(this.exprParser.expr());
+        }
 
         if (lexer.token() == Token.LIKE) {
             lexer.nextToken();
             SQLName name = this.exprParser.name();
             stmt.setLike(name);
+        } else if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+            
+            OdpsSelectParser selectParser = new OdpsSelectParser(this.exprParser);
+            SQLSelect select = selectParser.select();
+            
+            stmt.setSelect(select);
         } else {
             accept(Token.LPAREN);
+            
+            if (lexer.isKeepComments() && lexer.hasComment()) {
+                stmt.addBodyBeforeComment(lexer.readAndResetComments());
+            }
             
             for (;;) {
                 if (lexer.token() != Token.IDENTIFIER) {
@@ -68,10 +85,18 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 SQLColumnDefinition column = this.exprParser.parseColumn();
                 stmt.getTableElementList().add(column);
                 
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    column.addAfterComment(lexer.readAndResetComments());
+                }
+                
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 } else {
                     lexer.nextToken();
+                    
+                    if (lexer.isKeepComments() && lexer.hasComment()) {
+                        column.addAfterComment(lexer.readAndResetComments());
+                    }
                 }
             }
             accept(Token.RPAREN);
@@ -93,12 +118,19 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 }
                 
                 SQLColumnDefinition column = this.exprParser.parseColumn();
-                stmt.getPartitionColumns().add(column);
+                stmt.addPartitionColumn(column);
+                
+                if (lexer.isKeepComments() && lexer.hasComment()) {
+                    column.addAfterComment(lexer.readAndResetComments());
+                }
                 
                 if (!(lexer.token() == (Token.COMMA))) {
                     break;
                 } else {
                     lexer.nextToken();
+                    if (lexer.isKeepComments() && lexer.hasComment()) {
+                        column.addAfterComment(lexer.readAndResetComments());
+                    }
                 }
             }
             

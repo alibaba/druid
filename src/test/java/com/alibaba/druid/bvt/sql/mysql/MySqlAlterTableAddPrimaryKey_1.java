@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,12 @@ public class MySqlAlterTableAddPrimaryKey_1 extends TestCase {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toMySqlString(stmt);
+        
         Assert.assertEquals("ALTER TABLE tabelname" + //
-                            "\n\tADD CONSTRAINT mYconstraint PRIMARY KEY (id)", output);
+                            "\n\tADD CONSTRAINT mYconstraint PRIMARY KEY (id)", SQLUtils.toMySqlString(stmt));
+        
+        Assert.assertEquals("alter table tabelname" + //
+                "\n\tadd constraint mYconstraint primary key (id)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

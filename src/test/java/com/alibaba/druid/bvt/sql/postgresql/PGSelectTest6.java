@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,21 +29,26 @@ public class PGSelectTest6 extends PGTest {
     public void test_0() throws Exception {
         String sql = "select fromUserId, toMemberId, rank, tag " + //
                      "from cnres.function_get_re_cni_myali_acion_fct0(?) " + //
-                     "as (fromUserId character varying(128), toMemberId character varying(128), rank numeric, tag character varying(128))";
+                     "as ("//
+                     + "fromUserId character varying(128), " //
+                     + "toMemberId character varying(128), " //
+                     + "rank numeric, " //
+                     + "tag character varying(128)" //
+                     + ")";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getTables().size());

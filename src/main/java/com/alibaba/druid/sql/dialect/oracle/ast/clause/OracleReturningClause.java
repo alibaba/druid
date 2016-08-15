@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,16 +31,22 @@ public class OracleReturningClause extends OracleSQLObjectImpl {
         return items;
     }
 
-    public void setItems(List<SQLExpr> items) {
-        this.items = items;
+    public void addItem(SQLExpr item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public List<SQLExpr> getValues() {
         return values;
     }
 
-    public void setValues(List<SQLExpr> values) {
-        this.values = values;
+    public void addValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
+        this.values.add(value);
     }
 
     @Override

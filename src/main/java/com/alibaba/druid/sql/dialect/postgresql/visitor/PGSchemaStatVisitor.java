@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,17 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGExtractExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGInetExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGIntervalExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGLineSegmentsExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
@@ -33,6 +43,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForC
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLimit;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
@@ -85,6 +96,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGWithQuery x) {
+        x.getQuery().accept(this);
+        
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
             String alias = null;
@@ -94,10 +107,10 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
             if (alias != null) {
                 aliasMap.put(alias, null);
-                subQueryMap.put(alias, x.getQuery());
+                addSubQuery(alias, x.getQuery());
             }
         }
-        x.getQuery().accept(this);
+        
         return false;
     }
 
@@ -248,16 +261,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(PGParameter x) {
-
-    }
-
-    @Override
-    public boolean visit(PGParameter x) {
-        return false;
-    }
-
-    @Override
     public void endVisit(PGFunctionTableSource x) {
 
     }
@@ -295,16 +298,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGValuesQuery x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(PGArrayExpr x) {
-        
-    }
-    
-    @Override
-    public boolean visit(PGArrayExpr x) {
         return true;
     }
     
@@ -406,5 +399,15 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     @Override
     public boolean visit(PGPointExpr x) {
         return true;
+    }
+    
+    @Override
+    public void endVisit(PGShowStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGShowStatement x) {
+        return false;
     }
 }

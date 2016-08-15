@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
@@ -40,27 +41,61 @@ public class MySqlDeleteTest_3 extends MysqlTest {
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-        print(statementList);
+        SQLStatement stmt = statementList.get(0);
+        Assert.assertEquals("DELETE FROM t1"
+                + "\nWHERE s11 > ANY (SELECT COUNT(*)"
+                + "\n\t\tFROM t2"
+                + "\n\t\tWHERE NOT EXISTS ("
+                + "\n\t\t\tSELECT *"
+                + "\n\t\t\tFROM t3"
+                + "\n\t\t\tWHERE ROW(5 * t2.s1, 77) = ("
+                + "\n\t\t\t\tSELECT 50, 11 * s1"
+                + "\n\t\t\t\tFROM t4"
+                + "\n\t\t\t\tUNION"
+                + "\n\t\t\t\tSELECT 50, 77"
+                + "\n\t\t\t\tFROM (SELECT *"
+                + "\n\t\t\t\t\tFROM t5"
+                + "\n\t\t\t\t\t) t5"
+                + "\n\t\t\t\t)"
+                + "\n\t\t\t))", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("delete from t1"
+                + "\nwhere s11 > any (select count(*)"
+                + "\n\t\tfrom t2"
+                + "\n\t\twhere not exists ("
+                + "\n\t\t\tselect *"
+                + "\n\t\t\tfrom t3"
+                + "\n\t\t\twhere ROW(5 * t2.s1, 77) = ("
+                + "\n\t\t\t\tselect 50, 11 * s1"
+                + "\n\t\t\t\tfrom t4"
+                + "\n\t\t\t\tunion"
+                + "\n\t\t\t\tselect 50, 77"
+                + "\n\t\t\t\tfrom (select *"
+                + "\n\t\t\t\t\tfrom t5"
+                + "\n\t\t\t\t\t) t5"
+                + "\n\t\t\t\t)"
+                + "\n\t\t\t))", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(5, visitor.getTables().size());
-        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(5, visitor.getColumns().size());
         Assert.assertEquals(1, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
         Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "s11")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "*")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "s1")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("t3", "*")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("t4", "s1")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("t5", "*")));
     }
 }

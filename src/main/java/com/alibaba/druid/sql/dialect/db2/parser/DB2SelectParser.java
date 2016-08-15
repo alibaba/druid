@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.db2.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
@@ -76,6 +77,11 @@ public class DB2SelectParser extends SQLSelectParser {
         parseWhere(queryBlock);
 
         parseGroupBy(queryBlock);
+        
+        if (lexer.token() == Token.ORDER) {
+            SQLOrderBy orderBy = parseOrderBy();
+            queryBlock.setOrderBy(orderBy);
+        }
 
 
         for (;;) {
@@ -110,9 +116,15 @@ public class DB2SelectParser extends SQLSelectParser {
             
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
-                acceptIdentifier("READ");
-                accept(Token.ONLY);
-                queryBlock.setForReadOnly(true);
+                
+                if (lexer.token() == Token.UPDATE) {
+                    queryBlock.setForUpdate(true);
+                    lexer.nextToken();
+                } else {
+                    acceptIdentifier("READ");
+                    accept(Token.ONLY);
+                    queryBlock.setForReadOnly(true);
+                }
             }
             
             if (lexer.token() == Token.OPTIMIZE) {

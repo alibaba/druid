@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,35 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHintImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlSelectParser extends SQLSelectParser {
+
+    protected boolean              returningFlag = false;
+    protected MySqlUpdateStatement updateStmt;
 
     public MySqlSelectParser(SQLExprParser exprParser){
         super(exprParser);
@@ -48,7 +56,25 @@ public class MySqlSelectParser extends SQLSelectParser {
     public MySqlSelectParser(String sql){
         this(new MySqlExprParser(sql));
     }
+    
+    public void parseFrom(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token() != Token.FROM) {
+            return;
+        }
+        
+        lexer.nextToken();
+        
+        if (lexer.token() == Token.UPDATE) { // taobao returning to urgly syntax
+            updateStmt = this.parseUpdateStatment();
+            updateStmt.addReturning(queryBlock.getSelectList());
+            returningFlag = true;
+            return;
+        }
+        
+        queryBlock.setFrom(parseTableSource());
+    }
 
+  
     @Override
     public SQLSelectQuery query() {
         if (lexer.token() == (Token.LPAREN)) {
@@ -153,6 +179,15 @@ public class MySqlSelectParser extends SQLSelectParser {
             accept(Token.UPDATE);
 
             queryBlock.setForUpdate(true);
+            
+            if (identifierEquals("NO_WAIT")) {
+                lexer.nextToken();
+                queryBlock.setNoWait(true);
+            } else if (identifierEquals("WAIT")) {
+                lexer.nextToken();
+                SQLExpr waitTime = this.exprParser.primary();
+                queryBlock.setWaitTime(waitTime);
+            }
         }
 
         if (lexer.token() == Token.LOCK) {
@@ -164,6 +199,115 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
 
         return queryRest(queryBlock);
+    }
+    
+    public SQLTableSource parseTableSource() {
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            SQLTableSource tableSource;
+            if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
+                SQLSelect select = select();
+                accept(Token.RPAREN);
+                SQLSelectQuery query = queryRest(select.getQuery());
+                if (query instanceof SQLUnionQuery) {
+                    tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
+                } else {
+                    tableSource = new SQLSubqueryTableSource(select);
+                }
+            } else if (lexer.token() == Token.LPAREN) {
+                tableSource = parseTableSource();
+                accept(Token.RPAREN);
+            } else {
+                tableSource = parseTableSource();
+                accept(Token.RPAREN);
+            }
+
+            return parseTableSourceRest(tableSource);
+        }
+        
+        if(lexer.token() == Token.UPDATE) {
+            SQLTableSource tableSource = new MySqlUpdateTableSource(parseUpdateStatment());
+            return parseTableSourceRest(tableSource);
+        }
+
+        if (lexer.token() == Token.SELECT) {
+            throw new ParserException("TODO");
+        }
+
+        SQLExprTableSource tableReference = new SQLExprTableSource();
+
+        parseTableSourceQueryTableExpr(tableReference);
+
+        SQLTableSource tableSrc = parseTableSourceRest(tableReference);
+        
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            tableSrc.addAfterComment(lexer.readAndResetComments());
+        }
+        
+        return tableSrc;
+    }
+    
+    protected MySqlUpdateStatement parseUpdateStatment() {
+        MySqlUpdateStatement update = new MySqlUpdateStatement();
+
+        lexer.nextToken();
+
+        if (identifierEquals("LOW_PRIORITY")) {
+            lexer.nextToken();
+            update.setLowPriority(true);
+        }
+
+        if (identifierEquals("IGNORE")) {
+            lexer.nextToken();
+            update.setIgnore(true);
+        }
+        
+        if (identifierEquals("COMMIT_ON_SUCCESS")) {
+            lexer.nextToken();
+            update.setCommitOnSuccess(true);
+        }
+        
+        if (identifierEquals("ROLLBACK_ON_FAIL")) {
+            lexer.nextToken();
+            update.setRollBackOnFail(true);
+        }
+        
+        if (identifierEquals("QUEUE_ON_PK")) {
+            lexer.nextToken();
+            update.setQueryOnPk(true);
+        }
+        
+        if (identifierEquals("TARGET_AFFECT_ROW")) {
+            lexer.nextToken();
+            SQLExpr targetAffectRow = this.exprParser.expr();
+            update.setTargetAffectRow(targetAffectRow);
+        }
+
+        SQLTableSource updateTableSource = this.exprParser.createSelectParser().parseTableSource();
+        update.setTableSource(updateTableSource);
+
+        accept(Token.SET);
+
+        for (;;) {
+            SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
+            update.addItem(item);
+
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+
+            lexer.nextToken();
+        }
+
+        if (lexer.token() == (Token.WHERE)) {
+            lexer.nextToken();
+            update.setWhere(this.exprParser.expr());
+        }
+
+        update.setOrderBy(this.exprParser.parseOrderBy());
+        update.setLimit(parseLimit());
+        
+        return update;
     }
     
     protected void parseInto(SQLSelectQueryBlock queryBlock) {
@@ -225,49 +369,6 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
     }
 
-    protected void parseGroupBy(SQLSelectQueryBlock queryBlock) {
-        SQLSelectGroupByClause groupBy = null;
-
-        if (lexer.token() == Token.GROUP) {
-            groupBy = new SQLSelectGroupByClause();
-
-            lexer.nextToken();
-            accept(Token.BY);
-
-            while (true) {
-                groupBy.addItem(this.getExprParser().parseSelectGroupByItem());
-                if (!(lexer.token() == (Token.COMMA))) {
-                    break;
-                }
-                lexer.nextToken();
-            }
-
-            if (lexer.token() == Token.WITH) {
-                lexer.nextToken();
-                acceptIdentifier("ROLLUP");
-
-                MySqlSelectGroupBy mySqlGroupBy = new MySqlSelectGroupBy();
-                for (SQLExpr sqlExpr : groupBy.getItems()) {
-                    mySqlGroupBy.addItem(sqlExpr);
-                }
-                mySqlGroupBy.setRollUp(true);
-
-                groupBy = mySqlGroupBy;
-            }
-        }
-
-        if (lexer.token() == Token.HAVING) {
-            lexer.nextToken();
-
-            if (groupBy == null) {
-                groupBy = new SQLSelectGroupByClause();
-            }
-            groupBy.setHaving(this.exprParser.expr());
-        }
-
-        queryBlock.setGroupBy(groupBy);
-    }
-
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (identifierEquals("USING")) {
             return tableSource;
@@ -292,6 +393,13 @@ public class MySqlSelectParser extends SQLSelectParser {
             MySqlForceIndexHint hint = new MySqlForceIndexHint();
             parseIndexHint(hint);
             tableSource.getHints().add(hint);
+        }
+        
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            this.exprParser.names(((SQLExprTableSource) tableSource).getPartitions(), tableSource);
+            accept(Token.RPAREN);
         }
 
         return super.parseTableSourceRest(tableSource);

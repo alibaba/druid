@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,6 +68,11 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
         String message = e.getMessage();
         if (message != null && message.length() > 0) {
+            if (message.startsWith("Streaming result set com.mysql.jdbc.RowDataDynamic")
+                    && message.endsWith("is still active. No statements may be issued when any streaming result sets are open and in use on a given connection. Ensure that you have called .close() on any active streaming result sets before attempting more queries.")) {
+                return true;
+            }
+            
             final String errorText = message.toUpperCase();
 
             if ((errorCode == 0 && (errorText.contains("COMMUNICATIONS LINK FAILURE")) //
@@ -77,6 +82,8 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 return true;
             }
         }
+        
+        
         return false;
     }
 

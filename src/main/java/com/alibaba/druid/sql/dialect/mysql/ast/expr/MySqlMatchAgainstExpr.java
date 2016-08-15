@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,11 +56,13 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
     }
 
     public static enum SearchModifier {
-        IN_BOOLEAN_MODE("IN BOOLEAN MODE"), IN_NATURAL_LANGUAGE_MODE("IN NATURAL LANGUAGE MODE"),
+        IN_BOOLEAN_MODE("IN BOOLEAN MODE"), // 
+        IN_NATURAL_LANGUAGE_MODE("IN NATURAL LANGUAGE MODE"), //
         IN_NATURAL_LANGUAGE_MODE_WITH_QUERY_EXPANSION("IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION"),
-        WITH_QUERY_EXPANSION("WITH QUERY EXPANSION"), ;
+        WITH_QUERY_EXPANSION("WITH QUERY EXPANSION");
 
         public final String name;
+        public final String name_lcase;
 
         SearchModifier(){
             this(null);
@@ -68,6 +70,7 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
 
         SearchModifier(String name){
             this.name = name;
+            this.name_lcase = name.toLowerCase();
         }
     }
 

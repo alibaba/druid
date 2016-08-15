@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,9 @@ public class SQLServerSelectParser extends SQLSelectParser {
                         } else {
                             select.getForXmlOptions().add("ELEMENTS");
                         }
+                    } else if (identifierEquals("PATH")) {
+                        SQLExpr xmlPath = this.exprParser.expr();
+                        select.setXmlPath(xmlPath);
                     } else {
                         break;
                     }
@@ -99,7 +102,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
             acceptIdentifier("ROWS");
             select.setOffset(offset);
             
-            if (identifierEquals("FETCH")) {
+            if (lexer.token() == Token.FETCH) {
                 lexer.nextToken();
                 acceptIdentifier("NEXT");
                 

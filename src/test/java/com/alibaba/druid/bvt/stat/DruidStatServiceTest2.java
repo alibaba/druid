@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,6 +155,7 @@ public class DruidStatServiceTest2 extends TestCase {
     }
 
     public void test_statService_getDataSourceList() throws Exception {
+        DruidStatService.getInstance().service("/reset-all.json");
         String result = DruidStatService.getInstance().service("/datasource.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
         List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) resultMap.get("Content");

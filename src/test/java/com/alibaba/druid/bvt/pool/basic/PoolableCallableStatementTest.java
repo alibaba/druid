@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2101 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class PoolableCallableStatementTest extends TestCase {
 
     protected void setUp() throws Exception {
         MockConnection mockConn = new MockConnection();
-        DruidConnectionHolder connHolder = new DruidConnectionHolder(dataSource, mockConn);
+        DruidConnectionHolder connHolder = new DruidConnectionHolder(dataSource, mockConn, 0);
         conn = new DruidPooledConnection(connHolder);
         raw = new MockCallableStatement(null, null);
         stmt = new DruidPooledCallableStatement(conn, new PreparedStatementHolder(new PreparedStatementKey("", null,
