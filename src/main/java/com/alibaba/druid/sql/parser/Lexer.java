@@ -40,7 +40,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.druid.util.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
