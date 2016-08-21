@@ -352,4 +352,8 @@ public class OdpsLexer extends Lexer {
     protected final void scanString() {
         scanString2();
     }
+    
+    protected final void scanAlias() {
+        scanAlias2();
+    }
 }

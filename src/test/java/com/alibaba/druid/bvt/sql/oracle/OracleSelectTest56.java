@@ -29,47 +29,85 @@ public class OracleSelectTest56 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-                "SELECT TRIM(BOTH FROM EUCD) AS \"value\",NTLANG1 AS \"text\" " //
-                + " FROM T_HT_WREM_ENUMLANG_D"
-                + " WHERE TYPE=?"
-                + " ORDER BY \"value\" ASC"; //
+                "select "
+                + "\nAA.ID,"
+                + "\nAA.CODE,"
+                + "\nAA.TYPE,"
+                + "\nAA.STATUS,"
+                + "\nAA.EMPLOYEENAME,"
+                + "\nAA.CREATORNAME,"
+                + "\nAA.OPERATIONTYPE,"
+                + "\nAA.CREATEDATE,"
+                + "\nAA.REMARK,"
+                + "\nW.NAME,"
+                + "\nDD.DESC"
+                + "\nfrom "
+                + "\na AA,"
+                + "\nw W,"
+                + "\nd DD"
+                + "\nwhere "
+                + "\nAA.employeeNo IN ("
+                + "\nSELECT employeeno FROM employeeauditor ea WHERE auditorno = 1 GROUP BY employeeno"
+                + "\nUNION ALL"
+                + "\nSELECT 1 FROM dual "
+                + "\n) and"
+                + "\nAA.WNO = W.WNO(+) and"
+                + "\nAA.DEPTNO = DD.DEPTNO(+)"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("relationships : " + visitor.getRelationships());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("relationships : " + visitor.getRelationships());
+//        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(4, visitor.getTables().size());
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(18, visitor.getColumns().size());
 
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            Assert.assertEquals("SELECT TRIM(EUCD) AS \"value\", NTLANG1 AS \"text\""
-                    + "\nFROM T_HT_WREM_ENUMLANG_D"
-                    + "\nWHERE TYPE = ?"
-                    + "\nORDER BY \"value\" ASC", text);
+            Assert.assertEquals("SELECT AA.ID, AA.CODE, AA.TYPE, AA.STATUS, AA.EMPLOYEENAME\n" +
+                    "\t, AA.CREATORNAME, AA.OPERATIONTYPE, AA.CREATEDATE, AA.REMARK, W.NAME\n" +
+                    "\t, DD.DESC\n" +
+                    "FROM a AA, w W, d DD\n" +
+                    "WHERE AA.employeeNo IN (SELECT employeeno\n" +
+                    "\t\tFROM employeeauditor ea\n" +
+                    "\t\tWHERE auditorno = 1\n" +
+                    "\t\tGROUP BY employeeno\n" +
+                    "\t\tUNION ALL\n" +
+                    "\t\tSELECT 1\n" +
+                    "\t\tFROM dual)\n" +
+                    "\tAND AA.WNO = W.WNO(+)\n" +
+                    "\tAND AA.DEPTNO = DD.DEPTNO(+)", text);
         }
 
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            Assert.assertEquals("select TRIM(EUCD) as \"value\", NTLANG1 as \"text\""
-                    + "\nfrom T_HT_WREM_ENUMLANG_D"
-                    + "\nwhere TYPE = ?"
-                    + "\norder by \"value\" asc", text);
+            Assert.assertEquals("select AA.ID, AA.CODE, AA.TYPE, AA.STATUS, AA.EMPLOYEENAME\n" +
+                    "\t, AA.CREATORNAME, AA.OPERATIONTYPE, AA.CREATEDATE, AA.REMARK, W.NAME\n" +
+                    "\t, DD.DESC\n" +
+                    "from a AA, w W, d DD\n" +
+                    "where AA.employeeNo in (select employeeno\n" +
+                    "\t\tfrom employeeauditor ea\n" +
+                    "\t\twhere auditorno = 1\n" +
+                    "\t\tgroup by employeeno\n" +
+                    "\t\tunion all\n" +
+                    "\t\tselect 1\n" +
+                    "\t\tfrom dual)\n" +
+                    "\tand AA.WNO = W.WNO(+)\n" +
+                    "\tand AA.DEPTNO = DD.DEPTNO(+)", text);
         }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

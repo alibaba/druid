@@ -757,11 +757,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             x.getFrom().accept(this);
         }
 
-        if (x.getWhere() != null) {
+        SQLExpr where = x.getWhere();
+        if (where != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
-            x.getWhere().accept(this);
+            where.setParent(x);
+            where.accept(this);
         }
 
         if (x.getGroupBy() != null) {
