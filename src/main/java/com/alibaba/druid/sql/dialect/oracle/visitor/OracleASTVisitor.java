@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOf
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -79,7 +78,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -268,22 +266,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(ModelClause x);
 
     void endVisit(ModelClause x);
-
-    boolean visit(OracleMergeStatement x);
-
-    void endVisit(OracleMergeStatement x);
-
-    boolean visit(OracleMergeStatement.MergeUpdateClause x);
-
-    void endVisit(OracleMergeStatement.MergeUpdateClause x);
-
-    boolean visit(OracleMergeStatement.MergeInsertClause x);
-
-    void endVisit(OracleMergeStatement.MergeInsertClause x);
-
-    boolean visit(OracleErrorLoggingClause x);
-
-    void endVisit(OracleErrorLoggingClause x);
 
     boolean visit(OracleReturningClause x);
 

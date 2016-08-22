@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.clause;
+package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleErrorLoggingClause extends OracleSQLObjectImpl {
+public class SQLErrorLoggingClause extends SQLObjectImpl {
 
     private SQLName into;
     private SQLExpr simpleExpression;
     private SQLExpr limit;
 
     @Override
-    public void accept0(OracleASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, into);
             acceptChild(visitor, simpleExpression);

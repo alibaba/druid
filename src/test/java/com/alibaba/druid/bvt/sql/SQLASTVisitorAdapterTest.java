@@ -11,7 +11,7 @@ import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
-import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
@@ -48,7 +48,7 @@ public class SQLASTVisitorAdapterTest extends TestCase {
         new SQLCurrentOfCursorExpr ().accept(adapter);
         new SQLInsertStatement ().accept(adapter);
         new SQLUpdateStatement ().accept(adapter);
-        new NotNullConstraint ().accept(adapter);
+        new SQLNotNullConstraint ().accept(adapter);
         new SQLMethodInvokeExpr ().accept(adapter);
         new SQLCallStatement ().accept(adapter);
         new SQLSomeExpr ().accept(adapter);

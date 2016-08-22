@@ -61,12 +61,15 @@ import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
@@ -349,11 +352,11 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLCreateViewStatement.Column x) {
     }
 
-    public boolean visit(NotNullConstraint x) {
+    public boolean visit(SQLNotNullConstraint x) {
         return true;
     }
 
-    public void endVisit(NotNullConstraint x) {
+    public void endVisit(SQLNotNullConstraint x) {
     }
 
     @Override
@@ -1513,4 +1516,62 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
     
+    @Override
+    public boolean visit(SQLSequenceExpr x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLSequenceExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLMergeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLMergeStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MergeUpdateClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MergeUpdateClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(MergeInsertClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MergeInsertClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLErrorLoggingClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLErrorLoggingClause x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLNullConstraint x) {
+	return true;
+    }
+
+    @Override
+    public void endVisit(SQLNullConstraint x) {
+    }
 }

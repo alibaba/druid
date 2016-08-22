@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -31,7 +33,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumnCl
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -87,9 +88,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -554,15 +552,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleMergeStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleMergeStatement x) {
-    }
-
-    @Override
     public boolean visit(MergeUpdateClause x) {
         return true;
     }
@@ -579,16 +568,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(MergeInsertClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleErrorLoggingClause x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleErrorLoggingClause x) {
 
     }
 

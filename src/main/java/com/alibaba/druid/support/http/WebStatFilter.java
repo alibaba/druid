@@ -185,7 +185,7 @@ public class WebStatFilter extends AbstractWebStatImpl implements Filter {
     }
 
     public boolean isExclusion(String requestURI) {
-        if (excludesPattern == null) {
+        if (excludesPattern == null || requestURI == null) {
             return false;
         }
 

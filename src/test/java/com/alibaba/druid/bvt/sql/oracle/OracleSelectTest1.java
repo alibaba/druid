@@ -39,15 +39,15 @@ public class OracleSelectTest1 extends OracleTest {
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("relationships : " + visitor.getRelationships());
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("relationships : " + visitor.getRelationships());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("orders")));
 
         Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
 
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
     }

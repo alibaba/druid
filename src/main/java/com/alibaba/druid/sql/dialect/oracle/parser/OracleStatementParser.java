@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
@@ -51,11 +52,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
@@ -91,11 +88,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement.LockMode;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -117,10 +112,6 @@ public class OracleStatementParser extends SQLStatementParser {
     @Override
     public OracleExprParser getExprParser() {
         return (OracleExprParser) exprParser;
-    }
-
-    public void parseHints(List<SQLHint> hints) {
-        this.getExprParser().parseHints(hints);
     }
 
     public OracleCreateTableParser getSQLCreateTableParser() {
@@ -466,6 +457,12 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 if (lexer.token() == Token.USER) {
                     SQLDropUserStatement stmt = parseDropUser();
+                    statementList.add(stmt);
+                    continue;
+                }
+                
+                if (lexer.token() == Token.PROCEDURE) {
+                    SQLDropProcedureStatement stmt = parseDropProcedure(false);
                     statementList.add(stmt);
                     continue;
                 }
@@ -1100,119 +1097,6 @@ public class OracleStatementParser extends SQLStatementParser {
         return new OracleSelectParser(this.exprParser);
     }
 
-    public OracleMergeStatement parseMerge() {
-        accept(Token.MERGE);
-
-        OracleMergeStatement stmt = new OracleMergeStatement();
-
-        parseHints(stmt.getHints());
-
-        accept(Token.INTO);
-        
-        if (lexer.token() == Token.LPAREN) {
-            lexer.nextToken();
-            OracleSelect select = this.createSQLSelectParser().select();
-            SQLSubqueryTableSource tableSource = new SQLSubqueryTableSource(select);
-            stmt.setInto(tableSource);
-            accept(Token.RPAREN);
-        } else {
-            stmt.setInto(exprParser.name());
-        }
-        
-        stmt.setAlias(as());
-
-        accept(Token.USING);
-
-        SQLTableSource using = this.createSQLSelectParser().parseTableSource();
-        stmt.setUsing(using);
-
-        accept(Token.ON);
-        stmt.setOn(exprParser.expr());
-
-        boolean insertFlag = false;
-        if (lexer.token() == Token.WHEN) {
-            lexer.nextToken();
-            if (lexer.token() == Token.MATCHED) {
-                OracleMergeStatement.MergeUpdateClause updateClause = new OracleMergeStatement.MergeUpdateClause();
-                lexer.nextToken();
-                accept(Token.THEN);
-                accept(Token.UPDATE);
-                accept(Token.SET);
-
-                for (;;) {
-                    SQLUpdateSetItem item = this.exprParser.parseUpdateSetItem();
-
-                    updateClause.addItem(item);
-                    item.setParent(updateClause);
-
-                    if (lexer.token() == (Token.COMMA)) {
-                        lexer.nextToken();
-                        continue;
-                    }
-
-                    break;
-                }
-
-                if (lexer.token() == Token.WHERE) {
-                    lexer.nextToken();
-                    updateClause.setWhere(exprParser.expr());
-                }
-
-                if (lexer.token() == Token.DELETE) {
-                    lexer.nextToken();
-                    accept(Token.WHERE);
-                    updateClause.setWhere(exprParser.expr());
-                }
-
-                stmt.setUpdateClause(updateClause);
-            } else if (lexer.token() == Token.NOT) {
-                lexer.nextToken();
-                insertFlag = true;
-            }
-        }
-
-        if (!insertFlag) {
-            if (lexer.token() == Token.WHEN) {
-                lexer.nextToken();
-            }
-
-            if (lexer.token() == Token.NOT) {
-                lexer.nextToken();
-                insertFlag = true;
-            }
-        }
-
-        if (insertFlag) {
-            OracleMergeStatement.MergeInsertClause insertClause = new OracleMergeStatement.MergeInsertClause();
-
-            accept(Token.MATCHED);
-            accept(Token.THEN);
-            accept(Token.INSERT);
-
-            if (lexer.token() == Token.LPAREN) {
-                accept(Token.LPAREN);
-                exprParser.exprList(insertClause.getColumns(), insertClause);
-                accept(Token.RPAREN);
-            }
-            accept(Token.VALUES);
-            accept(Token.LPAREN);
-            exprParser.exprList(insertClause.getValues(), insertClause);
-            accept(Token.RPAREN);
-
-            if (lexer.token() == Token.WHERE) {
-                lexer.nextToken();
-                insertClause.setWhere(exprParser.expr());
-            }
-
-            stmt.setInsertClause(insertClause);
-        }
-
-        OracleErrorLoggingClause errorClause = parseErrorLoggingClause();
-        stmt.setErrorLoggingClause(errorClause);
-
-        return stmt;
-    }
-
     public OracleStatement parseInsert() {
         if (lexer.token() == Token.LPAREN) {
             OracleInsertStatement stmt = new OracleInsertStatement();
@@ -1320,34 +1204,6 @@ public class OracleStatementParser extends SQLStatementParser {
             }
         }
         return stmt;
-    }
-
-    private OracleErrorLoggingClause parseErrorLoggingClause() {
-        if (identifierEquals("LOG")) {
-            OracleErrorLoggingClause errorClause = new OracleErrorLoggingClause();
-
-            lexer.nextToken();
-            accept(Token.ERRORS);
-            if (lexer.token() == Token.INTO) {
-                lexer.nextToken();
-                errorClause.setInto(exprParser.name());
-            }
-
-            if (lexer.token() == Token.LPAREN) {
-                lexer.nextToken();
-                errorClause.setSimpleExpression(exprParser.expr());
-                accept(Token.RPAREN);
-            }
-
-            if (lexer.token() == Token.REJECT) {
-                lexer.nextToken();
-                accept(Token.LIMIT);
-                errorClause.setLimit(exprParser.expr());
-            }
-
-            return errorClause;
-        }
-        return null;
     }
 
     public OracleReturningClause parseReturningClause() {
@@ -1485,7 +1341,12 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 accept(Token.BY);
                 dbLink.setPassword(lexer.stringVal());
-                accept(Token.IDENTIFIER);
+                
+                if (lexer.token() == Token.IDENTIFIER) {
+                    lexer.nextToken();
+                } else {
+                    accept(Token.LITERAL_ALIAS);
+                }
             }
         }
 

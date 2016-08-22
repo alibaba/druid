@@ -50,6 +50,8 @@ public final class JdbcUtils implements JdbcConstants {
 
     private static final Properties DRIVER_URL_MAPPING = new Properties();
 
+    private static Boolean mysql_driver_version_6      = null;
+
     static {
         try {
             ClassLoader ctxClassLoader = Thread.currentThread().getContextClassLoader();
@@ -364,7 +366,15 @@ public final class JdbcUtils implements JdbcConstants {
         if (rawUrl.startsWith("jdbc:derby:")) {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
-            return MYSQL_DRIVER;
+            if (mysql_driver_version_6 == null) {
+                mysql_driver_version_6 = Utils.loadClass("com.mysql.cj.jdbc.Driver") != null;
+            }
+
+            if (mysql_driver_version_6) {
+                return MYSQL_DRIVER_6;
+            } else {
+                return MYSQL_DRIVER;
+            }
         } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
             return LOG4JDBC_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {

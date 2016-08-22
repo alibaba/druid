@@ -40,7 +40,7 @@ public final class DruidPooledResultSet extends PoolableWrapper implements Resul
 
     private final ResultSet         rs;
     private final DruidPooledStatement stmt;
-    private boolean                 closed        = false;
+    protected boolean               closed        = false;
 
     protected int                   cursorIndex   = 0;
     protected int                   fetchRowCount = 0;

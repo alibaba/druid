@@ -60,6 +60,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
@@ -244,9 +245,9 @@ public interface SQLASTVisitor {
     
     void endVisit(SQLCreateViewStatement.Column x);
 
-    boolean visit(NotNullConstraint x);
+    boolean visit(SQLNotNullConstraint x);
 
-    void endVisit(NotNullConstraint x);
+    void endVisit(SQLNotNullConstraint x);
 
     void endVisit(SQLMethodInvokeExpr x);
 
@@ -696,4 +697,28 @@ public interface SQLASTVisitor {
     
     void endVisit(SQLAlterTableRepairPartition x);
     
+    boolean visit(SQLSequenceExpr x);
+    
+    void endVisit(SQLSequenceExpr x);
+
+    boolean visit(SQLMergeStatement x);
+
+    void endVisit(SQLMergeStatement x);
+
+    boolean visit(SQLMergeStatement.MergeUpdateClause x);
+
+    void endVisit(SQLMergeStatement.MergeUpdateClause x);
+
+    boolean visit(SQLMergeStatement.MergeInsertClause x);
+
+    void endVisit(SQLMergeStatement.MergeInsertClause x);
+    
+    boolean visit(SQLErrorLoggingClause x);
+
+    void endVisit(SQLErrorLoggingClause x);
+
+    boolean visit(SQLNullConstraint x);
+
+    void endVisit(SQLNullConstraint x);
+
 }

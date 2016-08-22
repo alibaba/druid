@@ -15,17 +15,12 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -459,7 +454,17 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         checkOpen();
 
         try {
-            return stmt.getMoreResults();
+            boolean moreResults = stmt.getMoreResults();
+
+            if (resultSetTrace != null && resultSetTrace.size() > 0) {
+                ResultSet lastResultSet = resultSetTrace.get(resultSetTrace.size() - 1);
+                if (lastResultSet instanceof DruidPooledResultSet) {
+                    DruidPooledResultSet pooledResultSet = ((DruidPooledResultSet) lastResultSet);
+                    pooledResultSet.closed = true;
+                }
+            }
+
+            return moreResults;
         } catch (Throwable t) {
             throw checkException(t);
         }
@@ -585,7 +590,17 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         checkOpen();
 
         try {
-            return stmt.getMoreResults(current);
+            boolean results = stmt.getMoreResults(current);
+
+            if (resultSetTrace != null && resultSetTrace.size() > 0) {
+                ResultSet lastResultSet = resultSetTrace.get(resultSetTrace.size() - 1);
+                if (lastResultSet instanceof DruidPooledResultSet) {
+                    DruidPooledResultSet pooledResultSet = ((DruidPooledResultSet) lastResultSet);
+                    pooledResultSet.closed = true;
+                }
+            }
+
+            return results;
         } catch (Throwable t) {
             throw checkException(t);
         }

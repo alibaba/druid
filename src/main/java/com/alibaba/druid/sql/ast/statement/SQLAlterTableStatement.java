@@ -16,9 +16,12 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -35,6 +38,7 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     private boolean                 removePatiting          = false;
     private boolean                 upgradePatiting         = false;
+    private Map<String, SQLObject>  tableOptions            = new LinkedHashMap<String, SQLObject>();
 
     public SQLAlterTableStatement(){
 
@@ -112,6 +116,10 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
+    }
+
+    public Map<String, SQLObject> getTableOptions() {
+        return tableOptions;
     }
 
     @Override

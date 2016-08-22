@@ -254,6 +254,12 @@ public class MySqlLexer extends Lexer {
                 ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
+                    if (ch == '-' && pos < text.length() - 1) {
+                        char next_char = text.charAt(pos + 1);
+                        if (isIdentifierChar(next_char)) {
+                            continue;
+                        }
+                    }
                     if (last_ch == '-' && charAt(pos-2) != '-') {
                         ch = last_ch;
                         bufPos--;
@@ -419,7 +425,7 @@ public class MySqlLexer extends Lexer {
         }
         // identifierFlags['`'] = true;
         identifierFlags['_'] = true;
-        identifierFlags['-'] = true; // mysql
+        //identifierFlags['-'] = true; // mysql
     }
 
     public static boolean isIdentifierChar(char c) {

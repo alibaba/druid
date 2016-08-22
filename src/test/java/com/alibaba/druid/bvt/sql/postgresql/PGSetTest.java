@@ -51,7 +51,7 @@ public class PGSetTest extends PGTest {
         // System.out.println("fields : " + visitor.getColumns());
         // System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
 
         String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.POSTGRESQL);
         System.out.println(mergedSql);

@@ -695,7 +695,12 @@ public class MySqlExprParser extends SQLExprParser {
             }
         }
 
-        item.setValue(this.expr());
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            item.setValue(new SQLIdentifierExpr("ON"));
+        } else {
+            item.setValue(this.expr());
+        }
 
         item.setTarget(var);
         return item;

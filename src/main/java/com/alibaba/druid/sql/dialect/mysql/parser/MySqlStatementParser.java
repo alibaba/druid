@@ -83,6 +83,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
@@ -508,13 +509,13 @@ public class MySqlStatementParser extends SQLStatementParser {
         } else if (identifierEquals("QUERY")) {
             stmt.setType(MySqlKillStatement.Type.QUERY);
             lexer.nextToken();
+        } else if (lexer.token() == Token.LITERAL_INT) {
+            // skip
         } else {
             throw new ParserException("not support kill type " + lexer.token());
         }
 
-        SQLExpr threadId = this.exprParser.expr();
-        stmt.setThreadId(threadId);
-
+        this.exprParser.exprList(stmt.getThreadIds(), stmt);
         return stmt;
     }
 
@@ -2371,6 +2372,10 @@ public class MySqlStatementParser extends SQLStatementParser {
                         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
 
                         stmt.addItem(item);
+                    } else if (lexer.token() == Token.UNIQUE) {
+                        SQLUnique unique = this.exprParser.parseUnique();
+                        SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(unique);
+                        stmt.addItem(item);
                     } else {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     }
@@ -2745,6 +2750,16 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
                 stmt.addItem(new MySqlAlterTableOption("COMMENT", '\'' + lexer.stringVal() + '\''));
                 lexer.nextToken();
+            } else if (lexer.token() == Token.UNION) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                accept(Token.LPAREN);
+                SQLTableSource tableSrc = this.createSQLSelectParser().parseTableSource();
+                stmt.getTableOptions().put("UNION", tableSrc);
+                accept(Token.RPAREN);
             } else {
                 break;
             }

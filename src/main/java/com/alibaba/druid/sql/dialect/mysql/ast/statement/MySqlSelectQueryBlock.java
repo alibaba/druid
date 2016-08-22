@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -44,9 +43,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private SQLName              procedureName;
     private List<SQLExpr>        procedureArgumentList;
 
-    private boolean              forUpdate       = false;
-    private boolean              noWait          = false;
-    private SQLExpr              waitTime;
     private boolean              lockInShareMode = false;
 
     private List<SQLCommentHint> hints;
@@ -72,30 +68,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
-    }
-
-    public boolean isForUpdate() {
-        return forUpdate;
-    }
-
-    public void setForUpdate(boolean forUpdate) {
-        this.forUpdate = forUpdate;
-    }
-    
-    public boolean isNoWait() {
-        return noWait;
-    }
-
-    public void setNoWait(boolean noWait) {
-        this.noWait = noWait;
-    }
-    
-    public SQLExpr getWaitTime() {
-        return waitTime;
-    }
-    
-    public void setWaitTime(SQLExpr waitTime) {
-        this.waitTime = waitTime;
     }
 
     public boolean isLockInShareMode() {

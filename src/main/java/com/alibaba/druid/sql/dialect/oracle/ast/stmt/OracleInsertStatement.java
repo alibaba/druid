@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.statement.SQLErrorLoggingClause;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
@@ -29,7 +29,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class OracleInsertStatement extends SQLInsertStatement implements OracleStatement {
 
     private OracleReturningClause    returning;
-    private OracleErrorLoggingClause errorLogging;
+    private SQLErrorLoggingClause errorLogging;
     private List<SQLHint>            hints = new ArrayList<SQLHint>();
 
     public List<SQLHint> getHints() {
@@ -48,11 +48,11 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
         this.returning = returning;
     }
 
-    public OracleErrorLoggingClause getErrorLogging() {
+    public SQLErrorLoggingClause getErrorLogging() {
         return errorLogging;
     }
 
-    public void setErrorLogging(OracleErrorLoggingClause errorLogging) {
+    public void setErrorLogging(SQLErrorLoggingClause errorLogging) {
         this.errorLogging = errorLogging;
     }
 

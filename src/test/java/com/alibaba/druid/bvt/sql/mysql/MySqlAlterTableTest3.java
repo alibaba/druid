@@ -33,7 +33,7 @@ public class MySqlAlterTableTest3 extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
                                     "\n\tDROP COLUMN `f3`," + //
-                                    "\n\tCHANGE COLUMN `fname` `fname` VARCHAR(45) CHARACTER SET latin1 NULL AFTER `fid`",
+                                    "\n\tCHANGE COLUMN `fname` `fname` VARCHAR(45) CHARACTER SET latin1 NULL DEFAULT NULL AFTER `fid`",
                             output);
     }
 

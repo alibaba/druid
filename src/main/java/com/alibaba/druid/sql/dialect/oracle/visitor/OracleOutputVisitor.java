@@ -65,7 +65,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -126,9 +125,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -484,7 +480,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getExpr().accept(this);
         if (x.getType() != null) {
             print(' ');
-            print0(x.getType().name().toUpperCase());
+
+            String typeName = x.getType().name();
+            print0(ucase ? typeName.toUpperCase() : typeName.toLowerCase());
         }
 
         if (x.getNullsOrderType() != null) {
@@ -1282,138 +1280,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(CellAssignment x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleMergeStatement x) {
-        print0(ucase ? "MERGE " : "merge ");
-        if (x.getHints().size() > 0) {
-            printAndAccept(x.getHints(), ", ");
-            print(' ');
-        }
-
-        print0(ucase ? "INTO " : "into ");
-        x.getInto().accept(this);
-
-        if (x.getAlias() != null) {
-            print(' ');
-            print0(x.getAlias());
-        }
-
-        println();
-        print0(ucase ? "USING " : "using ");
-        x.getUsing().accept(this);
-
-        print0(ucase ? " ON (" : " on (");
-        x.getOn().accept(this);
-        print0(") ");
-
-        if (x.getUpdateClause() != null) {
-            println();
-            x.getUpdateClause().accept(this);
-        }
-
-        if (x.getInsertClause() != null) {
-            println();
-            x.getInsertClause().accept(this);
-        }
-
-        if (x.getErrorLoggingClause() != null) {
-            println();
-            x.getErrorLoggingClause().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleMergeStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MergeUpdateClause x) {
-        print0(ucase ? "WHEN MATCHED THEN UPDATE SET " : "when matched then update set ");
-        printAndAccept(x.getItems(), ", ");
-        if (x.getWhere() != null) {
-            incrementIndent();
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
-            x.getWhere().accept(this);
-            decrementIndent();
-        }
-
-        if (x.getDeleteWhere() != null) {
-            incrementIndent();
-            println();
-            print0(ucase ? "DELETE WHERE " : "delete where ");
-            x.getDeleteWhere().setParent(x);
-            x.getDeleteWhere().accept(this);
-            decrementIndent();
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MergeUpdateClause x) {
-
-    }
-
-    @Override
-    public boolean visit(MergeInsertClause x) {
-        print0(ucase ? "WHEN NOT MATCHED THEN INSERT" : "when not matched then insert");
-        if (x.getColumns().size() > 0) {
-            print(' ');
-            printAndAccept(x.getColumns(), ", ");
-        }
-        print0(ucase ? " VALUES (" : " values (");
-        printAndAccept(x.getValues(), ", ");
-        print(')');
-        if (x.getWhere() != null) {
-            incrementIndent();
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
-            x.getWhere().accept(this);
-            decrementIndent();
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MergeInsertClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleErrorLoggingClause x) {
-        print0(ucase ? "LOG ERRORS " : "log errors ");
-        if (x.getInto() != null) {
-            print0(ucase ? "INTO " : "into ");
-            x.getInto().accept(this);
-            print(' ');
-        }
-
-        if (x.getSimpleExpression() != null) {
-            print('(');
-            x.getSimpleExpression().accept(this);
-            print(')');
-        }
-
-        if (x.getLimit() != null) {
-            print0(ucase ? " REJECT LIMIT " : " reject limit ");
-            x.getLimit().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleErrorLoggingClause x) {
 
     }
 

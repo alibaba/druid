@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
@@ -100,6 +101,7 @@ import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.ast.statement.SQLObjectType;
 import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
@@ -111,6 +113,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
@@ -133,6 +136,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     protected final Set<Relationship>                  relationships  = new LinkedHashSet<Relationship>();
     protected final List<Column>                       orderByColumns = new ArrayList<Column>();
     protected final Set<Column>                        groupByColumns = new LinkedHashSet<Column>();
+    protected final List<SQLAggregateExpr>             aggregateFunctions = new ArrayList<SQLAggregateExpr>();
 
     protected final Map<String, SQLObject> subQueryMap = new LinkedHashMap<String, SQLObject>();
 
@@ -396,6 +400,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public List<Condition> getConditions() {
         return conditions;
+    }
+    
+    public List<SQLAggregateExpr> getAggregateFunctions() {
+        return aggregateFunctions;
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
@@ -1173,6 +1181,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLAggregateExpr x) {
+        this.aggregateFunctions.add(x);
+        
         accept(x.getArguments());
         accept(x.getWithinGroup());
         accept(x.getOver());
@@ -1684,4 +1694,53 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAlterTableRepairPartition x) {
         return false;
     }
+    
+    public boolean visit(SQLSequenceExpr x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLMergeStatement x) {
+        setAliasMap();
+
+        String originalTable = getCurrentTable();
+
+        setMode(x.getUsing(), Mode.Select);
+        x.getUsing().accept(this);
+
+        setMode(x, Mode.Merge);
+
+        String ident = x.getInto().toString();
+        setCurrentTable(x, ident);
+        x.putAttribute("_old_local_", originalTable);
+
+        TableStat stat = getTableStat(ident);
+        stat.incrementMergeCount();
+
+        Map<String, String> aliasMap = getAliasMap();
+        if (aliasMap != null) {
+            if (x.getAlias() != null) {
+                putAliasMap(aliasMap, x.getAlias(), ident);
+            }
+            putAliasMap(aliasMap, ident, ident);
+        }
+
+        x.getOn().accept(this);
+
+        if (x.getUpdateClause() != null) {
+            x.getUpdateClause().accept(this);
+        }
+
+        if (x.getInsertClause() != null) {
+            x.getInsertClause().accept(this);
+        }
+
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSetStatement x) {
+        return false;
+    }
+
 }

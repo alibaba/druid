@@ -881,10 +881,31 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         if (text == null) {
             print0(ucase ? "NULL" : "null");
         } else {
-            print('\'');
-            String text2 = text.replaceAll("\\'", "\\\\'");
-            print0(text2);
-            print('\'');
+            StringBuilder buf = new StringBuilder(text.length() + 2);
+            buf.append('\'');
+            for (int i = 0; i < text.length(); ++i) {
+                char ch = text.charAt(i);
+                switch (ch) {
+                    case '\\':
+                        buf.append("\\\\");
+                        break;
+                    case '\'':
+                        buf.append("\\'");
+                        break;
+                    case '\0':
+                        buf.append("\\0");
+                        break;
+                    case '\n':
+                        buf.append("\\n");
+                        break;
+                    default:
+                        buf.append(ch);
+                        break;
+                }
+            }
+            buf.append('\'');
+
+            print0(buf.toString());
         }
 
         return false;

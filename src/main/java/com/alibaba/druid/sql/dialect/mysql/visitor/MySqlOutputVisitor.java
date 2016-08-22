@@ -323,12 +323,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (x.getDefaultExpr() != null) {
-            if (x.getDefaultExpr() instanceof SQLNullExpr) {
-                print0(ucase ? " NULL" : " null");
-            } else {
-                print0(ucase ? " DEFAULT " : " default ");
-                x.getDefaultExpr().accept(this);
-            }
+            print0(ucase ? " DEFAULT " : " default ");
+            x.getDefaultExpr().accept(this);
         }
 
         if (x.getStorage() != null) {
@@ -1492,8 +1488,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "KILL CONNECTION " : "kill connection ");
         } else if (MySqlKillStatement.Type.QUERY.equals(x.getType())) {
             print0(ucase ? "KILL QUERY " : "kill query ");
+        } else {
+            print0(ucase ? "KILL " : "kill ");
         }
-        x.getThreadId().accept(this);
+        
+        printAndAccept(x.getThreadIds(), ", ");
         return false;
     }
 
@@ -2484,7 +2483,37 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "UPGRADE PARTITIONING" : "upgrade partitioning");
         }
         
+        if (x.getTableOptions().size() > 0) {
+            println();
+        }
+        
         decrementIndent();
+        
+        int i = 0;
+        for (Map.Entry<String, SQLObject> option : x.getTableOptions().entrySet()) {
+            String key = option.getKey();
+            if (i != 0) {
+                print(' ');
+            }
+            print0(ucase ? key : key.toLowerCase());
+
+            if ("TABLESPACE".equals(key)) {
+                print(' ');
+                option.getValue().accept(this);
+                continue;
+            } else if ("UNION".equals(key)) {
+                print0(" = (");
+                option.getValue().accept(this);
+                print(')');
+                continue;
+            }
+
+            print0(" = ");
+
+            option.getValue().accept(this);
+            i++;
+        }
+        
         return false;
     }
 

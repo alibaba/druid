@@ -34,6 +34,8 @@ public interface JdbcConstants {
 
     public static final String SQL_SERVER        = "sqlserver";
     public static final String SQL_SERVER_DRIVER = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+    public static final String SQL_SERVER_DRIVER_SQLJDBC4 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    public static final String SQL_SERVER_DRIVER_JTDS = "net.sourceforge.jtds.jdbc.Driver";
 
     public static final String ORACLE            = "oracle";
     public static final String ORACLE_DRIVER     = "oracle.jdbc.OracleDriver";
@@ -43,6 +45,7 @@ public interface JdbcConstants {
 
     public static final String MYSQL             = "mysql";
     public static final String MYSQL_DRIVER      = "com.mysql.jdbc.Driver";
+    public static final String MYSQL_DRIVER_6    = "com.mysql.cj.jdbc.Driver";
 
     public static final String MARIADB           = "mariadb";
     public static final String MARIADB_DRIVER    = "org.mariadb.jdbc.Driver";

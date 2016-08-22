@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.DriverManager;
-
 import junit.framework.TestCase;
+
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 
 public class TestMySqlPing extends TestCase {
 
@@ -26,15 +29,16 @@ public class TestMySqlPing extends TestCase {
         String user = "dragoon_admin";
         String password = "dragoon_root";
 
-        Class.forName("com.mysql.jdbc.Driver");
+        Driver driver = (Driver) Class.forName("com.mysql.jdbc.Driver").newInstance();
 
-        com.mysql.jdbc.Connection conn = (com.mysql.jdbc.Connection) DriverManager.getConnection(url, user, password);
+        Connection conn = DriverManager.getConnection(url, user, password);
         ping(conn);
         conn.close();
     }
 
-    public void ping(com.mysql.jdbc.Connection conn) throws Exception {
+    public void ping(Connection conn) throws Exception {
         System.out.println(conn.getClass());
-        conn.ping();
+        Method method = conn.getClass().getMethod("pring");
+        method.invoke(conn);
     }
 }

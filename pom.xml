@@ -10,7 +10,7 @@
 -->	
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.21</version>
+	<version>1.0.26-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -473,7 +473,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.38</version>
+			<version>5.1.39</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
