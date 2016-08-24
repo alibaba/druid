@@ -736,8 +736,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLJoinTableSource x) {
         x.getLeft().accept(this);
         x.getRight().accept(this);
-        if (x.getCondition() != null) {
-            x.getCondition().accept(this);
+        SQLExpr condition = x.getCondition();
+        if (condition != null) {
+            condition.accept(this);
         }
         return false;
     }

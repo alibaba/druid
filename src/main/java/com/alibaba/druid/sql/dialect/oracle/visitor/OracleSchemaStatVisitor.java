@@ -498,19 +498,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleSelectJoin x) {
-        x.getLeft().accept(this);
-        x.getRight().accept(this);
-
-        {
-            String leftTable = (String) x.getLeft().getAttribute(ATTR_TABLE);
-            String rightTable = (String) x.getRight().getAttribute(ATTR_TABLE);
-            if (leftTable != null && leftTable.equals(rightTable)) {
-                x.putAttribute(ATTR_TABLE, leftTable);
-            }
-        }
-        if (x.getCondition() != null) {
-            x.getCondition().accept(this);
-        }
+        super.visit(x);
 
         for (SQLExpr item : x.getUsing()) {
             if (item instanceof SQLIdentifierExpr) {
