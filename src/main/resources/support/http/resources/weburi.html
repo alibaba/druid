@@ -17,6 +17,7 @@
           				<h3>
           					Web URI Stat
           					<a href="weburi.json" target="_blank">View JSON API</a>
+							<a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang pull-right" href="javascript:druid.weburi.switchSuspendRefresh();">Suspend Refresh</a>
           				</h3>
 						<table id="dataTable" class="table table-bordered table-striped responsive-utilities">
 							<thead>
@@ -64,10 +65,42 @@
     				druid.common.ajaxuri = 'weburi.json?';
     				druid.common.handleCallback = druid.weburi.handleAjaxResult;
     				druid.common.setOrderBy("URI");
-    				druid.common.ajaxRequestForBasicInfo();
-    				setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
+    				//druid.common.ajaxRequestForBasicInfo();
+    				//setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
+					druid.weburi.controlRefresh();
     			},
-    			
+    			initRefresh : function() {
+    				$("#dataTable th a").click(function(obj) {
+    					druid.common.setOrderBy(obj.target.id.substring(3))
+    				})
+    				druid.common.buildHead(5);
+    				druid.common.ajaxuri = 'weburi.json?';
+    				druid.common.handleCallback = druid.weburi.handleAjaxResult;
+    				druid.common.setOrderBy("URI");
+    				//druid.common.ajaxRequestForBasicInfo();
+    				//setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
+					druid.weburi.controlRefresh();
+    			},
+				controlRefresh : function() {
+					if(!druid.weburi.disableAutoRefresh){
+						druid.common.ajaxRequestForBasicInfo();
+					}
+					if(!druid.weburi.refreshSeconds){
+						druid.weburi.refreshSeconds=5;
+					}
+					setTimeout(druid.weburi.controlRefresh, druid.weburi.refreshSeconds * 1000);
+				},
+				switchSuspendRefresh : function() {
+					druid.weburi.disableAutoRefresh = !druid.weburi.disableAutoRefresh;
+					if(druid.weburi.disableAutoRefresh){
+						$("#btnSuspendRefresh").addClass("btn-warning").removeClass("btn-primary");
+					} else {
+						$("#btnSuspendRefresh").addClass("btn-primary").removeClass("btn-warning");
+					}
+				},
+				disableAutoRefresh : false,
+				refreshSeconds : 5,
+
     			handleAjaxResult : function(data) {
     				var statList = data.Content;
     				if(statList == null) return;
