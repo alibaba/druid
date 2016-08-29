@@ -77,16 +77,6 @@
     				druid.common.setOrderBy("URI");
     				druid.weburi.controlRefresh();
     			},
-    			initRefresh : function() {
-    				$("#dataTable th a").click(function(obj) {
-    					druid.common.setOrderBy(obj.target.id.substring(3))
-    				})
-    				druid.common.buildHead(5);
-    				druid.common.ajaxuri = 'weburi.json?';
-    				druid.common.handleCallback = druid.weburi.handleAjaxResult;
-    				druid.common.setOrderBy("URI");
-    				druid.weburi.controlRefresh();
-    			},
     			controlRefresh : function() {
     				var FIVE = 5;
     				if(!druid.weburi.refreshSeconds){
