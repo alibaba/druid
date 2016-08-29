@@ -18,14 +18,15 @@
           					Web URI Stat
           					<a href="weburi.json" target="_blank">View JSON API</a>
 							<span class="pull-right" style="font-size: 16px; margin-right: 20px;">
-								<a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang" href="javascript:druid.weburi.switchSuspendRefresh();">Suspend Refresh</a>
-								<select class="refresh-seconds-select btn" style="width:80px;" onchange="javascript:druid.weburi.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
+								<label langkey="RefreshPeriod" class="lang" style="display: inline;" for="refreshSecondsSelect">Refresh Period</label>
+								<select id="refreshSecondsSelect" class="refresh-seconds-select btn" style="width:80px;" onchange="javascript:druid.weburi.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
 									<option value="5"selected="selected">5s</option>
 									<option value="10">10s</option>
 									<option value="20">20s</option>
 									<option value="30">30s</option>
 									<option value="60">60s</option>
 								</select>
+								<a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang" href="javascript:druid.weburi.switchSuspendRefresh();">Suspend Refresh</a>
 							</span>
           				</h3>
 						<table id="dataTable" class="table table-bordered table-striped responsive-utilities">
