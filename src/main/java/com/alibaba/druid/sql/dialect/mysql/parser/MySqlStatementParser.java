@@ -182,6 +182,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -602,6 +603,12 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlExecuteStatement stmt = parseExecute();
             statementList.add(stmt);
             return true;
+        }
+        
+        if(identifierEquals("DEALLOCATE")) {
+        	MysqlDeallocatePrepareStatement stmt = parseDeallocatePrepare();
+        	statementList.add(stmt);
+        	return true;
         }
 
         if (identifierEquals("LOAD")) {
@@ -1929,6 +1936,17 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+
+    public MysqlDeallocatePrepareStatement parseDeallocatePrepare() {
+    	acceptIdentifier("DEALLOCATE");
+    	acceptIdentifier("PREPARE");
+    	
+    	MysqlDeallocatePrepareStatement stmt = new MysqlDeallocatePrepareStatement();
+    	SQLName statementName = exprParser.name();
+    	stmt.setStatementName(statementName);
+    	
+    	return stmt;
     }
 
     public SQLInsertStatement parseInsert() {
