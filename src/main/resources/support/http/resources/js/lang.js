@@ -241,6 +241,8 @@ druid.lang = function() {
 		'RequestTimeMillisTotal':['RequestTimeMillisTotal', '总共请求时间'],
 		'RequestInterval':['RequestInterval', '请求间隔'],
 		/**weburi-detail*/
+		'RefreshPeriod':['Refresh Period', '刷新时间'],
+		'SuspendRefresh':['Suspend Refresh', '暂停刷新'],
 		'RequestTimeMillis':['RequestTimeMillis', '请求时间'],
 		'JdbcExecutePeak':['JdbcExecutePeak', 'jdbc执行峰值'],
 		'JdbcFetchRowPeak':['JdbcFetchRowPeak', 'jdbc查询取回行数峰值'],
