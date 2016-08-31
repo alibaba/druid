@@ -163,6 +163,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -874,6 +875,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             printAndAccept(x.getParameters(), ", ");
         }
         return false;
+    }
+    
+    @Override
+    public void  endVisit(MysqlDeallocatePrepareStatement x) {
+    	
+    }
+    
+    public boolean visit(MysqlDeallocatePrepareStatement x) {
+    	print0(ucase ? "DEALLOCATE PREPARE " : "deallocate prepare ");
+    	x.getStatementName().accept(this);
+    	return false;
     }
 
     @Override
