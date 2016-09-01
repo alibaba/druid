@@ -84,6 +84,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 
 import junit.framework.TestCase;
@@ -101,6 +102,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new SQLBinaryExpr().accept(adapter);
         new MySqlPrepareStatement().accept(adapter);
         new MySqlExecuteStatement().accept(adapter);
+        new MysqlDeallocatePrepareStatement().accept(adapter);
         new MySqlDeleteStatement().accept(adapter);
         new MySqlInsertStatement().accept(adapter);
         new MySqlLoadXmlStatement().accept(adapter);

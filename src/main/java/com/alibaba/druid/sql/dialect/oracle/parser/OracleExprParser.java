@@ -512,7 +512,11 @@ public class OracleExprParser extends SQLExprParser {
                 if (lexer.token() != Token.FROM) {
                     SQLExpr trim_character = this.primary();
                     trim_character.setParent(methodExpr);
-                    methodExpr.putAttribute("trim_character", trim_character);    
+                    if (trim_character instanceof SQLCharExpr) {
+                        methodExpr.putAttribute("trim_character", trim_character);
+                    } else {
+                        methodExpr.getParameters().add(trim_character);
+                    }
                 }
                 
                 if (lexer.token() == Token.FROM) {

@@ -61,41 +61,8 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLValuableExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
-import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -2455,7 +2422,9 @@ public class WallVisitorUtils {
             allow = config.isDescribeAllow();
             denyMessage = "describe not allow";
             errorCode = ErrorCode.DESC_NOT_ALLOW;
-        } else if (x instanceof MySqlShowStatement || x instanceof PGShowStatement) {
+        } else if (x instanceof MySqlShowStatement
+                || x instanceof PGShowStatement
+                || x instanceof SQLShowTablesStatement) {
             allow = config.isShowAllow();
             denyMessage = "show not allow";
             errorCode = ErrorCode.SHOW_NOT_ALLOW;

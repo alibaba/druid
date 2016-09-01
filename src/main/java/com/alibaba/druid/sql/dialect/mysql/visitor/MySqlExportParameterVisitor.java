@@ -36,7 +36,7 @@ public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor
      */
     private final boolean requireParameterizedOutput;
 
-    public MySqlExportParameterVisitor(final List<Object> parameters,final Appendable appender,final boolean wantParameterizedOutput){
+    public MySqlExportParameterVisitor(List<Object> parameters, Appendable appender, boolean wantParameterizedOutput){
         super(appender);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
@@ -46,12 +46,12 @@ public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor
         this(new ArrayList<Object>());
     }
 
-    public MySqlExportParameterVisitor(final List<Object> parameters){
-        this(parameters,new StringBuilder(),false);
+    public MySqlExportParameterVisitor(List<Object> parameters) {
+        this(parameters, new StringBuilder(), false);
     }
 
     public MySqlExportParameterVisitor(final Appendable appender) {
-        this(new ArrayList<Object>(),appender,true);
+        this(new ArrayList<Object>(),appender, true);
     }
 
     public List<Object> getParameters() {
@@ -64,7 +64,7 @@ public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor
         if(requireParameterizedOutput){
             return super.visit(x);
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -72,7 +72,8 @@ public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor
         if(requireParameterizedOutput){
             return super.visit(x);
         }
-        return false;
+
+        return true;
     }
 
     @Override
