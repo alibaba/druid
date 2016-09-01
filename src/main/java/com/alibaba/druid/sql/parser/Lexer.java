@@ -1090,7 +1090,7 @@ public class Lexer {
         
         scanChar();
         scanChar();
-        mark = pos - 1;
+        mark = pos;
         bufPos = 0;
 
         for (;;) {
