@@ -48,6 +48,11 @@ public class MySqlInsertTest_14 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
+
         String formatSql = "INSERT INTO test.heartbeat (id, ts)\n" +
                 "VALUES (1, UNIX_TIMESTAMP())\n" +
                 "ON DUPLICATE KEY UPDATE ts = UNIX_TIMESTAMP()";

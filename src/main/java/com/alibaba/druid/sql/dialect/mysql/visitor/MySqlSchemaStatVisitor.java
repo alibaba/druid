@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -206,8 +207,19 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         setAliasMap();
 
-        if (x.getTableName() instanceof SQLIdentifierExpr) {
-            String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
+        SQLName tableName = x.getTableName();
+
+        String ident = null;
+        if (tableName instanceof SQLIdentifierExpr) {
+            ident = ((SQLIdentifierExpr) tableName).getName();
+        } else if (tableName instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) tableName;
+            if (propertyExpr.getOwner() instanceof SQLIdentifierExpr) {
+                ident = propertyExpr.toString();
+            }
+        }
+
+        if (ident != null) {
             setCurrentTable(x, ident);
 
             TableStat stat = getTableStat(ident);
