@@ -25,12 +25,10 @@ import org.junit.Assert;
 
 import java.util.List;
 
-public class MySqlInsertTest_14 extends MysqlTest {
+public class MySqlInsertTest_15 extends MysqlTest {
 
     public void test_insert_rollback_on_fail() throws Exception {
-        String sql = "insert into  test.heartbeat (id ,ts)" +
-                " values ( 1, UNIX_TIMESTAMP())" +
-                " ON DUPLICATE KEY UPDATE ts =  UNIX_TIMESTAMP()";
+        String sql = "insert into t.t1 (id,id2) values (1,2);";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         parser.setParseCompleteValues(false);
@@ -48,11 +46,15 @@ public class MySqlInsertTest_14 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-        assertTrue(visitor.containsTable("test.heartbeat"));
+//        System.out.println("Tables : " + visitor.getTables());
+//        System.out.println("fields : " + visitor.getColumns());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("relationships : " + visitor.getRelationships());
+//
+        assertTrue(visitor.containsTable("t.t1"));
 
-        String formatSql = "INSERT INTO test.heartbeat (id, ts)\n" +
-                "VALUES (1, UNIX_TIMESTAMP())\n" +
-                "ON DUPLICATE KEY UPDATE ts = UNIX_TIMESTAMP()";
+        String formatSql = "INSERT INTO t.t1 (id, id2)\n" +
+                "VALUES (1, 2)";
         Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 
