@@ -66,93 +66,7 @@ public class SQLParser {
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
 
-            if (lexer.token() == Token.LITERAL_ALIAS) {
-                alias = '"' + lexer.stringVal() + '"';
-                lexer.nextToken();
-            } else if (lexer.token() == Token.IDENTIFIER) {
-                alias = lexer.stringVal();
-                lexer.nextToken();
-            } else if (lexer.token() == Token.LITERAL_CHARS) {
-                alias = "'" + lexer.stringVal() + "'";
-                lexer.nextToken();
-            } else {
-                switch (lexer.token()) {
-                    case KEY:
-                    case INDEX:
-                    case CASE:
-                    case MODEL:
-                    case PCTFREE:
-                    case INITRANS:
-                    case MAXTRANS:
-                    case SEGMENT:
-                    case CREATION:
-                    case IMMEDIATE:
-                    case DEFERRED:
-                    case STORAGE:
-                    case NEXT:
-                    case MINEXTENTS:
-                    case MAXEXTENTS:
-                    case MAXSIZE:
-                    case PCTINCREASE:
-                    case FLASH_CACHE:
-                    case CELL_FLASH_CACHE:
-                    case KEEP:
-                    case NONE:
-                    case LOB:
-                    case STORE:
-                    case ROW:
-                    case CHUNK:
-                    case CACHE:
-                    case NOCACHE:
-                    case LOGGING:
-                    case NOCOMPRESS:
-                    case KEEP_DUPLICATES:
-                    case EXCEPTIONS:
-                    case PURGE:
-                    case INITIALLY:
-                    case END:
-                    case COMMENT:
-                    case ENABLE:
-                    case DISABLE:
-                    case SEQUENCE:
-                    case USER:
-                    case ANALYZE:
-                    case OPTIMIZE:
-                    case GRANT:
-                    case REVOKE:
-                    case FULL:
-                    case TO:
-                    case NEW:
-                    case INTERVAL:
-                    case LOCK:
-                    case LIMIT:
-                    case IDENTIFIED:
-                    case PASSWORD:
-                    case BINARY:
-                    case WINDOW:
-                    case OFFSET:
-                    case SHARE:
-                    case START:
-                    case CONNECT:
-                    case MATCHED:
-                    case ERRORS:
-                    case REJECT:
-                    case UNLIMITED:
-                    case BEGIN:
-                    case EXCLUSIVE:
-                    case MODE:
-                    case ADVISE:
-                    case TYPE:
-                        alias = lexer.stringVal();
-                        lexer.nextToken();
-                        return alias;
-                    case QUES:
-                        alias = "?";
-                        lexer.nextToken();
-                    default:
-                        break;
-                }
-            }
+            alias = alias();
 
             if (alias != null) {
                 while (lexer.token() == Token.DOT) {
@@ -202,6 +116,99 @@ public class SQLParser {
                 break;
         }
 
+        return alias;
+    }
+
+    protected String alias() {
+        String alias = null;
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+            alias = '"' + lexer.stringVal() + '"';
+            lexer.nextToken();
+        } else if (lexer.token() == Token.IDENTIFIER) {
+            alias = lexer.stringVal();
+            lexer.nextToken();
+        } else if (lexer.token() == Token.LITERAL_CHARS) {
+            alias = "'" + lexer.stringVal() + "'";
+            lexer.nextToken();
+        } else {
+            switch (lexer.token()) {
+                case KEY:
+                case INDEX:
+                case CASE:
+                case MODEL:
+                case PCTFREE:
+                case INITRANS:
+                case MAXTRANS:
+                case SEGMENT:
+                case CREATION:
+                case IMMEDIATE:
+                case DEFERRED:
+                case STORAGE:
+                case NEXT:
+                case MINEXTENTS:
+                case MAXEXTENTS:
+                case MAXSIZE:
+                case PCTINCREASE:
+                case FLASH_CACHE:
+                case CELL_FLASH_CACHE:
+                case KEEP:
+                case NONE:
+                case LOB:
+                case STORE:
+                case ROW:
+                case CHUNK:
+                case CACHE:
+                case NOCACHE:
+                case LOGGING:
+                case NOCOMPRESS:
+                case KEEP_DUPLICATES:
+                case EXCEPTIONS:
+                case PURGE:
+                case INITIALLY:
+                case END:
+                case COMMENT:
+                case ENABLE:
+                case DISABLE:
+                case SEQUENCE:
+                case USER:
+                case ANALYZE:
+                case OPTIMIZE:
+                case GRANT:
+                case REVOKE:
+                case FULL:
+                case TO:
+                case NEW:
+                case INTERVAL:
+                case LOCK:
+                case LIMIT:
+                case IDENTIFIED:
+                case PASSWORD:
+                case BINARY:
+                case WINDOW:
+                case OFFSET:
+                case SHARE:
+                case START:
+                case CONNECT:
+                case MATCHED:
+                case ERRORS:
+                case REJECT:
+                case UNLIMITED:
+                case BEGIN:
+                case EXCLUSIVE:
+                case MODE:
+                case ADVISE:
+                case TYPE:
+                case CLOSE:
+                    alias = lexer.stringVal();
+                    lexer.nextToken();
+                    return alias;
+                case QUES:
+                    alias = "?";
+                    lexer.nextToken();
+                default:
+                    break;
+            }
+        }
         return alias;
     }
 

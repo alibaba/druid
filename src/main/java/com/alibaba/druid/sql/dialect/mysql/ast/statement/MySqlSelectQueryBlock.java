@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -39,14 +38,11 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private Boolean              cache;
     private boolean              calcFoundRows;
 
-    private SQLOrderBy           orderBy;
-
     private Limit                limit;
 
     private SQLName              procedureName;
     private List<SQLExpr>        procedureArgumentList;
 
-    private boolean              forUpdate       = false;
     private boolean              lockInShareMode = false;
 
     private List<SQLCommentHint> hints;
@@ -72,14 +68,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
-    }
-
-    public boolean isForUpdate() {
-        return forUpdate;
-    }
-
-    public void setForUpdate(boolean forUpdate) {
-        this.forUpdate = forUpdate;
     }
 
     public boolean isLockInShareMode() {
@@ -163,14 +151,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setCalcFoundRows(boolean calcFoundRows) {
         this.calcFoundRows = calcFoundRows;
-    }
-
-    public SQLOrderBy getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(SQLOrderBy orderBy) {
-        this.orderBy = orderBy;
     }
 
     public Limit getLimit() {

@@ -19,7 +19,6 @@ package com.alibaba.druid.sql.ast.expr;
  * 
  * 二元操作符
  * @author wenshao 2011-5-20 下午12:32:02
- * @formatter:off
  */
 public enum SQLBinaryOperator {
     Union("UNION", 0), 
@@ -29,9 +28,15 @@ public enum SQLBinaryOperator {
     Multiply("*", 60), 
     Divide("/", 60), 
     Modulus("%", 60), 
+    Mod("MOD", 60),
     
     Add("+", 70), 
     Subtract("-", 70), 
+    
+    SubGt("->", 20), 
+    SubGtGt("->>", 20), 
+    PoundGt("#>", 20), 
+    PoundGtGt("#>>", 20), 
     
     LeftShift("<<", 80), 
     RightShift(">>", 80), 
@@ -76,6 +81,7 @@ public enum SQLBinaryOperator {
     }
 
     public final String name;
+    public final String name_lcase;
     public final int    priority;
 
     SQLBinaryOperator(){
@@ -84,6 +90,7 @@ public enum SQLBinaryOperator {
 
     SQLBinaryOperator(String name, int priority){
         this.name = name;
+        this.name_lcase = name.toLowerCase();
         this.priority = priority;
     }
     

@@ -18,7 +18,7 @@ package com.alibaba.druid.proxy.jdbc;
 import java.sql.Clob;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface ClobProxy extends Clob {
 

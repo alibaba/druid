@@ -88,6 +88,11 @@ public class SLF4JImpl implements Log {
     public boolean isWarnEnabled() {
         return log.isWarnEnabled();
     }
+    
+    @Override
+    public boolean isErrorEnabled() {
+        return log.isErrorEnabled();
+    }
 
     @Override
     public void warn(String msg) {

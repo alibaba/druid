@@ -49,9 +49,12 @@ public class SQLDropViewStatement extends SQLStatementImpl implements SQLDDLStat
     public List<SQLExprTableSource> getTableSources() {
         return tableSources;
     }
-
-    public void setTableSources(List<SQLExprTableSource> tableSources) {
-        this.tableSources = tableSources;
+    
+    public void addPartition(SQLExprTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
+        this.tableSources.add(tableSource);
     }
 
     public void setName(SQLName name) {

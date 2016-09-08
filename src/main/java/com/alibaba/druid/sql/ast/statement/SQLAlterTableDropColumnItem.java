@@ -43,6 +43,13 @@ public class SQLAlterTableDropColumnItem extends SQLObjectImpl implements SQLAlt
     public List<SQLName> getColumns() {
         return columns;
     }
+    
+    public void addColumn(SQLName column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
 
     public boolean isCascade() {
         return cascade;

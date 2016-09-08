@@ -45,6 +45,13 @@ public class OdpsInsert extends SQLObjectImpl {
     public List<SQLAssignItem> getPartitions() {
         return partitions;
     }
+    
+    public void addPartition(SQLAssignItem partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+        this.partitions.add(partition);
+    }
 
     public void setPartitions(List<SQLAssignItem> partitions) {
         this.partitions = partitions;

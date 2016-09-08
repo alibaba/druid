@@ -25,10 +25,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 /**
  * 
- * @Description: MySql procedure repeat statement
- * @author zz email:455910092@qq.com
- * @date 2015-9-14
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public class MySqlRepeatStatement extends MySqlStatementImpl {
 	

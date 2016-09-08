@@ -23,9 +23,11 @@ public interface MySqlIndexHint extends MySqlHint {
         ;
         
         public final String name;
+        public final String name_lcase;
         
         Option(String name) {
             this.name = name;
+            this.name_lcase = name.toLowerCase();
         }
     }
 }

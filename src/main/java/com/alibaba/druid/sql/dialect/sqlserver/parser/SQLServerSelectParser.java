@@ -76,6 +76,9 @@ public class SQLServerSelectParser extends SQLSelectParser {
                         } else {
                             select.getForXmlOptions().add("ELEMENTS");
                         }
+                    } else if (identifierEquals("PATH")) {
+                        SQLExpr xmlPath = this.exprParser.expr();
+                        select.setXmlPath(xmlPath);
                     } else {
                         break;
                     }

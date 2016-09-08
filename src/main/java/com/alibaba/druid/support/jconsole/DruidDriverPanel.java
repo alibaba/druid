@@ -36,7 +36,7 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
  * }
  * </pre>
  * 
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny [yunnysunny@gmail.com]
  * */
 public class DruidDriverPanel extends DruidPanel {
 

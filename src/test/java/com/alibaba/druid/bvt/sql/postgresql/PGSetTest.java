@@ -40,7 +40,7 @@ public class PGSetTest extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        print(statementList);
+//        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -51,7 +51,7 @@ public class PGSetTest extends PGTest {
         // System.out.println("fields : " + visitor.getColumns());
         // System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
 
         String mergedSql = ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.POSTGRESQL);
         System.out.println(mergedSql);

@@ -18,7 +18,7 @@ package com.alibaba.druid.proxy.jdbc;
 import java.sql.CallableStatement;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public interface CallableStatementProxy extends CallableStatement, PreparedStatementProxy {
 

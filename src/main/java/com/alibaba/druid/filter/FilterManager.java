@@ -46,7 +46,7 @@ public class FilterManager {
                     aliasMap.put(name, (String) entry.getValue());
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOG.error("load filter config error", e);
         }
     }

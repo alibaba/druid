@@ -54,6 +54,13 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     public List<SQLExpr> getArguments() {
         return this.arguments;
     }
+    
+    public void addArgument(SQLExpr argument) {
+        if (argument != null) {
+            argument.setParent(this);
+        }
+        this.arguments.add(argument);
+    }
 
     @Override
     public int hashCode() {

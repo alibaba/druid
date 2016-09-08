@@ -29,6 +29,13 @@ public class SQLListExpr extends SQLExprImpl {
     public List<SQLExpr> getItems() {
         return items;
     }
+    
+    public void addItem(SQLExpr item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

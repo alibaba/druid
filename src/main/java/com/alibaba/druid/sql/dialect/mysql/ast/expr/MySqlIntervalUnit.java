@@ -28,5 +28,11 @@ public enum MySqlIntervalUnit {
 
     SECOND, SECOND_MICROSECOND,
 
-    MICROSECOND
+    MICROSECOND;
+    
+    public final String name_lcase;
+    
+    private MySqlIntervalUnit() {
+        this.name_lcase = name().toLowerCase();
+    }
 }

@@ -43,7 +43,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class DruidPooledPreparedStatement extends DruidPooledStatement implements PreparedStatement {
 

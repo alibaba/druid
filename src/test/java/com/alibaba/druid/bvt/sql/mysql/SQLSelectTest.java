@@ -98,11 +98,13 @@ public class SQLSelectTest extends TestCase {
         output(stmtList);
     }
 
-    private void output(List<SQLStatement> stmtList) {
+    private String output(List<SQLStatement> stmtList) {
+        StringBuilder out = new StringBuilder();
         for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(System.out));
-            System.out.println(";");
-            System.out.println();
+            stmt.accept(new MySqlOutputVisitor(out));
+//            System.out.println(";");
+//            System.out.println();
         }
+        return out.toString();
     }
 }

@@ -18,7 +18,6 @@ package com.alibaba.druid.util;
 /**
  * format validation This class encodes/decodes hexadecimal data
  * 
- * @xerces.internal
  * @author Jeffrey Rodriguez
  * @version $Id: HexBin.java,v 1.4 2007/07/19 04:38:32 ofung Exp $
  */

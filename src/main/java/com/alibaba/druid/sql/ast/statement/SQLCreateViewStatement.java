@@ -82,6 +82,13 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     public List<Column> getColumns() {
         return columns;
     }
+    
+    public void addColumn(Column column) {
+        if (column != null) {
+            column.setParent(this);
+        }
+        this.columns.add(column);
+    }
 
     public boolean isIfNotExists() {
         return ifNotExists;

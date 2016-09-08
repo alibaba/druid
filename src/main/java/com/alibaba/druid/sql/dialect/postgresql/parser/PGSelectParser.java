@@ -18,13 +18,13 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
@@ -286,9 +286,9 @@ public class PGSelectParser extends SQLSelectParser {
         return super.parseTableSourceRest(tableSource);
     }
 
-    private void parserParameters(List<PGParameter> parameters) {
+    private void parserParameters(List<SQLParameter> parameters) {
         for (;;) {
-            PGParameter parameter = new PGParameter();
+            SQLParameter parameter = new SQLParameter();
 
             parameter.setName(this.exprParser.name());
             parameter.setDataType(this.exprParser.parseDataType());

@@ -22,10 +22,10 @@ import java.util.Map;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
@@ -34,6 +34,8 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -41,12 +43,10 @@ import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
@@ -56,11 +56,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumnCl
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
@@ -87,23 +83,19 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -116,21 +108,13 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLoopStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
@@ -210,7 +194,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                 ident = expr.toString();
             }
 
-            if (subQueryMap.containsKey(ident)) {
+            if (containsSubQuery(ident)) {
                 return false;
             }
 
@@ -243,12 +227,8 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                     break;
             }
 
-            if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
-                }
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, x.getAlias(), ident);
+            putAliasMap(aliasMap, ident, ident);
             return false;
         }
 
@@ -407,11 +387,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public void endVisit(OracleOrderBy x) {
-
-    }
-
-    @Override
     public void endVisit(OracleOuterExpr x) {
 
     }
@@ -428,11 +403,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleSelectJoin x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleOrderByItem x) {
 
     }
 
@@ -509,11 +479,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleOrderBy x) {
-        return this.visit((SQLOrderBy) x);
-    }
-
-    @Override
     public boolean visit(OracleOuterExpr x) {
 
         return true;
@@ -533,19 +498,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleSelectJoin x) {
-        x.getLeft().accept(this);
-        x.getRight().accept(this);
-
-        {
-            String leftTable = (String) x.getLeft().getAttribute(ATTR_TABLE);
-            String rightTable = (String) x.getRight().getAttribute(ATTR_TABLE);
-            if (leftTable != null && leftTable.equals(rightTable)) {
-                x.putAttribute(ATTR_TABLE, leftTable);
-            }
-        }
-        if (x.getCondition() != null) {
-            x.getCondition().accept(this);
-        }
+        super.visit(x);
 
         for (SQLExpr item : x.getUsing()) {
             if (item instanceof SQLIdentifierExpr) {
@@ -571,12 +524,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         }
 
         return false;
-    }
-
-    @Override
-    public boolean visit(OracleOrderByItem x) {
-
-        return true;
     }
 
     @Override
@@ -614,7 +561,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             if (table != null) {
                 this.aliasMap.put(x.getAlias(), table);
             }
-            this.subQueryMap.put(x.getAlias(), x.getSelect());
+            addSubQuery(x.getAlias(), x.getSelect());
             this.setCurrentTable(x.getAlias());
         }
 
@@ -679,17 +626,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(GroupingSetExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(GroupingSetExpr x) {
-
-    }
-
-    @Override
     public boolean visit(OracleWithSubqueryEntry x) {
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
@@ -699,8 +635,8 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             }
 
             if (alias != null) {
-                aliasMap.put(alias, null);
-                subQueryMap.put(alias, x.getSubQuery());
+                putAliasMap(aliasMap, alias, null);
+                addSubQuery(alias, x.getSubQuery());
             }
         }
         x.getSubQuery().accept(this);
@@ -877,49 +813,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleMergeStatement x) {
-        setAliasMap();
-
-        String originalTable = getCurrentTable();
-
-        setMode(x.getUsing(), Mode.Select);
-        x.getUsing().accept(this);
-
-        setMode(x, Mode.Merge);
-
-        String ident = x.getInto().toString();
-        setCurrentTable(x, ident);
-        x.putAttribute("_old_local_", originalTable);
-
-        TableStat stat = getTableStat(ident);
-        stat.incrementMergeCount();
-
-        Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null) {
-            if (x.getAlias() != null) {
-                aliasMap.put(x.getAlias(), ident);
-            }
-            aliasMap.put(ident, ident);
-        }
-
-        x.getOn().accept(this);
-
-        if (x.getUpdateClause() != null) {
-            x.getUpdateClause().accept(this);
-        }
-
-        if (x.getInsertClause() != null) {
-            x.getInsertClause().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleMergeStatement x) {
-    }
-
-    @Override
     public boolean visit(MergeUpdateClause x) {
         return true;
     }
@@ -936,16 +829,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(MergeInsertClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleErrorLoggingClause x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleErrorLoggingClause x) {
 
     }
 
@@ -982,9 +865,9 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             Map<String, String> aliasMap = getAliasMap();
             if (aliasMap != null) {
                 if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
+                    putAliasMap(aliasMap, x.getAlias(), ident);
                 }
-                aliasMap.put(ident, ident);
+                putAliasMap(aliasMap, ident, ident);
             }
         }
 
@@ -1061,22 +944,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(ConditionalInsertClauseItem x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleBlockStatement x) {
-        for (OracleParameter param : x.getParameters()) {
-            param.setParent(x);
-
-            SQLExpr name = param.getName();
-            this.variants.put(name.toString(), name);
-        }
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleBlockStatement x) {
 
     }
 
@@ -1213,23 +1080,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleAlterTableStatement x) {
-        String tableName = x.getName().toString();
-        TableStat stat = getTableStat(tableName);
-        stat.incrementAlterCount();
-
-        setCurrentTable(x, tableName);
-
-        for (SQLObject item : x.getItems()) {
-            item.setParent(x);
-            item.accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableStatement x) {
+    public void endVisit(SQLAlterTableStatement x) {
         restoreCurrentTable(x);
     }
 
@@ -1275,7 +1126,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleAlterTableModify x) {
-        OracleAlterTableStatement stmt = (OracleAlterTableStatement) x.getParent();
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
         String table = stmt.getName().toString();
 
         for (SQLColumnDefinition column : x.getColumns()) {
@@ -1341,53 +1192,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(Else x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(Else x) {
-
-    }
-
-    @Override
-    public boolean visit(ElseIf x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(ElseIf x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleIfStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleIfStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleRangeExpr x) {
         return true;
     }
 
     @Override
     public void endVisit(OracleRangeExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleAlterTableAddConstaint x) {
-        x.getConstraint().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableAddConstaint x) {
 
     }
 
@@ -1446,16 +1256,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleLabelStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleParameter x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleParameter x) {
 
     }
 
@@ -1570,36 +1370,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleRangeValuesClause x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleRangeValuesClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OraclePartitionByRangeClause x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OraclePartitionByRangeClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleLoopStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleLoopStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleExitStatement x) {
         return true;
     }
@@ -1616,19 +1386,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleSavePointStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleCreateProcedureStatement x) {
-        String name = x.getName().toString();
-        this.variants.put(name, x);
-        accept(x.getBlock());
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateProcedureStatement x) {
 
     }
 

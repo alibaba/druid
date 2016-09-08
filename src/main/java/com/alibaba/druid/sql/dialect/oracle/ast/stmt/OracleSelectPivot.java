@@ -58,6 +58,13 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
     public List<Item> getItems() {
         return this.items;
     }
+    
+    public void addItem(Item item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
 
     public void setXml(boolean xml) {
         this.xml = xml;

@@ -42,13 +42,15 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public final class JdbcUtils implements JdbcConstants {
 
     private final static Log        LOG                = LogFactory.getLog(JdbcUtils.class);
 
     private static final Properties DRIVER_URL_MAPPING = new Properties();
+
+    private static Boolean mysql_driver_version_6      = null;
 
     static {
         try {
@@ -357,10 +359,22 @@ public final class JdbcUtils implements JdbcConstants {
     }
 
     public static String getDriverClassName(String rawUrl) throws SQLException {
+        if (rawUrl == null) {
+            return null;
+        }
+        
         if (rawUrl.startsWith("jdbc:derby:")) {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
-            return MYSQL_DRIVER;
+            if (mysql_driver_version_6 == null) {
+                mysql_driver_version_6 = Utils.loadClass("com.mysql.cj.jdbc.Driver") != null;
+            }
+
+            if (mysql_driver_version_6) {
+                return MYSQL_DRIVER_6;
+            } else {
+                return MYSQL_DRIVER;
+            }
         } else if (rawUrl.startsWith("jdbc:log4jdbc:")) {
             return LOG4JDBC_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mariadb:")) {
@@ -381,7 +395,9 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:fake:") || rawUrl.startsWith("jdbc:mock:")) {
             return "com.alibaba.druid.mock.MockDriver";
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
-            return "org.postgresql.Driver";
+            return POSTGRESQL_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:odps:")) {
+            return ODPS_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
             return "org.hsqldb.jdbcDriver";
         } else if (rawUrl.startsWith("jdbc:db2:")) {
@@ -461,6 +477,8 @@ public final class JdbcUtils implements JdbcConstants {
             return POSTGRESQL;
         } else if (rawUrl.startsWith("jdbc:hsqldb:") || rawUrl.startsWith("jdbc:log4jdbc:hsqldb:")) {
             return HSQL;
+        } else if (rawUrl.startsWith("jdbc:odps:")) {
+            return ODPS;
         } else if (rawUrl.startsWith("jdbc:db2:")) {
             return DB2;
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {

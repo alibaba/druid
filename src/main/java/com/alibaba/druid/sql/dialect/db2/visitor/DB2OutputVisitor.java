@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.db2.visitor;
 
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
@@ -42,32 +43,35 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
                 SQLOrderBy orderBy= ((SQLSelect) parent).getOrderBy();
                 if (orderBy!=null&&orderBy.getItems().size() > 0) {
                     println();
-                    print("ORDER BY ");
+                    print0(ucase ? "ORDER BY " : "order by ");
                     printAndAccept(orderBy.getItems(), ", ");
                     ((SQLSelect) parent).setOrderBy(null);
                 }
             }
             println();
-            print("FETCH FIRST ");
+            print0(ucase ? "FETCH FIRST " : "fetch first ");
             x.getFirst().accept(this);
-            print(" ROWS ONLY");
+            print0(ucase ? " ROWS ONLY" : " rows only");
 
 
         }
         if (x.isForReadOnly()) {
             println();
-            print("FOR READ ONLY");
+            print0(ucase ? "FOR READ ONLY" : "for read only");
+        } else if (x.isForUpdate()) {
+            println();
+            print0(ucase ? "FOR UPDATE" : "for update");
         }
 
         if (x.getIsolation() != null) {
             println();
-            print("WITH ");
-            print(x.getIsolation().name());
+            print0(ucase ? "WITH " : "with ");
+            print0(x.getIsolation().name());
         }
 
         if (x.getOptimizeFor() != null) {
             println();
-            print("OPTIMIZE FOR ");
+            print0(ucase ? "OPTIMIZE FOR " : "optimize for ");
             x.getOptimizeFor().accept(this);
         }
 
@@ -82,7 +86,7 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
 
     @Override
     public boolean visit(DB2ValuesStatement x) {
-        print("VALUES ");
+        print0(ucase ? "VALUES " : "values ");
         x.getExpr().accept(this);
         return false;
     }
@@ -90,5 +94,13 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
     @Override
     public void endVisit(DB2ValuesStatement x) {
 
+    }
+    
+    protected void printOperator(SQLBinaryOperator operator) {
+        if (operator == SQLBinaryOperator.Concat) {
+            print0(ucase ? "CONCAT" : "concat");
+        } else {
+            print0(ucase ? operator.name : operator.name_lcase);
+        }
     }
 }

@@ -70,10 +70,7 @@ public class SQLServerExecStatement extends SQLServerObjectImpl implements SQLSe
     
     /**
      * 
-     * @Description: SQLServer execute Parameter statement
-     * @author zz email:455910092@qq.com
-     * @date 2015-9-20
-     * @version V1.0
+     * @author zz [455910092@qq.com]
      */
     public static class SQLServerParameter extends SQLServerObjectImpl
     {

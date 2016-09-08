@@ -19,15 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObject;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLObject {
 
-    private final List<PGParameter> parameters = new ArrayList<PGParameter>();
+    private final List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
     public PGFunctionTableSource(){
 
@@ -37,7 +37,7 @@ public class PGFunctionTableSource extends SQLExprTableSource implements PGSQLOb
         this.expr = expr;
     }
 
-    public List<PGParameter> getParameters() {
+    public List<SQLParameter> getParameters() {
         return parameters;
     }
 

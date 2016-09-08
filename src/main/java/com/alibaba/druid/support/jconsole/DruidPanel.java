@@ -38,7 +38,7 @@ import com.sun.tools.jconsole.JConsoleContext;
 /**
  * druid面板的抽象类 在类在实现的时候，通过url地址获取数据，解析此数据，然后显示在界面中
  * 
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny [yunnysunny@gmail.com]
  */
 public abstract class DruidPanel extends JPanel {
 

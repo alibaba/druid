@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * @author sandzhang<sandzhangtoo@gmail.com>
+ * @author sandzhang[sandzhangtoo@gmail.com]
  */
 public class MapComparator<K extends Object, V extends Object> implements Comparator<Map<K, V>> {
 

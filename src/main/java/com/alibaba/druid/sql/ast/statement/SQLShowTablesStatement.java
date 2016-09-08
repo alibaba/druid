@@ -24,6 +24,10 @@ public class SQLShowTablesStatement extends SQLStatementImpl {
 
     protected SQLName database;
     protected SQLExpr like;
+    
+    // for mysql
+    protected boolean full;
+    protected SQLExpr where;
 
     public SQLName getDatabase() {
         return database;
@@ -47,6 +51,22 @@ public class SQLShowTablesStatement extends SQLStatementImpl {
         }
 
         this.like = like;
+    }
+    
+    public boolean isFull() {
+        return full;
+    }
+
+    public void setFull(boolean full) {
+        this.full = full;
+    }
+
+    public SQLExpr getWhere() {
+        return where;
+    }
+
+    public void setWhere(SQLExpr where) {
+        this.where = where;
     }
     
     @Override

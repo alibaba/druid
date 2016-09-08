@@ -16,7 +16,8 @@ public class OdpsSetLabelTest extends TestCase {
         OdpsStatementParser parser = new OdpsStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
-        String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("SET LABEL S3 TO USER aliyun$abc@alibaba-inc.com", output);
+        
+        Assert.assertEquals("SET LABEL S3 TO USER aliyun$abc@alibaba-inc.com", SQLUtils.toOdpsString(stmt));
+        Assert.assertEquals("set label S3 to user aliyun$abc@alibaba-inc.com", SQLUtils.toOdpsString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

@@ -20,22 +20,8 @@ package com.alibaba.druid.support.http.util;
  * describing modern routing protocols often refer to the extended-network-prefix-length rather than the subnet mask.
  * The prefix length is equal to the number of contiguous one-bits in the traditional subnet mask. This means that
  * specifying the network address 130.5.5.25 with a subnet mask of 255.255.255.0 can also be expressed as 130.5.5.25/24.
- * The /<prefix-length> notation is more compact and easier to understand than writing out the mask in its traditional
- * dotted-decimal format.<br/>
- * <br/>
- * <code>
- * &nbsp;&nbsp;&nbsp;&nbsp;130.5.5.25&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * <b>10</b>000010 . 00000101 . 00000101 . 00011001<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;255.255.255.0&nbsp;&nbsp;
- * 11111111 . 11111111 . 11111111 . 00000000<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<--extended-network-prefix --><br/>
- * or<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;130.5.5.25/24&nbsp;&nbsp;
- * <b>10</b>000010 . 00000101 . 00000101 . 00011001<br/>
- * </code> <br/>
- * This class supports both standards : the extended network prefix and the subnet mask.
- * 
+ * The prefix-length notation is more compact and easier to understand than writing out the mask in its traditional
+ * dotted-decimal format.
  * @author Marcel Dullaart
  * @version 1.0
  * @see IPAddress
@@ -51,15 +37,6 @@ public class IPRange {
     /** extended network prefix */
     private int       extendedNetworkPrefix = 0;
 
-    // -------------------------------------------------------------------------
-    /**
-     * Constructor.
-     * 
-     * @param range String representation of the IP address. The two following formats are supported :<br/>
-     * <li/>xxx.xxx.xxx.xxx/xxx.xxx.xxx.xxx <li/>xxx.xxx.xxx.xxx/xx <- extended network prefix
-     * @exception IllegalArgumentException Throws this exception when the specified string doesn't represent a valid IP
-     * address.
-     */
     public IPRange(String range){
         parseRange(range);
     }

@@ -165,7 +165,17 @@ public class PGLexer extends Lexer {
     }
     
     public void scanSharp() {
-        token = Token.POUND;
         scanChar();
+        if (ch == '>') {
+            scanChar();
+            if (ch == '>') {
+                scanChar();
+                token = Token.POUNDGTGT;
+            } else {
+                token = Token.POUNDGT;
+            }
+        } else {
+            token = Token.POUND;
+        }
     }
 }

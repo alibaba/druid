@@ -18,17 +18,28 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableAddPartition extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private boolean ifNotExists = false;
+    private boolean               ifNotExists = false;
 
-    private final List<SQLAssignItem> partition = new ArrayList<SQLAssignItem>(4);
+    private final List<SQLObject> partitions  = new ArrayList<SQLObject>(4);
 
-    public List<SQLAssignItem> getPartition() {
-        return partition;
+    private SQLExpr               partitionCount;
+
+    public List<SQLObject> getPartitions() {
+        return partitions;
+    }
+
+    public void addPartition(SQLObject partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+        this.partitions.add(partition);
     }
 
     public boolean isIfNotExists() {
@@ -39,10 +50,21 @@ public class SQLAlterTableAddPartition extends SQLObjectImpl implements SQLAlter
         this.ifNotExists = ifNotExists;
     }
 
+    public SQLExpr getPartitionCount() {
+        return partitionCount;
+    }
+
+    public void setPartitionCount(SQLExpr partitionCount) {
+        if (partitionCount != null) {
+            partitionCount.setParent(this);
+        }
+        this.partitionCount = partitionCount;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, partition);
+            acceptChild(visitor, partitions);
         }
         visitor.endVisit(this);
     }

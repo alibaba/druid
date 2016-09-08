@@ -18,7 +18,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
- * @author yinheli <yinheli@gmail.com>
+ * @author yinheli [yinheli@gmail.com]
  * @date 2012-11-26 下午11:41
  */
 public class HibernateCRUDTest extends TestCase {

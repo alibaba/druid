@@ -20,7 +20,7 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import java.sql.PreparedStatement;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public final class PreparedStatementHolder {
 

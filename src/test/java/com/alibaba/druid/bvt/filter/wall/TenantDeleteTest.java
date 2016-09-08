@@ -40,6 +40,8 @@ public class TenantDeleteTest extends TestCase {
     public void testMySql() throws Exception {
         WallProvider.setTenantValue(123);
         MySqlWallProvider provider = new MySqlWallProvider(config);
+        
+        WallProvider.setTenantValue("test");
         WallCheckResult checkResult = provider.check(sql);
         Assert.assertEquals(0, checkResult.getViolations().size());
 

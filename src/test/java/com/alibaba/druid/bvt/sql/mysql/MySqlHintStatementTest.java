@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.bvt.sql.mysql;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
+
+import junit.framework.TestCase;
 
 public class MySqlHintStatementTest extends TestCase {
 
@@ -32,6 +34,18 @@ public class MySqlHintStatementTest extends TestCase {
                      + " ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"//
                      + " \n/*!40101 SET character_set_client = @saved_cs_client */;";
         String rs = SQLUtils.formatMySql(sql);
-        System.out.println(rs);
+        Assert.assertEquals("DROP TABLE IF EXISTS `item_similarity`;"
+                + "\n"
+                + "\n/*!40101 SET @saved_cs_client     = @@character_set_client */;"
+                + "\n"
+                + "\n/*!40101 SET character_set_client = utf8 */;"
+                + "\n"
+                + "\nCREATE TABLE `item_similarity` ("
+                + "\n\t`id` bigint(20) UNSIGNED NOT NULL, "
+                + "\n\t`sellerId` bigint(20) DEFAULT NULL, "
+                + "\n\tPRIMARY KEY (`id`)"
+                + "\n) ENGINE = InnoDB CHARSET = utf8;"
+                + "\n"
+                + "\n/*!40101 SET character_set_client = @saved_cs_client */;", rs);
     }
 }

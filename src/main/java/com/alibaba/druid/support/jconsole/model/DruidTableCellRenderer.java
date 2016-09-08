@@ -23,7 +23,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 /**
- * @author yunnysunny<yunnysunny@gmail.com>
+ * @author yunnysunny[yunnysunny@gmail.com]
  * */
 public class DruidTableCellRenderer extends JLabel implements TableCellRenderer {
 

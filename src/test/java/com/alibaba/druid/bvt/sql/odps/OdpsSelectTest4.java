@@ -29,5 +29,10 @@ public class OdpsSelectTest4 extends TestCase {
                 + "\nFROM dual", SQLUtils.formatOdps(sql));
     }
     
-
+    public void test_distribute_by_lcase() throws Exception {
+        String sql = "select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60) from dual";//
+        
+        Assert.assertEquals("select total_day_cnt * EXP(-datediff(to_date('20150819', 'yyyymmdd'), last_time, 'dd') / 60)"
+                + "\nfrom dual", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+    }
 }

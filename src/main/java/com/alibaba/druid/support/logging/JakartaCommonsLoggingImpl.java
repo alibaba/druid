@@ -116,4 +116,9 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
         return debugCount;
     }
 
+    @Override
+    public boolean isErrorEnabled() {
+        return log.isErrorEnabled();
+    }
+
 }

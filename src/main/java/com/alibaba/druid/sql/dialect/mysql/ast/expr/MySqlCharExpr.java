@@ -53,8 +53,9 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
             buf.append(charset);
             buf.append(' ');
         }
-
-        super.output(buf);
+        if (super.text!=null){
+            super.output(buf);
+        }
 
         if (collate != null) {
             buf.append(" COLLATE ");

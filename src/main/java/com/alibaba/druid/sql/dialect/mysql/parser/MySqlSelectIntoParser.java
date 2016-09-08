@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -36,7 +35,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHintImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
@@ -47,10 +45,7 @@ import com.alibaba.druid.sql.parser.Token;
 
 /**
  * 
- * @Description: parse select into statement
- * @author zz email:455910092@qq.com
- * @date 2015-9-14
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public class MySqlSelectIntoParser extends SQLSelectParser {
 	private List<SQLExpr> argsList;
@@ -277,49 +272,6 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
                 queryBlock.setInto(this.exprParser.name());
             }
         }
-    }
-
-    protected void parseGroupBy(SQLSelectQueryBlock queryBlock) {
-        SQLSelectGroupByClause groupBy = null;
-
-        if (lexer.token() == Token.GROUP) {
-            groupBy = new SQLSelectGroupByClause();
-
-            lexer.nextToken();
-            accept(Token.BY);
-
-            while (true) {
-                groupBy.addItem(this.getExprParser().parseSelectGroupByItem());
-                if (!(lexer.token() == (Token.COMMA))) {
-                    break;
-                }
-                lexer.nextToken();
-            }
-
-            if (lexer.token() == Token.WITH) {
-                lexer.nextToken();
-                acceptIdentifier("ROLLUP");
-
-                MySqlSelectGroupBy mySqlGroupBy = new MySqlSelectGroupBy();
-                for (SQLExpr sqlExpr : groupBy.getItems()) {
-                    mySqlGroupBy.addItem(sqlExpr);
-                }
-                mySqlGroupBy.setRollUp(true);
-
-                groupBy = mySqlGroupBy;
-            }
-        }
-
-        if (lexer.token() == Token.HAVING) {
-            lexer.nextToken();
-
-            if (groupBy == null) {
-                groupBy = new SQLSelectGroupByClause();
-            }
-            groupBy.setHaving(this.exprParser.expr());
-        }
-
-        queryBlock.setGroupBy(groupBy);
     }
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {

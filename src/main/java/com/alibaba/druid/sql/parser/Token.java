@@ -18,8 +18,7 @@ package com.alibaba.druid.sql.parser;
 /**
  * 
  * SQL Token 
- * @author wenshao 2011-5-18 下午05:16:49
- * @formatter:off
+ * @author wenshao [szujobs@hotmail.com]
  */
 public enum Token {
     SELECT("SELECT"), 
@@ -139,6 +138,10 @@ public enum Token {
     CLOSE("CLOSE"),
     OUT("OUT"),
     INOUT("INOUT"),
+    EXIT("EXIT"),
+    UNDO("UNDO"),
+    SQLSTATE("SQLSTATE"),
+    CONDITION("CONDITION"),
     
     //postgresql
     WINDOW("WINDOW"),
@@ -262,6 +265,20 @@ public enum Token {
     PARTITION,
     PARTITIONED,
     OVERWRITE,
+    
+    // Teradata
+    SEL("SEL"),
+    LOCKING("LOCKING"),
+    ACCESS("ACCESS"),
+    VOLATILE("VOLATILE"),
+    MULTISET("MULTISET"),
+    POSITION("POSITION"),
+    RANGE_N("RANGE_N"),
+    FORMAT("FORMAT"),
+    QUALIFY("QUALIFY"),
+    MOD("MOD"),
+    
+    CONCAT("CONCAT"), // DB2
 
     LPAREN("("), 
     RPAREN(")"), 
@@ -298,6 +315,8 @@ public enum Token {
     BARSLASH("|/"), 
     PLUS("+"), 
     SUB("-"), 
+    SUBGT("->"), 
+    SUBGTGT("->>"), 
     STAR("*"), 
     SLASH("/"), 
     AMP("&"), 
@@ -307,7 +326,9 @@ public enum Token {
     LTLT("<<"), 
     GTGT(">>"),
     MONKEYS_AT("@"),
-    POUND("#")
+    POUND("#"),
+    POUNDGT("#>"),
+    POUNDGTGT("#>>")
     ;
 
     public final String name;

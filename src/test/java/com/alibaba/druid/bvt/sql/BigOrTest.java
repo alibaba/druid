@@ -33,6 +33,6 @@ public class BigOrTest extends TestCase {
         String sql = buf.toString();
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, null);
         String text = SQLUtils.toSQLString(stmtList.get(0));
-        System.out.println(text);
+        //System.out.println(text);
     }
 }

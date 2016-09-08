@@ -42,6 +42,9 @@ public class OdpsSelectTest extends TestCase {
         Assert.assertEquals("SELECT region" //
                             + "\nFROM sale_detail" //
                             + "\nDISTRIBUTE BY region SORT BY f1 ASC;", SQLUtils.formatOdps(sql));
+        Assert.assertEquals("select region" //
+                            + "\nfrom sale_detail" //
+                            + "\ndistribute by region sort by f1 asc;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

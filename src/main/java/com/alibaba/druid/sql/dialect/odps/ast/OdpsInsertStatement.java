@@ -46,6 +46,13 @@ public class OdpsInsertStatement extends SQLStatementImpl implements SQLStatemen
     public List<OdpsInsert> getItems() {
         return items;
     }
+    
+    public void addItem(OdpsInsert item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

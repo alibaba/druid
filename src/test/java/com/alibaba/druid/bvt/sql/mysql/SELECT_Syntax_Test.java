@@ -18,12 +18,14 @@ package com.alibaba.druid.bvt.sql.mysql;
 import java.util.List;
 
 import org.junit.Assert;
-import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+
+import junit.framework.TestCase;
 
 public class SELECT_Syntax_Test extends TestCase {
 
@@ -33,9 +35,10 @@ public class SELECT_Syntax_Test extends TestCase {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
-        String text = output(stmtList);
+        SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH ROLLUP;", text);
+        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH ROLLUP", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with rollup", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_1() throws Exception {
@@ -47,6 +50,18 @@ public class SELECT_Syntax_Test extends TestCase {
         String text = output(stmtList);
 
         Assert.assertEquals("SELECT *\nFROM T\nFOR UPDATE;", text);
+    }
+    
+    public void test_with_cube() throws Exception {
+        String sql = "SELECT year, SUM(profit) FROM sales GROUP BY year WITH CUBE;";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        SQLStatement stmt = stmtList.get(0);
+
+        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH CUBE", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with cube", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_2() throws Exception {
@@ -113,7 +128,12 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT column1\nFROM t1\nWHERE EXISTS (SELECT *\n\tFROM t2);", text);
+        Assert.assertEquals("SELECT column1" //
+                + "\nFROM t1" //
+                + "\nWHERE EXISTS (" //
+                + "\n\tSELECT *" //
+                + "\n\tFROM t2"
+                + "\n\t);", text);
     }
 
     public void test_8() throws Exception {
@@ -124,7 +144,13 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DISTINCT store_type\nFROM stores\nWHERE NOT EXISTS (SELECT *\n\tFROM cities_stores\n\tWHERE cities_stores.store_type = stores.store_type);",
+        Assert.assertEquals("SELECT DISTINCT store_type" //
+                + "\nFROM stores" //
+                + "\nWHERE NOT EXISTS (" //
+                + "\n\tSELECT *"
+                + "\n\tFROM cities_stores"
+                + "\n\tWHERE cities_stores.store_type = stores.store_type"
+                + "\n\t);",
                             text);
     }
 
@@ -166,10 +192,43 @@ public class SELECT_Syntax_Test extends TestCase {
 
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
+        SQLStatement stmt = stmtList.get(0);
 
-        String text = output(stmtList);
+        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 NOT IN (SELECT s1\n\tFROM t2)", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select s1\nfrom t1\nwhere s1 not in (select s1\n\tfrom t2)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+    }
+    
+    public void test_13() throws Exception {
+        String sql = "SELECT s1 FROM t1 WHERE s1 IN (SELECT s1 FROM t2);";
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 NOT IN (SELECT s1\n\tFROM t2);", text);
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        SQLStatement stmt = stmtList.get(0);
+
+        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 IN (SELECT s1\n\tFROM t2)", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select s1\nfrom t1\nwhere s1 in (select s1\n\tfrom t2)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+    }
+    
+    public void test_14() throws Exception {
+        String sql = "SELECT s1 FROM t1 WHERE s1 IN (?, ?, ?);";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        SQLStatement stmt = stmtList.get(0);
+
+        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 IN (?, ?, ?)", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select s1\nfrom t1\nwhere s1 in (?, ?, ?)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+    }
+    
+    public void test_15() throws Exception {
+        String sql = "SELECT s1 FROM t1 WHERE s1 NOT IN (?, ?, ?);";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        SQLStatement stmt = stmtList.get(0);
+
+        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 NOT IN (?, ?, ?)", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select s1\nfrom t1\nwhere s1 not in (?, ?, ?)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     private String output(List<SQLStatement> stmtList) {

@@ -17,13 +17,17 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import junit.framework.TestCase;
 
+import org.junit.Assert;
+
 import com.alibaba.druid.sql.SQLUtils;
 
 public class MySqlUpdateStatementLimitTest extends TestCase{
 	public void test_limit(){
 		String sql = "update t set name = 'x' where id < 100 limit 10";
 		String rs = SQLUtils.formatMySql(sql);
-		System.out.println(rs);
-		
+		Assert.assertEquals("UPDATE t"
+		        + "\nSET name = 'x'"
+		        + "\nWHERE id < 100"
+		        + "\nLIMIT 10", rs);
 	}
 }

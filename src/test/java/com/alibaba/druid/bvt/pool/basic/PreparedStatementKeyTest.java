@@ -162,7 +162,7 @@ public class PreparedStatementKeyTest extends TestCase {
         MockConnection conn = new MockConnection();
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
 
-        PreparedStatementPool pool = new PreparedStatementPool(new DruidConnectionHolder(dataSource, conn));
+        PreparedStatementPool pool = new PreparedStatementPool(new DruidConnectionHolder(dataSource, conn, 0));
         MockPreparedStatement raw = new MockPreparedStatement(null, null);
         pool.put(new PreparedStatementHolder(k1, raw));
 

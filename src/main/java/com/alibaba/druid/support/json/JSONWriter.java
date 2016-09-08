@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.support.json;
 
+import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.util.Utils;
 
 import javax.management.openmbean.CompositeData;
@@ -125,6 +126,11 @@ public class JSONWriter {
 
         if (o instanceof Map) {
             writeMap((Map) o);
+            return;
+        }
+        
+        if (o == SQLEvalVisitor.EVAL_VALUE_NULL) {
+            write("null");
             return;
         }
 

@@ -36,4 +36,10 @@ public class MySqlAlterUserStatement extends MySqlStatementImpl {
         return users;
     }
 
+    public void addUser(SQLExpr user) {
+        if (user != null) {
+            user.setParent(this);
+        }
+        this.users.add(user);
+    }
 }

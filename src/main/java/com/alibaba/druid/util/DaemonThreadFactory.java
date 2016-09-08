@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author sandzhang<sandzhangtoo@gmail.com>
+ * @author sandzhang [sandzhangtoo@gmail.com]
  */
 public class DaemonThreadFactory implements ThreadFactory {
 

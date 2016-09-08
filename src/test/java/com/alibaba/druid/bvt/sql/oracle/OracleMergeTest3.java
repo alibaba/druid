@@ -51,7 +51,7 @@ public class OracleMergeTest3 extends OracleTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab$")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.mon_mods_all$")));
 
-        Assert.assertEquals(15, visitor.getColumns().size());
+        Assert.assertEquals(16, visitor.getColumns().size());
 
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

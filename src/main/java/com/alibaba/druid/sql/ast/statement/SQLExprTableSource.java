@@ -15,12 +15,18 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLExprTableSource extends SQLTableSourceImpl {
 
     protected SQLExpr expr;
+
+    private List<SQLName>   partitions;
 
     public SQLExprTableSource(){
 
@@ -29,7 +35,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     public SQLExprTableSource(SQLExpr expr){
         this(expr, null);
     }
-    
+
     public SQLExprTableSource(SQLExpr expr, String alias){
         this.setExpr(expr);
         this.setAlias(alias);
@@ -44,6 +50,32 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
             expr.setParent(this);
         }
         this.expr = expr;
+    }
+
+    public List<SQLName> getPartitions() {
+        if (this.partitions == null) {
+            this.partitions = new ArrayList<SQLName>(2);
+        }
+        
+        return partitions;
+    }
+    
+    public int getPartitionSize() {
+        if (this.partitions == null) {
+            return 0;
+        }
+        return this.partitions.size();
+    }
+
+    public void addPartition(SQLName partition) {
+        if (partition != null) {
+            partition.setParent(this);
+        }
+        
+        if (this.partitions == null) {
+            this.partitions = new ArrayList<SQLName>(2);
+        }
+        this.partitions.add(partition);
     }
 
     @Override

@@ -25,7 +25,7 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
     protected SQLExpr                  expr;
     protected String                   collate;
     protected SQLOrderingSpecification type;
-    protected NullsOrderType             nullsOrderType;
+    protected NullsOrderType           nullsOrderType;
 
     public SQLSelectOrderByItem(){
 

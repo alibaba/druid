@@ -48,7 +48,27 @@ public class Kill_Test extends TestCase {
     	Assert.assertEquals("KILL CONNECTION 233;", text);
     }
 
+    public void test_2() throws Exception {
+        String sql = "KILL 233";
+        
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        
+        String text = output(stmtList);
+        
+        Assert.assertEquals("KILL 233;", text);
+    }
 
+    public void test_3() throws Exception {
+        String sql = "KILL 233,234";
+        
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        
+        String text = output(stmtList);
+        
+        Assert.assertEquals("KILL 233, 234;", text);
+    }
     private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
 

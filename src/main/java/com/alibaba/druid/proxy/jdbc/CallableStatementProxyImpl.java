@@ -32,7 +32,7 @@ import java.sql.SQLXML;
 import java.util.Calendar;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class CallableStatementProxyImpl extends PreparedStatementProxyImpl implements CallableStatementProxy {
 

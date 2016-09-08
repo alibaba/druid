@@ -31,16 +31,22 @@ public class OracleReturningClause extends OracleSQLObjectImpl {
         return items;
     }
 
-    public void setItems(List<SQLExpr> items) {
-        this.items = items;
+    public void addItem(SQLExpr item) {
+        if (item != null) {
+            item.setParent(this);
+        }
+        this.items.add(item);
     }
 
     public List<SQLExpr> getValues() {
         return values;
     }
 
-    public void setValues(List<SQLExpr> values) {
-        this.values = values;
+    public void addValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
+        this.values.add(value);
     }
 
     @Override

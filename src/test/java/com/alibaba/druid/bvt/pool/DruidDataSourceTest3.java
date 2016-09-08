@@ -15,7 +15,7 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
 /**
  * 这个场景测试并发初始化
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  *
  */
 public class DruidDataSourceTest3 extends TestCase {

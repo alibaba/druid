@@ -325,16 +325,8 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setValidationQuery(null);
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
 
-        {
-            Exception error = null;
-            try {
-                DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
-                dataSource.validateConnection(conn);
-            } catch (SQLException ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
-        
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+        dataSource.validateConnection(conn);
+
     }
 }

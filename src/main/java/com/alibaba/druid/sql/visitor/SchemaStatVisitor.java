@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.visitor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -23,15 +24,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.SQLPartitionByHash;
+import com.alibaba.druid.sql.ast.SQLPartitionByList;
+import com.alibaba.druid.sql.ast.SQLPartitionByRange;
+import com.alibaba.druid.sql.ast.SQLPartitionValue;
+import com.alibaba.druid.sql.ast.SQLSubPartition;
+import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
@@ -39,21 +50,37 @@ import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAnalyzePartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableCheckPartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableCoalescePartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableConvertCharSet;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDiscardPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeignKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableImportPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableOptimizePartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableReOrganizePartition;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRebuildPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableRepairPartition;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableTruncatePartition;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLCloseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
@@ -74,6 +101,7 @@ import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
 import com.alibaba.druid.sql.ast.statement.SQLObjectType;
 import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
@@ -85,8 +113,11 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
@@ -96,16 +127,16 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
-import com.alibaba.druid.util.StringUtils;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected final HashMap<TableStat.Name, TableStat> tableStats     = new LinkedHashMap<TableStat.Name, TableStat>();
-    protected final Set<Column>                        columns        = new LinkedHashSet<Column>();
+    protected final Map<Column, Column>                columns        = new LinkedHashMap<Column, Column>();
     protected final List<Condition>                    conditions     = new ArrayList<Condition>();
     protected final Set<Relationship>                  relationships  = new LinkedHashSet<Relationship>();
     protected final List<Column>                       orderByColumns = new ArrayList<Column>();
     protected final Set<Column>                        groupByColumns = new LinkedHashSet<Column>();
+    protected final List<SQLAggregateExpr>             aggregateFunctions = new ArrayList<SQLAggregateExpr>();
 
     protected final Map<String, SQLObject> subQueryMap = new LinkedHashMap<String, SQLObject>();
 
@@ -147,9 +178,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         columnName = handleName(columnName);
 
         Column column = this.getColumn(tableName, columnName);
-        if (column == null) {
+        if (column == null && columnName != null) {
             column = new Column(tableName, columnName);
-            columns.add(column);
+            columns.put(column, column);
         }
         return column;
     }
@@ -164,9 +195,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (stat == null) {
             stat = new TableStat();
             tableStats.put(new TableStat.Name(tableName), stat);
-            if (alias != null) {
-                aliasMap.put(alias, tableName);
-            }
+            putAliasMap(aliasMap, alias, tableName);
         }
         return stat;
     }
@@ -232,7 +261,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public Map<String, String> getAliasMap() {
         return aliasMap;
     }
-
+    
     public void setCurrentTable(String table) {
         this.currentTable = table;
     }
@@ -287,14 +316,19 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
-            if (subQueryMap.containsKey(currentTable)) {
+            if (containsSubQuery(currentTable)) {
                 return false;
             }
 
+            String identName = x.getName();
+            if (aliasMap != null && aliasMap.containsKey(identName) && aliasMap.get(identName) == null) {
+                return false;
+            }
+            
             if (currentTable != null) {
-                addOrderByColumn(currentTable, x.getName(), x);
+                addOrderByColumn(currentTable, identName, x);
             } else {
-                addOrderByColumn("UNKOWN", x.getName(), x);
+                addOrderByColumn("UNKOWN", identName, x);
             }
             return false;
         }
@@ -303,7 +337,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (x.getOwner() instanceof SQLIdentifierExpr) {
                 String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
 
-                if (subQueryMap.containsKey(owner)) {
+                if (containsSubQuery(owner)) {
                     return false;
                 }
 
@@ -367,6 +401,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public List<Condition> getConditions() {
         return conditions;
     }
+    
+    public List<SQLAggregateExpr> getAggregateFunctions() {
+        return aggregateFunctions;
+    }
 
     public boolean visit(SQLBinaryOpExpr x) {
         x.getLeft().setParent(x);
@@ -378,6 +416,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case GreaterThan:
             case GreaterThanOrEqual:
             case LessThan:
+            case LessThanOrGreater:
             case LessThanOrEqual:
             case LessThanOrEqualOrGreaterThan:
             case Like:
@@ -419,11 +458,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     protected void handleCondition(SQLExpr expr, String operator, SQLExpr... valueExprs) {
+        if (expr instanceof SQLCastExpr) {
+            expr = ((SQLCastExpr) expr).getExpr();
+        }
+        
         Column column = getColumn(expr);
         if (column == null) {
             return;
         }
-
+        
         Condition condition = null;
         for (Condition item : this.getConditions()) {
             if (item.getColumn().equals(column) && item.getOperator().equals(operator)) {
@@ -454,6 +497,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (aliasMap == null) {
             return null;
         }
+        
+        if (expr instanceof SQLMethodInvokeExpr) {
+            SQLMethodInvokeExpr methodInvokeExp = (SQLMethodInvokeExpr) expr;
+            if (methodInvokeExp.getParameters().size() == 1) {
+                SQLExpr firstExpr = methodInvokeExp.getParameters().get(0);
+                return getColumn(firstExpr);
+            }
+        }
 
         if (expr instanceof SQLPropertyExpr) {
             SQLExpr owner = ((SQLPropertyExpr) expr).getOwner();
@@ -462,8 +513,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (owner instanceof SQLIdentifierExpr) {
                 String tableName = ((SQLIdentifierExpr) owner).getName();
                 String table = tableName;
-                if (aliasMap.containsKey(table)) {
-                    table = aliasMap.get(table);
+                String tableNameLower = tableName.toLowerCase();
+                
+                if (aliasMap.containsKey(tableNameLower)) {
+                    table = aliasMap.get(tableNameLower);
+                }
+                
+                if (containsSubQuery(tableNameLower)) {
+                    table = null;
                 }
 
                 if (variants.containsKey(table)) {
@@ -528,9 +585,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementDeleteCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, ident, ident);
         }
 
         return false;
@@ -560,9 +615,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementDropCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, ident, ident);
         }
 
         return false;
@@ -585,18 +638,21 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
-                }
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, x.getAlias(), ident);
+            putAliasMap(aliasMap, ident, ident);
         }
 
         accept(x.getColumns());
         accept(x.getQuery());
 
         return false;
+    }
+    
+    protected static void putAliasMap(Map<String, String> aliasMap, String name, String value) {
+        if (aliasMap == null || name == null) {
+            return;
+        }
+        aliasMap.put(name.toLowerCase(), value);
     }
 
     protected void accept(SQLObject x) {
@@ -680,8 +736,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLJoinTableSource x) {
         x.getLeft().accept(this);
         x.getRight().accept(this);
-        if (x.getCondition() != null) {
-            x.getCondition().accept(this);
+        SQLExpr condition = x.getCondition();
+        if (condition != null) {
+            condition.accept(this);
         }
         return false;
     }
@@ -690,7 +747,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
 
-            if (subQueryMap.containsKey(owner)) {
+            if (containsSubQuery(owner)) {
                 return false;
             }
 
@@ -700,6 +757,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 Column column = addColumn(owner, x.getName());
                 x.putAttribute(ATTR_COLUMN, column);
                 if (column != null) {
+                    if (isParentGroupBy(x)) {
+                        this.groupByColumns.add(column);
+                    }
+                    
                     if (column != null) {
                         setColumn(x, column);
                     }
@@ -713,29 +774,48 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Map<String, String> aliasMap = getAliasMap();
 
         if (aliasMap != null) {
-            for (Map.Entry<String, String> entry : aliasMap.entrySet()) {
-                if (entry.getKey() == null) {
-                    continue;
-                }
-                if (entry.getKey().equalsIgnoreCase(name)) {
-                    return entry.getValue();
-                }
+            if (aliasMap.containsKey(name)) {
+                return aliasMap.get(name);
             }
+            
+            String name_lcase = name.toLowerCase();
+            if (name_lcase != name && aliasMap.containsKey(name_lcase)) {
+                return aliasMap.get(name_lcase);
+            }
+            
+//            for (Map.Entry<String, String> entry : aliasMap.entrySet()) {
+//                if (entry.getKey() == null) {
+//                    continue;
+//                }
+//                if (entry.getKey().equalsIgnoreCase(name)) {
+//                    return entry.getValue();
+//                }
+//            }
         }
 
         return name;
     }
 
     protected Column handleSubQueryColumn(String owner, String alias) {
-        SQLObject query = subQueryMap.get(owner);
+        SQLObject query = getSubQuery(owner);
 
         if (query == null) {
             return null;
         }
+        
+        return handleSubQueryColumn(alias, query);
+    }
 
+    protected Column handleSubQueryColumn(String alias, SQLObject query) {
+        if (query instanceof SQLSelect) {
+            query = ((SQLSelect) query).getQuery();
+        }
+
+        SQLSelectQueryBlock queryBlock = null;
         List<SQLSelectItem> selectList = null;
         if (query instanceof SQLSelectQueryBlock) {
-            selectList = ((SQLSelectQueryBlock) query).getSelectList();
+            queryBlock = (SQLSelectQueryBlock) query;
+            selectList = queryBlock.getSelectList();
         }
 
         if (selectList != null) {
@@ -746,19 +826,30 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                 String itemAlias = item.getAlias();
                 SQLExpr itemExpr = item.getExpr();
+                
+                String ident = itemAlias;
                 if (itemAlias == null) {
                     if (itemExpr instanceof SQLIdentifierExpr) {
-                        itemAlias = itemExpr.toString();
+                        ident = itemAlias = itemExpr.toString();
                     } else if (itemExpr instanceof SQLPropertyExpr) {
                         itemAlias = ((SQLPropertyExpr) itemExpr).getName();
+                        ident = itemExpr.toString();
                     }
                 }
 
                 if (alias.equalsIgnoreCase(itemAlias)) {
                     Column column = (Column) itemExpr.getAttribute(ATTR_COLUMN);
-                    return column;
+                    if (column != null) {
+                        return column;
+                    } else {
+                        SQLTableSource from = queryBlock.getFrom();
+                        if (from instanceof SQLSubqueryTableSource) {
+                            SQLSelect select = ((SQLSubqueryTableSource) from).getSelect();
+                            Column subQueryColumn = handleSubQueryColumn(ident, select);
+                            return subQueryColumn;
+                        }
+                    }
                 }
-
             }
         }
 
@@ -768,7 +859,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLIdentifierExpr x) {
         String currentTable = getCurrentTable();
 
-        if (subQueryMap.containsKey(currentTable)) {
+        if (containsSubQuery(currentTable)) {
             return false;
         }
 
@@ -781,6 +872,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Column column;
         if (currentTable != null) {
             column = addColumn(currentTable, ident);
+            
+            if (column != null && isParentGroupBy(x)) {
+                this.groupByColumns.add(column);
+            }
             x.putAttribute(ATTR_COLUMN, column);
         } else {
             column = handleUnkownColumn(ident);
@@ -792,6 +887,34 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             setColumn(x, column);
         }
         return false;
+    }
+    
+    private boolean isParentSelectItem(SQLObject parent) {
+        if (parent == null) {
+            return false;
+        }
+        
+        if (parent instanceof SQLSelectItem) {
+            return true;
+        }
+        
+        if (parent instanceof SQLSelectQueryBlock) {
+            return false;
+        }
+        
+        return isParentSelectItem(parent.getParent());
+    }
+    
+    private boolean isParentGroupBy(SQLObject parent) {
+        if (parent == null) {
+            return false;
+        }
+        
+        if (parent instanceof SQLSelectGroupByClause) {
+            return true;
+        }
+        
+        return isParentGroupBy(parent.getParent());
     }
 
     private void setColumn(SQLExpr x, Column column) {
@@ -821,7 +944,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 break;
             }
 
-            if (parent instanceof SQLSelectItem) {
+            if (isParentSelectItem(parent)) {
                 column.setSelec(true);
                 break;
             }
@@ -845,12 +968,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAllColumnExpr x) {
         String currentTable = getCurrentTable();
 
-        if (subQueryMap.containsKey(currentTable)) {
+        if (containsSubQuery(currentTable)) {
             return false;
+        }
+        
+        if (x.getParent() instanceof SQLAggregateExpr) {
+            SQLAggregateExpr aggregateExpr = (SQLAggregateExpr) x.getParent();
+            if ("count".equalsIgnoreCase(aggregateExpr.getMethodName())) {
+                return false;
+            }
         }
 
         if (currentTable != null) {
-            addColumn(currentTable, "*");
+            Column column = addColumn(currentTable, "*");
+            if (isParentSelectItem(x.getParent())) {
+                column.setSelec(true);
+            }
         }
         return false;
     }
@@ -863,18 +996,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return tableStats.containsKey(new TableStat.Name(tableName));
     }
 
-    public Set<Column> getColumns() {
-        return columns;
+    public Collection<Column> getColumns() {
+        return columns.values();
     }
 
     public Column getColumn(String tableName, String columnName) {
-        for (Column column : this.columns) {
-            if (StringUtils.equalsIgnoreCase(tableName, column.getTable())
-                && StringUtils.equalsIgnoreCase(columnName, column.getName())) {
-                return column;
-            }
+        if (aliasMap != null && aliasMap.containsKey(columnName) && aliasMap.get(columnName) == null) {
+            return null;
         }
-        return null;
+        
+        Column column = new Column(tableName, columnName);
+        
+        return this.columns.get(column);
     }
 
     public boolean visit(SQLSelectStatement x) {
@@ -894,8 +1027,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (Boolean.TRUE == with.getRecursive()) {
 
             if (aliasMap != null && alias != null) {
-                aliasMap.put(alias, null);
-                subQueryMap.put(alias, x.getSubQuery().getQuery());
+                putAliasMap(aliasMap, alias, null);
+                addSubQuery(alias, x.getSubQuery().getQuery());
             }
 
             x.getSubQuery().accept(this);
@@ -903,8 +1036,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.getSubQuery().accept(this);
 
             if (aliasMap != null && alias != null) {
-                aliasMap.put(alias, null);
-                subQueryMap.put(alias, x.getSubQuery().getQuery());
+                putAliasMap(aliasMap, alias, null);
+                addSubQuery(alias, x.getSubQuery().getQuery());
             }
         }
 
@@ -918,10 +1051,29 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null && x.getAlias() != null) {
-            aliasMap.put(x.getAlias(), null);
-            subQueryMap.put(x.getAlias(), query);
+            putAliasMap(aliasMap, x.getAlias(), null);
+            addSubQuery(x.getAlias(), query);
         }
         return false;
+    }
+    
+    protected void addSubQuery(String alias, SQLObject query) {
+        String alias_lcase = alias.toLowerCase();
+        subQueryMap.put(alias_lcase, query);
+    }
+    
+    protected SQLObject getSubQuery(String alias) {
+        String alias_lcase = alias.toLowerCase();
+        return subQueryMap.get(alias_lcase);
+    }
+    
+    protected boolean containsSubQuery(String alias) {
+        if (alias == null) {
+            return false;
+        }
+        
+        String alias_lcase = alias.toLowerCase();
+        return subQueryMap.containsKey(alias_lcase);
     }
 
     protected boolean isSimpleExprTableSource(SQLExprTableSource x) {
@@ -936,7 +1088,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 return false;
             }
 
-            if (subQueryMap.containsKey(ident)) {
+            if (containsSubQuery(ident)) {
                 return false;
             }
 
@@ -973,10 +1125,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (aliasMap != null) {
                 String alias = x.getAlias();
                 if (alias != null && !aliasMap.containsKey(alias)) {
-                    aliasMap.put(alias, ident);
+                    putAliasMap(aliasMap, alias, ident);
                 }
                 if (!aliasMap.containsKey(ident)) {
-                    aliasMap.put(ident, ident);
+                    putAliasMap(aliasMap, ident, ident);
                 }
             }
         } else {
@@ -987,8 +1139,20 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelectItem x) {
-        x.getExpr().setParent(x);
-        return true;
+        x.getExpr().accept(this);
+        
+        String alias = x.getAlias();
+        
+        Map<String, String> aliasMap = this.getAliasMap();
+        if (alias != null && (!alias.isEmpty()) && aliasMap != null) {
+            if (x.getExpr() instanceof SQLName) {
+                putAliasMap(aliasMap, alias, x.getExpr().toString());
+            } else {
+                putAliasMap(aliasMap, alias, null);
+            }
+        }
+        
+        return false;
     }
 
     public void endVisit(SQLSelect x) {
@@ -1018,6 +1182,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLAggregateExpr x) {
+        this.aggregateFunctions.add(x);
+        
         accept(x.getArguments());
         accept(x.getWithinGroup());
         accept(x.getOver());
@@ -1043,7 +1209,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementUpdateCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            aliasMap.put(ident, ident);
+            putAliasMap(aliasMap, ident, ident);
         } else {
             x.getTableSource().accept(this);
         }
@@ -1063,7 +1229,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         setCurrentTable(tableName);
 
         if (x.getAlias() != null) {
-            this.aliasMap.put(x.getAlias(), tableName);
+            putAliasMap(this.aliasMap, x.getAlias(), tableName);
         }
 
         TableStat stat = getTableStat(tableName);
@@ -1120,6 +1286,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.getInherits().accept(this);
         }
 
+        if (x.getSelect() != null) {
+            x.getSelect().accept(this);
+        }
+
         return false;
     }
 
@@ -1137,7 +1307,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         String columnName = x.getName().toString();
-        addColumn(tableName, columnName);
+        Column column = addColumn(tableName, columnName);
+        if (x.getDataType() != null) {
+            column.setDataType(x.getDataType().getName());
+        }
 
         return false;
     }
@@ -1243,9 +1416,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             stat.incrementDropIndexCount();
 
             Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                aliasMap.put(ident, ident);
-            }
+            putAliasMap(aliasMap, ident, ident);
         }
         return false;
     }
@@ -1263,9 +1434,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         stat.incrementDropIndexCount();
 
         Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null) {
-            aliasMap.put(table, table);
-        }
+        putAliasMap(aliasMap, table, table);
 
         for (SQLSelectOrderByItem item : x.getItems()) {
             SQLExpr expr = item.getExpr();
@@ -1395,6 +1564,183 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     
     @Override
     public boolean visit(SQLCloseStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        String name = x.getName().toString();
+        this.variants.put(name, x);
+        accept(x.getBlock());
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLBlockStatement x) {
+        for (SQLParameter param : x.getParameters()) {
+            param.setParent(x);
+
+            SQLExpr name = param.getName();
+            this.variants.put(name.toString(), name);
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLShowTablesStatement x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDeclareItem x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByHash x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByRange x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionByList x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSubPartitionByHash x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLPartitionValue x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterDatabaseStatement x) {
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableConvertCharSet x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableReOrganizePartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableCoalescePartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableTruncatePartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDiscardPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableImportPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAnalyzePartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableCheckPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableOptimizePartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableRebuildPartition x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableRepairPartition x) {
+        return false;
+    }
+    
+    public boolean visit(SQLSequenceExpr x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLMergeStatement x) {
+        setAliasMap();
+
+        String originalTable = getCurrentTable();
+
+        setMode(x.getUsing(), Mode.Select);
+        x.getUsing().accept(this);
+
+        setMode(x, Mode.Merge);
+
+        String ident = x.getInto().toString();
+        setCurrentTable(x, ident);
+        x.putAttribute("_old_local_", originalTable);
+
+        TableStat stat = getTableStat(ident);
+        stat.incrementMergeCount();
+
+        Map<String, String> aliasMap = getAliasMap();
+        if (aliasMap != null) {
+            if (x.getAlias() != null) {
+                putAliasMap(aliasMap, x.getAlias(), ident);
+            }
+            putAliasMap(aliasMap, ident, ident);
+        }
+
+        x.getOn().accept(this);
+
+        if (x.getUpdateClause() != null) {
+            x.getUpdateClause().accept(this);
+        }
+
+        if (x.getInsertClause() != null) {
+            x.getInsertClause().accept(this);
+        }
+
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSetStatement x) {
         return false;
     }
 

@@ -77,6 +77,7 @@ public class OdpsExprParser extends SQLExprParser {
             expr = expr();
         }
 
+        String alias = null;
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
 
@@ -88,7 +89,7 @@ public class OdpsExprParser extends SQLExprParser {
                 selectItem.setExpr(expr);
 
                 for (;;) {
-                    String alias = lexer.stringVal();
+                    alias = lexer.stringVal();
                     lexer.nextToken();
 
                     selectItem.getAliasList().add(alias);
@@ -103,10 +104,12 @@ public class OdpsExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
 
                 return selectItem;
+            } else {
+                alias = alias();
             }
+        } else {
+            alias = as();
         }
-
-        final String alias = as();
         
         SQLSelectItem item = new SQLSelectItem(expr, alias);
         

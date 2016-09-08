@@ -16,18 +16,17 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.clause;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
+import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
+import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBlockStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 
 /**
  * 
- * @Description: MySql procedure statement type
- * @author zz email:455910092@qq.com
- * @date 2015-9-14
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public enum MySqlStatementType {
 	//select statement
@@ -40,10 +39,12 @@ public enum MySqlStatementType {
 	DELETE(MySqlDeleteStatement.class.getName()),
 	//while statement
 	WHILE(MySqlWhileStatement.class.getName()),
-	//if statement
-	IF(MySqlIfStatement.class.getName()),
 	//begin-end
-	BLOCK(MySqlBlockStatement.class.getName()),
+	IF(SQLIfStatement.class.getName()),
+	//begin-end
+	LOOP(SQLLoopStatement.class.getName()),
+	//begin-end
+	BLOCK(SQLBlockStatement.class.getName()),
 	//declare statement
 	DECLARE(MySqlDeclareStatement.class.getName()),
 	//select into

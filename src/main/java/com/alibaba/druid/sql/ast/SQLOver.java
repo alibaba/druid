@@ -25,6 +25,9 @@ public class SQLOver extends SQLObjectImpl {
     protected final List<SQLExpr> partitionBy = new ArrayList<SQLExpr>();
     protected SQLOrderBy          orderBy;
 
+    // for db2
+    protected SQLExpr             of;
+
     public SQLOver(){
 
     }
@@ -38,6 +41,7 @@ public class SQLOver extends SQLObjectImpl {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.partitionBy);
             acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.of);
         }
         visitor.endVisit(this);
     }
@@ -51,6 +55,17 @@ public class SQLOver extends SQLObjectImpl {
             orderBy.setParent(this);
         }
         this.orderBy = orderBy;
+    }
+
+    public SQLExpr getOf() {
+        return of;
+    }
+
+    public void setOf(SQLExpr of) {
+        if (of != null) {
+            of.setParent(this);
+        }
+        this.of = of;
     }
 
     public List<SQLExpr> getPartitionBy() {

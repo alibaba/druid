@@ -155,6 +155,10 @@ public abstract class ResourceServlet extends HttpServlet {
                                                                                                 IOException {
 
         String filePath = getFilePath(fileName);
+        
+        if (filePath.endsWith(".html")) {
+            response.setContentType("text/html; charset=utf-8");
+        }
         if (fileName.endsWith(".jpg")) {
             byte[] bytes = Utils.readByteArrayFromResource(filePath);
             if (bytes != null) {

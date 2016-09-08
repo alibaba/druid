@@ -30,8 +30,11 @@ public class MySqlCreateUserStatement extends MySqlStatementImpl {
         return users;
     }
 
-    public void setUsers(List<UserSpecification> users) {
-        this.users = users;
+    public void addUser(UserSpecification user) {
+        if (user != null) {
+            user.setParent(this);
+        }
+        this.users.add(user);
     }
 
     @Override

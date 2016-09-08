@@ -55,7 +55,7 @@ import java.util.Properties;
 /**
  * 提供JdbcFilter的基本实现，使得实现一个JdbcFilter更容易。
  * 
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public abstract class FilterAdapter extends NotificationBroadcasterSupport implements Filter {
 

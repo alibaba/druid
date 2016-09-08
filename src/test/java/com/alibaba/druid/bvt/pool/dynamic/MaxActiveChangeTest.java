@@ -33,7 +33,7 @@ public class MaxActiveChangeTest extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setMaxActive(3);
-        dataSource.setMinIdle(1);
+        dataSource.setMinIdle(2);
         dataSource.setMinEvictableIdleTimeMillis(1000 * 60 * 5);
         dataSource.setMaxWait(20);
         dataSource.init();
@@ -61,44 +61,45 @@ public class MaxActiveChangeTest extends TestCase {
             Assert.assertEquals(3, dataSource.getPoolingCount());
         }
 
-        dataSource.setMaxActive(4);
+        dataSource.setMaxActive(5);
 
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(4, connect(4));
-            Assert.assertEquals(4, dataSource.getPoolingCount());
+            Assert.assertEquals(5, connect(5));
+            Assert.assertEquals(5, dataSource.getPoolingCount());
         }
 
         dataSource.shrink();
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        Assert.assertEquals(2, dataSource.getPoolingCount());
 
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(4, connect(4));
-            Assert.assertEquals(4, dataSource.getPoolingCount());
+            Assert.assertEquals(5, connect(5));
+            Assert.assertEquals(5, dataSource.getPoolingCount());
         }
 
-        Assert.assertEquals(4, dataSource.getPoolingCount());
+        Assert.assertEquals(5, dataSource.getPoolingCount());
         dataSource.setMaxActive(3);
 
-        Assert.assertEquals(4, dataSource.getPoolingCount());
+        Assert.assertEquals(5, dataSource.getPoolingCount());
 
         dataSource.shrink();
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        Assert.assertEquals(2, dataSource.getPoolingCount());
 
         // 确保收缩之后不会再长上去
         for (int i = 0; i < 10; ++i) {
-            Assert.assertEquals(3, connect(4));
+            Assert.assertEquals(3, connect(5));
             Assert.assertEquals(3, dataSource.getPoolingCount());
         }
 
         dataSource.setMaxActive(2);
         dataSource.shrink();
-        Assert.assertEquals(1, dataSource.getPoolingCount());
+        Assert.assertEquals(2, dataSource.getPoolingCount());
 
         for (int i = 0; i < 10; ++i) {
             Assert.assertEquals(2, connect(3));
             Assert.assertEquals(2, dataSource.getPoolingCount());
         }
 
+        dataSource.setMinIdle(1);
         dataSource.setMaxActive(1);
         dataSource.shrink();
         Assert.assertEquals(1, dataSource.getPoolingCount());

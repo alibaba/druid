@@ -38,8 +38,11 @@ public class SQLDropUserStatement extends SQLStatementImpl implements SQLDDLStat
         return users;
     }
 
-    public void setUsers(List<SQLExpr> users) {
-        this.users = users;
+    public void addUser(SQLExpr user) {
+        if (user != null) {
+            user.setParent(this);
+        }
+        this.users.add(user);
     }
 
     protected void accept0(SQLASTVisitor visitor) {

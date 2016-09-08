@@ -42,6 +42,7 @@ public class OracleSchemaStatVisitorTest1 extends TestCase {
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
+        System.out.println("relationShip : " + visitor.getRelationships());
 
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
@@ -52,6 +53,9 @@ public class OracleSchemaStatVisitorTest1 extends TestCase {
         Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
         Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "id")));
         Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "name")));
+
+        Assert.assertEquals(1, visitor.getRelationships().size());
+        Assert.assertEquals("users.groupId = usergroups.id", visitor.getRelationships().iterator().next().toString());
 
     }
 

@@ -24,10 +24,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.ast.SQLExpr;
 /**
  * 
- * @Description: MySql procedure select into statement
- * @author zz email:455910092@qq.com
- * @date 2015-9-14
- * @version V1.0
+ * @author zz [455910092@qq.com]
  */
 public class MySqlSelectIntoStatement extends MySqlStatementImpl{
 

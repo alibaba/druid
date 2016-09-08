@@ -43,7 +43,7 @@ import java.util.Map;
 import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class PreparedStatementProxyImpl extends StatementProxyImpl implements PreparedStatementProxy {
 

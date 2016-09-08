@@ -26,5 +26,6 @@ public class Bug_for_alibank extends TestCase {
         System.out.println(jsonStrz);
         Object o = JSONUtils.parse(jsonStrz.replaceAll("\\\\", ""));
         System.out.println(JSONUtils.toJSONString(o));
+        System.out.println(System.getProperty("java.vendor"));
     }
 }

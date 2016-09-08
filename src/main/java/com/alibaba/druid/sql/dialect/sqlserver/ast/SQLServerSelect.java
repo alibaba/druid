@@ -27,6 +27,7 @@ public class SQLServerSelect extends SQLSelect implements SQLServerObject {
 
     private boolean      forBrowse;
     private List<String> forXmlOptions = new ArrayList<String>(4);
+    private SQLExpr      xmlPath;
 
     private SQLExpr      rowCount;
     private SQLExpr      offset;
@@ -68,6 +69,17 @@ public class SQLServerSelect extends SQLSelect implements SQLServerObject {
             offset.setParent(this);
         }
         this.offset = offset;
+    }
+    
+    public SQLExpr getXmlPath() {
+        return xmlPath;
+    }
+
+    public void setXmlPath(SQLExpr xmlPath) {
+        if (xmlPath != null) {
+            xmlPath.setParent(this);
+        }
+        this.xmlPath = xmlPath;
     }
 
     @Override
