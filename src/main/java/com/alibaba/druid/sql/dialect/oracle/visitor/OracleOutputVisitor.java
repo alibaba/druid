@@ -28,24 +28,8 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
-import com.alibaba.druid.sql.ast.statement.SQLCheck;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
-import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -264,25 +248,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleDeleteStatement x) {
-        if (x.getTableName() != null) {
-            print0(ucase ? "DELETE " : "delete ");
-            
-            if (x.getHints().size() > 0) {
-                printAndAccept(x.getHints(), ", ");
-                print(' ');
-            }
+        print0(ucase ? "DELETE " : "delete ");
 
-            print0(ucase ? "FROM " : "from ");
-            if (x.isOnly()) {
-                print0(ucase ? "ONLY (" : "only (");
-                x.getTableName().accept(this);
-                print(')');
-            } else {
-                x.getTableName().accept(this);
-            }
+        SQLTableSource tableSource = x.getTableSource();
 
-            printAlias(x.getAlias());
+        if (x.getHints().size() > 0) {
+            printAndAccept(x.getHints(), ", ");
+            print(' ');
         }
+
+        print0(ucase ? "FROM " : "from ");
+        if (x.isOnly()) {
+            print0(ucase ? "ONLY (" : "only (");
+            x.getTableName().accept(this);
+            print(')');
+        } else {
+            x.getTableSource().accept(this);
+        }
+
+        printAlias(x.getAlias());
+
 
         if (x.getWhere() != null) {
             println();

@@ -1232,6 +1232,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             putAliasMap(this.aliasMap, x.getAlias(), tableName);
         }
 
+        if (x.getTableSource() instanceof SQLSubqueryTableSource) {
+            SQLSelectQuery selectQuery = ((SQLSubqueryTableSource) x.getTableSource()).getSelect().getQuery();
+            if (selectQuery instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock subQueryBlock = ((SQLSelectQueryBlock) selectQuery);
+                subQueryBlock.getWhere().accept(this);
+            }
+        }
+
         TableStat stat = getTableStat(tableName);
         stat.incrementDeleteCount();
 
