@@ -255,8 +255,13 @@ public class MySqlLexer extends Lexer {
 
                 if (!isIdentifierChar(ch)) {
                     if (ch == '-' && pos < text.length() - 1) {
+                        if (mark > 0 && text.charAt(mark - 1) == '.') {
+                            break;
+                        }
+
                         char next_char = text.charAt(pos + 1);
                         if (isIdentifierChar(next_char)) {
+                            bufPos++;
                             continue;
                         }
                     }
