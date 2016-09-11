@@ -326,11 +326,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         return super.visit(x);
     }
 
-    public boolean visit(SQLMethodInvokeExpr x) {
-        accept(x.getParameters());
-        return false;
-    }
-
     public boolean visit(SQLIdentifierExpr x) {
         if ("ROWNUM".equalsIgnoreCase(x.getName())) {
             return false;

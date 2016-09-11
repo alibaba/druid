@@ -137,6 +137,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     protected final List<Column>                       orderByColumns = new ArrayList<Column>();
     protected final Set<Column>                        groupByColumns = new LinkedHashSet<Column>();
     protected final List<SQLAggregateExpr>             aggregateFunctions = new ArrayList<SQLAggregateExpr>();
+    protected final List<SQLMethodInvokeExpr>          functions          = new ArrayList<SQLMethodInvokeExpr>(2);
 
     protected final Map<String, SQLObject> subQueryMap = new LinkedHashMap<String, SQLObject>();
 
@@ -1191,6 +1192,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
+        this.functions.add(x);
+
         accept(x.getParameters());
         return false;
     }
@@ -1752,4 +1755,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    public List<SQLMethodInvokeExpr> getFunctions() {
+        return this.functions;
+    }
 }
