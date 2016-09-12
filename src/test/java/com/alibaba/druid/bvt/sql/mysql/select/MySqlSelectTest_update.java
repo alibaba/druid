@@ -15,19 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.select;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import org.junit.Assert;
+
+import java.util.List;
 
 public class MySqlSelectTest_update extends MysqlTest {
 
@@ -41,8 +36,6 @@ public class MySqlSelectTest_update extends MysqlTest {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-
-        MySqlUpdateStatement updateStmt = (MySqlUpdateStatement) stmt;
 
         print(statementList);
 
