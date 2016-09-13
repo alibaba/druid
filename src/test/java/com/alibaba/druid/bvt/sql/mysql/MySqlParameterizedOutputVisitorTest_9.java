@@ -1,13 +1,11 @@
 package com.alibaba.druid.bvt.sql.mysql;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 import org.junit.Assert;
