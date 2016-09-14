@@ -280,6 +280,8 @@ public enum Token {
     
     CONCAT("CONCAT"), // DB2
 
+    UPSERT("UPSERT"), // Phoenix
+
     LPAREN("("), 
     RPAREN(")"), 
     LBRACE("{"), 

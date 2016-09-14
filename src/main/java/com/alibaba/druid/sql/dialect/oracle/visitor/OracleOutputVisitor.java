@@ -94,7 +94,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
@@ -2565,63 +2564,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? " PURGE SNAPSHOT LOG" : " purge snapshot log");
         }
         return false;
-    }
-
-    @Override
-    public boolean visit(OracleCreateSequenceStatement x) {
-        print0(ucase ? "CREATE SEQUENCE " : "create sequence ");
-        x.getName().accept(this);
-
-        if (x.getStartWith() != null) {
-            print0(ucase ? " START WITH " : " start with ");
-            x.getStartWith().accept(this);
-        }
-
-        if (x.getIncrementBy() != null) {
-            print0(ucase ? " INCREMENT BY " : " increment by ");
-            x.getIncrementBy().accept(this);
-        }
-
-        if (x.getMaxValue() != null) {
-            print0(ucase ? " MAXVALUE " : " maxvalue ");
-            x.getMaxValue().accept(this);
-        }
-
-        if (x.isNoMaxValue()) {
-            print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
-        }
-
-        if (x.getMinValue() != null) {
-            print0(ucase ? " MINVALUE " : " minvalue ");
-            x.getMinValue().accept(this);
-        }
-
-        if (x.isNoMinValue()) {
-            print0(ucase ? " NOMINVALUE" : " nominvalue");
-        }
-
-        if (x.getCycle() != null) {
-            if (x.getCycle().booleanValue()) {
-                print0(ucase ? " CYCLE" : " cycle");
-            } else {
-                print0(ucase ? " NOCYCLE" : " nocycle");
-            }
-        }
-
-        if (x.getCache() != null) {
-            if (x.getCache().booleanValue()) {
-                print0(ucase ? " CACHE" : " cache");
-            } else {
-                print0(ucase ? " NOCACHE" : " nocache");
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateSequenceStatement x) {
-
     }
 
     @Override

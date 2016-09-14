@@ -99,6 +99,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import org.apache.ibatis.jdbc.SQL;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -418,11 +419,29 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.token() == Token.UPSERT || identifierEquals("UPSERT")) {
+                SQLStatement stmt = parseUpsert();
+                statementList.add(stmt);
+                continue;
+            }
+
             // throw new ParserException("syntax error, " + lexer.token() + " "
             // + lexer.stringVal() + ", pos "
             // + lexer.pos());
             printError(lexer.token());
         }
+    }
+
+    public SQLStatement parseUpsert() {
+        SQLInsertStatement insertStatement = new SQLInsertStatement();
+
+        if (lexer.token() == Token.UPSERT || identifierEquals("UPSERT")) {
+            lexer.nextToken();
+            insertStatement.setUpsert(true);
+        }
+
+        parseInsert0(insertStatement);
+        return insertStatement;
     }
 
     public SQLRollbackStatement parseRollback() {

@@ -51,7 +51,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
@@ -1439,14 +1438,15 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleCreateSequenceStatement parseCreateSequence(boolean acceptCreate) {
+    public SQLCreateSequenceStatement parseCreateSequence(boolean acceptCreate) {
         if (acceptCreate) {
             accept(Token.CREATE);
         }
 
         accept(Token.SEQUENCE);
 
-        OracleCreateSequenceStatement stmt = new OracleCreateSequenceStatement();
+        SQLCreateSequenceStatement stmt = new SQLCreateSequenceStatement();
+        stmt.setDbType(JdbcConstants.ORACLE);
         stmt.setName(this.exprParser.name());
 
         for (;;) {

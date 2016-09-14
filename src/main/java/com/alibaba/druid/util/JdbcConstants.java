@@ -83,4 +83,7 @@ public interface JdbcConstants {
      */
     public static final String LOG4JDBC          = "log4jdbc";
     public static final String LOG4JDBC_DRIVER   = "net.sf.log4jdbc.DriverSpy";
+
+    public static final String PHOENIX           = "phoenix";
+    public static final String PHOENIX_DRIVER    = "org.apache.phoenix.jdbc.PhoenixDriver";
 }

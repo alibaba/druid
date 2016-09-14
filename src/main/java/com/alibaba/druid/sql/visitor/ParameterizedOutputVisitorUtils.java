@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
+import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerParameterizedOutputVisitor;
@@ -100,6 +101,10 @@ public class ParameterizedOutputVisitorUtils {
 
         if (JdbcUtils.DB2.equals(dbType)) {
             return new DB2ParameterizedOutputVisitor(out);
+        }
+
+        if (JdbcUtils.PHOENIX.equals(dbType)) {
+            return new PhoenixParameterizedOutputVisitor(out);
         }
 
         return new ParameterizedOutputVisitor(out);

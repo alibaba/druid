@@ -442,6 +442,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.HIVE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hive2:")) {
             return JdbcConstants.HIVE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:phoenix:thin:")) {
+            return "org.apache.phoenix.queryserver.client.Driver";
+        } else if (rawUrl.startsWith("jdbc:phoenix://")) {
+            return JdbcConstants.PHOENIX_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -523,6 +527,8 @@ public final class JdbcUtils implements JdbcConstants {
             return HIVE;
         } else if (rawUrl.startsWith("jdbc:hive2:")) {
             return HIVE;
+        } else if (rawUrl.startsWith("jdbc:phoenix:")) {
+            return PHOENIX;
         } else {
             return null;
         }

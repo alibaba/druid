@@ -1058,7 +1058,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLInsertStatement x) {
-        print0(ucase ? "INSERT INTO " : "insert into ");
+        if (x.isUpsert()) {
+            print0(ucase ? "UPSERT INTO " : "upsert into ");
+        } else {
+            print0(ucase ? "INSERT INTO " : "insert into ");
+        }
 
         x.getTableSource().accept(this);
 
@@ -3231,5 +3235,57 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         return false;
-    }    
+    }
+
+    @Override
+    public boolean visit(SQLCreateSequenceStatement x) {
+        print0(ucase ? "CREATE SEQUENCE " : "create sequence ");
+        x.getName().accept(this);
+
+        if (x.getStartWith() != null) {
+            print0(ucase ? " START WITH " : " start with ");
+            x.getStartWith().accept(this);
+        }
+
+        if (x.getIncrementBy() != null) {
+            print0(ucase ? " INCREMENT BY " : " increment by ");
+            x.getIncrementBy().accept(this);
+        }
+
+        if (x.getMaxValue() != null) {
+            print0(ucase ? " MAXVALUE " : " maxvalue ");
+            x.getMaxValue().accept(this);
+        }
+
+        if (x.isNoMaxValue()) {
+            print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
+        }
+
+        if (x.getMinValue() != null) {
+            print0(ucase ? " MINVALUE " : " minvalue ");
+            x.getMinValue().accept(this);
+        }
+
+        if (x.isNoMinValue()) {
+            print0(ucase ? " NOMINVALUE" : " nominvalue");
+        }
+
+        if (x.getCycle() != null) {
+            if (x.getCycle().booleanValue()) {
+                print0(ucase ? " CYCLE" : " cycle");
+            } else {
+                print0(ucase ? " NOCYCLE" : " nocycle");
+            }
+        }
+
+        if (x.getCache() != null) {
+            if (x.getCache().booleanValue()) {
+                print0(ucase ? " CACHE" : " cache");
+            } else {
+                print0(ucase ? " NOCACHE" : " nocache");
+            }
+        }
+
+        return false;
+    }
 }
