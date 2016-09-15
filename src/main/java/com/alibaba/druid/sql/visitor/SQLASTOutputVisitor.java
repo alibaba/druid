@@ -1077,7 +1077,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
                     }
                     print0(", ");
                 }
-                x.getColumns().get(i).accept(this);
+
+                SQLExpr column = x.getColumns().get(i);
+                column.accept(this);
+
+                String dataType = (String) column.getAttribute("dataType");
+                if (dataType != null) {
+                    print(' ');
+                    print(dataType);
+                }
             }
             print(')');
             decrementIndent();

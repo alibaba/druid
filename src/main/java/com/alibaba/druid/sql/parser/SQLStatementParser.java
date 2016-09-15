@@ -1547,7 +1547,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
-            this.exprParser.exprList(insertStatement.getColumns(), insertStatement);
+            parseInsertColumns(insertStatement);
             accept(Token.RPAREN);
         }
 
@@ -1571,6 +1571,10 @@ public class SQLStatementParser extends SQLParser {
             SQLSelect select = this.createSQLSelectParser().select();
             insertStatement.setQuery(select);
         }
+    }
+
+    protected void parseInsertColumns(SQLInsertInto insert) {
+        this.exprParser.exprList(insert.getColumns(), insert);
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
