@@ -1934,6 +1934,12 @@ public class SQLStatementParser extends SQLParser {
             SQLName tableName = exprParser.name();
 
             deleteStatement.setTableName(tableName);
+
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
+                deleteStatement.setFrom(tableSource);
+            }
         }
 
         if (lexer.token() == (Token.WHERE)) {

@@ -1035,9 +1035,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLDeleteStatement x) {
-        print0(ucase ? "DELETE FROM " : "delete from ");
+        SQLTableSource from = x.getFrom();
 
-        x.getTableName().accept(this);
+        if (from == null) {
+            print0(ucase ? "DELETE FROM " : "delete from ");
+            x.getTableName().accept(this);
+        } else {
+            print0(ucase ? "DELETE " : "delete ");
+            x.getTableName().accept(this);
+            print0(ucase ? " FROM " : " from ");
+            from.accept(this);
+        }
 
         if (x.getWhere() != null) {
             println();

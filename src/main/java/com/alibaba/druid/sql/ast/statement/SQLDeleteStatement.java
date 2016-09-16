@@ -25,6 +25,7 @@ public class SQLDeleteStatement extends SQLStatementImpl {
 
     protected SQLTableSource tableSource;
     protected SQLExpr        where;
+    protected SQLTableSource from;
 
     public SQLDeleteStatement(){
 
@@ -110,4 +111,14 @@ public class SQLDeleteStatement extends SQLStatementImpl {
         visitor.endVisit(this);
     }
 
+    public SQLTableSource getFrom() {
+        return from;
+    }
+
+    public void setFrom(SQLTableSource from) {
+        if (from != null) {
+            from.setParent(this);
+        }
+        this.from = from;
+    }
 }

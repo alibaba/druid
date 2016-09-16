@@ -34,7 +34,6 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
     private boolean              quick       = false;
     private boolean              ignore      = false;
 
-    private SQLTableSource       from;
     private SQLTableSource       using;
     private SQLOrderBy           orderBy;
     private Limit                limit;
@@ -84,20 +83,12 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         this.ignore = ignore;
     }
 
-    public SQLTableSource getFrom() {
-        return from;
-    }
-
     public SQLTableSource getUsing() {
         return using;
     }
 
     public void setUsing(SQLTableSource using) {
         this.using = using;
-    }
-
-    public void setFrom(SQLTableSource from) {
-        this.from = from;
     }
 
     public SQLOrderBy getOrderBy() {

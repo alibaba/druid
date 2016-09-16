@@ -330,7 +330,8 @@ public class SQLSelectParser extends SQLParser {
                 groupBy.setWithRollUp(true);
             }
             
-            if(JdbcConstants.MYSQL.equals(getDbType()) && lexer.token() == Token.DESC) {
+            if(JdbcConstants.MYSQL.equals(getDbType())
+                    && lexer.token() == Token.DESC) {
                 lexer.nextToken(); // skip
             }
 
