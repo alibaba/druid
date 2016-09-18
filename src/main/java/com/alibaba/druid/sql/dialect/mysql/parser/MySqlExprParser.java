@@ -801,7 +801,15 @@ public class MySqlExprParser extends SQLExprParser {
 
         accept(Token.LPAREN);
         for (;;) {
-            unique.addColumn(this.expr());
+            SQLExpr column = this.expr();
+            if (lexer.token() == Token.ASC) {
+                column = new MySqlOrderingExpr(column, SQLOrderingSpecification.ASC);
+                lexer.nextToken();
+            } else if (lexer.token() == Token.DESC) {
+                column = new MySqlOrderingExpr(column, SQLOrderingSpecification.DESC);
+                lexer.nextToken();
+            }
+            unique.addColumn(column);
             if (!(lexer.token() == (Token.COMMA))) {
                 break;
             } else {
