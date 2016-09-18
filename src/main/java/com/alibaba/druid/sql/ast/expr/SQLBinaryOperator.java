@@ -53,7 +53,11 @@ public enum SQLBinaryOperator {
     LessThanOrGreater("<>", 110), 
     
     Like("LIKE", 110),
-    NotLike("NOT LIKE", 110), 
+    NotLike("NOT LIKE", 110),
+
+    ILike("ILIKE", 110),
+    NotILike("NOT ILIKE", 110),
+    AT_AT("@@", 110), // postgresql textsearch
     
     RLike("RLIKE", 110),
     NotRLike("NOT RLIKE", 110),

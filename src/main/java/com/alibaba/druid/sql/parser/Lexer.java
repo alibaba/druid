@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
 /**
@@ -83,6 +84,8 @@ public class Lexer {
     protected int            line         = 0;
     
     protected int            lines        = 0;
+
+    protected String         dbType;
 
     public Lexer(String input){
         this(input, null);
@@ -984,6 +987,12 @@ public class Lexer {
         char ch;
 
         if (charAt(pos + 1) == '@') {
+            if (JdbcConstants.POSTGRESQL.equalsIgnoreCase(dbType)) {
+                pos += 2;
+                token = Token.MONKEYS_AT_AT;
+                this.ch = charAt(++pos);
+                return;
+            }
             ch = charAt(++pos);
 
             bufPos++;

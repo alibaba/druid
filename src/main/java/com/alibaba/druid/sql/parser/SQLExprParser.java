@@ -1456,6 +1456,20 @@ public class SQLExprParser extends SQLParser {
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.RLike, rightExp, getDbType());
+        } else if (lexer.token() == Token.ILIKE) {
+            lexer.nextToken();
+            rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.ILike, rightExp, getDbType());
+        } else if (lexer.token() == Token.MONKEYS_AT_AT) {
+            lexer.nextToken();
+            rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.AT_AT, rightExp, getDbType());
         } else if (lexer.token() == (Token.NOT)) {
             lexer.nextToken();
             expr = notRationalRest(expr);
@@ -1536,6 +1550,13 @@ public class SQLExprParser extends SQLParser {
             rightExp = relationalRest(rightExp);
 
             return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotRLike, rightExp, getDbType());
+        } else if (lexer.token() == Token.ILIKE) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+
+            rightExp = relationalRest(rightExp);
+
+            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotILike, rightExp, getDbType());
         } else {
             throw new ParserException("TODO " + lexer.token());
         }

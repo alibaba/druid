@@ -169,8 +169,9 @@ public enum Token {
     RETURNING("RETURNING"),
     COMMENT("COMMENT"),
     OVER("OVER"),
-    TYPE("TYPE"), 
-    
+    TYPE("TYPE"),
+    ILIKE("ILIKE"),
+
     // oracle
     START("START"),
     PRIOR("PRIOR"),
@@ -328,6 +329,7 @@ public enum Token {
     LTLT("<<"), 
     GTGT(">>"),
     MONKEYS_AT("@"),
+    MONKEYS_AT_AT("@@"),
     POUND("#"),
     POUNDGT("#>"),
     POUNDGTGT("#>>")
