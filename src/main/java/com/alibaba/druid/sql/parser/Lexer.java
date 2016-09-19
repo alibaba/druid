@@ -226,6 +226,10 @@ public class Lexer {
         return token;
     }
 
+    public final String getDbType() {
+        return this.dbType;
+    }
+
     public String info() {
         return this.token + " " + this.stringVal();
     }

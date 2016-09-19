@@ -1492,6 +1492,16 @@ public class SQLExprParser extends SQLParser {
             }
         } else if (lexer.token() == Token.IN) {
             expr = inRest(expr);
+        } else if (JdbcConstants.POSTGRESQL.equals(lexer.dbType)
+                && identifierEquals("SIMILAR")) {
+            lexer.nextToken();
+            accept(Token.TO);
+
+            rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SIMILAR_TO, rightExp, getDbType());
         }
 
         return expr;
