@@ -1492,16 +1492,49 @@ public class SQLExprParser extends SQLParser {
             }
         } else if (lexer.token() == Token.IN) {
             expr = inRest(expr);
-        } else if (JdbcConstants.POSTGRESQL.equals(lexer.dbType)
-                && identifierEquals("SIMILAR")) {
-            lexer.nextToken();
-            accept(Token.TO);
+        } else if (JdbcConstants.POSTGRESQL.equals(lexer.dbType)) {
+            if (identifierEquals("SIMILAR")) {
+                lexer.nextToken();
+                accept(Token.TO);
 
-            rightExp = equality();
+                rightExp = equality();
 
-            rightExp = relationalRest(rightExp);
+                rightExp = relationalRest(rightExp);
 
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SIMILAR_TO, rightExp, getDbType());
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SIMILAR_TO, rightExp, getDbType());
+            } else if (lexer.token() == Token.TILDE) {
+                lexer.nextToken();
+
+                rightExp = equality();
+
+                rightExp = relationalRest(rightExp);
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.POSIX_Regular_Match, rightExp, getDbType());
+            } else if (lexer.token() == Token.TILDE_STAR) {
+                lexer.nextToken();
+
+                rightExp = equality();
+
+                rightExp = relationalRest(rightExp);
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.POSIX_Regular_Match_Insensitive, rightExp, getDbType());
+            } else if (lexer.token() == Token.BANG_TILDE) {
+                lexer.nextToken();
+
+                rightExp = equality();
+
+                rightExp = relationalRest(rightExp);
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.POSIX_Regular_Not_Match, rightExp, getDbType());
+            } else if (lexer.token() == Token.BANG_TILDE_STAR) {
+                lexer.nextToken();
+
+                rightExp = equality();
+
+                rightExp = relationalRest(rightExp);
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.POSIX_Regular_Not_Match_POSIX_Regular_Match_Insensitive, rightExp, getDbType());
+            }
         }
 
         return expr;

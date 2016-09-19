@@ -626,6 +626,14 @@ public class Lexer {
                 } else if (ch == '!') {
                     scanChar();
                     token = Token.BANGBANG; // postsql
+                } else if (ch == '~') {
+                    scanChar();
+                    if (ch == '*') {
+                        scanChar();
+                        token = Token.BANG_TILDE_STAR; // postsql
+                    } else {
+                        token = Token.BANG_TILDE; // postsql
+                    }
                 } else {
                     token = Token.BANG;
                 }
@@ -636,7 +644,12 @@ public class Lexer {
                 break;
             case '~':
                 scanChar();
-                token = Token.TILDE;
+                if (ch == '*') {
+                    scanChar();
+                    token = Token.TILDE_STAR;
+                } else {
+                    token = Token.TILDE;
+                }
                 break;
             default:
                 throw new ParserException("TODO");
