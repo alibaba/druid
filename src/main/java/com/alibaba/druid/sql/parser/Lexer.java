@@ -608,6 +608,9 @@ public class Lexer {
                 } else if (ch == '<') {
                     scanChar();
                     token = Token.LTLT;
+                } else if (ch == '@') {
+                    scanChar();
+                    token = Token.LT_MONKEYS_AT;
                 } else {
                     token = Token.LT;
                 }
@@ -1003,7 +1006,8 @@ public class Lexer {
         bufPos = 1;
         char ch;
 
-        if (charAt(pos + 1) == '@') {
+        final char c1 = charAt(pos + 1);
+        if (c1 == '@') {
             if (JdbcConstants.POSTGRESQL.equalsIgnoreCase(dbType)) {
                 pos += 2;
                 token = Token.MONKEYS_AT_AT;
@@ -1013,7 +1017,12 @@ public class Lexer {
             ch = charAt(++pos);
 
             bufPos++;
-        } else if (charAt(pos + 1) == '{') {
+        } else if (c1 == '>' && JdbcConstants.POSTGRESQL.equalsIgnoreCase(dbType)) {
+            pos += 2;
+            token = Token.MONKEYS_AT_GT;
+            this.ch = charAt(++pos);
+            return;
+        } else if (c1 == '{') {
             pos++;
             bufPos++;
             

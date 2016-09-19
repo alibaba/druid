@@ -335,7 +335,9 @@ public enum Token {
     MONKEYS_AT_AT("@@"),
     POUND("#"),
     POUNDGT("#>"),
-    POUNDGTGT("#>>")
+    POUNDGTGT("#>>"),
+    MONKEYS_AT_GT("@>"),
+    LT_MONKEYS_AT("<@"),
     ;
 
     public final String name;

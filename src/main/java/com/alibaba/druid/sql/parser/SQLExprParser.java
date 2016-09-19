@@ -1299,7 +1299,8 @@ public class SQLExprParser extends SQLParser {
 
     public SQLExpr andRest(SQLExpr expr) {
         for (;;) {
-            if (lexer.token() == Token.AND || lexer.token() == Token.AMPAMP) {
+            Token token = lexer.token();
+            if (token == Token.AND || token == Token.AMPAMP) {
                 if (lexer.isKeepComments() && lexer.hasComment()) {
                     expr.addAfterComment(lexer.readAndResetComments());
                 }
@@ -1308,7 +1309,11 @@ public class SQLExprParser extends SQLParser {
 
                 SQLExpr rightExp = relational();
 
-                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanAnd, rightExp, getDbType());
+                SQLBinaryOperator operator = token == Token.AMPAMP && JdbcConstants.POSTGRESQL.equals(getDbType()) ?
+                        SQLBinaryOperator.PG_And
+                        : SQLBinaryOperator.BooleanAnd;
+
+                expr = new SQLBinaryOpExpr(expr, operator, rightExp, getDbType());
             } else {
                 break;
             }
@@ -1451,6 +1456,20 @@ public class SQLExprParser extends SQLParser {
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.AT_AT, rightExp, getDbType());
+        } else if (lexer.token() == Token.MONKEYS_AT_GT) {
+            lexer.nextToken();
+            rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Array_Contains, rightExp, getDbType());
+        } else if (lexer.token() == Token.LT_MONKEYS_AT) {
+            lexer.nextToken();
+            rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Array_ContainedBy, rightExp, getDbType());
         } else if (lexer.token() == (Token.NOT)) {
             lexer.nextToken();
             expr = notRationalRest(expr);

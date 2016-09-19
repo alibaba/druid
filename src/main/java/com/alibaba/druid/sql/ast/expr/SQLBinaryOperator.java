@@ -63,6 +63,8 @@ public enum SQLBinaryOperator {
     POSIX_Regular_Match_Insensitive("~*", 110),
     POSIX_Regular_Not_Match("!~", 110),
     POSIX_Regular_Not_Match_POSIX_Regular_Match_Insensitive("!~*", 110),
+    Array_Contains("@>", 110),
+    Array_ContainedBy("<@", 110),
     
     RLike("RLIKE", 110),
     NotRLike("NOT RLIKE", 110),
@@ -82,7 +84,9 @@ public enum SQLBinaryOperator {
     BooleanAnd("AND", 140), 
     BooleanXor("XOR", 150), 
     BooleanOr("OR", 160), 
-    Assignment(":=", 169)    
+    Assignment(":=", 169),
+
+    PG_And("&&", 140),
     ;
 
     public static int getPriority(SQLBinaryOperator operator) {
