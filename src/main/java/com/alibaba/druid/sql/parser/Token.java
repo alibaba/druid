@@ -303,6 +303,7 @@ public enum Token {
     BANG_TILDE_STAR("!~*"),
     TILDE("~"),
     TILDE_STAR("~*"),
+    TILDE_EQ("~="),
     QUES("?"), 
     COLON(":"), 
     COLONCOLON(":"), 

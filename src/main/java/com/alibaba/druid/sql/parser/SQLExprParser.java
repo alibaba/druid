@@ -51,6 +51,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLExprParser extends SQLParser {
@@ -1534,6 +1535,14 @@ public class SQLExprParser extends SQLParser {
                 rightExp = relationalRest(rightExp);
 
                 expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.POSIX_Regular_Not_Match_POSIX_Regular_Match_Insensitive, rightExp, getDbType());
+            } else if (lexer.token() == Token.TILDE_EQ) {
+                lexer.nextToken();
+
+                rightExp = equality();
+
+                rightExp = relationalRest(rightExp);
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SAME_AS, rightExp, getDbType());
             }
         }
 

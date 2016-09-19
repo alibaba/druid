@@ -650,6 +650,9 @@ public class Lexer {
                 if (ch == '*') {
                     scanChar();
                     token = Token.TILDE_STAR;
+                } else if (ch == '=') {
+                    scanChar();
+                    token = Token.TILDE_EQ; // postsql
                 } else {
                     token = Token.TILDE;
                 }

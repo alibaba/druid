@@ -65,6 +65,7 @@ public enum SQLBinaryOperator {
     POSIX_Regular_Not_Match_POSIX_Regular_Match_Insensitive("!~*", 110),
     Array_Contains("@>", 110),
     Array_ContainedBy("<@", 110),
+    SAME_AS("~=", 110),
     
     RLike("RLIKE", 110),
     NotRLike("NOT RLIKE", 110),
