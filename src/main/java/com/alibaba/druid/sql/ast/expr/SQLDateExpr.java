@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.expr;
+package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleDateExpr extends SQLExprImpl implements SQLLiteralExpr, OracleExpr {
+public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     private String literal;
 
-    public OracleDateExpr(){
+    public SQLDateExpr(){
 
     }
 
@@ -38,10 +38,6 @@ public class OracleDateExpr extends SQLExprImpl implements SQLLiteralExpr, Oracl
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
-    }
-
-    public void accept0(OracleASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
     }
@@ -65,7 +61,7 @@ public class OracleDateExpr extends SQLExprImpl implements SQLLiteralExpr, Oracl
         if (getClass() != obj.getClass()) {
             return false;
         }
-        OracleDateExpr other = (OracleDateExpr) obj;
+        SQLDateExpr other = (SQLDateExpr) obj;
         if (literal == null) {
             if (other.literal != null) {
                 return false;

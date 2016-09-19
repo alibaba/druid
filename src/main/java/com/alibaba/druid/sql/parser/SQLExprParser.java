@@ -30,40 +30,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.SQLPartitionValue;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
-import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
-import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
-import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
-import com.alibaba.druid.sql.ast.expr.SQLGroupingSetExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
-import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
@@ -252,8 +219,22 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLIdentifierExpr("INSERT");
                 break;
             case IDENTIFIER:
-                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                String ident = lexer.stringVal();
                 lexer.nextToken();
+
+                if ("DATE".equalsIgnoreCase(ident)
+                        && lexer.token() == Token.LITERAL_CHARS
+                        && (JdbcConstants.ORACLE.equals(getDbType())
+                            || JdbcConstants.POSTGRESQL.equals(getDbType()))) {
+                    String literal = lexer.stringVal();
+                    lexer.nextToken();
+
+                    SQLDateExpr dateExpr = new SQLDateExpr();
+                    dateExpr.setLiteral(literal);
+                    sqlExpr = dateExpr;
+                } else {
+                    sqlExpr = new SQLIdentifierExpr(ident);
+                }
                 break;
             case NEW:
                 throw new ParserException("TODO");
@@ -2002,12 +1983,27 @@ public class SQLExprParser extends SQLParser {
         SQLExpr expr;
         boolean connectByRoot = false;
         if (lexer.token() == Token.IDENTIFIER) {
-            if (identifierEquals("CONNECT_BY_ROOT")) {
-                connectByRoot = true;
-                lexer.nextToken();
-            }
-            expr = new SQLIdentifierExpr(lexer.stringVal());
+            String ident = lexer.stringVal();
             lexer.nextTokenComma();
+
+            if ("CONNECT_BY_ROOT".equalsIgnoreCase(ident)) {
+                connectByRoot = true;
+                expr = new SQLIdentifierExpr(lexer.stringVal());
+                lexer.nextToken();
+            } else if ("DATE".equalsIgnoreCase(ident)
+                    && lexer.token() == Token.LITERAL_CHARS
+                    && (JdbcConstants.ORACLE.equals(getDbType())
+                    || JdbcConstants.POSTGRESQL.equals(getDbType()))) {
+                String literal = lexer.stringVal();
+                lexer.nextToken();
+
+                SQLDateExpr dateExpr = new SQLDateExpr();
+                dateExpr.setLiteral(literal);
+
+                expr = dateExpr;
+            } else {
+                expr = new SQLIdentifierExpr(ident);
+            }
 
             if (lexer.token() != Token.COMMA) {
                 expr = this.primaryRest(expr);

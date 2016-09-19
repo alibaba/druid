@@ -676,4 +676,7 @@ public interface SQLASTVisitor {
     boolean visit(SQLCreateSequenceStatement x);
 
     void endVisit(SQLCreateSequenceStatement x);
+
+    boolean visit(SQLDateExpr x);
+    void endVisit(SQLDateExpr x);
 }

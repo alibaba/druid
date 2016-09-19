@@ -34,7 +34,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
@@ -100,7 +100,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OraclePLSQLCommitStatement().accept(adapter);
         new OracleAnalytic().accept(adapter);
         new OracleAnalyticWindowing().accept(adapter);
-        new OracleDateExpr().accept(adapter);
+        new SQLDateExpr().accept(adapter);
         new OracleDbLinkExpr().accept(adapter);
         new OracleExtractExpr().accept(adapter);
         new OracleSelectForUpdate().accept(adapter);

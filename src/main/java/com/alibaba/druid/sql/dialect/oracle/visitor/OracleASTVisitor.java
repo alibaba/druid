@@ -36,7 +36,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
@@ -108,7 +108,7 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleAnalyticWindowing x);
 
-    void endVisit(OracleDateExpr x);
+    void endVisit(SQLDateExpr x);
 
     void endVisit(OracleDbLinkExpr x);
 
@@ -146,7 +146,7 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     boolean visit(OracleAnalyticWindowing x);
 
-    boolean visit(OracleDateExpr x);
+    boolean visit(SQLDateExpr x);
 
     boolean visit(OracleDbLinkExpr x);
 
