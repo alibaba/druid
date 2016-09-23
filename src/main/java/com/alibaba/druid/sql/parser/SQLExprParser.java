@@ -415,7 +415,9 @@ public class SQLExprParser extends SQLParser {
                 }
                 break;
             case SELECT:
-                SQLQueryExpr queryExpr = new SQLQueryExpr(createSelectParser().select());
+                SQLQueryExpr queryExpr = new SQLQueryExpr(
+                        createSelectParser()
+                                .select());
                 sqlExpr = queryExpr;
                 break;
             case CAST:
