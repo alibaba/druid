@@ -675,8 +675,16 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.LOCK) {
             lexer.nextToken();
-            acceptIdentifier(TABLES);
-
+            String val = lexer.stringVal();
+            boolean isLockTables = TABLES.equalsIgnoreCase(val) && lexer.token() == Token.IDENTIFIER;
+            boolean isLockTable = "TABLE".equalsIgnoreCase(val) && lexer.token() == Token.TABLE;
+            if (isLockTables || isLockTable) {
+            	lexer.nextToken();
+            } else {
+            	setErrorEndPos(lexer.pos());
+                throw new ParserException("syntax error, expect TABLES or TABLE, actual " + lexer.token());
+            }
+            
             MySqlLockTableStatement stmt = new MySqlLockTableStatement();
             stmt.setTableSource(this.exprParser.name());
 
@@ -694,6 +702,8 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 acceptIdentifier(WRITE);
                 stmt.setLockType(LockType.LOW_PRIORITY_WRITE);
+            } else {
+            	throw new ParserException("syntax error, expect READ or WRITE, actual " + lexer.token());
             }
 
             if (lexer.token() == Token.HINT) {
@@ -705,8 +715,16 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals("UNLOCK")) {
             lexer.nextToken();
-            acceptIdentifier(TABLES);
+            String val = lexer.stringVal();
+            boolean isUnLockTables = TABLES.equalsIgnoreCase(val) && lexer.token() == Token.IDENTIFIER;
+            boolean isUnLockTable = "TABLE".equalsIgnoreCase(val) && lexer.token() == Token.TABLE;
             statementList.add(new MySqlUnlockTablesStatement());
+            if (isUnLockTables || isUnLockTable) {
+            	lexer.nextToken();
+            } else {
+            	setErrorEndPos(lexer.pos());
+                throw new ParserException("syntax error, expect TABLES or TABLE, actual " + lexer.token());
+            }
             return true;
         }
 
