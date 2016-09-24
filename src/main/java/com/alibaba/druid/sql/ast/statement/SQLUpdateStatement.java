@@ -30,6 +30,7 @@ public class SQLUpdateStatement extends SQLStatementImpl {
     protected SQLTableSource               from;
 
     protected SQLTableSource               tableSource;
+    protected List<SQLExpr>                returning;
 
     public SQLUpdateStatement(){
 
@@ -80,6 +81,14 @@ public class SQLUpdateStatement extends SQLStatementImpl {
     public void addItem(SQLUpdateSetItem item) {
         this.items.add(item);
         item.setParent(this);
+    }
+
+    public List<SQLExpr> getReturning() {
+        if (returning == null) {
+            returning = new ArrayList<SQLExpr>(2);
+        }
+
+        return returning;
     }
 
     public SQLTableSource getFrom() {

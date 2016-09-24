@@ -1147,6 +1147,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.getTableSource().accept(this);
         }
 
+        accept(x.getFrom());
+
         accept(x.getItems());
         accept(x.getWhere());
 

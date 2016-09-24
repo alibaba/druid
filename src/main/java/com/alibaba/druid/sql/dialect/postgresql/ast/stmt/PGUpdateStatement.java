@@ -32,10 +32,6 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
 
     private PGWithClause   with;
 
-    private List<SQLExpr>  returning = new ArrayList<SQLExpr>(2);
-
-
-    
     public PGUpdateStatement(){
         super (JdbcConstants.POSTGRESQL);
     }
@@ -46,14 +42,6 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
 
     public void setOnly(boolean only) {
         this.only = only;
-    }
-
-    public List<SQLExpr> getReturning() {
-        return returning;
-    }
-
-    public void setReturning(List<SQLExpr> returning) {
-        this.returning = returning;
     }
 
     public PGWithClause getWith() {

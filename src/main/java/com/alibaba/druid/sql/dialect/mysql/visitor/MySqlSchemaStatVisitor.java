@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -564,7 +565,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(MySqlUpdateStatement x) {
         
         visit((SQLUpdateStatement) x);
-        for (SQLSelectItem item : x.getReturning()) {
+        for (SQLExpr item : x.getReturning()) {
             item.accept(this);
         }
         

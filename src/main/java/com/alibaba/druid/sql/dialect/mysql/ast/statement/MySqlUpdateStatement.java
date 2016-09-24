@@ -39,8 +39,6 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
     private boolean             queryOnPk       = false;
     private SQLExpr             targetAffectRow;
 
-    private List<SQLSelectItem> returning       = new ArrayList<SQLSelectItem>();
-
     public MySqlUpdateStatement(){
         super(JdbcConstants.MYSQL);
     }
@@ -56,14 +54,15 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         this.limit = limit;
     }
 
-    public List<SQLSelectItem> getReturning() {
-        return returning;
-    }
+//    public List<SQLSelectItem> getReturning() {
+//        return returning;
+//    }
 
     public void addReturning(List<SQLSelectItem> returning) {
+        List<SQLExpr> thisReturning = this.getReturning();
         for (SQLSelectItem item : returning) {
             item.setParent(this);
-            this.returning.add(item);
+            thisReturning.add(item.getExpr());
         }
     }
 

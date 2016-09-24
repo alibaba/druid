@@ -63,7 +63,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
         
         lexer.nextToken();
-        
+
         if (lexer.token() == Token.UPDATE) { // taobao returning to urgly syntax
             updateStmt = this.parseUpdateStatment();
             updateStmt.addReturning(queryBlock.getSelectList());
