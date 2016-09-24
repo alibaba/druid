@@ -239,6 +239,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         TableStat stat = getTableStat(ident);
         stat.incrementUpdateCount();
 
+        accept(x.getFrom());
+
         Map<String, String> aliasMap = getAliasMap();
         aliasMap.put(ident, ident);
 

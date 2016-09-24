@@ -34,18 +34,10 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
 
     private List<SQLExpr>  returning = new ArrayList<SQLExpr>(2);
 
-    private SQLTableSource from;
+
     
     public PGUpdateStatement(){
         super (JdbcConstants.POSTGRESQL);
-    }
-
-    public SQLTableSource getFrom() {
-        return from;
-    }
-
-    public void setFrom(SQLTableSource from) {
-        this.from = from;
     }
 
     public boolean isOnly() {

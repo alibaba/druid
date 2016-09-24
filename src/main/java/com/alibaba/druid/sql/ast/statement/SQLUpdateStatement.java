@@ -27,6 +27,7 @@ public class SQLUpdateStatement extends SQLStatementImpl {
 
     protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
     protected SQLExpr                      where;
+    protected SQLTableSource               from;
 
     protected SQLTableSource               tableSource;
 
@@ -79,6 +80,17 @@ public class SQLUpdateStatement extends SQLStatementImpl {
     public void addItem(SQLUpdateSetItem item) {
         this.items.add(item);
         item.setParent(this);
+    }
+
+    public SQLTableSource getFrom() {
+        return from;
+    }
+
+    public void setFrom(SQLTableSource from) {
+        if (from != null) {
+            from.setParent(this);
+        }
+        this.from = from;
     }
 
     @Override
