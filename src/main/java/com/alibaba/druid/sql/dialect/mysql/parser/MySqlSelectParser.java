@@ -19,15 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHint;
@@ -43,6 +35,8 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
+
+import java.util.List;
 
 public class MySqlSelectParser extends SQLSelectParser {
 
@@ -66,7 +60,12 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.UPDATE) { // taobao returning to urgly syntax
             updateStmt = this.parseUpdateStatment();
-            updateStmt.addReturning(queryBlock.getSelectList());
+            List<SQLExpr> returnning = updateStmt.getReturning();
+            for (SQLSelectItem item : queryBlock.getSelectList()) {
+                SQLExpr itemExpr = item.getExpr();
+                itemExpr.setParent(updateStmt);
+                returnning.add(itemExpr);
+            }
             returningFlag = true;
             return;
         }

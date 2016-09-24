@@ -54,18 +54,6 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         this.limit = limit;
     }
 
-//    public List<SQLSelectItem> getReturning() {
-//        return returning;
-//    }
-
-    public void addReturning(List<SQLSelectItem> returning) {
-        List<SQLExpr> thisReturning = this.getReturning();
-        for (SQLSelectItem item : returning) {
-            item.setParent(this);
-            thisReturning.add(item.getExpr());
-        }
-    }
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor instanceof MySqlASTVisitor) {
