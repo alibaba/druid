@@ -23,11 +23,8 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
-import com.alibaba.druid.sql.parser.EOFParserException;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsExprParser extends SQLExprParser {
 
@@ -43,7 +40,7 @@ public class OdpsExprParser extends SQLExprParser {
                                                      };
 
     public OdpsExprParser(Lexer lexer){
-        super(lexer);
+        super(lexer, JdbcConstants.ODPS);
 
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
@@ -156,5 +153,10 @@ public class OdpsExprParser extends SQLExprParser {
         }
         
         return super.equalityRest(expr);
+    }
+
+    @Override
+    public OdpsSelectParser createSelectParser() {
+        return new OdpsSelectParser(this);
     }
 }
