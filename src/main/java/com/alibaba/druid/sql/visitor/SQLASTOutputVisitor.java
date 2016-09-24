@@ -639,7 +639,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLNumberExpr x) {
         if (this.parameterized
             && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            print('?');
+            incrementReplaceCunt();
+
+            if(this instanceof ExportParameterVisitor) {
+                ExportParameterVisitorUtils.exportParameter((this).getParameters(), x);
+            }
+            return false;
         }
 
         return SQLASTOutputVisitorUtils.visit(this, x);

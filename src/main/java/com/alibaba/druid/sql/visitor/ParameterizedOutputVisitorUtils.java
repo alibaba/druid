@@ -144,19 +144,6 @@ public class ParameterizedOutputVisitorUtils {
         return false;
     }
 
-    public static boolean visit(ParameterizedVisitor v, SQLNumberExpr x) {
-        if (!checkParameterize(x)) {
-            return SQLASTOutputVisitorUtils.visit(v, x);
-        }
-
-        v.print('?');
-        v.incrementReplaceCunt();
-        if( v instanceof ExportParameterVisitor){
-            ExportParameterVisitorUtils.exportParameter(((ExportParameterVisitor)v).getParameters(), x);
-        }
-        return false;
-    }
-
     public static boolean visit(ParameterizedVisitor v, SQLCharExpr x) {
         v.print('?');
         v.incrementReplaceCunt();
