@@ -659,7 +659,7 @@ public class SQLUtils {
         }
     }
 
-    public static String refactor(String dbType, String sql, Map<String, String> tableMapping) {
+    public static String refactor(String sql, String dbType, Map<String, String> tableMapping) {
         List<SQLStatement> stmtList = parseStatements(sql, dbType);
         return SQLUtils.toSQLString(stmtList, dbType, null, null, tableMapping);
     }

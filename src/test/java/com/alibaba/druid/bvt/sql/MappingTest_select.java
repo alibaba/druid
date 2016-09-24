@@ -15,37 +15,37 @@ public class MappingTest_select extends TestCase {
     Map<String, String> mapping = Collections.singletonMap("user", "user_01");
 
     public void test_mapping() throws Exception {
-        String result = SQLUtils.refactor(null, sql, mapping);
+        String result = SQLUtils.refactor(sql, null, mapping);
         assertEquals("SELECT *\n" +
                 "FROM user_01", result);
     }
 
     public void test_mapping_mysql() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.MYSQL, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.MYSQL, mapping);
         assertEquals("SELECT *\n" +
                 "FROM user_01", result);
     }
 
     public void test_mapping_pg() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.POSTGRESQL, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.POSTGRESQL, mapping);
         assertEquals("SELECT *\n" +
                 "FROM user_01", result);
     }
 
     public void test_mapping_oracle() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.ORACLE, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.ORACLE, mapping);
         assertEquals("SELECT *\n" +
                 "FROM user_01", result);
     }
 
     public void test_mapping_sqlserver() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.SQL_SERVER, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.SQL_SERVER, mapping);
         assertEquals("SELECT *\n" +
                 "FROM user_01", result);
     }
 
     public void test_mapping_odps() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.ODPS, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.ODPS, mapping);
         assertEquals("SELECT *\n" +
                 "FROM user_01", result);
     }

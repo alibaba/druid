@@ -20,7 +20,7 @@ public class MappingTest_createTable extends TestCase {
     Map<String, String> mapping = Collections.singletonMap("user", "user_01");
 
     public void test_mapping_createTable() throws Exception {
-        String result = SQLUtils.refactor(null, sql, mapping);
+        String result = SQLUtils.refactor(sql, null, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
@@ -29,7 +29,7 @@ public class MappingTest_createTable extends TestCase {
     }
 
     public void test_mapping_createTable_mysql() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.MYSQL, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.MYSQL, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
                 "\tsource_key int, \n" +
                 "\tsource_value varchar(32), \n" +
@@ -38,7 +38,7 @@ public class MappingTest_createTable extends TestCase {
     }
 
     public void test_mapping_createTable_oracle() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.ORACLE, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.ORACLE, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
@@ -47,7 +47,7 @@ public class MappingTest_createTable extends TestCase {
     }
 
     public void test_mapping_createTable_pg() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.POSTGRESQL, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.POSTGRESQL, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
@@ -56,7 +56,7 @@ public class MappingTest_createTable extends TestCase {
     }
 
     public void test_mapping_createTable_sqlserver() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.SQL_SERVER, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.SQL_SERVER, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
@@ -65,7 +65,7 @@ public class MappingTest_createTable extends TestCase {
     }
 
     public void test_mapping_createTable_db2() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.DB2, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.DB2, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +

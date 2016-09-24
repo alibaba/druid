@@ -15,32 +15,32 @@ public class MappingTest_delete extends TestCase {
     Map<String, String> mapping = Collections.singletonMap("user", "user_01");
 
     public void test_mapping() throws Exception {
-        String result = SQLUtils.refactor(null, sql, mapping);
+        String result = SQLUtils.refactor(sql, null, mapping);
         assertEquals("DELETE FROM user_01", result);
     }
 
     public void test_mapping_mysql() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.MYSQL, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.MYSQL, mapping);
         assertEquals("DELETE FROM user_01", result);
     }
 
     public void test_mapping_pg() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.POSTGRESQL, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.POSTGRESQL, mapping);
         assertEquals("DELETE FROM user_01", result);
     }
 
     public void test_mapping_oracle() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.ORACLE, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.ORACLE, mapping);
         assertEquals("DELETE FROM user_01", result);
     }
 
     public void test_mapping_sqlserver() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.SQL_SERVER, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.SQL_SERVER, mapping);
         assertEquals("DELETE FROM user_01", result);
     }
 
     public void test_mapping_db2() throws Exception {
-        String result = SQLUtils.refactor(JdbcConstants.DB2, sql, mapping);
+        String result = SQLUtils.refactor(sql, JdbcConstants.DB2, mapping);
         assertEquals("DELETE FROM user_01", result);
     }
 }
