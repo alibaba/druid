@@ -15,13 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowErrorsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private boolean count = false;
-    private Limit   limit;
+    private SQLLimit limit;
 
     public boolean isCount() {
         return count;
@@ -31,11 +31,11 @@ public class MySqlShowErrorsStatement extends MySqlStatementImpl implements MySq
         this.count = count;
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         this.limit = limit;
     }
 

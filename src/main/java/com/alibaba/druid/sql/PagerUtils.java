@@ -41,7 +41,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
@@ -320,7 +320,7 @@ public class PagerUtils {
             throw new IllegalArgumentException("limit already exists.");
         }
 
-        Limit limit = new Limit();
+        SQLLimit limit = new SQLLimit();
         if (offset > 0) {
             limit.setOffset(new SQLNumberExpr(offset));
         }
@@ -470,7 +470,7 @@ public class PagerUtils {
             SQLSelectQuery query = selectStmt.getSelect().getQuery();
             if (query instanceof SQLSelectQueryBlock) {
                 if (query instanceof MySqlSelectQueryBlock) {
-                    MySqlSelectQueryBlock.Limit limit = ((MySqlSelectQueryBlock) query).getLimit();
+                    SQLLimit limit = ((MySqlSelectQueryBlock) query).getLimit();
 
                     if (limit == null) {
                         return -1;

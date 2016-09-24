@@ -15,23 +15,7 @@
  */
 package com.alibaba.druid.sql.visitor;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLKeep;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOver;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionByHash;
-import com.alibaba.druid.sql.ast.SQLPartitionByList;
-import com.alibaba.druid.sql.ast.SQLPartitionByRange;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
-import com.alibaba.druid.sql.ast.SQLSubPartition;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
@@ -1558,6 +1542,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLDateExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLLimit x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLLimit x) {
 
     }
 }

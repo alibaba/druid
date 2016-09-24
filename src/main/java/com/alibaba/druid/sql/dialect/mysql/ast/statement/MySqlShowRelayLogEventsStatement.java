@@ -16,14 +16,14 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowRelayLogEventsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private SQLExpr logName;
     private SQLExpr from;
-    private Limit   limit;
+    private SQLLimit limit;
 
     public SQLExpr getLogName() {
         return logName;
@@ -41,11 +41,11 @@ public class MySqlShowRelayLogEventsStatement extends MySqlStatementImpl impleme
         this.from = from;
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         this.limit = limit;
     }
 

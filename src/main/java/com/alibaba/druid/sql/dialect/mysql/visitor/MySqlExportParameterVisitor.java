@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
@@ -34,7 +34,8 @@ public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor
     /**
      * true= if require parameterized sql output
      */
-    private final boolean requireParameterizedOutput;
+    private boolean requireParameterizedOutput;
+
 
     public MySqlExportParameterVisitor(List<Object> parameters, Appendable appender, boolean wantParameterizedOutput){
         super(appender);
@@ -68,7 +69,7 @@ public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor
     }
 
     @Override
-    public boolean visit(Limit x) {
+    public boolean visit(SQLLimit x) {
         if(requireParameterizedOutput){
             return super.visit(x);
         }

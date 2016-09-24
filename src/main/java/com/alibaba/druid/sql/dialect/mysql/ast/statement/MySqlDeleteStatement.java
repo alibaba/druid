@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -36,7 +36,7 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
 
     private SQLTableSource       using;
     private SQLOrderBy           orderBy;
-    private Limit                limit;
+    private SQLLimit limit;
 
     private List<SQLCommentHint> hints;
 
@@ -99,11 +99,11 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         this.orderBy = orderBy;
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         if (limit != null) {
             limit.setParent(this);
         }

@@ -73,7 +73,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
@@ -1171,7 +1171,7 @@ public class WallVisitorUtils {
                 return true;
             } else if (parent instanceof SQLOrderBy) {
                 return true;
-            } else if (parent instanceof Limit) {
+            } else if (parent instanceof SQLLimit) {
                 return true;
             } else if (parent instanceof MySqlOrderingExpr) {
                 return true;

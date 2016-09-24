@@ -679,4 +679,7 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLDateExpr x);
     void endVisit(SQLDateExpr x);
+
+    boolean visit(SQLLimit x);
+    void endVisit(SQLLimit x);
 }

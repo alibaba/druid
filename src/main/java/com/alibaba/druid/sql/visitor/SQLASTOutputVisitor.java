@@ -26,28 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLKeep;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.SQLOver;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.SQLPartitionByHash;
-import com.alibaba.druid.sql.ast.SQLPartitionByList;
-import com.alibaba.druid.sql.ast.SQLPartitionByRange;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
-import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLSubPartition;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
@@ -3275,6 +3254,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         print0(ucase ? "DATE '" : "date '");
         print0(x.getLiteral());
         print('\'');
+        return false;
+    }
+
+    public boolean visit(SQLLimit x) {
+        print0(ucase ? "LIMIT " : "limit ");
+        if (x.getOffset() != null) {
+            x.getOffset().accept(this);
+            print0(", ");
+        }
+        x.getRowCount().accept(this);
+
         return false;
     }
 }

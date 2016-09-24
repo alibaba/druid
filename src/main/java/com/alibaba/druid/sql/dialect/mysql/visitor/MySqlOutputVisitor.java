@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.ast.SQLSubPartitionBy;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
@@ -108,7 +107,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
@@ -361,17 +360,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    public boolean visit(MySqlSelectQueryBlock.Limit x) {
-        print0(ucase ? "LIMIT " : "limit ");
-        if (x.getOffset() != null) {
-            x.getOffset().accept(this);
-            print0(", ");
-        }
-        x.getRowCount().accept(this);
-
-        return false;
-    }
-
     public boolean visit(SQLDataType x) {
         print0(x.getName());
         if (!x.getArguments().isEmpty()) {
@@ -429,11 +417,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         return false;
-    }
-
-    @Override
-    public void endVisit(Limit x) {
-
     }
 
     @Override

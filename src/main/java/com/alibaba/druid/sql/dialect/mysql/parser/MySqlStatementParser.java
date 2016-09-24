@@ -132,7 +132,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
@@ -2312,7 +2312,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
     }
 
-    public Limit parseLimit() {
+    public SQLLimit parseLimit() {
         return ((MySqlExprParser) this.exprParser).parseLimit();
     }
 
