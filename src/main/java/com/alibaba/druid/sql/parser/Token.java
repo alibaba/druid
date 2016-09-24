@@ -306,7 +306,7 @@ public enum Token {
     TILDE_EQ("~="),
     QUES("?"), 
     COLON(":"), 
-    COLONCOLON(":"), 
+    COLONCOLON("::"), 
     COLONEQ(":="), 
     EQEQ("=="), 
     LTEQ("<="), 

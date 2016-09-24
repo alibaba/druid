@@ -397,13 +397,8 @@ public class Lexer {
                         scanChar();
                         token = COLONCOLON;
                     } else {
-                        if (isDigit(ch)) {
-                            unscan();
-                            scanVariable();
-                        } else {
-                            unscan();
-                            scanVariable();
-                        }
+                        unscan();
+                        scanVariable();
                     }
                     return;
                 case '#':
@@ -455,8 +450,7 @@ public class Lexer {
                     scanVariable();
                     return;
                 case '-':
-                    int subNextChar = charAt(pos + 1);
-                    if (subNextChar == '-') {
+                    if (charAt(pos +1) == '-') {
                         scanComment();
                         if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
                             bufPos = 0;
