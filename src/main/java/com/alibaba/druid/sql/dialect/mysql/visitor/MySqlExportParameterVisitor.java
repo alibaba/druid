@@ -29,7 +29,7 @@ import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
-public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor implements ExportParameterVisitor {
+public class MySqlExportParameterVisitor extends MySqlOutputVisitor implements ExportParameterVisitor {
 
     /**
      * true= if require parameterized sql output
@@ -38,7 +38,7 @@ public class MySqlExportParameterVisitor extends MySqlParameterizedOutputVisitor
 
 
     public MySqlExportParameterVisitor(List<Object> parameters, Appendable appender, boolean wantParameterizedOutput){
-        super(appender);
+        super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
     }

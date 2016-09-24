@@ -30,6 +30,10 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         super(appender);
     }
 
+    public DB2OutputVisitor(Appendable appender, boolean parameterized){
+        super(appender, parameterized);
+    }
+
     @Override
     public boolean visit(DB2SelectQueryBlock x) {
         this.visit((SQLSelectQueryBlock) x);

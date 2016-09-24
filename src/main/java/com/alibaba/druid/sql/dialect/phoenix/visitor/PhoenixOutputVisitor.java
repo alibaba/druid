@@ -24,4 +24,8 @@ public class PhoenixOutputVisitor extends SQLASTOutputVisitor implements Phoenix
     public PhoenixOutputVisitor(Appendable appender){
         super(appender);
     }
+
+    public PhoenixOutputVisitor(Appendable appender, boolean parameterized){
+        super(appender, parameterized);
+    }
 }

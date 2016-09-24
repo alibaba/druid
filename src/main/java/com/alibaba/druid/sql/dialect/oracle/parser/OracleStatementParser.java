@@ -901,6 +901,12 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleAlterTableDropPartition item = new OracleAlterTableDropPartition();
             item.setName(this.exprParser.name());
             stmt.addItem(item);
+        } else if (lexer.token() == Token.INDEX) {
+            lexer.nextToken();
+            SQLName indexName = this.exprParser.name();
+            SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
+            item.setIndexName(indexName);
+            stmt.addItem(item);
         } else {
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }

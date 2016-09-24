@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.util.JdbcUtils;
@@ -89,7 +88,7 @@ public class MySqlResourceTest extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
-        MySqlParameterizedOutputVisitor visitor = new MySqlParameterizedOutputVisitor(out);
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
         statemen.accept(visitor);
 
         System.out.println(out.toString());

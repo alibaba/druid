@@ -47,6 +47,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         super(appender);
     }
 
+    public SQLServerOutputVisitor(Appendable appender, boolean parameterized){
+        super(appender, parameterized);
+    }
+
     public boolean visit(SQLServerSelectQueryBlock x) {
         print0(ucase ? "SELECT " : "select ");
 

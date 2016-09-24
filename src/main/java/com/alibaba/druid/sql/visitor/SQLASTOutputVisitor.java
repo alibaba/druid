@@ -35,7 +35,7 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements PrintableVisitor {
+public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements ParameterizedVisitor, PrintableVisitor {
 
     protected final Appendable appender;
     private String indent = "\t";
@@ -52,8 +52,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     protected Map<String, String> tableMapping;
 
+    protected int replaceCount;
+
+    protected boolean parameterized = false;
+
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
+    }
+
+    public SQLASTOutputVisitor(Appendable appender, boolean parameterized){
+        this.appender = appender;
+        this.parameterized = parameterized;
     }
 
     public int getParametersSize() {
@@ -62,6 +71,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         return this.parameters.size();
+    }
+
+    public int getReplaceCount() {
+        return this.replaceCount;
+    }
+
+    public void incrementReplaceCunt() {
+        replaceCount++;
     }
 
     public void addTableMapping(String srcTable, String destTable) {
@@ -236,6 +253,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        if (this.parameterized) {
+            x = ParameterizedOutputVisitorUtils.merge(this, x);
+        }
+
         SQLObject parent = x.getParent();
         boolean isRoot = parent instanceof SQLSelectQueryBlock;
         boolean relational = x.getOperator() == SQLBinaryOperator.BooleanAnd
@@ -402,6 +423,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLCharExpr x) {
+        if (this.parameterized
+            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return ParameterizedOutputVisitorUtils.visit(this, x);
+        }
+
         if (x.getText() == null) {
             print0(ucase ? "NULL" : "null");
         } else {
@@ -450,6 +476,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLInListExpr x) {
+        if (this.parameterized) {
+            return ParameterizedOutputVisitorUtils.visit(this, x);
+        }
+
         x.getExpr().accept(this);
 
         if (x.isNot()) {
@@ -492,6 +522,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLIntegerExpr x) {
+        if (this.parameterized
+            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return ParameterizedOutputVisitorUtils.visit(this, x);
+        }
+
         return SQLASTOutputVisitorUtils.visit(this, x);
     }
 
@@ -554,6 +589,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLNCharExpr x) {
+        if (this.parameterized
+            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return ParameterizedOutputVisitorUtils.visit(this, x);
+        }
+
         if ((x.getText() == null) || (x.getText().length() == 0)) {
             print0(ucase ? "NULL" : "null");
         } else {
@@ -587,11 +627,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     }
 
     public boolean visit(SQLNullExpr x) {
+        if (this.parameterized
+            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return ParameterizedOutputVisitorUtils.visit(this, x);
+        }
+
         print0(ucase ? "NULL" : "null");
         return false;
     }
 
     public boolean visit(SQLNumberExpr x) {
+        if (this.parameterized
+            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return ParameterizedOutputVisitorUtils.visit(this, x);
+        }
+
         return SQLASTOutputVisitorUtils.visit(this, x);
     }
 
@@ -1265,6 +1315,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
     @Override
     public boolean visit(SQLHexExpr x) {
+        if (this.parameterized && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            return ParameterizedOutputVisitorUtils.visit(this, x);
+        }
+
         print0("0x");
         print0(x.getHex());
 
@@ -1881,7 +1935,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
     @Override
     public boolean visit(SQLAlterTableStatement x) {
         print0(ucase ? "ALTER TABLE " : "alter table ");
-        x.getName().accept(this);
+        printTableSourceExpr(x.getName());
         incrementIndent();
         for (int i = 0; i < x.getItems().size(); ++i) {
             SQLAlterTableItem item = x.getItems().get(i);

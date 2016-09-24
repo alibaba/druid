@@ -34,13 +34,13 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.dialect.db2.visitor.DB2ParameterizedOutputVisitor;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
-import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixParameterizedOutputVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.visitor.PGParameterizedOutputVisitor;
+import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixOutputVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerParameterizedOutputVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcUtils;
@@ -79,35 +79,29 @@ public class ParameterizedOutputVisitorUtils {
             return new OracleParameterizedOutputVisitor(out);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlParameterizedOutputVisitor(out);
-        }
-
-        if (JdbcUtils.MARIADB.equals(dbType)) {
-            return new MySqlParameterizedOutputVisitor(out);
-        }
-
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlParameterizedOutputVisitor(out);
+        if (JdbcUtils.MYSQL.equals(dbType)
+            || JdbcUtils.MARIADB.equals(dbType)
+            || JdbcUtils.H2.equals(dbType)) {
+            return new MySqlOutputVisitor(out, true);
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
-            return new PGParameterizedOutputVisitor(out);
+            return new PGOutputVisitor(out, true);
         }
 
         if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
-            return new SQLServerParameterizedOutputVisitor(out);
+            return new SQLServerOutputVisitor(out, true);
         }
 
         if (JdbcUtils.DB2.equals(dbType)) {
-            return new DB2ParameterizedOutputVisitor(out);
+            return new DB2OutputVisitor(out, true);
         }
 
         if (JdbcUtils.PHOENIX.equals(dbType)) {
-            return new PhoenixParameterizedOutputVisitor(out);
+            return new PhoenixOutputVisitor(out, true);
         }
 
-        return new ParameterizedOutputVisitor(out);
+        return new SQLASTOutputVisitor(out, true);
     }
 
     public static boolean visit(ParameterizedVisitor v, SQLInListExpr x) {

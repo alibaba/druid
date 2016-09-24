@@ -1695,7 +1695,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(SQLAlterTableStatement x) {
         print0(ucase ? "ALTER TABLE " : "alter table ");
-        x.getName().accept(this);
+        printTableSourceExpr(x.getName());
         incrementIndent();
         for (SQLAlterTableItem item : x.getItems()) {
             println();

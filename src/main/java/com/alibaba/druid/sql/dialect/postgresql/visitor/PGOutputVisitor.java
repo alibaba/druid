@@ -52,6 +52,10 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         super(appender);
     }
 
+    public PGOutputVisitor(Appendable appender, boolean parameterized){
+        super(appender, parameterized);
+    }
+
     @Override
     public void endVisit(WindowClause x) {
 
