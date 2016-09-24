@@ -94,6 +94,12 @@ public class DruidDataSourceFactory implements ObjectFactory {
             "druid.maxWaitThreadCount", //
             "druid.failFast", //
             "druid.phyTimeoutMillis", //
+            "druid.wall.tenantColumn", //
+            "druid.wall.updateAllow", //
+            "druid.wall.deleteAllow", //
+            "druid.wall.insertAllow", //
+            "druid.wall.selelctAllow", //
+            "druid.wall.multiStatementAllow", //
     };
 
     @Override
