@@ -619,7 +619,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleSelectTableReference x) {
         if (x.isOnly()) {
             print0(ucase ? "ONLY (" : "only (");
-            x.getExpr().accept(this);
+            printTableSourceExpr(x.getExpr());
 
             if (x.getPartition() != null) {
                 print(' ');
@@ -628,7 +628,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
             print(')');
         } else {
-            x.getExpr().accept(this);
+            printTableSourceExpr(x.getExpr());
 
             if (x.getPartition() != null) {
                 print(' ');
@@ -1285,27 +1285,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         
         x.getTableSource().accept(this);
 
-        if (x.getColumns().size() > 0) {
-            incrementIndent();
-            println();
-            print('(');
-            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
-                if (i != 0) {
-                    if (i % 5 == 0) {
-                        println();
-                    }
-                    print0(", ");
-                }
-                x.getColumns().get(i).accept(this);
-            }
-            print(')');
-            decrementIndent();
-        }
+        printInsertColumns(x.getColumns());
 
         if (x.getValues() != null) {
             println();
-            print0(ucase ? "VALUES" : "values");
-            println();
+            print0(ucase ? "VALUES " : "values ");
             x.getValues().accept(this);
         } else {
             if (x.getQuery() != null) {

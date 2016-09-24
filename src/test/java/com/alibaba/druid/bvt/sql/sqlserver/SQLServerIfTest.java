@@ -21,17 +21,13 @@ public class SQLServerIfTest extends TestCase {
         String sql = "if @is_exists is null begin  insert into Inventory_1 (co_id,sku_id,order_lock) values (@0,@1,@2) end else begin insert into Inventory_2 (co_id,sku_id,order_lock) values (@0,@1,@2) end ";
         String expect = "IF @is_exists IS NULL"//
                         + "\n\tBEGIN"//
-                        + "\n\t\tINSERT INTO Inventory_1"//
-                        + "\n\t\t\t(co_id, sku_id, order_lock)"//
-                        + "\n\t\tVALUES"//
-                        + "\n\t\t(@0, @1, @2);"//
+                        + "\n\t\tINSERT INTO Inventory_1 (co_id, sku_id, order_lock)"//
+                        + "\n\t\tVALUES (@0, @1, @2);"//
                         + "\n\tEND"//
                         + "\nELSE"//
                         + "\n\tBEGIN"//
-                        + "\n\t\tINSERT INTO Inventory_2"//
-                        + "\n\t\t\t(co_id, sku_id, order_lock)"//
-                        + "\n\t\tVALUES"//
-                        + "\n\t\t(@0, @1, @2);"//
+                        + "\n\t\tINSERT INTO Inventory_2 (co_id, sku_id, order_lock)"//
+                        + "\n\t\tVALUES (@0, @1, @2);"//
                         + "\n\tEND";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

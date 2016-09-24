@@ -51,8 +51,7 @@ public class SQLServerInsertTest8 extends TestCase {
         String formatSql = "INSERT INTO Production.ScrapReason"//
                            + "\nOUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate"//
                            + "\n\tINTO @MyTableVar"//
-                           + "\nVALUES"//
-                           + "\n(N'Operator error', GETDATE())";
+                           + "\nVALUES (N'Operator error', GETDATE())";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 

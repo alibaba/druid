@@ -44,10 +44,8 @@ public class PhoenixUpsertTest_1 extends TestCase {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.PHOENIX);
-        Assert.assertEquals("UPSERT INTO t_1\n" +
-                        "\t(a BIGINT, b, c)\n" +
-                        "VALUES\n" +
-                        "(?, ?, ?)", //
+        Assert.assertEquals("UPSERT INTO t_1 (a BIGINT, b, c)\n" +
+                        "VALUES (?, ?, ?)", //
                 output);
     }
 }

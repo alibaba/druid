@@ -291,7 +291,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "ONLY " : "only ");
         }
 
-        x.getTableName().accept(this);
+        printTableSourceExpr(x.getTableName());
 
         if (x.getAlias() != null) {
             print0(ucase ? " AS " : " as ");
@@ -337,22 +337,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         x.getTableSource().accept(this);
 
-        if (x.getColumns().size() > 0) {
-            incrementIndent();
-            println();
-            print('(');
-            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
-                if (i != 0) {
-                    if (i % 5 == 0) {
-                        println();
-                    }
-                    print0(", ");
-                }
-                x.getColumns().get(i).accept(this);
-            }
-            print(')');
-            decrementIndent();
-        }
+        printInsertColumns(x.getColumns());
 
         if (x.getValues() != null) {
             println();

@@ -39,10 +39,8 @@ public class OracleInsertTest17 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO sys_log"
-                + "\n\t(ID, EXCEPTION)"
-                + "\nVALUES"
-                + "\n(?, ?)",//
+        Assert.assertEquals("INSERT INTO sys_log (ID, EXCEPTION)"
+                + "\nVALUES (?, ?)",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

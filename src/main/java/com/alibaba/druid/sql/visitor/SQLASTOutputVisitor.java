@@ -22,9 +22,7 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.NClob;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
@@ -40,17 +38,19 @@ import com.alibaba.druid.util.JdbcConstants;
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements PrintableVisitor {
 
     protected final Appendable appender;
-    private String             indent                 = "\t";
-    private int                indentCount            = 0;
-    private boolean            prettyFormat           = true;
-    protected boolean          ucase                  = true;
-    protected int              selectListNumberOfLine = 5;
+    private String indent = "\t";
+    private int indentCount = 0;
+    private boolean prettyFormat = true;
+    protected boolean ucase = true;
+    protected int selectListNumberOfLine = 5;
 
-    protected boolean          groupItemSingleLine    = false;
+    protected boolean groupItemSingleLine = false;
 
-    protected List<Object>       parameters;
+    protected List<Object> parameters;
 
-    protected String           dbType;
+    protected String dbType;
+
+    protected Map<String, String> tableMapping;
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
@@ -62,6 +62,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         return this.parameters.size();
+    }
+
+    public void addTableMapping(String srcTable, String destTable) {
+        if (tableMapping != null) {
+            tableMapping = new HashMap<String, String>();
+        }
+        tableMapping.put(srcTable, destTable);
+    }
+
+    public void setTableMapping(Map<String, String> tableMapping) {
+        this.tableMapping = tableMapping;
     }
 
     public List<Object> getParameters() {
@@ -772,8 +783,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         return false;
     }
 
+    protected void printTableSourceExpr(SQLExpr expr) {
+        if (tableMapping != null && expr instanceof SQLName) {
+            String tableName = expr.toString();
+            String destTableName = tableMapping.get(tableName);
+            if (destTableName != null) {
+                tableName = destTableName;
+                print0(tableName);
+                return;
+            }
+        }
+
+        expr.accept(this);
+    }
+
     public boolean visit(SQLExprTableSource x) {
-        x.getExpr().accept(this);
+        printTableSourceExpr(x.getExpr());
 
         if (x.getAlias() != null) {
             print(' ');
@@ -984,10 +1009,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         if (from == null) {
             print0(ucase ? "DELETE FROM " : "delete from ");
-            x.getTableName().accept(this);
+            printTableSourceExpr(x.getTableName());
         } else {
             print0(ucase ? "DELETE " : "delete ");
-            x.getTableName().accept(this);
+            printTableSourceExpr(x.getTableName());
             print0(ucase ? " FROM " : " from ");
             from.accept(this);
         }
@@ -1019,35 +1044,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
 
         x.getTableSource().accept(this);
 
-        if (x.getColumns().size() > 0) {
-            incrementIndent();
-            println();
-            print('(');
-            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
-                if (i != 0) {
-                    if (i % 5 == 0) {
-                        println();
-                    }
-                    print0(", ");
-                }
-
-                SQLExpr column = x.getColumns().get(i);
-                column.accept(this);
-
-                String dataType = (String) column.getAttribute("dataType");
-                if (dataType != null) {
-                    print(' ');
-                    print(dataType);
-                }
-            }
-            print(')');
-            decrementIndent();
-        }
+        printInsertColumns(x.getColumns());
 
         if (!x.getValuesList().isEmpty()) {
             println();
-            print0(ucase ? "VALUES" : "values");
-            println();
+            print0(ucase ? "VALUES " : "values ");
             printAndAccept(x.getValuesList(), ", ");
         } else {
             if (x.getQuery() != null) {
@@ -1058,6 +1059,40 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
         }
 
         return false;
+    }
+
+    protected void printInsertColumns(List<SQLExpr> columns) {
+        final int size = columns.size();
+        if (size > 0) {
+            if (size > 5) {
+                incrementIndent();
+                println();
+            } else {
+                print(' ');
+            }
+            print('(');
+            for (int i = 0; i < size; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
+                    print0(", ");
+                }
+
+                SQLExpr column = columns.get(i);
+                column.accept(this);
+
+                String dataType = (String) column.getAttribute("dataType");
+                if (dataType != null) {
+                    print(' ');
+                    print(dataType);
+                }
+            }
+            print(')');
+            if (size > 5) {
+                decrementIndent();
+            }
+        }
     }
 
     public boolean visit(SQLUpdateSetItem x) {
@@ -1101,7 +1136,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Printab
             print0(ucase ? "LOCAL TEMPORARY " : "local temporary ");
         }
 
-        x.getName().accept(this);
+        printTableSourceExpr(x.getName());
 
         int size = x.getTableElementList().size();
 

@@ -17,6 +17,7 @@ package com.alibaba.druid.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -263,10 +264,18 @@ public class SQLUtils {
     }
     
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters) {
-        return toSQLString(statementList, dbType, parameters, null);
+        return toSQLString(statementList, dbType, parameters, null, null);
     }
 
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters, FormatOption option) {
+        return toSQLString(statementList, dbType, parameters, option, null);
+    }
+
+    public static String toSQLString(List<SQLStatement> statementList
+            , String dbType
+            , List<Object> parameters
+            , FormatOption option
+            , Map<String, String> tableMapping) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
@@ -277,6 +286,10 @@ public class SQLUtils {
             option = DEFAULT_FORMAT_OPTION;
         }
         visitor.setUppCase(option.isUppCase());
+
+        if (tableMapping != null) {
+            visitor.setTableMapping(tableMapping);
+        }
 
         for (int i = 0; i < statementList.size(); i++) {
             SQLStatement stmt = statementList.get(i);
@@ -644,6 +657,11 @@ public class SQLUtils {
         public void setUppCase(boolean val) {
             this.ucase = val;
         }
+    }
+
+    public static String refactor(String dbType, String sql, Map<String, String> tableMapping) {
+        List<SQLStatement> stmtList = parseStatements(sql, dbType);
+        return SQLUtils.toSQLString(stmtList, dbType, null, null, tableMapping);
     }
 }
 

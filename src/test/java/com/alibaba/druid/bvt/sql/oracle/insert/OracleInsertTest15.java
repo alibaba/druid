@@ -43,8 +43,7 @@ public class OracleInsertTest15 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("INSERT INTO employees@remote" //
-                            + "\nVALUES"//
-                            + "\n(8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL"//
+                            + "\nVALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL"//
                             + "\n\t, TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, NULL, 121"//
                             + "\n\t, 20)",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));

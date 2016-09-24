@@ -467,7 +467,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
         }
 
-        x.getName().accept(this);
+        printTableSourceExpr(x.getName());
 
         if (x.getLike() != null) {
             print0(ucase ? " LIKE " : " like ");
@@ -2659,7 +2659,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLExprTableSource x) {
-        x.getExpr().accept(this);
+        printTableSourceExpr(x.getExpr());
 
         if (x.getAlias() != null) {
             print(' ');
