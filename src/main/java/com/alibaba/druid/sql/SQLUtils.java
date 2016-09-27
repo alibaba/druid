@@ -663,5 +663,11 @@ public class SQLUtils {
         List<SQLStatement> stmtList = parseStatements(sql, dbType);
         return SQLUtils.toSQLString(stmtList, dbType, null, null, tableMapping);
     }
+
+    public static boolean containsIndexDDL(String sql, String dbType) {
+        List<SQLStatement> stmtList = parseStatements(sql, dbType);
+
+        return false;
+    }
 }
 

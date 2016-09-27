@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.alter;
 
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -36,6 +40,13 @@ public class MySqlAlterTableAddIndex_1 extends TestCase {
         
         Assert.assertEquals("alter table `test`.`tb1`" + //
                 "\n\tadd unique index `ix2` (`fid` asc)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+
+        SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
+        stmt.accept(visitor);
+        TableStat tableStat = visitor.getTableStat("test.tb1");
+        assertNotNull(tableStat);
+        assertEquals(1, tableStat.getAlterCount());
+        assertEquals(1, tableStat.getCreateIndexCount());
     }
 
 }

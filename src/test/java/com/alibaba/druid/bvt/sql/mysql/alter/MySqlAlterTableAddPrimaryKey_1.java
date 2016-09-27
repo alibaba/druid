@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.alter;
 
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -37,6 +40,13 @@ public class MySqlAlterTableAddPrimaryKey_1 extends TestCase {
         
         Assert.assertEquals("alter table tabelname" + //
                 "\n\tadd constraint mYconstraint primary key (id)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+
+        SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
+        stmt.accept(visitor);
+        TableStat tableStat = visitor.getTableStat("tabelname");
+        assertNotNull(tableStat);
+        assertEquals(1, tableStat.getAlterCount());
+        assertEquals(1, tableStat.getCreateIndexCount());
     }
 
 }

@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.alter;
 
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -37,6 +40,13 @@ public class MySqlAlterTableDropKey extends TestCase {
         
         Assert.assertEquals("alter table t6" + //
                 "\n\tdrop key v", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+
+        SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
+        stmt.accept(visitor);
+        TableStat tableStat = visitor.getTableStat("t6");
+        assertNotNull(tableStat);
+        assertEquals(1, tableStat.getAlterCount());
+        assertEquals(1, tableStat.getDropIndexCount());
     }
 
 }

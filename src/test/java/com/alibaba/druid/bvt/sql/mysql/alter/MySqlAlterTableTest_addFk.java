@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.alter;
 
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -34,7 +37,7 @@ public class MySqlAlterTableTest_addFk extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
 
-        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);
 
 //        System.out.println("Tables : " + visitor.getTables());
@@ -54,5 +57,10 @@ public class MySqlAlterTableTest_addFk extends TestCase {
 
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
+
+        TableStat tableStat = visitor.getTableStat("Test2");
+        assertNotNull(tableStat);
+        assertEquals(1, tableStat.getAlterCount());
+        assertEquals(1, tableStat.getCreateIndexCount());
     }
 }

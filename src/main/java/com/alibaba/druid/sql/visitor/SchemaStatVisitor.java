@@ -122,7 +122,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         tableName = handleName(tableName);
-        TableStat stat = tableStats.get(tableName);
+
+        TableStat.Name tableNameObj = new TableStat.Name(tableName);
+        TableStat stat = tableStats.get(tableNameObj);
         if (stat == null) {
             stat = new TableStat();
             tableStats.put(new TableStat.Name(tableName), stat);
@@ -1452,6 +1454,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         for (SQLSelectOrderByItem item : x.getItems()) {
             item.accept(this);
         }
+
+        String table = ((SQLAlterTableStatement) x.getParent()).getName().toString();
+        TableStat tableStat = this.getTableStat(table);
+        tableStat.incrementCreateIndexCount();
         return false;
     }
 
@@ -1694,4 +1700,48 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLCreateSequenceStatement x) {
         return false;
     }
+
+    @Override
+    public boolean visit(SQLAlterTableAddConstraint x) {
+        SQLConstraint constraint = x.getConstraint();
+        if (constraint instanceof SQLUniqueConstraint) {
+            SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+            String tableName = stmt.getName().toString();
+
+            TableStat tableStat = this.getTableStat(tableName);
+            tableStat.incrementCreateIndexCount();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropIndex x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String tableName = stmt.getName().toString();
+
+        TableStat tableStat = this.getTableStat(tableName);
+        tableStat.incrementDropIndexCount();
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropPrimaryKey x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String tableName = stmt.getName().toString();
+
+        TableStat tableStat = this.getTableStat(tableName);
+        tableStat.incrementDropIndexCount();
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropKey x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String tableName = stmt.getName().toString();
+
+        TableStat tableStat = this.getTableStat(tableName);
+        tableStat.incrementDropIndexCount();
+        return false;
+    }
+    //
 }
