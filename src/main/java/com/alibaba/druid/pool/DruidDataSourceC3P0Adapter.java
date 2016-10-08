@@ -145,11 +145,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public int getCheckoutTimeout() {
-        return (int) dataSource.getMaxWait() / 1000;
+        return (int) dataSource.getMaxWait();
     }
 
     public void setCheckoutTimeout(int checkoutTimeout) {
-        dataSource.setMaxWait(checkoutTimeout * 1000);
+        dataSource.setMaxWait(checkoutTimeout);
     }
 
     public boolean isAutoCommitOnClose() {
