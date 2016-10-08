@@ -365,8 +365,37 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlReplaceStatement x) {
+        setMode(x, Mode.Replace);
 
-        return true;
+        setAliasMap();
+
+        SQLName tableName = x.getTableName();
+
+        String ident = null;
+        if (tableName instanceof SQLIdentifierExpr) {
+            ident = ((SQLIdentifierExpr) tableName).getName();
+        } else if (tableName instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) tableName;
+            if (propertyExpr.getOwner() instanceof SQLIdentifierExpr) {
+                ident = propertyExpr.toString();
+            }
+        }
+
+        if (ident != null) {
+            setCurrentTable(x, ident);
+
+            TableStat stat = getTableStat(ident);
+            stat.incrementInsertCount();
+
+            Map<String, String> aliasMap = getAliasMap();
+            putAliasMap(aliasMap, ident, ident);
+        }
+
+        accept(x.getColumns());
+        accept(x.getValuesList());
+        accept(x.getQuery());
+
+        return false;
     }
 
     @Override

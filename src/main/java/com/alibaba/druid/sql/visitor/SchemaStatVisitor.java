@@ -929,6 +929,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return tableStats.containsKey(new TableStat.Name(tableName));
     }
 
+    public boolean containsColumn(String tableName, String columnName) {
+        return columns.containsKey(new Column(tableName, columnName));
+    }
+
     public Collection<Column> getColumns() {
         return columns.values();
     }
