@@ -1760,7 +1760,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? " RANGE " : " range ");
             }
 
-            x.getWindowing().accept(this);
+            printWindowingExpr(x.getWindowing());
+
             if (x.isWindowingPreceding()) {
                 print0(ucase ? " PRECEDING" : " preceding");
             } else if (x.isWindowingFollowing()) {
@@ -1775,7 +1776,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? " RANGE BETWEEN " : " range between ");
             }
 
-            x.getWindowingBetweenBegin().accept(this);
+            printWindowingExpr(x.getWindowingBetweenBegin());
 
             if (x.isWindowingBetweenBeginPreceding()) {
                 print0(ucase ? " PRECEDING" : " preceding");
@@ -1785,7 +1786,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             print0(ucase ? " AND " : " and ");
 
-            x.getWindowingBetweenEnd().accept(this);
+            printWindowingExpr(x.getWindowingBetweenEnd());
 
             if (x.isWindowingBetweenEndPreceding()) {
                 print0(ucase ? " PRECEDING" : " preceding");
@@ -1796,6 +1797,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         
         print(')');
         return false;
+    }
+
+    void printWindowingExpr(SQLExpr expr) {
+        if (expr instanceof SQLIdentifierExpr) {
+            String ident = ((SQLIdentifierExpr) expr).getName();
+            print0(ucase ? ident : ident.toLowerCase());
+        } else {
+            expr.accept(this);
+        }
     }
     
     @Override

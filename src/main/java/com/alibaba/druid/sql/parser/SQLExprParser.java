@@ -1116,15 +1116,33 @@ public class SQLExprParser extends SQLParser {
                 }
 
             } else {
-                SQLIntegerExpr rowsExpr = (SQLIntegerExpr) this.primary();
-                over.setWindowing(rowsExpr);
 
-                if (identifierEquals("PRECEDING")) {
-                    over.setWindowingPreceding(true);
+                if (identifierEquals("CURRENT")) {
                     lexer.nextToken();
-                } else if (identifierEquals("FOLLOWING")) {
-                    over.setWindowingFollowing(true);
+                    acceptIdentifier("ROW");
+                    over.setWindowing(new SQLIdentifierExpr("CURRENT ROW"));
+                } else  if (identifierEquals("UNBOUNDED")) {
                     lexer.nextToken();
+                    over.setWindowing(new SQLIdentifierExpr("UNBOUNDED"));
+
+                    if (identifierEquals("PRECEDING")) {
+                        over.setWindowingPreceding(true);
+                        lexer.nextToken();
+                    } else if (identifierEquals("FOLLOWING")) {
+                        over.setWindowingFollowing(true);
+                        lexer.nextToken();
+                    }
+                } else {
+                    SQLIntegerExpr rowsExpr = (SQLIntegerExpr) this.primary();
+                    over.setWindowing(rowsExpr);
+
+                    if (identifierEquals("PRECEDING")) {
+                        over.setWindowingPreceding(true);
+                        lexer.nextToken();
+                    } else if (identifierEquals("FOLLOWING")) {
+                        over.setWindowingFollowing(true);
+                        lexer.nextToken();
+                    }
                 }
             }
         }
