@@ -1752,6 +1752,47 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " OF " : " of ");
             x.getOf().accept(this);
         }
+
+        if (x.getWindowing() != null) {
+            if (SQLOver.WindowingType.ROWS.equals(x.getWindowingType())) {
+                print0(ucase ? " ROWS " : " rows ");
+            } else if (SQLOver.WindowingType.RANGE.equals(x.getWindowingType())) {
+                print0(ucase ? " RANGE " : " range ");
+            }
+
+            x.getWindowing().accept(this);
+            if (x.isWindowingPreceding()) {
+                print0(ucase ? " PRECEDING" : " preceding");
+            } else if (x.isWindowingFollowing()) {
+                print0(ucase ? " FOLLOWING" : " following");
+            }
+        }
+
+        if (x.getWindowingBetweenBegin() != null) {
+            if (SQLOver.WindowingType.ROWS.equals(x.getWindowingType())) {
+                print0(ucase ? " ROWS BETWEEN " : " rows between ");
+            } else if (SQLOver.WindowingType.RANGE.equals(x.getWindowingType())) {
+                print0(ucase ? " RANGE BETWEEN " : " range between ");
+            }
+
+            x.getWindowingBetweenBegin().accept(this);
+
+            if (x.isWindowingBetweenBeginPreceding()) {
+                print0(ucase ? " PRECEDING" : " preceding");
+            } else if (x.isWindowingBetweenBeginFollowing()) {
+                print0(ucase ? " FOLLOWING" : " following");
+            }
+
+            print0(ucase ? " AND " : " and ");
+
+            x.getWindowingBetweenEnd().accept(this);
+
+            if (x.isWindowingBetweenEndPreceding()) {
+                print0(ucase ? " PRECEDING" : " preceding");
+            } else if (x.isWindowingBetweenEndFollowing()) {
+                print0(ucase ? " FOLLOWING" : " following");
+            }
+        }
         
         print(')');
         return false;

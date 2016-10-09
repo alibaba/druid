@@ -1078,6 +1078,57 @@ public class SQLExprParser extends SQLParser {
             over.setOf(of);
         }
 
+        SQLOver.WindowingType windowingType = null;
+        if (identifierEquals("ROWS")) {
+            windowingType = SQLOver.WindowingType.ROWS;
+        } else if (identifierEquals("RANGE")) {
+            windowingType = SQLOver.WindowingType.RANGE;
+        }
+
+        if (windowingType != null) {
+            over.setWindowingType(windowingType);
+            lexer.nextToken();
+
+            if (lexer.token == Token.BETWEEN) {
+                lexer.nextToken();
+                SQLIntegerExpr rowsBegin = (SQLIntegerExpr) this.primary();
+                over.setWindowingBetweenBegin(rowsBegin);
+
+                if (identifierEquals("PRECEDING")) {
+                    over.setWindowingBetweenBeginPreceding(true);
+                    lexer.nextToken();
+                } else if (identifierEquals("FOLLOWING")) {
+                    over.setWindowingBetweenBeginFollowing(true);
+                    lexer.nextToken();
+                }
+
+                accept(Token.AND);
+
+                SQLIntegerExpr betweenEnd = (SQLIntegerExpr) this.primary();
+                over.setWindowingBetweenEnd(betweenEnd);
+
+                if (identifierEquals("PRECEDING")) {
+                    over.setWindowingBetweenEndPreceding(true);
+                    lexer.nextToken();
+                } else if (identifierEquals("FOLLOWING")) {
+                    over.setWindowingBetweenEndFollowing(true);
+                    lexer.nextToken();
+                }
+
+            } else {
+                SQLIntegerExpr rowsExpr = (SQLIntegerExpr) this.primary();
+                over.setWindowing(rowsExpr);
+
+                if (identifierEquals("PRECEDING")) {
+                    over.setWindowingPreceding(true);
+                    lexer.nextToken();
+                } else if (identifierEquals("FOLLOWING")) {
+                    over.setWindowingFollowing(true);
+                    lexer.nextToken();
+                }
+            }
+        }
+
         accept(Token.RPAREN);
         aggregateExpr.setOver(over);
     }

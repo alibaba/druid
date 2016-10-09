@@ -28,6 +28,20 @@ public class SQLOver extends SQLObjectImpl {
     // for db2
     protected SQLExpr             of;
 
+    protected SQLExpr             windowing;
+    protected WindowingType       windowingType = WindowingType.ROWS;
+
+    protected boolean             windowingPreceding;
+    protected boolean             windowingFollowing;
+
+    protected SQLExpr             windowingBetweenBegin;
+    protected boolean             windowingBetweenBeginPreceding;
+    protected boolean             windowingBetweenBeginFollowing;
+
+    protected SQLExpr             windowingBetweenEnd;
+    protected boolean             windowingBetweenEndPreceding;
+    protected boolean             windowingBetweenEndFollowing;
+
     public SQLOver(){
 
     }
@@ -72,35 +86,129 @@ public class SQLOver extends SQLObjectImpl {
         return partitionBy;
     }
 
+    public SQLExpr getWindowing() {
+        return windowing;
+    }
+
+    public void setWindowing(SQLExpr windowing) {
+        this.windowing = windowing;
+    }
+
+    public WindowingType getWindowingType() {
+        return windowingType;
+    }
+
+    public void setWindowingType(WindowingType windowingType) {
+        this.windowingType = windowingType;
+    }
+
+    public boolean isWindowingPreceding() {
+        return windowingPreceding;
+    }
+
+    public void setWindowingPreceding(boolean windowingPreceding) {
+        this.windowingPreceding = windowingPreceding;
+    }
+
+    public boolean isWindowingFollowing() {
+        return windowingFollowing;
+    }
+
+    public void setWindowingFollowing(boolean windowingFollowing) {
+        this.windowingFollowing = windowingFollowing;
+    }
+
+    public SQLExpr getWindowingBetweenBegin() {
+        return windowingBetweenBegin;
+    }
+
+    public void setWindowingBetweenBegin(SQLExpr windowingBetweenBegin) {
+        this.windowingBetweenBegin = windowingBetweenBegin;
+    }
+
+    public boolean isWindowingBetweenBeginPreceding() {
+        return windowingBetweenBeginPreceding;
+    }
+
+    public void setWindowingBetweenBeginPreceding(boolean windowingBetweenBeginPreceding) {
+        this.windowingBetweenBeginPreceding = windowingBetweenBeginPreceding;
+    }
+
+    public boolean isWindowingBetweenBeginFollowing() {
+        return windowingBetweenBeginFollowing;
+    }
+
+    public void setWindowingBetweenBeginFollowing(boolean windowingBetweenBeginFollowing) {
+        this.windowingBetweenBeginFollowing = windowingBetweenBeginFollowing;
+    }
+
+    public SQLExpr getWindowingBetweenEnd() {
+        return windowingBetweenEnd;
+    }
+
+    public void setWindowingBetweenEnd(SQLExpr windowingBetweenEnd) {
+        this.windowingBetweenEnd = windowingBetweenEnd;
+    }
+
+    public boolean isWindowingBetweenEndPreceding() {
+        return windowingBetweenEndPreceding;
+    }
+
+    public void setWindowingBetweenEndPreceding(boolean windowingBetweenEndPreceding) {
+        this.windowingBetweenEndPreceding = windowingBetweenEndPreceding;
+    }
+
+    public boolean isWindowingBetweenEndFollowing() {
+        return windowingBetweenEndFollowing;
+    }
+
+    public void setWindowingBetweenEndFollowing(boolean windowingBetweenEndFollowing) {
+        this.windowingBetweenEndFollowing = windowingBetweenEndFollowing;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLOver sqlOver = (SQLOver) o;
+
+        if (windowingPreceding != sqlOver.windowingPreceding) return false;
+        if (windowingFollowing != sqlOver.windowingFollowing) return false;
+        if (windowingBetweenBeginPreceding != sqlOver.windowingBetweenBeginPreceding) return false;
+        if (windowingBetweenBeginFollowing != sqlOver.windowingBetweenBeginFollowing) return false;
+        if (windowingBetweenEndPreceding != sqlOver.windowingBetweenEndPreceding) return false;
+        if (windowingBetweenEndFollowing != sqlOver.windowingBetweenEndFollowing) return false;
+        if (partitionBy != null ? !partitionBy.equals(sqlOver.partitionBy) : sqlOver.partitionBy != null) return false;
+        if (orderBy != null ? !orderBy.equals(sqlOver.orderBy) : sqlOver.orderBy != null) return false;
+        if (of != null ? !of.equals(sqlOver.of) : sqlOver.of != null) return false;
+        if (windowing != null ? !windowing.equals(sqlOver.windowing) : sqlOver.windowing != null) return false;
+        if (windowingType != sqlOver.windowingType) return false;
+        if (windowingBetweenBegin != null ? !windowingBetweenBegin.equals(sqlOver.windowingBetweenBegin) : sqlOver.windowingBetweenBegin != null)
+            return false;
+        return windowingBetweenEnd != null ? windowingBetweenEnd.equals(sqlOver.windowingBetweenEnd) : sqlOver.windowingBetweenEnd == null;
+
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((orderBy == null) ? 0 : orderBy.hashCode());
-        result = prime * result + partitionBy.hashCode();
+        int result = partitionBy != null ? partitionBy.hashCode() : 0;
+        result = 31 * result + (orderBy != null ? orderBy.hashCode() : 0);
+        result = 31 * result + (of != null ? of.hashCode() : 0);
+        result = 31 * result + (windowing != null ? windowing.hashCode() : 0);
+        result = 31 * result + (windowingType != null ? windowingType.hashCode() : 0);
+        result = 31 * result + (windowingPreceding ? 1 : 0);
+        result = 31 * result + (windowingFollowing ? 1 : 0);
+        result = 31 * result + (windowingBetweenBegin != null ? windowingBetweenBegin.hashCode() : 0);
+        result = 31 * result + (windowingBetweenBeginPreceding ? 1 : 0);
+        result = 31 * result + (windowingBetweenBeginFollowing ? 1 : 0);
+        result = 31 * result + (windowingBetweenEnd != null ? windowingBetweenEnd.hashCode() : 0);
+        result = 31 * result + (windowingBetweenEndPreceding ? 1 : 0);
+        result = 31 * result + (windowingBetweenEndFollowing ? 1 : 0);
         return result;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        SQLOver other = (SQLOver) obj;
-        if (orderBy == null) {
-            if (other.orderBy != null) {
-                return false;
-            }
-        } else if (!orderBy.equals(other.orderBy)) {
-            return false;
-        }
-        return partitionBy.equals(other.partitionBy);
+    public static enum WindowingType {
+        ROWS, RANGE
     }
-
 }
