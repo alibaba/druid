@@ -276,6 +276,8 @@ public class OracleSelectParser extends SQLSelectParser {
 
         parseModelClause(queryBlock);
 
+        parseFetchClause(queryBlock);
+
         return queryRest(queryBlock);
     }
 

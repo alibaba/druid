@@ -37,6 +37,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected boolean                   forUpdate     = false;
     protected boolean                   noWait        = false;
     protected SQLExpr                   waitTime;
+    protected SQLExpr                   first;
 
     public SQLSelectQueryBlock(){
 
@@ -142,7 +143,22 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     }
     
     public void setWaitTime(SQLExpr waitTime) {
+        if (waitTime != null) {
+            waitTime.setParent(this);
+        }
         this.waitTime = waitTime;
+    }
+
+
+    public SQLExpr getFirst() {
+        return first;
+    }
+
+    public void setFirst(SQLExpr first) {
+        if (first != null) {
+            first.setParent(this);
+        }
+        this.first = first;
     }
 
 	@Override

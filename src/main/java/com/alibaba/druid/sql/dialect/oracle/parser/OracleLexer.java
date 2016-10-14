@@ -109,6 +109,8 @@ public class OracleLexer extends Lexer {
         map.put("PURGE", Token.PURGE);
         map.put("INITIALLY", Token.INITIALLY);
 
+        map.put("FETCH", Token.FETCH);
+
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
 

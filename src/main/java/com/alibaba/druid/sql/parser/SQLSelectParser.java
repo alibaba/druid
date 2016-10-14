@@ -540,4 +540,25 @@ public class SQLSelectParser extends SQLParser {
         }
     }
 
+    public void parseFetchClause(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token() == Token.FETCH) {
+            lexer.nextToken();
+            if (lexer.token() == Token.FIRST) {
+                lexer.nextToken();
+            } else {
+                acceptIdentifier("FIRST");
+            }
+            SQLExpr first = this.exprParser.primary();
+            queryBlock.setFirst(first);
+            if (identifierEquals("ROW") || identifierEquals("ROWS")) {
+                lexer.nextToken();
+            }
+
+            if (lexer.token() == Token.ONLY) {
+                lexer.nextToken();
+            } else {
+                acceptIdentifier("ONLY");
+            }
+        }
+    }
 }

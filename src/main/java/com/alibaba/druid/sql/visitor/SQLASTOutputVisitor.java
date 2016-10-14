@@ -787,7 +787,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getOrderBy().accept(this);
         }
 
+        printFetchFirst(x);
+
         return false;
+    }
+
+    protected void printFetchFirst(SQLSelectQueryBlock x) {
+        if (x.getFirst() != null) {
+            //order by 语句必须在FETCH FIRST ROWS ONLY之前
+            SQLObject parent= x.getParent();
+            if(parent instanceof SQLSelect) {
+                SQLOrderBy orderBy = ((SQLSelect) parent).getOrderBy();
+                if (orderBy!=null&&orderBy.getItems().size() > 0) {
+                    println();
+                    print0(ucase ? "ORDER BY " : "order by ");
+                    printAndAccept(orderBy.getItems(), ", ");
+                    ((SQLSelect) parent).setOrderBy(null);
+                }
+            }
+            println();
+            print0(ucase ? "FETCH FIRST " : "fetch first ");
+            x.getFirst().accept(this);
+            print0(ucase ? " ROWS ONLY" : " rows only");
+        }
     }
 
     public boolean visit(SQLSelectItem x) {
