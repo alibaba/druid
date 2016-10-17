@@ -93,6 +93,8 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             x.getGroupBy().accept(this);
         }
 
+        printFetchFirst(x);
+
         return false;
     }
 

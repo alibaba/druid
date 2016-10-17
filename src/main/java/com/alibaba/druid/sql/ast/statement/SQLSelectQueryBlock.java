@@ -38,6 +38,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected boolean                   noWait        = false;
     protected SQLExpr                   waitTime;
     protected SQLExpr                   first;
+    protected SQLExpr                   offset;
 
     public SQLSelectQueryBlock(){
 
@@ -159,6 +160,17 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             first.setParent(this);
         }
         this.first = first;
+    }
+
+    public SQLExpr getOffset() {
+        return offset;
+    }
+
+    public void setOffset(SQLExpr offset) {
+        if (offset != null) {
+            offset.setParent(this);
+        }
+        this.offset = offset;
     }
 
 	@Override

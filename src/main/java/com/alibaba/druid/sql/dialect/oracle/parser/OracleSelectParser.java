@@ -18,18 +18,14 @@ package com.alibaba.druid.sql.dialect.oracle.parser;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
@@ -82,8 +78,15 @@ public class OracleSelectParser extends SQLSelectParser {
 
         withSubquery(select);
 
-        select.setQuery(query());
-        select.setOrderBy(this.parseOrderBy());
+        SQLSelectQuery query = query();
+        select.setQuery(query);
+
+        SQLOrderBy orderBy = this.parseOrderBy();
+        select.setOrderBy(orderBy);
+        if (orderBy != null && query instanceof SQLSelectQueryBlock) {
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+            parseFetchClause(queryBlock);
+        }
 
         if (lexer.token() == (Token.FOR)) {
             lexer.nextToken();

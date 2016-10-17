@@ -60,6 +60,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.appender = appender;
     }
 
+    public SQLASTOutputVisitor(Appendable appender, String dbType){
+        this.appender = appender;
+        this.dbType = dbType;
+    }
+
     public SQLASTOutputVisitor(Appendable appender, boolean parameterized){
         this.appender = appender;
         this.parameterized = parameterized;
@@ -753,6 +758,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print0(ucase ? "SELECT " : "select ");
 
+        if (JdbcConstants.INFORMIX.equals(dbType)) {
+            printFetchFirst(x);
+        }
+
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
             print0(ucase ? "ALL " : "all ");
         } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
@@ -787,28 +796,51 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getOrderBy().accept(this);
         }
 
-        printFetchFirst(x);
+        if (!JdbcConstants.INFORMIX.equals(dbType)) {
+            printFetchFirst(x);
+        }
 
         return false;
     }
 
     protected void printFetchFirst(SQLSelectQueryBlock x) {
-        if (x.getFirst() != null) {
-            //order by 语句必须在FETCH FIRST ROWS ONLY之前
-            SQLObject parent= x.getParent();
-            if(parent instanceof SQLSelect) {
-                SQLOrderBy orderBy = ((SQLSelect) parent).getOrderBy();
-                if (orderBy!=null&&orderBy.getItems().size() > 0) {
-                    println();
-                    print0(ucase ? "ORDER BY " : "order by ");
-                    printAndAccept(orderBy.getItems(), ", ");
-                    ((SQLSelect) parent).setOrderBy(null);
+        SQLExpr offset = x.getOffset();
+        SQLExpr first = x.getFirst();
+
+        boolean informix = JdbcConstants.INFORMIX.equals(dbType);
+        if (first != null) {
+            if (informix) {
+                if (offset != null) {
+                    print0(ucase ? "SKIP " : "skip ");
+                    offset.accept(this);
                 }
+
+                print0(ucase ? " FIRST " : " first ");
+                first.accept(this);
+                print(' ');
+            } else {
+                //order by 语句必须在FETCH FIRST ROWS ONLY之前
+                SQLObject parent = x.getParent();
+                if (parent instanceof SQLSelect) {
+                    SQLOrderBy orderBy = ((SQLSelect) parent).getOrderBy();
+                    if (orderBy != null && orderBy.getItems().size() > 0) {
+                        println();
+                        print0(ucase ? "ORDER BY " : "order by ");
+                        printAndAccept(orderBy.getItems(), ", ");
+                    }
+                }
+
+                println();
+
+                if (offset != null) {
+                    print0(ucase ? "OFFSET " : "offset ");
+                    offset.accept(this);
+                    print0(ucase ? " ROWS " : " rows ");
+                }
+                print0(ucase ? "FETCH FIRST " : "fetch first ");
+                first.accept(this);
+                print0(ucase ? " ROWS ONLY" : " rows only");
             }
-            println();
-            print0(ucase ? "FETCH FIRST " : "fetch first ");
-            x.getFirst().accept(this);
-            print0(ucase ? " ROWS ONLY" : " rows only");
         }
     }
 

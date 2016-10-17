@@ -344,7 +344,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
         }
 
-        x.getQuery().accept(this);
+        SQLSelectQuery query = x.getQuery();
+        query.accept(this);
 
         if (x.getRestriction() != null) {
             print(' ');
@@ -356,9 +357,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getForUpdate().accept(this);
         }
 
-        if (x.getOrderBy() != null) {
-            println();
-            x.getOrderBy().accept(this);
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            boolean hasFirst = false;
+            if (query instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+                hasFirst = queryBlock.getFirst() != null;
+            }
+
+            if (!hasFirst) {
+                println();
+                orderBy.accept(this);
+            }
         }
 
         return false;

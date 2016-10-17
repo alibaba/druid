@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVisitor {
 
@@ -77,7 +78,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     }
 
     public OdpsOutputVisitor(Appendable appender){
-        super(appender);
+        super(appender, JdbcConstants.ODPS);
     }
 
     public boolean visit(OdpsCreateTableStatement x) {

@@ -54,7 +54,7 @@ public class MySqlReplaceTest extends MysqlTest {
         assertEquals(0, visitor.getConditions().size());
 
         assertTrue(visitor.containsTable("t1"));
-        
+
         assertTrue(visitor.containsColumn("t1", "id"));
         assertTrue(visitor.containsColumn("t1", "name"));
     }

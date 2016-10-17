@@ -386,7 +386,7 @@ public class SQLUtils {
             return new OdpsOutputVisitor(out);
         }
         
-        return new SQLASTOutputVisitor(out);
+        return new SQLASTOutputVisitor(out, dbType);
     }
     
     @Deprecated

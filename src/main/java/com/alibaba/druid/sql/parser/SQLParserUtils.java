@@ -70,7 +70,7 @@ public class SQLParserUtils {
             return new PhoenixStatementParser(sql);
         }
 
-        return new SQLStatementParser(sql);
+        return new SQLStatementParser(sql, dbType);
     }
 
     public static SQLExprParser createExprParser(String sql, String dbType) {

@@ -173,6 +173,20 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
         }
 
+        if (JdbcConstants.INFORMIX.equals(dbType)) {
+            if (identifierEquals("SKIP")) {
+                lexer.nextToken();
+                SQLExpr offset = this.exprParser.primary();
+                queryBlock.setOffset(offset);
+            }
+
+            if (identifierEquals("FIRST")) {
+                lexer.nextToken();
+                SQLExpr first = this.exprParser.primary();
+                queryBlock.setFirst(first);
+            }
+        }
+
         if (lexer.token() == Token.DISTINCT) {
             queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
             lexer.nextToken();
@@ -541,6 +555,15 @@ public class SQLSelectParser extends SQLParser {
     }
 
     public void parseFetchClause(SQLSelectQueryBlock queryBlock) {
+        if (identifierEquals("OFFSET") || lexer.token() == Token.OFFSET) {
+            lexer.nextToken();
+            SQLExpr offset = this.exprParser.primary();
+            queryBlock.setOffset(offset);
+            if (identifierEquals("ROW") || identifierEquals("ROWS")) {
+                lexer.nextToken();
+            }
+        }
+
         if (lexer.token() == Token.FETCH) {
             lexer.nextToken();
             if (lexer.token() == Token.FIRST) {
