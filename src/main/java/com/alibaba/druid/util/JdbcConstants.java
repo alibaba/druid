@@ -68,6 +68,8 @@ public interface JdbcConstants {
 
     public static final String OCEANBASE         = "oceanbase";
     public static final String OCEANBASE_DRIVER  = "com.mysql.jdbc.Driver";
+
+    public static final String INFORMIX          = "informix";
     
     /**
      * 阿里云odps
