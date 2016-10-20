@@ -1088,6 +1088,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void setDriverClassName(String driverClass) {
         if (inited) {
+            if (StringUtils.equals(this.driverClass, driverClass)) {
+                return;
+            }
+            
             throw new UnsupportedOperationException();
         }
 
