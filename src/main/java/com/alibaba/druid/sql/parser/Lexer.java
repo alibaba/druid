@@ -61,7 +61,9 @@ public class Lexer {
     protected Keywords     keywods      = Keywords.DEFAULT_KEYWORDS;
 
     protected String       stringVal;
-    
+
+    protected int          commentCount = 0;
+
     protected List<String> comments = new ArrayList<String>(2);
 
     protected boolean      skipComment  = true;
@@ -94,6 +96,12 @@ public class Lexer {
     public Lexer(String input, CommentHandler commentHandler){
         this(input, true);
         this.commentHandler = commentHandler;
+    }
+
+    public Lexer(String input, CommentHandler commentHandler, String dbType){
+        this(input, true);
+        this.commentHandler = commentHandler;
+        this.dbType = dbType;
     }
     
     public boolean isKeepComments() {
@@ -300,7 +308,7 @@ public class Lexer {
 
     public final void nextToken() {
         bufPos = 0;
-        if (comments != null) {
+        if (comments != null && comments.size() > 0) {
             comments = null;
         }
 
@@ -1104,6 +1112,7 @@ public class Lexer {
 
         stringVal = subString(mark, bufPos);
         token = Token.MULTI_LINE_COMMENT;
+        commentCount++;
         if (keepComments) {
             addComment(stringVal);
         }
@@ -1153,6 +1162,7 @@ public class Lexer {
 
         stringVal = subString(mark, bufPos);
         token = Token.LINE_COMMENT;
+        commentCount++;
         if (keepComments) {
             addComment(stringVal);
         }
@@ -1444,6 +1454,10 @@ public class Lexer {
 
     public boolean hasComment() {
         return comments != null;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
     }
     
     public void skipToEOF() {

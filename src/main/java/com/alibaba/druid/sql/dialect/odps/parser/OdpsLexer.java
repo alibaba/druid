@@ -115,6 +115,7 @@ public class OdpsLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos + 1);
                 token = Token.MULTI_LINE_COMMENT;
+                commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
                 }
@@ -166,6 +167,7 @@ public class OdpsLexer extends Lexer {
 
             stringVal = subString(mark, ch != EOI ? bufPos : bufPos + 1);
             token = Token.LINE_COMMENT;
+            commentCount++;
             if (keepComments) {
                 addComment(stringVal);
             }

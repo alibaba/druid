@@ -105,6 +105,7 @@ public class SQLServerLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
+                commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
                 }
@@ -146,6 +147,7 @@ public class SQLServerLexer extends Lexer {
 
             stringVal = subString(mark + 1, bufPos);
             token = Token.LINE_COMMENT;
+            commentCount++;
             if (keepComments) {
                 addComment(stringVal);
             }

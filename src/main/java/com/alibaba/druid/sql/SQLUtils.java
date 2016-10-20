@@ -47,17 +47,14 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.util.Utils;
 
 public class SQLUtils {
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption();
@@ -668,6 +665,31 @@ public class SQLUtils {
         List<SQLStatement> stmtList = parseStatements(sql, dbType);
 
         return false;
+    }
+
+    public static long hash(String sql, String dbType) {
+        Lexer lexer = SQLParserUtils.createLexer(sql, dbType);
+
+        StringBuilder buf = new StringBuilder(sql.length());
+
+        for (;;) {
+            lexer.nextToken();
+
+            Token token = lexer.token();
+            if (token == Token.EOF) {
+                break;
+            }
+
+            if (token == Token.ERROR) {
+                return Utils.murmurhash2_64(sql);
+            }
+
+            if (buf.length() != 0) {
+
+            }
+        }
+
+        return buf.hashCode();
     }
 }
 

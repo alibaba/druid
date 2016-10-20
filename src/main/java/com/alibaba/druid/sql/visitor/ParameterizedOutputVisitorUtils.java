@@ -64,10 +64,15 @@ public class ParameterizedOutputVisitorUtils {
                 out.append(";\n");
             }
             SQLStatement stmt = statementList.get(i);
+
+            if (stmt.hasBeforeComment()) {
+                stmt.getBeforeCommentsDirect().clear();
+            }
             stmt.accept(visitor);
         }
 
-        if (visitor.getReplaceCount() == 0 && !parser.getLexer().hasComment()) {
+        if (visitor.getReplaceCount() == 0
+                && parser.getLexer().getCommentCount() == 0) {
             return sql;
         }
 
