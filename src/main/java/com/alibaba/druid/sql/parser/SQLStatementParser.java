@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
+import com.alibaba.druid.util.JdbcConstants;
 import org.apache.ibatis.jdbc.SQL;
 
 public class SQLStatementParser extends SQLParser {
@@ -1978,6 +1979,13 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected SQLAlterTableAddColumn parseAlterTableAddColumn() {
+        boolean odps = JdbcConstants.ODPS.equals(dbType);
+
+        if (odps) {
+            acceptIdentifier("COLUMNS");
+            accept(Token.LPAREN);
+        }
+
         SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
 
         for (;;) {
@@ -1991,6 +1999,10 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
             break;
+        }
+
+        if (odps) {
+            accept(Token.RPAREN);
         }
         return item;
     }

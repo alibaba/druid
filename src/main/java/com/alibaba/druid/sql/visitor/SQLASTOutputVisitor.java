@@ -1639,7 +1639,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTableAddColumn x) {
-        print0(ucase ? "ADD (" : "add (");
+        boolean odps = JdbcConstants.ODPS.equals(dbType);
+        if (odps) {
+            print0(ucase ? "ADD COLUMNS (" : "add columns (");
+        } else {
+            print0(ucase ? "ADD (" : "add (");
+        }
         printAndAccept(x.getColumns(), ", ");
         print(')');
         return false;
