@@ -24,7 +24,7 @@ import org.junit.Assert;
 
 import java.util.List;
 
-public class OdpsSelectTest19 extends TestCase {
+public class OdpsAlterTableAddColumnsTest extends TestCase {
 
     public void test_select() throws Exception {
         String sql = "alter table adl_smeta_column_indi_rule_relation_sdt add columns (rule_level string);";//

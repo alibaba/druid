@@ -881,6 +881,22 @@ public class SQLStatementParser extends SQLParser {
                     } else {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     }
+                } else if (identifierEquals("CHANGE")) {
+                    lexer.nextToken();
+                    accept(Token.COLUMN);
+                    SQLName columnName = this.exprParser.name();
+                    accept(Token.COMMENT);
+                    SQLExpr comment = this.exprParser.primary();
+
+                    SQLColumnDefinition columnDefinition = new SQLColumnDefinition();
+                    columnDefinition.setName(columnName);
+                    columnDefinition.setComment(comment);
+
+                    SQLAlterTableAlterColumn changeColumn = new SQLAlterTableAlterColumn();
+
+                    changeColumn.setColumn(columnDefinition);
+
+                    stmt.addItem(changeColumn);
                 } else if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
                     acceptIdentifier("NOCHECK");

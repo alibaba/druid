@@ -1637,9 +1637,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    protected boolean isOdps() {
+        return JdbcConstants.ODPS.equals(dbType);
+    }
+
     @Override
     public boolean visit(SQLAlterTableAddColumn x) {
-        boolean odps = JdbcConstants.ODPS.equals(dbType);
+        boolean odps = isOdps();
         if (odps) {
             print0(ucase ? "ADD COLUMNS (" : "add columns (");
         } else {
@@ -1962,7 +1966,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLAlterTableAlterColumn x) {
-        print0(ucase ? "ALTER COLUMN " : "alter column ");
+        boolean odps = isOdps();
+        if (odps) {
+            print0(ucase ? "CHANGE COLUMN " : "change column ");
+        } else {
+            print0(ucase ? "ALTER COLUMN " : "alter column ");
+        }
         x.getColumn().accept(this);
 
         if (x.isSetNotNull()) { // postgresql
