@@ -56,7 +56,7 @@ public class ParameterizedOutputVisitorUtils {
             return sql;
         }
 
-        StringBuilder out = new StringBuilder();
+        StringBuilder out = new StringBuilder(sql.length());
         ParameterizedVisitor visitor = createParameterizedOutputVisitor(out, dbType);
 
         for (int i = 0; i < statementList.size(); i++) {
