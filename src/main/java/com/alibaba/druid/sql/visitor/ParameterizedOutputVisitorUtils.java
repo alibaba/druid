@@ -90,7 +90,8 @@ public class ParameterizedOutputVisitorUtils {
             return new MySqlOutputVisitor(out, true);
         }
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+        if (JdbcUtils.POSTGRESQL.equals(dbType)
+                || JdbcUtils.ENTERPRISE_DB.equals(dbType)) {
             return new PGOutputVisitor(out, true);
         }
 

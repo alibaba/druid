@@ -396,6 +396,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "com.alibaba.druid.mock.MockDriver";
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
             return POSTGRESQL_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:edb:")) {
+            return ENTERPRISE_DB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:odps:")) {
             return ODPS_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
@@ -479,6 +481,8 @@ public final class JdbcUtils implements JdbcConstants {
             return MOCK;
         } else if (rawUrl.startsWith("jdbc:postgresql:") || rawUrl.startsWith("jdbc:log4jdbc:postgresql:")) {
             return POSTGRESQL;
+        } else if (rawUrl.startsWith("jdbc:edb:")) {
+            return ENTERPRISE_DB;
         } else if (rawUrl.startsWith("jdbc:hsqldb:") || rawUrl.startsWith("jdbc:log4jdbc:hsqldb:")) {
             return HSQL;
         } else if (rawUrl.startsWith("jdbc:odps:")) {

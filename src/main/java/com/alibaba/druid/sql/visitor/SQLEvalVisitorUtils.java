@@ -90,6 +90,7 @@ import com.alibaba.druid.sql.visitor.functions.Trim;
 import com.alibaba.druid.sql.visitor.functions.Ucase;
 import com.alibaba.druid.sql.visitor.functions.Unhex;
 import com.alibaba.druid.util.HexBin;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.Utils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
@@ -167,7 +168,8 @@ public class SQLEvalVisitorUtils {
             return new OracleEvalVisitor();
         }
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+        if (JdbcConstants.POSTGRESQL.equals(dbType)
+                || JdbcConstants.ENTERPRISE_DB.equals(dbType)) {
             return new PGEvalVisitor();
         }
 

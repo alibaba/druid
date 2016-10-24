@@ -17,6 +17,7 @@ public class OdpsDescTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
+        stmt.toString();
         System.out.println(output);
         Assert.assertEquals("DESC coupon_dataset_4_feature", output);
     }
