@@ -60,7 +60,7 @@ public final class ExportParameterVisitorUtils {
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISE_DB.equals(dbType)) {
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
             return new PGExportParameterVisitor(out);
         }
 

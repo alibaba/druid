@@ -89,6 +89,6 @@ public interface JdbcConstants {
     public static final String PHOENIX           = "phoenix";
     public static final String PHOENIX_DRIVER    = "org.apache.phoenix.jdbc.PhoenixDriver";
 
-    public static final String ENTERPRISE_DB        = "edb";
-    public static final String ENTERPRISE_DB_DRIVER = "com.edb.Driver";
+    public static final String ENTERPRISEDB        = "edb";
+    public static final String ENTERPRISEDB_DRIVER = "com.edb.Driver";
 }
