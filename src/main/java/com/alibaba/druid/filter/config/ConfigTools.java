@@ -94,7 +94,7 @@ public class ConfigTools {
 			X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(
 					publicKeyBytes);
 
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
 			return keyFactory.generatePublic(x509KeySpec);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Failed to get public key", e);
@@ -129,7 +129,7 @@ public class ConfigTools {
 
 	public static String decrypt(PublicKey publicKey, String cipherText)
 			throws Exception {
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, publicKey);
 		} catch (InvalidKeyException e) {
