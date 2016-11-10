@@ -27,26 +27,18 @@ import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
 public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implements ParameterizedVisitor {
 
-    private int replaceCount;
-
     public OracleParameterizedOutputVisitor(){
         this(new StringBuilder());
+        this.parameterized = true;
     }
 
     public OracleParameterizedOutputVisitor(Appendable appender){
         super(appender);
+        this.parameterized = true;
     }
 
     public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi){
         super(appender, printPostSemi);
-    }
-
-    public int getReplaceCount() {
-        return this.replaceCount;
-    }
-
-    public void incrementReplaceCunt() {
-        replaceCount++;
     }
 
     public boolean visit(SQLInListExpr x) {

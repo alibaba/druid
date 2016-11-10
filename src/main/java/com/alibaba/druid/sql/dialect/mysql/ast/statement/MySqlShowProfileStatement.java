@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowProfileStatement extends MySqlStatementImpl implements MySqlShowStatement {
@@ -28,7 +28,7 @@ public class MySqlShowProfileStatement extends MySqlStatementImpl implements MyS
 
     private SQLExpr    forQuery;
 
-    private Limit      limit;
+    private SQLLimit limit;
 
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
@@ -47,11 +47,11 @@ public class MySqlShowProfileStatement extends MySqlStatementImpl implements MyS
         this.forQuery = forQuery;
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         this.limit = limit;
     }
 

@@ -114,6 +114,7 @@ public class MySqlLexer extends Lexer {
 
         stringVal = subString(mark - 1, bufPos + 1);
         token = Token.LINE_COMMENT;
+        commentCount++;
         if (keepComments) {
             addComment(stringVal);
         }
@@ -255,8 +256,13 @@ public class MySqlLexer extends Lexer {
 
                 if (!isIdentifierChar(ch)) {
                     if (ch == '-' && pos < text.length() - 1) {
+                        if (mark > 0 && text.charAt(mark - 1) == '.') {
+                            break;
+                        }
+
                         char next_char = text.charAt(pos + 1);
                         if (isIdentifierChar(next_char)) {
+                            bufPos++;
                             continue;
                         }
                     }
@@ -348,6 +354,7 @@ public class MySqlLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
+                commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
                 }
@@ -394,6 +401,7 @@ public class MySqlLexer extends Lexer {
 
             stringVal = subString(mark, bufPos + 1);
             token = Token.LINE_COMMENT;
+            commentCount++;
             if (keepComments) {
                 addComment(stringVal);
             }

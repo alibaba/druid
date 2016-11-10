@@ -51,8 +51,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr.Search
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -723,11 +722,11 @@ public class MySqlExprParser extends SQLExprParser {
         return super.nameRest(name);
     }
 
-    public Limit parseLimit() {
+    public SQLLimit parseLimit() {
         if (lexer.token() == Token.LIMIT) {
             lexer.nextToken();
 
-            MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
+            SQLLimit limit = new SQLLimit();
 
             SQLExpr temp = this.expr();
             if (lexer.token() == (Token.COMMA)) {
@@ -801,7 +800,15 @@ public class MySqlExprParser extends SQLExprParser {
 
         accept(Token.LPAREN);
         for (;;) {
-            unique.addColumn(this.expr());
+            SQLExpr column = this.expr();
+            if (lexer.token() == Token.ASC) {
+                column = new MySqlOrderingExpr(column, SQLOrderingSpecification.ASC);
+                lexer.nextToken();
+            } else if (lexer.token() == Token.DESC) {
+                column = new MySqlOrderingExpr(column, SQLOrderingSpecification.DESC);
+                lexer.nextToken();
+            }
+            unique.addColumn(column);
             if (!(lexer.token() == (Token.COMMA))) {
                 break;
             } else {

@@ -29,30 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
-import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
-import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
-import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
@@ -74,7 +51,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
@@ -925,6 +901,12 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleAlterTableDropPartition item = new OracleAlterTableDropPartition();
             item.setName(this.exprParser.name());
             stmt.addItem(item);
+        } else if (lexer.token() == Token.INDEX) {
+            lexer.nextToken();
+            SQLName indexName = this.exprParser.name();
+            SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
+            item.setIndexName(indexName);
+            stmt.addItem(item);
         } else {
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
@@ -1283,6 +1265,9 @@ public class OracleStatementParser extends SQLStatementParser {
                 deleteStatement.setTableName(tableName);
 
                 accept(Token.RPAREN);
+            } else if (lexer.token() == Token.LPAREN) {
+                SQLTableSource tableSource = this.createSQLSelectParser().parseTableSource();
+                deleteStatement.setTableSource(tableSource);
             } else {
                 SQLName tableName = exprParser.name();
                 deleteStatement.setTableName(tableName);
@@ -1459,14 +1444,15 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleCreateSequenceStatement parseCreateSequence(boolean acceptCreate) {
+    public SQLCreateSequenceStatement parseCreateSequence(boolean acceptCreate) {
         if (acceptCreate) {
             accept(Token.CREATE);
         }
 
         accept(Token.SEQUENCE);
 
-        OracleCreateSequenceStatement stmt = new OracleCreateSequenceStatement();
+        SQLCreateSequenceStatement stmt = new SQLCreateSequenceStatement();
+        stmt.setDbType(JdbcConstants.ORACLE);
         stmt.setName(this.exprParser.name());
 
         for (;;) {

@@ -144,7 +144,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             provider = new SQLServerWallProvider(config);
-        } else if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+        } else if (JdbcUtils.POSTGRESQL.equals(dbType)
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
             }

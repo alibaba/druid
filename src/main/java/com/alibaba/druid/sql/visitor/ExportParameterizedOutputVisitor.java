@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.visitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExportParameterizedOutputVisitor extends ParameterizedOutputVisitor implements ExportParameterVisitor {
+public class ExportParameterizedOutputVisitor extends SQLASTOutputVisitor implements ExportParameterVisitor {
 
     /**
      * true= if require parameterized sql output
@@ -26,7 +26,7 @@ public class ExportParameterizedOutputVisitor extends ParameterizedOutputVisitor
     private final boolean requireParameterizedOutput;
 
     public ExportParameterizedOutputVisitor(final List<Object> parameters,final Appendable appender,final boolean wantParameterizedOutput){
-        super(appender);
+        super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
     }

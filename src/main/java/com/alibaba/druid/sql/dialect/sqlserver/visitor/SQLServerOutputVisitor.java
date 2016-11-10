@@ -47,6 +47,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         super(appender);
     }
 
+    public SQLServerOutputVisitor(Appendable appender, boolean parameterized){
+        super(appender, parameterized);
+    }
+
     public boolean visit(SQLServerSelectQueryBlock x) {
         print0(ucase ? "SELECT " : "select ");
 
@@ -88,6 +92,8 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             println();
             x.getGroupBy().accept(this);
         }
+
+        printFetchFirst(x);
 
         return false;
     }
@@ -151,23 +157,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         
         x.getTableSource().accept(this);
 
-        if (x.getColumns().size() > 0) {
-            incrementIndent();
-            println();
-            print('(');
-            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
-                if (i != 0) {
-                    if (i % 5 == 0) {
-                        println();
-                    }
-                    print0(", ");
-                }
-
-                x.getColumns().get(i).accept(this);
-            }
-            print(')');
-            decrementIndent();
-        }
+        printInsertColumns(x.getColumns());
         
         if (x.getOutput() != null) {
             println();
@@ -177,8 +167,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (x.getValuesList().size() != 0) {
             println();
-            print0(ucase ? "VALUES" : "values");
-            println();
+            print0(ucase ? "VALUES " : "values ");
             for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
                 if (i != 0) {
                     print(',');
@@ -256,7 +245,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     public boolean visit(SQLExprTableSource x) {
-        x.getExpr().accept(this);
+        printTableSourceExpr(x.getExpr());
 
         if (x.getAlias() != null) {
             print(' ');

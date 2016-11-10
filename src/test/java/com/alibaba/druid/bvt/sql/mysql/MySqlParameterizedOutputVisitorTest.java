@@ -17,22 +17,30 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 
 public class MySqlParameterizedOutputVisitorTest extends TestCase {
-
     public void test_0() throws Exception {
         validate("SELECT * FROM T WHERE ID IN (?, ?, ?)", "SELECT *\nFROM T\nWHERE ID IN (?)");
+    }
+
+    public void test_1() throws Exception {
         validate("SELECT * FROM T WHERE ID = 5", "SELECT *\nFROM T\nWHERE ID = ?");
+    }
+
+    public void test_2() throws Exception {
         validate("SELECT * FROM T WHERE 1 = 0 AND ID = 5", "SELECT *\nFROM T\nWHERE 1 = 0\n\tAND ID = ?");
+    }
+
+    public void test_3() throws Exception {
         validate("SELECT * FROM T WHERE ID = ? OR ID = ?", "SELECT *\nFROM T\nWHERE ID = ?");
         validate("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT *\nFROM T\nWHERE A.ID = ?");
         validate("SELECT * FROM T WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ?",
@@ -56,7 +64,7 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
-        MySqlParameterizedOutputVisitor visitor = new MySqlParameterizedOutputVisitor(out);
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
         stmt.accept(visitor);
         
         Assert.assertTrue(visitor.getReplaceCount() > 0);

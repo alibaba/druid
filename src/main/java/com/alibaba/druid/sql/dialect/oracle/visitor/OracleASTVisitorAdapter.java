@@ -46,7 +46,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
@@ -73,7 +73,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
@@ -134,11 +133,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleAnalyticWindowing x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleDateExpr x) {
 
     }
 
@@ -231,12 +225,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleAnalyticWindowing x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleDateExpr x) {
 
         return true;
     }
@@ -1018,16 +1006,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleAlterTablespaceStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleCreateSequenceStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleCreateSequenceStatement x) {
 
     }
 

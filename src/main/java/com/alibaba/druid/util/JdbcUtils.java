@@ -396,6 +396,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "com.alibaba.druid.mock.MockDriver";
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
             return POSTGRESQL_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:edb:")) {
+            return ENTERPRISEDB_DRIVER;
         } else if (rawUrl.startsWith("jdbc:odps:")) {
             return ODPS_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
@@ -442,6 +444,10 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.HIVE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:hive2:")) {
             return JdbcConstants.HIVE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:phoenix:thin:")) {
+            return "org.apache.phoenix.queryserver.client.Driver";
+        } else if (rawUrl.startsWith("jdbc:phoenix://")) {
+            return JdbcConstants.PHOENIX_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -475,6 +481,8 @@ public final class JdbcUtils implements JdbcConstants {
             return MOCK;
         } else if (rawUrl.startsWith("jdbc:postgresql:") || rawUrl.startsWith("jdbc:log4jdbc:postgresql:")) {
             return POSTGRESQL;
+        } else if (rawUrl.startsWith("jdbc:edb:")) {
+            return ENTERPRISEDB;
         } else if (rawUrl.startsWith("jdbc:hsqldb:") || rawUrl.startsWith("jdbc:log4jdbc:hsqldb:")) {
             return HSQL;
         } else if (rawUrl.startsWith("jdbc:odps:")) {
@@ -523,6 +531,8 @@ public final class JdbcUtils implements JdbcConstants {
             return HIVE;
         } else if (rawUrl.startsWith("jdbc:hive2:")) {
             return HIVE;
+        } else if (rawUrl.startsWith("jdbc:phoenix:")) {
+            return PHOENIX;
         } else {
             return null;
         }

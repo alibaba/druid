@@ -15,14 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -30,7 +26,7 @@ import com.alibaba.druid.util.JdbcConstants;
 public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlStatement {
 
     private SQLOrderBy          orderBy;
-    private Limit               limit;
+    private SQLLimit limit;
 
     private boolean             lowPriority     = false;
     private boolean             ignore          = false;
@@ -39,32 +35,19 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
     private boolean             queryOnPk       = false;
     private SQLExpr             targetAffectRow;
 
-    private List<SQLSelectItem> returning       = new ArrayList<SQLSelectItem>();
-
     public MySqlUpdateStatement(){
         super(JdbcConstants.MYSQL);
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         if (limit != null) {
             limit.setParent(this);
         }
         this.limit = limit;
-    }
-
-    public List<SQLSelectItem> getReturning() {
-        return returning;
-    }
-
-    public void addReturning(List<SQLSelectItem> returning) {
-        for (SQLSelectItem item : returning) {
-            item.setParent(this);
-            this.returning.add(item);
-        }
     }
 
     @Override

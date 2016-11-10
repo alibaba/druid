@@ -59,7 +59,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateTimeUnit;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
@@ -536,17 +536,6 @@ public class OracleExprParser extends SQLExprParser {
     public SQLExpr primaryRest(SQLExpr expr) {
         if (expr.getClass() == SQLIdentifierExpr.class) {
             String ident = ((SQLIdentifierExpr)expr).getName();
-            
-            if ("DATE".equalsIgnoreCase(ident)) {
-                OracleDateExpr timestamp = new OracleDateExpr();
-
-                String literal = lexer.stringVal();
-                timestamp.setLiteral(literal);
-                accept(Token.LITERAL_CHARS);
-                
-                return primaryRest(timestamp);     
-            }
-            
             if ("TIMESTAMP".equalsIgnoreCase(ident)) {
                 if (lexer.token() != Token.LITERAL_ALIAS && lexer.token() != Token.LITERAL_CHARS) {
                     return new SQLIdentifierExpr("TIMESTAMP");

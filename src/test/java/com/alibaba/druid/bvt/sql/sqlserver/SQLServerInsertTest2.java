@@ -29,10 +29,8 @@ public class SQLServerInsertTest2 extends TestCase {
         String sql = "INSERT INTO test (name)" + //
                      "VALUES (N'a'), (N'b'), (N'c')";
 
-        String expect = "INSERT INTO test" + //
-                        "\n\t(name)" + //
-                        "\nVALUES" + //
-                        "\n(N'a')," + //
+        String expect = "INSERT INTO test (name)" + //
+                        "\nVALUES (N'a')," + //
                         "\n(N'b')," + //
                         "\n(N'c')";
 

@@ -35,7 +35,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.builder.SQLSelectBuilder;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -230,7 +230,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
         if (queryBlock instanceof MySqlSelectQueryBlock) {
             MySqlSelectQueryBlock mySqlQueryBlock = (MySqlSelectQueryBlock) queryBlock;
 
-            Limit limit = new Limit();
+            SQLLimit limit = new SQLLimit();
             limit.setRowCount(new SQLIntegerExpr(rowCount));
             if (offset > 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));

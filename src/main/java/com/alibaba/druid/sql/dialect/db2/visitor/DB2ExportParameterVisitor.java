@@ -28,7 +28,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
-public class DB2ExportParameterVisitor extends DB2ParameterizedOutputVisitor implements ExportParameterVisitor {
+public class DB2ExportParameterVisitor extends DB2OutputVisitor implements ExportParameterVisitor {
 
 
     /**
@@ -37,7 +37,7 @@ public class DB2ExportParameterVisitor extends DB2ParameterizedOutputVisitor imp
     private final boolean requireParameterizedOutput;
 
     public DB2ExportParameterVisitor(final List<Object> parameters,final Appendable appender,final boolean wantParameterizedOutput){
-        super(appender);
+        super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
     }

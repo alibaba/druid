@@ -51,6 +51,9 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 // Out-of-memory errors
             case 1037: // ER_OUTOFMEMORY
             case 1038: // ER_OUT_OF_SORTMEMORY
+                // Access denied
+            case 1142: // ER_TABLEACCESS_DENIED_ERROR
+            case 1227: // ER_SPECIFIC_ACCESS_DENIED_ERROR
                 return true;
             default:
                 break;

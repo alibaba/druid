@@ -30,31 +30,14 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         super(appender);
     }
 
+    public DB2OutputVisitor(Appendable appender, boolean parameterized){
+        super(appender, parameterized);
+    }
+
     @Override
     public boolean visit(DB2SelectQueryBlock x) {
         this.visit((SQLSelectQueryBlock) x);
 
-        if (x.getFirst() != null) {
-
-            //order by 语句必须在FETCH FIRST ROWS ONLY之前
-            SQLObject parent= x.getParent();
-            if(parent instanceof SQLSelect)
-            {
-                SQLOrderBy orderBy= ((SQLSelect) parent).getOrderBy();
-                if (orderBy!=null&&orderBy.getItems().size() > 0) {
-                    println();
-                    print0(ucase ? "ORDER BY " : "order by ");
-                    printAndAccept(orderBy.getItems(), ", ");
-                    ((SQLSelect) parent).setOrderBy(null);
-                }
-            }
-            println();
-            print0(ucase ? "FETCH FIRST " : "fetch first ");
-            x.getFirst().accept(this);
-            print0(ucase ? " ROWS ONLY" : " rows only");
-
-
-        }
         if (x.isForReadOnly()) {
             println();
             print0(ucase ? "FOR READ ONLY" : "for read only");

@@ -28,10 +28,8 @@ public class SQLServerInsertTest extends TestCase {
         String sql = "INSERT INTO Cities (Location)" + //
                      "VALUES ( CONVERT(Point, '12.3:46.2') );";
 
-        String expect = "INSERT INTO Cities" + //
-                        "\n\t(Location)" + //
-                        "\nVALUES" + //
-                        "\n(CONVERT(Point, '12.3:46.2'))";
+        String expect = "INSERT INTO Cities (Location)" + //
+                        "\nVALUES (CONVERT(Point, '12.3:46.2'))";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

@@ -130,10 +130,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareS
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface MySqlASTVisitor extends SQLASTVisitor {
-    boolean visit(MySqlSelectQueryBlock.Limit x);
-
-    void endVisit(MySqlSelectQueryBlock.Limit x);
-
     boolean visit(MySqlTableIndex x);
 
     void endVisit(MySqlTableIndex x);

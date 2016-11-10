@@ -17,12 +17,12 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 
@@ -47,7 +47,7 @@ public class MySqlParameterizedOutputVisitorTest2 extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
-        MySqlParameterizedOutputVisitor visitor = new MySqlParameterizedOutputVisitor(out);
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out, true);
         stmt.accept(visitor);
 
         Assert.assertEquals(expect, out.toString());

@@ -36,10 +36,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class PGSQLStatementParser extends SQLStatementParser {
 
@@ -60,10 +57,17 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         PGUpdateStatement udpateStatement = new PGUpdateStatement();
 
-        SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+        SQLSelectParser selectParser = this.exprParser.createSelectParser();
+        SQLTableSource tableSource = selectParser.parseTableSource();
         udpateStatement.setTableSource(tableSource);
 
         parseUpdateSet(udpateStatement);
+
+        if (lexer.token() == Token.FROM) {
+            lexer.nextToken();
+            SQLTableSource from = selectParser.parseTableSource();
+            udpateStatement.setFrom(from);
+        }
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();

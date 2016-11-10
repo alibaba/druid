@@ -28,7 +28,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
-public class PGExportParameterVisitor extends PGParameterizedOutputVisitor implements ExportParameterVisitor {
+public class PGExportParameterVisitor extends PGOutputVisitor implements ExportParameterVisitor {
 
     /**
      * true= if require parameterized sql output
@@ -36,7 +36,7 @@ public class PGExportParameterVisitor extends PGParameterizedOutputVisitor imple
     private final boolean requireParameterizedOutput;
 
     public PGExportParameterVisitor(final List<Object> parameters,final Appendable appender,final boolean wantParameterizedOutput){
-        super(appender);
+        super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
     }

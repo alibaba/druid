@@ -73,7 +73,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
@@ -81,7 +81,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
@@ -1172,7 +1171,7 @@ public class WallVisitorUtils {
                 return true;
             } else if (parent instanceof SQLOrderBy) {
                 return true;
-            } else if (parent instanceof Limit) {
+            } else if (parent instanceof SQLLimit) {
                 return true;
             } else if (parent instanceof MySqlOrderingExpr) {
                 return true;
@@ -2388,7 +2387,7 @@ public class WallVisitorUtils {
                    || x instanceof SQLCreateIndexStatement //
                    || x instanceof SQLCreateViewStatement //
                    || x instanceof SQLCreateTriggerStatement //
-                   || x instanceof OracleCreateSequenceStatement //
+                   || x instanceof SQLCreateSequenceStatement //
         ) {
             allow = config.isCreateTableAllow();
             denyMessage = "create table not allow";

@@ -26,79 +26,11 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableLifecycle;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableLifecycle;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenameColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableRenamePartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableSetComment;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableSetLifecycle;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableTouch;
-import com.alibaba.druid.sql.ast.statement.SQLAlterViewRenameStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCheck;
-import com.alibaba.druid.sql.ast.statement.SQLCloseStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
-import com.alibaba.druid.sql.ast.statement.SQLConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
-import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableSpaceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
-import com.alibaba.druid.sql.ast.statement.SQLErrorLoggingClause;
-import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
-import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
-import com.alibaba.druid.sql.ast.statement.SQLObjectType;
-import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
-import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
-import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
-import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
-import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.util.JdbcConstants;
+import org.apache.ibatis.jdbc.SQL;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -418,11 +350,29 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (lexer.token() == Token.UPSERT || identifierEquals("UPSERT")) {
+                SQLStatement stmt = parseUpsert();
+                statementList.add(stmt);
+                continue;
+            }
+
             // throw new ParserException("syntax error, " + lexer.token() + " "
             // + lexer.stringVal() + ", pos "
             // + lexer.pos());
             printError(lexer.token());
         }
+    }
+
+    public SQLStatement parseUpsert() {
+        SQLInsertStatement insertStatement = new SQLInsertStatement();
+
+        if (lexer.token() == Token.UPSERT || identifierEquals("UPSERT")) {
+            lexer.nextToken();
+            insertStatement.setUpsert(true);
+        }
+
+        parseInsert0(insertStatement);
+        return insertStatement;
     }
 
     public SQLRollbackStatement parseRollback() {
@@ -931,6 +881,22 @@ public class SQLStatementParser extends SQLParser {
                     } else {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     }
+                } else if (identifierEquals("CHANGE")) {
+                    lexer.nextToken();
+                    accept(Token.COLUMN);
+                    SQLName columnName = this.exprParser.name();
+                    accept(Token.COMMENT);
+                    SQLExpr comment = this.exprParser.primary();
+
+                    SQLColumnDefinition columnDefinition = new SQLColumnDefinition();
+                    columnDefinition.setName(columnName);
+                    columnDefinition.setComment(comment);
+
+                    SQLAlterTableAlterColumn changeColumn = new SQLAlterTableAlterColumn();
+
+                    changeColumn.setColumn(columnDefinition);
+
+                    stmt.addItem(changeColumn);
                 } else if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
                     acceptIdentifier("NOCHECK");
@@ -1127,6 +1093,12 @@ public class SQLStatementParser extends SQLParser {
             SQLAlterTableDropPartition dropPartition = parseAlterTableDropPartition(ifNotExists);
 
             stmt.addItem(dropPartition);
+        } else if (lexer.token() == Token.INDEX) {
+            lexer.nextToken();
+            SQLName indexName = this.exprParser.name();
+            SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
+            item.setIndexName(indexName);
+            stmt.addItem(item);
         } else {
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         }
@@ -1528,7 +1500,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
-            this.exprParser.exprList(insertStatement.getColumns(), insertStatement);
+            parseInsertColumns(insertStatement);
             accept(Token.RPAREN);
         }
 
@@ -1552,6 +1524,10 @@ public class SQLStatementParser extends SQLParser {
             SQLSelect select = this.createSQLSelectParser().select();
             insertStatement.setQuery(select);
         }
+    }
+
+    protected void parseInsertColumns(SQLInsertInto insert) {
+        this.exprParser.exprList(insert.getColumns(), insert);
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
@@ -1911,6 +1887,12 @@ public class SQLStatementParser extends SQLParser {
             SQLName tableName = exprParser.name();
 
             deleteStatement.setTableName(tableName);
+
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
+                deleteStatement.setFrom(tableSource);
+            }
         }
 
         if (lexer.token() == (Token.WHERE)) {
@@ -2013,6 +1995,13 @@ public class SQLStatementParser extends SQLParser {
     }
 
     protected SQLAlterTableAddColumn parseAlterTableAddColumn() {
+        boolean odps = JdbcConstants.ODPS.equals(dbType);
+
+        if (odps) {
+            acceptIdentifier("COLUMNS");
+            accept(Token.LPAREN);
+        }
+
         SQLAlterTableAddColumn item = new SQLAlterTableAddColumn();
 
         for (;;) {
@@ -2026,6 +2015,10 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
             break;
+        }
+
+        if (odps) {
+            accept(Token.RPAREN);
         }
         return item;
     }

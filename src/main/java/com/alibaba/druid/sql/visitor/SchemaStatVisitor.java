@@ -51,77 +51,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterDatabaseStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAnalyzePartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableCheckPartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableCoalescePartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableConvertCharSet;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDiscardPartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeignKey;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableImportPartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableOptimizePartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableReOrganizePartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableRebuildPartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableRename;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableRepairPartition;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableTruncatePartition;
-import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCheck;
-import com.alibaba.druid.sql.ast.statement.SQLCloseStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropDatabaseStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropFunctionStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropSequenceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableSpaceStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropUserStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLFetchStatement;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLGrantStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLMergeStatement;
-import com.alibaba.druid.sql.ast.statement.SQLObjectType;
-import com.alibaba.druid.sql.ast.statement.SQLOpenStatement;
-import com.alibaba.druid.sql.ast.statement.SQLRevokeStatement;
-import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
-import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
@@ -137,6 +67,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     protected final List<Column>                       orderByColumns = new ArrayList<Column>();
     protected final Set<Column>                        groupByColumns = new LinkedHashSet<Column>();
     protected final List<SQLAggregateExpr>             aggregateFunctions = new ArrayList<SQLAggregateExpr>();
+    protected final List<SQLMethodInvokeExpr>          functions          = new ArrayList<SQLMethodInvokeExpr>(2);
 
     protected final Map<String, SQLObject> subQueryMap = new LinkedHashMap<String, SQLObject>();
 
@@ -191,7 +122,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         tableName = handleName(tableName);
-        TableStat stat = tableStats.get(tableName);
+
+        TableStat.Name tableNameObj = new TableStat.Name(tableName);
+        TableStat stat = tableStats.get(tableNameObj);
         if (stat == null) {
             stat = new TableStat();
             tableStats.put(new TableStat.Name(tableName), stat);
@@ -996,6 +929,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return tableStats.containsKey(new TableStat.Name(tableName));
     }
 
+    public boolean containsColumn(String tableName, String columnName) {
+        return columns.containsKey(new Column(tableName, columnName));
+    }
+
     public Collection<Column> getColumns() {
         return columns.values();
     }
@@ -1191,6 +1128,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
+        this.functions.add(x);
+
         accept(x.getParameters());
         return false;
     }
@@ -1214,6 +1153,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.getTableSource().accept(this);
         }
 
+        accept(x.getFrom());
+
         accept(x.getItems());
         accept(x.getWhere());
 
@@ -1230,6 +1171,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (x.getAlias() != null) {
             putAliasMap(this.aliasMap, x.getAlias(), tableName);
+        }
+
+        if (x.getTableSource() instanceof SQLSubqueryTableSource) {
+            SQLSelectQuery selectQuery = ((SQLSubqueryTableSource) x.getTableSource()).getSelect().getQuery();
+            if (selectQuery instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock subQueryBlock = ((SQLSelectQueryBlock) selectQuery);
+                subQueryBlock.getWhere().accept(this);
+            }
         }
 
         TableStat stat = getTableStat(tableName);
@@ -1509,6 +1458,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         for (SQLSelectOrderByItem item : x.getItems()) {
             item.accept(this);
         }
+
+        String table = ((SQLAlterTableStatement) x.getParent()).getName().toString();
+        TableStat tableStat = this.getTableStat(table);
+        tableStat.incrementCreateIndexCount();
         return false;
     }
 
@@ -1744,4 +1697,55 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
+    public List<SQLMethodInvokeExpr> getFunctions() {
+        return this.functions;
+    }
+
+    public boolean visit(SQLCreateSequenceStatement x) {
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableAddConstraint x) {
+        SQLConstraint constraint = x.getConstraint();
+        if (constraint instanceof SQLUniqueConstraint) {
+            SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+            String tableName = stmt.getName().toString();
+
+            TableStat tableStat = this.getTableStat(tableName);
+            tableStat.incrementCreateIndexCount();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropIndex x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String tableName = stmt.getName().toString();
+
+        TableStat tableStat = this.getTableStat(tableName);
+        tableStat.incrementDropIndexCount();
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropPrimaryKey x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String tableName = stmt.getName().toString();
+
+        TableStat tableStat = this.getTableStat(tableName);
+        tableStat.incrementDropIndexCount();
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropKey x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String tableName = stmt.getName().toString();
+
+        TableStat tableStat = this.getTableStat(tableName);
+        tableStat.incrementDropIndexCount();
+        return false;
+    }
+    //
 }

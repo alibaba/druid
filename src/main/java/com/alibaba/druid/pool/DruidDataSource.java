@@ -660,7 +660,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     JdbcDataSourceStat.setGlobal(dataSourceStat);
                 }
                 if (dataSourceStat.getDbType() == null) {
-                    dataSourceStat.setDbType(this.getDbType());
+                    dataSourceStat.setDbType(this.dbType);
                 }
             } else {
                 dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType, this.connectProperties);
@@ -1732,7 +1732,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         value.setName(this.getName());
-        value.setDbType(this.getDbType());
+        value.setDbType(this.dbType);
         value.setDriverClassName(this.getDriverClassName());
 
         value.setUrl(this.getUrl());
@@ -2492,7 +2492,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     for (PreparedStatementHolder stmtHolder : stmtPool.getMap().values()) {
                         Map<String, Object> stmtInfo = new LinkedHashMap<String, Object>();
 
-                        stmtInfo.put("sql", stmtHolder.getKey().getSql());
+                        stmtInfo.put("sql", stmtHolder.key.getSql());
                         stmtInfo.put("defaultRowPretch", stmtHolder.getDefaultRowPrefetch());
                         stmtInfo.put("rowPrefetch", stmtHolder.getRowPrefetch());
                         stmtInfo.put("hitCount", stmtHolder.getHitCount());
@@ -2578,7 +2578,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             map.put("MinEvictableIdleTimeMillis", this.getMinEvictableIdleTimeMillis());
             map.put("ConnectErrorCount", this.getConnectErrorCount());
             map.put("CreateTimespanMillis", this.getCreateTimespanMillis());
-            map.put("DbType", this.getDbType());
+            map.put("DbType", this.dbType);
 
             // 20 - 24
             map.put("ValidationQuery", this.getValidationQuery());
@@ -2651,7 +2651,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         dataMap.put("Identity", System.identityHashCode(this));
         dataMap.put("Name", this.getName());
-        dataMap.put("DbType", this.getDbType());
+        dataMap.put("DbType", this.dbType);
         dataMap.put("DriverClassName", this.getDriverClassName());
 
         dataMap.put("URL", this.getUrl());

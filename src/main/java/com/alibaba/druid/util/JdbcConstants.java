@@ -68,6 +68,8 @@ public interface JdbcConstants {
 
     public static final String OCEANBASE         = "oceanbase";
     public static final String OCEANBASE_DRIVER  = "com.mysql.jdbc.Driver";
+
+    public static final String INFORMIX          = "informix";
     
     /**
      * 阿里云odps
@@ -83,4 +85,10 @@ public interface JdbcConstants {
      */
     public static final String LOG4JDBC          = "log4jdbc";
     public static final String LOG4JDBC_DRIVER   = "net.sf.log4jdbc.DriverSpy";
+
+    public static final String PHOENIX           = "phoenix";
+    public static final String PHOENIX_DRIVER    = "org.apache.phoenix.jdbc.PhoenixDriver";
+
+    public static final String ENTERPRISEDB        = "edb";
+    public static final String ENTERPRISEDB_DRIVER = "com.edb.Driver";
 }
