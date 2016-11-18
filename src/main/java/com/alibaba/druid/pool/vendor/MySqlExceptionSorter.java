@@ -65,7 +65,8 @@ public class MySqlExceptionSorter implements ExceptionSorter {
         }
         
         String className = e.getClass().getName();
-        if ("com.mysql.jdbc.CommunicationsException".equals(className)) {
+        if ("com.mysql.jdbc.CommunicationsException".equals(className)
+                || "com.mysql.jdbc.exceptions.jdbc4.CommunicationsException".equals(className)) {
             return true;
         }
 
