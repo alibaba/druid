@@ -23,6 +23,7 @@ import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -94,7 +95,7 @@ public class ConfigTools {
 			X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(
 					publicKeyBytes);
 
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA", "SunRsaSign");
 			return keyFactory.generatePublic(x509KeySpec);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Failed to get public key", e);
@@ -118,7 +119,7 @@ public class ConfigTools {
 
 			byte[] publicKeyBytes = out.toByteArray();
 			X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
-			KeyFactory factory = KeyFactory.getInstance("RSA");
+			KeyFactory factory = KeyFactory.getInstance("RSA", "SunRsaSign");
 			return factory.generatePublic(spec);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Failed to get public key", e);
@@ -129,7 +130,7 @@ public class ConfigTools {
 
 	public static String decrypt(PublicKey publicKey, String cipherText)
 			throws Exception {
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, publicKey);
 		} catch (InvalidKeyException e) {
@@ -168,9 +169,9 @@ public class ConfigTools {
 	public static String encrypt(byte[] keyBytes, String plainText)
 			throws Exception {
 		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-		KeyFactory factory = KeyFactory.getInstance("RSA");
+		KeyFactory factory = KeyFactory.getInstance("RSA", "SunRsaSign");
 		PrivateKey privateKey = factory.generatePrivate(spec);
-		Cipher cipher = Cipher.getInstance("RSA");
+		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         try {
 		    cipher.init(Cipher.ENCRYPT_MODE, privateKey);
         } catch (InvalidKeyException e) {
@@ -189,10 +190,10 @@ public class ConfigTools {
 	}
 
 	public static byte[][] genKeyPairBytes(int keySize)
-			throws NoSuchAlgorithmException {
+			throws NoSuchAlgorithmException, NoSuchProviderException {
 		byte[][] keyPairBytes = new byte[2][];
 
-		KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
+		KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA", "SunRsaSign");
 		gen.initialize(keySize, new SecureRandom());
 		KeyPair pair = gen.generateKeyPair();
 
@@ -203,7 +204,7 @@ public class ConfigTools {
 	}
 
 	public static String[] genKeyPair(int keySize)
-			throws NoSuchAlgorithmException {
+			throws NoSuchAlgorithmException, NoSuchProviderException {
 		byte[][] keyPairBytes = genKeyPairBytes(keySize);
 		String[] keyPairs = new String[2];
 
