@@ -770,6 +770,12 @@ public class SQLExprParser extends SQLParser {
         }
 
         if (expr instanceof SQLName || expr instanceof SQLDefaultExpr || expr instanceof SQLCharExpr) {
+            boolean distinct = false;
+            if (lexer.token() == Token.DISTINCT) {
+                lexer.nextToken();
+                distinct = true;
+            }
+
             String methodName;
 
             SQLMethodInvokeExpr methodInvokeExpr;
@@ -784,6 +790,9 @@ public class SQLExprParser extends SQLParser {
 
             if (isAggreateFunction(methodName)) {
                 SQLAggregateExpr aggregateExpr = parseAggregateExpr(methodName);
+                if (distinct) {
+                    aggregateExpr.setOption(SQLAggregateOption.DISTINCT);
+                }
 
                 return aggregateExpr;
             }

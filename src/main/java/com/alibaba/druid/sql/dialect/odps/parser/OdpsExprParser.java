@@ -36,7 +36,8 @@ public class OdpsExprParser extends SQLExprParser {
             "MIN", //
             "STDDEV", //
             "SUM", //
-            "ROW_NUMBER"//
+            "ROW_NUMBER",
+            "WM_CONCAT"//
                                                      };
 
     public OdpsExprParser(Lexer lexer){
