@@ -1182,7 +1182,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (lexer.token() == Token.PURGE) {
+            if (lexer.token() == Token.PURGE || identifierEquals("PURGE")) {
                 lexer.nextToken();
                 stmt.setPurge(true);
                 continue;
