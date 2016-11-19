@@ -199,17 +199,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         final String name = x.getName();
-        boolean computeSharding = isShardingSupport();
-        if (computeSharding) {
+        if (shardingSupport) {
             SQLObject parent = x.getParent();
-            computeSharding = parent instanceof SQLExprTableSource || parent instanceof SQLPropertyExpr;
+            shardingSupport = parent instanceof SQLExprTableSource || parent instanceof SQLPropertyExpr;
         }
 
-        if (computeSharding) {
+        if (shardingSupport) {
             int pos = name.lastIndexOf('_');
             if (pos != -1 && pos != name.length() - 1) {
+                boolean quote = name.charAt(0) == '`' && name.charAt(name.length() - 1) == '`';
                 boolean isNumber = true;
-                for (int i = pos + 1; i < name.length(); ++i) {
+
+                int end = name.length();
+                if (quote) {
+                    end--;
+                }
+                for (int i = pos + 1; i < end; ++i) {
                     char ch = name.charAt(i);
                     if (ch < '0' || ch > '9') {
                         isNumber = false;
@@ -217,7 +222,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                     }
                 }
                 if (isNumber) {
-                    String realName = name.substring(0, pos);
+                    int start = quote ? 1 : 0;
+                    String realName = name.substring(start, pos);
                     print0(realName);
                     incrementReplaceCunt();
                     return false;
