@@ -45,6 +45,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             hintAllow                   = true;
     private boolean             lockTableAllow              = true;
     private boolean             startTransactionAllow       = true;
+    private boolean             blockAllow                  = true;
 
     private boolean             conditionAndAlwayTrueAllow  = false;
     private boolean             conditionAndAlwayFalseAllow = false;
@@ -787,6 +788,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setInsertValuesCheckSize(int insertValuesCheckSize) {
         this.insertValuesCheckSize = insertValuesCheckSize;
+    }
+
+    public boolean isBlockAllow() {
+        return blockAllow;
+    }
+
+    public void setBlockAllow(boolean blockAllow) {
+        this.blockAllow = blockAllow;
     }
 
     public void configFromProperties(Properties properties) {
