@@ -218,12 +218,22 @@ public class MySqlStatementParser extends SQLStatementParser {
     private static final String DELAYED        = "DELAYED";
     private static final String LOW_PRIORITY   = "LOW_PRIORITY";
 
+    private int maxIntoClause = -1;
+
     public MySqlStatementParser(String sql){
         super(new MySqlExprParser(sql));
     }
 
     public MySqlStatementParser(Lexer lexer){
         super(new MySqlExprParser(lexer));
+    }
+
+    public int getMaxIntoClause() {
+        return maxIntoClause;
+    }
+
+    public void setMaxIntoClause(int maxIntoClause) {
+        this.maxIntoClause = maxIntoClause;
     }
 
     public SQLCreateTableStatement parseCreateTable() {
@@ -2087,7 +2097,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     private void parseValueClause(List<ValuesClause> valueClauseList, int columnSize) {
-        for (;;) {
+        for (int i = 0;;++i) {
             if (lexer.token() != Token.LPAREN) {
                 throw new ParserException("syntax error, expect ')'");
             }

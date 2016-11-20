@@ -78,6 +78,25 @@ public class ParameterizedOutputVisitorUtils {
         return out.toString();
     }
 
+    public static String parameterize(List<SQLStatement> statementList, String dbType) {
+        StringBuilder out = new StringBuilder();
+        ParameterizedVisitor visitor = createParameterizedOutputVisitor(out, dbType);
+
+        for (int i = 0; i < statementList.size(); i++) {
+            if (i > 0) {
+                out.append(";\n");
+            }
+            SQLStatement stmt = statementList.get(i);
+
+            if (stmt.hasBeforeComment()) {
+                stmt.getBeforeCommentsDirect().clear();
+            }
+            stmt.accept(visitor);
+        }
+
+        return out.toString();
+    }
+
     public static ParameterizedVisitor createParameterizedOutputVisitor(Appendable out, String dbType) {
         if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleParameterizedOutputVisitor(out);

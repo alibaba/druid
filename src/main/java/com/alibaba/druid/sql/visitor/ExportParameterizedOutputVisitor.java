@@ -40,7 +40,7 @@ public class ExportParameterizedOutputVisitor extends SQLASTOutputVisitor implem
     }
 
     public ExportParameterizedOutputVisitor(final Appendable appender) {
-        this(new ArrayList<Object>(),appender,true);
+        this(new ArrayList<Object>(), appender, true);
     }
 
     

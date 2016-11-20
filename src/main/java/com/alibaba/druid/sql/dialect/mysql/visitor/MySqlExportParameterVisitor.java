@@ -48,7 +48,7 @@ public class MySqlExportParameterVisitor extends MySqlOutputVisitor implements E
     }
 
     public MySqlExportParameterVisitor(List<Object> parameters) {
-        this(parameters, new StringBuilder(), false);
+        this(parameters, null, false);
     }
 
     public MySqlExportParameterVisitor(final Appendable appender) {
@@ -58,7 +58,6 @@ public class MySqlExportParameterVisitor extends MySqlOutputVisitor implements E
     public List<Object> getParameters() {
         return parameters;
     }
-    
 
     @Override
     public boolean visit(final SQLSelectItem x) {

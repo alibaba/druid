@@ -134,6 +134,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void print(char value) {
+        if (this.appender == null) {
+            return;
+        }
+
         try {
             this.appender.append(value);
         } catch (IOException e) {
@@ -142,10 +146,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void print(int value) {
+        if (this.appender == null) {
+            return;
+        }
+
         print0(Integer.toString(value));
     }
 
     public void print(Date date) {
+        if (this.appender == null) {
+            return;
+        }
+
         SimpleDateFormat dateFormat;
         if (date instanceof java.sql.Timestamp) {
             dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -156,14 +168,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void print(long value) {
+        if (this.appender == null) {
+            return;
+        }
         print0(Long.toString(value));
     }
 
     public void print(String text) {
+        if (this.appender == null) {
+            return;
+        }
         print0(text);
     }
 
     protected void print0(String text) {
+        if (appender == null) {
+            return;
+        }
+
         try {
             this.appender.append(text);
         } catch (IOException e) {
