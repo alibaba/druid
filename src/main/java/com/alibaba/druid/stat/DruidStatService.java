@@ -149,7 +149,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
         }
 
         if (url.startsWith("/weburi-") && url.indexOf(".json") > 0) {
-            String uri = StringUtils.subString(url, "weburi-", ".json");
+            String uri = StringUtils.subString(url, "weburi-", ".json", true);
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatData(uri));
         }
 

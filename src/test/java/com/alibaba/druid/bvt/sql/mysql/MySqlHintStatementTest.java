@@ -42,7 +42,7 @@ public class MySqlHintStatementTest extends TestCase {
                 + "\n"
                 + "\nCREATE TABLE `item_similarity` ("
                 + "\n\t`id` bigint(20) UNSIGNED NOT NULL, "
-                + "\n\t`sellerId` bigint(20) NULL, "
+                + "\n\t`sellerId` bigint(20) DEFAULT NULL, "
                 + "\n\tPRIMARY KEY (`id`)"
                 + "\n) ENGINE = InnoDB CHARSET = utf8;"
                 + "\n"

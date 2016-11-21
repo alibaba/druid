@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery {
@@ -31,7 +32,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected SQLExprTableSource        into;
     protected SQLExpr                   where;
     protected SQLSelectGroupByClause    groupBy;
-    protected boolean parenthesized = false;
+    protected SQLOrderBy                orderBy;
+    protected boolean                   parenthesized = false;
+    protected boolean                   forUpdate     = false;
+    protected boolean                   noWait        = false;
+    protected SQLExpr                   waitTime;
+    protected SQLExpr                   first;
+    protected SQLExpr                   offset;
 
     public SQLSelectQueryBlock(){
 
@@ -70,6 +77,18 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
         this.where = where;
     }
+    
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
+        
+        this.orderBy = orderBy;
+    }
 
     public int getDistionOption() {
         return this.distionOption;
@@ -103,6 +122,56 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
 	public void setParenthesized(boolean parenthesized) {
 		this.parenthesized = parenthesized;
 	}
+	
+    public boolean isForUpdate() {
+        return forUpdate;
+    }
+
+    public void setForUpdate(boolean forUpdate) {
+        this.forUpdate = forUpdate;
+    }
+    
+    public boolean isNoWait() {
+        return noWait;
+    }
+
+    public void setNoWait(boolean noWait) {
+        this.noWait = noWait;
+    }
+    
+    public SQLExpr getWaitTime() {
+        return waitTime;
+    }
+    
+    public void setWaitTime(SQLExpr waitTime) {
+        if (waitTime != null) {
+            waitTime.setParent(this);
+        }
+        this.waitTime = waitTime;
+    }
+
+
+    public SQLExpr getFirst() {
+        return first;
+    }
+
+    public void setFirst(SQLExpr first) {
+        if (first != null) {
+            first.setParent(this);
+        }
+        this.first = first;
+    }
+
+    public SQLExpr getOffset() {
+        return offset;
+    }
+
+    public void setOffset(SQLExpr offset) {
+        if (offset != null) {
+            offset.setParent(this);
+        }
+        this.offset = offset;
+    }
 
 	@Override
     protected void accept0(SQLASTVisitor visitor) {

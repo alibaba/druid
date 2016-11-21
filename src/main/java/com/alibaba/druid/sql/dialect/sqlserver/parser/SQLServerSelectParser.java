@@ -164,6 +164,8 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
         parseGroupBy(queryBlock);
 
+        parseFetchClause(queryBlock);
+
         return queryRest(queryBlock);
     }
 

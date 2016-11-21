@@ -63,7 +63,7 @@ public class PreparedStatementPool {
             holder.incrementHitCount();
             dataSource.incrementCachedPreparedStatementHitCount();
             if (holder.isEnterOracleImplicitCache()) {
-                OracleUtils.exitImplicitCacheToActive(holder.getStatement());
+                OracleUtils.exitImplicitCacheToActive(holder.statement);
             }
         } else {
             dataSource.incrementCachedPreparedStatementMissCount();
@@ -73,7 +73,7 @@ public class PreparedStatementPool {
     }
 
     public void put(PreparedStatementHolder stmtHolder) throws SQLException {
-        PreparedStatement stmt = stmtHolder.getStatement();
+        PreparedStatement stmt = stmtHolder.statement;
 
         if (stmt == null) {
             return;
@@ -86,9 +86,7 @@ public class PreparedStatementPool {
             stmtHolder.setEnterOracleImplicitCache(false);
         }
 
-        PreparedStatementKey key = stmtHolder.getKey();
-
-        PreparedStatementHolder oldStmtHolder = map.put(key, stmtHolder);
+        PreparedStatementHolder oldStmtHolder = map.put(stmtHolder.key, stmtHolder);
 
         if (oldStmtHolder == stmtHolder) {
             return;
@@ -107,8 +105,8 @@ public class PreparedStatementPool {
 
         if (LOG.isDebugEnabled()) {
             String message = null;
-            if (stmtHolder.getStatement() instanceof PreparedStatementProxy) {
-                PreparedStatementProxy stmtProxy = (PreparedStatementProxy) stmtHolder.getStatement();
+            if (stmtHolder.statement instanceof PreparedStatementProxy) {
+                PreparedStatementProxy stmtProxy = (PreparedStatementProxy) stmtHolder.statement;
                 if (stmtProxy instanceof CallableStatementProxy) {
                     message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId()
                               + "} enter cache";
@@ -138,8 +136,8 @@ public class PreparedStatementPool {
     public void closeRemovedStatement(PreparedStatementHolder holder) {
         if (LOG.isDebugEnabled()) {
             String message = null;
-            if (holder.getStatement() instanceof PreparedStatementProxy) {
-                PreparedStatementProxy stmtProxy = (PreparedStatementProxy) holder.getStatement();
+            if (holder.statement instanceof PreparedStatementProxy) {
+                PreparedStatementProxy stmtProxy = (PreparedStatementProxy) holder.statement;
                 if (stmtProxy instanceof CallableStatementProxy) {
                     message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId()
                               + "} exit cache";
@@ -161,7 +159,7 @@ public class PreparedStatementPool {
 
         if (holder.isEnterOracleImplicitCache()) {
             try {
-                OracleUtils.exitImplicitCacheToClose(holder.getStatement());
+                OracleUtils.exitImplicitCacheToClose(holder.statement);
             } catch (Exception ex) {
                 LOG.error("exitImplicitCacheToClose error", ex);
             }

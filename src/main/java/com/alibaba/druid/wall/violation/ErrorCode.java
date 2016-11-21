@@ -34,6 +34,7 @@ public interface ErrorCode {
     public final static int COMMIT_NOT_ALLOW              = 1301;
     public final static int ROLLBACK_NOT_ALLOW            = 1302;
     public final static int START_TRANSACTION_NOT_ALLOW   = 1303;
+    public final static int BLOCK_NOT_ALLOW               = 1304;
 
     public final static int SET_NOT_ALLOW                 = 1200;
     public final static int DESC_NOT_ALLOW                = 1201;

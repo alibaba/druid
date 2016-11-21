@@ -126,13 +126,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface MySqlASTVisitor extends SQLASTVisitor {
-    boolean visit(MySqlSelectQueryBlock.Limit x);
-
-    void endVisit(MySqlSelectQueryBlock.Limit x);
-
     boolean visit(MySqlTableIndex x);
 
     void endVisit(MySqlTableIndex x);
@@ -170,6 +167,10 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlPrepareStatement x);
 
     void endVisit(MySqlExecuteStatement x);
+    
+    boolean visit(MysqlDeallocatePrepareStatement x);
+    
+    void endVisit(MysqlDeallocatePrepareStatement x);
 
     boolean visit(MySqlExecuteStatement x);
 

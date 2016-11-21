@@ -69,7 +69,7 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            return MySqlUtils.createXAConnection(physicalConn);
+            return MySqlUtils.createXAConnection(driver, physicalConn);
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {

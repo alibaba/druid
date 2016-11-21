@@ -78,9 +78,14 @@ public class DruidDataSourceTest_fill2 extends TestCase {
 
         Assert.assertEquals(0, fillErrorCount.get());
 
-        endLatch.await(1000, TimeUnit.MILLISECONDS);
-
-        Assert.assertEquals(true, fillCount.get() > 0);
+        for (int i = 0; i < 100; ++i) {
+            endLatch.await(100, TimeUnit.MILLISECONDS);
+            if (fillCount.get() > 0 || dataSource.isFull()) {
+                break;
+            }
+        }
+        Assert.assertTrue("not full", dataSource.isFull());
+//        Assert.assertTrue("fillCount zero", fillCount.get() > 0);
 
     }
 }

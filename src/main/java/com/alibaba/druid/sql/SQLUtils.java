@@ -17,6 +17,7 @@ package com.alibaba.druid.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -46,19 +47,14 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
-import com.alibaba.druid.sql.dialect.teradata.visitor.TeradataOutputVisitor;
-import com.alibaba.druid.sql.dialect.teradata.visitor.TeradataSchemaStatVisitor;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.druid.util.Utils;
 
 public class SQLUtils {
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption();
@@ -173,14 +169,6 @@ public class SQLUtils {
         return toSQLString(sqlObject, JdbcConstants.SQL_SERVER, option);
     }
     
-    public static String toTeradataString(SQLObject sqlObject) {
-        return toTeradataString(sqlObject, null);
-    }
-    
-    public static String toTeradataString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, JdbcConstants.TERADATA, option);
-    }
-
     public static String formatPGSql(String sql, FormatOption option) {
         return format(sql, JdbcConstants.POSTGRESQL, option);
     }
@@ -273,10 +261,18 @@ public class SQLUtils {
     }
     
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters) {
-        return toSQLString(statementList, dbType, parameters, null);
+        return toSQLString(statementList, dbType, parameters, null, null);
     }
 
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters, FormatOption option) {
+        return toSQLString(statementList, dbType, parameters, option, null);
+    }
+
+    public static String toSQLString(List<SQLStatement> statementList
+            , String dbType
+            , List<Object> parameters
+            , FormatOption option
+            , Map<String, String> tableMapping) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
@@ -287,6 +283,10 @@ public class SQLUtils {
             option = DEFAULT_FORMAT_OPTION;
         }
         visitor.setUppCase(option.isUppCase());
+
+        if (tableMapping != null) {
+            visitor.setTableMapping(tableMapping);
+        }
 
         for (int i = 0; i < statementList.size(); i++) {
             SQLStatement stmt = statementList.get(i);
@@ -383,11 +383,7 @@ public class SQLUtils {
             return new OdpsOutputVisitor(out);
         }
         
-        if (JdbcConstants.TERADATA.equals(dbType)) {
-            return new TeradataOutputVisitor(out);
-        }
-
-        return new SQLASTOutputVisitor(out);
+        return new SQLASTOutputVisitor(out, dbType);
     }
     
     @Deprecated
@@ -420,10 +416,6 @@ public class SQLUtils {
         
         if (JdbcConstants.ODPS.equals(dbType)) {
             return new OdpsSchemaStatVisitor();
-        }
-        
-        if (JdbcConstants.TERADATA.equals(dbType)) {
-            return new TeradataSchemaStatVisitor();
         }
 
         return new SchemaStatVisitor();
@@ -662,6 +654,42 @@ public class SQLUtils {
         public void setUppCase(boolean val) {
             this.ucase = val;
         }
+    }
+
+    public static String refactor(String sql, String dbType, Map<String, String> tableMapping) {
+        List<SQLStatement> stmtList = parseStatements(sql, dbType);
+        return SQLUtils.toSQLString(stmtList, dbType, null, null, tableMapping);
+    }
+
+    public static boolean containsIndexDDL(String sql, String dbType) {
+        List<SQLStatement> stmtList = parseStatements(sql, dbType);
+
+        return false;
+    }
+
+    public static long hash(String sql, String dbType) {
+        Lexer lexer = SQLParserUtils.createLexer(sql, dbType);
+
+        StringBuilder buf = new StringBuilder(sql.length());
+
+        for (;;) {
+            lexer.nextToken();
+
+            Token token = lexer.token();
+            if (token == Token.EOF) {
+                break;
+            }
+
+            if (token == Token.ERROR) {
+                return Utils.murmurhash2_64(sql);
+            }
+
+            if (buf.length() != 0) {
+
+            }
+        }
+
+        return buf.hashCode();
     }
 }
 

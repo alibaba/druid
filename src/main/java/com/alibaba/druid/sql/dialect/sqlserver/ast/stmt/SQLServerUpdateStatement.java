@@ -27,7 +27,6 @@ import com.alibaba.druid.util.JdbcConstants;
 public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLServerStatement {
 
     private SQLServerTop    top;
-    private SQLTableSource  from;
     private SQLServerOutput output;
     
     public SQLServerUpdateStatement(){
@@ -40,14 +39,6 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
 
     public void setTop(SQLServerTop top) {
         this.top = top;
-    }
-
-    public SQLTableSource getFrom() {
-        return from;
-    }
-
-    public void setFrom(SQLTableSource from) {
-        this.from = from;
     }
 
     public SQLServerOutput getOutput() {

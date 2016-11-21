@@ -83,6 +83,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
@@ -131,7 +132,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
@@ -181,6 +182,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -216,12 +218,22 @@ public class MySqlStatementParser extends SQLStatementParser {
     private static final String DELAYED        = "DELAYED";
     private static final String LOW_PRIORITY   = "LOW_PRIORITY";
 
+    private int maxIntoClause = -1;
+
     public MySqlStatementParser(String sql){
         super(new MySqlExprParser(sql));
     }
 
     public MySqlStatementParser(Lexer lexer){
         super(new MySqlExprParser(lexer));
+    }
+
+    public int getMaxIntoClause() {
+        return maxIntoClause;
+    }
+
+    public void setMaxIntoClause(int maxIntoClause) {
+        this.maxIntoClause = maxIntoClause;
     }
 
     public SQLCreateTableStatement parseCreateTable() {
@@ -242,37 +254,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
-        MySqlUpdateStatement stmt = createUpdateStatement();
-
-        if (lexer.token() == Token.UPDATE) {
-            lexer.nextToken();
-
-            if (identifierEquals(LOW_PRIORITY)) {
-                lexer.nextToken();
-                stmt.setLowPriority(true);
-            }
-
-            if (identifierEquals(IGNORE)) {
-                lexer.nextToken();
-                stmt.setIgnore(true);
-            }
-
-            SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
-            stmt.setTableSource(tableSource);
-        }
-
-        parseUpdateSet(stmt);
-
-        if (lexer.token() == (Token.WHERE)) {
-            lexer.nextToken();
-            stmt.setWhere(this.exprParser.expr());
-        }
-
-        stmt.setOrderBy(this.exprParser.parseOrderBy());
-
-        stmt.setLimit(parseLimit());
-
-        return stmt;
+        return new MySqlSelectParser(this.exprParser).parseUpdateStatment();
     }
 
     protected MySqlUpdateStatement createUpdateStatement() {
@@ -538,13 +520,13 @@ public class MySqlStatementParser extends SQLStatementParser {
         } else if (identifierEquals("QUERY")) {
             stmt.setType(MySqlKillStatement.Type.QUERY);
             lexer.nextToken();
+        } else if (lexer.token() == Token.LITERAL_INT) {
+            // skip
         } else {
             throw new ParserException("not support kill type " + lexer.token());
         }
 
-        SQLExpr threadId = this.exprParser.expr();
-        stmt.setThreadId(threadId);
-
+        this.exprParser.exprList(stmt.getThreadIds(), stmt);
         return stmt;
     }
 
@@ -632,6 +614,12 @@ public class MySqlStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
+        
+        if(identifierEquals("DEALLOCATE")) {
+        	MysqlDeallocatePrepareStatement stmt = parseDeallocatePrepare();
+        	statementList.add(stmt);
+        	return true;
+        }
 
         if (identifierEquals("LOAD")) {
             SQLStatement stmt = parseLoad();
@@ -697,8 +685,16 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.LOCK) {
             lexer.nextToken();
-            acceptIdentifier(TABLES);
-
+            String val = lexer.stringVal();
+            boolean isLockTables = TABLES.equalsIgnoreCase(val) && lexer.token() == Token.IDENTIFIER;
+            boolean isLockTable = "TABLE".equalsIgnoreCase(val) && lexer.token() == Token.TABLE;
+            if (isLockTables || isLockTable) {
+            	lexer.nextToken();
+            } else {
+            	setErrorEndPos(lexer.pos());
+                throw new ParserException("syntax error, expect TABLES or TABLE, actual " + lexer.token());
+            }
+            
             MySqlLockTableStatement stmt = new MySqlLockTableStatement();
             stmt.setTableSource(this.exprParser.name());
 
@@ -716,6 +712,8 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 acceptIdentifier(WRITE);
                 stmt.setLockType(LockType.LOW_PRIORITY_WRITE);
+            } else {
+            	throw new ParserException("syntax error, expect READ or WRITE, actual " + lexer.token());
             }
 
             if (lexer.token() == Token.HINT) {
@@ -727,8 +725,16 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals("UNLOCK")) {
             lexer.nextToken();
-            acceptIdentifier(TABLES);
+            String val = lexer.stringVal();
+            boolean isUnLockTables = TABLES.equalsIgnoreCase(val) && lexer.token() == Token.IDENTIFIER;
+            boolean isUnLockTable = "TABLE".equalsIgnoreCase(val) && lexer.token() == Token.TABLE;
             statementList.add(new MySqlUnlockTablesStatement());
+            if (isUnLockTables || isUnLockTable) {
+            	lexer.nextToken();
+            } else {
+            	setErrorEndPos(lexer.pos());
+                throw new ParserException("syntax error, expect TABLES or TABLE, actual " + lexer.token());
+            }
             return true;
         }
 
@@ -1960,30 +1966,55 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public MysqlDeallocatePrepareStatement parseDeallocatePrepare() {
+    	acceptIdentifier("DEALLOCATE");
+    	acceptIdentifier("PREPARE");
+    	
+    	MysqlDeallocatePrepareStatement stmt = new MysqlDeallocatePrepareStatement();
+    	SQLName statementName = exprParser.name();
+    	stmt.setStatementName(statementName);
+    	
+    	return stmt;
+    }
+
     public SQLInsertStatement parseInsert() {
         MySqlInsertStatement insertStatement = new MySqlInsertStatement();
 
         if (lexer.token() == Token.INSERT) {
             lexer.nextToken();
 
-            if (identifierEquals(LOW_PRIORITY)) {
-                insertStatement.setLowPriority(true);
-                lexer.nextToken();
-            }
+            for (;;) {
+                if (identifierEquals(LOW_PRIORITY)) {
+                    insertStatement.setLowPriority(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (identifierEquals(DELAYED)) {
-                insertStatement.setDelayed(true);
-                lexer.nextToken();
-            }
+                if (identifierEquals(DELAYED)) {
+                    insertStatement.setDelayed(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (identifierEquals("HIGH_PRIORITY")) {
-                insertStatement.setHighPriority(true);
-                lexer.nextToken();
-            }
+                if (identifierEquals("HIGH_PRIORITY")) {
+                    insertStatement.setHighPriority(true);
+                    lexer.nextToken();
+                    continue;
+                }
 
-            if (identifierEquals(IGNORE)) {
-                insertStatement.setIgnore(true);
-                lexer.nextToken();
+                if (identifierEquals(IGNORE)) {
+                    insertStatement.setIgnore(true);
+                    lexer.nextToken();
+                    continue;
+                }
+
+                if (identifierEquals("ROLLBACK_ON_FAIL")) {
+                    insertStatement.setRollbackOnFail(true);
+                    lexer.nextToken();
+                    continue;
+                }
+                
+                break;
             }
 
             if (lexer.token() == Token.INTO) {
@@ -2066,7 +2097,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     private void parseValueClause(List<ValuesClause> valueClauseList, int columnSize) {
-        for (;;) {
+        for (int i = 0;;++i) {
             if (lexer.token() != Token.LPAREN) {
                 throw new ParserException("syntax error, expect ')'");
             }
@@ -2291,7 +2322,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
     }
 
-    public Limit parseLimit() {
+    public SQLLimit parseLimit() {
         return ((MySqlExprParser) this.exprParser).parseLimit();
     }
 
@@ -2387,6 +2418,10 @@ public class MySqlStatementParser extends SQLStatementParser {
                         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
 
                         stmt.addItem(item);
+                    } else if (lexer.token() == Token.UNIQUE) {
+                        SQLUnique unique = this.exprParser.parseUnique();
+                        SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(unique);
+                        stmt.addItem(item);
                     } else {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     }
@@ -2458,23 +2493,43 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.addItem(item);
             } else if (identifierEquals("MODIFY")) {
                 lexer.nextToken();
+                
                 if (lexer.token() == Token.COLUMN) {
                     lexer.nextToken();
                 }
-                MySqlAlterTableModifyColumn item = new MySqlAlterTableModifyColumn();
-                item.setNewColumnDefinition(this.exprParser.parseColumn());
-                if (identifierEquals("AFTER")) {
-                    lexer.nextToken();
-                    item.setAfterColumn(this.exprParser.name());
-                } else if (identifierEquals("FIRST")) {
-                    lexer.nextToken();
-                    if (lexer.token() == Token.IDENTIFIER) {
-                        item.setFirstColumn(this.exprParser.name());
-                    } else {
-                        item.setFirst(true);
-                    }
+                
+                boolean paren = false;
+                if (lexer.token() == Token.LPAREN) {
+                	paren = true;
+                	lexer.nextToken();
                 }
-                stmt.addItem(item);
+                
+                for (;;) {
+					MySqlAlterTableModifyColumn item = new MySqlAlterTableModifyColumn();
+					item.setNewColumnDefinition(this.exprParser.parseColumn());
+					if (identifierEquals("AFTER")) {
+						lexer.nextToken();
+						item.setAfterColumn(this.exprParser.name());
+					} else if (identifierEquals("FIRST")) {
+						lexer.nextToken();
+						if (lexer.token() == Token.IDENTIFIER) {
+							item.setFirstColumn(this.exprParser.name());
+						} else {
+							item.setFirst(true);
+						}
+					}
+					stmt.addItem(item);
+					
+					if (paren && lexer.token() == Token.COMMA) {
+						lexer.nextToken();
+						continue;
+					}
+					break;
+                }
+                
+                if (paren) {
+                	accept(Token.RPAREN);
+                }
             } else if (lexer.token() == Token.DISABLE) {
                 lexer.nextToken();
 
@@ -2741,6 +2796,16 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
                 stmt.addItem(new MySqlAlterTableOption("COMMENT", '\'' + lexer.stringVal() + '\''));
                 lexer.nextToken();
+            } else if (lexer.token() == Token.UNION) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                accept(Token.LPAREN);
+                SQLTableSource tableSrc = this.createSQLSelectParser().parseTableSource();
+                stmt.getTableOptions().put("UNION", tableSrc);
+                accept(Token.RPAREN);
             } else {
                 break;
             }
@@ -2916,16 +2981,35 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setHints(this.exprParser.parseHints());
         }
 
+        if (lexer.token() == Token.DEFAULT) {
+            lexer.nextToken();
+        }
+        
         if (identifierEquals("CHARACTER")) {
             lexer.nextToken();
             accept(Token.SET);
             String charset = lexer.stringVal();
             accept(Token.IDENTIFIER);
             stmt.setCharacterSet(charset);
+        } else if (identifierEquals("CHARSET")) {
+            lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
+            String charset = lexer.stringVal();
+            accept(Token.IDENTIFIER);
+            stmt.setCharacterSet(charset);
+        }
+        
+        if (lexer.token() == Token.DEFAULT) {
+            lexer.nextToken();
         }
 
         if (identifierEquals("COLLATE")) {
             lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
             String collate = lexer.stringVal();
             accept(Token.IDENTIFIER);
             stmt.setCollate(collate);

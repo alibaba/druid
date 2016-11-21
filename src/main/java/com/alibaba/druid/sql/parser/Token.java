@@ -169,8 +169,9 @@ public enum Token {
     RETURNING("RETURNING"),
     COMMENT("COMMENT"),
     OVER("OVER"),
-    TYPE("TYPE"), 
-    
+    TYPE("TYPE"),
+    ILIKE("ILIKE"),
+
     // oracle
     START("START"),
     PRIOR("PRIOR"),
@@ -277,6 +278,10 @@ public enum Token {
     FORMAT("FORMAT"),
     QUALIFY("QUALIFY"),
     MOD("MOD"),
+    
+    CONCAT("CONCAT"), // DB2
+
+    UPSERT("UPSERT"), // Phoenix
 
     LPAREN("("), 
     RPAREN(")"), 
@@ -294,10 +299,14 @@ public enum Token {
     LT("<"), 
     BANG("!"),
     BANGBANG("!!"),
-    TILDE("~"), 
+    BANG_TILDE("!~"),
+    BANG_TILDE_STAR("!~*"),
+    TILDE("~"),
+    TILDE_STAR("~*"),
+    TILDE_EQ("~="),
     QUES("?"), 
     COLON(":"), 
-    COLONCOLON(":"), 
+    COLONCOLON("::"), 
     COLONEQ(":="), 
     EQEQ("=="), 
     LTEQ("<="), 
@@ -313,6 +322,8 @@ public enum Token {
     BARSLASH("|/"), 
     PLUS("+"), 
     SUB("-"), 
+    SUBGT("->"), 
+    SUBGTGT("->>"), 
     STAR("*"), 
     SLASH("/"), 
     AMP("&"), 
@@ -322,7 +333,12 @@ public enum Token {
     LTLT("<<"), 
     GTGT(">>"),
     MONKEYS_AT("@"),
-    POUND("#")
+    MONKEYS_AT_AT("@@"),
+    POUND("#"),
+    POUNDGT("#>"),
+    POUNDGTGT("#>>"),
+    MONKEYS_AT_GT("@>"),
+    LT_MONKEYS_AT("<@"),
     ;
 
     public final String name;

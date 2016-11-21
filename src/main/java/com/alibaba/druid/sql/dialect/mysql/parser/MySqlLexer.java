@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -115,6 +114,7 @@ public class MySqlLexer extends Lexer {
 
         stringVal = subString(mark - 1, bufPos + 1);
         token = Token.LINE_COMMENT;
+        commentCount++;
         if (keepComments) {
             addComment(stringVal);
         }
@@ -249,11 +249,28 @@ public class MySqlLexer extends Lexer {
 
             mark = pos;
             bufPos = 1;
-            char ch;
+            char ch = '\0', last_ch;
             for (;;) {
+                last_ch = ch;
                 ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
+                    if (ch == '-' && pos < text.length() - 1) {
+                        if (mark > 0 && text.charAt(mark - 1) == '.') {
+                            break;
+                        }
+
+                        char next_char = text.charAt(pos + 1);
+                        if (isIdentifierChar(next_char)) {
+                            bufPos++;
+                            continue;
+                        }
+                    }
+                    if (last_ch == '-' && charAt(pos-2) != '-') {
+                        ch = last_ch;
+                        bufPos--;
+                        pos--;
+                    }
                     break;
                 }
 
@@ -274,128 +291,7 @@ public class MySqlLexer extends Lexer {
     }
 
     protected final void scanString() {
-        {
-            boolean hasSpecial = false;
-            int startIndex = pos + 1;
-            int endIndex = -1; // text.indexOf('\'', startIndex);
-            for (int i = startIndex; i < text.length(); ++i) {
-                final char ch = text.charAt(i);
-                if (ch == '\\') {
-                    hasSpecial = true;
-                    continue;
-                }
-                if (ch == '\'') {
-                    endIndex = i;
-                    break;
-                }
-            }
-
-            if (endIndex == -1) {
-                throw new ParserException("unclosed str");
-            }
-
-            String stringVal = subString(startIndex, endIndex - startIndex);
-            // hasSpecial = stringVal.indexOf('\\') != -1;
-
-            if (!hasSpecial) {
-                this.stringVal = stringVal;
-                int pos = endIndex + 1;
-                char ch = charAt(pos);
-                if (ch != '\'') {
-                    this.pos = pos;
-                    this.ch = ch;
-                    token = LITERAL_CHARS;
-                    return;
-                }
-            }
-        }
-
-        mark = pos;
-        boolean hasSpecial = false;
-        for (;;) {
-            if (isEOF()) {
-                lexError("unclosed.str.lit");
-                return;
-            }
-
-            ch = charAt(++pos);
-
-            if (ch == '\\') {
-                scanChar();
-                if (!hasSpecial) {
-                    initBuff(bufPos);
-                    arraycopy(mark + 1, buf, 0, bufPos);
-                    hasSpecial = true;
-                }
-
-                switch (ch) {
-                    case '\0':
-                        putChar(ch = '\0');
-                        break;
-                    case '\'':
-                        putChar('\'');
-                        break;
-                    case '"':
-                        putChar('"');
-                        break;
-                    case 'b':
-                        putChar('\b');
-                        break;
-                    case 'n':
-                        putChar('\n');
-                        break;
-                    case 'r':
-                        putChar('\r');
-                        break;
-                    case 't':
-                        putChar('\t');
-                        break;
-                    case '\\':
-                        putChar('\\');
-                        break;
-                    case 'Z':
-                        putChar((char) 0x1A); // ctrl + Z
-                        break;
-                    default:
-                        putChar(ch);
-                        break;
-                }
-
-                continue;
-            }
-            if (ch == '\'') {
-                scanChar();
-                if (ch != '\'') {
-                    token = LITERAL_CHARS;
-                    break;
-                } else {
-                    if (!hasSpecial) {
-                        initBuff(bufPos);
-                        arraycopy(mark + 1, buf, 0, bufPos);
-                        hasSpecial = true;
-                    }
-                    putChar('\'');
-                    continue;
-                }
-            }
-
-            if (!hasSpecial) {
-                bufPos++;
-                continue;
-            }
-
-            if (bufPos == buf.length) {
-                putChar(ch);
-            } else {
-                buf[bufPos++] = ch;
-            }
-        }
-
-        if (!hasSpecial) {
-            stringVal = subString(mark + 1, bufPos);
-        } else {
-            stringVal = new String(buf, 0, bufPos);
-        }
+        scanString2();
     }
 
     public void scanComment() {
@@ -458,6 +354,7 @@ public class MySqlLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
+                commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
                 }
@@ -504,6 +401,7 @@ public class MySqlLexer extends Lexer {
 
             stringVal = subString(mark, bufPos + 1);
             token = Token.LINE_COMMENT;
+            commentCount++;
             if (keepComments) {
                 addComment(stringVal);
             }
@@ -535,7 +433,7 @@ public class MySqlLexer extends Lexer {
         }
         // identifierFlags['`'] = true;
         identifierFlags['_'] = true;
-        identifierFlags['-'] = true; // mysql
+        //identifierFlags['-'] = true; // mysql
     }
 
     public static boolean isIdentifierChar(char c) {

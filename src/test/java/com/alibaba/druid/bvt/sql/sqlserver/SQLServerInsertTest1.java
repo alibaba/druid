@@ -28,10 +28,8 @@ public class SQLServerInsertTest1 extends TestCase {
         String sql = "INSERT INTO Cities (Location)" +
         		"VALUES ( dbo.CreateNewPoint(x, y) );";
 
-        String expect = "INSERT INTO Cities" + //
-                        "\n\t(Location)" + //
-                        "\nVALUES" + //
-                        "\n(dbo.CreateNewPoint(x, y))";
+        String expect = "INSERT INTO Cities (Location)" + //
+                        "\nVALUES (dbo.CreateNewPoint(x, y))";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

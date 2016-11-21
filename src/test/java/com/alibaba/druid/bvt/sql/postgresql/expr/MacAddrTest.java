@@ -2,13 +2,10 @@ package com.alibaba.druid.bvt.sql.postgresql.expr;
 
 
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.PGTest;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGExprParser;
+import org.junit.Assert;
 
 
 public class MacAddrTest extends PGTest {

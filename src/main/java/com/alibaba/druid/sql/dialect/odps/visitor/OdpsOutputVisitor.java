@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -53,6 +54,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVisitor {
 
@@ -76,7 +78,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     }
 
     public OdpsOutputVisitor(Appendable appender){
-        super(appender);
+        super(appender, JdbcConstants.ODPS);
     }
 
     public boolean visit(OdpsCreateTableStatement x) {
@@ -511,10 +513,10 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             x.getOrderBy().accept(this);
         }
 
-        if (x.getDistributeBy() != null) {
+        if (x.getDistributeBy().size() > 0) {
             println();
             print0(ucase ? "DISTRIBUTE BY " : "distribute by ");
-            x.getDistributeBy().accept(this);
+            printAndAccept(x.getDistributeBy(), ", ");
 
             if (!x.getSortBy().isEmpty()) {
                 print0(ucase ? " SORT BY " : " sort by ");
@@ -872,6 +874,41 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         print0(ucase ? " AS " : " as ");
         printAndAccept(x.getColumns(), ", ");
         decrementIndent();
+        return false;
+    }
+    
+    public boolean visit(SQLCharExpr x) {
+        String text = x.getText();
+        if (text == null) {
+            print0(ucase ? "NULL" : "null");
+        } else {
+            StringBuilder buf = new StringBuilder(text.length() + 2);
+            buf.append('\'');
+            for (int i = 0; i < text.length(); ++i) {
+                char ch = text.charAt(i);
+                switch (ch) {
+                    case '\\':
+                        buf.append("\\\\");
+                        break;
+                    case '\'':
+                        buf.append("\\'");
+                        break;
+                    case '\0':
+                        buf.append("\\0");
+                        break;
+                    case '\n':
+                        buf.append("\\n");
+                        break;
+                    default:
+                        buf.append(ch);
+                        break;
+                }
+            }
+            buf.append('\'');
+
+            print0(buf.toString());
+        }
+
         return false;
     }
 }

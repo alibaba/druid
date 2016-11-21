@@ -25,20 +25,34 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
-public class MySqlExportParameterVisitor extends MySqlASTVisitorAdapter implements ExportParameterVisitor {
+public class MySqlExportParameterVisitor extends MySqlOutputVisitor implements ExportParameterVisitor {
 
-    private final List<Object> parameters;
-    
+    /**
+     * true= if require parameterized sql output
+     */
+    private boolean requireParameterizedOutput;
+
+
+    public MySqlExportParameterVisitor(List<Object> parameters, Appendable appender, boolean wantParameterizedOutput){
+        super(appender, true);
+        this.parameters = parameters;
+        this.requireParameterizedOutput = wantParameterizedOutput;
+    }
+
     public MySqlExportParameterVisitor() {
         this(new ArrayList<Object>());
     }
 
-    public MySqlExportParameterVisitor(List<Object> parameters){
-        this.parameters = parameters;
+    public MySqlExportParameterVisitor(List<Object> parameters) {
+        this(parameters, null, false);
+    }
+
+    public MySqlExportParameterVisitor(final Appendable appender) {
+        this(new ArrayList<Object>(),appender, true);
     }
 
     public List<Object> getParameters() {
@@ -46,34 +60,53 @@ public class MySqlExportParameterVisitor extends MySqlASTVisitorAdapter implemen
     }
 
     @Override
-    public boolean visit(SQLSelectItem x) {
-        return false;
+    public boolean visit(final SQLSelectItem x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+        }
+        return true;
     }
 
     @Override
-    public boolean visit(Limit x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLOrderBy x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLSelectGroupByClause x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(SQLMethodInvokeExpr x) {
-        ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getParameters());
+    public boolean visit(SQLLimit x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+        }
 
         return true;
     }
 
     @Override
+    public boolean visit(SQLOrderBy x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLSelectGroupByClause x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLMethodInvokeExpr x) {
+        if(requireParameterizedOutput){
+           return super.visit(x);
+        }
+        
+        ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getParameters());
+        return true;
+    }
+
+    @Override
     public boolean visit(SQLInListExpr x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+         }
         ExportParameterVisitorUtils.exportParamterAndAccept(this.parameters, x.getTargetList());
 
         return true;
@@ -81,13 +114,18 @@ public class MySqlExportParameterVisitor extends MySqlASTVisitorAdapter implemen
 
     @Override
     public boolean visit(SQLBetweenExpr x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+         }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
         return true;
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        if(requireParameterizedOutput){
+            return super.visit(x);
+         }
         ExportParameterVisitorUtils.exportParameter(this.parameters, x);
         return true;
     }
-
 }

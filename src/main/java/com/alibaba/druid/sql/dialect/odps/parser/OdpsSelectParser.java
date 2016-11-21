@@ -85,9 +85,7 @@ public class OdpsSelectParser extends SQLSelectParser {
         if (lexer.token() == Token.DISTRIBUTE) {
             lexer.nextToken();
             accept(Token.BY);
-            SQLExpr distributeBy = this.expr();
-            queryBlock.setDistributeBy(distributeBy);
-            
+            this.exprParser.exprList(queryBlock.getDistributeBy(), queryBlock);
 
             if (identifierEquals("SORT")) {
                 lexer.nextToken();

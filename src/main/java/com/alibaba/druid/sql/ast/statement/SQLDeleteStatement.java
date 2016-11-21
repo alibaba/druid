@@ -25,6 +25,7 @@ public class SQLDeleteStatement extends SQLStatementImpl {
 
     protected SQLTableSource tableSource;
     protected SQLExpr        where;
+    protected SQLTableSource from;
 
     public SQLDeleteStatement(){
 
@@ -54,7 +55,23 @@ public class SQLDeleteStatement extends SQLStatementImpl {
     }
 
     public SQLName getTableName() {
-        return (SQLName) getExprTableSource().getExpr();
+        if (this.tableSource instanceof SQLExprTableSource) {
+            SQLExprTableSource exprTableSource = (SQLExprTableSource) this.tableSource;
+            return (SQLName) exprTableSource.getExpr();
+        }
+
+        if (tableSource instanceof SQLSubqueryTableSource) {
+            SQLSelectQuery selectQuery = ((SQLSubqueryTableSource) tableSource).getSelect().getQuery();
+            if (selectQuery instanceof SQLSelectQueryBlock) {
+                SQLTableSource subQueryTableSource = ((SQLSelectQueryBlock) selectQuery).getFrom();
+                if (subQueryTableSource instanceof SQLExprTableSource) {
+                    SQLExpr subQueryTableSourceExpr = ((SQLExprTableSource) subQueryTableSource).getExpr();
+                    return (SQLName) subQueryTableSourceExpr;
+                }
+            }
+        }
+
+        return null;
     }
 
     public void setTableName(SQLName tableName) {
@@ -94,4 +111,14 @@ public class SQLDeleteStatement extends SQLStatementImpl {
         visitor.endVisit(this);
     }
 
+    public SQLTableSource getFrom() {
+        return from;
+    }
+
+    public void setFrom(SQLTableSource from) {
+        if (from != null) {
+            from.setParent(this);
+        }
+        this.from = from;
+    }
 }

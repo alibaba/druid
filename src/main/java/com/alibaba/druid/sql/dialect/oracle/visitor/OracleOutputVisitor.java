@@ -17,35 +17,14 @@ package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
-import com.alibaba.druid.sql.ast.statement.SQLCheck;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
-import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -65,7 +44,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -79,7 +57,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
@@ -111,7 +89,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
@@ -126,9 +103,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -253,13 +227,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleDateExpr x) {
-        print0(ucase ? "DATE '" : "date '");
-        print0(x.getLiteral());
-        print('\'');
-        return false;
-    }
-
     public boolean visit(OracleDbLinkExpr x) {
         x.getExpr().accept(this);
         print('@');
@@ -268,25 +235,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleDeleteStatement x) {
-        if (x.getTableName() != null) {
-            print0(ucase ? "DELETE " : "delete ");
-            
-            if (x.getHints().size() > 0) {
-                printAndAccept(x.getHints(), ", ");
-                print(' ');
-            }
+        print0(ucase ? "DELETE " : "delete ");
 
-            print0(ucase ? "FROM " : "from ");
-            if (x.isOnly()) {
-                print0(ucase ? "ONLY (" : "only (");
-                x.getTableName().accept(this);
-                print(')');
-            } else {
-                x.getTableName().accept(this);
-            }
+        SQLTableSource tableSource = x.getTableSource();
 
-            printAlias(x.getAlias());
+        if (x.getHints().size() > 0) {
+            printAndAccept(x.getHints(), ", ");
+            print(' ');
         }
+
+        print0(ucase ? "FROM " : "from ");
+        if (x.isOnly()) {
+            print0(ucase ? "ONLY (" : "only (");
+            x.getTableName().accept(this);
+            print(')');
+        } else {
+            x.getTableSource().accept(this);
+        }
+
+        printAlias(x.getAlias());
+
 
         if (x.getWhere() != null) {
             println();
@@ -376,7 +344,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
         }
 
-        x.getQuery().accept(this);
+        SQLSelectQuery query = x.getQuery();
+        query.accept(this);
 
         if (x.getRestriction() != null) {
             print(' ');
@@ -388,9 +357,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getForUpdate().accept(this);
         }
 
-        if (x.getOrderBy() != null) {
-            println();
-            x.getOrderBy().accept(this);
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            boolean hasFirst = false;
+            if (query instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+                hasFirst = queryBlock.getFirst() != null;
+            }
+
+            if (!hasFirst) {
+                println();
+                orderBy.accept(this);
+            }
         }
 
         return false;
@@ -484,7 +462,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getExpr().accept(this);
         if (x.getType() != null) {
             print(' ');
-            print0(x.getType().name().toUpperCase());
+
+            String typeName = x.getType().name();
+            print0(ucase ? typeName.toUpperCase() : typeName.toLowerCase());
         }
 
         if (x.getNullsOrderType() != null) {
@@ -597,6 +577,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getModelClause().accept(this);
         }
 
+        printFetchFirst(x);
+
         return false;
     }
 
@@ -644,7 +626,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleSelectTableReference x) {
         if (x.isOnly()) {
             print0(ucase ? "ONLY (" : "only (");
-            x.getExpr().accept(this);
+            printTableSourceExpr(x.getExpr());
 
             if (x.getPartition() != null) {
                 print(' ');
@@ -653,7 +635,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
             print(')');
         } else {
-            x.getExpr().accept(this);
+            printTableSourceExpr(x.getExpr());
 
             if (x.getPartition() != null) {
                 print(' ');
@@ -782,11 +764,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleAnalyticWindowing x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleDateExpr x) {
 
     }
 
@@ -1286,138 +1263,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleMergeStatement x) {
-        print0(ucase ? "MERGE " : "merge ");
-        if (x.getHints().size() > 0) {
-            printAndAccept(x.getHints(), ", ");
-            print(' ');
-        }
-
-        print0(ucase ? "INTO " : "into ");
-        x.getInto().accept(this);
-
-        if (x.getAlias() != null) {
-            print(' ');
-            print0(x.getAlias());
-        }
-
-        println();
-        print0(ucase ? "USING " : "using ");
-        x.getUsing().accept(this);
-
-        print0(ucase ? " ON (" : " on (");
-        x.getOn().accept(this);
-        print0(") ");
-
-        if (x.getUpdateClause() != null) {
-            println();
-            x.getUpdateClause().accept(this);
-        }
-
-        if (x.getInsertClause() != null) {
-            println();
-            x.getInsertClause().accept(this);
-        }
-
-        if (x.getErrorLoggingClause() != null) {
-            println();
-            x.getErrorLoggingClause().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleMergeStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MergeUpdateClause x) {
-        print0(ucase ? "WHEN MATCHED THEN UPDATE SET " : "when matched then update set ");
-        printAndAccept(x.getItems(), ", ");
-        if (x.getWhere() != null) {
-            incrementIndent();
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
-            x.getWhere().accept(this);
-            decrementIndent();
-        }
-
-        if (x.getDeleteWhere() != null) {
-            incrementIndent();
-            println();
-            print0(ucase ? "DELETE WHERE " : "delete where ");
-            x.getDeleteWhere().setParent(x);
-            x.getDeleteWhere().accept(this);
-            decrementIndent();
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MergeUpdateClause x) {
-
-    }
-
-    @Override
-    public boolean visit(MergeInsertClause x) {
-        print0(ucase ? "WHEN NOT MATCHED THEN INSERT" : "when not matched then insert");
-        if (x.getColumns().size() > 0) {
-            print(' ');
-            printAndAccept(x.getColumns(), ", ");
-        }
-        print0(ucase ? " VALUES (" : " values (");
-        printAndAccept(x.getValues(), ", ");
-        print(')');
-        if (x.getWhere() != null) {
-            incrementIndent();
-            println();
-            print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
-            x.getWhere().accept(this);
-            decrementIndent();
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MergeInsertClause x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleErrorLoggingClause x) {
-        print0(ucase ? "LOG ERRORS " : "log errors ");
-        if (x.getInto() != null) {
-            print0(ucase ? "INTO " : "into ");
-            x.getInto().accept(this);
-            print(' ');
-        }
-
-        if (x.getSimpleExpression() != null) {
-            print('(');
-            x.getSimpleExpression().accept(this);
-            print(')');
-        }
-
-        if (x.getLimit() != null) {
-            print0(ucase ? " REJECT LIMIT " : " reject limit ");
-            x.getLimit().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleErrorLoggingClause x) {
-
-    }
-
-    @Override
     public boolean visit(OracleReturningClause x) {
         print0(ucase ? "RETURNING " : "returning ");
         printAndAccept(x.getItems(), ", ");
@@ -1447,27 +1292,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         
         x.getTableSource().accept(this);
 
-        if (x.getColumns().size() > 0) {
-            incrementIndent();
-            println();
-            print('(');
-            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
-                if (i != 0) {
-                    if (i % 5 == 0) {
-                        println();
-                    }
-                    print0(", ");
-                }
-                x.getColumns().get(i).accept(this);
-            }
-            print(')');
-            decrementIndent();
-        }
+        printInsertColumns(x.getColumns());
 
         if (x.getValues() != null) {
             println();
-            print0(ucase ? "VALUES" : "values");
-            println();
+            print0(ucase ? "VALUES " : "values ");
             x.getValues().accept(this);
         } else {
             if (x.getQuery() != null) {
@@ -1873,7 +1702,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(SQLAlterTableStatement x) {
         print0(ucase ? "ALTER TABLE " : "alter table ");
-        x.getName().accept(this);
+        printTableSourceExpr(x.getName());
         incrementIndent();
         for (SQLAlterTableItem item : x.getItems()) {
             println();
@@ -2714,63 +2543,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? " PURGE SNAPSHOT LOG" : " purge snapshot log");
         }
         return false;
-    }
-
-    @Override
-    public boolean visit(OracleCreateSequenceStatement x) {
-        print0(ucase ? "CREATE SEQUENCE " : "create sequence ");
-        x.getName().accept(this);
-
-        if (x.getStartWith() != null) {
-            print0(ucase ? " START WITH " : " start with ");
-            x.getStartWith().accept(this);
-        }
-
-        if (x.getIncrementBy() != null) {
-            print0(ucase ? " INCREMENT BY " : " increment by ");
-            x.getIncrementBy().accept(this);
-        }
-
-        if (x.getMaxValue() != null) {
-            print0(ucase ? " MAXVALUE " : " maxvalue ");
-            x.getMaxValue().accept(this);
-        }
-
-        if (x.isNoMaxValue()) {
-            print0(ucase ? " NOMAXVALUE" : " nomaxvalue");
-        }
-
-        if (x.getMinValue() != null) {
-            print0(ucase ? " MINVALUE " : " minvalue ");
-            x.getMinValue().accept(this);
-        }
-
-        if (x.isNoMinValue()) {
-            print0(ucase ? " NOMINVALUE" : " nominvalue");
-        }
-
-        if (x.getCycle() != null) {
-            if (x.getCycle().booleanValue()) {
-                print0(ucase ? " CYCLE" : " cycle");
-            } else {
-                print0(ucase ? " NOCYCLE" : " nocycle");
-            }
-        }
-
-        if (x.getCache() != null) {
-            if (x.getCache().booleanValue()) {
-                print0(ucase ? " CACHE" : " cache");
-            } else {
-                print0(ucase ? " NOCACHE" : " nocache");
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCreateSequenceStatement x) {
-
     }
 
     @Override

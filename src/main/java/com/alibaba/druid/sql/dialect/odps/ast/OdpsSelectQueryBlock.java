@@ -35,7 +35,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     protected List<SQLHint> hints;
 
-    protected SQLExpr                    distributeBy;
+    protected List<SQLExpr>              distributeBy = new ArrayList<SQLExpr>();
     protected List<SQLSelectOrderByItem> sortBy = new ArrayList<SQLSelectOrderByItem>(2);
 
     public OdpsSelectQueryBlock(){
@@ -50,12 +50,8 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
         this.orderBy = orderBy;
     }
 
-    public SQLExpr getDistributeBy() {
+    public List<SQLExpr> getDistributeBy() {
         return distributeBy;
-    }
-
-    public void setDistributeBy(SQLExpr distributeBy) {
-        this.distributeBy = distributeBy;
     }
 
     public List<SQLSelectOrderByItem> getSortBy() {

@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     private String dbType;
 
+    protected boolean upsert = false; // for phoenix
+
     public SQLInsertStatement(){
 
     }
@@ -35,11 +37,19 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
         if (visitor.visit(this)) {
             this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, columns);
-            this.acceptChild(visitor, values);
+            this.acceptChild(visitor, valuesList);
             this.acceptChild(visitor, query);
         }
 
         visitor.endVisit(this);
+    }
+
+    public boolean isUpsert() {
+        return upsert;
+    }
+
+    public void setUpsert(boolean upsert) {
+        this.upsert = upsert;
     }
 
     public static class ValuesClause extends SQLObjectImpl {

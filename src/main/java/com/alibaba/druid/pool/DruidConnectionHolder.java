@@ -87,8 +87,9 @@ public final class DruidConnectionHolder {
 
         {
             boolean initUnderlyHoldability = !holdabilityUnsupported;
-            if (JdbcConstants.SYBASE.equals(dataSource.getDbType()) //
-                || JdbcConstants.DB2.equals(dataSource.getDbType()) //
+            if (JdbcConstants.SYBASE.equals(dataSource.dbType) //
+                || JdbcConstants.DB2.equals(dataSource.dbType) //
+                || JdbcConstants.HIVE.equals(dataSource.dbType) //
             ) {
                 initUnderlyHoldability = false;
             }

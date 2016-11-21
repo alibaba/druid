@@ -18,22 +18,17 @@ package com.alibaba.druid.pool.vendor;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.pool.ValidConnectionCheckerAdapter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter implements ValidConnectionChecker, Serializable {
 
     private static final long serialVersionUID     = -2227528634302168877L;
-
-    private static final Log  LOG                  = LogFactory.getLog(PGValidConnectionChecker.class);
 
     private String            defaultValidateQuery = "SELECT 'x'";
 
@@ -41,47 +36,32 @@ public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter impl
         configFromProperties(System.getProperties());
     }
 
-    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) {
+    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
         if (validateQuery == null || validateQuery.isEmpty()) {
             validateQuery = this.defaultValidateQuery;
         }
 
-        try {
-            if (conn.isClosed()) {
-                return false;
-            }
-        } catch (SQLException ex) {
-            // skip
+        if (conn.isClosed()) {
             return false;
         }
 
+        if (conn instanceof DruidPooledConnection) {
+            conn = ((DruidPooledConnection) conn).getConnection();
+        }
+
+        if (conn instanceof ConnectionProxy) {
+            conn = ((ConnectionProxy) conn).getRawObject();
+        }
+
+        Statement stmt = null;
+        ResultSet rs = null;
         try {
-            if (conn instanceof DruidPooledConnection) {
-                conn = ((DruidPooledConnection) conn).getConnection();
-            }
-
-            if (conn instanceof ConnectionProxy) {
-                conn = ((ConnectionProxy) conn).getRawObject();
-            }
-
-            Statement stmt = null;
-            ResultSet rs = null;
-            try {
-                stmt = conn.createStatement();
-                rs = stmt.executeQuery(validateQuery);
-                return true;
-            } catch (SQLException e) {
-                return false;
-            } catch (Exception e) {
-                LOG.warn("Unexpected error in ping", e);
-                return false;
-            } finally {
-                JdbcUtils.close(rs);
-                JdbcUtils.close(stmt);
-            }
-        } catch (Exception e) {
-            LOG.warn("Unexpected error in pingDatabase", e);
-            return false;
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(validateQuery);
+            return true;
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
         }
     }
 }

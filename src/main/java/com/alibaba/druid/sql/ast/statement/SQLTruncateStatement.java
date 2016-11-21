@@ -24,20 +24,28 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLTruncateStatement extends SQLStatementImpl {
 
-    protected List<SQLExprTableSource> tableSources     = new ArrayList<SQLExprTableSource>(2);
+    protected List<SQLExprTableSource> tableSources               = new ArrayList<SQLExprTableSource>(2);
 
-    private boolean                    purgeSnapshotLog = false;
+    private boolean                    purgeSnapshotLog           = false;
 
     private boolean                    only;
     private Boolean                    restartIdentity;
     private Boolean                    cascade;
-    
-    public SQLTruncateStatement() {
-        
+
+    // db2
+    private boolean                    dropStorage                = false;
+    private boolean                    reuseStorage               = false;
+    private boolean                    immediate                  = false;
+    private boolean                    ignoreDeleteTriggers       = false;
+    private boolean                    restrictWhenDeleteTriggers = false;
+    private boolean                    continueIdentity           = false;
+
+    public SQLTruncateStatement(){
+
     }
-    
-    public SQLTruncateStatement(String dbType) {
-        super (dbType);
+
+    public SQLTruncateStatement(String dbType){
+        super(dbType);
     }
 
     public List<SQLExprTableSource> getTableSources() {
@@ -93,4 +101,53 @@ public class SQLTruncateStatement extends SQLStatementImpl {
     public void setCascade(Boolean cascade) {
         this.cascade = cascade;
     }
+
+    public boolean isDropStorage() {
+        return dropStorage;
+    }
+
+    public void setDropStorage(boolean dropStorage) {
+        this.dropStorage = dropStorage;
+    }
+
+    public boolean isReuseStorage() {
+        return reuseStorage;
+    }
+
+    public void setReuseStorage(boolean reuseStorage) {
+        this.reuseStorage = reuseStorage;
+    }
+
+    public boolean isImmediate() {
+        return immediate;
+    }
+
+    public void setImmediate(boolean immediate) {
+        this.immediate = immediate;
+    }
+
+    public boolean isIgnoreDeleteTriggers() {
+        return ignoreDeleteTriggers;
+    }
+
+    public void setIgnoreDeleteTriggers(boolean ignoreDeleteTriggers) {
+        this.ignoreDeleteTriggers = ignoreDeleteTriggers;
+    }
+
+    public boolean isRestrictWhenDeleteTriggers() {
+        return restrictWhenDeleteTriggers;
+    }
+
+    public void setRestrictWhenDeleteTriggers(boolean restrictWhenDeleteTriggers) {
+        this.restrictWhenDeleteTriggers = restrictWhenDeleteTriggers;
+    }
+
+    public boolean isContinueIdentity() {
+        return continueIdentity;
+    }
+
+    public void setContinueIdentity(boolean continueIdentity) {
+        this.continueIdentity = continueIdentity;
+    }
+
 }

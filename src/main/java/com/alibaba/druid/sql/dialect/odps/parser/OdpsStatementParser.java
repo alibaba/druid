@@ -253,6 +253,10 @@ public class OdpsStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public SQLSelectParser createSQLSelectParser() {
+        return new OdpsSelectParser(this.exprParser);
+    }
+
     public OdpsInsert parseOdpsInsert() {
         OdpsInsert insert = new OdpsInsert();
 

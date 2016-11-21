@@ -37,6 +37,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -247,6 +248,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     private boolean                                    asyncCloseConnectionEnable                = false;
     protected int                                      maxCreateTaskCount                        = 3;
     protected boolean                                  failFast                                  = false;
+    protected AtomicBoolean                            failContinuous                            = new AtomicBoolean(false);
     protected ScheduledExecutorService                 destroyScheduler;
     protected ScheduledExecutorService                 createScheduler;
 
@@ -1086,6 +1088,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void setDriverClassName(String driverClass) {
         if (inited) {
+            if (StringUtils.equals(this.driverClass, driverClass)) {
+                return;
+            }
+            
             throw new UnsupportedOperationException();
         }
 
@@ -1245,8 +1251,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         if (validConnectionChecker != null) {
-            if (!validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout)) {
-                throw new SQLException("validateConnection false");
+            boolean result = true;
+            Exception error = null;
+            try {
+                result = validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
+            } catch (Exception ex) {
+                error = ex;
+            }
+            
+            if (!result) {
+                SQLException sqlError = error != null ? //
+                    new SQLException("validateConnection false", error) //
+                    : new SQLException("validateConnection false");
+                throw sqlError;
             }
             return;
         }
@@ -1483,6 +1500,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw ex;
         } catch (Error ex) {
             createErrorCount.incrementAndGet();
+            setCreateError(ex);
             throw ex;
         } finally {
             long nano = System.nanoTime() - connectStartNanos;
@@ -1515,6 +1533,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         } finally {
             lock.unlock();
         }
+    }
+    
+    protected void setFailContinuous(boolean fail) {
+        failContinuous.set(fail);
     }
 
     public void initPhysicalConnection(Connection conn) throws SQLException {
@@ -1682,7 +1704,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         decrementCachedPreparedStatementCount();
         incrementCachedPreparedStatementDeleteCount();
 
-        JdbcUtils.close(stmtHolder.getStatement());
+        JdbcUtils.close(stmtHolder.statement);
     }
 
     protected void cloneTo(DruidAbstractDataSource to) {

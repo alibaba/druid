@@ -43,7 +43,7 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
 
     public DruidPooledCallableStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
         super(conn, holder);
-        this.stmt = (CallableStatement) holder.getStatement();
+        this.stmt = (CallableStatement) holder.statement;
     }
 
     public CallableStatement getCallableStatementRaw() {

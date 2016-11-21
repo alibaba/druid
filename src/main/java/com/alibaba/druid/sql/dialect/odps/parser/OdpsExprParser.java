@@ -23,11 +23,8 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
-import com.alibaba.druid.sql.parser.EOFParserException;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsExprParser extends SQLExprParser {
 
@@ -39,11 +36,12 @@ public class OdpsExprParser extends SQLExprParser {
             "MIN", //
             "STDDEV", //
             "SUM", //
-            "ROW_NUMBER"//
+            "ROW_NUMBER",
+            "WM_CONCAT"//
                                                      };
 
     public OdpsExprParser(Lexer lexer){
-        super(lexer);
+        super(lexer, JdbcConstants.ODPS);
 
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
     }
@@ -77,6 +75,7 @@ public class OdpsExprParser extends SQLExprParser {
             expr = expr();
         }
 
+        String alias = null;
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
 
@@ -88,7 +87,7 @@ public class OdpsExprParser extends SQLExprParser {
                 selectItem.setExpr(expr);
 
                 for (;;) {
-                    String alias = lexer.stringVal();
+                    alias = lexer.stringVal();
                     lexer.nextToken();
 
                     selectItem.getAliasList().add(alias);
@@ -103,10 +102,12 @@ public class OdpsExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
 
                 return selectItem;
+            } else {
+                alias = alias();
             }
+        } else {
+            alias = as();
         }
-
-        final String alias = as();
         
         SQLSelectItem item = new SQLSelectItem(expr, alias);
         
@@ -153,5 +154,10 @@ public class OdpsExprParser extends SQLExprParser {
         }
         
         return super.equalityRest(expr);
+    }
+
+    @Override
+    public OdpsSelectParser createSelectParser() {
+        return new OdpsSelectParser(this);
     }
 }

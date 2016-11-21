@@ -109,6 +109,8 @@ public class OracleLexer extends Lexer {
         map.put("PURGE", Token.PURGE);
         map.put("INITIALLY", Token.INITIALLY);
 
+        map.put("FETCH", Token.FETCH);
+
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
 
@@ -230,6 +232,7 @@ public class OracleLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
+                commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
                 }
@@ -275,6 +278,7 @@ public class OracleLexer extends Lexer {
 
             stringVal = subString(mark + 1, bufPos);
             token = Token.LINE_COMMENT;
+            commentCount++;
             if (keepComments) {
                 addComment(stringVal);
             }

@@ -45,6 +45,8 @@ public class OdpsLexer extends Lexer {
         map.put("LIMIT", Token.LIMIT);
         map.put("IF", Token.IF);
         map.put("DISTRIBUTE", Token.DISTRIBUTE);
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
         
         DEFAULT_ODPS_KEYWORDS = new Keywords(map);
     }
@@ -113,6 +115,7 @@ public class OdpsLexer extends Lexer {
             } else {
                 stringVal = subString(mark, bufPos + 1);
                 token = Token.MULTI_LINE_COMMENT;
+                commentCount++;
                 if (keepComments) {
                     addComment(stringVal);
                 }
@@ -164,6 +167,7 @@ public class OdpsLexer extends Lexer {
 
             stringVal = subString(mark, ch != EOI ? bufPos : bufPos + 1);
             token = Token.LINE_COMMENT;
+            commentCount++;
             if (keepComments) {
                 addComment(stringVal);
             }
@@ -179,6 +183,34 @@ public class OdpsLexer extends Lexer {
 
     public void scanIdentifier() {
         final char first = ch;
+        
+        if (first == '`') {
+
+            mark = pos;
+            bufPos = 1;
+            char ch;
+            for (;;) {
+                ch = charAt(++pos);
+
+                if (ch == '`') {
+                    bufPos++;
+                    ch = charAt(++pos);
+                    break;
+                } else if (ch == EOI) {
+                    throw new ParserException("illegal identifier");
+                }
+
+                bufPos++;
+                continue;
+            }
+
+            this.ch = charAt(pos);
+
+            stringVal = subString(mark, bufPos);
+            token = Token.IDENTIFIER;
+            
+            return;
+        }
 
         final boolean firstFlag = isFirstIdentifierChar(first);
         if (!firstFlag) {
@@ -317,5 +349,13 @@ public class OdpsLexer extends Lexer {
         }
         
         super.scanVariable();
+    }
+    
+    protected final void scanString() {
+        scanString2();
+    }
+    
+    protected final void scanAlias() {
+        scanAlias2();
     }
 }

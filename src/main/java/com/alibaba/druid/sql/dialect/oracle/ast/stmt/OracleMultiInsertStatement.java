@@ -20,11 +20,11 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.statement.SQLErrorLoggingClause;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -158,7 +158,7 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
     public static class InsertIntoClause extends SQLInsertInto implements OracleSQLObject, Entry {
 
         private OracleReturningClause    returning;
-        private OracleErrorLoggingClause errorLogging;
+        private SQLErrorLoggingClause errorLogging;
 
         public InsertIntoClause(){
 
@@ -172,11 +172,11 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
             this.returning = returning;
         }
 
-        public OracleErrorLoggingClause getErrorLogging() {
+        public SQLErrorLoggingClause getErrorLogging() {
             return errorLogging;
         }
 
-        public void setErrorLogging(OracleErrorLoggingClause errorLogging) {
+        public void setErrorLogging(SQLErrorLoggingClause errorLogging) {
             this.errorLogging = errorLogging;
         }
 
@@ -190,7 +190,7 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
             if (visitor.visit(this)) {
                 this.acceptChild(visitor, tableSource);
                 this.acceptChild(visitor, columns);
-                this.acceptChild(visitor, values);
+                this.acceptChild(visitor, valuesList);
                 this.acceptChild(visitor, query);
                 this.acceptChild(visitor, returning);
                 this.acceptChild(visitor, errorLogging);

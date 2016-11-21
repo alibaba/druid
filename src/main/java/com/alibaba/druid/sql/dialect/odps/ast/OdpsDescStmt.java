@@ -23,12 +23,17 @@ import com.alibaba.druid.sql.ast.statement.SQLDescribeStatement;
 import com.alibaba.druid.sql.ast.statement.SQLObjectType;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsDescStmt extends SQLDescribeStatement {
 
     private SQLObjectType objectType;
 
     private List<SQLExpr> partition = new ArrayList<SQLExpr>();
+
+    public OdpsDescStmt() {
+        this.setDbType(JdbcConstants.ODPS);
+    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

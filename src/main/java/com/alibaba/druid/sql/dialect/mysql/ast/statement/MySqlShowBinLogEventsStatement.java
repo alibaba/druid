@@ -16,14 +16,14 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowBinLogEventsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private SQLExpr in;
     private SQLExpr from;
-    private Limit   limit;
+    private SQLLimit limit;
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -50,11 +50,11 @@ public class MySqlShowBinLogEventsStatement extends MySqlStatementImpl implement
         this.from = from;
     }
 
-    public Limit getLimit() {
+    public SQLLimit getLimit() {
         return limit;
     }
 
-    public void setLimit(Limit limit) {
+    public void setLimit(SQLLimit limit) {
         if (limit != null) {
             limit.setParent(this);
         }

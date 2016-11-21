@@ -24,7 +24,6 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerParameterizedOutputVisitor;
 
 public class SQLServerParameterizedOutputVisitorTest extends TestCase {
 
@@ -49,7 +48,7 @@ public class SQLServerParameterizedOutputVisitorTest extends TestCase {
     
     public static String outputSqlServer(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
-        SQLServerOutputVisitor visitor = new SQLServerParameterizedOutputVisitor(out);
+        SQLServerOutputVisitor visitor = new SQLServerOutputVisitor(out, true);
 
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);

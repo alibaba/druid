@@ -48,10 +48,8 @@ public class SQLServerInsertTest6 extends TestCase {
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String formatSql = "INSERT INTO [dbo].[SurveyAnswer]"//
-                           + "\n\t([CustomerId], [QuestionId], [OptionId], [CreateTime], [LastUpdateTime])"//
-                           + "\nVALUES" //
-                           + "\n(@0, @1, @2, @3, @4)";
+        String formatSql = "INSERT INTO [dbo].[SurveyAnswer] ([CustomerId], [QuestionId], [OptionId], [CreateTime], [LastUpdateTime])"//
+                           + "\nVALUES (@0, @1, @2, @3, @4)";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 

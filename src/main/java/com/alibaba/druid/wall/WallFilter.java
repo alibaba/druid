@@ -98,11 +98,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 this.throwException = value;
             }
         }
-        {
-            String tenantColumn = properties.getProperty("druid.wall.tenantColumn");
-            if (tenantColumn != null) {
-                this.config.setTenantColumn(tenantColumn);
-            }
+        
+        if (this.config != null) {
+            this.config.configFromProperties(properties);
         }
     }
 
@@ -146,7 +144,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             provider = new SQLServerWallProvider(config);
-        } else if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+        } else if (JdbcUtils.POSTGRESQL.equals(dbType)
+                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
             }
@@ -161,7 +160,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
-
+        
         provider.setName(dataSource.getName());
 
         this.inited = true;

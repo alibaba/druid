@@ -37,6 +37,12 @@ public class DB2Lexer extends Lexer {
         map.put("ONLY", Token.ONLY);
         map.put("OPTIMIZE", Token.OPTIMIZE);
         map.put("OF", Token.OF);
+        map.put("CONCAT", Token.CONCAT);
+        map.put("CONTINUE", Token.CONTINUE);
+        map.put("IDENTITY", Token.IDENTITY);
+        map.put("MERGE", Token.MERGE);
+        map.put("USING", Token.USING);
+        map.put("MATCHED", Token.MATCHED);
         
         DEFAULT_DB2_KEYWORDS = new Keywords(map);
     }
