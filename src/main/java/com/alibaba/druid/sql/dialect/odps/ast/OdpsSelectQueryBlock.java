@@ -79,9 +79,10 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) {
+            return false;
+        }
+
         OdpsSelectQueryBlock other = (OdpsSelectQueryBlock) obj;
         if (limit == null) {
             if (other.limit != null) return false;
