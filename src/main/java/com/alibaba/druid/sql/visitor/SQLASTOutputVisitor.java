@@ -55,6 +55,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected int replaceCount;
 
     protected boolean parameterized = false;
+    protected boolean parameterizedMergeInList = false;
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
@@ -131,6 +132,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public void incrementIndent() {
         this.indentCount += 1;
+    }
+
+    public boolean isParameterized() {
+        return parameterized;
+    }
+
+    public void setParameterized(boolean parameterized) {
+        this.parameterized = parameterized;
+    }
+
+    public boolean isParameterizedMergeInList() {
+        return parameterizedMergeInList;
+    }
+
+    public void setParameterizedMergeInList(boolean parameterizedMergeInList) {
+        this.parameterizedMergeInList = parameterizedMergeInList;
     }
 
     public void print(char value) {
@@ -452,7 +469,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLCharExpr x) {
         if (this.parameterized
             && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            print('?');
+            incrementReplaceCunt();
+            if (this instanceof ExportParameterVisitor || this.parameters != null) {
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
         }
 
         if (x.getText() == null) {
@@ -504,7 +526,41 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLInListExpr x) {
         if (this.parameterized) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            List<SQLExpr> targetList = x.getTargetList();
+
+            boolean changed = true;
+            if (targetList.size() == 1 && targetList.get(0) instanceof SQLVariantRefExpr) {
+                changed = false;
+            }
+
+            x.getExpr().accept(this);
+
+            if (x.isNot()) {
+                print(isUppCase() ? " NOT IN (?)" : " not in (?)");
+            } else {
+                print(isUppCase() ? " IN (?)" : " in (?)");
+            }
+
+            if (changed) {
+                incrementReplaceCunt();
+                if(this instanceof ExportParameterVisitor || this.parameters != null) {
+                    if (parameterizedMergeInList) {
+                        List<Object> subList = new ArrayList<Object>(x.getTargetList().size());
+                        for (SQLExpr target : x.getTargetList()) {
+                            ExportParameterVisitorUtils.exportParameter(subList, target);
+                        }
+                        if (subList != null) {
+                            parameters.add(subList);
+                        }
+                    } else {
+                        for (SQLExpr target : x.getTargetList()) {
+                            ExportParameterVisitorUtils.exportParameter(this.parameters, target);
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         x.getExpr().accept(this);
@@ -551,7 +607,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLIntegerExpr x) {
         if (this.parameterized
             && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+                return SQLASTOutputVisitorUtils.visit(this, x);
+            }
+
+            print('?');
+            incrementReplaceCunt();
+
+            if(this instanceof ExportParameterVisitor || this.parameters != null){
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
         }
 
         return SQLASTOutputVisitorUtils.visit(this, x);
@@ -618,7 +684,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLNCharExpr x) {
         if (this.parameterized
             && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            print('?');
+            incrementReplaceCunt();
+
+            if(this instanceof ExportParameterVisitor || this.parameters != null){
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
         }
 
         if ((x.getText() == null) || (x.getText().length() == 0)) {
@@ -656,7 +728,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLNullExpr x) {
         if (this.parameterized
             && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            SQLObject parent = x.getParent();
+            if (parent instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
+                if (binaryOpExpr.getOperator() == SQLBinaryOperator.IsNot
+                        || binaryOpExpr.getOperator() == SQLBinaryOperator.Is) {
+                    print("NULL");
+                    return false;
+                }
+            }
+
+            print('?');
+            incrementReplaceCunt();
+
+            if(this instanceof ExportParameterVisitor || this.parameters != null){
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
         }
 
         print0(ucase ? "NULL" : "null");
@@ -962,7 +1050,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         Object param = parameters.get(index);
-        printParameter(param);
+
+        if (param instanceof Collection && x.getParent() instanceof SQLInListExpr) {
+            boolean first = true;
+            for (Object item : (Collection) param) {
+                if (!first) {
+                    print0(", ");
+                }
+                printParameter(item);
+                first = false;
+            }
+        } else {
+            printParameter(param);
+        }
         return false;
     }
 
@@ -1398,7 +1498,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLHexExpr x) {
         if (this.parameterized && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            print('?');
+            incrementReplaceCunt();
+
+            if(this instanceof ExportParameterVisitor || this.parameters != null){
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
         }
 
         print0("0x");

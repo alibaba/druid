@@ -41,22 +41,10 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
         super(appender, printPostSemi);
     }
 
-    public boolean visit(SQLInListExpr x) {
-        return ParameterizedOutputVisitorUtils.visit(this, x);
-    }
-
     public boolean visit(SQLBinaryOpExpr x) {
         x = ParameterizedOutputVisitorUtils.merge(this, x);
 
         return super.visit(x);
-    }
-
-    public boolean visit(SQLIntegerExpr x) {
-        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return super.visit(x);
-        }
-
-        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
     public boolean visit(SQLNumberExpr x) {
@@ -67,30 +55,6 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
         print('?');
         incrementReplaceCunt();
         return false;
-    }
-
-    public boolean visit(SQLCharExpr x) {
-        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return super.visit(x);
-        }
-
-        return ParameterizedOutputVisitorUtils.visit(this, x);
-    }
-
-    public boolean visit(SQLNCharExpr x) {
-        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return super.visit(x);
-        }
-
-        return ParameterizedOutputVisitorUtils.visit(this, x);
-    }
-
-    public boolean visit(SQLNullExpr x) {
-        if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return super.visit(x);
-        }
-
-        return ParameterizedOutputVisitorUtils.visit(this, x);
     }
 
 }

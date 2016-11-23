@@ -24,11 +24,8 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -127,56 +124,6 @@ public class ParameterizedOutputVisitorUtils {
 
         return new SQLASTOutputVisitor(out, true);
     }
-
-    public static boolean visit(ParameterizedVisitor v, SQLInListExpr x) {
-        List<SQLExpr> targetList = x.getTargetList();
-
-        boolean changed = true;
-        if (targetList.size() == 1 && targetList.get(0) instanceof SQLVariantRefExpr) {
-            changed = false;
-        }
-
-        x.getExpr().accept(v);
-
-        if (x.isNot()) {
-            v.print(v.isUppCase() ? " NOT IN (?)" : " not in (?)");
-        } else {
-            v.print(v.isUppCase() ? " IN (?)" : " in (?)");
-        }
-
-        if (changed) {
-            v.incrementReplaceCunt();
-            if( v instanceof ExportParameterVisitor){
-                ExportParameterVisitorUtils.exportParameter(((ExportParameterVisitor)v).getParameters(), x);
-            }
-        }
-
-        return false;
-    }
-
-    public static boolean visit(ParameterizedVisitor v, SQLIntegerExpr x) {
-        if (!checkParameterize(x)) {
-            return SQLASTOutputVisitorUtils.visit(v, x);
-        }
-
-        v.print('?');
-        v.incrementReplaceCunt();
-        
-        if( v instanceof ExportParameterVisitor){
-            ExportParameterVisitorUtils.exportParameter(((ExportParameterVisitor)v).getParameters(), x);
-        }
-        return false;
-    }
-
-    public static boolean visit(ParameterizedVisitor v, SQLCharExpr x) {
-        v.print('?');
-        v.incrementReplaceCunt();
-        if( v instanceof ExportParameterVisitor){
-            ExportParameterVisitorUtils.exportParameter(((ExportParameterVisitor)v).getParameters(), x);
-        }
-        return false;
-    }
-
    
     public static boolean checkParameterize(SQLObject x) {
         if (Boolean.TRUE.equals(x.getAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP))) {
@@ -197,51 +144,11 @@ public class ParameterizedOutputVisitorUtils {
         return true;
     }
 
-    public static boolean visit(ParameterizedVisitor v, SQLNCharExpr x) {
-        v.print('?');
-        v.incrementReplaceCunt();
-        
-        if( v instanceof ExportParameterVisitor){
-            ExportParameterVisitorUtils.exportParameter(((ExportParameterVisitor)v).getParameters(), x);
-        }
-        return false;
-    }
-
-    public static boolean visit(ParameterizedVisitor v, SQLNullExpr x) {
-        SQLObject parent = x.getParent();
-        if (parent instanceof SQLBinaryOpExpr) {
-            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
-            if (binaryOpExpr.getOperator() == SQLBinaryOperator.IsNot
-                || binaryOpExpr.getOperator() == SQLBinaryOperator.Is) {
-                v.print("NULL");
-                return false;
-            }
-        }
-
-        v.print('?');
-        v.incrementReplaceCunt();
-        
-        if( v instanceof ExportParameterVisitor){
-            ExportParameterVisitorUtils.exportParameter(((ExportParameterVisitor)v).getParameters(), x);
-        }
-        return false;
-    }
-
     public static boolean visit(ParameterizedVisitor v, SQLVariantRefExpr x) {
         v.print('?');
         v.incrementReplaceCunt();
-        
-        if( v instanceof ExportParameterVisitor){
-            ExportParameterVisitorUtils.exportParameter(((ExportParameterVisitor)v).getParameters(), x);
-        }
-        return false;
-    }
-    
-    public static boolean visit(ParameterizedVisitor v, SQLHexExpr x) {
-        v.print('?');
-        v.incrementReplaceCunt();
-        
-        if( v instanceof ExportParameterVisitor){
+
+        if (v instanceof ExportParameterVisitor) {
             ExportParameterVisitorUtils.exportParameter(((ExportParameterVisitor)v).getParameters(), x);
         }
         return false;

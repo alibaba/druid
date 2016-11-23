@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import java.security.AccessControlException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -148,6 +149,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -695,7 +698,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(SQLCharExpr x) {
         if (this.parameterized
                 && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            print('?');
+            incrementReplaceCunt();
+            if (this instanceof ExportParameterVisitor || this.parameters != null) {
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
         }
 
         print('\'');
@@ -735,7 +743,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
             if (index >= 0 && index < parametersSize) {
                 Object param = this.getParameters().get(index);
-                printParameter(param);
+                if (param instanceof Collection && x.getParent() instanceof SQLInListExpr) {
+                    boolean first = true;
+                    for (Object item : (Collection) param) {
+                        if (!first) {
+                            print0(", ");
+                        }
+                        printParameter(item);
+                        first = false;
+                    }
+                } else {
+                    printParameter(param);
+                }
                 return false;
             }
         }
@@ -2922,7 +2941,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlCharExpr x) {
         if (parameterized && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            return ParameterizedOutputVisitorUtils.visit(this, x);
+            print('?');
+            incrementReplaceCunt();
+            if (this instanceof ExportParameterVisitor || this.parameters != null) {
+                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+            }
+            return false;
         }
 
         print0(x.toString());
