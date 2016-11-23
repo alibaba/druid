@@ -57,6 +57,26 @@ public class DB2ExprParser extends SQLExprParser {
                     return seqExpr;
                 }
             }
+        } else if (identifierEquals("DATE")) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                String ident = identExpr.getName();
+                if (ident.equalsIgnoreCase("CURRENT")) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT DATE");
+                }
+            }
+        } else if (identifierEquals("TIMESTAMP")) {
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                String ident = identExpr.getName();
+                if (ident.equalsIgnoreCase("CURRENT")) {
+                    lexer.nextToken();
+
+                    expr = new SQLIdentifierExpr("CURRENT DATE");
+                }
+            }
         }
 
         return super.primaryRest(expr);
