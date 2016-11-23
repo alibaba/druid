@@ -27,13 +27,14 @@ import java.util.List;
  */
 public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
-    private final static Log        LOG          = LogFactory.getLog(DruidPooledStatement.class);
+    private final static Log        LOG            = LogFactory.getLog(DruidPooledStatement.class);
 
     private final Statement         stmt;
     protected DruidPooledConnection conn;
     protected List<ResultSet>       resultSetTrace;
-    protected boolean               closed       = false;
-    protected int                   fetchRowPeak = -1;
+    protected boolean               closed         = false;
+    protected int                   fetchRowPeak   = -1;
+    protected int                   exceptionCount = 0;
 
     public DruidPooledStatement(DruidPooledConnection conn, Statement stmt){
         super(stmt);
@@ -60,6 +61,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     protected SQLException checkException(Throwable error) throws SQLException {
+        exceptionCount++;
         return conn.handleException(error);
     }
 

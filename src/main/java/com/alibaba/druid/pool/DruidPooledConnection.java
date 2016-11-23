@@ -164,7 +164,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         }
 
         stmt.getPreparedStatementHolder().decrementInUseCount();
-        if (stmt.isPooled() && holder.isPoolPreparedStatements()) {
+        if (stmt.isPooled() && holder.isPoolPreparedStatements() && stmt.exceptionCount == 0) {
             holder.getStatementPool().put(stmt.getPreparedStatementHolder());
 
             stmt.clearResultSet();
