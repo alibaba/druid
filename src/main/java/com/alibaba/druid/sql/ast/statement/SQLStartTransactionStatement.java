@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlStartTransactionStatement extends MySqlStatementImpl {
+public class SQLStartTransactionStatement extends SQLStatementImpl {
 
     private boolean              consistentSnapshot = false;
 
     private boolean              begin              = false;
     private boolean              work               = false;
+    private SQLExpr              name;
 
     private List<SQLCommentHint> hints;
 
@@ -53,7 +59,7 @@ public class MySqlStartTransactionStatement extends MySqlStatementImpl {
         this.work = work;
     }
 
-    public void accept0(MySqlASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         visitor.visit(this);
 
         visitor.endVisit(this);
@@ -65,5 +71,16 @@ public class MySqlStartTransactionStatement extends MySqlStatementImpl {
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
+    }
+
+    public SQLExpr getName() {
+        return name;
+    }
+
+    public void setName(SQLExpr name) {
+        if (name != null) {
+            name.setParent(this);
+        }
+        this.name = name;
     }
 }

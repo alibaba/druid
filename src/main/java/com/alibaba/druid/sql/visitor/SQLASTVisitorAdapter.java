@@ -1554,4 +1554,15 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLLimit x) {
 
     }
+
+
+    @Override
+    public void endVisit(SQLStartTransactionStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLStartTransactionStatement x) {
+        return true;
+    }
 }

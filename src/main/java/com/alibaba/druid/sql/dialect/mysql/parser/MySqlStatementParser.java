@@ -179,7 +179,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.ast.statement.SQLStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
@@ -634,7 +634,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (identifierEquals("START")) {
-            MySqlStartTransactionStatement stmt = parseStart();
+            SQLStartTransactionStatement stmt = parseStart();
             statementList.add(stmt);
             return true;
         }
@@ -1565,11 +1565,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public MySqlStartTransactionStatement parseStart() {
+    public SQLStartTransactionStatement parseStart() {
         acceptIdentifier("START");
         acceptIdentifier("TRANSACTION");
 
-        MySqlStartTransactionStatement stmt = new MySqlStartTransactionStatement();
+        SQLStartTransactionStatement stmt = new SQLStartTransactionStatement();
 
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();

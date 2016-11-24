@@ -682,4 +682,7 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLLimit x);
     void endVisit(SQLLimit x);
+
+    void endVisit(SQLStartTransactionStatement x);
+    boolean visit(SQLStartTransactionStatement x);
 }

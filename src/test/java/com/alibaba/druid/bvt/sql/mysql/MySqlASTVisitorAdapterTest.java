@@ -79,7 +79,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.ast.statement.SQLStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
@@ -107,7 +107,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlInsertStatement().accept(adapter);
         new MySqlLoadXmlStatement().accept(adapter);
         new MySqlReplaceStatement().accept(adapter);
-        new MySqlStartTransactionStatement().accept(adapter);
+        new SQLStartTransactionStatement().accept(adapter);
         new MySqlRollbackStatement().accept(adapter);
         new MySqlShowColumnsStatement().accept(adapter);
         new MySqlShowDatabasesStatement().accept(adapter);

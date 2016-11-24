@@ -25,16 +25,7 @@ import com.alibaba.druid.sql.ast.SQLDeclareItem;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
@@ -469,11 +460,22 @@ public class SQLServerStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLBlockStatement parseBlock() {
-        SQLBlockStatement block = new SQLBlockStatement();
-
+    public SQLStatement parseBlock() {
         accept(Token.BEGIN);
 
+        if (identifierEquals("TRANSACTION") || identifierEquals("TRAN")) {
+            lexer.nextToken();
+
+            SQLStartTransactionStatement startTrans = new SQLStartTransactionStatement();
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                SQLName name = this.exprParser.name();
+                startTrans.setName(name);
+            }
+            return startTrans;
+        }
+
+        SQLBlockStatement block = new SQLBlockStatement();
         parseStatementList(block.getStatementList());
 
         accept(Token.END);

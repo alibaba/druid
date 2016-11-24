@@ -118,7 +118,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.ast.statement.SQLStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
@@ -193,10 +193,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlReplaceStatement x);
 
     boolean visit(MySqlReplaceStatement x);
-
-    void endVisit(MySqlStartTransactionStatement x);
-
-    boolean visit(MySqlStartTransactionStatement x);
 
     void endVisit(MySqlCommitStatement x);
 
