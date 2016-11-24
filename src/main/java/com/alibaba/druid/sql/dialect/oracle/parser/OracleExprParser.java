@@ -327,20 +327,34 @@ public class OracleExprParser extends SQLExprParser {
                 return primaryRest(new SQLIdentifierExpr(alias));
             case EXTRACT:
                 lexer.nextToken();
-                OracleExtractExpr extract = new OracleExtractExpr();
-
                 accept(Token.LPAREN);
-
-                extract.setUnit(OracleDateTimeUnit.valueOf(lexer.stringVal().toUpperCase()));
+                final String str =  lexer.stringVal() ;
                 lexer.nextToken();
-
-                accept(Token.FROM);
-
-                extract.setFrom(expr());
-
+                final Token token1 = lexer.token();
+                if(token1 == Token.FROM ){ //eg: extract(year from systimestamp) 
+                    lexer.nextToken();
+                    OracleExtractExpr extract = new OracleExtractExpr();
+                    extract.setUnit(OracleDateTimeUnit.valueOf(str.toUpperCase()));
+                    extract.setFrom(expr());
+                    accept(Token.RPAREN);
+                    return primaryRest(extract);
+                }
+                //eg: extract("xmltype_fld1",'//base').getClobVal()
+                final StringBuilder exprBuilder = new StringBuilder(50);
+                exprBuilder.append("extract (\"").append(str);
+                
+                lexer.nextToken();
+                exprBuilder.append("\",'").append( lexer.stringVal()).append("')");
+                lexer.nextToken();
                 accept(Token.RPAREN);
-
-                return primaryRest(extract);
+              
+                if( lexer.token() == Token.DOT ){
+                    lexer.nextToken();
+                    SQLExpr expr3 = expr();
+                     exprBuilder.append('.').append(expr3.toString());
+                }
+                lexer.nextToken();
+                return primaryRest(new SQLIdentifierExpr(exprBuilder.toString() ));
             case BINARY_FLOAT:
                 OracleBinaryFloatExpr floatExpr = new OracleBinaryFloatExpr();
                 floatExpr.setValue(Float.parseFloat(lexer.numberString()));
