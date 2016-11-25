@@ -351,6 +351,7 @@ public class SQLExprParser extends SQLParser {
             case EXCEPTION:
             case FUNCTION:
             case IDENTITY:
+            case EXTRACT:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -799,6 +800,12 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.token() != Token.RPAREN) {
                 exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
+            }
+
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                SQLExpr from = this.expr();
+                methodInvokeExpr.setFrom(from);
             }
 
             accept(Token.RPAREN);

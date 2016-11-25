@@ -631,6 +631,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printFunctionName(x.getMethodName());
         print('(');
         printAndAccept(x.getParameters(), ", ");
+
+        SQLExpr from = x.getFrom();
+        if (from != null) {
+            print0(ucase ? " FROM " : " from ");
+            from.accept(this);
+        }
+
         print(')');
         return false;
     }

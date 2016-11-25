@@ -57,10 +57,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
@@ -270,15 +268,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getReturning().accept(this);
         }
 
-        return false;
-    }
-
-    public boolean visit(OracleExtractExpr x) {
-        print0(ucase ? "EXTRACT(" : "extract(");
-        print0(x.getUnit().name());
-        print0(ucase ? " FROM " : " from ");
-        x.getFrom().accept(this);
-        print(')');
         return false;
     }
 
@@ -774,11 +763,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleDeleteStatement x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleExtractExpr x) {
 
     }
 

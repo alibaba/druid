@@ -39,7 +39,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
@@ -114,8 +113,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleDeleteStatement x);
 
-    void endVisit(OracleExtractExpr x);
-
     void endVisit(OracleIntervalExpr x);
 
     void endVisit(OracleOuterExpr x);
@@ -151,8 +148,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleDbLinkExpr x);
 
     boolean visit(OracleDeleteStatement x);
-
-    boolean visit(OracleExtractExpr x);
 
     boolean visit(OracleIntervalExpr x);
 

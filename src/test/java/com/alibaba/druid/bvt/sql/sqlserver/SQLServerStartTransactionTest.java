@@ -26,7 +26,7 @@ public class SQLServerStartTransactionTest extends TestCase {
 
     public void test_stmt() throws Exception {
         String sql = "BEGIN TRAN T1;";
-        
+
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 

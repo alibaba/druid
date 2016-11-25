@@ -31,6 +31,8 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
     private SQLExpr             owner;
     private final List<SQLExpr> parameters       = new ArrayList<SQLExpr>();
 
+    private SQLExpr             from;
+
     public SQLMethodInvokeExpr(){
 
     }
@@ -62,6 +64,14 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
             owner.setParent(this);
         }
         this.owner = owner;
+    }
+
+    public SQLExpr getFrom() {
+        return from;
+    }
+
+    public void setFrom(SQLExpr from) {
+        this.from = from;
     }
 
     public List<SQLExpr> getParameters() {
@@ -113,48 +123,25 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
-        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLMethodInvokeExpr that = (SQLMethodInvokeExpr) o;
+
+        if (methodName != null ? !methodName.equals(that.methodName) : that.methodName != null) return false;
+        if (owner != null ? !owner.equals(that.owner) : that.owner != null) return false;
+        if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) return false;
+        return from != null ? from.equals(that.from) : that.from == null;
+
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        SQLMethodInvokeExpr other = (SQLMethodInvokeExpr) obj;
-        if (methodName == null) {
-            if (other.methodName != null) {
-                return false;
-            }
-        } else if (!methodName.equals(other.methodName)) {
-            return false;
-        }
-        if (owner == null) {
-            if (other.owner != null) {
-                return false;
-            }
-        } else if (!owner.equals(other.owner)) {
-            return false;
-        }
-        if (parameters == null) {
-            if (other.parameters != null) {
-                return false;
-            }
-        } else if (!parameters.equals(other.parameters)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = methodName != null ? methodName.hashCode() : 0;
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
+        result = 31 * result + (from != null ? from.hashCode() : 0);
+        return result;
     }
 }
