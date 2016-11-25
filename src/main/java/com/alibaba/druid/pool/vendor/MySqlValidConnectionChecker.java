@@ -105,7 +105,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
             }
         }
 
-        if (validateQuery == null) {
+        if (validateQuery == null || validateQuery.length() == 0) {
             return true;
         }
 

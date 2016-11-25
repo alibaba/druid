@@ -70,6 +70,10 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
             conn = ((ConnectionProxy) conn).getRawObject();
         }
 
+        if (validateQuery == null || validateQuery.length() == 0) {
+            return true;
+        }
+
         Statement stmt = null;
         ResultSet rs = null;
         try {
