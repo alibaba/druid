@@ -53,7 +53,7 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
         this.timeout = seconds;
     }
 
-    public boolean validConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
         if (validateQuery == null || validateQuery.isEmpty()) {
             validateQuery = this.defaultValidateQuery;
         }

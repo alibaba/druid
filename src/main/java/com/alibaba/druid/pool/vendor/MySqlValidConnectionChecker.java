@@ -81,7 +81,7 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
         this.usePingMethod = usePingMethod;
     }
 
-    public boolean validConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
+    public boolean isValidConnection(Connection conn, String validateQuery, int validationQueryTimeout) throws Exception {
         if (conn.isClosed()) {
             return false;
         }
@@ -103,6 +103,10 @@ public class MySqlValidConnectionChecker extends ValidConnectionCheckerAdapter i
                 ping.invoke(conn, true, validationQueryTimeout * 1000);
                 return true;
             }
+        }
+
+        if (validateQuery == null) {
+            return true;
         }
 
         Statement stmt = null;
