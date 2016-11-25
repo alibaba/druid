@@ -57,6 +57,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected boolean parameterized = false;
     protected boolean parameterizedMergeInList = false;
 
+    protected boolean shardingSupport = false;
+
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
     }
@@ -88,7 +90,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void addTableMapping(String srcTable, String destTable) {
-        if (tableMapping != null) {
+        if (tableMapping == null) {
             tableMapping = new HashMap<String, String>();
         }
         tableMapping.put(srcTable, destTable);
