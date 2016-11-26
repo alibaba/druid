@@ -539,7 +539,9 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         List<Object> parameters = new ArrayList<Object>(parametersSize);
         for (int i = 0; i < parametersSize; ++i) {
             JdbcParameter jdbcParam = statement.getParameter(i);
-            parameters.add(jdbcParam.getValue());
+            parameters.add(jdbcParam != null
+                    ? jdbcParam.getValue()
+                    : null);
         }
 
         String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
