@@ -52,6 +52,8 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
@@ -312,6 +314,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                         SQLSelectItem selectItem = query.getSelectList().get(intValue);
                         selectItem.getExpr().accept(orderByVisitor);
                     }
+                } else if (expr instanceof MySqlExpr || expr instanceof OracleExpr) {
+                    continue;
                 }
             }
         }
