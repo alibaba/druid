@@ -735,26 +735,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLNullExpr x) {
-        if (this.parameterized
-            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            SQLObject parent = x.getParent();
-            if (parent instanceof SQLBinaryOpExpr) {
-                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
-                if (binaryOpExpr.getOperator() == SQLBinaryOperator.IsNot
-                        || binaryOpExpr.getOperator() == SQLBinaryOperator.Is) {
-                    print("NULL");
-                    return false;
-                }
-            }
-
-            print('?');
-            incrementReplaceCunt();
-
-            if(this instanceof ExportParameterVisitor || this.parameters != null){
-                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
-            }
-            return false;
-        }
+//        if (this.parameterized
+//            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+//            SQLObject parent = x.getParent();
+//            if (parent instanceof SQLBinaryOpExpr) {
+//                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
+//                if (binaryOpExpr.getOperator() == SQLBinaryOperator.IsNot
+//                        || binaryOpExpr.getOperator() == SQLBinaryOperator.Is) {
+//                    print("NULL");
+//                    return false;
+//                }
+//            }
+//
+//            print('?');
+//            incrementReplaceCunt();
+//
+//            if(this instanceof ExportParameterVisitor || this.parameters != null){
+//                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+//            }
+//            return false;
+//        }
 
         print0(ucase ? "NULL" : "null");
         return false;
