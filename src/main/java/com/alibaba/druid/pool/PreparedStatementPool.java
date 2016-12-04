@@ -78,15 +78,15 @@ public class PreparedStatementPool {
         if (stmt == null) {
             return;
         }
+        
+        PreparedStatementHolder oldStmtHolder = map.put(stmtHolder.key, stmtHolder);
 
         if (dataSource.isOracle() && dataSource.isUseOracleImplicitCache()) {
-            OracleUtils.enterImplicitCache(stmt);
             stmtHolder.setEnterOracleImplicitCache(true);
+            OracleUtils.enterImplicitCache(stmt);
         } else {
             stmtHolder.setEnterOracleImplicitCache(false);
         }
-
-        PreparedStatementHolder oldStmtHolder = map.put(stmtHolder.key, stmtHolder);
 
         if (oldStmtHolder == stmtHolder) {
             return;
