@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.mysql;
+package com.alibaba.druid.bvt.sql.mysql.param;
 
 import junit.framework.TestCase;
 
@@ -22,19 +22,15 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class MySqlParameterizedOutputVisitorTest_3 extends TestCase {
-    protected void setUp() throws Exception {
-        System.setProperty("druid.parameterized.shardingSupport", "false");
-    }
-    
-    protected void tearDown() throws Exception {
-        System.clearProperty("druid.parameterized.shardingSupport");
-    }
+public class MySqlParameterizedOutputVisitorTest_4 extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "delete from alerts where not (exists (select metric1_.id from metrics metric1_ where id=alerts.metric_id))";
+        String sql = "select user0_.id as id0_, user0_.email as email0_, " //
+                     + "user0_.login_name as login3_0_, user0_.name as name0_, "//
+                     + "user0_.password as password0_ " //
+                     + "from acct_user user0_ "//
+                     + "where user0_.login_name=? limit ?";
         Assert.assertSame(ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL), sql);
     }
 
-    
 }

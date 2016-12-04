@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.sql.mysql;
+package com.alibaba.druid.bvt.sql.mysql.param;
 
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
