@@ -201,9 +201,7 @@ public abstract class ResourceServlet extends HttpServlet {
         }
 
         if ("/submitLogin".equals(path)) {
-            String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
-            String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
-            if (username.equals(usernameParam) && password.equals(passwordParam)) {
+            if (checkLoginParam(request)) {
                 request.getSession().setAttribute(SESSION_USER_KEY, username);
                 response.getWriter().print("success");
             } else {
@@ -214,6 +212,7 @@ public abstract class ResourceServlet extends HttpServlet {
 
         if (isRequireAuth() //
             && !ContainsUser(request)//
+            && !checkLoginParam(request)//
             && !("/login.html".equals(path) //
                  || path.startsWith("/css")//
                  || path.startsWith("/js") //
@@ -260,6 +259,18 @@ public abstract class ResourceServlet extends HttpServlet {
     public boolean ContainsUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         return session != null && session.getAttribute(SESSION_USER_KEY) != null;
+    }
+
+    public boolean checkLoginParam(HttpServletRequest request) {
+        String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
+        String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
+        if(null == username || null == password){
+            return true;
+        } else if (username.equals(usernameParam) && password.equals(passwordParam)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isRequireAuth() {
