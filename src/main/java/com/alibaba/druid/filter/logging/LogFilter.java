@@ -35,6 +35,7 @@ import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.SQLUtils.FormatOption;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -79,6 +80,9 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     private boolean           statementLogErrorEnabled             = true;
     private boolean           resultSetLogEnabled                  = true;
     private boolean           resultSetLogErrorEnabled             = true;
+
+    private FormatOption      statementSqlFormatOption             = SQLUtils.DEFAULT_LCASE_FORMAT_OPTION;
+    private boolean           statementLogSqlPrettyFormat          = false;
 
     protected DataSourceProxy dataSource;
 
@@ -334,6 +338,22 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         this.statementParameterClearLogEnable = statementParameterClearLogEnable;
     }
 
+    public FormatOption getStatementSqlFormatOption() {
+        return this.statementSqlFormatOption;
+    }
+
+    public void setStatementSqlFormatOption(FormatOption formatOption) {
+        this.statementSqlFormatOption = formatOption;
+    }
+
+    public boolean isStatementSqlPrettyFormat() {
+        return this.statementLogSqlPrettyFormat;
+    }
+
+    public void setStatementSqlPrettyFormat(boolean statementSqlPrettyFormat) {
+        this.statementLogSqlPrettyFormat = statementSqlPrettyFormat;
+    }
+
     protected abstract void connectionLog(String message);
 
     protected abstract void statementLog(String message);
@@ -545,7 +565,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         }
 
         String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
-        String formattedSql = SQLUtils.format(sql, dbType, parameters);
+        String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption,
+                                              this.statementLogSqlPrettyFormat);
         statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
                      + formattedSql);
     }
