@@ -194,65 +194,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         this.shardingSupport = shardingSupport;
     }
 
-    public boolean visit(SQLIdentifierExpr x) {
-        if (!parameterized) {
-            return super.visit(x);
-        }
-
-        final String name = x.getName();
-        if (shardingSupport) {
-            SQLObject parent = x.getParent();
-            shardingSupport = parent instanceof SQLExprTableSource || parent instanceof SQLPropertyExpr;
-        }
-
-        if (shardingSupport) {
-            int pos = name.lastIndexOf('_');
-            if (pos != -1 && pos != name.length() - 1) {
-                boolean quote = name.charAt(0) == '`' && name.charAt(name.length() - 1) == '`';
-                boolean isNumber = true;
-
-                int end = name.length();
-                if (quote) {
-                    end--;
-                }
-                for (int i = pos + 1; i < end; ++i) {
-                    char ch = name.charAt(i);
-                    if (ch < '0' || ch > '9') {
-                        isNumber = false;
-                        break;
-                    }
-                }
-                if (isNumber) {
-                    int start = quote ? 1 : 0;
-                    String realName = name.substring(start, pos);
-                    print0(realName);
-                    incrementReplaceCunt();
-                    return false;
-                }
-            }
-
-            int numberCount = 0;
-            for (int i = name.length() - 1; i >= 0; --i) {
-                char ch = name.charAt(i);
-                if (ch < '0' || ch > '9') {
-                    break;
-                } else {
-                    numberCount++;
-                }
-            }
-
-            if (numberCount > 1) {
-                int numPos = name.length() - numberCount;
-                String realName = name.substring(0, numPos);
-                print0(realName);
-                incrementReplaceCunt();
-                return false;
-            }
-        }
-        print0(name);
-        return false;
-    }
-
     @Override
     public boolean visit(SQLSelectQueryBlock select) {
         if (select instanceof MySqlSelectQueryBlock) {

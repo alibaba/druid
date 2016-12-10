@@ -522,7 +522,67 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLIdentifierExpr x) {
-        print0(x.getName());
+        final String name = x.getName();
+        if (!parameterized) {
+            print0(x.getName());
+            return false;
+        }
+
+        return printName(x, name);
+    }
+
+    private boolean printName(SQLName x, String name) {
+        boolean shardingSupport = this.shardingSupport;
+        if (shardingSupport) {
+            SQLObject parent = x.getParent();
+            shardingSupport = parent instanceof SQLExprTableSource || parent instanceof SQLPropertyExpr;
+        }
+
+        if (shardingSupport) {
+            int pos = name.lastIndexOf('_');
+            if (pos != -1 && pos != name.length() - 1) {
+                boolean quote = name.charAt(0) == '`' && name.charAt(name.length() - 1) == '`';
+                boolean isNumber = true;
+
+                int end = name.length();
+                if (quote) {
+                    end--;
+                }
+                for (int i = pos + 1; i < end; ++i) {
+                    char ch = name.charAt(i);
+                    if (ch < '0' || ch > '9') {
+                        isNumber = false;
+                        break;
+                    }
+                }
+                if (isNumber) {
+                    int start = quote ? 1 : 0;
+                    String realName = name.substring(start, pos);
+                    print0(realName);
+                    incrementReplaceCunt();
+                    return false;
+                }
+            }
+
+            int numberCount = 0;
+            for (int i = name.length() - 1; i >= 0; --i) {
+                char ch = name.charAt(i);
+                if (ch < '0' || ch > '9') {
+                    break;
+                } else {
+                    numberCount++;
+                }
+            }
+
+            if (numberCount > 1) {
+                int numPos = name.length() - numberCount;
+                String realName = name.substring(0, numPos);
+                print0(realName);
+                incrementReplaceCunt();
+                return false;
+            }
+        }
+        print0(name);
         return false;
     }
 
@@ -735,26 +795,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLNullExpr x) {
-//        if (this.parameterized
-//            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-//            SQLObject parent = x.getParent();
-//            if (parent instanceof SQLBinaryOpExpr) {
-//                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
-//                if (binaryOpExpr.getOperator() == SQLBinaryOperator.IsNot
-//                        || binaryOpExpr.getOperator() == SQLBinaryOperator.Is) {
-//                    print("NULL");
-//                    return false;
-//                }
-//            }
-//
-//            print('?');
-//            incrementReplaceCunt();
-//
-//            if(this instanceof ExportParameterVisitor || this.parameters != null){
-//                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
-//            }
-//            return false;
-//        }
+        if (this.parameterized
+            && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            SQLObject parent = x.getParent();
+            if (parent instanceof ValuesClause) {
+                print('?');
+                incrementReplaceCunt();
+                return false;
+            }
+        }
 
         print0(ucase ? "NULL" : "null");
         return false;
@@ -776,9 +825,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLPropertyExpr x) {
-        x.getOwner().accept(this);
+        SQLExpr owner = x.getOwner();
+
+        owner.accept(this);
         print('.');
-        print0(x.getName());
+
+        String name = x.getName();
+        printName(x, name);
+
         return false;
     }
 
