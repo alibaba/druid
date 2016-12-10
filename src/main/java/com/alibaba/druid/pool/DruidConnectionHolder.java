@@ -32,6 +32,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -68,18 +69,35 @@ public final class DruidConnectionHolder {
     private int                                 underlyingTransactionIsolation;
     private boolean                             underlyingAutoCommit;
     private boolean                             discard                  = false;
+
+    protected final Map<String, Object>         variables;
+    protected final Map<String, Object>         globleVariables;
     
     public static boolean                       holdabilityUnsupported   = false;
     
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo) throws SQLException {
-        this(dataSource, pyConnectInfo.getPhysicalConnection(), pyConnectInfo.getConnectNanoSpan());
+        this(dataSource
+                , pyConnectInfo.getPhysicalConnection()
+                , pyConnectInfo.getConnectNanoSpan()
+                , pyConnectInfo.getVairiables()
+                , pyConnectInfo.getGlobalVairiables());
     }
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan) throws SQLException{
+        this(dataSource, conn, connectNanoSpan, null, null);
+    }
 
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource
+            , Connection conn
+            , long connectNanoSpan
+            , Map<String, Object> variables
+            , Map<String, Object> globleVariables) throws SQLException{
         this.dataSource = dataSource;
         this.conn = conn;
         this.createNanoSpan = connectNanoSpan;
+        this.variables = variables;
+        this.globleVariables = globleVariables;
+
         this.connectTimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connectTimeMillis;
 
