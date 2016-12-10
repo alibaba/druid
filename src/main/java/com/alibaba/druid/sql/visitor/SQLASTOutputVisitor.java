@@ -47,6 +47,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected boolean groupItemSingleLine = false;
 
     protected List<Object> parameters;
+    protected Set<String> tables;
+
+    protected boolean exportTables = false;
 
     protected String dbType;
 
@@ -108,6 +111,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return parameters;
     }
 
+    public Set<String> getTables() {
+        return this.tables;
+    }
+
     public void setParameters(List<Object> parameters) {
         this.parameters = parameters;
     }
@@ -150,6 +157,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public void setParameterizedMergeInList(boolean parameterizedMergeInList) {
         this.parameterizedMergeInList = parameterizedMergeInList;
+    }
+
+    public boolean isExportTables() {
+        return exportTables;
+    }
+
+    public void setExportTables(boolean exportTables) {
+        this.exportTables = exportTables;
     }
 
     public void print(char value) {
@@ -1066,9 +1081,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    protected void addTable(String table) {
+        if (tables == null) {
+            tables = new HashSet<String>();
+        }
+        this.tables.add(table);
+    }
+
     protected void printTableSourceExpr(SQLExpr expr) {
+        if (exportTables) {
+            addTable(expr.toString());
+        }
+
         if (tableMapping != null && expr instanceof SQLName) {
             String tableName = expr.toString();
+
             String destTableName = tableMapping.get(tableName);
             if (destTableName != null) {
                 tableName = destTableName;
