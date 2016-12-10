@@ -1473,7 +1473,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             physicalConnectProperties.put("password", password);
         }
 
-        Connection conn;
+        Connection conn = null;
 
         long connectStartNanos = System.nanoTime();
         long connectedNanos, initedNanos, validatedNanos;
@@ -1494,13 +1494,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             setCreateError(null);
         } catch (SQLException ex) {
             setCreateError(ex);
+            JdbcUtils.close(conn);
             throw ex;
         } catch (RuntimeException ex) {
             setCreateError(ex);
+            JdbcUtils.close(conn);
             throw ex;
         } catch (Error ex) {
             createErrorCount.incrementAndGet();
             setCreateError(ex);
+            JdbcUtils.close(conn);
             throw ex;
         } finally {
             long nano = System.nanoTime() - connectStartNanos;
