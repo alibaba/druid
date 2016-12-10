@@ -63,10 +63,10 @@ public class SQLUtils {
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
     public static String toSQLString(SQLObject sqlObject, String dbType) {
-        return toSQLString(sqlObject, dbType, null);
+        return toSQLString(sqlObject, dbType, null, false);
     }
     
-    public static String toSQLString(SQLObject sqlObject, String dbType, FormatOption option) {
+    public static String toSQLString(SQLObject sqlObject, String dbType, FormatOption option, boolean prettyFormat) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createOutputVisitor(out, dbType);
         
@@ -74,6 +74,7 @@ public class SQLUtils {
             option = DEFAULT_FORMAT_OPTION;
         }
         visitor.setUppCase(option.isUppCase());
+        visitor.setPrettyFormat(prettyFormat);
         
         sqlObject.accept(visitor);
 
@@ -90,19 +91,19 @@ public class SQLUtils {
     }
 
     public static String toOdpsString(SQLObject sqlObject) {
-        return toOdpsString(sqlObject, null);
+        return toOdpsString(sqlObject, null, false);
     }
     
-    public static String toOdpsString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, JdbcConstants.ODPS, option);
+    public static String toOdpsString(SQLObject sqlObject, FormatOption option, boolean prettyFormat) {
+        return toSQLString(sqlObject, JdbcConstants.ODPS, option, prettyFormat);
     }
     
     public static String toMySqlString(SQLObject sqlObject) {
-        return toMySqlString(sqlObject, null);
+        return toMySqlString(sqlObject, null, false);
     }
 
-    public static String toMySqlString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, JdbcConstants.MYSQL, option);
+    public static String toMySqlString(SQLObject sqlObject, FormatOption option, boolean prettyFormat) {
+        return toSQLString(sqlObject, JdbcConstants.MYSQL, option, prettyFormat);
     }
 
     public static SQLExpr toMySqlExpr(String sql) {
@@ -138,35 +139,35 @@ public class SQLUtils {
     }
 
     public static String toOracleString(SQLObject sqlObject) {
-        return toOracleString(sqlObject, null);
+        return toOracleString(sqlObject, null, false);
     }
     
-    public static String toOracleString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, JdbcConstants.ORACLE, option);
+    public static String toOracleString(SQLObject sqlObject, FormatOption option, boolean prettyFormat) {
+        return toSQLString(sqlObject, JdbcConstants.ORACLE, option, prettyFormat);
     }
     
     public static String toPGString(SQLObject sqlObject) {
-        return toPGString(sqlObject, null);
+        return toPGString(sqlObject, null, false);
     }
 
-    public static String toPGString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, JdbcConstants.POSTGRESQL, option);
+    public static String toPGString(SQLObject sqlObject, FormatOption option, boolean prettyFormat) {
+        return toSQLString(sqlObject, JdbcConstants.POSTGRESQL, option, prettyFormat);
     }
 
     public static String toDB2String(SQLObject sqlObject) {
-        return toDB2String(sqlObject, null);
+        return toDB2String(sqlObject, null, false);
     }
     
-    public static String toDB2String(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, JdbcConstants.DB2, option);
+    public static String toDB2String(SQLObject sqlObject, FormatOption option, boolean prettyFormat) {
+        return toSQLString(sqlObject, JdbcConstants.DB2, option, prettyFormat);
     }
 
     public static String toSQLServerString(SQLObject sqlObject) {
-        return toSQLServerString(sqlObject, null);
+        return toSQLServerString(sqlObject, null, false);
     }
     
-    public static String toSQLServerString(SQLObject sqlObject, FormatOption option) {
-        return toSQLString(sqlObject, JdbcConstants.SQL_SERVER, option);
+    public static String toSQLServerString(SQLObject sqlObject, FormatOption option, boolean prettyFormat) {
+        return toSQLString(sqlObject, JdbcConstants.SQL_SERVER, option, prettyFormat);
     }
     
     public static String formatPGSql(String sql, FormatOption option) {
@@ -227,25 +228,25 @@ public class SQLUtils {
     }
 
     public static String format(String sql, String dbType) {
-        return format(sql, dbType, null, null);
+        return format(sql, dbType, null, null, false);
     }
     
     public static String format(String sql, String dbType, FormatOption option) {
-        return format(sql, dbType, null, option);
+        return format(sql, dbType, null, option, false);
     }
     
     public static String format(String sql, String dbType, List<Object> parameters) {
-        return format(sql, dbType, parameters, null);
+        return format(sql, dbType, parameters, null, false);
     }
 
-    public static String format(String sql, String dbType, List<Object> parameters, FormatOption option) {
+    public static String format(String sql, String dbType, List<Object> parameters, FormatOption option, boolean prettyFormat) {
         try {
             SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
             parser.setKeepComments(true);
             
             List<SQLStatement> statementList = parser.parseStatementList();
 
-            return toSQLString(statementList, dbType, parameters, option);
+            return toSQLString(statementList, dbType, parameters, option, null, prettyFormat);
         } catch (ParserException ex) {
             LOG.warn("format error", ex);
             return sql;
@@ -261,28 +262,30 @@ public class SQLUtils {
     }
     
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters) {
-        return toSQLString(statementList, dbType, parameters, null, null);
+        return toSQLString(statementList, dbType, parameters, DEFAULT_LCASE_FORMAT_OPTION, null, false);
     }
 
     public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters, FormatOption option) {
-        return toSQLString(statementList, dbType, parameters, option, null);
+        return toSQLString(statementList, dbType, parameters, option, null, false);
     }
 
     public static String toSQLString(List<SQLStatement> statementList
             , String dbType
             , List<Object> parameters
             , FormatOption option
-            , Map<String, String> tableMapping) {
+            , Map<String, String> tableMapping
+            , boolean prettyFormat) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
             visitor.setParameters(parameters);
         }
-        
+    
         if (option == null) {
             option = DEFAULT_FORMAT_OPTION;
         }
         visitor.setUppCase(option.isUppCase());
+        visitor.setPrettyFormat(prettyFormat);
 
         if (tableMapping != null) {
             visitor.setTableMapping(tableMapping);
@@ -658,7 +661,7 @@ public class SQLUtils {
 
     public static String refactor(String sql, String dbType, Map<String, String> tableMapping) {
         List<SQLStatement> stmtList = parseStatements(sql, dbType);
-        return SQLUtils.toSQLString(stmtList, dbType, null, null, tableMapping);
+        return SQLUtils.toSQLString(stmtList, dbType, null, DEFAULT_LCASE_FORMAT_OPTION, tableMapping, false);
     }
 
     public static boolean containsIndexDDL(String sql, String dbType) {
