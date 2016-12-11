@@ -75,6 +75,7 @@ public class SQLUtils {
         }
         visitor.setUppCase(option.isUppCase());
         visitor.setPrettyFormat(option.isPrettyFormat());
+        visitor.setParameterized(option.isParameterized());
 
         sqlObject.accept(visitor);
 
@@ -285,6 +286,7 @@ public class SQLUtils {
         }
         visitor.setUppCase(option.isUppCase());
         visitor.setPrettyFormat(option.isPrettyFormat());
+        visitor.setParameterized(option.isParameterized());
 
         if (tableMapping != null) {
             visitor.setTableMapping(tableMapping);
@@ -640,19 +642,25 @@ public class SQLUtils {
     public static class FormatOption {
 
         private boolean ucase = true;
-        private boolean prettyFormat = false;
+        private boolean prettyFormat = true;
+        private boolean parameterized = false;
 
         public FormatOption() {
 
         }
 
         public FormatOption(boolean ucase) {
-            this.ucase = ucase;
+            this(ucase, true);
         }
 
         public FormatOption(boolean ucase, boolean prettyFormat) {
+            this(ucase, prettyFormat, false);
+        }
+
+        public FormatOption(boolean ucase, boolean prettyFormat, boolean parameterized) {
             this.ucase = ucase;
             this.prettyFormat = prettyFormat;
+            this.parameterized = parameterized;
         }
 
         public boolean isUppCase() {
@@ -669,6 +677,14 @@ public class SQLUtils {
 
         public void setPrettyFormat(boolean prettyFormat) {
             this.prettyFormat = prettyFormat;
+        }
+
+        public boolean isParameterized() {
+            return parameterized;
+        }
+
+        public void setParameterized(boolean parameterized) {
+            this.parameterized = parameterized;
         }
     }
 
