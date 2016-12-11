@@ -38,11 +38,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.SQLUtils.FormatOption;
 import com.alibaba.druid.util.JdbcUtils;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public abstract class LogFilter extends FilterEventAdapter implements LogFilterMBean {
-
     protected String          dataSourceLoggerName                 = "druid.sql.DataSource";
     protected String          connectionLoggerName                 = "druid.sql.Connection";
     protected String          statementLoggerName                  = "druid.sql.Statement";
@@ -81,7 +82,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     private boolean           resultSetLogEnabled                  = true;
     private boolean           resultSetLogErrorEnabled             = true;
 
-    private FormatOption      statementSqlFormatOption             = SQLUtils.DEFAULT_LCASE_FORMAT_OPTION;
+    private FormatOption      statementSqlFormatOption             = new FormatOption(false, true);
     private boolean           statementLogSqlPrettyFormat          = false;
 
     protected DataSourceProxy dataSource;
@@ -565,8 +566,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         }
 
         String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
-        String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption,
-                                              this.statementLogSqlPrettyFormat);
+        String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption);
         statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
                      + formattedSql);
     }
