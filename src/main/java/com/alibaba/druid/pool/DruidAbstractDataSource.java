@@ -1018,7 +1018,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setUsername(String username) {
-        if (StringUtils.equals(this.jdbcUrl, jdbcUrl)) {
+        if (StringUtils.equals(this.username, username)) {
             return;
         }
 
