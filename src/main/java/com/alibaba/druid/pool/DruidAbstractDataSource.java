@@ -599,6 +599,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void addConnectionProperty(String name, String value) {
+        if (StringUtils.equals(connectProperties.getProperty(name), value)) {
+            return;
+        }
+
         if (inited) {
             throw new UnsupportedOperationException();
         }
