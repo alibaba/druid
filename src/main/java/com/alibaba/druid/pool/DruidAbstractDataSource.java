@@ -1018,6 +1018,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setUsername(String username) {
+        if (StringUtils.equals(this.jdbcUrl, jdbcUrl)) {
+            return;
+        }
+
         if (inited) {
             throw new UnsupportedOperationException();
         }
@@ -1082,6 +1086,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setUrl(String jdbcUrl) {
+        if (StringUtils.equals(this.jdbcUrl, jdbcUrl)) {
+            return;
+        }
+
         if (inited) {
             throw new UnsupportedOperationException();
         }
