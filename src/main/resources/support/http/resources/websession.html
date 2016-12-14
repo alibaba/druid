@@ -20,12 +20,12 @@
           					<span class="pull-right" style="font-size: 16px; margin-right: 20px;">
           						<label langkey="RefreshPeriod" class="lang" style="display: inline;" for="refreshSecondsSelect">Refresh Period</label>
           						<select id="refreshSecondsSelect" class="refresh-seconds-select btn" style="width:80px;" onchange="javascript:druid.websession.refreshSeconds=parseInt(this.options[this.options.selectedIndex].value);">
-                                    <option value="5"selected="selected">5s</option>
-                                    <option value="10">10s</option>
-                                    <option value="20">20s</option>
-                                    <option value="30">30s</option>
-                                    <option value="60">60s</option>
-                                </select>
+          							<option value="5"selected="selected">5s</option>
+          							<option value="10">10s</option>
+          							<option value="20">20s</option>
+          							<option value="30">30s</option>
+          							<option value="60">60s</option>
+          						</select>
           						<a id="btnSuspendRefresh" langkey="SuspendRefresh" class="btn btn-primary lang" href="javascript:druid.websession.switchSuspendRefresh();">Suspend Refresh</a>
           					</span>
           				</h3>
@@ -66,36 +66,36 @@
     				druid.common.buildHead(6);
     				druid.common.ajaxuri = 'websession.json?';
     				druid.common.handleCallback = druid.websession.handleAjaxResult;
-                    druid.websession.controlRefresh();
+    				druid.websession.controlRefresh();
     			},
-                controlRefresh : function() {
-                    var FIVE = 5;
-                    if(!druid.websession.refreshSeconds){
-                        druid.websession.refreshSeconds=FIVE;
-                    }
-                    if(!druid.websession.suspendedSeconds){
-                        druid.websession.suspendedSeconds=0;
-                    }
-                    druid.websession.suspendedSeconds += FIVE;
-                    if(!druid.websession.disableAutoRefresh){
-                        if(druid.websession.suspendedSeconds >= druid.websession.refreshSeconds){
-                            druid.websession.suspendedSeconds = 0;
-                            druid.common.ajaxRequestForBasicInfo();
-                        }
-                    }
-                    setTimeout(druid.websession.controlRefresh, FIVE * 1000);
-                },
-                switchSuspendRefresh : function() {
-                    druid.websession.disableAutoRefresh = !druid.websession.disableAutoRefresh;
-                    if(druid.websession.disableAutoRefresh){
-                        $("#btnSuspendRefresh").addClass("btn-warning").removeClass("btn-primary");
-                    } else {
-                        $("#btnSuspendRefresh").addClass("btn-primary").removeClass("btn-warning");
-                    }
-                },
-                disableAutoRefresh : false,
-                refreshSeconds : 5,
-                suspendedSeconds : 0,
+    			controlRefresh : function() {
+    				var FIVE = 5;
+    				if(!druid.websession.refreshSeconds){
+    					druid.websession.refreshSeconds=FIVE;
+    				}
+    				if(!druid.websession.suspendedSeconds){
+    					druid.websession.suspendedSeconds=0;
+    				}
+    				druid.websession.suspendedSeconds += FIVE;
+    				if(!druid.websession.disableAutoRefresh){
+    					if(druid.websession.suspendedSeconds >= druid.websession.refreshSeconds){
+    						druid.websession.suspendedSeconds = 0;
+    						druid.common.ajaxRequestForBasicInfo();
+    					}
+    				}
+    				setTimeout(druid.websession.controlRefresh, FIVE * 1000);
+    			},
+    			switchSuspendRefresh : function() {
+    				druid.websession.disableAutoRefresh = !druid.websession.disableAutoRefresh;
+    				if(druid.websession.disableAutoRefresh){
+    					$("#btnSuspendRefresh").addClass("btn-warning").removeClass("btn-primary");
+    				} else {
+    					$("#btnSuspendRefresh").addClass("btn-primary").removeClass("btn-warning");
+    				}
+    			},
+    			disableAutoRefresh : false,
+    			refreshSeconds : 5,
+    			suspendedSeconds : 0,
     			
     			handleAjaxResult : function(data) {
     				var statList = data.Content;
