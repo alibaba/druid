@@ -1999,7 +1999,22 @@ public class SQLExprParser extends SQLParser {
                 item.setValue(new SQLIdentifierExpr(lexer.stringVal()));
                 lexer.nextToken();
             } else {
-                item.setValue(expr());
+                SQLExpr expr = expr();
+
+                if (lexer.token() == Token.COMMA && JdbcConstants.POSTGRESQL.equals(dbType)) {
+                    SQLListExpr listExpr = new SQLListExpr();
+                    listExpr.addItem(expr);
+                    expr.setParent(listExpr);
+                    do {
+                        lexer.nextToken();
+                        SQLExpr listItem = this.expr();
+                        listItem.setParent(listExpr);
+                        listExpr.addItem(listItem);
+                    } while (lexer.token() == Token.COMMA);
+                    item.setValue(listExpr);
+                } else {
+                    item.setValue(expr);
+                }
             }
         }
 
