@@ -1955,6 +1955,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
+            long lastDiscardCount = 0;
             int errorCount = 0;
             for (;;) {
                 // addLast
@@ -1964,10 +1965,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     break;
                 }
 
+                long discardCount = DruidDataSource.this.discardCount;
+                boolean discardChanged = discardCount - lastDiscardCount > 0;
+                lastDiscardCount = discardCount;
+
                 try {
                     boolean emptyWait = true;
 
-                    if (createError != null && poolingCount == 0) {
+                    if (createError != null && poolingCount == 0 && !discardChanged) {
                         emptyWait = false;
                     }
 

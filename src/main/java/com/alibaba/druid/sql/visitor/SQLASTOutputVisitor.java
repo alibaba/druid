@@ -992,12 +992,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printFetchFirst(SQLSelectQueryBlock x) {
-        SQLExpr offset = x.getOffset();
-        SQLExpr first = x.getFirst();
+        SQLLimit limit = x.getLimit();
+        if (limit == null) {
+            return;
+        }
 
-        boolean informix = JdbcConstants.INFORMIX.equals(dbType);
-        if (first != null) {
-            if (informix) {
+        SQLExpr offset = limit.getOffset();
+        SQLExpr first = limit.getRowCount();
+
+        if (limit != null) {
+            if (JdbcConstants.INFORMIX.equals(dbType)) {
                 if (offset != null) {
                     print0(ucase ? "SKIP " : "skip ");
                     offset.accept(this);
@@ -1006,7 +1010,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? " FIRST " : " first ");
                 first.accept(this);
                 print(' ');
-            } else {
+            } else if (JdbcConstants.DB2.equals(dbType)
+                    || JdbcConstants.ORACLE.equals(dbType)
+                    || JdbcConstants.SQL_SERVER.equals(dbType)) {
                 //order by 语句必须在FETCH FIRST ROWS ONLY之前
                 SQLObject parent = x.getParent();
                 if (parent instanceof SQLSelect) {
@@ -1028,6 +1034,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(ucase ? "FETCH FIRST " : "fetch first ");
                 first.accept(this);
                 print0(ucase ? " ROWS ONLY" : " rows only");
+            } else {
+                println();
+                limit.accept(this);
             }
         }
     }

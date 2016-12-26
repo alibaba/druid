@@ -324,7 +324,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             deleteStatement.setOrderBy(orderBy);
         }
 
-        deleteStatement.setLimit(parseLimit());
+        deleteStatement.setLimit(this.exprParser.parseLimit());
 
         return deleteStatement;
     }
@@ -865,7 +865,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             MySqlShowErrorsStatement stmt = new MySqlShowErrorsStatement();
-            stmt.setLimit(parseLimit());
+            stmt.setLimit(this.exprParser.parseLimit());
 
             return stmt;
         }
@@ -998,7 +998,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setFrom(this.exprParser.expr());
             }
 
-            stmt.setLimit(parseLimit());
+            stmt.setLimit(this.exprParser.parseLimit());
 
             return stmt;
         }
@@ -1341,7 +1341,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setForQuery(this.exprParser.primary());
             }
 
-            stmt.setLimit(this.parseLimit());
+            stmt.setLimit(this.exprParser.parseLimit());
 
             return stmt;
         }
@@ -1361,7 +1361,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setFrom(this.exprParser.primary());
             }
 
-            stmt.setLimit(this.parseLimit());
+            stmt.setLimit(this.exprParser.parseLimit());
 
             return stmt;
         }
@@ -1381,7 +1381,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setFrom(this.exprParser.primary());
             }
 
-            stmt.setLimit(this.parseLimit());
+            stmt.setLimit(this.exprParser.parseLimit());
 
             return stmt;
         }
@@ -1488,7 +1488,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     private MySqlShowWarningsStatement parseShowWarnings() {
         MySqlShowWarningsStatement stmt = new MySqlShowWarningsStatement();
 
-        stmt.setLimit(parseLimit());
+        stmt.setLimit(this.exprParser.parseLimit());
 
         return stmt;
     }
@@ -2320,10 +2320,6 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             return stmt;
         }
-    }
-
-    public SQLLimit parseLimit() {
-        return ((MySqlExprParser) this.exprParser).parseLimit();
     }
 
     public SQLStatement parseAlter() {

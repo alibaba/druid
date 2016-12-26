@@ -102,6 +102,10 @@ public class Lexer {
         this(input, true);
         this.commentHandler = commentHandler;
         this.dbType = dbType;
+
+        if (JdbcConstants.SQLITE.equals(dbType)) {
+            this.keywods = Keywords.SQLITE_KEYWORDS;
+        }
     }
     
     public boolean isKeepComments() {

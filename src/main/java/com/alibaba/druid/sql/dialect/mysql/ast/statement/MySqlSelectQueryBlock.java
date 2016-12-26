@@ -35,8 +35,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private Boolean              cache;
     private boolean              calcFoundRows;
 
-    private SQLLimit limit;
-
     private SQLName              procedureName;
     private List<SQLExpr>        procedureArgumentList;
 
@@ -148,17 +146,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setCalcFoundRows(boolean calcFoundRows) {
         this.calcFoundRows = calcFoundRows;
-    }
-
-    public SQLLimit getLimit() {
-        return limit;
-    }
-
-    public void setLimit(SQLLimit limit) {
-        if (limit != null) {
-            limit.setParent(this);
-        }
-        this.limit = limit;
     }
 
     @Override

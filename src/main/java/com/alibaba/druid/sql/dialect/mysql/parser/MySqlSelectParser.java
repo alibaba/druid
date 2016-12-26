@@ -163,7 +163,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
 
         if (lexer.token() == Token.LIMIT) {
-            queryBlock.setLimit(parseLimit());
+            queryBlock.setLimit(this.exprParser.parseLimit());
         }
 
         if (lexer.token() == Token.PROCEDURE) {
@@ -304,7 +304,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
 
         update.setOrderBy(this.exprParser.parseOrderBy());
-        update.setLimit(parseLimit());
+        update.setLimit(this.exprParser.parseLimit());
         
         return update;
     }
@@ -445,15 +445,11 @@ public class MySqlSelectParser extends SQLSelectParser {
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
         if (lexer.token() == Token.LIMIT) {
             MySqlUnionQuery mysqlUnionQuery = (MySqlUnionQuery) union;
-            mysqlUnionQuery.setLimit(parseLimit());
+            mysqlUnionQuery.setLimit(this.exprParser.parseLimit());
         }
         return super.unionRest(union);
     }
 
-    public SQLLimit parseLimit() {
-        return ((MySqlExprParser) this.exprParser).parseLimit();
-    }
-    
     public MySqlExprParser getExprParser() {
         return (MySqlExprParser) exprParser;
     }

@@ -728,30 +728,6 @@ public class MySqlExprParser extends SQLExprParser {
         return super.nameRest(name);
     }
 
-    public SQLLimit parseLimit() {
-        if (lexer.token() == Token.LIMIT) {
-            lexer.nextToken();
-
-            SQLLimit limit = new SQLLimit();
-
-            SQLExpr temp = this.expr();
-            if (lexer.token() == (Token.COMMA)) {
-                limit.setOffset(temp);
-                lexer.nextToken();
-                limit.setRowCount(this.expr());
-            } else if (identifierEquals("OFFSET")) {
-                limit.setRowCount(temp);
-                lexer.nextToken();
-                limit.setOffset(this.expr());
-            } else {
-                limit.setRowCount(temp);
-            }
-            return limit;
-        }
-
-        return null;
-    }
-
     @Override
     public MySqlPrimaryKey parsePrimaryKey() {
         accept(Token.PRIMARY);

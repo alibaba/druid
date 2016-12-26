@@ -35,15 +35,17 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionI
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
 
     public SQLServerOutputVisitor(Appendable appender){
-        super(appender);
+        super(appender, JdbcConstants.SQL_SERVER);
     }
 
     public SQLServerOutputVisitor(Appendable appender, boolean parameterized){
         super(appender, parameterized);
+        this.dbType = JdbcConstants.SQL_SERVER;
     }
 
     public boolean visit(SQLServerSelectQueryBlock x) {

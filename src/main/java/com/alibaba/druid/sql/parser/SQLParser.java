@@ -22,7 +22,7 @@ public class SQLParser {
     protected String      dbType;
 
     public SQLParser(String sql, String dbType){
-        this(new Lexer(sql), dbType);
+        this(new Lexer(sql, null, dbType), dbType);
         this.lexer.nextToken();
     }
 

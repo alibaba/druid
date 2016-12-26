@@ -405,7 +405,7 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:db2:")) {
             return DB2_DRIVER;
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
-            return "org.sqlite.JDBC";
+            return SQLITE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
             return "com.ingres.jdbc.IngresDriver";
         } else if (rawUrl.startsWith("jdbc:h2:")) {
@@ -490,7 +490,7 @@ public final class JdbcUtils implements JdbcConstants {
         } else if (rawUrl.startsWith("jdbc:db2:")) {
             return DB2;
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
-            return "sqlite";
+            return SQLITE;
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
             return "ingres";
         } else if (rawUrl.startsWith("jdbc:h2:") || rawUrl.startsWith("jdbc:log4jdbc:h2:")) {
