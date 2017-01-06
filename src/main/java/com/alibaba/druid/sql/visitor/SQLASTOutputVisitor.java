@@ -816,6 +816,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (parent instanceof ValuesClause) {
                 print('?');
                 incrementReplaceCunt();
+
+                if(this instanceof ExportParameterVisitor || this.parameters != null){
+                    this.getParameters().add(null);
+                }
                 return false;
             }
         }
@@ -830,7 +834,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print('?');
             incrementReplaceCunt();
 
-            if(this instanceof ExportParameterVisitor) {
+            if(this instanceof ExportParameterVisitor || this.parameters != null){
                 ExportParameterVisitorUtils.exportParameter((this).getParameters(), x);
             }
             return false;
