@@ -2022,12 +2022,23 @@ public class SQLStatementParser extends SQLParser {
         }
         return item;
     }
-
+    
     public SQLStatement parseStatement() {
+        return parseStatement(false);
+    }
+    
+    /**
+    * @param tryBest  - 为true去解析并忽略之后的错误
+    *  强制建议除非明确知道可以忽略才传tryBest=true,
+    *  不然会忽略语法错误，且截断sql,导致update和delete无where条件下执行！！！
+    */
+    public SQLStatement parseStatement( final boolean tryBest) {
         List<SQLStatement> list = new ArrayList<SQLStatement>();
-
-        this.parseStatementList(list, 1);
-
+        if(tryBest){
+            this.parseStatementList(list, 1);
+        }else{
+            parseStatementList(list);
+        }
         return list.get(0);
     }
 
