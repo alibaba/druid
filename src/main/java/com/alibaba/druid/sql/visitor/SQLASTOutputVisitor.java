@@ -2838,8 +2838,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableDropPartition x) {
         print0(ucase ? "DROP " : "drop ");
-        if (x.isIfNotExists()) {
-            print0(ucase ? "IF NOT EXISTS " : "if not exists ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
         }
         print0(ucase ? "PARTITION " : "partition ");
 

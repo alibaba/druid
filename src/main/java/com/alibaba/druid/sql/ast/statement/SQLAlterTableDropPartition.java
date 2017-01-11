@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableDropPartition extends SQLObjectImpl implements SQLAlterTableItem {
 
-    private boolean ifNotExists = false;
+    private boolean ifExists = false;
 
     private boolean purge;
 
@@ -41,12 +41,12 @@ public class SQLAlterTableDropPartition extends SQLObjectImpl implements SQLAlte
         this.partitions.add(partition);
     }
 
-    public boolean isIfNotExists() {
-        return ifNotExists;
+    public boolean isIfExists() {
+        return ifExists;
     }
 
-    public void setIfNotExists(boolean ifNotExists) {
-        this.ifNotExists = ifNotExists;
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
     }
 
     public boolean isPurge() {

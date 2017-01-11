@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.util.JdbcConstants;
-import org.apache.ibatis.jdbc.SQL;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -1054,13 +1053,13 @@ public class SQLStatementParser extends SQLParser {
     public void parseAlterDrop(SQLAlterTableStatement stmt) {
         lexer.nextToken();
 
-        boolean ifNotExists = false;
+        boolean ifExists = false;
 
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
-            accept(Token.NOT);
+
             accept(Token.EXISTS);
-            ifNotExists = true;
+            ifExists = true;
         }
 
         if (lexer.token() == Token.CONSTRAINT) {
@@ -1090,7 +1089,7 @@ public class SQLStatementParser extends SQLParser {
 
             stmt.addItem(item);
         } else if (lexer.token() == Token.PARTITION) {
-            SQLAlterTableDropPartition dropPartition = parseAlterTableDropPartition(ifNotExists);
+            SQLAlterTableDropPartition dropPartition = parseAlterTableDropPartition(ifExists);
 
             stmt.addItem(dropPartition);
         } else if (lexer.token() == Token.INDEX) {
@@ -1104,11 +1103,11 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
-    protected SQLAlterTableDropPartition parseAlterTableDropPartition(boolean ifNotExists) {
+    protected SQLAlterTableDropPartition parseAlterTableDropPartition(boolean ifExists) {
         lexer.nextToken();
         SQLAlterTableDropPartition dropPartition = new SQLAlterTableDropPartition();
 
-        dropPartition.setIfNotExists(ifNotExists);
+        dropPartition.setIfExists(ifExists);
 
         if (lexer.token() == Token.LPAREN) {
             accept(Token.LPAREN);
