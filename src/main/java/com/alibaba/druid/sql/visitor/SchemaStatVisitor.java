@@ -78,7 +78,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected final Map<String, SQLObject> variants = new LinkedHashMap<String, SQLObject>();
 
-    protected Map<String, String> aliasMap = new HashMap<String, String>();
+    protected Map<String, String> aliasMap = new LinkedHashMap<String, String>();
 
     protected String currentTable;
 

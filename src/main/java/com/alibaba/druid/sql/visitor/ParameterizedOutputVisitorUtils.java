@@ -209,7 +209,7 @@ public class ParameterizedOutputVisitorUtils {
 
         // ID = ? OR ID = ? => ID = ?
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            if ((left instanceof SQLBinaryOpExpr) && (right instanceof SQLBinaryOpExpr)) {
+            if ((x.getLeft() instanceof SQLBinaryOpExpr) && (x.getRight() instanceof SQLBinaryOpExpr)) {
                 SQLBinaryOpExpr leftBinary = (SQLBinaryOpExpr) x.getLeft();
                 SQLBinaryOpExpr rightBinary = (SQLBinaryOpExpr) x.getRight();
 
@@ -220,7 +220,7 @@ public class ParameterizedOutputVisitorUtils {
 
                 if (isLiteralExpr(leftBinary.getLeft()) //
                     && leftBinary.getOperator() == SQLBinaryOperator.BooleanOr) {
-                    if (mergeEqual(leftBinary.getRight(), right)) {
+                    if (mergeEqual(leftBinary.getRight(), x.getRight())) {
                         v.incrementReplaceCunt();
                         return leftBinary;
                     }

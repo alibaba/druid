@@ -846,7 +846,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLPropertyExpr x) {
         SQLExpr owner = x.getOwner();
 
-        owner.accept(this);
+        String mapTableName = null;
+        if (owner instanceof SQLIdentifierExpr) {
+            String ownerName = ((SQLIdentifierExpr) owner).getName();
+            if (tableMapping != null) {
+                mapTableName = tableMapping.get(ownerName);
+
+                if (mapTableName == null
+                        && ownerName.length() > 2
+                        && ownerName.charAt(0) == '`'
+                        && ownerName.charAt(ownerName.length() - 1) == '`') {
+                    mapTableName = tableMapping.get(ownerName.substring(1, ownerName.length() - 1));
+                }
+            }
+        }
+
+        if (mapTableName != null) {
+            print0(mapTableName);
+        } else {
+            owner.accept(this);
+        }
         print('.');
 
         String name = x.getName();
@@ -1096,7 +1115,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void addTable(String table) {
         if (tables == null) {
-            tables = new HashSet<String>();
+            tables = new LinkedHashSet<String>();
         }
         this.tables.add(table);
     }
@@ -1110,6 +1129,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             String tableName = expr.toString();
 
             String destTableName = tableMapping.get(tableName);
+            if (destTableName == null) {
+                if (expr instanceof SQLPropertyExpr) {
+                    SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+                    String propName = propertyExpr.getName();
+                    destTableName = tableMapping.get(propName);
+                    if (destTableName == null
+                            && propName.length() > 2 && propName.charAt(0) == '`' && propName.charAt(propName.length() - 1) == '`') {
+                        destTableName = tableMapping.get(propName.substring(1, propName.length() - 1));
+                    }
+
+                    if (destTableName != null) {
+                        propertyExpr.getOwner().accept(this);
+                        print('.');
+                        print(destTableName);
+                        return;
+                    }
+                } else if (expr instanceof SQLIdentifierExpr) {
+                    boolean quote = tableName.length() > 2 && tableName.charAt(0) == '`' && tableName.charAt(tableName.length() - 1) == '`';
+                    if (quote) {
+                        destTableName = tableMapping.get(tableName.substring(1, tableName.length() - 1));
+                    }
+                }
+            }
             if (destTableName != null) {
                 tableName = destTableName;
                 print0(tableName);
