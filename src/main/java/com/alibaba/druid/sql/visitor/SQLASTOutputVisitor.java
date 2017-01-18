@@ -846,9 +846,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLPropertyExpr x) {
         SQLExpr owner = x.getOwner();
 
-        String mapTableName = null;
+        String mapTableName = null, ownerName = null;
         if (owner instanceof SQLIdentifierExpr) {
-            String ownerName = ((SQLIdentifierExpr) owner).getName();
+            ownerName = ((SQLIdentifierExpr) owner).getName();
             if (tableMapping != null) {
                 mapTableName = tableMapping.get(ownerName);
 
@@ -856,7 +856,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                         && ownerName.length() > 2
                         && ownerName.charAt(0) == '`'
                         && ownerName.charAt(ownerName.length() - 1) == '`') {
-                    mapTableName = tableMapping.get(ownerName.substring(1, ownerName.length() - 1));
+                    ownerName = ownerName.substring(1, ownerName.length() - 1);
+                    mapTableName = tableMapping.get(ownerName);
+                }
+            }
+        }
+
+        if (mapTableName != null) {
+            for (SQLObject parent = x.getParent();parent != null; parent = parent.getParent()) {
+                if (parent instanceof SQLSelectQueryBlock) {
+                    SQLTableSource from = ((SQLSelectQueryBlock) parent).getFrom();
+                    if (containsAlias(from, mapTableName, ownerName)) {
+                        mapTableName = null;
+                    }
+                    break;
                 }
             }
         }
@@ -871,6 +884,32 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         String name = x.getName();
         printName(x, name);
 
+        return false;
+    }
+
+    protected boolean containsAlias(SQLTableSource from, String... tableNames) {
+        String alias = from.getAlias();
+        if (alias != null) {
+            for (String tableName : tableNames) {
+                if (alias.equalsIgnoreCase(tableName)) {
+                    return true;
+                }
+            }
+
+            if (alias.length() > 2 && alias.charAt(0) == '`' && alias.charAt(alias.length() -1) == '`') {
+                alias = alias.substring(1, alias.length() -1);
+                for (String tableName : tableNames) {
+                    if (alias.equalsIgnoreCase(tableName)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (from instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) from;
+            return containsAlias(join.getLeft(), tableNames)
+                    || containsAlias(join.getRight(), tableNames);
+        }
         return false;
     }
 
@@ -2344,6 +2383,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             item.accept(this);
         }
         decrementIndent();
+
+        if (x.isMergeSmallFiles()) {
+            print0(ucase ? " MERGE SMALLFILES" : " merge smallfiles");
+        }
         return false;
     }
 

@@ -991,6 +991,10 @@ public class SQLStatementParser extends SQLParser {
                     }
 
                     stmt.addItem(item);
+                } else if (JdbcConstants.ODPS.equals(dbType) && identifierEquals("MERGE")) {
+                    lexer.nextToken();
+                    acceptIdentifier("SMALLFILES");
+                    stmt.setMergeSmallFiles(true);
                 } else {
                     break;
                 }

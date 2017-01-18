@@ -65,6 +65,9 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     }
 
     public void setGroupBy(SQLSelectGroupByClause groupBy) {
+        if (groupBy != null) {
+            groupBy.setParent(this);
+        }
         this.groupBy = groupBy;
     }
 
@@ -113,6 +116,9 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     }
 
     public void setFrom(SQLTableSource from) {
+        if (from != null) {
+            from.setParent(this);
+        }
         this.from = from;
     }
 

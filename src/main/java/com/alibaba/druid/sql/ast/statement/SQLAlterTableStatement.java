@@ -40,6 +40,9 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
     private boolean                 upgradePatiting         = false;
     private Map<String, SQLObject>  tableOptions            = new LinkedHashMap<String, SQLObject>();
 
+    // odps
+    private boolean                 mergeSmallFiles         = false;
+
     public SQLAlterTableStatement(){
 
     }
@@ -86,6 +89,14 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setInvalidateGlobalIndexes(boolean invalidateGlobalIndexes) {
         this.invalidateGlobalIndexes = invalidateGlobalIndexes;
+    }
+
+    public boolean isMergeSmallFiles() {
+        return mergeSmallFiles;
+    }
+
+    public void setMergeSmallFiles(boolean mergeSmallFiles) {
+        this.mergeSmallFiles = mergeSmallFiles;
     }
 
     public List<SQLAlterTableItem> getItems() {
