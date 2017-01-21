@@ -2368,6 +2368,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 } catch (Throwable error) {
                     // skip
                 }
+                item.setLastActiveTimeMillis(System.currentTimeMillis());
 
                 if (validate) {
                     put(item);
