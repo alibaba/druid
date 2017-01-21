@@ -36,6 +36,7 @@ import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -116,6 +117,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                             notEmptyWaitCount       = 0L;
     private long                             notEmptySignalCount     = 0L;
     private long                             notEmptyWaitNanos       = 0L;
+
+    private int                             keepAliveCheckCount     = 0;
+    private final AtomicInteger             keepAliveCheckOkCount   = new AtomicInteger();
+    private final AtomicInteger             keepAliveCheckErrCount  = new AtomicInteger();
 
     private int                              activePeak              = 0;
     private long                             activePeakTime          = 0;
@@ -2123,7 +2128,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         @Override
         public void run() {
-            shrink(true);
+            shrink(true, keepAlive);
 
             if (isRemoveAbandoned()) {
                 removeAbandoned();
@@ -2323,9 +2328,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (checkTime && i < checkCount) {
                         evictConnections[evictCount++] = connection;
                     } else if (idleMillis > maxEvictableIdleTimeMillis) {
-                        evictConnections[evictCount++] = connection;
-                    } else {
-                        keepAliveConnections[keepAliveCount++] = connection;
+                        if (keepAlive) {
+                            keepAliveConnections[keepAliveCount++] = connection;
+                        } else {
+                            evictConnections[evictCount++] = connection;
+                        }
                     }
                 } else {
                     if (i < checkCount) {
@@ -2342,6 +2349,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
                 poolingCount -= removeCount;
             }
+            keepAliveCheckCount += keepAliveCount;
         } finally {
             lock.unlock();
         }
@@ -2358,21 +2366,26 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         if (keepAliveCount > 0) {
             for (int i = 0; i < keepAliveCount; ++i) {
-                DruidConnectionHolder item = keepAliveConnections[i];
-                Connection connection = item.getConnection();
+                DruidConnectionHolder holer = keepAliveConnections[i];
+                Connection connection = holer.getConnection();
 
                 boolean validate = false;
                 try {
                     this.validateConnection(connection);
                     validate = true;
                 } catch (Throwable error) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("keepAliveErr", error);
+                    }
                     // skip
                 }
-                item.setLastActiveTimeMillis(System.currentTimeMillis());
 
                 if (validate) {
-                    put(item);
+                    holer.setLastActiveTimeMillis(System.currentTimeMillis());
+                    put(holer);
+                    keepAliveCheckOkCount.incrementAndGet();
                 } else {
+                    keepAliveCheckErrCount.incrementAndGet();
                     JdbcUtils.close(connection);
                 }
             }
