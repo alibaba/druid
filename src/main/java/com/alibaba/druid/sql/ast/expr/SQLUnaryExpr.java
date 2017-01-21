@@ -33,7 +33,7 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
 
     public SQLUnaryExpr(SQLUnaryOperator operator, SQLExpr expr){
         this.operator = operator;
-        this.expr = expr;
+        this.setExpr(expr);
     }
 
     public SQLUnaryOperator getOperator() {
@@ -49,6 +49,9 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 

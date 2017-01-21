@@ -463,10 +463,13 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
 
                         break;
-                    case QUES:
-                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, new SQLVariantRefExpr("?"));
+                    case QUES: {
+                        SQLVariantRefExpr variantRefExpr = new SQLVariantRefExpr("?");
+                        variantRefExpr.setIndex(lexer.nextVarIndex());
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, variantRefExpr);
                         lexer.nextToken();
                         break;
+                    }
                     case LPAREN:
                         lexer.nextToken();
                         sqlExpr = expr();

@@ -826,7 +826,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlIntervalExpr x) {
         print0(ucase ? "INTERVAL " : "interval ");
-        x.getValue().accept(this);
+        SQLExpr value = x.getValue();
+        value.accept(this);
         print(' ');
         print0(ucase ? x.getUnit().name() : x.getUnit().name_lcase);
         return false;

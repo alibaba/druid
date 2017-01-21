@@ -50,8 +50,8 @@ public class MySqlParameterizedOutputVisitorTest_23 extends TestCase {
         visitor1.setParameters(visitor.getParameters());
         stmt.accept(visitor1);
 
-        assertEquals("SELECT wmc_xxx_s_0479.fid\n" +
+        assertEquals("SELECT `wmc_xxx_s`.fid\n" +
                 "FROM wmc_xxx_s_0479 `wmc_xxx_s`\n" +
-                "WHERE wmc_xxx_s_0479.fid = ?", buf.toString());
+                "WHERE `wmc_xxx_s`.fid = ?", buf.toString());
     }
 }
