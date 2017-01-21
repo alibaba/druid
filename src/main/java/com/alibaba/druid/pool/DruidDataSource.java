@@ -132,6 +132,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     //
     private DruidConnectionHolder[]          evictConnections;
+    private DruidConnectionHolder[]          keepAliveConnections;
 
     // threads
     private ScheduledFuture<?>               destroySchedulerFuture;
@@ -163,6 +164,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public static ThreadLocal<Long>          waitNanosLocal          = new ThreadLocal<Long>();
 
     private boolean                          logDifferentThread      = true;
+
+    private boolean                          keepAlive               = false;
 
     public DruidDataSource(){
         this(false);
@@ -313,6 +316,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
         }
+        {
+            Boolean value = getBoolean(properties, "druid.keepAlive");
+            if (value != null) {
+                this.setKeepAlive(value);
+            }
+        }
     }
 
     public boolean isUseGlobalDataSourceStat() {
@@ -321,6 +330,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void setUseGlobalDataSourceStat(boolean useGlobalDataSourceStat) {
         this.useGlobalDataSourceStat = useGlobalDataSourceStat;
+    }
+
+    public boolean isKeepAlive() {
+        return keepAlive;
+    }
+
+    public void setKeepAlive(boolean keepAlive) {
+        this.keepAlive = keepAlive;
     }
 
     public String getInitStackTrace() {
@@ -491,9 +508,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (maxActive > allCount) {
                 this.connections = Arrays.copyOf(this.connections, maxActive);
                 evictConnections = new DruidConnectionHolder[maxActive];
+                keepAliveConnections = new DruidConnectionHolder[maxActive];
             } else {
                 this.connections = Arrays.copyOf(this.connections, allCount);
                 evictConnections = new DruidConnectionHolder[allCount];
+                keepAliveConnections = new DruidConnectionHolder[allCount];
             }
 
             this.maxActive = maxActive;
@@ -674,6 +693,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             connections = new DruidConnectionHolder[maxActive];
             evictConnections = new DruidConnectionHolder[maxActive];
+            keepAliveConnections = new DruidConnectionHolder[maxActive];
 
             SQLException connectError = null;
 
@@ -1815,6 +1835,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return false;
         }
 
+        return put(holder);
+    }
+
+    private boolean put(DruidConnectionHolder holder) {
         lock.lock();
         try {
             if (poolingCount >= maxActive) {
@@ -1842,7 +1866,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
-
         return true;
     }
 
@@ -2256,10 +2279,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public void shrink() {
-        shrink(false);
+        shrink(false, false);
     }
 
     public void shrink(boolean checkTime) {
+        shrink(checkTime, keepAlive);
+    }
+
+    public void shrink(boolean checkTime, boolean keepAlive) {
         try {
             lock.lockInterruptibly();
         } catch (InterruptedException e) {
@@ -2267,6 +2294,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         int evictCount = 0;
+        int keepAliveCount = 0;
         try {
             if (!inited) {
                 return;
@@ -2296,6 +2324,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         evictConnections[evictCount++] = connection;
                     } else if (idleMillis > maxEvictableIdleTimeMillis) {
                         evictConnections[evictCount++] = connection;
+                    } else {
+                        keepAliveConnections[keepAliveCount++] = connection;
                     }
                 } else {
                     if (i < checkCount) {
@@ -2306,7 +2336,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
-            int removeCount = evictCount;
+            int removeCount = evictCount + keepAliveCount;
             if (removeCount > 0) {
                 System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
                 Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
@@ -2316,13 +2346,37 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
-        for (int i = 0; i < evictCount; ++i) {
-            DruidConnectionHolder item = evictConnections[i];
-            Connection connection = item.getConnection();
-            JdbcUtils.close(connection);
-            destroyCount.incrementAndGet();
+        if (evictCount > 0) {
+            for (int i = 0; i < evictCount; ++i) {
+                DruidConnectionHolder item = evictConnections[i];
+                Connection connection = item.getConnection();
+                JdbcUtils.close(connection);
+                destroyCount.incrementAndGet();
+            }
+            Arrays.fill(evictConnections, null);
         }
-        Arrays.fill(evictConnections, null);
+
+        if (keepAliveCount > 0) {
+            for (int i = 0; i < keepAliveCount; ++i) {
+                DruidConnectionHolder item = keepAliveConnections[i];
+                Connection connection = item.getConnection();
+
+                boolean validate = false;
+                try {
+                    this.validateConnection(connection);
+                    validate = true;
+                } catch (Throwable error) {
+                    // skip
+                }
+
+                if (validate) {
+                    put(item);
+                } else {
+                    JdbcUtils.close(connection);
+                }
+            }
+            Arrays.fill(keepAliveConnections, null);
+        }
     }
 
     public int getWaitThreadCount() {
