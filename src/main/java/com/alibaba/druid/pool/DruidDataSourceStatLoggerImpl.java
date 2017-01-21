@@ -234,6 +234,10 @@ public class DruidDataSourceStatLoggerImpl extends DruidDataSourceStatLoggerAdap
             map.put("sqlList", sqlList);
         }
 
+        if (statValue.getKeepAliveCheckCount() > 0) {
+            map.put("keepAliveCheckCount", statValue.getKeepAliveCheckCount());
+        }
+
         String text = JSONUtils.toJSONString(map);
 
         log(text);

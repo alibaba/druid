@@ -73,6 +73,7 @@ druid.lang = function() {
 		'ConnectionHoldTimeHistogram' : ['ConnectionHoldTimeHistogram', '连接持有时间分布'],
 		'ClobOpenCount' : ['ClobOpenCount', 'Clob打开次数'],
 		'BlobOpenCount' : ['BlobOpenCount', 'Blob打开次数'],
+		'KeepAliveCheckCount' : ['KeepAliveCheckCount', 'KeepAlive检测次数'],
 		'ActiveConnectionStackTrace' : ['ActiveConnection StackTrace', '活跃连接堆栈查看'],
 		'PollingConnectionInfo' : ['PollingConnection Info', '连接池中连接信息'],
 		'SQLList' : ['SQL List', 'sql列表'],

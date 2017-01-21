@@ -73,6 +73,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final AtomicLong                                    clobOpenCount           = new AtomicLong();
 
     private final AtomicLong                                    blobOpenCount           = new AtomicLong();
+    private final AtomicLong                                    keepAliveCheckCount      = new AtomicLong();
 
     private boolean                                             resetStatEnable         = true;
 
@@ -497,4 +498,15 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         blobOpenCount.incrementAndGet();
     }
 
+    public long getKeepAliveCheckCount() {
+        return keepAliveCheckCount.get();
+    }
+
+    public long getKeepAliveCheckCountAndReset() {
+        return keepAliveCheckCount.getAndSet(0);
+    }
+
+    public void addKeepAliveCheckCount(long delta) {
+        keepAliveCheckCount.addAndGet(delta);
+    }
 }

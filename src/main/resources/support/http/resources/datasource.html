@@ -269,12 +269,17 @@
 								<td  class="lang"  langKey="BlobOpenCountDesc"></td>
 							</tr>
 							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="KeepAliveCheckCount">KeepAliveCheckCount</span></td>
+								<td>{{=datasourceNow.KeepAliveCheckCount}}</td>
+								<td  class="lang"  langKey="KeepAliveCheckCount"></td>
+							</tr>
+							<tr>
 									<td valign="top" class="td_lable"><span class="lang" langKey="ActiveConnectionStackTrace">ActiveConnection StackTrace</span></td>
 									<td>
 										<a href="activeConnectionStackTrace.html?datasourceId={{=datasourceNow.Identity}}">View</a>
 									</td>
 									<td>
-										StackTrace for active Connection. 
+										StackTrace for active Connection.
 										<a href="activeConnectionStackTrace-{{=datasourceNow.Identity}}.json" 	target="_blank">[View JSON API]</a>
 									</td>
 								</tr>

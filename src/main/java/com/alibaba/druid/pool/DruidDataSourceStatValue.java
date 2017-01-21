@@ -117,6 +117,9 @@ public class DruidDataSourceStatValue {
     @MField(aggregate = AggregateType.Sum)
     protected long                   startTransactionCount;
 
+    @MField(aggregate = AggregateType.Sum)
+    protected long                   keepAliveCheckCount;
+
     // protected long[] transactionHistogram;
     protected long[]                 connectionHoldTimeHistogram;
 
@@ -563,4 +566,11 @@ public class DruidDataSourceStatValue {
         this.poolingPeakTime = poolingPeakTime;
     }
 
+    public long getKeepAliveCheckCount() {
+        return keepAliveCheckCount;
+    }
+
+    public void setKeepAliveCheckCount(long keepAliveCheckCount) {
+        this.keepAliveCheckCount = keepAliveCheckCount;
+    }
 }

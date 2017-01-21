@@ -119,8 +119,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                             notEmptyWaitNanos       = 0L;
 
     private int                             keepAliveCheckCount     = 0;
-    private final AtomicInteger             keepAliveCheckOkCount   = new AtomicInteger();
-    private final AtomicInteger             keepAliveCheckErrCount  = new AtomicInteger();
 
     private int                              activePeak              = 0;
     private long                             activePeakTime          = 0;
@@ -1747,6 +1745,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             value.setWaitThreadCount(lock.getWaitQueueLength(notEmpty));
             value.setNotEmptyWaitCount(this.notEmptyWaitCount);
             value.setNotEmptyWaitNanos(this.notEmptyWaitNanos);
+            value.setKeepAliveCheckCount(this.keepAliveCheckCount);
 
             // reset
             this.poolingPeak = 0;
@@ -1755,6 +1754,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.activePeakTime = 0;
             this.connectCount = 0;
             this.closeCount = 0;
+            this.keepAliveCheckCount = 0;
 
             this.notEmptyWaitCount = 0;
             this.notEmptyWaitNanos = 0;
@@ -2365,6 +2365,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         if (keepAliveCount > 0) {
+            this.getDataSourceStat().addKeepAliveCheckCount(keepAliveCount);
             for (int i = 0; i < keepAliveCount; ++i) {
                 DruidConnectionHolder holer = keepAliveConnections[i];
                 Connection connection = holer.getConnection();
@@ -2383,9 +2384,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (validate) {
                     holer.setLastActiveTimeMillis(System.currentTimeMillis());
                     put(holer);
-                    keepAliveCheckOkCount.incrementAndGet();
                 } else {
-                    keepAliveCheckErrCount.incrementAndGet();
                     JdbcUtils.close(connection);
                 }
             }
@@ -2699,6 +2698,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             map.put("CreateErrorCount", this.getCreateErrorCount());
             map.put("DiscardCount", this.getDiscardCount());
 
+
             return map;
         } catch (JMException ex) {
             throw new IllegalStateException("getStatData error", ex);
@@ -2797,6 +2797,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("RemoveAbandoned", this.isRemoveAbandoned());
         dataMap.put("ClobOpenCount", this.getDataSourceStat().getClobOpenCount());
         dataMap.put("BlobOpenCount", this.getDataSourceStat().getBlobOpenCount());
+        dataMap.put("KeepAliveCheckCount", this.getDataSourceStat().getKeepAliveCheckCount());
 
         return dataMap;
     }
