@@ -69,7 +69,7 @@ druid.lang = function() {
 		'RollbackCount' : ['RollbackCount', '回滚数'],
 		'PSCacheAccessCount' : ['PSCacheAccessCount', 'PSCache访问次数'],
 		'PSCacheHitCount' : ['PSCacheHitCount', 'PSCache命中次数'],
-		'PSCacheMissCount' : ['PSCacheMissCount', 'PSCache丢失次数'],//
+		'PSCacheMissCount' : ['PSCacheMissCount', 'PSCache不命中次数'],//
 		'ConnectionHoldTimeHistogram' : ['ConnectionHoldTimeHistogram', '连接持有时间分布'],
 		'ClobOpenCount' : ['ClobOpenCount', 'Clob打开次数'],
 		'BlobOpenCount' : ['BlobOpenCount', 'Blob打开次数'],
@@ -116,11 +116,11 @@ druid.lang = function() {
 		'PhysicalConnectErrorCountDesc' : ['Total physical connect error times', '产生的物理连接失败总数'],
 		'ExecuteCountDesc' : ['', ''],
 		'ErrorCountDesc' : ['', ''],
-		'CommitCountDesc' : ['', ''],
-		'RollbackCountDesc' : ['', ''],
+		'CommitCountDesc' : ['', '事务提交次数'],
+		'RollbackCountDesc' : ['', '事务回滚次数'],
 		'PSCacheAccessCountDesc' : ['PerpareStatement access count', 'PSCache访问总数'],
 		'PSCacheHitCountDesc' : ['PerpareStatement hit count', 'PSCache命中次数'],
-		'PSCacheMissCountDesc' : ['PerpareStatement miss count', 'PSCache丢失次数'],//
+		'PSCacheMissCountDesc' : ['PerpareStatement miss count', 'PSCache不命中次数'],//
 		'ConnectionHoldTimeHistogramDesc' : ['The histogram values of connection hold time, [0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]', '连接持有时间分布，分布区间为[0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]'],
 		'ClobOpenCountDesc' : ['', 'Clob打开数'],
 		'BlobOpenCountDesc' : ['', 'Blob打开数'],

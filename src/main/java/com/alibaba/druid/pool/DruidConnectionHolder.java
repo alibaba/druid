@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
+import com.alibaba.druid.proxy.jdbc.WrapperProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
@@ -43,12 +44,14 @@ public final class DruidConnectionHolder {
     private final static Log                    LOG                      = LogFactory.getLog(DruidConnectionHolder.class);
 
     private final DruidAbstractDataSource       dataSource;
+    private final long                          connectionId;
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
     private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     protected final long                        connectTimeMillis;
     protected transient long                    lastActiveTimeMillis;
     private long                                useCount                 = 0;
+    private long                                keepAliveCheckCount      = 0;
     
     private long                                lastNotEmptyWaitNanos;
     
@@ -102,6 +105,12 @@ public final class DruidConnectionHolder {
         this.lastActiveTimeMillis = connectTimeMillis;
 
         this.underlyingAutoCommit = conn.getAutoCommit();
+
+        if (conn instanceof WrapperProxy) {
+            this.connectionId = ((WrapperProxy) conn).getId();
+        } else {
+            this.connectionId = dataSource.createConnectionId();
+        }
 
         {
             boolean initUnderlyHoldability = !holdabilityUnsupported;
@@ -240,8 +249,20 @@ public final class DruidConnectionHolder {
         return useCount;
     }
 
+    public long getConnectionId() {
+        return connectionId;
+    }
+
     public void incrementUseCount() {
         useCount++;
+    }
+
+    public long getKeepAliveCheckCount() {
+        return keepAliveCheckCount;
+    }
+
+    public void incrementKeepAliveCheckCount() {
+        keepAliveCheckCount++;
     }
 
     public void reset() throws SQLException {

@@ -20,19 +20,20 @@
 							<thead>
 								<tr>
 									<th width="50">ID</th>
-									<th width="50">UseCount</th>
+									<th width="50" title="UseCount">UseCnt</th>
+									<th width="50" title="KeepAliveCheckCount">KACheckCnt</th>
 									<th width="150">LastActiveTime</th>
 									<th width="150">ConnectTime</th>
 									<th width="50">Holdability</th>
 									<th width="50" title="Transaction Isolation">TranIsolation</th>
 									<th width="50">AutoCommit</th>
-									<th width="50">ReadoOnly</th>
+									<th width="50">ReadOnly</th>
 									<th>
 										Pscache<br />
 										<table>
 											<thead><tr>
 												<th>sql</th>
-												<th width="50">defaultRowPrefetch</th>
+												<th width="50" title="DefaultRowPrefetch">dfRowPrefetch</th>
 												<th width="50">rowPrefetch</th>
 												<th width="50">hitCount</th>
 											</tr></thead>
@@ -84,8 +85,9 @@
     					var stat = statList[i];
     					var newRow = sqlStatTable.insertRow(-1);
     					html += "<tr>";
-    					html += "<td>" + stat.id + "</td>";
+    					html += "<td>" + stat.connectionId + "</td>";
     					html += "<td>" + stat.useCount + "</td>";
+    					html += "<td>" + stat.keepAliveCheckCount + "</td>";
     					
     					if (stat.lastActiveTime)
     						html += "<td>" + stat.lastActiveTime + "</td>";

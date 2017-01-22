@@ -168,7 +168,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private boolean                          logDifferentThread      = true;
 
-    private boolean                          keepAlive               = false;
+    private volatile boolean                 keepAlive               = false;
 
     public DruidDataSource(){
         this(false);
@@ -325,6 +325,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.setKeepAlive(value);
             }
         }
+        {
+            Boolean value = getBoolean(properties, "druid.poolPreparedStatements");
+            if (value != null) {
+                this.setPoolPreparedStatements0(value);
+            }
+        }
     }
 
     public boolean isUseGlobalDataSourceStat() {
@@ -449,6 +455,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public void setPoolPreparedStatements(boolean value) {
+        setPoolPreparedStatements0(value);
+    }
+
+    private void setPoolPreparedStatements0(boolean value) {
         if (this.poolPreparedStatements == value) {
             return;
         }
@@ -730,6 +740,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (connectError != null && poolingCount == 0) {
                 throw connectError;
+            }
+
+            if (keepAlive) {
+                // async fill to minIdle
+                if (createScheduler != null) {
+                    for (int i = 0; i < minIdle; ++i) {
+                        createTaskCount++;
+                        CreateConnectionTask task = new CreateConnectionTask();
+                        createScheduler.submit(task);
+                    }
+                } else {
+                    this.emptySignal();
+                }
             }
         } catch (SQLException e) {
             LOG.error("{dataSource-" + this.getID() + "} init error", e);
@@ -1897,7 +1920,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     if (emptyWait) {
                         // 必须存在线程等待，才创建连接
-                        if (poolingCount >= notEmptyWaitThreadCount) {
+                        if (poolingCount >= notEmptyWaitThreadCount //
+                                && !(keepAlive && activeCount + poolingCount < minIdle)) {
                             createTaskCount--;
                             return;
                         }
@@ -2012,7 +2036,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     if (emptyWait) {
                         // 必须存在线程等待，才创建连接
-                        if (poolingCount >= notEmptyWaitThreadCount) {
+                        if (poolingCount >= notEmptyWaitThreadCount //
+                                && !(keepAlive && activeCount + poolingCount < minIdle)) {
                             empty.await();
                         }
 
@@ -2328,11 +2353,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (checkTime && i < checkCount) {
                         evictConnections[evictCount++] = connection;
                     } else if (idleMillis > maxEvictableIdleTimeMillis) {
-                        if (keepAlive) {
-                            keepAliveConnections[keepAliveCount++] = connection;
-                        } else {
-                            evictConnections[evictCount++] = connection;
-                        }
+                        evictConnections[evictCount++] = connection;
+                    } else if (keepAlive) {
+                        keepAliveConnections[keepAliveCount++] = connection;
                     }
                 } else {
                     if (i < checkCount) {
@@ -2366,9 +2389,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         if (keepAliveCount > 0) {
             this.getDataSourceStat().addKeepAliveCheckCount(keepAliveCount);
-            for (int i = 0; i < keepAliveCount; ++i) {
+            // keep order
+            for (int i = keepAliveCount - 1; i >= 0; --i) {
                 DruidConnectionHolder holer = keepAliveConnections[i];
                 Connection connection = holer.getConnection();
+                holer.incrementKeepAliveCheckCount();
 
                 boolean validate = false;
                 try {
@@ -2560,6 +2585,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 Map<String, Object> map = new LinkedHashMap<String, Object>();
                 map.put("id", System.identityHashCode(conn));
+                map.put("connectionId", connHolder.getConnectionId());
                 map.put("useCount", connHolder.getUseCount());
                 if (connHolder.getLastActiveTimeMillis() > 0) {
                     map.put("lastActiveTime", new Date(connHolder.getLastActiveTimeMillis()));
@@ -2577,7 +2603,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         Map<String, Object> stmtInfo = new LinkedHashMap<String, Object>();
 
                         stmtInfo.put("sql", stmtHolder.key.getSql());
-                        stmtInfo.put("defaultRowPretch", stmtHolder.getDefaultRowPrefetch());
+                        stmtInfo.put("defaultRowPrefetch", stmtHolder.getDefaultRowPrefetch());
                         stmtInfo.put("rowPrefetch", stmtHolder.getRowPrefetch());
                         stmtInfo.put("hitCount", stmtHolder.getHitCount());
 
@@ -2586,6 +2612,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     map.put("pscache", stmtCache);
                 }
+                map.put("keepAliveCheckCount", connHolder.getKeepAliveCheckCount());
 
                 list.add(map);
             }
@@ -2798,6 +2825,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("ClobOpenCount", this.getDataSourceStat().getClobOpenCount());
         dataMap.put("BlobOpenCount", this.getDataSourceStat().getBlobOpenCount());
         dataMap.put("KeepAliveCheckCount", this.getDataSourceStat().getKeepAliveCheckCount());
+
+        dataMap.put("KeepAlive", this.isKeepAlive());
+        dataMap.put("FailFast", this.isFailFast());
+        dataMap.put("MaxWait", this.getMaxWait());
+        dataMap.put("MaxWaitThreadCount", this.getMaxWaitThreadCount());
+        dataMap.put("PoolPreparedStatements", this.isPoolPreparedStatements());
+        dataMap.put("MaxPoolPreparedStatementPerConnectionSize", this.getMaxPoolPreparedStatementPerConnectionSize());
+        dataMap.put("MinEvictableIdleTimeMillis", this.getMinEvictableIdleTimeMillis());
+        dataMap.put("MaxEvictableIdleTimeMillis", this.getMaxEvictableIdleTimeMillis());
 
         return dataMap;
     }
