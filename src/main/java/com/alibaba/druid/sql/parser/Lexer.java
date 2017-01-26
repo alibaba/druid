@@ -450,7 +450,18 @@ public class Lexer {
                     return;
                 case '?':
                     scanChar();
-                    token = Token.QUES;
+                    if (ch == '?') {
+                        scanChar();
+                        token = Token.QUESQUES;
+                    } else if (ch == '|') {
+                        scanChar();
+                        token = Token.QUESBAR;
+                    } else if (ch == '&') {
+                        scanChar();
+                        token = Token.QUESAMP;
+                    } else {
+                        token = Token.QUES;
+                    }
                     return;
                 case ';':
                     scanChar();

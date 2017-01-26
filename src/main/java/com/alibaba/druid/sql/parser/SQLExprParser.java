@@ -139,6 +139,21 @@ public class SQLExprParser extends SQLParser {
             SQLExpr rightExp = primary();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGtGt, rightExp, getDbType());
             expr = bitXorRest(expr);
+        } else if (token == Token.QUESQUES) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesQues, rightExp, getDbType());
+            expr = bitXorRest(expr);
+        } else if (token == Token.QUESBAR) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesBar, rightExp, getDbType());
+            expr = bitXorRest(expr);
+        } else if (token == Token.QUESAMP) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesAmp, rightExp, getDbType());
+            expr = bitXorRest(expr);
         }
 
         return expr;
