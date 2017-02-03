@@ -118,7 +118,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                             notEmptySignalCount     = 0L;
     private long                             notEmptyWaitNanos       = 0L;
 
-    private int                             keepAliveCheckCount     = 0;
+    private int                              keepAliveCheckCount     = 0;
 
     private int                              activePeak              = 0;
     private long                             activePeakTime          = 0;
@@ -329,6 +329,24 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             Boolean value = getBoolean(properties, "druid.poolPreparedStatements");
             if (value != null) {
                 this.setPoolPreparedStatements0(value);
+            }
+        }
+        {
+            Boolean value = getBoolean(properties, "druid.initVariants");
+            if (value != null) {
+                this.setInitVariants(value);
+            }
+        }
+        {
+            Boolean value = getBoolean(properties, "druid.initGlobalVariants");
+            if (value != null) {
+                this.setInitGlobalVariants(value);
+            }
+        }
+        {
+            Boolean value = getBoolean(properties, "druid.useUnfairLock");
+            if (value != null) {
+                this.setUseUnfairLock(value);
             }
         }
     }
@@ -2835,6 +2853,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("MinEvictableIdleTimeMillis", this.getMinEvictableIdleTimeMillis());
         dataMap.put("MaxEvictableIdleTimeMillis", this.getMaxEvictableIdleTimeMillis());
 
+        dataMap.put("LogDifferentThread", isLogDifferentThread());
+        dataMap.put("RecycleErrorCount", getRecycleErrorCount());
+        dataMap.put("PreparedStatementOpenCount", getPreparedStatementCount());
+        dataMap.put("PreparedStatementClosedCount", getClosedPreparedStatementCount());
+
+        dataMap.put("UseUnfairLock", isUseUnfairLock());
+        dataMap.put("InitGlobalVariants", isInitGlobalVariants());
+        dataMap.put("InitVariants", isInitVariants());
         return dataMap;
     }
 
