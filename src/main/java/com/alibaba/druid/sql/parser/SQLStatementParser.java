@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -2037,10 +2038,11 @@ public class SQLStatementParser extends SQLParser {
     */
     public SQLStatement parseStatement( final boolean tryBest) {
         List<SQLStatement> list = new ArrayList<SQLStatement>();
-        if(tryBest){
-            this.parseStatementList(list, 1);
-        }else{
-            parseStatementList(list);
+        this.parseStatementList(list, 1);
+        if (tryBest) {
+            if (lexer.token() != Token.EOF) {
+                throw new ParserException("sql syntax error, no terminated. " + lexer.token());
+            }
         }
         return list.get(0);
     }
