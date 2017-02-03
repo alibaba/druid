@@ -411,12 +411,6 @@
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -488,12 +482,6 @@
 			<version>9.1-901-1.jdbc4</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.aliyun.odps</groupId>
-			<artifactId>odps-jdbc</artifactId>
-			<version>1.6</version>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>com.oracle</groupId>
@@ -508,6 +496,64 @@
 			<version>2.2.2</version>
 			<scope>provided</scope>
 			<optional>true</optional>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>2.3.4.726</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.191</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.1.0.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>5.1.0.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.aliyun.odps</groupId>
+			<artifactId>odps-sdk-udf</artifactId>
+			<version>0.17.3</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.validation</groupId>
+					<artifactId>validation-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!--
+			test dependences
+		-->
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.aliyun.odps</groupId>
+			<artifactId>odps-jdbc</artifactId>
+			<version>1.6</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- <dependency> <groupId>com.microsoft.sqlserver</groupId> <artifactId>sqljdbc4</artifactId> <version>4.0.2206.100</version>
@@ -577,33 +623,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.ibatis</groupId>
-			<artifactId>ibatis-sqlmap</artifactId>
-			<version>2.3.4.726</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.4.191</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.1.0.Final</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-c3p0</artifactId>
-			<version>5.1.0.Final</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
 			<version>1.r.55</version>
@@ -646,19 +665,6 @@
 			<artifactId>guava</artifactId>
 			<version>19.0</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.aliyun.odps</groupId>
-			<artifactId>odps-sdk-udf</artifactId>
-			<version>0.17.3</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.validation</groupId>
-					<artifactId>validation-api</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 </project>
