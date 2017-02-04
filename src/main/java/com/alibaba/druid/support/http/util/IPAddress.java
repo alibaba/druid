@@ -150,7 +150,7 @@ public class IPAddress implements Cloneable {
             }
 
             // IP address must contain three dot
-            if (offset == 24 && temp > 0 && temp < 256) {
+            if (offset == 24 && temp >= 0 && temp < 256) {
                 result += temp << offset;
                 ipAddress = result;
             } else {
