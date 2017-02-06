@@ -122,50 +122,42 @@ public class IPAddress implements Cloneable {
         }
 
         try {
-            String tmp = ipAddressStr;
-
+            int len = ipAddressStr.length();
+            // temp value
+            int temp = 0;
             // get the 3 first numbers
             int offset = 0;
-            for (int i = 0; i < 3; i++) {
-
-                // get the position of the first dot
-                int index = tmp.indexOf('.');
-
-                // if there is not a dot then the ip string representation is
-                // not compliant to the decimal-dotted notation.
-                if (index != -1) {
-
-                    // get the number before the dot and convert it into
-                    // an integer.
-                    String numberStr = tmp.substring(0, index);
-                    int number = Integer.parseInt(numberStr);
-                    if ((number < 0) || (number > 255)) {
+            for (int i = 0; i < len; i++) {
+                char c = ipAddressStr.charAt(i);
+                switch (c) {
+                case '.':
+                    if (temp < 0 || temp > 255) {
                         throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
                     }
-
-                    result += number << offset;
+                    result += temp << offset;
+                    temp = 0;
                     offset += 8;
-                    tmp = tmp.substring(index + 1);
-                } else {
-                    throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
+                    break;
+                default:
+                    // char to num
+                    int num = c - '0';
+                    if (num > -1 && num < 10) {
+                        temp = (temp * 10) + num;
+                    } else {
+                        throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
+                    }
+                    break;
                 }
             }
 
-            // the remaining part of the string should be the last number.
-            if (tmp.length() > 0) {
-                int number = Integer.parseInt(tmp);
-                if ((number < 0) || (number > 255)) {
-                    throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
-                }
-
-                result += number << offset;
+            // IP address must contain three dot
+            if (offset == 24 && temp >= 0 && temp < 256) {
+                result += temp << offset;
                 ipAddress = result;
             } else {
                 throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
             }
-        } catch (NoSuchElementException ex) {
-            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]", ex);
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
             throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]", ex);
         }
 
