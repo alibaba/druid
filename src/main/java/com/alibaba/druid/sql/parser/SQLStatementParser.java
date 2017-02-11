@@ -1927,6 +1927,30 @@ public class SQLStatementParser extends SQLParser {
             createView.setOrReplace(true);
         }
 
+        if (identifierEquals("ALGORITHM")) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            String algorithm = lexer.stringVal();
+            createView.setAlgorithm(algorithm);
+            lexer.nextToken();
+        }
+
+        if (identifierEquals("DEFINER")) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            SQLName definer = this.exprParser.name();
+            createView.setDefiner(definer);
+            lexer.nextToken();
+        }
+
+        if (identifierEquals("SQL")) {
+            lexer.nextToken();
+            acceptIdentifier("SECURITY");
+            String sqlSecurity = lexer.stringVal();
+            createView.setSqlSecurity(sqlSecurity);
+            lexer.nextToken();
+        }
+
         this.accept(Token.VIEW);
 
         if (lexer.token() == Token.IF || identifierEquals("IF")) {

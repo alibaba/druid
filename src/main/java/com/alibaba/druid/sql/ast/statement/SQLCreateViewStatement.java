@@ -33,6 +33,10 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     protected SQLSelect subQuery;
     protected boolean   ifNotExists = false;
 
+    protected String    algorithm;
+    protected SQLName   definer;
+    protected String    sqlSecurity;
+
     protected final List<Column> columns = new ArrayList<Column>();
 
     private Level with;
@@ -107,6 +111,33 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
             comment.setParent(this);
         }
         this.comment = comment;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public SQLName getDefiner() {
+        return definer;
+    }
+
+    public void setDefiner(SQLName definer) {
+        if (definer != null) {
+            definer.setParent(this);
+        }
+        this.definer = definer;
+    }
+
+    public String getSqlSecurity() {
+        return sqlSecurity;
+    }
+
+    public void setSqlSecurity(String sqlSecurity) {
+        this.sqlSecurity = sqlSecurity;
     }
 
     public void output(StringBuffer buf) {

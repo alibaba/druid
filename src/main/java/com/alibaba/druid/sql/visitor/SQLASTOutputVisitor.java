@@ -2053,6 +2053,31 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isOrReplace()) {
             print0(ucase ? "OR REPLACE " : "or replace ");
         }
+
+        incrementIndent();
+        String algorithm = x.getAlgorithm();
+        if (algorithm != null && algorithm.length() > 0) {
+            print0(ucase ? "ALGORITHM = " : "algorithm = ");
+            print0(algorithm);
+            println();
+        }
+
+        SQLName definer = x.getDefiner();
+        if (definer != null) {
+            print0(ucase ? "DEFINER = " : "definer = ");
+            definer.accept(this);
+            println();
+        }
+
+        String sqlSecurity = x.getSqlSecurity();
+        if (sqlSecurity != null && sqlSecurity.length() > 0) {
+            print0(ucase ? "SQL SECURITY = " : "sql security = ");
+            print0(sqlSecurity);
+            println();
+        }
+
+        decrementIndent();
+
         print0(ucase ? "VIEW " : "view ");
 
         if (x.isIfNotExists()) {
