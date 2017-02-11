@@ -306,7 +306,7 @@ public enum Token {
     TILDE_STAR("~*"),
     TILDE_EQ("~="),
     QUES("?"),
-    QUESQUES("?？"),
+    QUESQUES("??"),
     QUESBAR("?|"),
     QUESAMP("?&"),
     COLON(":"), 
