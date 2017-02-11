@@ -571,11 +571,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     }
                 }
                 if (isNumber) {
-                    int start = quote ? 1 : 0;
-                    String realName = name.substring(start, pos);
-                    print0(realName);
-                    incrementReplaceCunt();
-                    return false;
+                    boolean isAlias = false;
+                    for (SQLObject parent = x.getParent();parent != null; parent = parent.getParent()) {
+                        if (parent instanceof SQLSelectQueryBlock) {
+                            SQLTableSource from = ((SQLSelectQueryBlock) parent).getFrom();
+                            if (quote) {
+                                String name2 = name.substring(1, name.length() - 1);
+                                if (isTableSourceAlias(from, name, name2)) {
+                                    isAlias = true;
+                                }
+                            } else {
+                                if (isTableSourceAlias(from, name)) {
+                                    isAlias = true;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    if (!isAlias) {
+                        int start = quote ? 1 : 0;
+                        String realName = name.substring(start, pos);
+                        print0(realName);
+                        incrementReplaceCunt();
+                        return false;
+                    } else {
+                        print0(name);
+                        return false;
+                    }
                 }
             }
 
@@ -866,7 +889,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             for (SQLObject parent = x.getParent();parent != null; parent = parent.getParent()) {
                 if (parent instanceof SQLSelectQueryBlock) {
                     SQLTableSource from = ((SQLSelectQueryBlock) parent).getFrom();
-                    if (containsAlias(from, mapTableName, ownerName)) {
+                    if (isTableSourceAlias(from, mapTableName, ownerName)) {
                         mapTableName = null;
                     }
                     break;
@@ -887,8 +910,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    protected boolean containsAlias(SQLTableSource from, String... tableNames) {
+    protected boolean isTableSourceAlias(SQLTableSource from, String... tableNames) {
         String alias = from.getAlias();
+
         if (alias != null) {
             for (String tableName : tableNames) {
                 if (alias.equalsIgnoreCase(tableName)) {
@@ -907,8 +931,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         if (from instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) from;
-            return containsAlias(join.getLeft(), tableNames)
-                    || containsAlias(join.getRight(), tableNames);
+            return isTableSourceAlias(join.getLeft(), tableNames)
+                    || isTableSourceAlias(join.getRight(), tableNames);
         }
         return false;
     }
