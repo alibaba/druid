@@ -1031,7 +1031,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
             || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
             this.exceptionSorter = new MySqlExceptionSorter();
-        } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)) {
+        } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
+                || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
             this.exceptionSorter = new OracleExceptionSorter();
         } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
             this.exceptionSorter = new InformixExceptionSorter();
