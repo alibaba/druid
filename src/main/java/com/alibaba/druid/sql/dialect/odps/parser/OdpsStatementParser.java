@@ -226,19 +226,26 @@ public class OdpsStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
-            accept(Token.LPAREN);
 
-            SQLSelectParser selectParser = createSQLSelectParser();
-            SQLSelect select = selectParser.select();
+            if (lexer.token() == Token.IDENTIFIER) {
+                SQLName tableName = this.exprParser.name();
+                SQLExprTableSource from = new SQLExprTableSource(tableName);
+                stmt.setFrom(from);
+            } else {
+                accept(Token.LPAREN);
 
-            accept(Token.RPAREN);
+                SQLSelectParser selectParser = createSQLSelectParser();
+                SQLSelect select = selectParser.select();
 
-            String alias = lexer.stringVal();
-            accept(Token.IDENTIFIER);
+                accept(Token.RPAREN);
 
-            SQLSubqueryTableSource from = new SQLSubqueryTableSource(select, alias);
+                String alias = lexer.stringVal();
+                accept(Token.IDENTIFIER);
 
-            stmt.setFrom(from);
+                SQLSubqueryTableSource from = new SQLSubqueryTableSource(select, alias);
+
+                stmt.setFrom(from);
+            }
         }
 
         for (;;) {

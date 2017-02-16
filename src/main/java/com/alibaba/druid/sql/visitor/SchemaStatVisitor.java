@@ -62,6 +62,7 @@ import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.StringUtils;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
@@ -518,6 +519,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         for (SQLExpr item : valueExprs) {
+            Column valueColumn = getColumn(item);
+            if (valueColumn != null) {
+                continue;
+            }
             Object value = SQLEvalVisitorUtils.eval(getDbType(), item, parameters, false);
             condition.getValues().add(value);
         }
@@ -539,6 +544,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 SQLExpr firstExpr = methodInvokeExp.getParameters().get(0);
                 return getColumn(firstExpr);
             }
+        }
+
+        if (expr instanceof SQLCastExpr) {
+            expr = ((SQLCastExpr) expr).getExpr();
         }
 
         if (expr instanceof SQLPropertyExpr) {
@@ -854,6 +863,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         if (selectList != null) {
+            boolean allColumn = false;
+            String allColumnOwner = null;
             for (SQLSelectItem item : selectList) {
                 if (!item.getClass().equals(SQLSelectItem.class)) {
                     continue;
@@ -885,7 +896,52 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                         }
                     }
                 }
+
+                if (itemExpr instanceof SQLAllColumnExpr) {
+                    allColumn = true;
+                } else if (itemExpr instanceof SQLPropertyExpr) {
+                    SQLPropertyExpr propertyExpr = (SQLPropertyExpr) itemExpr;
+                    if (propertyExpr.getName().equals("*")) {
+                        SQLExpr owner = propertyExpr.getOwner();
+                        if (owner instanceof SQLIdentifierExpr) {
+                            allColumnOwner = ((SQLIdentifierExpr) owner).getName();
+                            allColumn = true;
+                        }
+                    }
+                }
             }
+
+            if (allColumn) {
+
+                SQLTableSource from = queryBlock.getFrom();
+                String tableName = getTable(from, allColumnOwner);
+                if (tableName != null) {
+                    return new Column(tableName, alias);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private String getTable(SQLTableSource from, String tableAlias) {
+        if (from instanceof SQLExprTableSource) {
+            boolean aliasEq = StringUtils.equals(from.getAlias(), tableAlias);
+            SQLExpr tableSourceExpr = ((SQLExprTableSource) from).getExpr();
+            if (tableSourceExpr instanceof SQLName) {
+                String tableName = ((SQLName) tableSourceExpr).toString();
+                if (tableAlias == null || aliasEq) {
+                    return tableName;
+                }
+            }
+        } else if (from instanceof SQLJoinTableSource) {
+            SQLJoinTableSource joinTableSource = (SQLJoinTableSource) from;
+            String leftMatchTableName = getTable(joinTableSource.getLeft(), tableAlias);
+            if (leftMatchTableName != null) {
+                return leftMatchTableName;
+            }
+
+            return getTable(joinTableSource.getRight(), tableAlias);
         }
 
         return null;

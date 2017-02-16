@@ -318,6 +318,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x = ParameterizedOutputVisitorUtils.merge(this, x);
         }
 
+        if (parameters != null
+                && parameters.size() > 0
+                && x.getOperator() == SQLBinaryOperator.Equality
+                && x.getRight() instanceof SQLVariantRefExpr
+                ) {
+            SQLVariantRefExpr right = (SQLVariantRefExpr) x.getRight();
+            int index = right.getIndex();
+            if (index >= 0 && index < parameters.size()) {
+                Object param = parameters.get(index);
+                if (param instanceof Collection) {
+                    x.getLeft().accept(this);
+                    print0(" IN (");
+                    right.accept(this);
+                    print(')');
+                    return false;
+                }
+            }
+        }
+
         SQLObject parent = x.getParent();
         boolean isRoot = parent instanceof SQLSelectQueryBlock;
         boolean relational = x.getOperator() == SQLBinaryOperator.BooleanAnd
@@ -1259,7 +1278,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         Object param = parameters.get(index);
 
-        if (param instanceof Collection && x.getParent() instanceof SQLInListExpr) {
+        SQLObject parent = x.getParent();
+
+        boolean in;
+        if (parent instanceof SQLInListExpr) {
+            in = true;
+        } else if (parent instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
+            if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality) {
+                in = true;
+            } else {
+                in = false;
+            }
+        } else {
+            in = false;
+        }
+
+        if (in && param instanceof Collection) {
             boolean first = true;
             for (Object item : (Collection) param) {
                 if (!first) {

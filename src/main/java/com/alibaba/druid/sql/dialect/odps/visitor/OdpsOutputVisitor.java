@@ -27,14 +27,8 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
@@ -194,15 +188,22 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
     @Override
     public boolean visit(OdpsInsertStatement x) {
+        SQLTableSource from = x.getFrom();
         if (x.getFrom() != null) {
-            print0(ucase ? "FROM (" : "from (");
-            incrementIndent();
-            println();
-            x.getFrom().getSelect().accept(this);
-            decrementIndent();
-            println();
-            print0(") ");
-            print0(x.getFrom().getAlias());
+            if (from instanceof SQLSubqueryTableSource) {
+                SQLSelect select = ((SQLSubqueryTableSource) from).getSelect();
+                print0(ucase ? "FROM (" : "from (");
+                incrementIndent();
+                println();
+                select.accept(this);
+                decrementIndent();
+                println();
+                print0(") ");
+                print0(x.getFrom().getAlias());
+            } else {
+                print0(ucase ? "FROM " : "from ");
+                from.accept(this);
+            }
             println();
         }
 
