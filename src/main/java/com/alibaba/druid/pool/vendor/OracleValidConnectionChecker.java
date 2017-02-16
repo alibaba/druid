@@ -70,15 +70,17 @@ public class OracleValidConnectionChecker extends ValidConnectionCheckerAdapter 
             conn = ((ConnectionProxy) conn).getRawObject();
         }
 
-        if (validateQuery == null || validateQuery.length() == 0) {
+        if (validateQuery == null || validateQuery.isEmpty()) {
             return true;
         }
+
+        int queryTimeout = validationQueryTimeout < 0 ? timeout : validationQueryTimeout;
 
         Statement stmt = null;
         ResultSet rs = null;
         try {
             stmt = conn.createStatement();
-            stmt.setQueryTimeout(timeout);
+            stmt.setQueryTimeout(queryTimeout);
             rs = stmt.executeQuery(validateQuery);
             return true;
         } finally {
