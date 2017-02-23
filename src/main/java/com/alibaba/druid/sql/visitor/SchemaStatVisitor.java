@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
 import com.alibaba.druid.stat.TableStat;
@@ -859,6 +860,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         List<SQLSelectItem> selectList = null;
         if (query instanceof SQLSelectQueryBlock) {
             queryBlock = (SQLSelectQueryBlock) query;
+
+            if (queryBlock.getGroupBy() != null) {
+                return null;
+            }
+
             selectList = queryBlock.getSelectList();
         }
 
@@ -960,7 +966,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
-        Column column;
+        Column column = null;
         if (currentTable != null) {
             column = addColumn(currentTable, ident);
             
@@ -969,7 +975,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
             x.putAttribute(ATTR_COLUMN, column);
         } else {
-            column = handleUnkownColumn(ident);
+            boolean skip = false;
+            for (SQLObject parent = x.getParent();parent != null;parent = parent.getParent()) {
+                if (parent instanceof SQLSelectQueryBlock) {
+                    SQLTableSource from = ((SQLSelectQueryBlock) parent).getFrom();
+
+                    if (from instanceof OdpsValuesTableSource) {
+                        skip = true;
+                        break;
+                    }
+                } else if (parent instanceof SQLSelectQuery) {
+                    break;
+                }
+            }
+            if (!skip) {
+                column = handleUnkownColumn(ident);
+            }
             if (column != null) {
                 x.putAttribute(ATTR_COLUMN, column);
             }
