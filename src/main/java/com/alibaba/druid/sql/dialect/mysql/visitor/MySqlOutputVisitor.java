@@ -681,20 +681,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             int index = x.getIndex();
 
             if (index >= 0 && index < parametersSize) {
-                Object param = this.getParameters().get(index);
-                if (param instanceof Collection && x.getParent() instanceof SQLInListExpr) {
-                    boolean first = true;
-                    for (Object item : (Collection) param) {
-                        if (!first) {
-                            print0(", ");
-                        }
-                        printParameter(item);
-                        first = false;
-                    }
-                } else {
-                    printParameter(param);
-                }
-                return false;
+
+                return super.visit(x);
             }
         }
 

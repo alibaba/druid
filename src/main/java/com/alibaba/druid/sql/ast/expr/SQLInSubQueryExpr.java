@@ -47,6 +47,9 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 

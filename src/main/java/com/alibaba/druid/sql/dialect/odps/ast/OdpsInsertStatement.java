@@ -21,13 +21,14 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsInsertStatement extends SQLStatementImpl implements SQLStatement {
 
-    private SQLSubqueryTableSource from;
+    private SQLTableSource from;
 
     private List<OdpsInsert>       items = new ArrayList<OdpsInsert>();
     
@@ -35,11 +36,11 @@ public class OdpsInsertStatement extends SQLStatementImpl implements SQLStatemen
         super (JdbcConstants.ODPS);
     }
 
-    public void setFrom(SQLSubqueryTableSource from) {
+    public void setFrom(SQLTableSource from) {
         this.from = from;
     }
 
-    public SQLSubqueryTableSource getFrom() {
+    public SQLTableSource getFrom() {
         return from;
     }
 

@@ -1114,6 +1114,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setDriverClassName(String driverClass) {
+        if (driverClass != null && driverClass.length() > 256) {
+            throw new IllegalArgumentException("driverClassName length > 256.");
+        }
+
         if (inited) {
             if (StringUtils.equals(this.driverClass, driverClass)) {
                 return;

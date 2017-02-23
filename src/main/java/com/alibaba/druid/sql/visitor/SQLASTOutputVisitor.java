@@ -318,6 +318,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x = ParameterizedOutputVisitorUtils.merge(this, x);
         }
 
+        if (parameters != null
+                && parameters.size() > 0
+                && x.getOperator() == SQLBinaryOperator.Equality
+                && x.getRight() instanceof SQLVariantRefExpr
+                ) {
+            SQLVariantRefExpr right = (SQLVariantRefExpr) x.getRight();
+            int index = right.getIndex();
+            if (index >= 0 && index < parameters.size()) {
+                Object param = parameters.get(index);
+                if (param instanceof Collection) {
+                    x.getLeft().accept(this);
+                    print0(" IN (");
+                    right.accept(this);
+                    print(')');
+                    return false;
+                }
+            }
+        }
+
         SQLObject parent = x.getParent();
         boolean isRoot = parent instanceof SQLSelectQueryBlock;
         boolean relational = x.getOperator() == SQLBinaryOperator.BooleanAnd
@@ -571,11 +590,34 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     }
                 }
                 if (isNumber) {
-                    int start = quote ? 1 : 0;
-                    String realName = name.substring(start, pos);
-                    print0(realName);
-                    incrementReplaceCunt();
-                    return false;
+                    boolean isAlias = false;
+                    for (SQLObject parent = x.getParent();parent != null; parent = parent.getParent()) {
+                        if (parent instanceof SQLSelectQueryBlock) {
+                            SQLTableSource from = ((SQLSelectQueryBlock) parent).getFrom();
+                            if (quote) {
+                                String name2 = name.substring(1, name.length() - 1);
+                                if (isTableSourceAlias(from, name, name2)) {
+                                    isAlias = true;
+                                }
+                            } else {
+                                if (isTableSourceAlias(from, name)) {
+                                    isAlias = true;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    if (!isAlias) {
+                        int start = quote ? 1 : 0;
+                        String realName = name.substring(start, pos);
+                        print0(realName);
+                        incrementReplaceCunt();
+                        return false;
+                    } else {
+                        print0(name);
+                        return false;
+                    }
                 }
             }
 
@@ -866,7 +908,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             for (SQLObject parent = x.getParent();parent != null; parent = parent.getParent()) {
                 if (parent instanceof SQLSelectQueryBlock) {
                     SQLTableSource from = ((SQLSelectQueryBlock) parent).getFrom();
-                    if (containsAlias(from, mapTableName, ownerName)) {
+                    if (isTableSourceAlias(from, mapTableName, ownerName)) {
                         mapTableName = null;
                     }
                     break;
@@ -887,8 +929,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    protected boolean containsAlias(SQLTableSource from, String... tableNames) {
+    protected boolean isTableSourceAlias(SQLTableSource from, String... tableNames) {
         String alias = from.getAlias();
+
         if (alias != null) {
             for (String tableName : tableNames) {
                 if (alias.equalsIgnoreCase(tableName)) {
@@ -907,8 +950,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         if (from instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) from;
-            return containsAlias(join.getLeft(), tableNames)
-                    || containsAlias(join.getRight(), tableNames);
+            return isTableSourceAlias(join.getLeft(), tableNames)
+                    || isTableSourceAlias(join.getRight(), tableNames);
         }
         return false;
     }
@@ -1235,7 +1278,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         Object param = parameters.get(index);
 
-        if (param instanceof Collection && x.getParent() instanceof SQLInListExpr) {
+        SQLObject parent = x.getParent();
+
+        boolean in;
+        if (parent instanceof SQLInListExpr) {
+            in = true;
+        } else if (parent instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
+            if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality) {
+                in = true;
+            } else {
+                in = false;
+            }
+        } else {
+            in = false;
+        }
+
+        if (in && param instanceof Collection) {
             boolean first = true;
             for (Object item : (Collection) param) {
                 if (!first) {
@@ -2053,6 +2112,31 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isOrReplace()) {
             print0(ucase ? "OR REPLACE " : "or replace ");
         }
+
+        incrementIndent();
+        String algorithm = x.getAlgorithm();
+        if (algorithm != null && algorithm.length() > 0) {
+            print0(ucase ? "ALGORITHM = " : "algorithm = ");
+            print0(algorithm);
+            println();
+        }
+
+        SQLName definer = x.getDefiner();
+        if (definer != null) {
+            print0(ucase ? "DEFINER = " : "definer = ");
+            definer.accept(this);
+            println();
+        }
+
+        String sqlSecurity = x.getSqlSecurity();
+        if (sqlSecurity != null && sqlSecurity.length() > 0) {
+            print0(ucase ? "SQL SECURITY = " : "sql security = ");
+            print0(sqlSecurity);
+            println();
+        }
+
+        decrementIndent();
+
         print0(ucase ? "VIEW " : "view ");
 
         if (x.isIfNotExists()) {
