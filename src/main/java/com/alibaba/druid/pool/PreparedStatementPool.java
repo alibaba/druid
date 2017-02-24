@@ -76,7 +76,7 @@ public class PreparedStatementPool {
         if (stmtHolder == null) {
             return;
         }
-        map.remove(stmtHolder.key, stmtHolder);
+        map.remove(stmtHolder.key);
         closeRemovedStatement(stmtHolder);
     }
 
