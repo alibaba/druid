@@ -250,6 +250,9 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlKey x) {
+        for (SQLObject item : x.getColumns()) {
+            item.accept(this);
+        }
         return false;
     }
 

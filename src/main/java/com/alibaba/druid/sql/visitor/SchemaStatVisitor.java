@@ -996,6 +996,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         }
         if (column != null) {
+            SQLObject parent = x.getParent();
+            if (parent instanceof SQLPrimaryKey) {
+                column.setPrimaryKey(true);
+            } else if (parent instanceof SQLUnique) {
+                column.setUnique(true);
+            }
+
             setColumn(x, column);
         }
         return false;
@@ -1438,6 +1445,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         Column column = addColumn(tableName, columnName);
         if (x.getDataType() != null) {
             column.setDataType(x.getDataType().getName());
+        }
+
+        for (SQLColumnConstraint item : x.getConstraints()) {
+            if (item instanceof SQLPrimaryKey) {
+                column.setPrimaryKey(true);
+            } else if (item instanceof SQLUnique) {
+                column.setUnique(true);
+            }
         }
 
         return false;

@@ -236,7 +236,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print0(ucase ? "DELETE " : "delete ");
 
         SQLTableSource tableSource = x.getTableSource();
-
         if (x.getHints().size() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');

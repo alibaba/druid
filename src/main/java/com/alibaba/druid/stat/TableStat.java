@@ -405,6 +405,9 @@ public class TableStat {
         private boolean             having;
         private boolean             join;
 
+        private boolean             primaryKey; // for ddl
+        private boolean             unique; //
+
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
         private transient String    fullName;
@@ -482,6 +485,22 @@ public class TableStat {
 
         public void setHaving(boolean having) {
             this.having = having;
+        }
+
+        public boolean isPrimaryKey() {
+            return primaryKey;
+        }
+
+        public void setPrimaryKey(boolean primaryKey) {
+            this.primaryKey = primaryKey;
+        }
+
+        public boolean isUnique() {
+            return unique;
+        }
+
+        public void setUnique(boolean unique) {
+            this.unique = unique;
         }
 
         public String getName() {

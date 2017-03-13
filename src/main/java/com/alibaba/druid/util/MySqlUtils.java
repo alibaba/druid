@@ -42,7 +42,8 @@ public class MySqlUtils {
     static Constructor<?> MysqlXAConnectionConstructor = null;
 
     public static XAConnection createXAConnection(Driver driver, Connection physicalConn) throws SQLException {
-        if (driver.getMajorVersion() == 5) {
+        final int major = driver.getMajorVersion();
+        if (major == 5) {
             if (utilClass == null && !utilClassError) {
                 try {
                     utilClass = Class.forName("com.mysql.jdbc.Util");

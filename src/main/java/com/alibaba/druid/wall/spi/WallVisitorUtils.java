@@ -1650,6 +1650,10 @@ public class WallVisitorUtils {
                 return;
             }
 
+            if (isTopFromDenySchema(visitor, x)) {
+                return;
+            }
+
             boolean isShow = x.getParent() instanceof MySqlShowGrantsStatement;
             if (isShow) {
                 return;
@@ -1699,6 +1703,7 @@ public class WallVisitorUtils {
         if (!(x.getParent() instanceof SQLSelectItem)) {
             return false;
         }
+
         SQLSelectItem item = (SQLSelectItem) x.getParent();
 
         if (!(item.getParent() instanceof SQLSelectQueryBlock)) {
@@ -1723,6 +1728,51 @@ public class WallVisitorUtils {
         SQLSelectStatement stmt = (SQLSelectStatement) select.getParent();
 
         return stmt.getParent() == null;
+    }
+
+    private static boolean isTopFromDenySchema(WallVisitor visitor, SQLMethodInvokeExpr x) {
+        SQLObject parent = x.getParent();
+        for (;; ) {
+            if (parent instanceof SQLExpr || parent instanceof Item || parent instanceof SQLSelectItem) {
+                parent = parent.getParent();
+            } else {
+                break;
+            }
+        }
+
+        if (parent instanceof SQLSelectQueryBlock) {
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent;
+            if (!(queryBlock.getParent() instanceof SQLSelect)) {
+                return false;
+            }
+
+            SQLSelect select = (SQLSelect) queryBlock.getParent();
+
+            if (!(select.getParent() instanceof SQLSelectStatement)) {
+                return false;
+            }
+
+            SQLSelectStatement stmt = (SQLSelectStatement) select.getParent();
+
+            if (stmt.getParent() != null) {
+                return false;
+            }
+
+            SQLTableSource from = queryBlock.getFrom();
+            if (from instanceof SQLExprTableSource) {
+                SQLExpr fromExpr = ((SQLExprTableSource) from).getExpr();
+                if (fromExpr instanceof SQLName) {
+                    String fromTableName = fromExpr.toString();
+                    return visitor.isDenyTable(fromTableName);
+                }
+            }
+
+            return false;
+        }
+
+
+
+        return false;
     }
 
     private static boolean checkSchema(WallVisitor visitor, SQLExpr x) {

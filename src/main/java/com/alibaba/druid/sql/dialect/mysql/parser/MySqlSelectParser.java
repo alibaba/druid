@@ -328,7 +328,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                         lexer.nextToken();
                         accept(Token.BY);
                     }
-                    outFile.setColumnsTerminatedBy((SQLLiteralExpr) expr());
+                    outFile.setColumnsTerminatedBy(expr());
 
                     if (identifierEquals("OPTIONALLY")) {
                         lexer.nextToken();
