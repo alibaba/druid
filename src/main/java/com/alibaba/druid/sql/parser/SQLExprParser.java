@@ -1220,6 +1220,19 @@ public class SQLExprParser extends SQLParser {
             item.setType(SQLOrderingSpecification.DESC);
         }
 
+        if (identifierEquals("NULLS")) {
+            lexer.nextToken();
+            if (identifierEquals("FIRST")) {
+                lexer.nextToken();
+                item.setNullsOrderType(SQLSelectOrderByItem.NullsOrderType.NullsFirst);
+            } else if (identifierEquals("LAST")) {
+                lexer.nextToken();
+                item.setNullsOrderType(SQLSelectOrderByItem.NullsOrderType.NullsLast);
+            } else {
+                throw new ParserException("TODO " + lexer.token());
+            }
+        }
+
         return item;
     }
 

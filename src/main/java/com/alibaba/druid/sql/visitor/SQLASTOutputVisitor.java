@@ -1192,6 +1192,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(x.getCollate());
         }
 
+        if (x.getNullsOrderType() != null) {
+            print(' ');
+            print0(x.getNullsOrderType().toFormalString());
+        }
+
         return false;
     }
 
@@ -1261,6 +1266,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLSelectStatement stmt) {
+        List<SQLCommentHint> headHints = stmt.getHeadHintsDirect();
+        if (headHints != null) {
+            for (SQLCommentHint hint : headHints) {
+                hint.accept(this);
+                println();
+            }
+        }
+
         SQLSelect select = stmt.getSelect();
 
         select.accept(this);

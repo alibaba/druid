@@ -692,7 +692,29 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.HINT) {
-            statementList.add(this.parseHint());
+            List<SQLCommentHint> hints = this.exprParser.parseHints();
+
+            boolean tddlSelectHints = false;
+
+            if (hints.size() == 1 && statementList.size() == 0 && lexer.token() == Token.SELECT) {
+                SQLCommentHint hint = hints.get(0);
+                String hintText = hint.getText();
+                if (hintText.startsWith("+TDDL")) {
+                    tddlSelectHints = true;
+                }
+            }
+
+            if (tddlSelectHints) {
+                SQLSelectStatement stmt = (SQLSelectStatement) this.parseStatement();
+                stmt.setHeadHints(hints);
+                statementList.add(stmt);
+                return true;
+            }
+
+            MySqlHintStatement stmt = new MySqlHintStatement();
+            stmt.setHints(hints);
+
+            statementList.add(stmt);
             return true;
         }
 
@@ -1105,7 +1127,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals("STORAGE")) {
             lexer.nextToken();
-            acceptIdentifier(ENGINES);
+            accept(Token.EQ);
+            accept(Token.DEFAULT);
             MySqlShowEnginesStatement stmt = new MySqlShowEnginesStatement();
             stmt.setStorage(true);
             return stmt;
@@ -2755,6 +2778,20 @@ public class MySqlStatementParser extends SQLStatementParser {
                 SQLTableSource tableSrc = this.createSQLSelectParser().parseTableSource();
                 stmt.getTableOptions().put("UNION", tableSrc);
                 accept(Token.RPAREN);
+            } else if (identifierEquals("ROW_FORMAT")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                }
+
+                if (lexer.token() == Token.DEFAULT || lexer.token() == Token.IDENTIFIER) {
+                    SQLIdentifierExpr rowFormat = new SQLIdentifierExpr(lexer.stringVal());
+                    lexer.nextToken();
+                    stmt.getTableOptions().put("ROW_FORMAT", rowFormat);
+                } else {
+                    throw new ParserException("illegal syntax.");
+                }
+
             } else {
                 break;
             }
@@ -3025,13 +3062,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         return (MySqlExprParser) exprParser;
     }
 
-    public MySqlHintStatement parseHint() {
-        // accept(Token.HINT);
-        MySqlHintStatement stmt = new MySqlHintStatement();
-        stmt.setHints(this.exprParser.parseHints());
-
-        return stmt;
-    }
 
     /**
      * parse create procedure statement
