@@ -231,6 +231,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected Condition                                notEmpty;
     protected Condition                                empty;
 
+    protected ReentrantLock                            activeConnectionLock                      = new ReentrantLock();
+
     protected AtomicLong                               createCount                               = new AtomicLong();
     protected AtomicLong                               destroyCount                              = new AtomicLong();
 
@@ -1372,8 +1374,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public Set<DruidPooledConnection> getActiveConnections() {
-        synchronized (activeConnections) {
+        activeConnectionLock.lock();
+        try {
             return new HashSet<DruidPooledConnection>(this.activeConnections.keySet());
+        } finally {
+            activeConnectionLock.unlock();
         }
     }
 

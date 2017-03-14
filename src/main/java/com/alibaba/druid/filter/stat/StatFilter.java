@@ -24,6 +24,8 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
@@ -68,6 +70,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
     public final static String        ATTR_TRANSACTION           = "stat.tx";
     public final static String        ATTR_RESULTSET_CLOSED      = "stat.rs.closed";
+
+    private final Lock                lock                       = new ReentrantLock();
 
     // protected JdbcDataSourceStat dataSourceStat;
 
@@ -151,13 +155,18 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    public synchronized void init(DataSourceProxy dataSource) {
-        if (this.dbType == null || this.dbType.trim().length() == 0) {
-            this.dbType = dataSource.getDbType();
-        }
+    public void init(DataSourceProxy dataSource) {
+        lock.lock();
+        try {
+            if (this.dbType == null || this.dbType.trim().length() == 0) {
+                this.dbType = dataSource.getDbType();
+            }
 
-        configFromProperties(dataSource.getConnectProperties());
-        configFromProperties(System.getProperties());
+            configFromProperties(dataSource.getConnectProperties());
+            configFromProperties(System.getProperties());
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void configFromProperties(Properties properties) {
