@@ -72,6 +72,14 @@ public class PreparedStatementPool {
         return holder;
     }
 
+    public void remove(PreparedStatementHolder stmtHolder) throws SQLException {
+        if (stmtHolder == null) {
+            return;
+        }
+        map.remove(stmtHolder.key);
+        closeRemovedStatement(stmtHolder);
+    }
+
     public void put(PreparedStatementHolder stmtHolder) throws SQLException {
         PreparedStatement stmt = stmtHolder.statement;
 
