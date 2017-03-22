@@ -18,13 +18,13 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
@@ -81,7 +81,7 @@ public class DALParserTest extends TestCase {
     public void testdesc() throws Exception {
         String sql = "desc tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlDescribeStatement desc = parser.parseDescribe();
+        MySqlExplainStatement desc = parser.parseDescribe();
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(desc);
         Assert.assertEquals("DESC tb1", output);
@@ -90,7 +90,7 @@ public class DALParserTest extends TestCase {
     public void testdesc_1() throws Exception {
         String sql = "desc db.tb1";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlDescribeStatement desc = parser.parseDescribe();
+        MySqlExplainStatement desc = parser.parseDescribe();
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(desc);
         Assert.assertEquals("DESC db.tb1", output);
