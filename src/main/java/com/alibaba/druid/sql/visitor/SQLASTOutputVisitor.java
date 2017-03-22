@@ -2631,6 +2631,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(' ');
             printAndAccept(x.getHints(), " ");
         }
+
+        if (x.getType() != null) {
+            print(' ');
+            print0(x.getType());
+        }
         println();
         x.getStatement().accept(this);
         return false;

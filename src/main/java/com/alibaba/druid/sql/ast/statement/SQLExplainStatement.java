@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLExplainStatement extends SQLStatementImpl {
 
+    private String type;
+
     protected SQLStatement       statement;
 
     private List<SQLCommentHint> hints;
@@ -45,6 +47,14 @@ public class SQLExplainStatement extends SQLStatementImpl {
             statement.setParent(this);
         }
         this.statement = statement;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

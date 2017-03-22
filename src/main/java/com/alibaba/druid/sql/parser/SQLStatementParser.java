@@ -2087,6 +2087,15 @@ public class SQLStatementParser extends SQLParser {
             explain.setHints(this.exprParser.parseHints());
         }
 
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            if (identifierEquals("FORMAT")
+                    || identifierEquals("EXTENDED")
+                    || identifierEquals("PARTITIONS")) {
+                explain.setType(lexer.stringVal);
+                lexer.nextToken();
+            }
+        }
+
         explain.setStatement(parseStatement());
 
         return explain;
