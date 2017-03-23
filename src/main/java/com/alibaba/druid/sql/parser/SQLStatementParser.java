@@ -2126,6 +2126,16 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
         } else {
             item.setName(this.exprParser.name());
+
+            if (JdbcConstants.MYSQL.equals(dbType)) {
+                if (identifierEquals("USING")) {
+                    lexer.nextToken();
+                    String indexType = lexer.stringVal;
+                    item.setType(indexType);
+                    accept(Token.IDENTIFIER);
+                }
+            }
+
             accept(Token.LPAREN);
         }
 

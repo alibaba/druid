@@ -2799,8 +2799,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAlterTableAddIndex x) {
         print0(ucase ? "ADD " : "add ");
-        if (x.getType() != null) {
-            print0(x.getType());
+        String type = x.getType();
+
+        boolean mysql = JdbcConstants.MYSQL.equals(dbType);
+
+        if (type != null && !mysql) {
+            print0(type);
             print(' ');
         }
 
@@ -2818,6 +2822,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getName().accept(this);
             print(' ');
         }
+
+        if (type != null && mysql) {
+            print0(ucase ? "USING " : "using ");
+            print0(type);
+            print(' ');
+        }
+
         print('(');
         printAndAccept(x.getItems(), ", ");
         print(')');
