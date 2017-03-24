@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!--
+<!--	   
         <parent>
-            <groupId>com.alibaba</groupId>
-            <artifactId>parent-pom</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+                <groupId>com.alibaba</groupId>
+                <artifactId>parent-pom</artifactId>
+                <version>1.0.0</version>
         </parent>
-    -->
+ -->
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.29-SNAPSHOT</version>
+	<version>1.0.30-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -22,8 +22,8 @@
 		<spring.version>4.2.5.RELEASE</spring.version>
 		<junit.version>4.12</junit.version>
 
-		<gpg.skip>true</gpg.skip>
-		<javadoc.skip>true</javadoc.skip>
+		<gpg.skip>false</gpg.skip>
+		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
