@@ -1758,7 +1758,14 @@ public class SQLExprParser extends SQLParser {
                 accept(Token.RPAREN);
             }
 
-            return parseCharTypeRest(charType);
+            charType = (SQLCharacterDataType) parseCharTypeRest(charType);
+
+            if (lexer.token() == Token.HINT) {
+                List<SQLCommentHint> hints = this.parseHints();
+                charType.setHints(hints);
+            }
+
+            return charType;
         }
 
         if ("character".equalsIgnoreCase(typeName) && "varying".equalsIgnoreCase(lexer.stringVal())) {
@@ -1867,7 +1874,12 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.NOT) {
             lexer.nextToken();
             accept(Token.NULL);
-            column.addConstraint(new SQLNotNullConstraint());
+            SQLNotNullConstraint notNull = new SQLNotNullConstraint();
+            if (lexer.token() == Token.HINT) {
+                List<SQLCommentHint> hints = this.parseHints();
+                notNull.setHints(hints);
+            }
+            column.addConstraint(notNull);
             return parseColumnRest(column);
         }
 

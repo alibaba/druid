@@ -537,6 +537,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLCharacterDataType x) {
         visit((SQLDataType) x);
+
+        List<SQLCommentHint> hints = ((SQLCharacterDataType) x).hints;
+        if (hints != null) {
+            print(' ');
+            for (SQLCommentHint hint : hints) {
+                hint.accept(this);
+            }
+        }
+
         return false;
     }
 
@@ -1678,6 +1687,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(' ');
         }
         print0(ucase ? "NOT NULL" : "not null");
+
+        List<SQLCommentHint> hints = x.hints;
+
+        if (hints != null) {
+            print(' ');
+            for (SQLCommentHint hint : hints) {
+                hint.accept(this);
+            }
+        }
+
         return false;
     }
 

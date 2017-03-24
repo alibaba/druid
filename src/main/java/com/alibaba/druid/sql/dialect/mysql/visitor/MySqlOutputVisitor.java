@@ -405,6 +405,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                     print0(charType.getCollate());
                 }
             }
+
+            List<SQLCommentHint> hints = ((SQLCharacterDataType) x).hints;
+            if (hints != null) {
+                print(' ');
+                for (SQLCommentHint hint : hints) {
+                    hint.accept(this);
+                }
+            }
         }
         return false;
     }
@@ -432,6 +440,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         } else if (x.getCollate() != null) {
             print0(ucase ? " COLLATE " : " collate ");
             print0(x.getCollate());
+        }
+
+        List<SQLCommentHint> hints = ((SQLCharacterDataType) x).hints;
+        if (hints != null) {
+            print(' ');
+            for (SQLCommentHint hint : hints) {
+                hint.accept(this);
+            }
         }
 
         return false;

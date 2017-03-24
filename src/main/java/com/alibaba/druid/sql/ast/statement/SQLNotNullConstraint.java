@@ -15,9 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.List;
+
 public class SQLNotNullConstraint extends SQLConstraintImpl implements SQLColumnConstraint {
+
+
 
     public SQLNotNullConstraint(){
 
