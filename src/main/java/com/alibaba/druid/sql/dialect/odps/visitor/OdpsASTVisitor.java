@@ -104,10 +104,6 @@ public interface OdpsASTVisitor extends SQLASTVisitor {
     
     boolean visit(OdpsGrantStmt x);
     
-    void endVisit(OdpsDescStmt x);
-    
-    boolean visit(OdpsDescStmt x);
-    
     void endVisit(OdpsLateralViewTableSource x);
     
     boolean visit(OdpsLateralViewTableSource x);

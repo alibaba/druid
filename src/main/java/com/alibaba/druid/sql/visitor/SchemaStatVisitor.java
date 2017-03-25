@@ -53,6 +53,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
@@ -1941,5 +1942,29 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         tableStat.incrementDropIndexCount();
         return false;
     }
+
+    @Override
+    public boolean visit(SQLDescribeStatement x) {
+        String tableName = x.getObject().toString();
+
+        TableStat tableStat = this.getTableStat(tableName);
+        tableStat.incrementDropIndexCount();
+
+        SQLName column = x.getColumn();
+        if (column != null) {
+            String columnName = column.toString();
+            this.addColumn(tableName, columnName);
+        }
+        return false;
+    }
+
+    public boolean visit(SQLExplainStatement x) {
+        if (x.getStatement() != null) {
+            accept(x.getStatement());
+        }
+
+        return false;
+    }
+    //
     //
 }

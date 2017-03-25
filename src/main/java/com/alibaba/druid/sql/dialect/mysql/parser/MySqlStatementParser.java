@@ -654,7 +654,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.EXPLAIN) {
-            MySqlExplainStatement stmt = this.parseExplain();
+            SQLStatement stmt = this.parseExplain();
             statementList.add(stmt);
             return true;
         }
@@ -829,44 +829,40 @@ public class MySqlStatementParser extends SQLStatementParser {
 
 
     private MySqlExplainStatement parseExplain(MySqlExplainStatement explain) {
+
+        if (lexer.token() == Token.HINT) {
+            List<SQLCommentHint> hints = this.exprParser.parseHints();
+            explain.setHints(hints);
+        }
         // see https://dev.mysql.com/doc/refman/5.7/en/explain.html
 
-        boolean extended = lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase(EXTENDED);
-        boolean partitions = lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase(PARTITIONS);
-        boolean format = lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase(FORMAT);
-        boolean type = extended || partitions || format;
-        boolean forConnection = lexer.token() == Token.FOR;
-        boolean table = lexer.token() == Token.IDENTIFIER && !type && !forConnection;
+        boolean table = false;
+        if (lexer.token() == Token.IDENTIFIER) {
+             String stringVal = lexer.stringVal();
 
-        // tbl_name [col_name | wild]
-        if (table) {
-            explain.setTableName(exprParser.name());
-            if (lexer.token() == Token.IDENTIFIER) {
-                explain.setColumnName(exprParser.name());
-            } else if (lexer.token() == Token.LITERAL_CHARS) {
-                explain.setWild(exprParser.expr());
-            }
-        } else if (type) {
-            // [explain_type]
-            if (extended) {
-                explain.setType(MySqlExplainType.EXTENDED);
-            } else if (partitions) {
-                explain.setType(MySqlExplainType.PARTITIONS);
-            } else if (format) {
-                explain.setType(MySqlExplainType.FORMAT);
-                lexer.nextToken();
-                accept(Token.EQ);
-                if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase(TRADITIONAL)) {
-                    explain.setFormatName(MySqlFormatName.TRADITIONAL);
-                } else if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase(JSON)) {
-                    explain.setFormatName(MySqlFormatName.JSON);
-                }
-            }
+             if (stringVal.equalsIgnoreCase(EXTENDED)
+                     || stringVal.equalsIgnoreCase(PARTITIONS)) {
+                 explain.setType(stringVal);
+                 lexer.nextToken();
+             } else if (stringVal.equalsIgnoreCase(FORMAT)) {
+                 explain.setType(stringVal);
+                 lexer.nextToken();
+                 accept(Token.EQ);
 
-            lexer.nextToken();
+                 String format = lexer.stringVal();
+                 explain.setFormat(format);
+                 accept(Token.IDENTIFIER);
+             } else {
+                 explain.setTableName(exprParser.name());
+                 if (lexer.token() == Token.IDENTIFIER) {
+                     explain.setColumnName(exprParser.name());
+                 } else if (lexer.token() == Token.LITERAL_CHARS) {
+                     explain.setWild(exprParser.expr());
+                 }
+                 table = true;
+             }
         }
 
-        // {explainable_stmt | FOR CONNECTION connection_id}
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
             acceptIdentifier(CONNECTION);

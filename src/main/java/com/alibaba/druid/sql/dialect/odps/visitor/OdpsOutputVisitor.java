@@ -816,31 +816,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     }
 
     @Override
-    public void endVisit(OdpsDescStmt x) {
-        
-    }
-
-    @Override
-    public boolean visit(OdpsDescStmt x) {
-        print0(ucase ? "DESC " : "desc ");
-        if (x.getObjectType() != null) {
-            print0(x.getObjectType().name());
-            print(' ');
-        }
-        
-        if(x.getObject() != null) {
-            x.getObject().accept(this);
-        }
-        
-        if (x.getPartition().size() > 0) {
-            print0(ucase ? " PARTITION (" : " partition (");
-            printAndAccept(x.getPartition(), ", ");
-            print(')');
-        }
-        return false;
-    }
-
-    @Override
     public void endVisit(OdpsLateralViewTableSource x) {
         
     }

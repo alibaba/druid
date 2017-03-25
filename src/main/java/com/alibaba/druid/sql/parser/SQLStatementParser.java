@@ -2352,4 +2352,48 @@ public class SQLStatementParser extends SQLParser {
     public void parseHints(List<SQLHint> hints) {
         this.getExprParser().parseHints(hints);
     }
+
+    public SQLStatement parseDescribe() {
+        if (lexer.token() == Token.DESC || identifierEquals("DESCRIBE")) {
+            lexer.nextToken();
+        } else {
+            throw new ParserException("expect DESC, actual " + lexer.token());
+        }
+
+        SQLDescribeStatement stmt = new SQLDescribeStatement();
+        stmt.setDbType(dbType);
+
+        if (identifierEquals("ROLE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.ROLE);
+        } else if (identifierEquals("PACKAGE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.PACKAGE);
+        } else if (identifierEquals("INSTANCE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.INSTANCE);
+        }
+        stmt.setObject(this.exprParser.name());
+
+        Token token = lexer.token();
+        if (token == Token.PARTITION) {
+            lexer.nextToken();
+            this.accept(Token.LPAREN);
+            for (;;) {
+                stmt.getPartition().add(this.exprParser.expr());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                if (lexer.token() == Token.RPAREN) {
+                    lexer.nextToken();
+                    break;
+                }
+            }
+        } else if (token == Token.IDENTIFIER) {
+            SQLName column = this.exprParser.name();
+            stmt.setColumn(column);
+        }
+        return stmt;
+    }
 }

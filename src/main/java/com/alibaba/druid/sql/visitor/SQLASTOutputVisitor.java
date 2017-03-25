@@ -3929,4 +3929,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         return false;
     }
+
+    public boolean visit(SQLDescribeStatement x) {
+        print0(ucase ? "DESC " : "desc ");
+        if (x.getObjectType() != null) {
+            print0(x.getObjectType().name());
+            print(' ');
+        }
+
+        if(x.getObject() != null) {
+            x.getObject().accept(this);
+        }
+
+        if (x.getPartition().size() > 0) {
+            print0(ucase ? " PARTITION (" : " partition (");
+            printAndAccept(x.getPartition(), ", ");
+            print(')');
+        }
+        return false;
+    }
 }

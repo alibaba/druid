@@ -1723,12 +1723,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
         } else {
             // [explain_type]
-            if (x.getType() != null) {
-                print0(ucase ? x.getType().name() : x.getType().name().toLowerCase());
+            String type = x.getType();
+            if (type != null) {
+                print0(type);
                 print(' ');
-                if (x.getType() == MySqlExplainType.FORMAT) {
+                if ("format".equalsIgnoreCase(type)) {
                     print0("= ");
-                    print(ucase ? x.getFormatName().name() : x.getFormatName().name().toLowerCase());
+                    print0(x.getFormat());
                     print(' ');
                 }
             }

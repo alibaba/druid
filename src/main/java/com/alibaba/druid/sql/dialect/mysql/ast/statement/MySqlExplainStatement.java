@@ -33,9 +33,7 @@ public class MySqlExplainStatement extends SQLExplainStatement implements MySqlS
     private SQLName columnName;
     private SQLExpr wild;
 
-    private MySqlExplainType type;
-
-    private MySqlFormatName formatName;
+    private String format;
 
     private SQLExpr connectionId;
 
@@ -106,20 +104,12 @@ public class MySqlExplainStatement extends SQLExplainStatement implements MySqlS
         this.wild = wild;
     }
 
-    public MySqlExplainType getType() {
-        return type;
+    public String getFormat() {
+        return format;
     }
 
-    public void setType(MySqlExplainType type) {
-        this.type = type;
-    }
-
-    public MySqlFormatName getFormatName() {
-        return formatName;
-    }
-
-    public void setFormatName(MySqlFormatName formatName) {
-        this.formatName = formatName;
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     public SQLExpr getConnectionId() {
