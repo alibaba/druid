@@ -126,7 +126,7 @@ public enum Token {
     BINARY("BINARY"),
     SHOW("SHOW"),
     REPLACE("REPLACE"),
-    
+
     // MySql procedure add by zz
     WHILE("WHILE"),
     DO("DO"),
