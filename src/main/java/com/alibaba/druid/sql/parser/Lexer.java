@@ -450,13 +450,13 @@ public class Lexer {
                     return;
                 case '?':
                     scanChar();
-                    if (ch == '?') {
+                    if (ch == '?' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
                         token = Token.QUESQUES;
-                    } else if (ch == '|') {
+                    } else if (ch == '|' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
                         token = Token.QUESBAR;
-                    } else if (ch == '&') {
+                    } else if (ch == '&' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
                         token = Token.QUESAMP;
                     } else {
