@@ -42,6 +42,9 @@ public class SQLAlterTableRenameColumn extends SQLObjectImpl implements SQLAlter
     }
 
     public void setColumn(SQLName column) {
+        if (column != null) {
+            column.setParent(this);
+        }
         this.column = column;
     }
 
@@ -50,6 +53,9 @@ public class SQLAlterTableRenameColumn extends SQLObjectImpl implements SQLAlter
     }
 
     public void setTo(SQLName to) {
+        if (to != null) {
+            to.setParent(this);
+        }
         this.to = to;
     }
 
