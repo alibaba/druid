@@ -885,18 +885,38 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                     accept(Token.COLUMN);
                     SQLName columnName = this.exprParser.name();
-                    accept(Token.COMMENT);
-                    SQLExpr comment = this.exprParser.primary();
 
-                    SQLColumnDefinition columnDefinition = new SQLColumnDefinition();
-                    columnDefinition.setName(columnName);
-                    columnDefinition.setComment(comment);
+                    if (identifierEquals("RENAME")) {
+                        lexer.nextToken();
+                        accept(Token.TO);
+                        SQLName toName = this.exprParser.name();
+                        SQLAlterTableRenameColumn renameColumn = new SQLAlterTableRenameColumn();
 
-                    SQLAlterTableAlterColumn changeColumn = new SQLAlterTableAlterColumn();
+                        renameColumn.setColumn(columnName);
+                        renameColumn.setTo(toName);
 
-                    changeColumn.setColumn(columnDefinition);
+                        stmt.addItem(renameColumn);
+                    } else if (lexer.token() == Token.COMMENT) {
+                        lexer.nextToken();
+                        SQLExpr comment = this.exprParser.primary();
 
-                    stmt.addItem(changeColumn);
+                        SQLColumnDefinition columnDefinition = new SQLColumnDefinition();
+                        columnDefinition.setName(columnName);
+                        columnDefinition.setComment(comment);
+
+                        SQLAlterTableAlterColumn changeColumn = new SQLAlterTableAlterColumn();
+
+                        changeColumn.setColumn(columnDefinition);
+
+                        stmt.addItem(changeColumn);
+                    } else {
+                        SQLColumnDefinition column = this.exprParser.parseColumn();
+
+                        SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
+                        alterColumn.setColumn(column);
+                        alterColumn.setOriginColumn(columnName);
+                        stmt.addItem(alterColumn);
+                    }
                 } else if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
                     acceptIdentifier("NOCHECK");

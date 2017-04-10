@@ -888,4 +888,13 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         return false;
     }
+
+    @Override
+    public boolean visit(SQLAlterTableRenameColumn x) {
+        print0(ucase ? "CHANGE COLUMN " : "change column ");
+        x.getColumn().accept(this);
+        print0(ucase ? " RENAME TO " : " rename to ");
+        x.getTo().accept(this);
+        return false;
+    }
 }
