@@ -15,17 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
-import com.alibaba.druid.proxy.jdbc.WrapperProxy;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.Utils;
-
-import javax.sql.ConnectionEventListener;
-import javax.sql.StatementEventListener;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -35,6 +24,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.sql.ConnectionEventListener;
+import javax.sql.StatementEventListener;
+
+import com.alibaba.druid.pool.DruidAbstractDataSource.PhysicalConnectionInfo;
+import com.alibaba.druid.proxy.jdbc.WrapperProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -52,9 +52,9 @@ public final class DruidConnectionHolder {
     protected transient long                    lastActiveTimeMillis;
     private long                                useCount                 = 0;
     private long                                keepAliveCheckCount      = 0;
-    
+
     private long                                lastNotEmptyWaitNanos;
-    
+
     private final long                          createNanoSpan;
 
     private PreparedStatementPool               statementPool;
@@ -75,26 +75,26 @@ public final class DruidConnectionHolder {
 
     protected final Map<String, Object>         variables;
     protected final Map<String, Object>         globleVariables;
-    
+
     public static boolean                       holdabilityUnsupported   = false;
-    
-    public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo) throws SQLException {
-        this(dataSource
-                , pyConnectInfo.getPhysicalConnection()
-                , pyConnectInfo.getConnectNanoSpan()
-                , pyConnectInfo.getVairiables()
-                , pyConnectInfo.getGlobalVairiables());
+
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, PhysicalConnectionInfo pyConnectInfo)
+                                                                                                          throws SQLException{
+        this(dataSource,
+            pyConnectInfo.getPhysicalConnection(),
+            pyConnectInfo.getConnectNanoSpan(),
+            pyConnectInfo.getVairiables(),
+            pyConnectInfo.getGlobalVairiables());
     }
 
-    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan) throws SQLException{
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan)
+                                                                                                           throws SQLException{
         this(dataSource, conn, connectNanoSpan, null, null);
     }
 
-    public DruidConnectionHolder(DruidAbstractDataSource dataSource
-            , Connection conn
-            , long connectNanoSpan
-            , Map<String, Object> variables
-            , Map<String, Object> globleVariables) throws SQLException{
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn, long connectNanoSpan,
+                                 Map<String, Object> variables, Map<String, Object> globleVariables)
+                                                                                                    throws SQLException{
         this.dataSource = dataSource;
         this.conn = conn;
         this.createNanoSpan = connectNanoSpan;
@@ -144,7 +144,7 @@ public final class DruidConnectionHolder {
             this.underlyingTransactionIsolation = conn.getTransactionIsolation();
         } catch (SQLException e) {
             // compartible for alibaba corba
-            if (!"com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName())) { 
+            if (!"HY000".equals(e.getSQLState())) {
                 throw e;
             }
         }
@@ -306,13 +306,11 @@ public final class DruidConnectionHolder {
     public void setDiscard(boolean discard) {
         this.discard = discard;
     }
-    
-    
+
     public long getCreateNanoSpan() {
         return createNanoSpan;
     }
-    
-    
+
     public long getLastNotEmptyWaitNanos() {
         return lastNotEmptyWaitNanos;
     }
