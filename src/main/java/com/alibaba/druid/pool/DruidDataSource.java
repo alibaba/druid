@@ -782,7 +782,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
 
             if (init && LOG.isInfoEnabled()) {
-                LOG.info("{dataSource-" + this.getID() + "} inited");
+                String msg = "{dataSource-" + this.getID();
+
+                if (this.name != null && !this.name.isEmpty()) {
+                    msg += ",";
+                    msg += this.name;
+                }
+
+                msg += "} inited";
+
+                LOG.info(msg);
             }
         }
     }
