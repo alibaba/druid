@@ -1712,16 +1712,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLUnionQuery x) {
-        x.getLeft().accept(this);
-        println();
-        print0(ucase ? x.getOperator().name : x.getOperator().name_lcase);
-        println();
+        SQLUnionOperator operator = x.getOperator();
 
-        boolean needParen = false;
+        boolean mysqlUnion = (JdbcConstants.MYSQL.equals(dbType) //
+                && (operator == SQLUnionOperator.UNION || operator == SQLUnionOperator.UNION_ALL));
 
-        if (x.getOrderBy() != null) {
-            needParen = true;
+        if (mysqlUnion) {
+            print('(');
         }
+        x.getLeft().accept(this);
+        if (mysqlUnion) {
+            print(')');
+        }
+        println();
+        print0(ucase ? operator.name : operator.name_lcase);
+        println();
+
+        boolean needParen = x.getOrderBy() != null || mysqlUnion;
 
         if (needParen) {
             print('(');

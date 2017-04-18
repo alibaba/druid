@@ -28,23 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLBlockStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
-import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateProcedureStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLIfStatement;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLLoopStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLShowTablesStatement;
-import com.alibaba.druid.sql.ast.statement.SQLStartTransactionStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -2661,43 +2645,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlUnionQuery x) {
-        {
-            boolean needParen = false;
-            if (x.getLeft() instanceof MySqlSelectQueryBlock) {
-                MySqlSelectQueryBlock right = (MySqlSelectQueryBlock) x.getLeft();
-                if (right.getOrderBy() != null || right.getLimit() != null) {
-                    needParen = true;
-                }
-            }
-            if (needParen) {
-                print('(');
-                x.getLeft().accept(this);
-                print(')');
-            } else {
-                x.getLeft().accept(this);
-            }
-        }
+        print('(');
+        x.getLeft().accept(this);
+        print(')');
         println();
         print0(ucase ? x.getOperator().name : x.getOperator().name_lcase);
         println();
 
-        boolean needParen = false;
-
-        if (x.getOrderBy() != null || x.getLimit() != null) {
-            needParen = true;
-        } else if (x.getRight() instanceof MySqlSelectQueryBlock) {
-            MySqlSelectQueryBlock right = (MySqlSelectQueryBlock) x.getRight();
-            if (right.getOrderBy() != null || right.getLimit() != null) {
-                needParen = true;
-            }
-        }
+        SQLSelectQuery right = x.getRight();
+        boolean needParen = ! (right instanceof SQLUnionQuery);
 
         if (needParen) {
             print('(');
-            x.getRight().accept(this);
+            right.accept(this);
             print(')');
         } else {
-            x.getRight().accept(this);
+            right.accept(this);
         }
 
         if (x.getOrderBy() != null) {
