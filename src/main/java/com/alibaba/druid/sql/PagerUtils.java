@@ -16,7 +16,9 @@
 package com.alibaba.druid.sql;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOver;
@@ -42,11 +44,13 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -502,5 +506,33 @@ public class PagerUtils {
         }
         
         return -1;
+    }
+
+    public static boolean hasUnorderedLimit(String sql, String dbType) {
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+
+        if (!JdbcConstants.MYSQL.equals(dbType)) {
+            throw new DruidRuntimeException("not supported. dbType : " + dbType);
+        }
+
+        final AtomicInteger unorderedLimitCount = new AtomicInteger();
+        MySqlASTVisitorAdapter visitor = new MySqlASTVisitorAdapter() {
+            @Override
+            public boolean visit(MySqlSelectQueryBlock x) {
+                SQLOrderBy orderBy = x.getOrderBy();
+                SQLLimit limit = x.getLimit();
+
+                if (limit != null && (orderBy == null || orderBy.getItems().size() == 0)) {
+                    unorderedLimitCount.incrementAndGet();
+                }
+                return false;
+            }
+        };
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+        }
+
+        return unorderedLimitCount.get() > 0;
     }
 }
