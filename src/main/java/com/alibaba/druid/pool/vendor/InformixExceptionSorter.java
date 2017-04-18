@@ -17,6 +17,7 @@ package com.alibaba.druid.pool.vendor;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
 import com.alibaba.druid.pool.ExceptionSorter;
@@ -26,6 +27,10 @@ public class InformixExceptionSorter implements ExceptionSorter, Serializable {
     private static final long serialVersionUID = -5175884111768095263L;
 
     public boolean isExceptionFatal(SQLException e) {
+        if (e instanceof SQLRecoverableException) {
+            return true;
+        }
+
         switch (e.getErrorCode()) {
             case -710: // Table has been dropped, altered or renamed JBAS-3120
             case -79716: // System or internal error

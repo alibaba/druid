@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool.vendor;
 
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
 import com.alibaba.druid.pool.ExceptionSorter;
@@ -24,6 +25,10 @@ public class DB2ExceptionSorter implements ExceptionSorter {
 
     @Override
     public boolean isExceptionFatal(SQLException e) {
+        if (e instanceof SQLRecoverableException) {
+            return true;
+        }
+
         String sqlState = e.getSQLState();
         if (sqlState != null && sqlState.startsWith("08")) { // Connection Exception
             return true;

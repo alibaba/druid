@@ -18,12 +18,17 @@ package com.alibaba.druid.pool.vendor;
 import com.alibaba.druid.pool.ExceptionSorter;
 
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
 public class MySqlExceptionSorter implements ExceptionSorter {
 
     @Override
     public boolean isExceptionFatal(SQLException e) {
+        if (e instanceof SQLRecoverableException) {
+            return true;
+        }
+
         final String sqlState = e.getSQLState();
         final int errorCode = e.getErrorCode();
 

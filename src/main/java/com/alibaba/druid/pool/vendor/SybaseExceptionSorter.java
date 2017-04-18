@@ -19,6 +19,7 @@ import com.alibaba.druid.pool.ExceptionSorter;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.util.Properties;
 
 public class SybaseExceptionSorter implements ExceptionSorter, Serializable {
@@ -30,6 +31,10 @@ public class SybaseExceptionSorter implements ExceptionSorter, Serializable {
     }
 
     public boolean isExceptionFatal(SQLException e) {
+        if (e instanceof SQLRecoverableException) {
+            return true;
+        }
+
         boolean result = false;
 
         String errorText = e.getMessage();
