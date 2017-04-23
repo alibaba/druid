@@ -41,6 +41,12 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
 
     protected SQLLimit                  limit;
 
+    // for oracle & oceanbase
+    protected SQLExpr startWith;
+    protected SQLExpr connectBy;
+    protected boolean prior   = false;
+    protected boolean noCycle = false;
+
     public SQLSelectQueryBlock(){
 
     }
@@ -198,12 +204,52 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         this.limit.setOffset(offset);
     }
 
+    public boolean isPrior() {
+        return prior;
+    }
+
+    public void setPrior(boolean prior) {
+        this.prior = prior;
+    }
+
+    public SQLExpr getStartWith() {
+        return this.startWith;
+    }
+
+    public void setStartWith(SQLExpr startWith) {
+        if (startWith != null) {
+            startWith.setParent(this);
+        }
+        this.startWith = startWith;
+    }
+
+    public SQLExpr getConnectBy() {
+        return this.connectBy;
+    }
+
+    public void setConnectBy(SQLExpr connectBy) {
+        if (connectBy != null) {
+            connectBy.setParent(this);
+        }
+        this.connectBy = connectBy;
+    }
+
+    public boolean isNoCycle() {
+        return this.noCycle;
+    }
+
+    public void setNoCycle(boolean noCycle) {
+        this.noCycle = noCycle;
+    }
+
 	@Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);
+            acceptChild(visitor, this.startWith);
+            acceptChild(visitor, this.connectBy);
             acceptChild(visitor, this.groupBy);
         }
         visitor.endVisit(this);

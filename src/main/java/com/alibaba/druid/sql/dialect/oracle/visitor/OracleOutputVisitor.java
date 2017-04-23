@@ -110,7 +110,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot.Item;
@@ -381,28 +380,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleSelectHierachicalQueryClause x) {
-        if (x.getStartWith() != null) {
-            print0(ucase ? "START WITH " : "start with ");
-            x.getStartWith().accept(this);
-            println();
-        }
-
-        print0(ucase ? "CONNECT BY " : "connect by ");
-
-        if (x.isNoCycle()) {
-            print0(ucase ? "NOCYCLE " : "nocycle ");
-        }
-
-        if (x.isPrior()) {
-            print0(ucase ? "PRIOR " : "prior ");
-        }
-
-        x.getConnectBy().accept(this);
-
-        return false;
-    }
-
     public boolean visit(OracleSelectJoin x) {
         x.getLeft().accept(this);
 
@@ -550,9 +527,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getWhere().accept(this);
         }
 
-        if (x.getHierachicalQueryClause() != null) {
+        SQLExpr startWith = x.getStartWith(), connectBy = x.getConnectBy();
+        if (startWith != null || connectBy != null){
             println();
-            x.getHierachicalQueryClause().accept(this);
+            if (x.getStartWith() != null) {
+                print0(ucase ? "START WITH " : "start with ");
+                x.getStartWith().accept(this);
+                println();
+            }
+
+            print0(ucase ? "CONNECT BY " : "connect by ");
+
+            if (x.isNoCycle()) {
+                print0(ucase ? "NOCYCLE " : "nocycle ");
+            }
+
+            if (x.isPrior()) {
+                print0(ucase ? "PRIOR " : "prior ");
+            }
+
+            x.getConnectBy().accept(this);
         }
 
         if (x.getGroupBy() != null) {
@@ -782,11 +776,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleSelectForUpdate x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectHierachicalQueryClause x) {
 
     }
 

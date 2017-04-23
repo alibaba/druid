@@ -85,7 +85,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -118,8 +117,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleOuterExpr x);
 
     void endVisit(OracleSelectForUpdate x);
-
-    void endVisit(OracleSelectHierachicalQueryClause x);
 
     void endVisit(OracleSelectJoin x);
 
@@ -154,8 +151,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleOuterExpr x);
 
     boolean visit(OracleSelectForUpdate x);
-
-    boolean visit(OracleSelectHierachicalQueryClause x);
 
     boolean visit(OracleSelectJoin x);
 
