@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements ParameterizedVisitor, PrintableVisitor {
@@ -3954,5 +3955,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
         return false;
+    }
+
+    protected void printHierarchical(SQLSelectQueryBlock x) {
+        SQLExpr startWith = x.getStartWith(), connectBy = x.getConnectBy();
+        if (startWith != null || connectBy != null){
+            println();
+            if (x.getStartWith() != null) {
+                print0(ucase ? "START WITH " : "start with ");
+                x.getStartWith().accept(this);
+                println();
+            }
+
+            print0(ucase ? "CONNECT BY " : "connect by ");
+
+            if (x.isNoCycle()) {
+                print0(ucase ? "NOCYCLE " : "nocycle ");
+            }
+
+            if (x.isPrior()) {
+                print0(ucase ? "PRIOR " : "prior ");
+            }
+
+            x.getConnectBy().accept(this);
+        }
     }
 }

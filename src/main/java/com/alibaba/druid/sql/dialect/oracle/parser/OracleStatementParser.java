@@ -1273,7 +1273,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 deleteStatement.setTableName(tableName);
             }
 
-            deleteStatement.setAlias(as());
+            deleteStatement.setAlias(tableAlias());
         }
 
         if (lexer.token() == (Token.WHERE)) {

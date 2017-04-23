@@ -527,27 +527,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getWhere().accept(this);
         }
 
-        SQLExpr startWith = x.getStartWith(), connectBy = x.getConnectBy();
-        if (startWith != null || connectBy != null){
-            println();
-            if (x.getStartWith() != null) {
-                print0(ucase ? "START WITH " : "start with ");
-                x.getStartWith().accept(this);
-                println();
-            }
-
-            print0(ucase ? "CONNECT BY " : "connect by ");
-
-            if (x.isNoCycle()) {
-                print0(ucase ? "NOCYCLE " : "nocycle ");
-            }
-
-            if (x.isPrior()) {
-                print0(ucase ? "PRIOR " : "prior ");
-            }
-
-            x.getConnectBy().accept(this);
-        }
+        printHierarchical(x);
 
         if (x.getGroupBy() != null) {
             println();

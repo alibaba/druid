@@ -49,7 +49,7 @@ public class OracleUpdateParser extends SQLStatementParser {
             update.setTableSource(tableSource);
 
             if ((update.getAlias() == null) || (update.getAlias().length() == 0)) {
-                update.setAlias(as());
+                update.setAlias(tableAlias());
             }
         }
 

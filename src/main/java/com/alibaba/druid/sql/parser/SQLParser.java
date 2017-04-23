@@ -60,10 +60,28 @@ public class SQLParser {
         }
     }
 
+    protected String tableAlias() {
+        if (lexer.token() == Token.CONNECT || lexer.token() == Token.START) {
+            return null;
+        }
+
+        if (identifierEquals("START") || identifierEquals("CONNECT")) {
+            return null;
+        }
+
+        return this.as();
+    }
+
     protected String as() {
         String alias = null;
 
-        if (lexer.token() == Token.AS) {
+        final Token token = lexer.token();
+
+        if (token == Token.COMMA) {
+            return null;
+        }
+
+        if (token == Token.AS) {
             lexer.nextToken();
 
             alias = alias();

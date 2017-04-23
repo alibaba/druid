@@ -1511,7 +1511,7 @@ public class SQLStatementParser extends SQLParser {
             insertStatement.setTableName(tableName);
 
             if (lexer.token() == Token.LITERAL_ALIAS) {
-                insertStatement.setAlias(as());
+                insertStatement.setAlias(tableAlias());
             }
 
             parseInsert0_hinits(insertStatement);
@@ -2247,7 +2247,7 @@ public class SQLStatementParser extends SQLParser {
             stmt.setInto(exprParser.name());
         }
         
-        stmt.setAlias(as());
+        stmt.setAlias(tableAlias());
 
         accept(Token.USING);
 

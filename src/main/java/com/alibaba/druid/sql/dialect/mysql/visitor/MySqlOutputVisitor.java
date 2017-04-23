@@ -279,6 +279,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getWhere().accept(this);
         }
 
+        printHierarchical(x);
+
         if (x.getGroupBy() != null) {
             println();
             x.getGroupBy().accept(this);

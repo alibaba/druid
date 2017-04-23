@@ -148,7 +148,7 @@ public class OdpsSelectParser extends SQLSelectParser {
                 break;
             }
 
-            String alias = this.as();
+            String alias = this.tableAlias();
             tableSource.setAlias(alias);
 
             accept(Token.LPAREN);

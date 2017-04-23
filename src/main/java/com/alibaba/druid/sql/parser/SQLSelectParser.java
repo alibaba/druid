@@ -448,7 +448,7 @@ public class SQLSelectParser extends SQLParser {
         if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL
                 && !identifierEquals("STRAIGHT_JOIN") && !identifierEquals("CROSS") && lexer.token != Token.OUTER) {
-                String alias = as();
+                String alias = tableAlias();
                 if (alias != null) {
                     tableSource.setAlias(alias);
                     return parseTableSourceRest(tableSource);
@@ -587,6 +587,57 @@ public class SQLSelectParser extends SQLParser {
             } else {
                 acceptIdentifier("ONLY");
             }
+        }
+    }
+
+    protected void parseHierachical(SQLSelectQueryBlock queryBlock) {
+        if (lexer.token() == Token.CONNECT || identifierEquals("CONNECT")) {
+            lexer.nextToken();
+            accept(Token.BY);
+
+            if (lexer.token() == Token.PRIOR || identifierEquals("PRIOR")) {
+                lexer.nextToken();
+                queryBlock.setPrior(true);
+            }
+
+            if (identifierEquals("NOCYCLE")) {
+                queryBlock.setNoCycle(true);
+                lexer.nextToken();
+
+                if (lexer.token() == Token.PRIOR) {
+                    lexer.nextToken();
+                    queryBlock.setPrior(true);
+                }
+            }
+            queryBlock.setConnectBy(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.START || identifierEquals("START")) {
+            lexer.nextToken();
+            accept(Token.WITH);
+
+            queryBlock.setStartWith(this.exprParser.expr());
+        }
+
+        if (lexer.token() == Token.CONNECT || identifierEquals("CONNECT")) {
+            lexer.nextToken();
+            accept(Token.BY);
+
+            if (lexer.token() == Token.PRIOR || identifierEquals("PRIOR")) {
+                lexer.nextToken();
+                queryBlock.setPrior(true);
+            }
+
+            if (identifierEquals("NOCYCLE")) {
+                queryBlock.setNoCycle(true);
+                lexer.nextToken();
+
+                if (lexer.token() == Token.PRIOR || identifierEquals("PRIOR")) {
+                    lexer.nextToken();
+                    queryBlock.setPrior(true);
+                }
+            }
+            queryBlock.setConnectBy(this.exprParser.expr());
         }
     }
 }

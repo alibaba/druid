@@ -563,64 +563,7 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     protected String as() {
-        if (lexer.token() == Token.CONNECT) {
-            return null;
-        }
-
         return super.as();
-    }
-
-    private void parseHierachical(OracleSelectQueryBlock queryBlock) {
-
-
-        if (lexer.token() == Token.CONNECT) {
-            lexer.nextToken();
-            accept(Token.BY);
-
-            if (lexer.token() == Token.PRIOR) {
-                lexer.nextToken();
-                queryBlock.setPrior(true);
-            }
-
-            if (identifierEquals("NOCYCLE")) {
-                queryBlock.setNoCycle(true);
-                lexer.nextToken();
-
-                if (lexer.token() == Token.PRIOR) {
-                    lexer.nextToken();
-                    queryBlock.setPrior(true);
-                }
-            }
-            queryBlock.setConnectBy(this.exprParser.expr());
-        }
-
-        if (lexer.token() == Token.START) {
-            lexer.nextToken();
-            accept(Token.WITH);
-
-            queryBlock.setStartWith(this.exprParser.expr());
-        }
-
-        if (lexer.token() == Token.CONNECT) {
-            lexer.nextToken();
-            accept(Token.BY);
-
-            if (lexer.token() == Token.PRIOR) {
-                lexer.nextToken();
-                queryBlock.setPrior(true);
-            }
-
-            if (identifierEquals("NOCYCLE")) {
-                queryBlock.setNoCycle(true);
-                lexer.nextToken();
-
-                if (lexer.token() == Token.PRIOR) {
-                    lexer.nextToken();
-                    queryBlock.setPrior(true);
-                }
-            }
-            queryBlock.setConnectBy(this.exprParser.expr());
-        }
     }
 
     @Override
@@ -807,10 +750,10 @@ public class OracleSelectParser extends SQLSelectParser {
                 tableSource.setFlashback(flashback());
             }
 
-            tableSource.setAlias(as());
+            tableSource.setAlias(tableAlias());
         } else if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
-                tableSource.setAlias(as());
+                tableSource.setAlias(tableAlias());
             }
         }
 

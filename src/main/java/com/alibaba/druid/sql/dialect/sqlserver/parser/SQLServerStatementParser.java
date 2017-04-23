@@ -256,7 +256,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         insertStatement.setTableName(tableName);
 
         if (lexer.token() == Token.LITERAL_ALIAS) {
-            insertStatement.setAlias(as());
+            insertStatement.setAlias(tableAlias());
         }
 
         parseInsert0_hinits(insertStatement);
