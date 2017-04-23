@@ -19,34 +19,16 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.druid.DruidRuntimeException;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOver;
-import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateOption;
-import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
@@ -511,28 +493,127 @@ public class PagerUtils {
     public static boolean hasUnorderedLimit(String sql, String dbType) {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
-        if (!JdbcConstants.MYSQL.equals(dbType)) {
-            throw new DruidRuntimeException("not supported. dbType : " + dbType);
-        }
+        if (JdbcConstants.MYSQL.equals(dbType)) {
 
-        final AtomicInteger unorderedLimitCount = new AtomicInteger();
-        MySqlASTVisitorAdapter visitor = new MySqlASTVisitorAdapter() {
-            @Override
-            public boolean visit(MySqlSelectQueryBlock x) {
-                SQLOrderBy orderBy = x.getOrderBy();
-                SQLLimit limit = x.getLimit();
+            MySqlUnorderedLimitDetectVisitor visitor = new MySqlUnorderedLimitDetectVisitor();
 
-                if (limit != null && (orderBy == null || orderBy.getItems().size() == 0)) {
-                    unorderedLimitCount.incrementAndGet();
-                }
-                return false;
+            for (SQLStatement stmt : stmtList) {
+                stmt.accept(visitor);
             }
-        };
 
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
+            return visitor.unorderedLimitCount > 0;
         }
 
-        return unorderedLimitCount.get() > 0;
+        if (JdbcConstants.ORACLE.equals(dbType)) {
+
+            OracleUnorderedLimitDetectVisitor visitor = new OracleUnorderedLimitDetectVisitor();
+
+            for (SQLStatement stmt : stmtList) {
+                stmt.accept(visitor);
+            }
+
+            return visitor.unorderedLimitCount > 0;
+        }
+
+        throw new DruidRuntimeException("not supported. dbType : " + dbType);
+    }
+
+    private static class MySqlUnorderedLimitDetectVisitor extends MySqlASTVisitorAdapter {
+        public int unorderedLimitCount;
+
+        @Override
+        public boolean visit(MySqlSelectQueryBlock x) {
+            SQLOrderBy orderBy = x.getOrderBy();
+            SQLLimit limit = x.getLimit();
+
+            if (limit != null && (orderBy == null || orderBy.getItems().size() == 0)) {
+                unorderedLimitCount++;
+            }
+            return true;
+        }
+    }
+
+    private static class OracleUnorderedLimitDetectVisitor extends OracleASTVisitorAdapter {
+        public int unorderedLimitCount;
+
+        public boolean visit(SQLBinaryOpExpr x) {
+            SQLExpr left = x.getLeft();
+            SQLExpr right = x.getRight();
+
+            boolean rownum = false;
+            if (left instanceof SQLIdentifierExpr
+                    && ((SQLIdentifierExpr) left).getName().equalsIgnoreCase("ROWNUM")
+                    && right instanceof SQLLiteralExpr) {
+                rownum = true;
+            } else if (right instanceof SQLIdentifierExpr
+                    && ((SQLIdentifierExpr) right).getName().equalsIgnoreCase("ROWNUM")
+                    && left instanceof SQLLiteralExpr) {
+                rownum = true;
+            }
+
+            OracleSelectQueryBlock selectQuery = null;
+            if (rownum) {
+                for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
+                    if (parent instanceof SQLSelectQuery) {
+                        if (parent instanceof OracleSelectQueryBlock) {
+                            OracleSelectQueryBlock queryBlock = (OracleSelectQueryBlock) parent;
+                            if (queryBlock.getFrom() instanceof SQLExprTableSource) {
+                                selectQuery = queryBlock;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (selectQuery != null) {
+                SQLObject parent = selectQuery.getParent();
+                if (parent instanceof SQLSelect) {
+                    SQLSelect select = (SQLSelect) parent;
+                    if (select.getOrderBy() == null || select.getOrderBy().getItems().size() == 0) {
+                        unorderedLimitCount++;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        @Override
+        public boolean visit(OracleSelectQueryBlock queryBlock) {
+            boolean isExprTableSrc = queryBlock.getFrom() instanceof SQLExprTableSource;
+
+            if (!isExprTableSrc) {
+                return true;
+            }
+
+            boolean rownum = false;
+            for (SQLSelectItem item : queryBlock.getSelectList()) {
+                SQLExpr itemExpr = item.getExpr();
+                if (itemExpr instanceof SQLIdentifierExpr) {
+                    if (((SQLIdentifierExpr) itemExpr).getName().equalsIgnoreCase("ROWNUM")) {
+                        rownum = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!rownum) {
+                return true;
+            }
+
+            SQLObject parent = queryBlock.getParent();
+            if (!(parent instanceof SQLSelect)) {
+                return true;
+            }
+
+            SQLSelect select = (SQLSelect) parent;
+
+            if (select.getOrderBy() == null || select.getOrderBy().getItems().size() == 0) {
+                unorderedLimitCount++;
+            }
+
+            return false;
+        }
     }
 }

@@ -21,4 +21,9 @@ public class PagerUtilsTest_hasUnorderedLimit extends TestCase {
         String sql = " select * from test t limit 3";
         assertTrue(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.MYSQL));
     }
+
+    public void test_true_subquery() throws Exception {
+        String sql = "select * from(select * from test t limit 3) x";
+        assertTrue(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.MYSQL));
+    }
 }
