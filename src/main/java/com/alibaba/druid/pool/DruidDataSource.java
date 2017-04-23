@@ -1250,8 +1250,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             StringBuilder buf = new StringBuilder();
             buf.append("wait millis ")//
                .append(waitNanos / (1000 * 1000))//
-               .append(", active " + activeCount)//
-               .append(", maxActive " + maxActive)//
+               .append(", active ").append(activeCount)//
+               .append(", maxActive ").append(maxActive)//
+               .append(", creating ").append(creatingCount.get())//
             ;
 
             List<JdbcSqlStatValue> sqlList = this.getDataSourceStat().getRuningSqlList();
@@ -1262,8 +1263,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     buf.append(", ");
                 }
                 JdbcSqlStatValue sql = sqlList.get(i);
-                buf.append("runningSqlCount ");
-                buf.append(sql.getRunningCount());
+                buf.append("runningSqlCount ").append(sql.getRunningCount());
                 buf.append(" : ");
                 buf.append(sql.getSql());
             }

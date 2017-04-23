@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -222,6 +223,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long                            lastErrorTimeMillis;
     protected volatile Throwable                       lastCreateError;
     protected volatile long                            lastCreateErrorTimeMillis;
+    protected volatile long                            lastCreateStartTimeMillis;
 
     protected boolean                                  isOracle                                  = false;
 
@@ -233,6 +235,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected ReentrantLock                            activeConnectionLock                      = new ReentrantLock();
 
+    protected AtomicInteger                            creatingCount                             = new AtomicInteger();
     protected AtomicLong                               createCount                               = new AtomicLong();
     protected AtomicLong                               destroyCount                              = new AtomicLong();
 
@@ -1521,6 +1524,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 ? new HashMap<String, Object>()
                 : null;
 
+        creatingCount.incrementAndGet();
         try {
             conn = createPhysicalConnection(url, physicalConnectProperties);
             connectedNanos = System.nanoTime();
@@ -1552,6 +1556,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         } finally {
             long nano = System.nanoTime() - connectStartNanos;
             createTimespan += nano;
+            creatingCount.decrementAndGet();
         }
 
         return new PhysicalConnectionInfo(conn, connectStartNanos, connectedNanos, initedNanos, validatedNanos, variables, globalVariables);
