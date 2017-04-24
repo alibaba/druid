@@ -967,6 +967,19 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
+        if ("LEVEL".equalsIgnoreCase(ident)) {
+            SQLObject parent = x.getParent();
+            if (parent instanceof SQLSelectItem) {
+                SQLObject parent2 = parent.getParent();
+                if (parent2 instanceof SQLSelectQueryBlock) {
+                    SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent2;
+                    if (queryBlock.getStartWith() != null || queryBlock.getConnectBy() != null) {
+                        return false;
+                    }
+                }
+            }
+        }
+
         Column column = null;
         if (currentTable != null) {
             column = addColumn(currentTable, ident);
