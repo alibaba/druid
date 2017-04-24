@@ -967,7 +967,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
-        if ("LEVEL".equalsIgnoreCase(ident)) {
+        if ("LEVEL".equalsIgnoreCase(ident) || "CONNECT_BY_ISCYCLE".equalsIgnoreCase(ident)) {
             SQLObject parent = x.getParent();
             if (parent instanceof SQLSelectItem) {
                 SQLObject parent2 = parent.getParent();
