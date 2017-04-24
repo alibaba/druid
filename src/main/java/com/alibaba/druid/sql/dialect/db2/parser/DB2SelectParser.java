@@ -76,6 +76,8 @@ public class DB2SelectParser extends SQLSelectParser {
 
         parseWhere(queryBlock);
 
+        parseHierachical(queryBlock);
+
         parseGroupBy(queryBlock);
         
         if (lexer.token() == Token.ORDER) {

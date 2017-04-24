@@ -27,25 +27,27 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery {
 
     protected int                       distionOption;
-    protected final List<SQLSelectItem> selectList = new ArrayList<SQLSelectItem>();
+    protected final List<SQLSelectItem> selectList      = new ArrayList<SQLSelectItem>();
 
     protected SQLTableSource            from;
     protected SQLExprTableSource        into;
     protected SQLExpr                   where;
+
+    // for oracle & oceanbase
+    protected SQLExpr                   startWith;
+    protected SQLExpr                   connectBy;
+    protected boolean                   prior           = false;
+    protected boolean                   noCycle         = false;
+    protected SQLOrderBy                orderBySiblings;
+
     protected SQLSelectGroupByClause    groupBy;
     protected SQLOrderBy                orderBy;
-    protected boolean                   parenthesized = false;
-    protected boolean                   forUpdate     = false;
-    protected boolean                   noWait        = false;
+    protected boolean                   parenthesized   = false;
+    protected boolean                   forUpdate       = false;
+    protected boolean                   noWait          = false;
     protected SQLExpr                   waitTime;
 
     protected SQLLimit                  limit;
-
-    // for oracle & oceanbase
-    protected SQLExpr startWith;
-    protected SQLExpr connectBy;
-    protected boolean prior   = false;
-    protected boolean noCycle = false;
 
     public SQLSelectQueryBlock(){
 
@@ -98,6 +100,17 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
         
         this.orderBy = orderBy;
+    }
+
+    public SQLOrderBy getOrderBySiblings() {
+        return orderBySiblings;
+    }
+
+    public void setOrderBySiblings(SQLOrderBy orderBySiblings) {
+        if (orderBySiblings != null) {
+            orderBySiblings.setParent(this);
+        }
+        this.orderBySiblings = orderBySiblings;
     }
 
     public int getDistionOption() {

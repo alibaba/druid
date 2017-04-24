@@ -1089,6 +1089,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             where.accept(this);
         }
 
+        printHierarchical(x);
+
         if (x.getGroupBy() != null) {
             println();
             x.getGroupBy().accept(this);
