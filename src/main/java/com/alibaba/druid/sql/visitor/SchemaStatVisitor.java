@@ -968,14 +968,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         if ("LEVEL".equalsIgnoreCase(ident) || "CONNECT_BY_ISCYCLE".equalsIgnoreCase(ident)) {
-            SQLObject parent = x.getParent();
-            if (parent instanceof SQLSelectItem) {
-                SQLObject parent2 = parent.getParent();
-                if (parent2 instanceof SQLSelectQueryBlock) {
-                    SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent2;
+            for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
+                if (parent instanceof SQLSelectQueryBlock) {
+                    SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent;
                     if (queryBlock.getStartWith() != null || queryBlock.getConnectBy() != null) {
                         return false;
                     }
+                    break;
                 }
             }
         }
