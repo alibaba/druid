@@ -3195,17 +3195,19 @@ public class MySqlStatementParser extends SQLStatementParser {
          */
         SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
 
-        if (identifierEquals("DEFINER")) {
-            lexer.nextToken();
-            accept(Token.EQ);
-            SQLName definer = this.exprParser.name();
-            stmt.setDefiner(definer);
-        } else {
-            accept(Token.CREATE);
-            if (lexer.token() == Token.OR) {
+        if (lexer.token() != Token.PROCEDURE) {
+            if (identifierEquals("DEFINER")) {
                 lexer.nextToken();
-                accept(Token.REPLACE);
-                stmt.setOrReplace(true);
+                accept(Token.EQ);
+                SQLName definer = this.exprParser.name();
+                stmt.setDefiner(definer);
+            } else {
+                accept(Token.CREATE);
+                if (lexer.token() == Token.OR) {
+                    lexer.nextToken();
+                    accept(Token.REPLACE);
+                    stmt.setOrReplace(true);
+                }
             }
         }
 
@@ -3218,7 +3220,13 @@ public class MySqlStatementParser extends SQLStatementParser {
             parserParameters(stmt.getParameters());
             accept(Token.RPAREN);// match ")"
         }
-        SQLBlockStatement block = this.parseBlock();
+        SQLStatement block;
+
+        if (lexer.token() == Token.BEGIN) {
+            block = this.parseBlock();
+        } else {
+            block = this.parseStatement();
+        }
 
         stmt.setBlock(block);
 
