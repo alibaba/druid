@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,9 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
     private boolean                 removePatiting          = false;
     private boolean                 upgradePatiting         = false;
     private Map<String, SQLObject>  tableOptions            = new LinkedHashMap<String, SQLObject>();
+
+    // odps
+    private boolean                 mergeSmallFiles         = false;
 
     public SQLAlterTableStatement(){
 
@@ -86,6 +89,14 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setInvalidateGlobalIndexes(boolean invalidateGlobalIndexes) {
         this.invalidateGlobalIndexes = invalidateGlobalIndexes;
+    }
+
+    public boolean isMergeSmallFiles() {
+        return mergeSmallFiles;
+    }
+
+    public void setMergeSmallFiles(boolean mergeSmallFiles) {
+        this.mergeSmallFiles = mergeSmallFiles;
     }
 
     public List<SQLAlterTableItem> getItems() {

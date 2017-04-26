@@ -78,7 +78,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.CheckOption;
@@ -102,7 +101,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new SQLDateExpr().accept(adapter);
         new OracleDbLinkExpr().accept(adapter);
         new OracleSelectForUpdate().accept(adapter);
-        new OracleSelectHierachicalQueryClause().accept(adapter);
         new OracleSelectPivot.Item().accept(adapter);
         new OracleSelectPivot().accept(adapter);
         new CheckOption().accept(adapter);

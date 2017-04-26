@@ -126,15 +126,15 @@ public class TenantInsertTest extends TestCase {
     public void testMySql6() throws Exception {
         String insert_sql = "INSERT INTO orders (ID, NAME) SELECT ID, NAME FROM temp1 WHERE age = 18 UNION SELECT ID, NAME FROM temp2 UNION ALL SELECT ID, NAME FROM temp3";
         String expect_sql = "INSERT INTO orders (ID, NAME, tenant)" + //
-                            "\nSELECT ID, NAME, 123" + //
+                            "\n(SELECT ID, NAME, 123" + //
                             "\nFROM temp1" + //
-                            "\nWHERE age = 18" + //
+                            "\nWHERE age = 18)" + //
                             "\nUNION" + //
-                            "\nSELECT ID, NAME, 123" + //
-                            "\nFROM temp2" + //
+                            "\n(SELECT ID, NAME, 123" + //
+                            "\nFROM temp2)" + //
                             "\nUNION ALL" + //
-                            "\nSELECT ID, NAME, 123" + //
-                            "\nFROM temp3";
+                            "\n(SELECT ID, NAME, 123" + //
+                            "\nFROM temp3)";
 
         {
             MySqlWallProvider provider = new MySqlWallProvider(config_callback);

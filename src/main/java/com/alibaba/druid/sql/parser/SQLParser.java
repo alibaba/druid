@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ public class SQLParser {
     protected String      dbType;
 
     public SQLParser(String sql, String dbType){
-        this(new Lexer(sql), dbType);
+        this(new Lexer(sql, null, dbType), dbType);
         this.lexer.nextToken();
     }
 
@@ -60,10 +60,28 @@ public class SQLParser {
         }
     }
 
+    protected String tableAlias() {
+        if (lexer.token() == Token.CONNECT || lexer.token() == Token.START) {
+            return null;
+        }
+
+        if (identifierEquals("START") || identifierEquals("CONNECT")) {
+            return null;
+        }
+
+        return this.as();
+    }
+
     protected String as() {
         String alias = null;
 
-        if (lexer.token() == Token.AS) {
+        final Token token = lexer.token();
+
+        if (token == Token.COMMA) {
+            return null;
+        }
+
+        if (token == Token.AS) {
             lexer.nextToken();
 
             alias = alias();

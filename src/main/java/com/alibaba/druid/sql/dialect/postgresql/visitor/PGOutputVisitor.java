@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -38,7 +39,6 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLimit;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
@@ -233,7 +233,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         if (x.getLimit() != null) {
             println();
-            print0(ucase ? "LIMIT " : "limit ");
             x.getLimit().accept(this);
         }
 
@@ -459,21 +458,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     }
 
-	@Override
-	public boolean visit(PGLimit x) {
-	    x.getRowCount().accept(this);
-	    if (x.getOffset() != null) {
-	        print0(ucase ? " OFFSET " : " offset ");
-	        x.getOffset().accept(this);
-	    }
-		return false;
-	}
-
-	@Override
-	public void endVisit(PGLimit x) {
-		
-	}
-
     @Override
     public void endVisit(PGTypeCastExpr x) {
         
@@ -641,6 +625,19 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public boolean visit(PGShowStatement x) {
         print0(ucase ? "SHOW " : "show ");
         x.getExpr().accept(this);
+        return false;
+    }
+
+    public boolean visit(SQLLimit x) {
+        print0(ucase ? "LIMIT " : "limit ");
+
+        x.getRowCount().accept(this);
+
+        if (x.getOffset() != null) {
+            print0(ucase ? " OFFSET " : " offset ");
+            x.getOffset().accept(this);
+        }
+
         return false;
     }
 }

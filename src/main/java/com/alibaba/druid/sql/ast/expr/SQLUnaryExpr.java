@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
 
     public SQLUnaryExpr(SQLUnaryOperator operator, SQLExpr expr){
         this.operator = operator;
-        this.expr = expr;
+        this.setExpr(expr);
     }
 
     public SQLUnaryOperator getOperator() {
@@ -49,6 +49,9 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 

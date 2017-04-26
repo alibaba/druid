@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,10 @@ public class Lexer {
         this(input, true);
         this.commentHandler = commentHandler;
         this.dbType = dbType;
+
+        if (JdbcConstants.SQLITE.equals(dbType)) {
+            this.keywods = Keywords.SQLITE_KEYWORDS;
+        }
     }
     
     public boolean isKeepComments() {
@@ -446,7 +450,18 @@ public class Lexer {
                     return;
                 case '?':
                     scanChar();
-                    token = Token.QUES;
+                    if (ch == '?' && JdbcConstants.POSTGRESQL.equals(dbType)) {
+                        scanChar();
+                        token = Token.QUESQUES;
+                    } else if (ch == '|' && JdbcConstants.POSTGRESQL.equals(dbType)) {
+                        scanChar();
+                        token = Token.QUESBAR;
+                    } else if (ch == '&' && JdbcConstants.POSTGRESQL.equals(dbType)) {
+                        scanChar();
+                        token = Token.QUESAMP;
+                    } else {
+                        token = Token.QUES;
+                    }
                     return;
                 case ';':
                     scanChar();

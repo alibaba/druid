@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLDataType;
@@ -23,10 +24,8 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
@@ -154,6 +153,16 @@ public class ParameterizedOutputVisitorUtils {
         return false;
     }
 
+    public final static String ATTR_MERGED = "parameterized.mergedList";
+    static void putMergedArribute(SQLObject object, SQLObject item) {
+        List<SQLObject> mergedList = (List<SQLObject>) object.getAttribute(ATTR_MERGED);
+        if (mergedList == null) {
+            mergedList = new ArrayList<SQLObject>();
+            object.putAttribute(ATTR_MERGED, mergedList);
+        }
+        mergedList.add(item);
+    }
+
     public static SQLBinaryOpExpr merge(ParameterizedVisitor v, SQLBinaryOpExpr x) {
         SQLExpr left = x.getLeft();
         SQLExpr right = x.getRight();
@@ -201,27 +210,31 @@ public class ParameterizedOutputVisitorUtils {
         if (x.getLeft() instanceof SQLBinaryOpExpr) {
             SQLExpr mergedLeft = merge(v, (SQLBinaryOpExpr) x.getLeft());
             if (mergedLeft != x.getLeft()) {
-                x = new SQLBinaryOpExpr(mergedLeft, x.getOperator(), x.getRight());
+                SQLBinaryOpExpr tmp = new SQLBinaryOpExpr(mergedLeft, x.getOperator(), x.getRight());
+                tmp.setParent(parent);
+                x = tmp;
                 v.incrementReplaceCunt();
             }
-            x.setParent(parent);
         }
 
         // ID = ? OR ID = ? => ID = ?
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            if ((left instanceof SQLBinaryOpExpr) && (right instanceof SQLBinaryOpExpr)) {
+            if ((x.getLeft() instanceof SQLBinaryOpExpr) && (x.getRight() instanceof SQLBinaryOpExpr)) {
                 SQLBinaryOpExpr leftBinary = (SQLBinaryOpExpr) x.getLeft();
                 SQLBinaryOpExpr rightBinary = (SQLBinaryOpExpr) x.getRight();
 
                 if (mergeEqual(leftBinary, rightBinary)) {
                     v.incrementReplaceCunt();
+                    leftBinary.setParent(x.getParent());
+                    putMergedArribute(leftBinary, rightBinary);
                     return leftBinary;
                 }
 
                 if (isLiteralExpr(leftBinary.getLeft()) //
                     && leftBinary.getOperator() == SQLBinaryOperator.BooleanOr) {
-                    if (mergeEqual(leftBinary.getRight(), right)) {
+                    if (mergeEqual(leftBinary.getRight(), x.getRight())) {
                         v.incrementReplaceCunt();
+                        putMergedArribute(leftBinary, rightBinary);
                         return leftBinary;
                     }
                 }

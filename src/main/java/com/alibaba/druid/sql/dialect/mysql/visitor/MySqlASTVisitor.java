@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -118,7 +118,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
-import com.alibaba.druid.sql.ast.statement.SQLStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
@@ -167,9 +166,9 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlPrepareStatement x);
 
     void endVisit(MySqlExecuteStatement x);
-    
+
     boolean visit(MysqlDeallocatePrepareStatement x);
-    
+
     void endVisit(MysqlDeallocatePrepareStatement x);
 
     boolean visit(MySqlExecuteStatement x);
@@ -258,9 +257,9 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlOutFileExpr x);
 
-    boolean visit(MySqlDescribeStatement x);
+    boolean visit(MySqlExplainStatement x);
 
-    void endVisit(MySqlDescribeStatement x);
+    void endVisit(MySqlExplainStatement x);
 
     boolean visit(MySqlUpdateStatement x);
 
@@ -517,74 +516,74 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlSetPasswordStatement x);
 
     void endVisit(MySqlSetPasswordStatement x);
-    
+
     boolean visit(MySqlHintStatement x);
 
     void endVisit(MySqlHintStatement x);
-    
+
     boolean visit(MySqlOrderingExpr x);
 
     void endVisit(MySqlOrderingExpr x);
-	
-	/**
-	 * support procedure
-	 */
+
+    /**
+     * support procedure
+     */
     boolean visit(MySqlWhileStatement x);
 
     void endVisit(MySqlWhileStatement x);
-    
+
     boolean visit(MySqlCaseStatement x);
 
     void endVisit(MySqlCaseStatement x);
-    
+
     boolean visit(MySqlDeclareStatement x);
 
     void endVisit(MySqlDeclareStatement x);
-    
+
     boolean visit(MySqlSelectIntoStatement x);
 
     void endVisit(MySqlSelectIntoStatement x);
-    
+
     boolean visit(MySqlWhenStatement x);
 
     void endVisit(MySqlWhenStatement x);
-    
+
     boolean visit(MySqlLeaveStatement x);
 
     void endVisit(MySqlLeaveStatement x);
-    
+
     boolean visit(MySqlIterateStatement x);
 
     void endVisit(MySqlIterateStatement x);
-    
+
     boolean visit(MySqlRepeatStatement x);
 
     void endVisit(MySqlRepeatStatement x);
-    
+
     boolean visit(MySqlCursorDeclareStatement x);
 
     void endVisit(MySqlCursorDeclareStatement x);
-    
+
     boolean visit(MySqlUpdateTableSource x);
 
     void endVisit(MySqlUpdateTableSource x);
-    
+
     boolean visit(MySqlAlterTableAlterColumn x);
-    
+
     void endVisit(MySqlAlterTableAlterColumn x);
-    
+
     boolean visit(MySqlSubPartitionByKey x);
-    
+
     void endVisit(MySqlSubPartitionByKey x);
-    
+
     boolean visit(MySqlSubPartitionByList x);
-    
+
     void endVisit(MySqlSubPartitionByList x);
-    
+
     boolean visit(MySqlDeclareHandlerStatement x);
 
     void endVisit(MySqlDeclareHandlerStatement x);
-    
+
     boolean visit(MySqlDeclareConditionStatement x);
 
     void endVisit(MySqlDeclareConditionStatement x);

@@ -134,6 +134,66 @@
 								<td  class="lang"  langKey="DefaultTransactionIsolationDesc"></td>
 							</tr>
 							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="MinEvictableIdleTimeMillis">MinEvictableIdleTimeMillis</span></td>
+								<td>{{=datasourceNow.MinEvictableIdleTimeMillis}}</td>
+								<td  class="lang"  langKey="MinEvictableIdleTimeMillis"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="MaxEvictableIdleTimeMillis">MaxEvictableIdleTimeMillis</span></td>
+								<td>{{=datasourceNow.MaxEvictableIdleTimeMillis}}</td>
+								<td  class="lang"  langKey="MaxEvictableIdleTimeMillis"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="KeepAlive">KeepAlive</span></td>
+								<td>{{=datasourceNow.KeepAlive}}</td>
+								<td  class="lang"  langKey="KeepAlive"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="FailFast">FailFast</span></td>
+								<td>{{=datasourceNow.FailFast}}</td>
+								<td  class="lang"  langKey="FailFast"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="PoolPreparedStatements">PoolPreparedStatements</span></td>
+								<td>{{=datasourceNow.PoolPreparedStatements}}</td>
+								<td  class="lang"  langKey="PoolPreparedStatements"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="MaxPoolPreparedStatementPerConnectionSize">MaxPoolPreparedStatementPerConnectionSize</span></td>
+								<td>{{=datasourceNow.MaxPoolPreparedStatementPerConnectionSize}}</td>
+								<td  class="lang"  langKey="MaxPoolPreparedStatementPerConnectionSize"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="MaxWait">MaxWait</span></td>
+								<td>{{=datasourceNow.MaxWait}}</td>
+								<td  class="lang"  langKey="MaxWait"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="MaxWaitThreadCount">MaxWaitThreadCount</span></td>
+								<td>{{=datasourceNow.MaxWaitThreadCount}}</td>
+								<td  class="lang"  langKey="MaxWaitThreadCount"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="LogDifferentThread">LogDifferentThread</span></td>
+								<td>{{=datasourceNow.LogDifferentThread}}</td>
+								<td  class="lang"  langKey="LogDifferentThread"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="UseUnfairLock">UseUnfairLock</span></td>
+								<td>{{=datasourceNow.UseUnfairLock}}</td>
+								<td  class="lang"  langKey="UseUnfairLock"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="InitGlobalVariants">InitGlobalVariants</span></td>
+								<td>{{=datasourceNow.InitGlobalVariants}}</td>
+								<td  class="lang"  langKey="InitGlobalVariants"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" > *  <span class="lang"  langKey="InitVariants">InitVariants</span></td>
+								<td>{{=datasourceNow.InitVariants}}</td>
+								<td  class="lang"  langKey="InitVariants"></td>
+							</tr>
+							<tr>
 								<td valign="top" class="td_lable" >   <span class="lang"  langKey="NotEmptyWaitCount">NotEmptyWaitCount</span></td>
 								<td>{{=datasourceNow.NotEmptyWaitCount}}</td>
 								<td  class="lang"  langKey="NotEmptyWaitCountDesc">Total times for wait to get a connection</td>
@@ -204,6 +264,11 @@
 								<td  class="lang"  langKey="LogicConnectErrorCountDesc">Total connect error times</td>
 							</tr>
 							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="RecycleErrorCount">RecycleErrorCount</span></td>
+								<td>{{=datasourceNow.RecycleErrorCount}}</td>
+								<td  class="lang"  langKey="RecycleErrorCount">Total connect error times</td>
+							</tr>
+							<tr>
 								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PhysicalConnectCount">PhysicalConnectCount</span></td>
 								<td>{{=datasourceNow.PhysicalConnectCount}}</td>
 								<td  class="lang"  langKey="PhysicalConnectCountDesc">Create physical connnection count</td>
@@ -239,6 +304,16 @@
 								<td  class="lang"  langKey="RollbackCountDesc"></td>
 							</tr>
 							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PreparedStatementOpenCount">PSOpenCount</span></td>
+								<td>{{=datasourceNow.PreparedStatementOpenCount}}</td>
+								<td  class="lang"  langKey="PreparedStatementOpenCount"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PreparedStatementClosedCount">PSClosedCount</span></td>
+								<td>{{=datasourceNow.PreparedStatementClosedCount}}</td>
+								<td  class="lang"  langKey="PreparedStatementClosedCount"></td>
+							</tr>
+							<tr>
 								<td valign="top" class="td_lable" >   <span class="lang"  langKey="PSCacheAccessCount">PSCacheAccessCount</span></td>
 								<td>{{=datasourceNow.PSCacheAccessCount}}</td>
 								<td  class="lang"  langKey="PSCacheAccessCountDesc">PerpareStatement access count</td>
@@ -269,12 +344,17 @@
 								<td  class="lang"  langKey="BlobOpenCountDesc"></td>
 							</tr>
 							<tr>
+								<td valign="top" class="td_lable" >   <span class="lang"  langKey="KeepAliveCheckCount">KeepAliveCheckCount</span></td>
+								<td>{{=datasourceNow.KeepAliveCheckCount}}</td>
+								<td  class="lang"  langKey="KeepAliveCheckCount"></td>
+							</tr>
+							<tr>
 									<td valign="top" class="td_lable"><span class="lang" langKey="ActiveConnectionStackTrace">ActiveConnection StackTrace</span></td>
 									<td>
 										<a href="activeConnectionStackTrace.html?datasourceId={{=datasourceNow.Identity}}">View</a>
 									</td>
 									<td>
-										StackTrace for active Connection. 
+										StackTrace for active Connection.
 										<a href="activeConnectionStackTrace-{{=datasourceNow.Identity}}.json" 	target="_blank">[View JSON API]</a>
 									</td>
 								</tr>

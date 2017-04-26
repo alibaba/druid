@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -260,12 +260,16 @@ public class SQLEvalVisitorUtils {
                 return false;
             }
 
-            int intValue0 = castToInteger(param0Value);
-            int intValue1 = castToInteger(param1Value);
+            long intValue0 = castToLong(param0Value);
+            long intValue1 = castToLong(param1Value);
 
-            int result = intValue0 % intValue1;
-
-            x.putAttribute(EVAL_VALUE, result);
+            long result = intValue0 % intValue1;
+            if (result >= Integer.MIN_VALUE && result <= Integer.MAX_VALUE) {
+                int intResult = (int) result;
+                x.putAttribute(EVAL_VALUE, intResult);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
         } else if ("abs".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;

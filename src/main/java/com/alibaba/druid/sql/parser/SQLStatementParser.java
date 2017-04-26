@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,6 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.util.JdbcConstants;
-import org.apache.ibatis.jdbc.SQL;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -885,18 +885,38 @@ public class SQLStatementParser extends SQLParser {
                     lexer.nextToken();
                     accept(Token.COLUMN);
                     SQLName columnName = this.exprParser.name();
-                    accept(Token.COMMENT);
-                    SQLExpr comment = this.exprParser.primary();
 
-                    SQLColumnDefinition columnDefinition = new SQLColumnDefinition();
-                    columnDefinition.setName(columnName);
-                    columnDefinition.setComment(comment);
+                    if (identifierEquals("RENAME")) {
+                        lexer.nextToken();
+                        accept(Token.TO);
+                        SQLName toName = this.exprParser.name();
+                        SQLAlterTableRenameColumn renameColumn = new SQLAlterTableRenameColumn();
 
-                    SQLAlterTableAlterColumn changeColumn = new SQLAlterTableAlterColumn();
+                        renameColumn.setColumn(columnName);
+                        renameColumn.setTo(toName);
 
-                    changeColumn.setColumn(columnDefinition);
+                        stmt.addItem(renameColumn);
+                    } else if (lexer.token() == Token.COMMENT) {
+                        lexer.nextToken();
+                        SQLExpr comment = this.exprParser.primary();
 
-                    stmt.addItem(changeColumn);
+                        SQLColumnDefinition columnDefinition = new SQLColumnDefinition();
+                        columnDefinition.setName(columnName);
+                        columnDefinition.setComment(comment);
+
+                        SQLAlterTableAlterColumn changeColumn = new SQLAlterTableAlterColumn();
+
+                        changeColumn.setColumn(columnDefinition);
+
+                        stmt.addItem(changeColumn);
+                    } else {
+                        SQLColumnDefinition column = this.exprParser.parseColumn();
+
+                        SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
+                        alterColumn.setColumn(column);
+                        alterColumn.setOriginColumn(columnName);
+                        stmt.addItem(alterColumn);
+                    }
                 } else if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
                     acceptIdentifier("NOCHECK");
@@ -992,6 +1012,10 @@ public class SQLStatementParser extends SQLParser {
                     }
 
                     stmt.addItem(item);
+                } else if (JdbcConstants.ODPS.equals(dbType) && identifierEquals("MERGE")) {
+                    lexer.nextToken();
+                    acceptIdentifier("SMALLFILES");
+                    stmt.setMergeSmallFiles(true);
                 } else {
                     break;
                 }
@@ -1054,13 +1078,13 @@ public class SQLStatementParser extends SQLParser {
     public void parseAlterDrop(SQLAlterTableStatement stmt) {
         lexer.nextToken();
 
-        boolean ifNotExists = false;
+        boolean ifExists = false;
 
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
-            accept(Token.NOT);
+
             accept(Token.EXISTS);
-            ifNotExists = true;
+            ifExists = true;
         }
 
         if (lexer.token() == Token.CONSTRAINT) {
@@ -1090,7 +1114,7 @@ public class SQLStatementParser extends SQLParser {
 
             stmt.addItem(item);
         } else if (lexer.token() == Token.PARTITION) {
-            SQLAlterTableDropPartition dropPartition = parseAlterTableDropPartition(ifNotExists);
+            SQLAlterTableDropPartition dropPartition = parseAlterTableDropPartition(ifExists);
 
             stmt.addItem(dropPartition);
         } else if (lexer.token() == Token.INDEX) {
@@ -1104,11 +1128,11 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
-    protected SQLAlterTableDropPartition parseAlterTableDropPartition(boolean ifNotExists) {
+    protected SQLAlterTableDropPartition parseAlterTableDropPartition(boolean ifExists) {
         lexer.nextToken();
         SQLAlterTableDropPartition dropPartition = new SQLAlterTableDropPartition();
 
-        dropPartition.setIfNotExists(ifNotExists);
+        dropPartition.setIfExists(ifExists);
 
         if (lexer.token() == Token.LPAREN) {
             accept(Token.LPAREN);
@@ -1487,7 +1511,7 @@ public class SQLStatementParser extends SQLParser {
             insertStatement.setTableName(tableName);
 
             if (lexer.token() == Token.LITERAL_ALIAS) {
-                insertStatement.setAlias(as());
+                insertStatement.setAlias(tableAlias());
             }
 
             parseInsert0_hinits(insertStatement);
@@ -1923,6 +1947,30 @@ public class SQLStatementParser extends SQLParser {
             createView.setOrReplace(true);
         }
 
+        if (identifierEquals("ALGORITHM")) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            String algorithm = lexer.stringVal();
+            createView.setAlgorithm(algorithm);
+            lexer.nextToken();
+        }
+
+        if (identifierEquals("DEFINER")) {
+            lexer.nextToken();
+            accept(Token.EQ);
+            SQLName definer = this.exprParser.name();
+            createView.setDefiner(definer);
+            lexer.nextToken();
+        }
+
+        if (identifierEquals("SQL")) {
+            lexer.nextToken();
+            acceptIdentifier("SECURITY");
+            String sqlSecurity = lexer.stringVal();
+            createView.setSqlSecurity(sqlSecurity);
+            lexer.nextToken();
+        }
+
         this.accept(Token.VIEW);
 
         if (lexer.token() == Token.IF || identifierEquals("IF")) {
@@ -2022,12 +2070,24 @@ public class SQLStatementParser extends SQLParser {
         }
         return item;
     }
-
+    
     public SQLStatement parseStatement() {
+        return parseStatement(false);
+    }
+    
+    /**
+    * @param tryBest  - 为true去解析并忽略之后的错误
+    *  强制建议除非明确知道可以忽略才传tryBest=true,
+    *  不然会忽略语法错误，且截断sql,导致update和delete无where条件下执行！！！
+    */
+    public SQLStatement parseStatement( final boolean tryBest) {
         List<SQLStatement> list = new ArrayList<SQLStatement>();
-
         this.parseStatementList(list, 1);
-
+        if (tryBest) {
+            if (lexer.token() != Token.EOF) {
+                throw new ParserException("sql syntax error, no terminated. " + lexer.token());
+            }
+        }
         return list.get(0);
     }
 
@@ -2045,6 +2105,15 @@ public class SQLStatementParser extends SQLParser {
 
         if (lexer.token == Token.HINT) {
             explain.setHints(this.exprParser.parseHints());
+        }
+
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            if (identifierEquals("FORMAT")
+                    || identifierEquals("EXTENDED")
+                    || identifierEquals("PARTITIONS")) {
+                explain.setType(lexer.stringVal);
+                lexer.nextToken();
+            }
         }
 
         explain.setStatement(parseStatement());
@@ -2077,6 +2146,16 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
         } else {
             item.setName(this.exprParser.name());
+
+            if (JdbcConstants.MYSQL.equals(dbType)) {
+                if (identifierEquals("USING")) {
+                    lexer.nextToken();
+                    String indexType = lexer.stringVal;
+                    item.setType(indexType);
+                    accept(Token.IDENTIFIER);
+                }
+            }
+
             accept(Token.LPAREN);
         }
 
@@ -2168,7 +2247,7 @@ public class SQLStatementParser extends SQLParser {
             stmt.setInto(exprParser.name());
         }
         
-        stmt.setAlias(as());
+        stmt.setAlias(tableAlias());
 
         accept(Token.USING);
 
@@ -2292,5 +2371,49 @@ public class SQLStatementParser extends SQLParser {
     
     public void parseHints(List<SQLHint> hints) {
         this.getExprParser().parseHints(hints);
+    }
+
+    public SQLStatement parseDescribe() {
+        if (lexer.token() == Token.DESC || identifierEquals("DESCRIBE")) {
+            lexer.nextToken();
+        } else {
+            throw new ParserException("expect DESC, actual " + lexer.token());
+        }
+
+        SQLDescribeStatement stmt = new SQLDescribeStatement();
+        stmt.setDbType(dbType);
+
+        if (identifierEquals("ROLE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.ROLE);
+        } else if (identifierEquals("PACKAGE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.PACKAGE);
+        } else if (identifierEquals("INSTANCE")) {
+            lexer.nextToken();
+            stmt.setObjectType(SQLObjectType.INSTANCE);
+        }
+        stmt.setObject(this.exprParser.name());
+
+        Token token = lexer.token();
+        if (token == Token.PARTITION) {
+            lexer.nextToken();
+            this.accept(Token.LPAREN);
+            for (;;) {
+                stmt.getPartition().add(this.exprParser.expr());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                if (lexer.token() == Token.RPAREN) {
+                    lexer.nextToken();
+                    break;
+                }
+            }
+        } else if (token == Token.IDENTIFIER) {
+            SQLName column = this.exprParser.name();
+            stmt.setColumn(column);
+        }
+        return stmt;
     }
 }

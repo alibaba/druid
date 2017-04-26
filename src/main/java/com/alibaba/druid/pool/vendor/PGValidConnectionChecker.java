@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter impl
 
     private static final long serialVersionUID     = -2227528634302168877L;
 
+    private int               defaultQueryTimeout  = 1;
+
     private String            defaultValidateQuery = "SELECT 'x'";
 
     public PGValidConnectionChecker(){
@@ -53,10 +55,13 @@ public class PGValidConnectionChecker extends ValidConnectionCheckerAdapter impl
             conn = ((ConnectionProxy) conn).getRawObject();
         }
 
+        int queryTimeout = validationQueryTimeout < 0 ? defaultQueryTimeout : validationQueryTimeout;
+
         Statement stmt = null;
         ResultSet rs = null;
         try {
             stmt = conn.createStatement();
+            stmt.setQueryTimeout(queryTimeout);
             rs = stmt.executeQuery(validateQuery);
             return true;
         } finally {

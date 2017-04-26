@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,15 +35,17 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionI
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
 
     public SQLServerOutputVisitor(Appendable appender){
-        super(appender);
+        super(appender, JdbcConstants.SQL_SERVER);
     }
 
     public SQLServerOutputVisitor(Appendable appender, boolean parameterized){
         super(appender, parameterized);
+        this.dbType = JdbcConstants.SQL_SERVER;
     }
 
     public boolean visit(SQLServerSelectQueryBlock x) {

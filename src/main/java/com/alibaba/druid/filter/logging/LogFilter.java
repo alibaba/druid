@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,13 +35,15 @@ import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.SQLUtils.FormatOption;
 import com.alibaba.druid.util.JdbcUtils;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
  */
 public abstract class LogFilter extends FilterEventAdapter implements LogFilterMBean {
-
     protected String          dataSourceLoggerName                 = "druid.sql.DataSource";
     protected String          connectionLoggerName                 = "druid.sql.Connection";
     protected String          statementLoggerName                  = "druid.sql.Statement";
@@ -79,6 +81,9 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     private boolean           statementLogErrorEnabled             = true;
     private boolean           resultSetLogEnabled                  = true;
     private boolean           resultSetLogErrorEnabled             = true;
+
+    private FormatOption      statementSqlFormatOption             = new FormatOption(false, true);
+    private boolean           statementLogSqlPrettyFormat          = false;
 
     protected DataSourceProxy dataSource;
 
@@ -334,6 +339,22 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         this.statementParameterClearLogEnable = statementParameterClearLogEnable;
     }
 
+    public FormatOption getStatementSqlFormatOption() {
+        return this.statementSqlFormatOption;
+    }
+
+    public void setStatementSqlFormatOption(FormatOption formatOption) {
+        this.statementSqlFormatOption = formatOption;
+    }
+
+    public boolean isStatementSqlPrettyFormat() {
+        return this.statementLogSqlPrettyFormat;
+    }
+
+    public void setStatementSqlPrettyFormat(boolean statementSqlPrettyFormat) {
+        this.statementLogSqlPrettyFormat = statementSqlPrettyFormat;
+    }
+
     protected abstract void connectionLog(String message);
 
     protected abstract void statementLog(String message);
@@ -450,7 +471,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
-                         + millis + " millis. \n" + sql);
+                         + millis + " millis. " + sql);
         }
     }
 
@@ -476,7 +497,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
-                         + "} batch executed. " + millis + " millis. \n" + sql);
+                         + "} batch executed. " + millis + " millis. " + sql);
         }
     }
 
@@ -498,7 +519,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + ", rs-"
-                         + resultSet.getId() + "} query executed. " + millis + " millis. \n" + sql);
+                         + resultSet.getId() + "} query executed. " + millis + " millis. " + sql);
         }
     }
 
@@ -520,7 +541,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
-                         + "} update executed. effort " + updateCount + ". " + millis + " millis. \n" + sql);
+                         + "} update executed. effort " + updateCount + ". " + millis + " millis. " + sql);
         }
     }
 
@@ -531,7 +552,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
         int parametersSize = statement.getParametersSize();
         if (parametersSize == 0) {
-            statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. \n"
+            statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
                          + sql);
             return;
         }
@@ -545,8 +566,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         }
 
         String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
-        String formattedSql = SQLUtils.format(sql, dbType, parameters);
-        statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. \n"
+        String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption);
+        statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
                      + formattedSql);
     }
 
@@ -715,22 +736,42 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected void statementPrepareAfter(PreparedStatementProxy statement) {
         if (statementPrepareAfterLogEnable && isStatementLogEnabled()) {
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", pstmt-" + statement.getId()
-                         + "} created. \n" + statement.getSql());
+                         + "} created. " + statement.getSql());
         }
     }
 
     protected void statementPrepareCallAfter(CallableStatementProxy statement) {
         if (statementPrepareCallAfterLogEnable && isStatementLogEnabled()) {
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", cstmt-" + statement.getId()
-                         + "} created. \n" + statement.getSql());
+                         + "} created. " + statement.getSql());
         }
     }
 
     @Override
     protected void statement_executeErrorAfter(StatementProxy statement, String sql, Throwable error) {
         if (this.isStatementLogErrorEnabled()) {
-            statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
+	    if (!isStatementExecutableSqlLogEnable()) {
+        		statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
                               + "} execute error. " + sql, error);
+            }else{
+            	int parametersSize = statement.getParametersSize();
+            	if (parametersSize > 0) {
+            		List<Object> parameters = new ArrayList<Object>(parametersSize);
+            		for (int i = 0; i < parametersSize; ++i) {
+            			JdbcParameter jdbcParam = statement.getParameter(i);
+            			parameters.add(jdbcParam != null
+            					? jdbcParam.getValue()
+            							: null);
+            		}
+            		String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
+            		String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption);
+			statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
+                              + "} execute error. " + formattedSql, error);
+            	}else{
+            		statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
+                              + "} execute error. " + sql, error);
+            	}
+            }
         }
     }
 

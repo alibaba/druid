@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     private boolean              bufferResult;
     private Boolean              cache;
     private boolean              calcFoundRows;
-
-    private SQLLimit limit;
 
     private SQLName              procedureName;
     private List<SQLExpr>        procedureArgumentList;
@@ -148,17 +146,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public void setCalcFoundRows(boolean calcFoundRows) {
         this.calcFoundRows = calcFoundRows;
-    }
-
-    public SQLLimit getLimit() {
-        return limit;
-    }
-
-    public void setLimit(SQLLimit limit) {
-        if (limit != null) {
-            limit.setParent(this);
-        }
-        this.limit = limit;
     }
 
     @Override

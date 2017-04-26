@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
@@ -68,6 +70,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
     public final static String        ATTR_TRANSACTION           = "stat.tx";
     public final static String        ATTR_RESULTSET_CLOSED      = "stat.rs.closed";
+
+    private final Lock                lock                       = new ReentrantLock();
 
     // protected JdbcDataSourceStat dataSourceStat;
 
@@ -144,20 +148,25 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         try {
             sql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
         } catch (Exception e) {
-            LOG.error("merge sql error, dbType " + dbType + ", sql : \n" + sql, e);
+            LOG.error("merge sql error, dbType " + dbType + ", sql : " + sql, e);
         }
 
         return sql;
     }
 
     @Override
-    public synchronized void init(DataSourceProxy dataSource) {
-        if (this.dbType == null || this.dbType.trim().length() == 0) {
-            this.dbType = dataSource.getDbType();
-        }
+    public void init(DataSourceProxy dataSource) {
+        lock.lock();
+        try {
+            if (this.dbType == null || this.dbType.trim().length() == 0) {
+                this.dbType = dataSource.getDbType();
+            }
 
-        configFromProperties(dataSource.getConnectProperties());
-        configFromProperties(System.getProperties());
+            configFromProperties(dataSource.getConnectProperties());
+            configFromProperties(System.getProperties());
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void configFromProperties(Properties properties) {
@@ -462,8 +471,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 sqlStat.setLastSlowParameters(slowParameters);
 
                 if (logSlowSql) {
-                    LOG.error("slow sql " + millis + " millis. \n" + statement.getLastExecuteSql() + "\n"
-                              + slowParameters);
+                    LOG.error("slow sql " + millis + " millis. " + statement.getLastExecuteSql() + "" + slowParameters);
                 }
             }
         }

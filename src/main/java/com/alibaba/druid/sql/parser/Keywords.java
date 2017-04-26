@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ public class Keywords {
     private final Map<String, Token> keywords;
 
     public final static Keywords     DEFAULT_KEYWORDS;
+
+    public final static Keywords     SQLITE_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
@@ -152,6 +154,13 @@ public class Keywords {
         map.put("INOUT", Token.INOUT);
         
         DEFAULT_KEYWORDS = new Keywords(map);
+
+        Map<String, Token> sqlitemap = new HashMap<String, Token>();
+
+        sqlitemap.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+
+        sqlitemap.put("LIMIT", Token.LIMIT);
+        SQLITE_KEYWORDS = new Keywords(sqlitemap);
     }
 
     public boolean containsValue(Token token) {

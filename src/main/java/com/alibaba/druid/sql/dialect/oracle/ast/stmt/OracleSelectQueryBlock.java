@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
     private final List<SQLCommentHint>         hints = new ArrayList<SQLCommentHint>(1);
 
-    private OracleSelectHierachicalQueryClause hierachicalQueryClause;
     private ModelClause                        modelClause;
 
     public OracleSelectQueryBlock(){
@@ -42,14 +41,6 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
     public void setModelClause(ModelClause modelClause) {
         this.modelClause = modelClause;
-    }
-
-    public OracleSelectHierachicalQueryClause getHierachicalQueryClause() {
-        return this.hierachicalQueryClause;
-    }
-
-    public void setHierachicalQueryClause(OracleSelectHierachicalQueryClause hierachicalQueryClause) {
-        this.hierachicalQueryClause = hierachicalQueryClause;
     }
 
     public List<SQLCommentHint> getHints() {
@@ -73,7 +64,8 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.into);
             acceptChild(visitor, this.from);
             acceptChild(visitor, this.where);
-            acceptChild(visitor, this.hierachicalQueryClause);
+            acceptChild(visitor, this.startWith);
+            acceptChild(visitor, this.connectBy);
             acceptChild(visitor, this.groupBy);
             acceptChild(visitor, this.modelClause);
         }

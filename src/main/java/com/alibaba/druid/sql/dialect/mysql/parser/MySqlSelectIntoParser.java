@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,7 +157,7 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
 
         if (lexer.token() == Token.LIMIT) {
-            queryBlock.setLimit(parseLimit());
+            queryBlock.setLimit(this.exprParser.parseLimit());
         }
 
         if (lexer.token() == Token.PROCEDURE) {
@@ -344,13 +344,9 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
         if (lexer.token() == Token.LIMIT) {
             MySqlUnionQuery mysqlUnionQuery = (MySqlUnionQuery) union;
-            mysqlUnionQuery.setLimit(parseLimit());
+            mysqlUnionQuery.setLimit(this.exprParser.parseLimit());
         }
         return super.unionRest(union);
-    }
-
-    public SQLLimit parseLimit() {
-        return ((MySqlExprParser) this.exprParser).parseLimit();
     }
     
     public MySqlExprParser getExprParser() {

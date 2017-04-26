@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     protected SQLName   name;
     protected SQLSelect subQuery;
     protected boolean   ifNotExists = false;
+
+    protected String    algorithm;
+    protected SQLName   definer;
+    protected String    sqlSecurity;
 
     protected final List<Column> columns = new ArrayList<Column>();
 
@@ -107,6 +111,33 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
             comment.setParent(this);
         }
         this.comment = comment;
+    }
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public SQLName getDefiner() {
+        return definer;
+    }
+
+    public void setDefiner(SQLName definer) {
+        if (definer != null) {
+            definer.setParent(this);
+        }
+        this.definer = definer;
+    }
+
+    public String getSqlSecurity() {
+        return sqlSecurity;
+    }
+
+    public void setSqlSecurity(String sqlSecurity) {
+        this.sqlSecurity = sqlSecurity;
     }
 
     public void output(StringBuffer buf) {

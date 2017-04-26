@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,32 +27,9 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAddStatisticStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsAnalyzeTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsDescStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsGrantStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsert;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsInsertStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsListStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsReadStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsRemoveStatisticStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSetLabelStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowGrantsStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowPartitionsStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsShowStatisticStmt;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsStatisticClause;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
+import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -194,15 +171,22 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
     @Override
     public boolean visit(OdpsInsertStatement x) {
+        SQLTableSource from = x.getFrom();
         if (x.getFrom() != null) {
-            print0(ucase ? "FROM (" : "from (");
-            incrementIndent();
-            println();
-            x.getFrom().getSelect().accept(this);
-            decrementIndent();
-            println();
-            print0(") ");
-            print0(x.getFrom().getAlias());
+            if (from instanceof SQLSubqueryTableSource) {
+                SQLSelect select = ((SQLSubqueryTableSource) from).getSelect();
+                print0(ucase ? "FROM (" : "from (");
+                incrementIndent();
+                println();
+                select.accept(this);
+                decrementIndent();
+                println();
+                print0(") ");
+                print0(x.getFrom().getAlias());
+            } else {
+                print0(ucase ? "FROM " : "from ");
+                from.accept(this);
+            }
             println();
         }
 
@@ -526,7 +510,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         if (x.getLimit() != null) {
             println();
-            print0(ucase ? "LIMIT " : "limit ");
             x.getLimit().accept(this);
         }
 
@@ -833,31 +816,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     }
 
     @Override
-    public void endVisit(OdpsDescStmt x) {
-        
-    }
-
-    @Override
-    public boolean visit(OdpsDescStmt x) {
-        print0(ucase ? "DESC " : "desc ");
-        if (x.getObjectType() != null) {
-            print0(x.getObjectType().name());
-            print(' ');
-        }
-        
-        if(x.getObject() != null) {
-            x.getObject().accept(this);
-        }
-        
-        if (x.getPartition().size() > 0) {
-            print0(ucase ? " PARTITION (" : " partition (");
-            printAndAccept(x.getPartition(), ", ");
-            print(')');
-        }
-        return false;
-    }
-
-    @Override
     public void endVisit(OdpsLateralViewTableSource x) {
         
     }
@@ -909,6 +867,34 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print0(buf.toString());
         }
 
+        return false;
+    }
+
+    @Override
+    public void endVisit(OdpsValuesTableSource x) {
+
+    }
+
+    @Override
+    public boolean visit(OdpsValuesTableSource x) {
+        print0(ucase ? "VALUES " : "values ");
+        printAndAccept(x.getValues(), ", ");
+
+        print(' ');
+        print0(x.getAlias());
+        print0(" (");
+        printAndAccept(x.getColumns(), ", ");
+        print(')');
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableRenameColumn x) {
+        print0(ucase ? "CHANGE COLUMN " : "change column ");
+        x.getColumn().accept(this);
+        print0(ucase ? " RENAME TO " : " rename to ");
+        x.getTo().accept(this);
         return false;
     }
 }

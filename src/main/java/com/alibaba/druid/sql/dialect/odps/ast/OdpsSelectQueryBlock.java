@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,6 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     private SQLOrderBy orderBy;
 
-    private SQLExpr limit;
-
     protected List<SQLHint> hints;
 
     protected List<SQLExpr>              distributeBy = new ArrayList<SQLExpr>();
@@ -56,17 +54,6 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     public List<SQLSelectOrderByItem> getSortBy() {
         return sortBy;
-    }
-
-    public SQLExpr getLimit() {
-        return limit;
-    }
-
-    public void setLimit(SQLExpr limit) {
-        if (limit != null) {
-            limit.setParent(this);
-        }
-        this.limit = limit;
     }
 
     @Override

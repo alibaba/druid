@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.PGLimit;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
@@ -256,7 +255,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
 
         if (queryBlock instanceof PGSelectQueryBlock) {
             PGSelectQueryBlock pgQueryBlock = (PGSelectQueryBlock) queryBlock;
-            PGLimit limit = new PGLimit();
+            SQLLimit limit = new SQLLimit();
             if (offset > 0) {
                 limit.setOffset(new SQLIntegerExpr(offset));
             }
@@ -299,7 +298,7 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
                 throw new UnsupportedOperationException("not support offset");
             }
 
-            odpsQueryBlock.setLimit(new SQLIntegerExpr(rowCount));
+            odpsQueryBlock.setLimit(new SQLLimit(new SQLIntegerExpr(rowCount)));
 
             return this;
         }

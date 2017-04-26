@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
@@ -86,21 +88,46 @@ public final class ExportParameterVisitorUtils {
     }
 
     public static SQLExpr exportParameter(final List<Object> parameters, final SQLExpr param) {
+        Object value = null;
+        boolean replace = false;
+
         if (param instanceof SQLCharExpr) {
-            Object value = ((SQLCharExpr) param).getText();
-            parameters.add(value);
-            return new SQLVariantRefExpr("?");
+            value = ((SQLCharExpr) param).getText();
+            replace = true;
         }
 
         if (param instanceof SQLBooleanExpr) {
-            Object value = ((SQLBooleanExpr) param).getValue();
-            parameters.add(value);
-            return new SQLVariantRefExpr("?");
+            value = ((SQLBooleanExpr) param).getValue();
+            replace = true;
         }
 
         if (param instanceof SQLNumericLiteralExpr) {
-            Object value = ((SQLNumericLiteralExpr) param).getNumber();
+            value = ((SQLNumericLiteralExpr) param).getNumber();
+            replace = true;
+        }
+
+        if (replace) {
+            SQLObject parent = param.getParent();
+            if (parent != null) {
+                List<SQLObject> mergedList = (List<SQLObject>) parent.getAttribute(ParameterizedOutputVisitorUtils.ATTR_MERGED);
+                if (mergedList != null) {
+                    List<Object> mergedListParams = new ArrayList<Object>(mergedList.size() + 1);
+                    for (int i = 0; i < mergedList.size(); ++i) {
+                        SQLObject item = mergedList.get(i);
+                        if (item instanceof SQLBinaryOpExpr) {
+                            SQLBinaryOpExpr binaryOpItem = (SQLBinaryOpExpr) item;
+                            exportParameter(mergedListParams, binaryOpItem.getRight());
+                        }
+                    }
+                    if (mergedListParams.size() > 0) {
+                        mergedListParams.add(0, value);
+                        value = mergedListParams;
+                    }
+                }
+            }
+
             parameters.add(value);
+
             return new SQLVariantRefExpr("?");
         }
 

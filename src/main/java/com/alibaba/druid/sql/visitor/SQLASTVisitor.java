@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -685,4 +685,7 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLStartTransactionStatement x);
     boolean visit(SQLStartTransactionStatement x);
+
+    void endVisit(SQLDescribeStatement x);
+    boolean visit(SQLDescribeStatement x);
 }

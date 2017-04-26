@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class OracleUpdateParser extends SQLStatementParser {
             update.setTableSource(tableSource);
 
             if ((update.getAlias() == null) || (update.getAlias().length() == 0)) {
-                update.setAlias(as());
+                update.setAlias(tableAlias());
             }
         }
 

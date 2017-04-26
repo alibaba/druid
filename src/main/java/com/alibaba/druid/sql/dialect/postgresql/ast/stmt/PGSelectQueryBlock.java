@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 
     private PGWithClause  with;
     private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
-    private PGLimit       limit;
     private WindowClause  window;
 
     private SQLOrderBy    orderBy;
@@ -107,35 +106,12 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
         this.with = with;
     }
 
-    public PGLimit getLimit() {
-        return limit;
-    }
-
-    public void setLimit(PGLimit limit) {
-        this.limit = limit;
-    }
-
     public SQLOrderBy getOrderBy() {
         return orderBy;
     }
 
     public void setOrderBy(SQLOrderBy orderBy) {
         this.orderBy = orderBy;
-    }
-
-    public SQLExpr getOffset() {
-        if (limit != null) {
-            return limit.offset;
-        }
-        return null;
-    }
-
-    public void setOffset(SQLExpr offset) {
-        if (limit == null) {
-            limit = new PGLimit();
-            limit.setParent(this);
-        }
-        limit.setOffset(offset);
     }
 
     public List<SQLExpr> getDistinctOn() {
@@ -255,51 +231,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
         }
     }
 
-    public static class PGLimit extends SQLObjectImpl implements SQLExpr, PGSQLObject {
 
-        public PGLimit(){
-
-        }
-
-        private SQLExpr rowCount;
-        private SQLExpr offset;
-
-        public SQLExpr getRowCount() {
-            return rowCount;
-        }
-
-        public void setRowCount(SQLExpr rowCount) {
-            if (rowCount != null) {
-                rowCount.setParent(this);
-            }
-            this.rowCount = rowCount;
-        }
-
-        public SQLExpr getOffset() {
-            return offset;
-        }
-
-        public void setOffset(SQLExpr offset) {
-            if (offset != null) {
-                offset.setParent(this);
-            }
-            this.offset = offset;
-        }
-        
-        @Override
-        protected void accept0(SQLASTVisitor visitor) {
-            accept0((PGASTVisitor) visitor);
-        }
-
-        @Override
-        public void accept0(PGASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, offset);
-                acceptChild(visitor, rowCount);
-            }
-            visitor.endVisit(this);
-        }
-
-    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -726,30 +726,6 @@ public class MySqlExprParser extends SQLExprParser {
             return userName;
         }
         return super.nameRest(name);
-    }
-
-    public SQLLimit parseLimit() {
-        if (lexer.token() == Token.LIMIT) {
-            lexer.nextToken();
-
-            SQLLimit limit = new SQLLimit();
-
-            SQLExpr temp = this.expr();
-            if (lexer.token() == (Token.COMMA)) {
-                limit.setOffset(temp);
-                lexer.nextToken();
-                limit.setRowCount(this.expr());
-            } else if (identifierEquals("OFFSET")) {
-                limit.setRowCount(temp);
-                lexer.nextToken();
-                limit.setOffset(this.expr());
-            } else {
-                limit.setRowCount(temp);
-            }
-            return limit;
-        }
-
-        return null;
     }
 
     @Override

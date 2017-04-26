@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.List;
 
 public class SQLCharacterDataType extends SQLDataTypeImpl {
 
@@ -25,6 +28,8 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
 
     private String             charType;
     private boolean            hasBinary;
+
+    public List<SQLCommentHint> hints;
 
     public final static String CHAR_TYPE_BYTE = "BYTE";
     public final static String CHAR_TYPE_CHAR = "CHAR";
@@ -63,6 +68,14 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
 
     public void setCharType(String charType) {
         this.charType = charType;
+    }
+
+    public List<SQLCommentHint> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<SQLCommentHint> hints) {
+        this.hints = hints;
     }
 
     @Override

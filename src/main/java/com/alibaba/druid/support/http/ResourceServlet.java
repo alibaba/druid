@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -214,6 +214,7 @@ public abstract class ResourceServlet extends HttpServlet {
 
         if (isRequireAuth() //
             && !ContainsUser(request)//
+            && !checkLoginParam(request)//
             && !("/login.html".equals(path) //
                  || path.startsWith("/css")//
                  || path.startsWith("/js") //
@@ -260,6 +261,17 @@ public abstract class ResourceServlet extends HttpServlet {
     public boolean ContainsUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         return session != null && session.getAttribute(SESSION_USER_KEY) != null;
+    }
+
+    public boolean checkLoginParam(HttpServletRequest request) {
+        String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
+        String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
+        if(null == username || null == password){
+            return false;
+        } else if (username.equals(usernameParam) && password.equals(passwordParam)) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isRequireAuth() {

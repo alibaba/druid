@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot.Item;
@@ -236,7 +235,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print0(ucase ? "DELETE " : "delete ");
 
         SQLTableSource tableSource = x.getTableSource();
-
         if (x.getHints().size() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');
@@ -379,28 +377,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? " WAIT " : " wait ");
             x.getWait().accept(this);
         }
-        return false;
-    }
-
-    public boolean visit(OracleSelectHierachicalQueryClause x) {
-        if (x.getStartWith() != null) {
-            print0(ucase ? "START WITH " : "start with ");
-            x.getStartWith().accept(this);
-            println();
-        }
-
-        print0(ucase ? "CONNECT BY " : "connect by ");
-
-        if (x.isNoCycle()) {
-            print0(ucase ? "NOCYCLE " : "nocycle ");
-        }
-
-        if (x.isPrior()) {
-            print0(ucase ? "PRIOR " : "prior ");
-        }
-
-        x.getConnectBy().accept(this);
-
         return false;
     }
 
@@ -551,10 +527,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getWhere().accept(this);
         }
 
-        if (x.getHierachicalQueryClause() != null) {
-            println();
-            x.getHierachicalQueryClause().accept(this);
-        }
+        printHierarchical(x);
 
         if (x.getGroupBy() != null) {
             println();
@@ -783,11 +756,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleSelectForUpdate x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectHierachicalQueryClause x) {
 
     }
 

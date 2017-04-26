@@ -19,7 +19,7 @@ public class MySqlParameterizedOutputVisitorTest_14 extends TestCase {
         String psql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
         assertEquals("INSERT INTO t_temp (processId, resultId, gmt_create, gmt_modified, result_content\n" +
                 "\t, result_number)\n" +
-                "VALUES (?, ?, now(), now(), NULL\n" +
-                "\t\t, NULL)", psql);
+                "VALUES (?, ?, now(), now(), ?\n" +
+                "\t\t, ?)", psql);
     }
 }
