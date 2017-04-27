@@ -527,7 +527,22 @@ public class PagerUtils {
             SQLLimit limit = x.getLimit();
 
             if (limit != null && (orderBy == null || orderBy.getItems().size() == 0)) {
-                unorderedLimitCount++;
+                boolean subQueryHasOrderBy = false;
+                SQLTableSource from = x.getFrom();
+                if (from instanceof SQLSubqueryTableSource) {
+                    SQLSubqueryTableSource subqueryTabSrc = (SQLSubqueryTableSource) from;
+                    SQLSelect select = subqueryTabSrc.getSelect();
+                    if (select.getQuery() instanceof SQLSelectQueryBlock) {
+                        SQLSelectQueryBlock subquery = (SQLSelectQueryBlock) select.getQuery();
+                        if (subquery.getOrderBy() != null && subquery.getOrderBy().getItems().size() > 0) {
+                            subQueryHasOrderBy = true;
+                        }
+                    }
+                }
+
+                if (!subQueryHasOrderBy) {
+                    unorderedLimitCount++;
+                }
             }
             return true;
         }
