@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author lihengming<89921218@qq.com>
  *
- * <p>druid-spring-boot-starter 测试例子</p>
+ * <p>druid-spring-boot-autoconfigure 测试例子</p>
  * <p>1.按需配置application.properties，配置项请参考</p>
  * <p>2.run Application</p>
  * <p>3.访问http://127.0.0.1:8080/druid</p>
