@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Bean;
  * @author lihengming<89921218@qq.com>
  * @see <a href="https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE_%E9%85%8D%E7%BD%AEWebStatFilter">配置WebStatFilter</a>
  */
-@ConditionalOnProperty(name = "spring.datasource.druid.stat.StatFilter.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.datasource.druid.StatFilter.enabled", havingValue = "true", matchIfMissing = true)
 public class DruidStatFilterConfiguration {
     @Bean
     public FilterRegistrationBean filterRegistrationBean(DruidStatProperties properties) {
