@@ -1,4 +1,19 @@
-package com.alibaba.druid.spring.boot.autoconfigure;
+/*
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.druid.support.spring.boot.autoconfigure;
 
 import com.alibaba.druid.support.http.WebStatFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -8,14 +23,14 @@ import org.springframework.context.annotation.Bean;
 /**
  * The Druid stat filter configuration.
  *
- * @author lihengming< qq.com>
+ * @author lihengming<89921218@qq.com>
  * @see <a href="https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE_%E9%85%8D%E7%BD%AEWebStatFilter">配置WebStatFilter</a>
  */
-@ConditionalOnProperty(name = "spring.datasource.druid.StatFilter.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.datasource.druid.stat.StatFilter.enabled", havingValue = "true", matchIfMissing = true)
 public class DruidStatFilterConfiguration {
     @Bean
-    public FilterRegistrationBean filterRegistrationBean(DruidProperties properties) {
-        DruidProperties.StatFilter config = properties.getStatFilter();
+    public FilterRegistrationBean filterRegistrationBean(DruidStatProperties properties) {
+        DruidStatProperties.StatFilter config = properties.getStatFilter();
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         WebStatFilter filter = new WebStatFilter();
         registrationBean.setFilter(filter);

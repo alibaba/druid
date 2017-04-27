@@ -1,7 +1,7 @@
-package com.alibaba.druid.spring.boot.autoconfigure.test.web;
+package com.alibaba.druid.spring.boot.autoconfigure.web;
 
-import com.alibaba.druid.spring.boot.autoconfigure.test.service.UserService;
-import com.alibaba.druid.spring.boot.autoconfigure.test.model.User;
+import com.alibaba.druid.spring.boot.autoconfigure.model.User;
+import com.alibaba.druid.spring.boot.autoconfigure.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
