@@ -2401,7 +2401,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     long idleMillis = currentTimeMillis - connection.lastActiveTimeMillis;
 
                     if (idleMillis < minEvictableIdleTimeMillis) {
-                        break;
+                        continue;
                     }
 
                     if (checkTime && i < checkCount) {
