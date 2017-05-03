@@ -18,8 +18,6 @@ package com.alibaba.druid.support.spring.boot.autoconfigure;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * The type Druid stat properties.
- *
  * @author lihengming<89921218@qq.com>
  */
 @ConfigurationProperties("spring.datasource.druid")

@@ -21,13 +21,11 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 /**
- * The Druid stat filter configuration.
- *
  * @author lihengming<89921218@qq.com>
  * @see <a href="https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE_%E9%85%8D%E7%BD%AEWebStatFilter">配置WebStatFilter</a>
  */
-@ConditionalOnProperty(name = "spring.datasource.druid.StatFilter.enabled", havingValue = "true", matchIfMissing = true)
-public class DruidStatFilterConfiguration {
+@ConditionalOnProperty(name = "spring.datasource.druid.WebStatFilter.enabled", havingValue = "true", matchIfMissing = false)
+public class DruidWebStatFilterConfiguration {
     @Bean
     public FilterRegistrationBean filterRegistrationBean(DruidStatProperties properties) {
         DruidStatProperties.StatFilter config = properties.getStatFilter();

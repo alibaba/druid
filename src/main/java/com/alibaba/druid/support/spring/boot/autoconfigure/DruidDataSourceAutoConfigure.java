@@ -26,16 +26,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 /**
- * The Druid data source auto configure.
- *
  * @author lihengming<89921218@qq.com>
  */
 @Configuration
 @ConditionalOnClass(com.alibaba.druid.pool.DruidDataSource.class)
 @EnableConfigurationProperties(DruidStatProperties.class)
-@Import({DruidSpringAopConfiguration.class, DruidStatViewServletConfiguration.class, DruidStatFilterConfiguration.class})
+@Import({DruidSpringAopConfiguration.class, DruidStatViewServletConfiguration.class, DruidWebStatFilterConfiguration.class})
 public class DruidDataSourceAutoConfigure {
 
     @Bean
@@ -44,7 +43,7 @@ public class DruidDataSourceAutoConfigure {
     public DataSource dataSource(Environment env) {
         DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
 
-        //if not found prefix spring.datasource.druid property,spring.datasource prefix property will be used
+        //if not found prefix 'spring.datasource.druid' property,'spring.datasource' prefix property will be used
         if (dataSource.getUsername() == null) {
             dataSource.setUsername(env.getProperty("spring.datasource.username"));
         }
@@ -56,6 +55,14 @@ public class DruidDataSourceAutoConfigure {
         }
         if (dataSource.getDriverClassName() == null) {
             dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        }
+        //if not found 'spring.datasource.druid.filters' property will set default value on StatViewServlet Enabled
+        if (env.getProperty("spring.datasource.druid.filters") == null && "true".equals(env.getProperty("spring.datasource.druid.StatViewServlet.enabled"))) {
+            try {
+                dataSource.setFilters("stat");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return dataSource;
     }

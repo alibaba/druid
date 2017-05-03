@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The Druid data source builder.
- *
  * @author lihengming<89921218@qq.com>
  */
 public class DruidDataSourceBuilder {
@@ -42,26 +40,6 @@ public class DruidDataSourceBuilder {
         maybeGetDriverClassName();
         bind(dataSource);
         return dataSource;
-    }
-
-    public DruidDataSourceBuilder url(String url) {
-        this.properties.put("url", url);
-        return this;
-    }
-
-    public DruidDataSourceBuilder driverClassName(String driverClassName) {
-        this.properties.put("driverClassName", driverClassName);
-        return this;
-    }
-
-    public DruidDataSourceBuilder username(String username) {
-        this.properties.put("username", username);
-        return this;
-    }
-
-    public DruidDataSourceBuilder password(String password) {
-        this.properties.put("password", password);
-        return this;
     }
 
     //use RelaxedDataBinder by reflection config druid .
