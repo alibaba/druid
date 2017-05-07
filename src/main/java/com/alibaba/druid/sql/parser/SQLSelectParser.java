@@ -458,6 +458,12 @@ public class SQLSelectParser extends SQLParser {
 
         SQLJoinTableSource.JoinType joinType = null;
 
+        boolean natural = false;
+        if (JdbcConstants.MYSQL.equals(dbType) && identifierEquals("NATURAL")) {
+            lexer.nextToken();
+            natural = true;
+        }
+
         if (lexer.token() == Token.LEFT) {
             lexer.nextToken();
             if (lexer.token() == Token.OUTER) {
@@ -515,6 +521,14 @@ public class SQLSelectParser extends SQLParser {
             join.setLeft(tableSource);
             join.setJoinType(joinType);
             join.setRight(parseTableSource());
+
+            if (!natural) {
+                if (JdbcConstants.MYSQL.equals(dbType) && "NATURAL".equalsIgnoreCase(tableSource.getAlias())) {
+                    tableSource.setAlias(null);
+                    natural = true;
+                }
+            }
+            join.setNatural(natural);
 
             if (lexer.token() == Token.ON) {
                 lexer.nextToken();

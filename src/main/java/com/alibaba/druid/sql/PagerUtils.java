@@ -572,14 +572,21 @@ public class PagerUtils {
                     if (parent instanceof SQLSelectQuery) {
                         if (parent instanceof OracleSelectQueryBlock) {
                             OracleSelectQueryBlock queryBlock = (OracleSelectQueryBlock) parent;
-                            if (queryBlock.getFrom() instanceof SQLExprTableSource) {
+                            SQLTableSource from = queryBlock.getFrom();
+                            if (from instanceof SQLExprTableSource) {
                                 selectQuery = queryBlock;
+                            } else if (from instanceof SQLSubqueryTableSource) {
+                                SQLSelect subSelect = ((SQLSubqueryTableSource) from).getSelect();
+                                if (subSelect.getQuery() instanceof OracleSelectQueryBlock) {
+                                    selectQuery = (OracleSelectQueryBlock) subSelect.getQuery();
+                                }
                             }
                         }
                         break;
                     }
                 }
             }
+
 
             if (selectQuery != null) {
                 SQLObject parent = selectQuery.getParent();

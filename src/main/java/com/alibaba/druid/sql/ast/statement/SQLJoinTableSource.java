@@ -29,6 +29,9 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     protected SQLExpr             condition;
     protected final List<SQLExpr> using = new ArrayList<SQLExpr>();
 
+
+    protected boolean             natural = false;
+
     public SQLJoinTableSource(String alias){
         super(alias);
     }
@@ -91,6 +94,14 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
 
     public List<SQLExpr> getUsing() {
         return this.using;
+    }
+
+    public boolean isNatural() {
+        return natural;
+    }
+
+    public void setNatural(boolean natural) {
+        this.natural = natural;
     }
 
     public void output(StringBuffer buf) {

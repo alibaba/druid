@@ -1856,6 +1856,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(',');
         } else {
             println();
+
+            if (x.isNatural()) {
+                print0(ucase ? "NATURAL " : "natural ");
+            }
+
             printJoinType(x.getJoinType());
         }
         print(' ');
