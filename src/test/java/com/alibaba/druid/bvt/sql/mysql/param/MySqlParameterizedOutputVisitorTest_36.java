@@ -35,6 +35,6 @@ public class MySqlParameterizedOutputVisitorTest_36 extends TestCase {
         visitor.setExportTables(true);
         visitor.setPrettyFormat(false);
         statement.accept(visitor);
-        System.out.println(out);
+        assertEquals("INSERT INTO v_j (jb) VALUES (?)", out.toString());
     }
 }

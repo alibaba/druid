@@ -240,6 +240,8 @@ public class SQLExprParser extends SQLParser {
                     SQLDateExpr dateExpr = new SQLDateExpr();
                     dateExpr.setLiteral(literal);
                     sqlExpr = dateExpr;
+                } else if (JdbcConstants.MYSQL.equalsIgnoreCase(dbType) && ident.startsWith("0x") && (ident.length() % 2) == 0) {
+                    sqlExpr = new SQLHexExpr(ident.substring(2));
                 } else {
                     sqlExpr = new SQLIdentifierExpr(ident);
                 }
