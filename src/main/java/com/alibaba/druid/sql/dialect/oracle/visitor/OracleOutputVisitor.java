@@ -245,12 +245,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "ONLY (" : "only (");
             x.getTableName().accept(this);
             print(')');
+
+            printAlias(x.getAlias());
         } else {
             x.getTableSource().accept(this);
         }
-
-        printAlias(x.getAlias());
-
 
         if (x.getWhere() != null) {
             println();
