@@ -249,7 +249,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getTableSource().accept(this);
         }
 
-        printAlias(x.getAlias());
+       //printAlias(x.getAlias());
 
 
         if (x.getWhere() != null) {
