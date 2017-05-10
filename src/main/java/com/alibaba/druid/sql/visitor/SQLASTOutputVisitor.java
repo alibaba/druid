@@ -63,6 +63,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected boolean shardingSupport = false;
 
+    protected transient int lines = 0;
+
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
     }
@@ -283,6 +285,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         print0("\n");
+        lines++;
         printIndent();
     }
 

@@ -1977,8 +1977,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(SQLIfStatement x) {
         print0(ucase ? "IF " : "if ");
+        int lines = this.lines;
+        incrementIndent();
         x.getCondition().accept(this);
-        print0(ucase ? " THEN" : " then");
+        decrementIndent();
+
+        if (lines != this.lines) {
+            println();
+        } else {
+            print(' ');
+        }
+        print0(ucase ? "THEN" : "then");
+
         incrementIndent();
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
