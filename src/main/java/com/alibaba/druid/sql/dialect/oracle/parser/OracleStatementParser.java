@@ -104,7 +104,7 @@ public class OracleStatementParser extends SQLStatementParser {
         }
     }
 
-    public void parseStatementList(List<SQLStatement> statementList, int max) {
+    public void parseStatementList(List<SQLStatement> statementList, int max, SQLStatement parent) {
         for (;;) {
             if (max != -1) {
                 if (statementList.size() >= max) {
@@ -459,6 +459,10 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.token() == Token.ELSIF && parent instanceof SQLIfStatement) {
+                break;
+            }
+
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
     }
@@ -472,7 +476,20 @@ public class OracleStatementParser extends SQLStatementParser {
 
         accept(Token.THEN);
 
-        this.parseStatementList(stmt.getStatements());
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
+
+        while (lexer.token() == Token.ELSIF) {
+            lexer.nextToken();
+
+            SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
+
+            elseIf.setCondition(this.exprParser.expr());
+
+            accept(Token.THEN);
+            this.parseStatementList(elseIf.getStatements(), -1, stmt);
+
+            stmt.getElseIfList().add(elseIf);
+        }
 
         while (lexer.token() == Token.ELSE) {
             lexer.nextToken();

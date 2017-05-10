@@ -80,6 +80,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public void parseStatementList(List<SQLStatement> statementList, int max) {
+        parseStatementList(statementList, max, null);
+    }
+
+    public void parseStatementList(List<SQLStatement> statementList, int max, SQLStatement parent) {
         for (;;) {
             if (max != -1) {
                 if (statementList.size() >= max) {

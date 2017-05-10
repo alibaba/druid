@@ -51,6 +51,7 @@ public class OracleLexer extends Lexer {
         map.put("EXTRACT", Token.EXTRACT);
         map.put("GOTO", Token.GOTO);
         map.put("IF", Token.IF);
+        map.put("ELSIF", Token.ELSIF);
 
         map.put("LIMIT", Token.LIMIT);
         map.put("LOOP", Token.LOOP);
