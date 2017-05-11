@@ -496,6 +496,43 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(SQLCaseStatement x) {
+        print0(ucase ? "CASE" : "case");
+        if (x.getValueExpr() != null) {
+            print(' ');
+            x.getValueExpr().accept(this);
+        }
+        incrementIndent();
+        println();
+        printlnAndAccept(x.getItems(), " ");
+
+        if (x.getElseStatements() != null) {
+            println();
+            print0(ucase ? "ELSE " : "else ");
+            printlnAndAccept(x.getElseStatements(), ";");
+            print(';');
+        }
+
+        decrementIndent();
+
+        println();
+        print0(ucase ? "END CASE" : "end case");
+        return false;
+    }
+
+    public boolean visit(SQLCaseStatement.Item x) {
+        print0(ucase ? "WHEN " : "when ");
+        x.getConditionExpr().accept(this);
+        print0(ucase ? " THEN " : " then ");
+
+        SQLStatement stmt = x.getStatement();
+        if (stmt != null) {
+            stmt.accept(this);
+            print(';');
+        }
+        return false;
+    }
+
     public boolean visit(SQLCastExpr x) {
         print0(ucase ? "CAST(" : "cast(");
         x.getExpr().accept(this);

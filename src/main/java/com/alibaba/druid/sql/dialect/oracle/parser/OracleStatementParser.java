@@ -24,11 +24,7 @@ import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLParameter;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
@@ -459,12 +455,57 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.token() == Token.CASE) {
+                SQLStatement stmt = this.parseCase();
+                statementList.add(stmt);
+                continue;
+            }
+
             if (lexer.token() == Token.ELSIF && parent instanceof SQLIfStatement) {
                 break;
             }
 
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
+    }
+
+    public SQLStatement parseCase() {
+        SQLCaseStatement caseStmt = new SQLCaseStatement();
+        lexer.nextToken();
+        if (lexer.token() != Token.WHEN) {
+            caseStmt.setValueExpr(this.exprParser.expr());
+        }
+
+        accept(Token.WHEN);
+        SQLExpr testExpr = this.exprParser.expr();
+        accept(Token.THEN);
+        SQLStatement stmt = this.parseStatement();
+        if (lexer.token() == Token.SEMI) {
+            lexer.nextToken();
+        }
+        SQLCaseStatement.Item caseItem = new SQLCaseStatement.Item(testExpr, stmt);
+        caseStmt.addItem(caseItem);
+
+        while (lexer.token() == Token.WHEN) {
+            lexer.nextToken();
+            testExpr = this.exprParser.expr();
+            accept(Token.THEN);
+            stmt = this.parseStatement();
+            if (lexer.token() == Token.SEMI) {
+                lexer.nextToken();
+            }
+            caseItem = new SQLCaseStatement.Item(testExpr, stmt);
+            caseStmt.addItem(caseItem);
+        }
+
+        if (lexer.token() == Token.ELSE) {
+            lexer.nextToken();
+            this.parseStatementList(caseStmt.getElseStatements(), -1, caseStmt);
+        }
+
+        accept(Token.END);
+        accept(Token.CASE);
+        return caseStmt;
     }
 
     public SQLStatement parseIf() {

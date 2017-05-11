@@ -39,6 +39,12 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLCaseExpr.Item x) {
     }
 
+    public void endVisit(SQLCaseStatement x) {
+    }
+
+    public void endVisit(SQLCaseStatement.Item x) {
+    }
+
     public void endVisit(SQLCharExpr x) {
     }
 
@@ -101,6 +107,14 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public boolean visit(SQLCaseExpr.Item x) {
+        return true;
+    }
+
+    public boolean visit(SQLCaseStatement x) {
+        return true;
+    }
+
+    public boolean visit(SQLCaseStatement.Item x) {
         return true;
     }
 
