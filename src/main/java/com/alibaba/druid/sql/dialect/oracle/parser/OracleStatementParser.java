@@ -1095,13 +1095,30 @@ public class OracleStatementParser extends SQLStatementParser {
                 parameter.setDataType(dataType);
 
                 parameter.setDefaultValue(new SQLQueryExpr(select));
+            } else if (lexer.token() == Token.PROCEDURE) {
+                break;
             } else {
                 parameter.setName(this.exprParser.name());
 
                 if (lexer.token() == Token.IN) {
                     lexer.nextToken();
-                    parameter.setParamType(SQLParameter.ParameterType.IN);
+
+                    if (lexer.token() == Token.OUT) {
+                        lexer.nextToken();
+                        parameter.setParamType(SQLParameter.ParameterType.INOUT);
+                    } else {
+                        parameter.setParamType(SQLParameter.ParameterType.IN);
+                    }
+                } else if (lexer.token() == Token.OUT) {
+                    lexer.nextToken();
+                    parameter.setParamType(SQLParameter.ParameterType.OUT);
                 }
+
+                if (identifierEquals("NOCOPY")) {
+                    lexer.nextToken();
+                    parameter.setNoCopy(true);
+                }
+
                 parameter.setDataType(this.exprParser.parseDataType());
 
                 if (lexer.token() == Token.COLONEQ) {

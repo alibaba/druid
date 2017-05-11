@@ -1022,7 +1022,7 @@ public class SQLExprParser extends SQLParser {
                     lexer.nextToken();
                     break;
                 default:
-                    throw new ParserException("error " + lexer.token());
+                    throw new ParserException("error " + lexer.info());
             }
         }
 

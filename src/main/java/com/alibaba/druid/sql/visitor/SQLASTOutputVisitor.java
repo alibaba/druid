@@ -3344,9 +3344,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
                     print0(ucase ? " OUT " : " out ");
                 } else if (x.getParamType() == SQLParameter.ParameterType.INOUT) {
-                    print0(ucase ? " INOUT " : " inout ");
+                    print0(ucase ? " IN OUT " : " in out ");
                 } else {
                     print(' ');
+                }
+
+                if (x.isNoCopy()) {
+                    print0(ucase ? "NOCOPY " : "nocopy ");
                 }
             } else {
                 if (x.getParamType() == SQLParameter.ParameterType.IN) {
