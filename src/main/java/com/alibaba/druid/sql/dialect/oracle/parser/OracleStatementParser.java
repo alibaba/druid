@@ -18,12 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
@@ -1062,8 +1057,10 @@ public class OracleStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.DECLARE) {
             lexer.nextToken();
+        }
 
-            parserParameters(block.getParameters());
+        if (lexer.token() == Token.IDENTIFIER) {
+            parserParameters(block.getParameters(), block);
             for (SQLParameter param : block.getParameters()) {
                 param.setParent(block);
             }
@@ -1078,7 +1075,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return block;
     }
 
-    private void parserParameters(List<SQLParameter> parameters) {
+    private void parserParameters(List<SQLParameter> parameters, SQLObject parent) {
         for (;;) {
             SQLParameter parameter = new SQLParameter();
 
@@ -1591,7 +1588,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
-            parserParameters(stmt.getParameters());
+            parserParameters(stmt.getParameters(), stmt);
             accept(Token.RPAREN);
         }
 
@@ -1599,6 +1596,20 @@ public class OracleStatementParser extends SQLStatementParser {
             lexer.nextToken();
         } else {
             accept(Token.AS);
+        }
+
+        if (identifierEquals("LANGUAGE")) {
+            lexer.nextToken();
+            if (identifierEquals("JAVA")) {
+                lexer.nextToken();
+                acceptIdentifier("NAME");
+                String javaCallSpec = lexer.stringVal();
+                accept(Token.LITERAL_CHARS);
+                stmt.setJavaCallSpec(javaCallSpec);
+            } else {
+                throw new ParserException("TODO : " + lexer.info());
+            }
+            return stmt;
         }
 
         SQLBlockStatement block = this.parseBlock();

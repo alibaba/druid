@@ -1709,6 +1709,10 @@ public class SQLStatementParser extends SQLParser {
             return parseCreateView();
         } else if (token == Token.TRIGGER) {
             return parseCreateTrigger();
+        } else if (token == Token.PROCEDURE) {
+            SQLCreateProcedureStatement stmt = parseCreateProcedure();
+            stmt.setCreate(true);
+            return stmt;
         }
 
         throw new ParserException("TODO " + lexer.token());
@@ -1791,7 +1795,7 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
-    public SQLStatement parseCreateProcedure() {
+    public SQLCreateProcedureStatement parseCreateProcedure() {
         throw new ParserException("TODO " + lexer.token());
     }
 

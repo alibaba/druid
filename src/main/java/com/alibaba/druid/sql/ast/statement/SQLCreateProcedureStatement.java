@@ -34,6 +34,9 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     private SQLStatement       block;
     private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
 
+    // for oracle
+    private String             javaCallSpec;
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -66,6 +69,9 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     }
 
     public void setBlock(SQLStatement block) {
+        if (block != null) {
+            block.setParent(this);
+        }
         this.block = block;
     }
 
@@ -91,5 +97,13 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
     public void setCreate(boolean create) {
         this.create = create;
+    }
+
+    public String getJavaCallSpec() {
+        return javaCallSpec;
+    }
+
+    public void setJavaCallSpec(String javaCallSpec) {
+        this.javaCallSpec = javaCallSpec;
     }
 }

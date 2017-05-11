@@ -1355,9 +1355,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(SQLBlockStatement x) {
         if (x.getParameters().size() != 0) {
-            print0(ucase ? "DECLARE" : "declare");
             incrementIndent();
-            println();
+            if (!(x.getParent() instanceof SQLCreateProcedureStatement)) {
+                print0(ucase ? "DECLARE" : "declare");
+                println();
+            }
 
             for (int i = 0, size = x.getParameters().size(); i < size; ++i) {
                 if (i != 0) {
@@ -2542,14 +2544,30 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(')');
         }
 
+        SQLStatement block = x.getBlock();
+
         if (!create) {
             println();
             println("IS");
         } else {
             println();
+            if (block instanceof SQLBlockStatement) {
+                SQLBlockStatement blockStatement = (SQLBlockStatement) block;
+                if (blockStatement.getParameters().size() > 0) {
+                    println("AS");
+                }
+            }
         }
-        x.getBlock().setParent(x);
-        x.getBlock().accept(this);
+
+        String javaCallSpec = x.getJavaCallSpec();
+        if (javaCallSpec != null) {
+            print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
+            print0(javaCallSpec);
+            print('\'');
+            return false;
+        }
+
+        block.accept(this);
         return false;
     }
 
