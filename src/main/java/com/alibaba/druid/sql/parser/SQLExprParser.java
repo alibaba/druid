@@ -858,20 +858,40 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
 
-                SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(name);
-                methodInvokeExpr.setOwner(expr);
-                if (lexer.token() == Token.RPAREN) {
+                if (lexer.token() == Token.DISTINCT) {
                     lexer.nextToken();
-                } else {
-                    if (lexer.token() == Token.PLUS) {
-                        methodInvokeExpr.addParameter(new SQLIdentifierExpr("+"));
+
+                    String aggreateMethodName = expr.toString() + "." + name;
+                    SQLAggregateExpr aggregateExpr = new SQLAggregateExpr(aggreateMethodName, SQLAggregateOption.DISTINCT);
+
+                    if (lexer.token() == Token.RPAREN) {
                         lexer.nextToken();
                     } else {
-                        exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
+                        if (lexer.token() == Token.PLUS) {
+                            aggregateExpr.getArguments().add(new SQLIdentifierExpr("+"));
+                            lexer.nextToken();
+                        } else {
+                            exprList(aggregateExpr.getArguments(), aggregateExpr);
+                        }
+                        accept(Token.RPAREN);
                     }
-                    accept(Token.RPAREN);
+                    expr = aggregateExpr;
+                } else {
+                    SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(name);
+                    methodInvokeExpr.setOwner(expr);
+                    if (lexer.token() == Token.RPAREN) {
+                        lexer.nextToken();
+                    } else {
+                        if (lexer.token() == Token.PLUS) {
+                            methodInvokeExpr.addParameter(new SQLIdentifierExpr("+"));
+                            lexer.nextToken();
+                        } else {
+                            exprList(methodInvokeExpr.getParameters(), methodInvokeExpr);
+                        }
+                        accept(Token.RPAREN);
+                    }
+                    expr = methodInvokeExpr;
                 }
-                expr = methodInvokeExpr;
             } else {
                 expr = new SQLPropertyExpr(expr, name);
             }
@@ -1309,6 +1329,14 @@ public class SQLExprParser extends SQLParser {
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, getDbType());
         } else if (lexer.token() == Token.BANGEQ) {
             lexer.nextToken();
+            rightExp = bitOr();
+
+            rightExp = equalityRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotEqual, rightExp, getDbType());
+        } else if (lexer.token() == Token.BANG) {
+            lexer.nextToken();
+            accept(Token.EQ);
             rightExp = bitOr();
 
             rightExp = equalityRest(rightExp);

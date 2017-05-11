@@ -361,8 +361,13 @@ public class OracleExprParser extends SQLExprParser {
                         accept(Token.RPAREN);
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
                         break;
+                    case IDENTIFIER: {
+                        sqlExpr = expr();
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
+                        break;
+                    }
                     default:
-                        throw new ParserException("TODO");
+                        throw new ParserException("TODO " + lexer.info());
                 }
                 return primaryRest(sqlExpr);
             case SUB:
@@ -403,6 +408,7 @@ public class OracleExprParser extends SQLExprParser {
                         lexer.nextToken();
                         break;
                     case VARIANT:
+                    case QUES:
                     case IDENTIFIER:
                         sqlExpr = expr();
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
@@ -981,6 +987,14 @@ public class OracleExprParser extends SQLExprParser {
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, getDbType());
         } else if (lexer.token() == Token.BANGEQ) {
             lexer.nextToken();
+            rightExp = shift();
+
+            rightExp = equalityRest(rightExp);
+
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotEqual, rightExp, getDbType());
+        } else if (lexer.token() == Token.BANG) {
+            lexer.nextToken();
+            accept(Token.EQ);
             rightExp = shift();
 
             rightExp = equalityRest(rightExp);
