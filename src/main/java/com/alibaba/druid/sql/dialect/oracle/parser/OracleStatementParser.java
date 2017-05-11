@@ -27,44 +27,11 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.TableSpaceItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.UpdateIndexesClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement.LockMode;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -248,6 +215,11 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.IDENTIFIER) {
+                if (lexer.stringVal().equals("RAISE")) {
+                    statementList.add(this.parseRaise());
+                    continue;
+                }
+
                 SQLExpr expr = exprParser.expr();
                 OracleExprStatement stmt = new OracleExprStatement(expr);
                 statementList.add(stmt);
@@ -467,6 +439,13 @@ public class OracleStatementParser extends SQLStatementParser {
 
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
+    }
+
+    public SQLStatement parseRaise() {
+        lexer.nextToken();
+        OracleRaiseStatement stmt = new OracleRaiseStatement();
+        stmt.setException(this.exprParser.expr());
+        return stmt;
     }
 
     public SQLStatement parseCase() {
