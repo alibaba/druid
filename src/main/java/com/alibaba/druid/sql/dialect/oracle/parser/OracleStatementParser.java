@@ -433,6 +433,12 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.token() == Token.PROCEDURE) {
+                SQLStatement stmt = this.parseCreateProcedure();
+                statementList.add(stmt);
+                continue;
+            }
+
             if (lexer.token() == Token.ELSIF && parent instanceof SQLIfStatement) {
                 break;
             }
@@ -1091,6 +1097,11 @@ public class OracleStatementParser extends SQLStatementParser {
                 parameter.setDefaultValue(new SQLQueryExpr(select));
             } else {
                 parameter.setName(this.exprParser.name());
+
+                if (lexer.token() == Token.IN) {
+                    lexer.nextToken();
+                    parameter.setParamType(SQLParameter.ParameterType.IN);
+                }
                 parameter.setDataType(this.exprParser.parseDataType());
 
                 if (lexer.token() == Token.COLONEQ) {
@@ -1544,16 +1555,22 @@ public class OracleStatementParser extends SQLStatementParser {
 
     public SQLCreateProcedureStatement parseCreateProcedure() {
         SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
-        accept(Token.CREATE);
-        if (lexer.token() == Token.OR) {
+
+        if (lexer.token() == Token.CREATE) {
             lexer.nextToken();
-            accept(Token.REPLACE);
-            stmt.setOrReplace(true);
+            if (lexer.token() == Token.OR) {
+                lexer.nextToken();
+                accept(Token.REPLACE);
+                stmt.setOrReplace(true);
+            }
+        } else {
+            stmt.setCreate(false);
         }
 
         accept(Token.PROCEDURE);
 
-        stmt.setName(this.exprParser.name());
+        SQLName procedureName = this.exprParser.name();
+        stmt.setName(procedureName);
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
@@ -1561,11 +1578,19 @@ public class OracleStatementParser extends SQLStatementParser {
             accept(Token.RPAREN);
         }
 
-        accept(Token.AS);
+        if (lexer.token() == Token.IS) {
+            lexer.nextToken();
+        } else {
+            accept(Token.AS);
+        }
 
         SQLBlockStatement block = this.parseBlock();
 
         stmt.setBlock(block);
+
+        if (identifierEquals(procedureName.getSimpleName())) {
+            lexer.nextToken();
+        }
 
         return stmt;
     }

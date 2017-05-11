@@ -3337,16 +3337,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             decrementIndent();
 
         } else {
-
-            if (x.getParamType() == SQLParameter.ParameterType.IN) {
-                print0(ucase ? "IN " : "in ");
-            } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
-                print0(ucase ? "OUT " : "out ");
-            } else if (x.getParamType() == SQLParameter.ParameterType.INOUT) {
-                print0(ucase ? "INOUT " : "inout ");
+            if (JdbcConstants.ORACLE.equals(dbType)) {
+                x.getName().accept(this);
+                if (x.getParamType() == SQLParameter.ParameterType.IN) {
+                    print0(ucase ? " IN " : " in ");
+                } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
+                    print0(ucase ? " OUT " : " out ");
+                } else if (x.getParamType() == SQLParameter.ParameterType.INOUT) {
+                    print0(ucase ? " INOUT " : " inout ");
+                } else {
+                    print(' ');
+                }
+            } else {
+                if (x.getParamType() == SQLParameter.ParameterType.IN) {
+                    print0(ucase ? "IN " : "in ");
+                } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
+                    print0(ucase ? "OUT " : "out ");
+                } else if (x.getParamType() == SQLParameter.ParameterType.INOUT) {
+                    print0(ucase ? "INOUT " : "inout ");
+                }
+                x.getName().accept(this);
+                print(' ');
             }
-            x.getName().accept(this);
-            print(' ');
 
             x.getDataType().accept(this);
 

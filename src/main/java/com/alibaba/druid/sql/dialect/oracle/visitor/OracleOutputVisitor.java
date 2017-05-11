@@ -1864,7 +1864,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         incrementIndent();
         println();
 
-        printlnAndAccept(x.getStatements(), ";");
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement stmt = x.getStatements().get(i);
+            stmt.accept(this);
+            if (i != size - 1) {
+                println(";");
+            } else {
+                print(';');
+            }
+        }
 
         decrementIndent();
         println();
@@ -2503,7 +2511,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(SQLCreateProcedureStatement x) {
-        if (x.isOrReplace()) {
+        boolean create = x.isCreate();
+        if (!create) {
+            print0(ucase ? "PROCEDURE " : "procedure ");
+        } else if (x.isOrReplace()) {
             print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
         } else {
             print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
@@ -2531,7 +2542,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(')');
         }
 
-        println();
+        if (!create) {
+            println();
+            println("IS");
+        } else {
+            println();
+        }
         x.getBlock().setParent(x);
         x.getBlock().accept(this);
         return false;

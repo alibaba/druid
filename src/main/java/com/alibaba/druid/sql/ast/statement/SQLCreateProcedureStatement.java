@@ -28,6 +28,7 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
     private SQLName            definer;
 
+    private boolean            create     = true;
     private boolean            orReplace;
     private SQLName            name;
     private SQLStatement       block;
@@ -79,10 +80,16 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     public SQLName getDefiner() {
         return definer;
     }
-
     
     public void setDefiner(SQLName definer) {
         this.definer = definer;
     }
 
+    public boolean isCreate() {
+        return create;
+    }
+
+    public void setCreate(boolean create) {
+        this.create = create;
+    }
 }
