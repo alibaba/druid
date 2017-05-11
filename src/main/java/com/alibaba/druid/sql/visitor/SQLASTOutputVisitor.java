@@ -3303,10 +3303,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         incrementIndent();
         println();
 
+
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
             item.setParent(x);
             item.accept(this);
+
+            if (JdbcConstants.ORACLE.equals(dbType)) {
+               print(";");
+            }
+
             if (i != size - 1) {
                 println();
             }

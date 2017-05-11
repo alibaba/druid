@@ -1912,14 +1912,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         incrementIndent();
         println();
 
-        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
-            SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
-            item.accept(this);
-            if (i != size - 1) {
-                println();
-            }
-        }
+        printlnAndAccept(x.getStatements(), ";");
 
         decrementIndent();
         println();
