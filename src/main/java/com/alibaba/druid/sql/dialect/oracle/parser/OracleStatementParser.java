@@ -1059,7 +1059,7 @@ public class OracleStatementParser extends SQLStatementParser {
             lexer.nextToken();
         }
 
-        if (lexer.token() == Token.IDENTIFIER) {
+        if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.CURSOR) {
             parserParameters(block.getParameters(), block);
             for (SQLParameter param : block.getParameters()) {
                 param.setParent(block);
