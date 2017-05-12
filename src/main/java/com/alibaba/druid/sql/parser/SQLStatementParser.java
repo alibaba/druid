@@ -2211,6 +2211,13 @@ public class SQLStatementParser extends SQLParser {
 
         SQLFetchStatement stmt = new SQLFetchStatement();
         stmt.setCursorName(this.exprParser.name());
+
+        if (identifierEquals("BULK")) {
+            lexer.nextToken();
+            acceptIdentifier("COLLECT");
+            stmt.setBulkCollect(true);
+        }
+
         accept(Token.INTO);
         for (;;) {
             stmt.getInto().add(this.exprParser.name());

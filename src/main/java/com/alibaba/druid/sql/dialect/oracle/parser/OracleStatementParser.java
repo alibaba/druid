@@ -1085,23 +1085,50 @@ public class OracleStatementParser extends SQLStatementParser {
         for (;;) {
             SQLParameter parameter = new SQLParameter();
 
+            SQLName name;
+            SQLDataType dataType;
             if (lexer.token() == Token.CURSOR) {
                 lexer.nextToken();
 
-                parameter.setName(this.exprParser.name());
+                name = this.exprParser.name();
 
                 accept(Token.IS);
                 SQLSelect select = this.createSQLSelectParser().select();
 
-                SQLDataTypeImpl dataType = new SQLDataTypeImpl();
+                dataType = new SQLDataTypeImpl();
                 dataType.setName("CURSOR");
-                parameter.setDataType(dataType);
 
                 parameter.setDefaultValue(new SQLQueryExpr(select));
             } else if (lexer.token() == Token.PROCEDURE) {
                 break;
+            } else if (identifierEquals("TYPE")) {
+                lexer.nextToken();
+                name = this.exprParser.name();
+                accept(Token.IS);
+
+                if (identifierEquals("REF")) {
+                    lexer.nextToken();
+                    accept(Token.CURSOR);
+
+                    dataType = new SQLDataTypeImpl("REF CURSOR");
+                } else if (lexer.token() == Token.TABLE) {
+                    lexer.nextToken();
+                    accept(Token.OF);
+
+                    name = this.exprParser.name();
+
+                    if (lexer.token() == Token.PERCENT) {
+                        lexer.nextToken();
+                        acceptIdentifier("TYPE");
+                    }
+
+                    String typeName = name.toString() + "%TYPE";
+                    dataType = new SQLDataTypeImpl(typeName);
+                } else {
+                    throw new ParserException("TODO : " + lexer.info());
+                }
             } else {
-                parameter.setName(this.exprParser.name());
+                name = this.exprParser.name();
 
                 if (lexer.token() == Token.IN) {
                     lexer.nextToken();
@@ -1122,13 +1149,16 @@ public class OracleStatementParser extends SQLStatementParser {
                     parameter.setNoCopy(true);
                 }
 
-                parameter.setDataType(this.exprParser.parseDataType());
+                dataType = this.exprParser.parseDataType();
 
                 if (lexer.token() == Token.COLONEQ) {
                     lexer.nextToken();
                     parameter.setDefaultValue(this.exprParser.expr());
                 }
             }
+
+            parameter.setName(name);
+            parameter.setDataType(dataType);
 
             parameters.add(parameter);
             if (lexer.token() == Token.COMMA || lexer.token() == Token.SEMI) {

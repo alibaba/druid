@@ -3216,7 +3216,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLFetchStatement x) {
         print0(ucase ? "FETCH " : "fetch ");
         x.getCursorName().accept(this);
-        print0(ucase ? " INTO " : " into ");
+        if (x.isBulkCollect()) {
+            print0(ucase ? " BULK COLLECT INTO " : " bulk collect into ");
+        } else {
+            print0(ucase ? " INTO " : " into ");
+        }
         printAndAccept(x.getInto(), ", ");
         return false;
     }
