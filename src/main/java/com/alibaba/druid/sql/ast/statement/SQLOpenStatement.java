@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 /**
@@ -24,7 +25,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLOpenStatement extends SQLStatementImpl{
 	
 	//cursor name
-	private String cursorName; 
+	private String cursorName;
+
+	private SQLExpr forExpr;
 	
 	public String getCursorName() {
 		return cursorName;
@@ -36,10 +39,20 @@ public class SQLOpenStatement extends SQLStatementImpl{
 
 	@Override
 	protected void accept0(SQLASTVisitor visitor) {
-		// TODO Auto-generated method stub
-		visitor.visit(this);
+		if (visitor.visit(this)) {
+			acceptChild(visitor, forExpr);
+		}
 	    visitor.endVisit(this);
-		
 	}
 
+	public SQLExpr getFor() {
+		return forExpr;
+	}
+
+	public void setFor(SQLExpr forExpr) {
+		if (forExpr != null) {
+			forExpr.setParent(this);
+		}
+		this.forExpr = forExpr;
+	}
 }

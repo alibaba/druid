@@ -422,6 +422,12 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.token() == Token.CLOSE) {
+                SQLStatement stmt = this.parseClose();
+                statementList.add(stmt);
+                continue;
+            }
+
             if (lexer.token() == Token.CASE) {
                 SQLStatement stmt = this.parseCase();
                 statementList.add(stmt);

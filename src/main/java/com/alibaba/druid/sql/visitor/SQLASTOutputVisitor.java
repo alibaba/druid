@@ -1025,6 +1025,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getSubQuery().accept(this);
             print(')');
             println();
+        } else if (parent instanceof SQLOpenStatement) {
+            x.getSubQuery().accept(this);
         } else {
             print('(');
             incrementIndent();
@@ -3201,6 +3203,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLOpenStatement x) {
         print0(ucase ? "OPEN " : "open ");
         print0(x.getCursorName());
+
+        SQLExpr forExpr = x.getFor();
+        if (forExpr != null) {
+            print0(ucase ? " FOR " : "for ");
+            forExpr.accept(this);
+        }
         return false;
     }
 
