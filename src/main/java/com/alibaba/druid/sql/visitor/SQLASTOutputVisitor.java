@@ -3349,7 +3349,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             decrementIndent();
 
         } else {
+            SQLDataType dataType = x.getDataType();
+
             if (JdbcConstants.ORACLE.equals(dbType)) {
+                String dataTypeName = dataType.getName();
+                if ((dataTypeName.endsWith("%TYPE") && x.getDefaultValue() == null)
+                        || dataTypeName.equalsIgnoreCase("REF CURSOR")) {
+                    print0(ucase ? "TYPE " : "type ");
+                }
+
                 x.getName().accept(this);
                 if (x.getParamType() == SQLParameter.ParameterType.IN) {
                     print0(ucase ? " IN " : " in ");
@@ -3376,7 +3384,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print(' ');
             }
 
-            x.getDataType().accept(this);
+            dataType.accept(this);
 
             if (x.getDefaultValue() != null) {
                 print0(" := ");

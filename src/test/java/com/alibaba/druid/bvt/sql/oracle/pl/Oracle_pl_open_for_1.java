@@ -78,10 +78,11 @@ public class Oracle_pl_open_for_1 extends OracleTest {
 
 		{
 			String output = SQLUtils.toOracleString(stmt);
+			System.out.println(output);
 			assertEquals("DECLARE\n" +
-							"\tempcurtyp REF CURSOR;\n" +
-							"\temployees.last_name employees.last_name%TYPE;\n" +
-							"\temployees.salary employees.salary%TYPE;\n" +
+							"\tTYPE empcurtyp REF CURSOR;\n" +
+							"\tTYPE employees.last_name employees.last_name%TYPE;\n" +
+							"\tTYPE employees.salary employees.salary%TYPE;\n" +
 							"\temp_cv empcurtyp;\n" +
 							"\tnames namelist;\n" +
 							"\tsals sallist;\n" +
@@ -103,9 +104,9 @@ public class Oracle_pl_open_for_1 extends OracleTest {
 		{
 			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 			assertEquals("declare\n" +
-							"\tempcurtyp REF CURSOR;\n" +
-							"\temployees.last_name employees.last_name%TYPE;\n" +
-							"\temployees.salary employees.salary%TYPE;\n" +
+							"\ttype empcurtyp REF CURSOR;\n" +
+							"\ttype employees.last_name employees.last_name%TYPE;\n" +
+							"\ttype employees.salary employees.salary%TYPE;\n" +
 							"\temp_cv empcurtyp;\n" +
 							"\tnames namelist;\n" +
 							"\tsals sallist;\n" +
