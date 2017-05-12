@@ -292,11 +292,15 @@ public class SQLUtils {
             visitor.setTableMapping(tableMapping);
         }
 
-        for (int i = 0; i < statementList.size(); i++) {
+        boolean printStmtSeperator = !JdbcConstants.ORACLE.equals(dbType);
+
+        for (int i = 0, size = statementList.size(); i < size; i++) {
             SQLStatement stmt = statementList.get(i);
 
             if (i > 0) {
-                visitor.print(";");
+                if (printStmtSeperator) {
+                    visitor.print(";");
+                }
 
                 SQLStatement preStmt = statementList.get(i - 1);
                 List<String> comments = preStmt.getAfterCommentsDirect();
@@ -309,7 +313,10 @@ public class SQLUtils {
                         visitor.print(comment);
                     }
                 }
-                visitor.println();
+
+                if (printStmtSeperator) {
+                    visitor.println();
+                }
 
                 if (!(stmt instanceof SQLSetStatement)) {
                     visitor.println();
@@ -325,12 +332,9 @@ public class SQLUtils {
             }
             stmt.accept(visitor);
 
-            if (i == statementList.size() - 1) {
+            if (i == size - 1) {
                 Boolean semi = (Boolean) stmt.getAttribute("format.semi");
-                if (semi != null && semi.booleanValue()) {
-//                    if (stmt.hasAfterComment()) {
-//                        visitor.println();
-//                    }
+                if (semi != null && semi.booleanValue() && printStmtSeperator) {
                     visitor.print(";");
                 }
 

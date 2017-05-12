@@ -210,8 +210,15 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.IDENTIFIER) {
-                if (lexer.stringVal().equals("RAISE")) {
+                String strVal = lexer.stringVal();
+                if (strVal.equalsIgnoreCase("RAISE")) {
                     statementList.add(this.parseRaise());
+                    continue;
+                }
+
+                if (strVal.equalsIgnoreCase("FORALL")) {
+                    SQLStatement forAll = this.parseFor();
+                    statementList.add(forAll);
                     continue;
                 }
 
@@ -547,18 +554,30 @@ public class OracleStatementParser extends SQLStatementParser {
     }
 
     public OracleForStatement parseFor() {
-        accept(Token.FOR);
-
         OracleForStatement stmt = new OracleForStatement();
+
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+        } else {
+            acceptIdentifier("FORALL");
+            stmt.setAll(true);
+        }
 
         stmt.setIndex(this.exprParser.name());
         accept(Token.IN);
         stmt.setRange(this.exprParser.expr());
-        accept(Token.LOOP);
 
-        this.parseStatementList(stmt.getStatements());
-        accept(Token.END);
-        accept(Token.LOOP);
+        if (stmt.isAll()) {
+            SQLStatement itemStmt = this.parseStatement();
+            itemStmt.setParent(stmt);
+            stmt.getStatements().add(itemStmt);
+        } else {
+            accept(Token.LOOP);
+
+            this.parseStatementList(stmt.getStatements());
+            accept(Token.END);
+            accept(Token.LOOP);
+        }
         return stmt;
     }
 
@@ -1122,8 +1141,22 @@ public class OracleStatementParser extends SQLStatementParser {
                         acceptIdentifier("TYPE");
                     }
 
-                    String typeName = name.toString() + "%TYPE";
+                    String typeName = "TABLE OF " + name.toString() + "%TYPE";
                     dataType = new SQLDataTypeImpl(typeName);
+                } else if (identifierEquals("VARRAY")) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    int len = this.exprParser.acceptInteger();
+                    accept(Token.RPAREN);
+                    accept(Token.OF);
+
+                    if (identifierEquals("NUMBER")) {
+                        lexer.nextToken();
+                        String typeName = "VARRAY(" + len + ") OF NUMBER";
+                        dataType = new SQLDataTypeImpl(typeName);
+                    } else {
+                        throw new ParserException("TODO : " + lexer.info());
+                    }
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
                 }

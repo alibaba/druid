@@ -3353,8 +3353,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             if (JdbcConstants.ORACLE.equals(dbType)) {
                 String dataTypeName = dataType.getName();
-                if ((dataTypeName.endsWith("%TYPE") && x.getDefaultValue() == null)
-                        || dataTypeName.equalsIgnoreCase("REF CURSOR")) {
+                boolean printType = (dataTypeName.startsWith("TABLE OF") && x.getDefaultValue() == null)
+                        || dataTypeName.equalsIgnoreCase("REF CURSOR")
+                        || dataTypeName.startsWith("VARRAY(");
+                if (printType) {
                     print0(ucase ? "TYPE " : "type ");
                 }
 
@@ -3371,6 +3373,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
                 if (x.isNoCopy()) {
                     print0(ucase ? "NOCOPY " : "nocopy ");
+                }
+
+                if (printType) {
+                    print0(ucase ? "IS " : "is ");
                 }
             } else {
                 if (x.getParamType() == SQLParameter.ParameterType.IN) {

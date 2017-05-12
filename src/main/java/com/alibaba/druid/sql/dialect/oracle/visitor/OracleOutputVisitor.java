@@ -112,12 +112,21 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x instanceof OraclePLSQLCommitStatement) {
             return;
         }
-        if (x.getParent() instanceof SQLCreateProcedureStatement) {
+
+        SQLObject parent = x.getParent();
+        if (parent instanceof SQLCreateProcedureStatement) {
             return;
         }
 
         if (isPrettyFormat()) {
-            if (x.getParent() != null) {
+            if (parent instanceof OracleForStatement) {
+                OracleForStatement forStatement = (OracleForStatement) parent;
+                if (forStatement.isAll()) {
+                    return;
+                }
+            }
+
+            if (parent != null) {
                 print(';');
             } else {
                 println(";");
@@ -1857,28 +1866,39 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleForStatement x) {
-        print0(ucase ? "FOR " : "for ");
+        boolean all = x.isAll();
+        if (all) {
+            print0(ucase ? "FORALL " : "forall ");
+        } else {
+            print0(ucase ? "FOR " : "for ");
+        }
         x.getIndex().accept(this);
         print0(ucase ? " IN " : " in ");
         x.getRange().accept(this);
-        println();
-        print0(ucase ? "LOOP" : "loop");
+        if (!all) {
+            println();
+            print0(ucase ? "LOOP" : "loop");
+        }
         incrementIndent();
         println();
 
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement stmt = x.getStatements().get(i);
             stmt.accept(this);
-            if (i != size - 1) {
-                println(";");
-            } else {
-                print(';');
+            if (!all) {
+                if (i != size - 1) {
+                    println(";");
+                } else {
+                    print(';');
+                }
             }
         }
 
         decrementIndent();
-        println();
-        print0(ucase ? "END LOOP" : "end loop");
+        if (!all) {
+            println();
+            print0(ucase ? "END LOOP" : "end loop");
+        }
         return false;
     }
 

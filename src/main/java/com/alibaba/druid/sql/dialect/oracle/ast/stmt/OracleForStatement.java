@@ -31,6 +31,8 @@ public class OracleForStatement extends OracleStatementImpl {
 
     private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
+    private boolean            all;
+
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -65,4 +67,11 @@ public class OracleForStatement extends OracleStatementImpl {
         this.statements = statements;
     }
 
+    public boolean isAll() {
+        return all;
+    }
+
+    public void setAll(boolean all) {
+        this.all = all;
+    }
 }

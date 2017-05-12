@@ -270,6 +270,17 @@ public class SQLParser {
         }
     }
 
+    public int acceptInteger() {
+        if (lexer.token() == Token.LITERAL_INT) {
+            int intVal = ((Integer) lexer.integerValue()).intValue();
+            lexer.nextToken();
+            return intVal;
+        } else {
+            throw new ParserException("syntax error, expect int, actual " + lexer.token() + " "
+                    + lexer.stringVal());
+        }
+    }
+
     public void match(Token token) {
         if (lexer.token() != token) {
             throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token() + " "
