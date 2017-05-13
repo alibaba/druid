@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import static com.alibaba.druid.util.Utils.getBoolean;
+import static com.alibaba.druid.util.Utils.getInteger;
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
 public class WallConfig implements WallConfigMBean {
@@ -843,6 +844,12 @@ public class WallConfig implements WallConfigMBean {
             Boolean propertyValue = getBoolean(properties, "druid.wall.multiStatementAllow");
             if (propertyValue != null) {
                 this.setMultiStatementAllow(propertyValue);
+            }
+        }
+        {
+            Integer propertyValue = getInteger(properties, "druid.wall.selectLimit");
+            if (propertyValue != null) {
+                this.setSelectLimit(propertyValue);
             }
         }
     }
