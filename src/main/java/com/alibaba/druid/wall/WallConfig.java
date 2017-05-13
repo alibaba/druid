@@ -126,6 +126,8 @@ public class WallConfig implements WallConfigMBean {
     private boolean             completeInsertValuesCheck   = false;
     private int                 insertValuesCheckSize       = 3;
 
+    private int                 selectLimit                 = -1;
+
     public WallConfig(){
         this.configFromProperties(System.getProperties());
     }
@@ -796,6 +798,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setBlockAllow(boolean blockAllow) {
         this.blockAllow = blockAllow;
+    }
+
+    public int getSelectLimit() {
+        return selectLimit;
+    }
+
+    public void setSelectLimit(int selectLimit) {
+        this.selectLimit = selectLimit;
     }
 
     public void configFromProperties(Properties properties) {
