@@ -23,7 +23,7 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-public class Oracle_pl_open_forall_0 extends OracleTest {
+public class Oracle_pl_forall_0 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = "DROP TABLE employees_temp;\n" +
