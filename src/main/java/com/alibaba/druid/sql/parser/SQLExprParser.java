@@ -2208,7 +2208,17 @@ public class SQLExprParser extends SQLParser {
         } else {
             expr = expr();
         }
-        final String alias = as();
+
+        final String alias;
+        switch (lexer.token()) {
+            case FULL:
+                alias = lexer.stringVal();
+                lexer.nextToken();
+                break;
+            default:
+                alias = as();
+                break;
+        }
 
         return new SQLSelectItem(expr, alias, connectByRoot);
     }
