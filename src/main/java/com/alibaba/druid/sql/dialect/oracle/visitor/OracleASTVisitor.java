@@ -393,6 +393,10 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleExitStatement x);
 
+    boolean visit(OracleConntinueStatement x);
+
+    void endVisit(OracleConntinueStatement x);
+
     boolean visit(OracleRaiseStatement x);
 
     void endVisit(OracleRaiseStatement x);

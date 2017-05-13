@@ -40,6 +40,7 @@ public class OracleLexer extends Lexer {
         map.put("COMMENT", Token.COMMENT);
         map.put("COMMIT", Token.COMMIT);
         map.put("CONNECT", Token.CONNECT);
+        map.put("CONTINUE", Token.CONTINUE);
 
         map.put("CROSS", Token.CROSS);
         map.put("CURSOR", Token.CURSOR);

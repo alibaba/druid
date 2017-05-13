@@ -109,7 +109,7 @@ public class Oracle_pl_open_for_0 extends OracleTest {
 							"\t\tWHERE job_id LIKE 'AD_%';\n" +
 							"\tLOOP\n" +
 							"\t\tFETCH cv INTO sal, sal_multiple;\n" +
-							"\t\tEXIT WHEN cv % NOTFOUND;\n" +
+							"\t\tEXIT WHEN cv%NOTFOUND;\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal          = ' || sal);\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal_multiple = ' || sal_multiple);\n" +
 							"\tEND LOOP;\n" +
@@ -121,7 +121,7 @@ public class Oracle_pl_open_for_0 extends OracleTest {
 							"\t\tWHERE job_id LIKE 'AD_%';\n" +
 							"\tLOOP\n" +
 							"\t\tFETCH cv INTO sal, sal_multiple;\n" +
-							"\t\tEXIT WHEN cv % NOTFOUND;\n" +
+							"\t\tEXIT WHEN cv%NOTFOUND;\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal          = ' || sal);\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal_multiple = ' || sal_multiple);\n" +
 							"\tEND LOOP;\n" +
@@ -144,7 +144,7 @@ public class Oracle_pl_open_for_0 extends OracleTest {
 							"\t\twhere job_id like 'AD_%';\n" +
 							"\tloop\n" +
 							"\t\tfetch cv into sal, sal_multiple;\n" +
-							"\t\texit when cv % NOTFOUND;\n" +
+							"\t\texit when cv%NOTFOUND;\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal          = ' || sal);\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal_multiple = ' || sal_multiple);\n" +
 							"\tend loop;\n" +
@@ -156,7 +156,7 @@ public class Oracle_pl_open_for_0 extends OracleTest {
 							"\t\twhere job_id like 'AD_%';\n" +
 							"\tloop\n" +
 							"\t\tfetch cv into sal, sal_multiple;\n" +
-							"\t\texit when cv % NOTFOUND;\n" +
+							"\t\texit when cv%NOTFOUND;\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal          = ' || sal);\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal_multiple = ' || sal_multiple);\n" +
 							"\tend loop;\n" +

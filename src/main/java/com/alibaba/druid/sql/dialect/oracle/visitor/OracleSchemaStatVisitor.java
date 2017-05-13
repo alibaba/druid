@@ -1282,6 +1282,16 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
+    public boolean visit(OracleConntinueStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleConntinueStatement x) {
+
+    }
+
+    @Override
     public boolean visit(OracleRaiseStatement x) {
         return false;
     }

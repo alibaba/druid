@@ -16,11 +16,13 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleExitStatement extends OracleStatementImpl {
+public class OracleConntinueStatement extends OracleStatementImpl {
 
     private SQLExpr when;
+    private SQLName label;
 
     public SQLExpr getWhen() {
         return when;
@@ -33,9 +35,21 @@ public class OracleExitStatement extends OracleStatementImpl {
         this.when = when;
     }
 
+    public SQLName getLabel() {
+        return label;
+    }
+
+    public void setLabel(SQLName label) {
+        if (label != null) {
+            label.setParent(this);
+        }
+        this.label = label;
+    }
+
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, label);
             acceptChild(visitor, when);
         }
         visitor.endVisit(this);

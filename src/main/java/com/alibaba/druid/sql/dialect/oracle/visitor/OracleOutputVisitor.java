@@ -109,7 +109,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             return;
         }
 
-        if (x instanceof OraclePLSQLCommitStatement) {
+        if (x instanceof OraclePLSQLCommitStatement
+                || x instanceof OracleLabelStatement
+                || x instanceof OracleExceptionStatement.Item) {
             return;
         }
 
@@ -1495,14 +1497,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement.Item x) {
         print0(ucase ? "WHEN " : "when ");
         x.getWhen().accept(this);
+        print0(ucase ? " THEN " : " then ");
         incrementIndent();
+        x.getStatement().accept(this);
 
-        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
-            println();
-            SQLStatement stmt = x.getStatements().get(i);
-            stmt.setParent(x);
-            stmt.accept(this);
-        }
         decrementIndent();
         return false;
     }
@@ -1898,6 +1896,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (!all) {
             println();
             print0(ucase ? "END LOOP" : "end loop");
+            SQLName endLabel = x.getEndLabel();
+            if (endLabel != null) {
+                print(' ');
+                endLabel.accept(this);
+            }
         }
         return false;
     }
@@ -2493,6 +2496,29 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleExitStatement x) {
+
+    }
+
+
+    @Override
+    public boolean visit(OracleConntinueStatement x) {
+        print0(ucase ? "CONTINUE" : "continue");
+
+        SQLName label = x.getLabel();
+        if (label != null) {
+            print(' ');
+            label.accept(this);
+        }
+
+        if (x.getWhen() != null) {
+            print0(ucase ? " WHEN " : " when ");
+            x.getWhen().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleConntinueStatement x) {
 
     }
 

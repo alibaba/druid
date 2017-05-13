@@ -322,6 +322,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x = ParameterizedOutputVisitorUtils.merge(this, x);
         }
 
+        SQLBinaryOperator operator = x.getOperator();
+
         if (parameters != null
                 && parameters.size() > 0
                 && x.getOperator() == SQLBinaryOperator.Equality
@@ -343,8 +345,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLObject parent = x.getParent();
         boolean isRoot = parent instanceof SQLSelectQueryBlock;
-        boolean relational = x.getOperator() == SQLBinaryOperator.BooleanAnd
-                             || x.getOperator() == SQLBinaryOperator.BooleanOr;
+        boolean relational = operator == SQLBinaryOperator.BooleanAnd
+                             || operator == SQLBinaryOperator.BooleanOr;
 
         if (isRoot && relational) {
             incrementIndent();
@@ -352,8 +354,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         List<SQLExpr> groupList = new ArrayList<SQLExpr>();
         SQLExpr left = x.getLeft();
+        SQLExpr right = x.getRight();
         for (;;) {
-            if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
+            if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == operator) {
                 SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
                 groupList.add(binaryLeft.getRight());
                 left = binaryLeft.getLeft();
@@ -376,7 +379,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printlnComments(item.getBeforeCommentsDirect());
             }
 
-            visitBinaryLeft(item, x.getOperator());
+            visitBinaryLeft(item, operator);
 
             if (isPrettyFormat() && item.hasAfterComment()) {
                 print(' ');
@@ -388,13 +391,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printComment(item.getParent().getAfterCommentsDirect(), "\n");
             }
 
+            boolean printOpSpace = true;
             if (relational) {
                 println();
             } else {
-                print0(" ");
+                if (operator == SQLBinaryOperator.Modulus
+                        && JdbcConstants.ORACLE.equals(dbType)
+                        && left instanceof SQLIdentifierExpr
+                        && right instanceof SQLIdentifierExpr
+                        && ((SQLIdentifierExpr) right).getName().equalsIgnoreCase("NOTFOUND")) {
+                    printOpSpace = false;
+                }
+                if (printOpSpace) {
+                    print(' ');
+                }
             }
-            printOperator(x.getOperator());
-            print0(" ");
+            printOperator(operator);
+            if (printOpSpace) {
+                print(' ');
+            }
         }
 
         visitorBinaryRight(x);

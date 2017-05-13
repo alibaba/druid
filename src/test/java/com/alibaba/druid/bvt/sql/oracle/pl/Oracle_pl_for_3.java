@@ -23,30 +23,25 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-public class Oracle_pl_case_1 extends OracleTest {
+public class Oracle_pl_for_3 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
-				"  grade CHAR(1);\n" +
+				"  v_employees employees%ROWTYPE;\n" +
+				"  CURSOR c1 is SELECT * FROM employees;\n" +
 				"BEGIN\n" +
-				"  grade := 'B';\n" +
-				"  \n" +
-				"  CASE\n" +
-				"    WHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent');\n" +
-				"    WHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good');\n" +
-				"    WHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good');\n" +
-				"    WHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair');\n" +
-				"    WHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-				"  END CASE;\n" +
-				"EXCEPTION\n" +
-				"  WHEN CASE_NOT_FOUND THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+				"  OPEN c1;\n" +
+				"  -- Fetch entire row into v_employees record:\n" +
+				"  FOR i IN 1..10 LOOP\n" +
+				"    FETCH c1 INTO v_employees;\n" +
+				"    EXIT WHEN c1%NOTFOUND;\n" +
+				"    -- Process data here\n" +
+				"  END LOOP;\n" +
+				"  CLOSE c1;\n" +
 				"END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
-
-        assertEquals(1, statementList.size());
+		assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -59,7 +54,7 @@ public class Oracle_pl_case_1 extends OracleTest {
 //        System.out.println("relationships : " + visitor.getRelationships());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals(0, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
@@ -71,40 +66,39 @@ public class Oracle_pl_case_1 extends OracleTest {
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
 		{
-			String output = SQLUtils.toOracleString(stmt);
+			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+			System.out.println(output);
 			assertEquals("DECLARE\n" +
-							"\tgrade CHAR(1);\n" +
+							"\tv_employees employees%ROWTYPE;\n" +
+							"\tCURSOR c1 IS\n" +
+							"\t\tSELECT *\n" +
+							"\t\tFROM employees;\n" +
 							"BEGIN\n" +
-							"\tgrade := 'B';\n" +
-							"\tCASE\n" +
-							"\t\tWHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent'); \n" +
-							"\t\tWHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good'); \n" +
-							"\t\tWHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good'); \n" +
-							"\t\tWHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
-							"\t\tWHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\tELSE ;\n" +
-							"\tEND CASE;\n" +
-							"\tEXCEPTION\n" +
-							"\t\tWHEN CASE_NOT_FOUND THEN DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+							"\tOPEN c1;\n" +
+							"\tFOR i IN 1..10\n" +
+							"\tLOOP\n" +
+							"\t\tFETCH c1 INTO v_employees;\n" +
+							"\t\tEXIT WHEN c1%NOTFOUND;\n" +
+							"\tEND LOOP;\n" +
+							"\tCLOSE c1;\n" +
 							"END", //
 					output);
 		}
 		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 			assertEquals("declare\n" +
-							"\tgrade CHAR(1);\n" +
+							"\tv_employees employees%ROWTYPE;\n" +
+							"\tcursor c1 is\n" +
+							"\t\tselect *\n" +
+							"\t\tfrom employees;\n" +
 							"begin\n" +
-							"\tgrade := 'B';\n" +
-							"\tcase\n" +
-							"\t\twhen grade = 'A' then DBMS_OUTPUT.PUT_LINE('Excellent'); \n" +
-							"\t\twhen grade = 'B' then DBMS_OUTPUT.PUT_LINE('Very Good'); \n" +
-							"\t\twhen grade = 'C' then DBMS_OUTPUT.PUT_LINE('Good'); \n" +
-							"\t\twhen grade = 'D' then DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
-							"\t\twhen grade = 'F' then DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\telse ;\n" +
-							"\tend case;\n" +
-							"\texception\n" +
-							"\t\twhen CASE_NOT_FOUND then DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+							"\topen c1;\n" +
+							"\tfor i in 1..10\n" +
+							"\tloop\n" +
+							"\t\tfetch c1 into v_employees;\n" +
+							"\t\texit when c1%NOTFOUND;\n" +
+							"\tend loop;\n" +
+							"\tclose c1;\n" +
 							"end", //
 					output);
 		}

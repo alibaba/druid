@@ -191,6 +191,22 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.token() == Token.CONTINUE) {
+                lexer.nextToken();
+                OracleConntinueStatement stmt = new OracleConntinueStatement();
+
+                if (lexer.token() == Token.IDENTIFIER) {
+                    SQLName label = this.exprParser.name();
+                    stmt.setLabel(label);
+                }
+                if (lexer.token() == Token.WHEN) {
+                    lexer.nextToken();
+                    stmt.setWhen(this.exprParser.expr());
+                }
+                statementList.add(stmt);
+                continue;
+            }
+
             if (lexer.token() == Token.FETCH || identifierEquals("FETCH")) {
                 SQLStatement stmt = parseFetch();
                 statementList.add(stmt);
@@ -262,7 +278,21 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
             if (lexer.token() == Token.FOR) {
-                statementList.add(this.parseFor());
+                OracleForStatement forStatement = this.parseFor();
+                if (lexer.token() == Token.IDENTIFIER) {
+                    String strVal = lexer.stringVal();
+                    int stmtListSize = statementList.size();
+                    if (stmtListSize > 0) {
+                        SQLStatement lastStmt = statementList.get(stmtListSize - 1);
+                        if (lastStmt instanceof OracleLabelStatement) {
+                            if (((OracleLabelStatement) lastStmt).getLabel().getSimpleName().equalsIgnoreCase(strVal)) {
+                                SQLName endLabbel = this.exprParser.name();
+                                forStatement.setEndLabel(endLabbel);
+                            }
+                        }
+                    }
+                }
+                statementList.add(forStatement);
                 continue;
             }
             if (lexer.token() == Token.LOOP) {
@@ -458,7 +488,9 @@ public class OracleStatementParser extends SQLStatementParser {
     public SQLStatement parseRaise() {
         lexer.nextToken();
         OracleRaiseStatement stmt = new OracleRaiseStatement();
-        stmt.setException(this.exprParser.expr());
+        if (lexer.token() != Token.SEMI) {
+            stmt.setException(this.exprParser.expr());
+        }
         return stmt;
     }
 
@@ -574,7 +606,7 @@ public class OracleStatementParser extends SQLStatementParser {
         } else {
             accept(Token.LOOP);
 
-            this.parseStatementList(stmt.getStatements());
+            this.parseStatementList(stmt.getStatements(), -1, stmt);
             accept(Token.END);
             accept(Token.LOOP);
         }
@@ -586,7 +618,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         SQLLoopStatement stmt = new SQLLoopStatement();
 
-        this.parseStatementList(stmt.getStatements());
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
         accept(Token.END);
         accept(Token.LOOP);
         return stmt;
@@ -1308,7 +1340,8 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleExceptionStatement.Item item = new OracleExceptionStatement.Item();
             item.setWhen(this.exprParser.expr());
             accept(Token.THEN);
-            parseStatementList(item.getStatements());
+            SQLStatement thenStmt = this.parseStatement();
+            item.setStatement(thenStmt);
 
             stmt.addItem(item);
 

@@ -949,6 +949,16 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
+    public boolean visit(OracleConntinueStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleConntinueStatement x) {
+
+    }
+
+    @Override
     public boolean visit(OracleRaiseStatement x) {
         return true;
     }
