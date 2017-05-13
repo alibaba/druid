@@ -42,7 +42,7 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
     public static class Item extends OracleSQLObjectImpl {
 
         private SQLExpr            when;
-        private SQLStatement       statement;
+        private List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
         public SQLExpr getWhen() {
             return when;
@@ -52,22 +52,22 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
             this.when = when;
         }
 
-        public SQLStatement getStatement() {
-            return statement;
+        public List<SQLStatement> getStatements() {
+            return statements;
         }
 
         public void setStatement(SQLStatement statement) {
             if (statement != null) {
                 statement.setParent(this);
+                this.statements.add(statement);
             }
-            this.statement = statement;
         }
 
         @Override
         public void accept0(OracleASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, when);
-                acceptChild(visitor, statement);
+                acceptChild(visitor, statements);
             }
             visitor.endVisit(this);
         }

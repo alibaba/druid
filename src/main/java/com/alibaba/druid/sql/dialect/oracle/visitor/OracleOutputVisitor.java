@@ -104,30 +104,29 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             return;
         }
 
+        SQLObject parent = x.getParent();
+
         if ((!isPrintPostSemi()) //
-            && (!(x.getParent() instanceof SQLBlockStatement))) {
+            && (!(parent instanceof SQLBlockStatement))
+                && (!(parent instanceof OracleForStatement))) {
             return;
         }
 
         if (x instanceof OraclePLSQLCommitStatement
                 || x instanceof OracleLabelStatement
-                || x instanceof OracleExceptionStatement.Item) {
+                || x instanceof OracleExceptionStatement.Item
+                || x instanceof OracleExceptionStatement) {
             return;
         }
 
-        SQLObject parent = x.getParent();
-        if (parent instanceof SQLCreateProcedureStatement) {
+
+        if (parent instanceof SQLCreateProcedureStatement
+                || parent instanceof OracleExceptionStatement.Item
+                || parent instanceof OracleForStatement) {
             return;
         }
 
         if (isPrettyFormat()) {
-            if (parent instanceof OracleForStatement) {
-                OracleForStatement forStatement = (OracleForStatement) parent;
-                if (forStatement.isAll()) {
-                    return;
-                }
-            }
-
             if (parent != null) {
                 print(';');
             } else {
@@ -1367,6 +1366,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(SQLBlockStatement x) {
         if (x.getParameters().size() != 0) {
             incrementIndent();
+            if (x.getParent() instanceof SQLCreateProcedureStatement) {
+                printIndent();
+            }
             if (!(x.getParent() instanceof SQLCreateProcedureStatement)) {
                 print0(ucase ? "DECLARE" : "declare");
                 println();
@@ -1396,6 +1398,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             stmt.accept(this);
         }
         decrementIndent();
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            println();
+            exception.accept(this);
+        }
+
         println();
         print0(ucase ? "END" : "end");
         return false;
@@ -1497,9 +1506,23 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement.Item x) {
         print0(ucase ? "WHEN " : "when ");
         x.getWhen().accept(this);
-        print0(ucase ? " THEN " : " then ");
+        print0(ucase ? " THEN" : " then");
+
         incrementIndent();
-        x.getStatement().accept(this);
+        if (x.getStatements().size() > 1) {
+            println();
+        } else {
+            print(' ');
+        }
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            if (i != 0 && size > 1) {
+                println();
+            }
+            SQLStatement stmt = x.getStatements().get(i);
+            stmt.accept(this);
+            print(";");
+        }
 
         decrementIndent();
         return false;
@@ -1509,8 +1532,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleExceptionStatement x) {
         print0(ucase ? "EXCEPTION" : "exception");
         incrementIndent();
-        for (OracleExceptionStatement.Item item : x.getItems()) {
+        List<OracleExceptionStatement.Item> items = x.getItems();
+        for (int i = 0, size = items.size(); i < size; ++i) {
             println();
+            OracleExceptionStatement.Item item = items.get(i);
             item.accept(this);
         }
         decrementIndent();
@@ -2590,6 +2615,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(')');
         }
 
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            print(ucase ? " AUTHID " : " authid ");
+            authid.accept(this);
+        }
+
         SQLStatement block = x.getBlock();
 
         if (!create) {
@@ -2599,8 +2630,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             if (block instanceof SQLBlockStatement) {
                 SQLBlockStatement blockStatement = (SQLBlockStatement) block;
-                if (blockStatement.getParameters().size() > 0) {
-                    println("AS");
+                if (blockStatement.getParameters().size() > 0 || authid != null) {
+                    println(ucase ? "AS" : "as");
                 }
             }
         }

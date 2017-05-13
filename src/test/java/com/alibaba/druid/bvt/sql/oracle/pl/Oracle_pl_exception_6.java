@@ -23,30 +23,20 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-public class Oracle_pl_case_1 extends OracleTest {
+public class Oracle_pl_exception_6 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = "DECLARE\n" +
-				"  grade CHAR(1);\n" +
+				"  credit_limit CONSTANT NUMBER(3) := 5000;  -- Maximum value is 999\n" +
 				"BEGIN\n" +
-				"  grade := 'B';\n" +
-				"  \n" +
-				"  CASE\n" +
-				"    WHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent');\n" +
-				"    WHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good');\n" +
-				"    WHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good');\n" +
-				"    WHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair');\n" +
-				"    WHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-				"  END CASE;\n" +
+				"  NULL;\n" +
 				"EXCEPTION\n" +
-				"  WHEN CASE_NOT_FOUND THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+				"  WHEN VALUE_ERROR THEN\n" +
+				"    DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
 				"END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
-
-        assertEquals(1, statementList.size());
+		assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -71,40 +61,25 @@ public class Oracle_pl_case_1 extends OracleTest {
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
 		{
-			String output = SQLUtils.toOracleString(stmt);
+			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+			System.out.println(output);
 			assertEquals("DECLARE\n" +
-							"\tgrade CHAR(1);\n" +
+							"\tcredit_limit CONSTANT NUMBER(3) := 5000;\n" +
 							"BEGIN\n" +
-							"\tgrade := 'B';\n" +
-							"\tCASE\n" +
-							"\t\tWHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent'); \n" +
-							"\t\tWHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good'); \n" +
-							"\t\tWHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good'); \n" +
-							"\t\tWHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
-							"\t\tWHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\tELSE ;\n" +
-							"\tEND CASE;\n" +
+							"\tNULL;\n" +
 							"EXCEPTION\n" +
-							"\tWHEN CASE_NOT_FOUND THEN DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+							"\tWHEN VALUE_ERROR THEN DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
 							"END", //
 					output);
 		}
 		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 			assertEquals("declare\n" +
-							"\tgrade CHAR(1);\n" +
+							"\tcredit_limit constant NUMBER(3) := 5000;\n" +
 							"begin\n" +
-							"\tgrade := 'B';\n" +
-							"\tcase\n" +
-							"\t\twhen grade = 'A' then DBMS_OUTPUT.PUT_LINE('Excellent'); \n" +
-							"\t\twhen grade = 'B' then DBMS_OUTPUT.PUT_LINE('Very Good'); \n" +
-							"\t\twhen grade = 'C' then DBMS_OUTPUT.PUT_LINE('Good'); \n" +
-							"\t\twhen grade = 'D' then DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
-							"\t\twhen grade = 'F' then DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\telse ;\n" +
-							"\tend case;\n" +
+							"\tnull;\n" +
 							"exception\n" +
-							"\twhen CASE_NOT_FOUND then DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+							"\twhen VALUE_ERROR then DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
 							"end", //
 					output);
 		}

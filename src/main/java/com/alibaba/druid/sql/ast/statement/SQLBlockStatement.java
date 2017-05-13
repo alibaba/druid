@@ -46,11 +46,14 @@ public class SQLBlockStatement extends SQLStatementImpl {
         this.labelName = labelName;
     }
 
+    public SQLStatement exception;
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, parameters);
             acceptChild(visitor, statementList);
+            acceptChild(visitor, exception);
         }
         visitor.endVisit(this);
     }
@@ -63,4 +66,11 @@ public class SQLBlockStatement extends SQLStatementImpl {
         this.parameters = parameters;
     }
 
+    public SQLStatement getException() {
+        return exception;
+    }
+
+    public void setException(SQLStatement exception) {
+        this.exception = exception;
+    }
 }

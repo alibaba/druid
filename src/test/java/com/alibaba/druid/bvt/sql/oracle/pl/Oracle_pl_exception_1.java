@@ -23,30 +23,31 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-public class Oracle_pl_case_1 extends OracleTest {
+public class Oracle_pl_exception_1 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "DECLARE\n" +
-				"  grade CHAR(1);\n" +
+        String sql = "CREATE OR REPLACE PROCEDURE loc_var AUTHID DEFINER IS\n" +
+				"  stmt_no  POSITIVE;\n" +
+				"  name_    VARCHAR2(100);\n" +
 				"BEGIN\n" +
-				"  grade := 'B';\n" +
-				"  \n" +
-				"  CASE\n" +
-				"    WHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent');\n" +
-				"    WHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good');\n" +
-				"    WHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good');\n" +
-				"    WHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair');\n" +
-				"    WHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-				"  END CASE;\n" +
+				"  stmt_no := 1;\n" +
+				"\n" +
+				"  SELECT table_name INTO name_\n" +
+				"  FROM user_tables\n" +
+				"  WHERE table_name LIKE 'ABC%';\n" +
+				"\n" +
+				"  stmt_no := 2;\n" +
+				"\n" +
+				"  SELECT table_name INTO name_\n" +
+				"  FROM user_tables\n" +
+				"  WHERE table_name LIKE 'XYZ%';\n" +
 				"EXCEPTION\n" +
-				"  WHEN CASE_NOT_FOUND THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+				"  WHEN NO_DATA_FOUND THEN\n" +
+				"    DBMS_OUTPUT.PUT_LINE ('Table name not found in query ' || stmt_no);\n" +
 				"END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
-
-        assertEquals(1, statementList.size());
+		assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -59,7 +60,7 @@ public class Oracle_pl_case_1 extends OracleTest {
 //        System.out.println("relationships : " + visitor.getRelationships());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals(0, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("emp_name")));
@@ -71,40 +72,47 @@ public class Oracle_pl_case_1 extends OracleTest {
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
 		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("DECLARE\n" +
-							"\tgrade CHAR(1);\n" +
+			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+			System.out.println(output);
+			assertEquals("CREATE OR REPLACE PROCEDURE loc_var AUTHID DEFINER\n" +
+							"AS\n" +
+							"\tstmt_no POSITIVE;\n" +
+							"\tname_ VARCHAR2(100);\n" +
 							"BEGIN\n" +
-							"\tgrade := 'B';\n" +
-							"\tCASE\n" +
-							"\t\tWHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent'); \n" +
-							"\t\tWHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good'); \n" +
-							"\t\tWHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good'); \n" +
-							"\t\tWHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
-							"\t\tWHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\tELSE ;\n" +
-							"\tEND CASE;\n" +
+							"\tstmt_no := 1;\n" +
+							"\tSELECT table_name\n" +
+							"\tINTO name_\n" +
+							"\tFROM user_tables\n" +
+							"\tWHERE table_name LIKE 'ABC%';\n" +
+							"\tstmt_no := 2;\n" +
+							"\tSELECT table_name\n" +
+							"\tINTO name_\n" +
+							"\tFROM user_tables\n" +
+							"\tWHERE table_name LIKE 'XYZ%';\n" +
 							"EXCEPTION\n" +
-							"\tWHEN CASE_NOT_FOUND THEN DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+							"\tWHEN NO_DATA_FOUND THEN DBMS_OUTPUT.PUT_LINE('Table name not found in query ' || stmt_no);\n" +
 							"END", //
 					output);
 		}
 		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("declare\n" +
-							"\tgrade CHAR(1);\n" +
+			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+			assertEquals("create or replace procedure loc_var authid DEFINER\n" +
+							"as\n" +
+							"\tstmt_no POSITIVE;\n" +
+							"\tname_ VARCHAR2(100);\n" +
 							"begin\n" +
-							"\tgrade := 'B';\n" +
-							"\tcase\n" +
-							"\t\twhen grade = 'A' then DBMS_OUTPUT.PUT_LINE('Excellent'); \n" +
-							"\t\twhen grade = 'B' then DBMS_OUTPUT.PUT_LINE('Very Good'); \n" +
-							"\t\twhen grade = 'C' then DBMS_OUTPUT.PUT_LINE('Good'); \n" +
-							"\t\twhen grade = 'D' then DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
-							"\t\twhen grade = 'F' then DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\telse ;\n" +
-							"\tend case;\n" +
+							"\tstmt_no := 1;\n" +
+							"\tselect table_name\n" +
+							"\tinto name_\n" +
+							"\tfrom user_tables\n" +
+							"\twhere table_name like 'ABC%';\n" +
+							"\tstmt_no := 2;\n" +
+							"\tselect table_name\n" +
+							"\tinto name_\n" +
+							"\tfrom user_tables\n" +
+							"\twhere table_name like 'XYZ%';\n" +
 							"exception\n" +
-							"\twhen CASE_NOT_FOUND then DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+							"\twhen NO_DATA_FOUND then DBMS_OUTPUT.PUT_LINE('Table name not found in query ' || stmt_no);\n" +
 							"end", //
 					output);
 		}

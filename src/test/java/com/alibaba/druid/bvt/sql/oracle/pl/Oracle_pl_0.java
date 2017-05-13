@@ -67,7 +67,7 @@ public class Oracle_pl_0 extends OracleTest {
 							"\temployee_id NUMBER\n" +
 							")\n" +
 							"AS\n" +
-							"tot_emps NUMBER;\n" +
+							"\ttot_emps NUMBER;\n" +
 							"BEGIN\n" +
 							"\tDELETE FROM employees\n" +
 							"\tWHERE employees.employee_id = remove_emp.employee_id;\n" +
@@ -80,8 +80,8 @@ public class Oracle_pl_0 extends OracleTest {
 			assertEquals("create procedure remove_emp (\n" +
 							"\temployee_id NUMBER\n" +
 							")\n" +
-							"AS\n" +
-							"tot_emps NUMBER;\n" +
+							"as\n" +
+							"\ttot_emps NUMBER;\n" +
 							"begin\n" +
 							"\tdelete from employees\n" +
 							"\twhere employees.employee_id = remove_emp.employee_id;\n" +

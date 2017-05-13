@@ -23,30 +23,25 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-public class Oracle_pl_case_1 extends OracleTest {
+public class Oracle_pl_exception_5 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "DECLARE\n" +
-				"  grade CHAR(1);\n" +
-				"BEGIN\n" +
-				"  grade := 'B';\n" +
-				"  \n" +
-				"  CASE\n" +
-				"    WHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent');\n" +
-				"    WHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good');\n" +
-				"    WHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good');\n" +
-				"    WHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair');\n" +
-				"    WHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-				"  END CASE;\n" +
-				"EXCEPTION\n" +
-				"  WHEN CASE_NOT_FOUND THEN\n" +
-				"    DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+        String sql = "BEGIN\n" +
+				"\n" +
+				"  DECLARE\n" +
+				"    past_due     EXCEPTION;\n" +
+				"    due_date     DATE := trunc(SYSDATE) - 1;\n" +
+				"    todays_date  DATE := trunc(SYSDATE);\n" +
+				"  BEGIN\n" +
+				"    IF due_date < todays_date THEN\n" +
+				"      RAISE past_due;\n" +
+				"    END IF;\n" +
+				"  END;\n" +
+				"\n" +
 				"END;"; //
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-		SQLStatement stmt = statementList.get(0);
-
-        assertEquals(1, statementList.size());
+		assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         for (SQLStatement statement : statementList) {
@@ -71,40 +66,33 @@ public class Oracle_pl_case_1 extends OracleTest {
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
 
 		{
-			String output = SQLUtils.toOracleString(stmt);
-			assertEquals("DECLARE\n" +
-							"\tgrade CHAR(1);\n" +
-							"BEGIN\n" +
-							"\tgrade := 'B';\n" +
-							"\tCASE\n" +
-							"\t\tWHEN grade = 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent'); \n" +
-							"\t\tWHEN grade = 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good'); \n" +
-							"\t\tWHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good'); \n" +
-							"\t\tWHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
-							"\t\tWHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\tELSE ;\n" +
-							"\tEND CASE;\n" +
-							"EXCEPTION\n" +
-							"\tWHEN CASE_NOT_FOUND THEN DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
+			System.out.println(output);
+			assertEquals("BEGIN\n" +
+							"\tDECLARE\n" +
+							"\t\tpast_due EXCEPTION;\n" +
+							"\t\tdue_date DATE := trunc(SYSDATE) - 1;\n" +
+							"\t\ttodays_date DATE := trunc(SYSDATE);\n" +
+							"\tBEGIN\n" +
+							"\t\tIF due_date < todays_date THEN\n" +
+							"\t\t\tRAISE past_due;\n" +
+							"\t\tEND IF;\n" +
+							"\tEND;\n" +
 							"END", //
 					output);
 		}
 		{
-			String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-			assertEquals("declare\n" +
-							"\tgrade CHAR(1);\n" +
-							"begin\n" +
-							"\tgrade := 'B';\n" +
-							"\tcase\n" +
-							"\t\twhen grade = 'A' then DBMS_OUTPUT.PUT_LINE('Excellent'); \n" +
-							"\t\twhen grade = 'B' then DBMS_OUTPUT.PUT_LINE('Very Good'); \n" +
-							"\t\twhen grade = 'C' then DBMS_OUTPUT.PUT_LINE('Good'); \n" +
-							"\t\twhen grade = 'D' then DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
-							"\t\twhen grade = 'F' then DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\telse ;\n" +
-							"\tend case;\n" +
-							"exception\n" +
-							"\twhen CASE_NOT_FOUND then DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
+			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+			assertEquals("begin\n" +
+							"\tdeclare\n" +
+							"\t\tpast_due EXCEPTION;\n" +
+							"\t\tdue_date DATE := trunc(sysdate) - 1;\n" +
+							"\t\ttodays_date DATE := trunc(sysdate);\n" +
+							"\tbegin\n" +
+							"\t\tif due_date < todays_date then\n" +
+							"\t\t\traise past_due;\n" +
+							"\t\tend if;\n" +
+							"\tend;\n" +
 							"end", //
 					output);
 		}

@@ -3194,6 +3194,7 @@ public class MySqlStatementParser extends SQLStatementParser {
          * CREATE OR REPALCE PROCEDURE SP_NAME(parameter_list) BEGIN block_statement END
          */
         SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
+        stmt.setDbType(dbType);
 
         if (lexer.token() != Token.PROCEDURE) {
             if (identifierEquals("DEFINER")) {

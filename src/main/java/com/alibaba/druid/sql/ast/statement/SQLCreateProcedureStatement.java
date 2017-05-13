@@ -37,6 +37,8 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     // for oracle
     private String             javaCallSpec;
 
+    private SQLName            authid;
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -73,6 +75,17 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
             block.setParent(this);
         }
         this.block = block;
+    }
+
+    public SQLName getAuthid() {
+        return authid;
+    }
+
+    public void setAuthid(SQLName authid) {
+        if (authid != null) {
+            authid.setParent(this);
+        }
+        this.authid = authid;
     }
 
     public boolean isOrReplace() {

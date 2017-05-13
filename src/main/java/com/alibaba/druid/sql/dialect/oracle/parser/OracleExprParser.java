@@ -158,30 +158,30 @@ public class OracleExprParser extends SQLExprParser {
     }
     
     public SQLDataType parseDataType() {
-        
+
         if (lexer.token() == Token.CONSTRAINT || lexer.token() == Token.COMMA) {
             return null;
         }
-        
+
         if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
             return null;
         }
-        
+
         if (lexer.token() == Token.INTERVAL) {
             lexer.nextToken();
             if (identifierEquals("YEAR")) {
                 lexer.nextToken();
                 OracleDataTypeIntervalYear interval = new OracleDataTypeIntervalYear();
-                
+
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
                     interval.addArgument(this.expr());
                     accept(Token.RPAREN);
                 }
-                
+
                 accept(Token.TO);
                 acceptIdentifier("MONTH");
-                
+
                 return interval;
             } else {
                 acceptIdentifier("DAY");
@@ -191,22 +191,25 @@ public class OracleExprParser extends SQLExprParser {
                     interval.addArgument(this.expr());
                     accept(Token.RPAREN);
                 }
-                
+
                 accept(Token.TO);
                 acceptIdentifier("SECOND");
-                
+
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
                     interval.getFractionalSeconds().add(this.expr());
                     accept(Token.RPAREN);
                 }
-                
+
                 return interval;
             }
         }
-        
+
         String typeName;
-        if (identifierEquals("LONG")) {
+        if (lexer.token() == Token.EXCEPTION) {
+            typeName = "EXCEPTION";
+            lexer.nextToken();
+        } else if (identifierEquals("LONG")) {
             lexer.nextToken();
             acceptIdentifier("RAW");
             typeName = "LONG RAW";

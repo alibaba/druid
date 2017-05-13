@@ -3390,6 +3390,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     print0(ucase ? "NOCOPY " : "nocopy ");
                 }
 
+                if (x.isConstant()) {
+                    print0(ucase ? "CONSTANT " : "constant ");
+                }
+
                 if (printType) {
                     print0(ucase ? "IS " : "is ");
                 }
