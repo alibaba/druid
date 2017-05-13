@@ -654,6 +654,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                         break;
                     }
                 }
+
+                if (isNumber) {
+                    int pos2 = name.lastIndexOf('_', pos - 1);
+                    if (pos2 != -1) {
+                        boolean isNumber2 = true;
+                        for (int i = pos2 + 1; i < pos; ++i) {
+                            char ch = name.charAt(i);
+                            if (ch < '0' || ch > '9') {
+                                isNumber2 = false;
+                                break;
+                            }
+                        }
+                        if (isNumber2) {
+                            pos = pos2;
+                        }
+                    }
+                }
+
                 if (isNumber) {
                     boolean isAlias = false;
                     for (SQLObject parent = x.getParent();parent != null; parent = parent.getParent()) {
