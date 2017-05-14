@@ -75,6 +75,13 @@ public class MySqlLexer extends Lexer {
         super.keywods = DEFAULT_MYSQL_KEYWORDS;
     }
 
+    public MySqlLexer(String input, boolean skipComment, boolean keepComments){
+        super(input, skipComment);
+        this.skipComment = skipComment;
+        this.keepComments = keepComments;
+        super.keywods = DEFAULT_MYSQL_KEYWORDS;
+    }
+
     public void scanSharp() {
         if (ch != '#') {
             throw new ParserException("illegal stat");

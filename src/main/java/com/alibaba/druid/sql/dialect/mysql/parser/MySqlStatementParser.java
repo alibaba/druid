@@ -231,6 +231,10 @@ public class MySqlStatementParser extends SQLStatementParser {
         super(new MySqlExprParser(sql));
     }
 
+    public MySqlStatementParser(String sql, boolean keepComments) {
+        super(new MySqlExprParser(sql, keepComments));
+    }
+
     public MySqlStatementParser(Lexer lexer) {
         super(new MySqlExprParser(lexer));
     }

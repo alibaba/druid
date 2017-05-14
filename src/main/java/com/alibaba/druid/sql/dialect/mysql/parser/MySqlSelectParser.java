@@ -87,6 +87,10 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
 
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            queryBlock.addBeforeComment(lexer.readAndResetComments());
+        }
+
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
 

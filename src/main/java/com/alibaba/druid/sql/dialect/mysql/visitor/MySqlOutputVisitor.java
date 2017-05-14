@@ -206,8 +206,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(MySqlSelectQueryBlock x) {
-        if (x.getOrderBy() != null) {
-            x.getOrderBy().setParent(x);
+        if ((!isParameterized()) && isPrettyFormat() && x.hasBeforeComment()) {
+            printComment(x.getBeforeCommentsDirect(), "\n");
         }
 
         print0(ucase ? "SELECT " : "select ");

@@ -242,7 +242,7 @@ public class SQLUtils {
 
     public static String format(String sql, String dbType, List<Object> parameters, FormatOption option) {
         try {
-            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, true);
             parser.setKeepComments(true);
 
             List<SQLStatement> statementList = parser.parseStatementList();
@@ -431,6 +431,15 @@ public class SQLUtils {
 
     public static List<SQLStatement> parseStatements(String sql, String dbType) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        if (parser.getLexer().token() != Token.EOF) {
+            throw new DruidRuntimeException("syntax error : " + sql);
+        }
+        return stmtList;
+    }
+
+    public static List<SQLStatement> parseStatements(String sql, String dbType, boolean keepComments) {
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, keepComments);
         List<SQLStatement> stmtList = parser.parseStatementList();
         if (parser.getLexer().token() != Token.EOF) {
             throw new DruidRuntimeException("syntax error : " + sql);

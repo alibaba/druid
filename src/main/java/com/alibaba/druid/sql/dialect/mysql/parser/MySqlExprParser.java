@@ -73,6 +73,11 @@ public class MySqlExprParser extends SQLExprParser {
         this.lexer.nextToken();
     }
 
+    public MySqlExprParser(String sql, boolean keepComments){
+        this(new MySqlLexer(sql, keepComments, keepComments));
+        this.lexer.nextToken();
+    }
+
     public SQLExpr relationalRest(SQLExpr expr) {
         if (identifierEquals("REGEXP")) {
             lexer.nextToken();
