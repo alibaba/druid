@@ -22,7 +22,6 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.*;
 import junit.framework.TestCase;
-import sun.jvm.hotspot.debugger.Page;
 
 public class WallSelectLimitTest_2 extends TestCase {
     private WallConfig config = new WallConfig();
