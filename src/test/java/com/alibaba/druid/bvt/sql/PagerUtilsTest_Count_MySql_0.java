@@ -37,6 +37,13 @@ public class PagerUtilsTest_Count_MySql_0 extends TestCase {
                             "FROM t", result);
     }
 
+    public void test_mysql_4() throws Exception {
+        String sql = "select distinct a.col1,a.col2 from test a";
+        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT DISTINCT COUNT(*)\n" +
+                "FROM test a", result);
+    }
+
     public void test_mysql_group_0() throws Exception {
         String sql = "select type, count(*) from t group by type";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
