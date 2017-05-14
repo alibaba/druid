@@ -10,7 +10,7 @@
  -->
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.30-SNAPSHOT</version>
+	<version>1.0.31-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -22,7 +22,7 @@
 		<spring.version>4.2.5.RELEASE</spring.version>
 		<junit.version>4.12</junit.version>
 
-		<gpg.skip>false</gpg.skip>
+		<gpg.skip>true</gpg.skip>
 		<javadoc.skip>false</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
