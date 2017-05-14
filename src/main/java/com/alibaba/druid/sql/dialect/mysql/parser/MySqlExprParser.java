@@ -74,7 +74,7 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     public MySqlExprParser(String sql, boolean keepComments){
-        this(new MySqlLexer(sql, keepComments, keepComments));
+        this(new MySqlLexer(sql, true, keepComments));
         this.lexer.nextToken();
     }
 
