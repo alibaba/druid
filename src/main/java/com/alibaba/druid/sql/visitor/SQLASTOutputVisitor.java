@@ -737,10 +737,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             x.getExpr().accept(this);
 
+            final StringBuilder pStr = new StringBuilder("(");
+            if( parameterizedMergeInList){
+                pStr.append('?');
+            }else{
+                for (Iterator<SQLExpr> iterator = targetList.iterator();;) {
+                    iterator.next();
+                    pStr.append('?');
+                    if(iterator.hasNext()){
+                        pStr.append(',');
+                    }else{
+                        break;
+                    }
+                }
+            }
+            pStr.append(')');
+
             if (x.isNot()) {
-                print(isUppCase() ? " NOT IN (?)" : " not in (?)");
+                print(isUppCase() ? " NOT IN "+pStr : " not in "+pStr);
             } else {
-                print(isUppCase() ? " IN (?)" : " in (?)");
+                print(isUppCase() ? " IN "+pStr : " in "+pStr);
             }
 
             if (changed) {

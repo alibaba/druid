@@ -32,7 +32,9 @@ public class ExportAndParameterizedVisitorTestCase extends TestCase {
         // final String sql =
         // "insert  into tab01(a,b,c) values('a1','bXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX1',5)";
         Object[][] sqlAndExpectedCases = { { "insert  into tab01(a,b,c) values('a1','b1',5)", 3, "a1" },
-                { "select * from tab01 where a=1 and b='b1'", 2, 1 }, 
+        		{"select * from test_tab1 where name='name' and id in  ('A','B')",3,"name"},
+        		{"select * from test_tab1 where name='name' and id in  ('A','B')",3,"name",2},
+        		{ "select * from tab01 where a=1 and b='b1'", 2, 1 }, 
                 { "update tab01 set d='d1' where a=1 and b='b1'", 3, "d1" },
                 { "delete from tab01 where a=1 and b='b1'", 2, 1.0 } };
 
@@ -48,15 +50,16 @@ public class ExportAndParameterizedVisitorTestCase extends TestCase {
 
                 final SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
                 final ParameterizedVisitor pVisitor = (ParameterizedVisitor) ExportParameterVisitorUtils.createExportParameterVisitor(out, dbType);
+                final ExportParameterVisitor vistor2 = (ExportParameterVisitor) pVisitor;
+                final boolean parameterizedMergeInList = arr.length>3 ;
+                vistor2.setParameterizedMergeInList(parameterizedMergeInList);
+                
                 final SQLStatement parseStatement = parser.parseStatement();
                 parseStatement.accept(pVisitor);
-                // final ExportParameterVisitor vistor2 = new MySqlExportParameterVisitor();
-                // parseStatement.accept(vistor2);
-                final ExportParameterVisitor vistor2 = (ExportParameterVisitor) pVisitor;
                 System.out.println("before:" + sql);
                 System.out.println("after:" + out);
                 System.out.println("size:" + vistor2.getParameters());
-                final int expectedSize = (Integer) arr[1];
+                final int expectedSize = (Integer) ( parameterizedMergeInList ? arr[3] : arr[1] ) ;
                 Assert.assertEquals(expectedSize, vistor2.getParameters().size());
             }
         }
