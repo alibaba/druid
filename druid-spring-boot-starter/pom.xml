@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.alibaba.boot</groupId>
+    <artifactId>druid-spring-boot-starter</artifactId>
+    <version>5.1.26-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>tddl-spring-boot-starter</name>
+    <url>http://gitlab.alibaba-inc.com/sping-boot/tddl-spring-boot-starter</url>
+
+    <properties>
+        <spring-boot.version>1.4.5.RELEASE</spring-boot.version>
+        <druid.version>1.0.29</druid.version>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>leijuan</id>
+            <name>雷卷</name>
+            <email>jacky.chenlb@alibaba-inc.com</email>
+            <url>https://work.alibaba-inc.com/work/u/7883</url>
+            <roles>
+                <role>开发人员</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@gitlab.alibaba-inc.com:spring-boot-incubator/druid-spring-boot-starter.git</connection>
+        <developerConnection>scm:git:git@gitlab.alibaba-inc.com:spring-boot-incubator/druid-spring-boot-starter.git
+        </developerConnection>
+        <url>http://gitlab.alibaba-inc.com/spring-boot-incubator/druid-spring-boot-starter</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Import dependency management from Spring Boot,not include plugin
+                    management as the parent import style -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
