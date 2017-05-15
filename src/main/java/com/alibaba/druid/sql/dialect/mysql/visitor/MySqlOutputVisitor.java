@@ -189,7 +189,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean isShardingSupport() {
-        return shardingSupport;
+        return parameterized && shardingSupport;
     }
 
     public void setShardingSupport(boolean shardingSupport) {

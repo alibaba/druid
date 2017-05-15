@@ -631,7 +631,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     private boolean printName(SQLName x, String name) {
-        boolean shardingSupport = this.shardingSupport;
+        boolean shardingSupport = this.shardingSupport && parameterized;
         if (shardingSupport) {
             SQLObject parent = x.getParent();
             shardingSupport = parent instanceof SQLExprTableSource || parent instanceof SQLPropertyExpr;
