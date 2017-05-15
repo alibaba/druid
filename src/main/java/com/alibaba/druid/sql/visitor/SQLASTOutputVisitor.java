@@ -1457,6 +1457,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
+        if (param instanceof byte[]) {
+            byte[] bytes = (byte[]) param;
+            int bytesLen = bytes.length;
+            char[] chars = new char[bytesLen * 2 + 3];
+            chars[0] = 'x';
+            chars[1] = '\'';
+            for (int i = 0; i < bytes.length; i++) {
+                int a = bytes[i] & 0xFF;
+                int b0 = a >> 4;
+                int b1 = a & 0xf;
+
+                chars[i * 2 + 2] = (char) (b0 + (b0 < 10 ? 48 : 55)); //hexChars[b0];
+                chars[i * 2 + 3] = (char) (b1 + (b1 < 10 ? 48 : 55));
+            }
+            chars[chars.length - 1] = '\'';
+            print0(new String(chars));
+            return;
+        }
+
         print0("'" + param.getClass().getName() + "'");
     }
 
