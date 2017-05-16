@@ -65,65 +65,17 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement.Rebuild;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.TableSpaceItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.UpdateIndexesClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDbLinkStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot.Item;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.CheckOption;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.ReadOnly;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -152,20 +104,30 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             return;
         }
 
+        SQLObject parent = x.getParent();
+
         if ((!isPrintPostSemi()) //
-            && (!(x.getParent() instanceof SQLBlockStatement))) {
+            && (!(parent instanceof SQLBlockStatement))
+                && (!(parent instanceof OracleForStatement))) {
             return;
         }
 
-        if (x instanceof OraclePLSQLCommitStatement) {
+        if (x instanceof OraclePLSQLCommitStatement
+                || x instanceof OracleLabelStatement
+                || x instanceof OracleExceptionStatement.Item
+                || x instanceof OracleExceptionStatement) {
             return;
         }
-        if (x.getParent() instanceof SQLCreateProcedureStatement) {
+
+
+        if (parent instanceof SQLCreateProcedureStatement
+                || parent instanceof OracleExceptionStatement.Item
+                || parent instanceof OracleForStatement) {
             return;
         }
 
         if (isPrettyFormat()) {
-            if (x.getParent() != null) {
+            if (parent != null) {
                 print(';');
             } else {
                 println(";");
@@ -245,12 +207,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "ONLY (" : "only (");
             x.getTableName().accept(this);
             print(')');
+
+            printAlias(x.getAlias());
         } else {
             x.getTableSource().accept(this);
         }
-
-        printAlias(x.getAlias());
-
 
         if (x.getWhere() != null) {
             println();
@@ -1404,9 +1365,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(SQLBlockStatement x) {
         if (x.getParameters().size() != 0) {
-            print0(ucase ? "DECLARE" : "declare");
             incrementIndent();
-            println();
+            if (x.getParent() instanceof SQLCreateProcedureStatement) {
+                printIndent();
+            }
+            if (!(x.getParent() instanceof SQLCreateProcedureStatement)) {
+                print0(ucase ? "DECLARE" : "declare");
+                println();
+            }
 
             for (int i = 0, size = x.getParameters().size(); i < size; ++i) {
                 if (i != 0) {
@@ -1432,6 +1398,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             stmt.accept(this);
         }
         decrementIndent();
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            println();
+            exception.accept(this);
+        }
+
         println();
         print0(ucase ? "END" : "end");
         return false;
@@ -1533,14 +1506,24 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement.Item x) {
         print0(ucase ? "WHEN " : "when ");
         x.getWhen().accept(this);
+        print0(ucase ? " THEN" : " then");
+
         incrementIndent();
+        if (x.getStatements().size() > 1) {
+            println();
+        } else {
+            print(' ');
+        }
 
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
-            println();
+            if (i != 0 && size > 1) {
+                println();
+            }
             SQLStatement stmt = x.getStatements().get(i);
-            stmt.setParent(x);
             stmt.accept(this);
+            print(";");
         }
+
         decrementIndent();
         return false;
     }
@@ -1549,8 +1532,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleExceptionStatement x) {
         print0(ucase ? "EXCEPTION" : "exception");
         incrementIndent();
-        for (OracleExceptionStatement.Item item : x.getItems()) {
+        List<OracleExceptionStatement.Item> items = x.getItems();
+        for (int i = 0, size = items.size(); i < size; ++i) {
             println();
+            OracleExceptionStatement.Item item = items.get(i);
             item.accept(this);
         }
         decrementIndent();
@@ -1904,27 +1889,44 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleForStatement x) {
-        print0(ucase ? "FOR " : "for ");
+        boolean all = x.isAll();
+        if (all) {
+            print0(ucase ? "FORALL " : "forall ");
+        } else {
+            print0(ucase ? "FOR " : "for ");
+        }
         x.getIndex().accept(this);
         print0(ucase ? " IN " : " in ");
         x.getRange().accept(this);
-        println();
-        print0(ucase ? "LOOP" : "loop");
+        if (!all) {
+            println();
+            print0(ucase ? "LOOP" : "loop");
+        }
         incrementIndent();
         println();
 
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
-            SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
-            item.accept(this);
-            if (i != size - 1) {
-                println();
+            SQLStatement stmt = x.getStatements().get(i);
+            stmt.accept(this);
+            if (!all) {
+                if (i != size - 1) {
+                    println(";");
+                } else {
+                    print(';');
+                }
             }
         }
 
         decrementIndent();
-        println();
-        print0(ucase ? "END LOOP" : "end loop");
+        if (!all) {
+            println();
+            print0(ucase ? "END LOOP" : "end loop");
+            SQLName endLabel = x.getEndLabel();
+            if (endLabel != null) {
+                print(' ');
+                endLabel.accept(this);
+            }
+        }
         return false;
     }
 
@@ -1978,8 +1980,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(SQLIfStatement x) {
         print0(ucase ? "IF " : "if ");
+        int lines = this.lines;
+        incrementIndent();
         x.getCondition().accept(this);
-        print0(ucase ? " THEN" : " then");
+        decrementIndent();
+
+        if (lines != this.lines) {
+            println();
+        } else {
+            print(' ');
+        }
+        print0(ucase ? "THEN" : "then");
+
         incrementIndent();
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
@@ -2512,6 +2524,44 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
+
+    @Override
+    public boolean visit(OracleConntinueStatement x) {
+        print0(ucase ? "CONTINUE" : "continue");
+
+        SQLName label = x.getLabel();
+        if (label != null) {
+            print(' ');
+            label.accept(this);
+        }
+
+        if (x.getWhen() != null) {
+            print0(ucase ? " WHEN " : " when ");
+            x.getWhen().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleConntinueStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleRaiseStatement x) {
+        print0(ucase ? "RAISE" : "raise");
+        if (x.getException() != null) {
+            print(' ');
+            x.getException().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleRaiseStatement x) {
+
+    }
+
     @Override
     public void endVisit(SQLRollbackStatement x) {
 
@@ -2534,7 +2584,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(SQLCreateProcedureStatement x) {
-        if (x.isOrReplace()) {
+        boolean create = x.isCreate();
+        if (!create) {
+            print0(ucase ? "PROCEDURE " : "procedure ");
+        } else if (x.isOrReplace()) {
             print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
         } else {
             print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
@@ -2562,9 +2615,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(')');
         }
 
-        println();
-        x.getBlock().setParent(x);
-        x.getBlock().accept(this);
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            print(ucase ? " AUTHID " : " authid ");
+            authid.accept(this);
+        }
+
+        SQLStatement block = x.getBlock();
+
+        if (!create) {
+            println();
+            println("IS");
+        } else {
+            println();
+            if (block instanceof SQLBlockStatement) {
+                SQLBlockStatement blockStatement = (SQLBlockStatement) block;
+                if (blockStatement.getParameters().size() > 0 || authid != null) {
+                    println(ucase ? "AS" : "as");
+                }
+            }
+        }
+
+        String javaCallSpec = x.getJavaCallSpec();
+        if (javaCallSpec != null) {
+            print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
+            print0(javaCallSpec);
+            print('\'');
+            return false;
+        }
+
+        block.accept(this);
         return false;
     }
 

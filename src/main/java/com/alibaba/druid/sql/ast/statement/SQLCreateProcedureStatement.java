@@ -28,10 +28,16 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
     private SQLName            definer;
 
+    private boolean            create     = true;
     private boolean            orReplace;
     private SQLName            name;
     private SQLStatement       block;
     private List<SQLParameter> parameters = new ArrayList<SQLParameter>();
+
+    // for oracle
+    private String             javaCallSpec;
+
+    private SQLName            authid;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -65,7 +71,21 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     }
 
     public void setBlock(SQLStatement block) {
+        if (block != null) {
+            block.setParent(this);
+        }
         this.block = block;
+    }
+
+    public SQLName getAuthid() {
+        return authid;
+    }
+
+    public void setAuthid(SQLName authid) {
+        if (authid != null) {
+            authid.setParent(this);
+        }
+        this.authid = authid;
     }
 
     public boolean isOrReplace() {
@@ -79,10 +99,24 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     public SQLName getDefiner() {
         return definer;
     }
-
     
     public void setDefiner(SQLName definer) {
         this.definer = definer;
     }
 
+    public boolean isCreate() {
+        return create;
+    }
+
+    public void setCreate(boolean create) {
+        this.create = create;
+    }
+
+    public String getJavaCallSpec() {
+        return javaCallSpec;
+    }
+
+    public void setJavaCallSpec(String javaCallSpec) {
+        this.javaCallSpec = javaCallSpec;
+    }
 }

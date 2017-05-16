@@ -148,7 +148,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
                 select.setRestriction(checkOption);
             } else {
-                throw new ParserException("syntax error");
+                throw new ParserException("syntax error. " + lexer.info());
             }
         }
 

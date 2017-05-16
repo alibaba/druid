@@ -30,4 +30,9 @@ public class PagerUtilsTest_hasUnorderedLimit_oracle extends TestCase {
                 "\nWHERE ROWNUM <= 10";
         assertTrue(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.ORACLE));
     }
+
+    public void test_true_1() throws Exception {
+        String sql = "select * from (select * from t where id > 1 ) where rownum < 1000";
+        assertTrue(PagerUtils.hasUnorderedLimit(sql, JdbcConstants.ORACLE));
+    }
 }

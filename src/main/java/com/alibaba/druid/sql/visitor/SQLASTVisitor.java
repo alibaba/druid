@@ -31,6 +31,10 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLCaseExpr.Item x);
 
+    void endVisit(SQLCaseStatement x);
+
+    void endVisit(SQLCaseStatement.Item x);
+
     void endVisit(SQLCharExpr x);
 
     void endVisit(SQLIdentifierExpr x);
@@ -70,6 +74,10 @@ public interface SQLASTVisitor {
     boolean visit(SQLCaseExpr x);
 
     boolean visit(SQLCaseExpr.Item x);
+
+    boolean visit(SQLCaseStatement x);
+
+    boolean visit(SQLCaseStatement.Item x);
 
     boolean visit(SQLCastExpr x);
 

@@ -112,16 +112,20 @@ public class SQLParser {
         } else if (lexer.token() == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
-        } else if (lexer.token() == Token.CASE) {
-            alias = lexer.token.name();
-            lexer.nextToken();
-        } else if (lexer.token() == Token.USER) {
-            alias = lexer.stringVal();
-            lexer.nextToken();
-        } else if (lexer.token() == Token.END) {
-            alias = lexer.stringVal();
-            lexer.nextToken();
-        } 
+        } else {
+            switch (lexer.token()) {
+                case CASE:
+                case USER:
+                case LOB:
+                case END:
+                case DEFERRED:
+                    alias = lexer.stringVal();
+                    lexer.nextToken();
+                    break;
+                default:
+                    break;
+            }
+        }
 
         switch (lexer.token()) {
             case KEY:
@@ -263,6 +267,17 @@ public class SQLParser {
         } else {
             setErrorEndPos(lexer.pos());
             printError(token);
+        }
+    }
+
+    public int acceptInteger() {
+        if (lexer.token() == Token.LITERAL_INT) {
+            int intVal = ((Integer) lexer.integerValue()).intValue();
+            lexer.nextToken();
+            return intVal;
+        } else {
+            throw new ParserException("syntax error, expect int, actual " + lexer.token() + " "
+                    + lexer.stringVal());
         }
     }
 

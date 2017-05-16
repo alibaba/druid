@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import static com.alibaba.druid.util.Utils.getBoolean;
+import static com.alibaba.druid.util.Utils.getInteger;
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
 public class WallConfig implements WallConfigMBean {
@@ -125,6 +126,8 @@ public class WallConfig implements WallConfigMBean {
     
     private boolean             completeInsertValuesCheck   = false;
     private int                 insertValuesCheckSize       = 3;
+
+    private int                 selectLimit                 = -1;
 
     public WallConfig(){
         this.configFromProperties(System.getProperties());
@@ -798,6 +801,14 @@ public class WallConfig implements WallConfigMBean {
         this.blockAllow = blockAllow;
     }
 
+    public int getSelectLimit() {
+        return selectLimit;
+    }
+
+    public void setSelectLimit(int selectLimit) {
+        this.selectLimit = selectLimit;
+    }
+
     public void configFromProperties(Properties properties) {
         {
             String propertyValue = properties.getProperty("druid.wall.tenantColumn");
@@ -833,6 +844,12 @@ public class WallConfig implements WallConfigMBean {
             Boolean propertyValue = getBoolean(properties, "druid.wall.multiStatementAllow");
             if (propertyValue != null) {
                 this.setMultiStatementAllow(propertyValue);
+            }
+        }
+        {
+            Integer propertyValue = getInteger(properties, "druid.wall.selectLimit");
+            if (propertyValue != null) {
+                this.setSelectLimit(propertyValue);
             }
         }
     }

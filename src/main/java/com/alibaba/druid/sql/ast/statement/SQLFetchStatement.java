@@ -27,6 +27,8 @@ public class SQLFetchStatement extends SQLStatementImpl {
 
     private SQLName       cursorName;
 
+    private boolean       bulkCollect;
+
     private List<SQLExpr> into = new ArrayList<SQLExpr>();
 
     @Override
@@ -54,4 +56,11 @@ public class SQLFetchStatement extends SQLStatementImpl {
         this.into = into;
     }
 
+    public boolean isBulkCollect() {
+        return bulkCollect;
+    }
+
+    public void setBulkCollect(boolean bulkCollect) {
+        this.bulkCollect = bulkCollect;
+    }
 }

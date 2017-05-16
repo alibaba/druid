@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
@@ -80,6 +81,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public void parseStatementList(List<SQLStatement> statementList, int max) {
+        parseStatementList(statementList, max, null);
+    }
+
+    public void parseStatementList(List<SQLStatement> statementList, int max, SQLObject parent) {
         for (;;) {
             if (max != -1) {
                 if (statementList.size() >= max) {
@@ -1705,6 +1710,10 @@ public class SQLStatementParser extends SQLParser {
             return parseCreateView();
         } else if (token == Token.TRIGGER) {
             return parseCreateTrigger();
+        } else if (token == Token.PROCEDURE) {
+            SQLCreateProcedureStatement stmt = parseCreateProcedure();
+            stmt.setCreate(true);
+            return stmt;
         }
 
         throw new ParserException("TODO " + lexer.token());
@@ -1787,7 +1796,7 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
-    public SQLStatement parseCreateProcedure() {
+    public SQLCreateProcedureStatement parseCreateProcedure() {
         throw new ParserException("TODO " + lexer.token());
     }
 
@@ -2181,6 +2190,18 @@ public class SQLStatementParser extends SQLParser {
         SQLOpenStatement stmt = new SQLOpenStatement();
         accept(Token.OPEN);
         stmt.setCursorName(exprParser.name().getSimpleName());
+
+        if (lexer.token() == Token.FOR) {
+            lexer.nextToken();
+            if (lexer.token() == Token.SELECT) {
+                SQLSelectParser selectParser = createSQLSelectParser();
+                SQLSelect select = selectParser.select();
+                SQLQueryExpr queryExpr = new SQLQueryExpr(select);
+                stmt.setFor(queryExpr);
+            } else {
+                throw new ParserException("TODO " + lexer.info());
+            }
+        }
         accept(Token.SEMI);
         return stmt;
     }
@@ -2190,6 +2211,13 @@ public class SQLStatementParser extends SQLParser {
 
         SQLFetchStatement stmt = new SQLFetchStatement();
         stmt.setCursorName(this.exprParser.name());
+
+        if (identifierEquals("BULK")) {
+            lexer.nextToken();
+            acceptIdentifier("COLLECT");
+            stmt.setBulkCollect(true);
+        }
+
         accept(Token.INTO);
         for (;;) {
             stmt.getInto().add(this.exprParser.name());

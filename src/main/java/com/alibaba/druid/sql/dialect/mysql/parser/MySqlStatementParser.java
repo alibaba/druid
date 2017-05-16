@@ -231,6 +231,10 @@ public class MySqlStatementParser extends SQLStatementParser {
         super(new MySqlExprParser(sql));
     }
 
+    public MySqlStatementParser(String sql, boolean keepComments) {
+        super(new MySqlExprParser(sql, keepComments));
+    }
+
     public MySqlStatementParser(Lexer lexer) {
         super(new MySqlExprParser(lexer));
     }
@@ -3194,18 +3198,21 @@ public class MySqlStatementParser extends SQLStatementParser {
          * CREATE OR REPALCE PROCEDURE SP_NAME(parameter_list) BEGIN block_statement END
          */
         SQLCreateProcedureStatement stmt = new SQLCreateProcedureStatement();
+        stmt.setDbType(dbType);
 
-        if (identifierEquals("DEFINER")) {
-            lexer.nextToken();
-            accept(Token.EQ);
-            SQLName definer = this.exprParser.name();
-            stmt.setDefiner(definer);
-        } else {
-            accept(Token.CREATE);
-            if (lexer.token() == Token.OR) {
+        if (lexer.token() != Token.PROCEDURE) {
+            if (identifierEquals("DEFINER")) {
                 lexer.nextToken();
-                accept(Token.REPLACE);
-                stmt.setOrReplace(true);
+                accept(Token.EQ);
+                SQLName definer = this.exprParser.name();
+                stmt.setDefiner(definer);
+            } else {
+                accept(Token.CREATE);
+                if (lexer.token() == Token.OR) {
+                    lexer.nextToken();
+                    accept(Token.REPLACE);
+                    stmt.setOrReplace(true);
+                }
             }
         }
 
@@ -3218,7 +3225,13 @@ public class MySqlStatementParser extends SQLStatementParser {
             parserParameters(stmt.getParameters());
             accept(Token.RPAREN);// match ")"
         }
-        SQLBlockStatement block = this.parseBlock();
+        SQLStatement block;
+
+        if (lexer.token() == Token.BEGIN) {
+            block = this.parseBlock();
+        } else {
+            block = this.parseStatement();
+        }
 
         stmt.setBlock(block);
 

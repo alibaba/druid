@@ -133,4 +133,15 @@ public class SQLSelect extends SQLObjectImpl {
         
         return super.toString();
     }
+
+    public SQLSelect clone() {
+        SQLSelect clone = new SQLSelect();
+
+        clone.withSubQuery = this.withSubQuery;
+        clone.query = this.query;
+        clone.orderBy = this.orderBy;
+        clone.hints = this.hints;
+
+        return clone;
+    }
 }

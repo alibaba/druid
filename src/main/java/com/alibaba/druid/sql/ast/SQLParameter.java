@@ -23,6 +23,8 @@ public class SQLParameter extends SQLObjectImpl {
     private SQLDataType   dataType;
     private SQLExpr       defaultValue;
     private ParameterType paramType;
+    private boolean       noCopy = false;
+    private boolean       constant = false;
 
     public SQLExpr getDefaultValue() {
         return defaultValue;
@@ -71,5 +73,21 @@ public class SQLParameter extends SQLObjectImpl {
         IN, // in
         OUT, // out
         INOUT// inout
+    }
+
+    public boolean isNoCopy() {
+        return noCopy;
+    }
+
+    public void setNoCopy(boolean noCopy) {
+        this.noCopy = noCopy;
+    }
+
+    public boolean isConstant() {
+        return constant;
+    }
+
+    public void setConstant(boolean constant) {
+        this.constant = constant;
     }
 }

@@ -27,6 +27,9 @@ public class OracleExitStatement extends OracleStatementImpl {
     }
 
     public void setWhen(SQLExpr when) {
+        if (when != null) {
+            when.setParent(this);
+        }
         this.when = when;
     }
 
