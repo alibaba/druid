@@ -1,1 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.springframework.boot.autoconfigure.jdbc.DruidAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
