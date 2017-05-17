@@ -281,6 +281,10 @@ public class PGSelectParser extends SQLSelectParser {
 
                 return super.parseTableSourceRest(functionTableSource);
             }
+            if (alias != null) {
+                tableSource.setAlias(alias);
+                return super.parseTableSourceRest(tableSource);
+            }
         }
 
         return super.parseTableSourceRest(tableSource);
