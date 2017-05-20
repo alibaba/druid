@@ -52,18 +52,27 @@ public class OracleCreateTableTest18 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE dept_20 (\n" +
-                        "\temployee_id NUMBER(4),\n" +
-                        "\tlast_name VARCHAR2(10),\n" +
-                        "\tjob_id VARCHAR2(9),\n" +
-                        "\tmanager_id NUMBER(4),\n" +
-                        "\thire_date DATE,\n" +
-                        "\tsalary NUMBER(7, 2),\n" +
-                        "\tcommission_pct NUMBER(7, 2),\n" +
-                        "\tdepartment_id,\n" +
-                        "\tCONSTRAINT fk_deptno FOREIGN KEY (department_id)\n" +
-                        "\t\tREFERENCES departments (department_id)\n" +
-                        ")", //
+        Assert.assertEquals("CREATE TABLE \"SONAR\".\"AUTHORS\" (\n" +
+                        "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"PERSON_ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"LOGIN\" VARCHAR2(100 BYTE),\n" +
+                        "\t\"CREATED_AT\" TIMESTAMP(6),\n" +
+                        "\t\"UPDATED_AT\" TIMESTAMP(6),\n" +
+                        "\tPRIMARY KEY (\"ID\")\n" +
+                        "\t\tUSING INDEX\n" +
+                        "\t\tPCTFREE 10\n" +
+                        "\t\tINITRANS 2\n" +
+                        "\t\tMAXTRANS 255\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tENABLE\n" +
+                        ")\n" +
+                        "PCTFREE 10\n" +
+                        "INITRANS 1\n" +
+                        "MAXTRANS 255\n" +
+                        "NOCOMPRESS\n" +
+                        "LOGGING\n" +
+                        "TABLESPACE \"USERS\"", //
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

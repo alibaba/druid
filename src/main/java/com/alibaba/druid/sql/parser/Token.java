@@ -220,7 +220,6 @@ public enum Token {
     PCTINCREASE("PCTINCREASE"),
     FLASH_CACHE("FLASH_CACHE"),
     CELL_FLASH_CACHE("CELL_FLASH_CACHE"),
-    KEEP("KEEP"),
     NONE("NONE"),
     LOB("LOB"),
     STORE("STORE"),

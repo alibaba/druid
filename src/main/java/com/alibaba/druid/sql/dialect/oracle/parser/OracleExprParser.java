@@ -459,7 +459,6 @@ public class OracleExprParser extends SQLExprParser {
            case PCTINCREASE:
            case FLASH_CACHE:
            case CELL_FLASH_CACHE:
-           case KEEP:
            case NONE:
            case LOB:
            case STORE:
@@ -765,7 +764,7 @@ public class OracleExprParser extends SQLExprParser {
             accept(Token.RPAREN);
         }
         
-        if (lexer.token() == Token.KEEP) {
+        if (identifierEquals("KEEP")) {
             lexer.nextToken();
             
             SQLKeep keep = new SQLKeep();
@@ -1317,7 +1316,7 @@ public class OracleExprParser extends SQLExprParser {
             } else if (lexer.token() == Token.FLASH_CACHE) {
                 lexer.nextToken();
                 FlashCacheType flashCacheType;
-                if (lexer.token() == Token.KEEP) {
+                if (identifierEquals("KEEP")) {
                     flashCacheType = FlashCacheType.KEEP;
                     lexer.nextToken();
                 } else if (lexer.token() == Token.NONE) {
@@ -1332,7 +1331,7 @@ public class OracleExprParser extends SQLExprParser {
             } else if (lexer.token() == Token.CELL_FLASH_CACHE) {
                 lexer.nextToken();
                 FlashCacheType flashCacheType;
-                if (lexer.token() == Token.KEEP) {
+                if (identifierEquals("KEEP")) {
                     flashCacheType = FlashCacheType.KEEP;
                     lexer.nextToken();
                 } else if (lexer.token() == Token.NONE) {

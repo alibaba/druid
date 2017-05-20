@@ -96,7 +96,6 @@ public class OracleLexer extends Lexer {
         map.put("PCTINCREASE", Token.PCTINCREASE);
         map.put("FLASH_CACHE", Token.FLASH_CACHE);
         map.put("CELL_FLASH_CACHE", Token.CELL_FLASH_CACHE);
-        map.put("KEEP", Token.KEEP);
         map.put("NONE", Token.NONE);
         map.put("LOB", Token.LOB);
         map.put("STORE", Token.STORE);

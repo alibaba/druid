@@ -57,22 +57,28 @@ public class OracleCreateTableTest19 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" (" //
-                                    + "\n\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE," //
-                                    + "\n\t\"DASHBOARD_ID\" NUMBER(38, 0) NOT NULL ENABLE," //
-                                    + "\n\t\"USER_ID\" NUMBER(38, 0)," //
-                                    + "\n\t\"ORDER_INDEX\" NUMBER(38, 0)," //
-                                    + "\n\tPRIMARY KEY (\"ID\")" //
-                                    + "\n\tUSING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS TABLESPACE \"USERS\" ENABLE"
-                                    + "\n\tSTORAGE (INITIAL 65536 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)" //
-                                    + "\n)" //
-                                    + "\nPCTFREE 10" //
-                                    + "\nINITRANS 1" //
-                                    + "\nMAXTRANS 255" //
-                                    + "\nNOCOMPRESS" //
-                                    + "\nLOGGING" //
-                                    + "\nTABLESPACE \"USERS\"" //
-                                    + "\nSTORAGE (INITIAL 65536 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)", //
+        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" (\n" +
+                        "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"DASHBOARD_ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"USER_ID\" NUMBER(38, 0),\n" +
+                        "\t\"ORDER_INDEX\" NUMBER(38, 0),\n" +
+                        "\tPRIMARY KEY (\"ID\")\n" +
+                        "\t\tUSING INDEX\n" +
+                        "\t\tPCTFREE 10\n" +
+                        "\t\tINITRANS 2\n" +
+                        "\t\tMAXTRANS 255\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tENABLE\n" +
+                        "\t\tSTORAGE (INITIAL 65536 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                        ")\n" +
+                        "PCTFREE 10\n" +
+                        "INITRANS 1\n" +
+                        "MAXTRANS 255\n" +
+                        "NOCOMPRESS\n" +
+                        "LOGGING\n" +
+                        "TABLESPACE \"USERS\"\n" +
+                        "STORAGE (INITIAL 65536 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)", //
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

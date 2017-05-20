@@ -325,7 +325,6 @@ public class SQLExprParser extends SQLParser {
             case PCTINCREASE:
             case FLASH_CACHE:
             case CELL_FLASH_CACHE:
-            case KEEP:
             case NONE:
             case LOB:
             case STORE:
@@ -999,7 +998,6 @@ public class SQLExprParser extends SQLParser {
                 case PCTINCREASE:
                 case FLASH_CACHE:
                 case CELL_FLASH_CACHE:
-                case KEEP:
                 case NONE:
                 case LOB:
                 case STORE:
