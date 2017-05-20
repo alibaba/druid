@@ -21,20 +21,26 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement {
+public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement {
 
     private SQLName                name;
-    private List<SQLExpr>          columns = new ArrayList<SQLExpr>();
 
     private OracleUsingIndexClause using;
     private SQLName                exceptionsInto;
     private Boolean                enable;
     private Initially              initially;
     private Boolean                deferrable;
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        this.accept0((OracleASTVisitor) visitor);
+    }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -65,10 +71,6 @@ public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConst
 
     public List<SQLExpr> getColumns() {
         return columns;
-    }
-
-    public void setColumns(List<SQLExpr> columns) {
-        this.columns = columns;
     }
 
     public OracleUsingIndexClause getUsing() {

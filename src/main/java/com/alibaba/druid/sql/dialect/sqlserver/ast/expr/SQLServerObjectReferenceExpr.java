@@ -111,4 +111,11 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
         this.schema = schema;
     }
 
+    public SQLServerObjectReferenceExpr clone() {
+        SQLServerObjectReferenceExpr x = new SQLServerObjectReferenceExpr();
+        x.server = server;
+        x.database = database;
+        x.schema = schema;
+        return x;
+    }
 }

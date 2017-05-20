@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
@@ -107,6 +108,15 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             return false;
         }
         return true;
+    }
+
+    public SQLPropertyExpr clone() {
+        SQLPropertyExpr propertyExpr = new SQLPropertyExpr();
+        propertyExpr.name = this.name;
+        if (owner != null) {
+            propertyExpr.setOwner(owner.clone());
+        }
+        return propertyExpr;
     }
 
 }

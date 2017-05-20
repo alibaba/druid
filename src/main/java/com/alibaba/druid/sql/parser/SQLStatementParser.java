@@ -1682,6 +1682,10 @@ public class SQLStatementParser extends SQLParser {
         } else if (token == Token.OR) {
             lexer.nextToken();
             accept(Token.REPLACE);
+
+            if (identifierEquals("FORCE")) {
+                lexer.nextToken();
+            }
             if (lexer.token() == Token.PROCEDURE) {
                 lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreateProcedure();
@@ -1980,6 +1984,11 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
         }
 
+        if (identifierEquals("FORCE")) {
+            lexer.nextToken();
+            createView.setForce(true);
+        }
+
         this.accept(Token.VIEW);
 
         if (lexer.token() == Token.IF || identifierEquals("IF")) {
@@ -2025,7 +2034,8 @@ public class SQLStatementParser extends SQLParser {
 
         this.accept(Token.AS);
 
-        createView.setSubQuery(new SQLSelectParser(this.exprParser).select());
+        SQLSelectParser selectParser = this.createSQLSelectParser();
+        createView.setSubQuery(selectParser.select());
         return createView;
     }
 

@@ -243,7 +243,7 @@ public class Lexer {
     }
 
     public String info() {
-        return this.token + " " + this.stringVal();
+        return "pos " + this.pos + ", " + this.token + " " + this.stringVal();
     }
 
     public final void nextTokenComma() {

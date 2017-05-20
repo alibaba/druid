@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -30,6 +31,9 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
     private final List<SQLCommentHint>         hints = new ArrayList<SQLCommentHint>(1);
 
     private ModelClause                        modelClause;
+
+    private final List<SQLExpr> forUpdateOf         = new ArrayList<SQLExpr>(1);
+    private boolean             skipLocked = false;
 
     public OracleSelectQueryBlock(){
 
@@ -45,6 +49,18 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
     public List<SQLCommentHint> getHints() {
         return this.hints;
+    }
+
+    public List<SQLExpr> getForUpdateOf() {
+        return forUpdateOf;
+    }
+
+    public boolean isSkipLocked() {
+        return skipLocked;
+    }
+
+    public void setSkipLocked(boolean skipLocked) {
+        this.skipLocked = skipLocked;
     }
 
     @Override
@@ -68,6 +84,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.connectBy);
             acceptChild(visitor, this.groupBy);
             acceptChild(visitor, this.modelClause);
+            acceptChild(visitor, this.forUpdateOf);
         }
         visitor.endVisit(this);
     }

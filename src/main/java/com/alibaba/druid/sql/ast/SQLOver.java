@@ -208,6 +208,10 @@ public class SQLOver extends SQLObjectImpl {
         return result;
     }
 
+    public SQLExpr clone() {
+        throw new UnsupportedOperationException();
+    }
+
     public static enum WindowingType {
         ROWS, RANGE
     }

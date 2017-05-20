@@ -28,23 +28,26 @@ public class MySqlCreateTableTest76 extends MysqlTest {
 
     @Test
     public void test_one() throws Exception {
-        String sql = "CREATE TABLE `log_info_20170516` (\n" +
-                "  `toid` varchar(40) CHARACTER SET utf8 NOT NULL,\n" +
-                "  `title` varchar(40) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `traceid` varchar(50) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `parentid` varchar(40) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `key1` varchar(100) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `key2` varchar(100) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `key3` varchar(100) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `type` varchar(50) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `createdate` varchar(30) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `classmethod` varchar(100) CHARACTER SET utf8 DEFAULT NULL,\n" +
-                "  `linenum` int(11) DEFAULT NULL,\n" +
-                "  `threadname` varchar(80) CHARACTER SET utf8 DEFAULT '',\n" +
-                "  `content` text CHARACTER SET utf8,\n" +
-                "  PRIMARY KEY (`toid`),\n" +
-                "  KEY `traceid_index` (`traceid`)\n" +
-                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        String sql = "CREATE TABLE `sys_msg_entry_0320` (\n" +
+                "  `provider_dsp_name` varchar(256) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '消息提供者的显示名，提供给一些需要统一发送名称的系统消息',\n" +
+                "  `template_data` varchar(2048) NOT NULL /*!50616 COLUMN_FORMAT COMPRESSED */ COMMENT '模板渲染时使用的数据,key-value对',\n" +
+                "  `template_merge_data` varchar(512) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '对于需要合并的消息，被合并的参数放在此处理',\n" +
+                "  `expiration_date` datetime NOT NULL COMMENT '失效日期，精度到天,查询和任务处理时使用',\n" +
+                "  `merge_key` varchar(128) DEFAULT NULL COMMENT '消息合并主键，合并成功的消息，不参与计数',\n" +
+                "  `out_id` varchar(256) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '外部关联源的id',\n" +
+                "  `number_expiration_date` datetime DEFAULT NULL COMMENT '计数过期时间',\n" +
+                "  `hidden` int(11) DEFAULT '0' COMMENT '标记是否在吊顶展示，1表示隐藏，0表示展示',\n" +
+                "  `popup` tinyint(3) unsigned DEFAULT '0' COMMENT '表示消息提醒方式:0-数字提醒，1-layer，2-popup',\n" +
+                "  `tag_id` bigint(20) unsigned DEFAULT NULL COMMENT 'TAG标志',\n" +
+                "  `attribute` varchar(512) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '消息的一些属性',\n" +
+                "  `original_msg_ids` varchar(1024) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '原始消息ID，多个id用半角逗号隔开',\n" +
+                "  PRIMARY KEY (`id`),\n" +
+                "  KEY `idx_expiration_date` (`expiration_date`),\n" +
+                "  KEY `k_rid_hidd_cid` (`receiver_id`,`hidden`,`cat_id`,`expiration_date`),\n" +
+                "  KEY `k_rid_aid_tid` (`receiver_id`,`app_id`,`type_id`,`expiration_date`),\n" +
+                "  KEY `k_rid_stat_popup` (`receiver_id`,`status`,`popup`,`expiration_date`),\n" +
+                "  KEY `k_tid` (`tag_id`)\n" +
+                ") ENGINE=InnoDB AUTO_INCREMENT=167279613030 DEFAULT CHARSET=gbk COMMENT='消息实体表'";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
@@ -52,50 +55,56 @@ public class MySqlCreateTableTest76 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
         
-        Column column = visitor.getColumn("log_info_20170516", "toid");
+        Column column = visitor.getColumn("sys_msg_entry_0320", "provider_dsp_name");
         Assert.assertNotNull(column);
         Assert.assertEquals("varchar", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE `log_info_20170516` (\n" +
-                    "\t`toid` varchar(40) CHARACTER SET utf8 NOT NULL, \n" +
-                    "\t`title` varchar(40) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`traceid` varchar(50) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`parentid` varchar(40) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`key1` varchar(100) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`key2` varchar(100) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`key3` varchar(100) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`type` varchar(50) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`createdate` varchar(30) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`classmethod` varchar(100) CHARACTER SET utf8 DEFAULT NULL, \n" +
-                    "\t`linenum` int(11) DEFAULT NULL, \n" +
-                    "\t`threadname` varchar(80) CHARACTER SET utf8 DEFAULT '', \n" +
-                    "\t`content` text CHARACTER SET utf8, \n" +
-                    "\tPRIMARY KEY (`toid`), \n" +
-                    "\tKEY `traceid_index` (`traceid`)\n" +
-                    ") ENGINE = InnoDB CHARSET = utf8mb4", output);
+            Assert.assertEquals("CREATE TABLE `sys_msg_entry_0320` (\n" +
+                    "\t`provider_dsp_name` varchar(256) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '消息提供者的显示名，提供给一些需要统一发送名称的系统消息', \n" +
+                    "\t`template_data` varchar(2048) NOT NULL /*!50616 COLUMN_FORMAT COMPRESSED */ COMMENT '模板渲染时使用的数据,key-value对', \n" +
+                    "\t`template_merge_data` varchar(512) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '对于需要合并的消息，被合并的参数放在此处理', \n" +
+                    "\t`expiration_date` datetime NOT NULL COMMENT '失效日期，精度到天,查询和任务处理时使用', \n" +
+                    "\t`merge_key` varchar(128) DEFAULT NULL COMMENT '消息合并主键，合并成功的消息，不参与计数', \n" +
+                    "\t`out_id` varchar(256) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '外部关联源的id', \n" +
+                    "\t`number_expiration_date` datetime DEFAULT NULL COMMENT '计数过期时间', \n" +
+                    "\t`hidden` int(11) DEFAULT '0' COMMENT '标记是否在吊顶展示，1表示隐藏，0表示展示', \n" +
+                    "\t`popup` tinyint(3) UNSIGNED DEFAULT '0' COMMENT '表示消息提醒方式:0-数字提醒，1-layer，2-popup', \n" +
+                    "\t`tag_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'TAG标志', \n" +
+                    "\t`attribute` varchar(512) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '消息的一些属性', \n" +
+                    "\t`original_msg_ids` varchar(1024) /*!50616 COLUMN_FORMAT COMPRESSED */ DEFAULT NULL COMMENT '原始消息ID，多个id用半角逗号隔开', \n" +
+                    "\tPRIMARY KEY (`id`), \n" +
+                    "\tKEY `idx_expiration_date` (`expiration_date`), \n" +
+                    "\tKEY `k_rid_hidd_cid` (`receiver_id`, `hidden`, `cat_id`, `expiration_date`), \n" +
+                    "\tKEY `k_rid_aid_tid` (`receiver_id`, `app_id`, `type_id`, `expiration_date`), \n" +
+                    "\tKEY `k_rid_stat_popup` (`receiver_id`, `status`, `popup`, `expiration_date`), \n" +
+                    "\tKEY `k_tid` (`tag_id`)\n" +
+                    ") ENGINE = InnoDB AUTO_INCREMENT = 167279613030 CHARSET = gbk COMMENT = '消息实体表'", output);
         }
         
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table `log_info_20170516` (\n" +
-                    "\t`toid` varchar(40) character set utf8 not null, \n" +
-                    "\t`title` varchar(40) character set utf8 default null, \n" +
-                    "\t`traceid` varchar(50) character set utf8 default null, \n" +
-                    "\t`parentid` varchar(40) character set utf8 default null, \n" +
-                    "\t`key1` varchar(100) character set utf8 default null, \n" +
-                    "\t`key2` varchar(100) character set utf8 default null, \n" +
-                    "\t`key3` varchar(100) character set utf8 default null, \n" +
-                    "\t`type` varchar(50) character set utf8 default null, \n" +
-                    "\t`createdate` varchar(30) character set utf8 default null, \n" +
-                    "\t`classmethod` varchar(100) character set utf8 default null, \n" +
-                    "\t`linenum` int(11) default null, \n" +
-                    "\t`threadname` varchar(80) character set utf8 default '', \n" +
-                    "\t`content` text character set utf8, \n" +
-                    "\tprimary key (`toid`), \n" +
-                    "\tkey `traceid_index` (`traceid`)\n" +
-                    ") engine = InnoDB charset = utf8mb4", output);
+            Assert.assertEquals("create table `sys_msg_entry_0320` (\n" +
+                    "\t`provider_dsp_name` varchar(256) /*!50616 COLUMN_FORMAT COMPRESSED */ default null comment '消息提供者的显示名，提供给一些需要统一发送名称的系统消息', \n" +
+                    "\t`template_data` varchar(2048) not null /*!50616 COLUMN_FORMAT COMPRESSED */ comment '模板渲染时使用的数据,key-value对', \n" +
+                    "\t`template_merge_data` varchar(512) /*!50616 COLUMN_FORMAT COMPRESSED */ default null comment '对于需要合并的消息，被合并的参数放在此处理', \n" +
+                    "\t`expiration_date` datetime not null comment '失效日期，精度到天,查询和任务处理时使用', \n" +
+                    "\t`merge_key` varchar(128) default null comment '消息合并主键，合并成功的消息，不参与计数', \n" +
+                    "\t`out_id` varchar(256) /*!50616 COLUMN_FORMAT COMPRESSED */ default null comment '外部关联源的id', \n" +
+                    "\t`number_expiration_date` datetime default null comment '计数过期时间', \n" +
+                    "\t`hidden` int(11) default '0' comment '标记是否在吊顶展示，1表示隐藏，0表示展示', \n" +
+                    "\t`popup` tinyint(3) unsigned default '0' comment '表示消息提醒方式:0-数字提醒，1-layer，2-popup', \n" +
+                    "\t`tag_id` bigint(20) unsigned default null comment 'TAG标志', \n" +
+                    "\t`attribute` varchar(512) /*!50616 COLUMN_FORMAT COMPRESSED */ default null comment '消息的一些属性', \n" +
+                    "\t`original_msg_ids` varchar(1024) /*!50616 COLUMN_FORMAT COMPRESSED */ default null comment '原始消息ID，多个id用半角逗号隔开', \n" +
+                    "\tprimary key (`id`), \n" +
+                    "\tkey `idx_expiration_date` (`expiration_date`), \n" +
+                    "\tkey `k_rid_hidd_cid` (`receiver_id`, `hidden`, `cat_id`, `expiration_date`), \n" +
+                    "\tkey `k_rid_aid_tid` (`receiver_id`, `app_id`, `type_id`, `expiration_date`), \n" +
+                    "\tkey `k_rid_stat_popup` (`receiver_id`, `status`, `popup`, `expiration_date`), \n" +
+                    "\tkey `k_tid` (`tag_id`)\n" +
+                    ") engine = InnoDB auto_increment = 167279613030 charset = gbk comment = '消息实体表'", output);
         }
     }
 }

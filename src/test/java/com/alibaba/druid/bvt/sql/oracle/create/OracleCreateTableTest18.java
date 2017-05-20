@@ -52,21 +52,18 @@ public class OracleCreateTableTest18 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"AUTHORS\" (" //
-                                    + "\n\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE," //
-                                    + "\n\t\"PERSON_ID\" NUMBER(38, 0) NOT NULL ENABLE," //
-                                    + "\n\t\"LOGIN\" VARCHAR2(100 BYTE)," //
-                                    + "\n\t\"CREATED_AT\" TIMESTAMP(6)," //
-                                    + "\n\t\"UPDATED_AT\" TIMESTAMP(6)," //
-                                    + "\n\tPRIMARY KEY (\"ID\")"
-                                    + "\n\tUSING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS TABLESPACE \"USERS\" ENABLE" //
-                                    + "\n)"
-                                    + "\nPCTFREE 10"
-                                    + "\nINITRANS 1"
-                                    + "\nMAXTRANS 255"
-                                    + "\nNOCOMPRESS"
-                                    + "\nLOGGING"
-                                    + "\nTABLESPACE \"USERS\"", //
+        Assert.assertEquals("CREATE TABLE dept_20 (\n" +
+                        "\temployee_id NUMBER(4),\n" +
+                        "\tlast_name VARCHAR2(10),\n" +
+                        "\tjob_id VARCHAR2(9),\n" +
+                        "\tmanager_id NUMBER(4),\n" +
+                        "\thire_date DATE,\n" +
+                        "\tsalary NUMBER(7, 2),\n" +
+                        "\tcommission_pct NUMBER(7, 2),\n" +
+                        "\tdepartment_id,\n" +
+                        "\tCONSTRAINT fk_deptno FOREIGN KEY (department_id)\n" +
+                        "\t\tREFERENCES departments (department_id)\n" +
+                        ")", //
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

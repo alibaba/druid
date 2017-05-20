@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPartition extends SQLObjectImpl {
@@ -38,6 +40,16 @@ public class SQLPartition extends SQLObjectImpl {
     protected SQLExpr           minRows;
     protected SQLExpr           engine;
     protected SQLExpr           comment;
+
+    private SQLExpr             ptcfree;
+    private SQLExpr             pctused;
+    private SQLExpr             initrans;
+    private SQLExpr             maxtrans;
+    private OracleStorageClause storage;
+    private SQLName             tablespace;
+    private Boolean             compress;
+
+    private OracleLobStorageClause lobStorage;
 
 
     public SQLName getName() {
@@ -174,7 +186,98 @@ public class SQLPartition extends SQLObjectImpl {
             acceptChild(visitor, minRows);
             acceptChild(visitor, engine);
             acceptChild(visitor, comment);
+
+            acceptChild(visitor, ptcfree);
+            acceptChild(visitor, pctused);
+            acceptChild(visitor, initrans);
+            acceptChild(visitor, maxtrans);
+            acceptChild(visitor, storage);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLExpr getPtcfree() {
+        return ptcfree;
+    }
+
+    public void setPtcfree(SQLExpr ptcfree) {
+        if (ptcfree != null) {
+            ptcfree.setParent(this);
+        }
+        this.ptcfree = ptcfree;
+    }
+
+    public SQLExpr getPctused() {
+        return pctused;
+    }
+
+    public void setPctused(SQLExpr pctused) {
+        if (pctused != null) {
+            pctused.setParent(this);
+        }
+        this.pctused = pctused;
+    }
+
+    public SQLExpr getInitrans() {
+        return initrans;
+    }
+
+    public void setInitrans(SQLExpr initrans) {
+        if (initrans != null) {
+            initrans.setParent(this);
+        }
+        this.initrans = initrans;
+    }
+
+    public SQLExpr getMaxtrans() {
+        return maxtrans;
+    }
+
+    public void setMaxtrans(SQLExpr maxtrans) {
+        if (maxtrans != null) {
+            maxtrans.setParent(this);
+        }
+        this.maxtrans = maxtrans;
+    }
+
+    public OracleStorageClause getStorage() {
+        return storage;
+    }
+
+    public void setStorage(OracleStorageClause storage) {
+        if (storage != null) {
+            storage.setParent(this);
+        }
+        this.storage = storage;
+    }
+
+    public SQLName getTablespace() {
+        return tablespace;
+    }
+
+    public void setTablespace(SQLName tablespace) {
+        if (tablespace != null) {
+            tablespace.setParent(this);
+        }
+        this.tablespace = tablespace;
+    }
+
+    public Boolean getCompress() {
+        return compress;
+    }
+
+    public void setCompress(Boolean compress) {
+        this.compress = compress;
+    }
+
+    public OracleLobStorageClause getLobStorage() {
+        return lobStorage;
+    }
+
+    public void setLobStorage(OracleLobStorageClause lobStorage) {
+        if (lobStorage != null) {
+            lobStorage.setParent(this);
+        }
+        this.lobStorage = lobStorage;
     }
 }

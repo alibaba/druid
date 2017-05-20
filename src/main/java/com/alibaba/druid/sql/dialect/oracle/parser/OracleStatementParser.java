@@ -262,7 +262,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     statementList.add(this.parseSelect());
                     continue;
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
             }
 
@@ -495,7 +495,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 break;
             }
 
-            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO : " + lexer.info());
         }
     }
 
@@ -935,7 +935,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             } else if (lexer.token() == Token.TRUNCATE) {
                 lexer.nextToken();
-                if (identifierEquals("PARTITION")) {
+                if (lexer.token() == Token.PARTITION) {
                     lexer.nextToken();
                     OracleAlterTableTruncatePartition item = new OracleAlterTableTruncatePartition();
                     item.setName(this.exprParser.name());
@@ -1005,7 +1005,7 @@ public class OracleStatementParser extends SQLStatementParser {
             SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
             this.exprParser.names(item.getColumns());
             stmt.addItem(item);
-        } else if (identifierEquals("PARTITION")) {
+        } else if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
             OracleAlterTableDropPartition item = new OracleAlterTableDropPartition();
             item.setName(this.exprParser.name());
@@ -1023,7 +1023,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
     private void parseAlterTableSplit(SQLAlterTableStatement stmt) {
         lexer.nextToken();
-        if (identifierEquals("PARTITION")) {
+        if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
             OracleAlterTableSplitPartition item = new OracleAlterTableSplitPartition();
             item.setName(this.exprParser.name());
@@ -1043,7 +1043,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 for (;;) {
                     NestedTablePartitionSpec spec = new NestedTablePartitionSpec();
-                    acceptIdentifier("PARTITION");
+                    accept(Token.PARTITION);
                     spec.setPartition(this.exprParser.name());
 
                     for (;;) {

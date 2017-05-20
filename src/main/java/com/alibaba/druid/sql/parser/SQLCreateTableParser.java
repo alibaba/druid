@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLCreateTableParser extends SQLDDLParser {
 
@@ -82,19 +83,25 @@ public class SQLCreateTableParser extends SQLDDLParser {
             lexer.nextToken();
 
             for (;;) {
-                if (lexer.token() == Token.IDENTIFIER //
-                    || lexer.token() == Token.LITERAL_ALIAS) {
+                Token token = lexer.token();
+                if (token == Token.IDENTIFIER
+                        && lexer.stringVal().equalsIgnoreCase("SUPPLEMENTAL")
+                        && JdbcConstants.ORACLE.equals(dbType)) {
+                    this.parseCreateTableSupplementalLogingProps(createTable);
+                } else if (token == Token.IDENTIFIER //
+                    || token == Token.LITERAL_ALIAS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
-                } else if (lexer.token == Token.PRIMARY //
-                           || lexer.token == Token.UNIQUE //
-                           || lexer.token == Token.CHECK //
-                           || lexer.token == Token.CONSTRAINT) {
+                } else if (token == Token.PRIMARY //
+                           || token == Token.UNIQUE //
+                           || token == Token.CHECK //
+                           || token == Token.CONSTRAINT
+                           || token == Token.FOREIGN) {
                     SQLConstraint constraint = this.exprParser.parseConstaint();
                     constraint.setParent(createTable);
                     createTable.getTableElementList().add((SQLTableElement) constraint);
-                } else if (lexer.token() == Token.TABLESPACE) {
-                    throw new ParserException("TODO " + lexer.token());
+                } else if (token == Token.TABLESPACE) {
+                    throw new ParserException("TODO " + token);
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
@@ -133,6 +140,10 @@ public class SQLCreateTableParser extends SQLDDLParser {
         }
 
         return createTable;
+    }
+
+    protected void parseCreateTableSupplementalLogingProps(SQLCreateTableStatement stmt) {
+        throw new ParserException("TODO " + lexer.info());
     }
 
     protected SQLCreateTableStatement newCreateStatement() {

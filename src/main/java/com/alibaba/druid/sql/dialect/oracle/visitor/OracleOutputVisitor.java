@@ -300,11 +300,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getRestriction().accept(this);
         }
 
-        if (x.getForUpdate() != null) {
-            println();
-            x.getForUpdate().accept(this);
-        }
-
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
             boolean hasFirst = false;
@@ -319,25 +314,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
         }
 
-        return false;
-    }
-
-    public boolean visit(OracleSelectForUpdate x) {
-        print0(ucase ? "FOR UPDATE" : "for update");
-        if (x.getOf().size() > 0) {
-            print('(');
-            printAndAccept(x.getOf(), ", ");
-            print(')');
-        }
-
-        if (x.isNotWait()) {
-            print0(ucase ? " NOWAIT" : " nowait");
-        } else if (x.isSkipLocked()) {
-            print0(ucase ? " SKIP LOCKED" : " skip locked");
-        } else if (x.getWait() != null) {
-            print0(ucase ? " WAIT " : " wait ");
-            x.getWait().accept(this);
-        }
         return false;
     }
 
@@ -501,6 +477,25 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         printFetchFirst(x);
+
+        if (x.isForUpdate()) {
+            println();
+            print0(ucase ? "FOR UPDATE" : "for update");
+            if (x.getForUpdateOf().size() > 0) {
+                print('(');
+                printAndAccept(x.getForUpdateOf(), ", ");
+                print(')');
+            }
+
+            if (x.isNoWait()) {
+                print0(ucase ? " NOWAIT" : " nowait");
+            } else if (x.isSkipLocked()) {
+                print0(ucase ? " SKIP LOCKED" : " skip locked");
+            } else if (x.getWaitTime() != null) {
+                print0(ucase ? " WAIT " : " wait ");
+                x.getWaitTime().accept(this);
+            }
+        }
 
         return false;
     }
@@ -712,11 +707,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleOuterExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectForUpdate x) {
 
     }
 
@@ -2058,6 +2048,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     protected void printConstraintState(OracleConstraint x) {
+        incrementIndent();
         if (x.getUsing() != null) {
             println();
             x.getUsing().accept(this);
@@ -2089,6 +2080,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print0(ucase ? " NOT DEFERRABLE" : " not deferrable");
             }
         }
+        decrementIndent();
     }
 
     @Override
@@ -2149,12 +2141,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "NOCACHE" : "nocache");
         }
 
-        if (x.getCompress() == Boolean.TRUE) {
-            println();
-            print0(ucase ? "COMPRESS" : "compress");
-        } else if (x.getCompress() == Boolean.FALSE) {
+        if (x.getCompress() == Boolean.FALSE) {
             println();
             print0(ucase ? "NOCOMPRESS" : "nocompress");
+        } else if (x.getCompress() == Boolean.TRUE) {
+            println();
+            print0(ucase ? "COMPRESS" : "compress");
         }
 
         if (x.getLogging() == Boolean.TRUE) {
@@ -2806,40 +2798,61 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getIndex().accept(this);
         } else {
             if (x.getPtcfree() != null) {
-                print0(ucase ? " PCTFREE " : " pctfree ");
+                println();
+                print0(ucase ? "PCTFREE " : "pctfree ");
                 x.getPtcfree().accept(this);
             }
 
             if (x.getInitrans() != null) {
-                print0(ucase ? " INITRANS " : " initrans ");
+                println();
+                print0(ucase ? "INITRANS " : "initrans ");
                 x.getInitrans().accept(this);
             }
 
             if (x.getMaxtrans() != null) {
-                print0(ucase ? " MAXTRANS " : " maxtrans ");
+                println();
+                print0(ucase ? "MAXTRANS " : "maxtrans ");
                 x.getMaxtrans().accept(this);
             }
 
             if (x.isComputeStatistics()) {
-                print0(ucase ? " COMPUTE STATISTICS" : " compute statistics");
+                println();
+                print0(ucase ? "COMPUTE STATISTICS" : "compute statistics");
             }
 
             if (x.getTablespace() != null) {
-                print0(ucase ? " TABLESPACE " : " tablespace ");
+                println();
+                print0(ucase ? "TABLESPACE " : "tablespace ");
                 x.getTablespace().accept(this);
             }
 
             if (x.getEnable() != null) {
                 if (x.getEnable().booleanValue()) {
-                    print0(ucase ? " ENABLE" : " enable");
+                    println();
+                    print0(ucase ? "ENABLE" : "enable");
                 } else {
-                    print0(ucase ? " DISABLE" : " disable");
+                    println();
+                    print0(ucase ? "DISABLE" : "disable");
                 }
             }
 
             if (x.getStorage() != null) {
                 println();
                 x.getStorage().accept(this);
+            }
+
+            if (x.isNocompress()) {
+                println();
+                print0(ucase ? "NOCOMPRESS" : "nocompress");
+            }
+
+            if (x.getLogging() != null) {
+                println();
+                if (x.getLogging().booleanValue()) {
+                    print0(ucase ? "LOGGING" : "logging");
+                } else {
+                    print0(ucase ? "NOLOGGING" : "nologging");
+                }
             }
         }
 
@@ -2885,6 +2898,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             } else {
                 print0(ucase ? "DISABLE STORAGE IN ROW" : "disable storage in row");
             }
+            first = false;
+        }
+
+        if (x.getStorageClause() != null) {
+            if (!first) {
+                print(' ');
+            }
+            x.getStorageClause().accept(this);
+            first = false;
         }
 
         if (x.getChunk() != null) {
@@ -2893,6 +2915,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
             print0(ucase ? "CHUNK " : "chunk ");
             x.getChunk().accept(this);
+            first = false;
         }
 
         if (x.getCache() != null) {
@@ -2912,6 +2935,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                     print0(ucase ? " NOLOGGING" : " nologging");
                 }
             }
+            first = false;
         }
 
         if (x.getCompress() != null) {
@@ -2923,6 +2947,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             } else {
                 print0(ucase ? "NOCOMPRESS" : "nocompress");
             }
+            first = false;
         }
 
         if (x.getKeepDuplicate() != null) {
@@ -2934,6 +2959,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             } else {
                 print0(ucase ? "DEDUPLICATE" : "deduplicate");
             }
+            first = false;
+        }
+
+        if (x.isRetention()) {
+            if (!first) {
+                print(' ');
+            }
+            print0(ucase ? "RETENTION" : "retention");
+            first = false;
         }
 
         print(')');
@@ -3022,5 +3056,75 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         return false;
+    }
+
+    @Override
+    public boolean visit(OracleSupplementalIdKey x) {
+        print0(ucase ? "SUPPLEMENTAL LOG DATA (" : "supplemental log data (");
+
+        int count = 0;
+
+        if (x.isAll()) {
+            print0(ucase ? "ALL" : "all");
+            count++;
+        }
+
+        if (x.isPrimaryKey()) {
+            if (count != 0) {
+                print0(", ");
+            }
+            print0(ucase ? "PRIMARY KEY" : "primary key");
+            count++;
+        }
+
+        if (x.isUnique()) {
+            if (count != 0) {
+                print0(", ");
+            }
+            print0(ucase ? "UNIQUE" : "unique");
+            count++;
+        }
+
+        if (x.isUniqueIndex()) {
+            if (count != 0) {
+                print0(", ");
+            }
+            print0(ucase ? "UNIQUE INDEX" : "unique index");
+            count++;
+        }
+
+        if (x.isForeignKey()) {
+            if (count != 0) {
+                print0(", ");
+            }
+            print0(ucase ? "FOREIGHN KEY" : "foreighn key");
+            count++;
+        }
+
+        print0(ucase ? ") COLUMNS" : ") columns");
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleSupplementalIdKey x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleSupplementalLogGrp x) {
+        print0(ucase ? "SUPPLEMENTAL LOG GROUP " : "supplemental log group ");
+        x.getGroup().accept(this);
+        print0(" (");
+        printAndAccept(x.getColumns(), ", ");
+        print(')');
+        if (x.isAlways()) {
+            print0(ucase ? " ALWAYS" : " always");
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleSupplementalLogGrp x) {
+
     }
 }

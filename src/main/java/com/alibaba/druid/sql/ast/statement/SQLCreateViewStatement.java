@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private boolean     orReplace   = false;
+    private boolean     force       = false;
     protected SQLName   name;
     protected SQLSelect subQuery;
     protected boolean   ifNotExists = false;
@@ -138,6 +139,14 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setSqlSecurity(String sqlSecurity) {
         this.sqlSecurity = sqlSecurity;
+    }
+
+    public boolean isForce() {
+        return force;
+    }
+
+    public void setForce(boolean force) {
+        this.force = force;
     }
 
     public void output(StringBuffer buf) {

@@ -327,11 +327,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public void endVisit(OracleSelectForUpdate x) {
-
-    }
-
-    @Override
     public void endVisit(OracleSelectJoin x) {
 
     }
@@ -398,12 +393,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleOuterExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleSelectForUpdate x) {
 
         return true;
     }
@@ -1408,6 +1397,26 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleCheck x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleSupplementalIdKey x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSupplementalIdKey x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleSupplementalLogGrp x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSupplementalLogGrp x) {
 
     }
 }

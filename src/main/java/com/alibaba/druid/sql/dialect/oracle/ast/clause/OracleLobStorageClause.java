@@ -41,6 +41,11 @@ public class OracleLobStorageClause extends OracleSQLObjectImpl {
 
     private Boolean             compress;
     private Boolean             keepDuplicate;
+    private boolean             retention;
+
+    private OracleStorageClause storageClause;
+
+    private SQLExpr             pctversion;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -127,4 +132,33 @@ public class OracleLobStorageClause extends OracleSQLObjectImpl {
         this.keepDuplicate = keepDuplicate;
     }
 
+    public boolean isRetention() {
+        return retention;
+    }
+
+    public void setRetention(boolean retention) {
+        this.retention = retention;
+    }
+
+    public OracleStorageClause getStorageClause() {
+        return storageClause;
+    }
+
+    public void setStorageClause(OracleStorageClause storageClause) {
+        if (storageClause != null) {
+            storageClause.setParent(this);
+        }
+        this.storageClause = storageClause;
+    }
+
+    public SQLExpr getPctversion() {
+        return pctversion;
+    }
+
+    public void setPctversion(SQLExpr pctversion) {
+        if (pctversion != null) {
+            pctversion.setParent(this);
+        }
+        this.pctversion = pctversion;
+    }
 }

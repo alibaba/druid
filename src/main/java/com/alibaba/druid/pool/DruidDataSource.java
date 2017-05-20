@@ -182,6 +182,24 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void configFromPropety(Properties properties) {
         {
+            String property = properties.getProperty("druid.url");
+            if (property != null) {
+                this.setUrl(property);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.username");
+            if (property != null) {
+                this.setUsername(property);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.password");
+            if (property != null) {
+                this.setPassword(property);
+            }
+        }
+        {
             Boolean value = getBoolean(properties, "druid.testWhileIdle");
             if (value != null) {
                 this.setTestWhileIdle(value);

@@ -21,8 +21,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelect extends SQLSelect {
-
-    private OracleSelectForUpdate   forUpdate;
     private OracleSelectRestriction restriction;
 
     public OracleSelect(){
@@ -35,14 +33,6 @@ public class OracleSelect extends SQLSelect {
 
     public void setRestriction(OracleSelectRestriction restriction) {
         this.restriction = restriction;
-    }
-
-    public OracleSelectForUpdate getForUpdate() {
-        return this.forUpdate;
-    }
-
-    public void setForUpdate(OracleSelectForUpdate forUpdate) {
-        this.forUpdate = forUpdate;
     }
 
     public void output(StringBuffer buf) {
@@ -64,7 +54,6 @@ public class OracleSelect extends SQLSelect {
             acceptChild(visitor, this.query);
             acceptChild(visitor, this.restriction);
             acceptChild(visitor, this.orderBy);
-            acceptChild(visitor, this.forUpdate);
         }
         visitor.endVisit(this);
     }

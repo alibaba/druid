@@ -444,6 +444,10 @@ public class SQLSelectParser extends SQLParser {
         tableReference.setExpr(expr());
     }
 
+    protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {
+        return tableSource;
+    }
+
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL
@@ -520,7 +524,37 @@ public class SQLSelectParser extends SQLParser {
             SQLJoinTableSource join = new SQLJoinTableSource();
             join.setLeft(tableSource);
             join.setJoinType(joinType);
-            join.setRight(parseTableSource());
+
+
+            SQLTableSource rightTableSource;
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                SQLSelect select = this.select();
+                rightTableSource = new SQLSubqueryTableSource(select);
+                accept(Token.RPAREN);
+            } else {
+                SQLExpr expr = this.expr();
+                rightTableSource = new SQLExprTableSource(expr);
+            }
+
+            if (identifierEquals("USING")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    this.exprParser.exprList(join.getUsing(), join);
+                    accept(Token.RPAREN);
+                } else {
+                    join.getUsing().add(this.expr());
+                }
+
+                join.setAlias(this.tableAlias());
+            } else {
+                rightTableSource.setAlias(this.tableAlias());
+
+                primaryTableSourceRest(rightTableSource);
+            }
+
+            join.setRight(rightTableSource);
 
             if (!natural) {
                 if (JdbcConstants.MYSQL.equals(dbType) && "NATURAL".equalsIgnoreCase(tableSource.getAlias())) {

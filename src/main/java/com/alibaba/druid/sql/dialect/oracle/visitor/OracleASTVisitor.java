@@ -69,8 +69,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleOuterExpr x);
 
-    void endVisit(OracleSelectForUpdate x);
-
     void endVisit(OracleSelectJoin x);
 
     void endVisit(OracleSelectPivot x);
@@ -102,8 +100,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleIntervalExpr x);
 
     boolean visit(OracleOuterExpr x);
-
-    boolean visit(OracleSelectForUpdate x);
 
     boolean visit(OracleSelectJoin x);
 
@@ -444,4 +440,12 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleCheck x);
 
     void endVisit(OracleCheck x);
+
+    boolean visit(OracleSupplementalIdKey x);
+
+    void endVisit(OracleSupplementalIdKey x);
+
+    boolean visit(OracleSupplementalLogGrp x);
+
+    void endVisit(OracleSupplementalLogGrp x);
 }

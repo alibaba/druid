@@ -19,5 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 
 public abstract class MySqlExprImpl extends MySqlObjectImpl implements SQLExpr {
-
+    public SQLExpr clone() {
+        throw new UnsupportedOperationException();
+    }
 }

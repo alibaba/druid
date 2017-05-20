@@ -112,6 +112,8 @@ public class OracleLexer extends Lexer {
         map.put("INITIALLY", Token.INITIALLY);
 
         map.put("FETCH", Token.FETCH);
+        map.put("TABLESPACE", Token.TABLESPACE);
+        map.put("PARTITION", Token.PARTITION);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -216,7 +218,7 @@ public class OracleLexer extends Lexer {
                 bufPos++;
             }
 
-            for (;;) {
+            for (;!isEOF();) {
                 if (ch == '*' && charAt(pos + 1) == '/') {
                     bufPos += 2;
                     scanChar();

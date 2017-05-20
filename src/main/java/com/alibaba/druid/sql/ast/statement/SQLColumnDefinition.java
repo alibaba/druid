@@ -33,6 +33,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     protected SQLExpr                         comment;
 
     protected Boolean                         enable;
+    protected Boolean                         validate;
+    protected Boolean                         rely;
 
     // for mysql
     protected boolean                         autoIncrement = false;
@@ -67,6 +69,22 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
     public void setEnable(Boolean enable) {
         this.enable = enable;
+    }
+
+    public Boolean getValidate() {
+        return validate;
+    }
+
+    public void setValidate(Boolean validate) {
+        this.validate = validate;
+    }
+
+    public Boolean getRely() {
+        return rely;
+    }
+
+    public void setRely(Boolean rely) {
+        this.rely = rely;
     }
 
     public SQLName getName() {

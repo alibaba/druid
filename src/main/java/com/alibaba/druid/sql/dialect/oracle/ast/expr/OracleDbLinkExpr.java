@@ -106,4 +106,15 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
         }
         return true;
     }
+
+    public OracleDbLinkExpr clone() {
+        OracleDbLinkExpr x = new OracleDbLinkExpr();
+
+        if (expr != null) {
+            expr = expr.clone();
+        }
+        x.dbLink = dbLink;
+
+        return x;
+    }
 }

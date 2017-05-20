@@ -108,11 +108,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public void endVisit(OracleSelectForUpdate x) {
-
-    }
-
-    @Override
     public void endVisit(OracleSelectJoin x) {
 
     }
@@ -190,12 +185,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleOuterExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleSelectForUpdate x) {
 
         return true;
     }
@@ -1078,4 +1067,23 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     }
 
+    @Override
+    public boolean visit(OracleSupplementalIdKey x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSupplementalIdKey x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleSupplementalLogGrp x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSupplementalLogGrp x) {
+
+    }
 }

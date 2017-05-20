@@ -2710,7 +2710,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         printAndAccept(x.getReferencingColumns(), ", ");
         print(')');
 
-        print0(ucase ? " REFERENCES " : " references ");
+        incrementIndent();
+        println();
+        print0(ucase ? "REFERENCES " : "references ");
         x.getReferencedTableName().accept(this);
 
         if (x.getReferencedColumns().size() > 0) {
@@ -2718,6 +2720,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printAndAccept(x.getReferencedColumns(), ", ");
             print(')');
         }
+
+        if (x.isOnDeleteCascade()) {
+            println();
+            print0(ucase ? "ON DELETE CASCADE" : "on delete cascade");
+        } else if (x.isOnDeleteSetNull()) {
+            print0(ucase ? "ON DELETE SET NULL" : "on delete set null");
+        }
+        decrementIndent();
         return false;
     }
 

@@ -21,6 +21,9 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OracleUsingIndexClause extends OracleSQLObjectImpl {
 
     private SQLName             index;
@@ -36,6 +39,12 @@ public class OracleUsingIndexClause extends OracleSQLObjectImpl {
     private boolean             computeStatistics = false;
 
     private OracleStorageClause storage;
+
+    private Integer             compress          = null;
+    private boolean             nocompress        = false;
+    private Boolean             logging           = null;
+
+    private List<PartitionedItem> localPartitionIndex = new ArrayList<PartitionedItem>();
 
     public OracleUsingIndexClause(){
 
@@ -123,4 +132,57 @@ public class OracleUsingIndexClause extends OracleSQLObjectImpl {
         this.maxtrans = maxtrans;
     }
 
+    public Integer getCompress() {
+        return compress;
+    }
+
+    public void setCompress(Integer compress) {
+        this.compress = compress;
+    }
+
+    public boolean isNocompress() {
+        return nocompress;
+    }
+
+    public void setNocompress(boolean nocompress) {
+        this.nocompress = nocompress;
+    }
+
+    public Boolean getLogging() {
+        return logging;
+    }
+
+    public void setLogging(Boolean logging) {
+        this.logging = logging;
+    }
+
+    public List<PartitionedItem> getLocalPartitionIndex() {
+        return localPartitionIndex;
+    }
+
+    public static class PartitionedItem extends OracleSQLObjectImpl {
+        private SQLName partition;
+        private SQLName tablespace;
+
+        @Override
+        public void accept0(OracleASTVisitor visitor) {
+
+        }
+
+        public SQLName getPartition() {
+            return partition;
+        }
+
+        public void setPartition(SQLName partition) {
+            this.partition = partition;
+        }
+
+        public SQLName getTablespace() {
+            return tablespace;
+        }
+
+        public void setTablespace(SQLName tablespace) {
+            this.tablespace = tablespace;
+        }
+    }
 }

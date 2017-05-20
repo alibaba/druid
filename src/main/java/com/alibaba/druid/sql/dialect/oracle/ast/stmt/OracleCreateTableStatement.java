@@ -53,9 +53,13 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     private Boolean                 cache;
 
-    private SQLPartitionBy   partitioning;
+    private SQLPartitionBy          partitioning;
 
     private DeferredSegmentCreation deferredSegmentCreation;
+
+    private boolean                 forOLTP;
+
+    private Boolean                 enableRowMovement;
     
     public OracleCreateTableStatement() {
         super (JdbcConstants.ORACLE);
@@ -206,7 +210,26 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     }
 
     public void setStorage(OracleStorageClause storage) {
+        if (storage != null) {
+            storage.setParent(this);
+        }
         this.storage = storage;
+    }
+
+    public boolean isForOLTP() {
+        return forOLTP;
+    }
+
+    public void setForOLTP(boolean forOLTP) {
+        this.forOLTP = forOLTP;
+    }
+
+    public Boolean getEnableRowMovement() {
+        return enableRowMovement;
+    }
+
+    public void setEnableRowMovement(Boolean enableRowMovement) {
+        this.enableRowMovement = enableRowMovement;
     }
 
     public void accept0(OracleASTVisitor visitor) {

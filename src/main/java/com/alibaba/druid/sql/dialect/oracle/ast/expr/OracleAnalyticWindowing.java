@@ -57,6 +57,15 @@ public class OracleAnalyticWindowing extends SQLObjectImpl implements OracleExpr
         this.type = type;
     }
 
+    public SQLExpr clone() {
+        OracleAnalyticWindowing x = new OracleAnalyticWindowing();
+        x.type = type;
+        if (expr != null) {
+            this.setExpr(expr.clone());
+        }
+        return x;
+    }
+
     public static enum Type {
         ROWS, RANGE;
     }

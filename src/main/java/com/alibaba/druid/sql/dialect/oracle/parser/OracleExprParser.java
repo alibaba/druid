@@ -211,8 +211,13 @@ public class OracleExprParser extends SQLExprParser {
             lexer.nextToken();
         } else if (identifierEquals("LONG")) {
             lexer.nextToken();
-            acceptIdentifier("RAW");
-            typeName = "LONG RAW";
+
+            if (identifierEquals("RAW")) {
+                lexer.nextToken();
+                typeName = "LONG RAW";
+            } else {
+                typeName = "LONG";
+            }
         } else {
             SQLName typeExpr = name();
             typeName = typeExpr.toString();
@@ -788,7 +793,7 @@ public class OracleExprParser extends SQLExprParser {
             lexer.nextToken();
             accept(Token.LPAREN);
 
-            if (identifierEquals("PARTITION")) {
+            if (lexer.token() == Token.PARTITION) {
                 lexer.nextToken();
                 accept(Token.BY);
 
@@ -1028,7 +1033,7 @@ public class OracleExprParser extends SQLExprParser {
     private OracleUsingIndexClause parseUsingIndex() {
         accept(Token.USING);
         accept(Token.INDEX);
-        
+
         OracleUsingIndexClause using = new OracleUsingIndexClause();
         
         for (;;) {
@@ -1065,9 +1070,50 @@ public class OracleExprParser extends SQLExprParser {
                 OracleStorageClause storage = parseStorage();
                 using.setStorage(storage);
                 continue;
+            } else if (identifierEquals("LOCAL")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+
+                // http://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_5010.htm#i2125897
+                for (;;) {
+                    accept(Token.PARTITION);
+                    OracleUsingIndexClause.PartitionedItem item = new OracleUsingIndexClause.PartitionedItem();
+                    item.setPartition(this.name());
+                    if (lexer.token() == Token.TABLESPACE) {
+                        lexer.nextToken();
+                        item.setTablespace(this.name());
+                    }
+
+                    using.getLocalPartitionIndex().add(item);
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    } else if (lexer.token() == Token.RPAREN) {
+                        break;
+                    } else {
+                        throw new ParserException("TODO " + lexer.token());
+                    }
+                }
+                accept(Token.RPAREN);
+                continue;
+            } else if (identifierEquals("NOLOGGING")) {
+                lexer.nextToken();
+                using.setLogging(Boolean.FALSE);
+                continue;
+            } else if (identifierEquals("COMPRESS")) {
+                throw new ParserException("TODO " + lexer.token());
             } else if (lexer.token() == Token.IDENTIFIER) {
                 using.setTablespace(this.name());
                 break;
+            } else if (lexer.token() == Token.NOCOMPRESS || identifierEquals("NOCOMPRESS")) {
+                lexer.nextToken();
+                using.setNocompress(true);
+                continue;
+            } else if (lexer.token() == Token.LOGGING || identifierEquals("LOGGING")) {
+                lexer.nextToken();
+                using.setLogging(Boolean.TRUE);
+                continue;
             } else {
                 break;
             }
@@ -1081,6 +1127,21 @@ public class OracleExprParser extends SQLExprParser {
         if (lexer.token() == Token.ENABLE) {
             lexer.nextToken();
             column.setEnable(Boolean.TRUE);
+        } else if (lexer.token() == Token.ENABLE) {
+            lexer.nextToken();
+            column.setEnable(true);
+        } else if (identifierEquals("VALIDATE")) {
+            lexer.nextToken();
+            column.setValidate(Boolean.TRUE);
+        } else if (identifierEquals("NOVALIDATE")) {
+            lexer.nextToken();
+            column.setValidate(Boolean.FALSE);
+        } else if (identifierEquals("RELY")) {
+            lexer.nextToken();
+            column.setRely(Boolean.TRUE);
+        } else if (identifierEquals("NORELY")) {
+            lexer.nextToken();
+            column.setRely(Boolean.FALSE);
         }
         
         return column;
@@ -1140,6 +1201,13 @@ public class OracleExprParser extends SQLExprParser {
                         accept(Token.ROW);
                         clause.setEnable(true);
                         continue;
+                    } else if (lexer.token() == Token.DISABLE) {
+                        lexer.nextToken();
+                        accept(Token.STORAGE);
+                        accept(Token.IN);
+                        accept(Token.ROW);
+                        clause.setEnable(false);
+                        continue;
                     }
                     
                     if (lexer.token() == Token.CHUNK) {
@@ -1167,6 +1235,24 @@ public class OracleExprParser extends SQLExprParser {
                     if (lexer.token() == Token.KEEP_DUPLICATES) {
                         lexer.nextToken();
                         clause.setKeepDuplicate(true);
+                        continue;
+                    }
+
+                    if (identifierEquals("PCTVERSION")) {
+                        lexer.nextToken();
+                        clause.setPctversion(this.expr());
+                        continue;
+                    }
+
+                    if (identifierEquals("RETENTION")) {
+                        lexer.nextToken();
+                        clause.setRetention(true);
+                        continue;
+                    }
+
+                    if (lexer.token() == Token.STORAGE) {
+                        OracleStorageClause storageClause = this.parseStorage();
+                        clause.setStorageClause(storageClause);
                         continue;
                     }
                     
@@ -1342,7 +1428,7 @@ public class OracleExprParser extends SQLExprParser {
         return constraint;
     }
     
-    protected SQLForeignKeyConstraint createForeignKey() {
+    protected OracleForeignKey createForeignKey() {
         return new OracleForeignKey();
     }
     
