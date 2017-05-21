@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
@@ -299,6 +301,12 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     public static class Organization extends OracleSegmentAttributesImpl implements OracleSegmentAttributes, OracleSQLObject {
         public String type;
 
+        private SQLName externalType;
+        private SQLExpr externalDirectory;
+        private OracleExternalRecordFormat externalDirectoryRecordFormat;
+        private List<SQLExpr> externalDirectoryLocation = new ArrayList<SQLExpr>();
+        private SQLExpr externalRejectLimit;
+
         protected void accept0(SQLASTVisitor visitor) {
             this.accept0((OracleASTVisitor) visitor);
         }
@@ -319,5 +327,82 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.type = type;
         }
 
+        public SQLName getExternalType() {
+            return externalType;
+        }
+
+        public void setExternalType(SQLName externalType) {
+            this.externalType = externalType;
+        }
+
+        public SQLExpr getExternalDirectory() {
+            return externalDirectory;
+        }
+
+        public void setExternalDirectory(SQLExpr externalDirectory) {
+            this.externalDirectory = externalDirectory;
+        }
+
+        public OracleExternalRecordFormat getExternalDirectoryRecordFormat() {
+            return externalDirectoryRecordFormat;
+        }
+
+        public void setExternalDirectoryRecordFormat(OracleExternalRecordFormat recordFormat) {
+            if (recordFormat != null) {
+                recordFormat.setParent(this);
+            }
+            this.externalDirectoryRecordFormat = recordFormat;
+        }
+
+        public SQLExpr getExternalRejectLimit() {
+            return externalRejectLimit;
+        }
+
+        public void setExternalRejectLimit(SQLExpr externalRejectLimit) {
+            if (externalRejectLimit != null) {
+                externalRejectLimit.setParent(this);
+            }
+            this.externalRejectLimit = externalRejectLimit;
+        }
+
+        public List<SQLExpr> getExternalDirectoryLocation() {
+            return externalDirectoryLocation;
+        }
+    }
+
+    public static class OracleExternalRecordFormat extends OracleSQLObjectImpl {
+        private SQLExpr delimitedBy;
+        private SQLExpr terminatedBy;
+
+        @Override
+        public void accept0(OracleASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, delimitedBy);
+                acceptChild(visitor, terminatedBy);
+            }
+            visitor.endVisit(this);
+        }
+
+        public SQLExpr getDelimitedBy() {
+            return delimitedBy;
+        }
+
+        public void setDelimitedBy(SQLExpr delimitedBy) {
+            if (delimitedBy != null) {
+                delimitedBy.setParent(this);
+            }
+            this.delimitedBy = delimitedBy;
+        }
+
+        public SQLExpr getTerminatedBy() {
+            return terminatedBy;
+        }
+
+        public void setTerminatedBy(SQLExpr terminatedBy) {
+            if (terminatedBy != null) {
+                terminatedBy.setParent(this);
+            }
+            this.terminatedBy = terminatedBy;
+        }
     }
 }

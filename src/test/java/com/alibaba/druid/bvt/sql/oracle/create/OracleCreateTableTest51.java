@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.create;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,22 +22,22 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class OracleCreateTableTest22 extends OracleTest {
+import java.util.List;
+
+public class OracleCreateTableTest51 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE promotions_var2" //
-                + "    ( promo_id         NUMBER(6)"//
-                + "    , promo_name       VARCHAR2(20)"//
-                + "    , promo_category   VARCHAR2(15)"//
-                + "    , promo_cost       NUMBER(10,2)"//
-                + "    , promo_begin_date DATE"//
-                + "    , promo_end_date   DATE"//
-                + "    , CONSTRAINT promo_id_u UNIQUE (promo_id)"//
-                + "   USING INDEX PCTFREE 20"//
-                + "      TABLESPACE stocks"//
-                + "      STORAGE (INITIAL 8M) );";
+        "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                "   (  \"A\" NUMBER, \n" +
+                "  \"C\" VARCHAR2(7), \n" +
+                "  \"DC1\" VARCHAR2(120)\n" +
+                "   ) PCTFREE 0 PCTUSED 40 INITRANS 1 MAXTRANS 255 COMPRESS NOLOGGING\n" +
+                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                "  TABLESPACE \"APP_DATA1K\"    ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -50,20 +46,23 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE promotions_var2 (\n" +
-                        "\tpromo_id NUMBER(6),\n" +
-                        "\tpromo_name VARCHAR2(20),\n" +
-                        "\tpromo_category VARCHAR2(15),\n" +
-                        "\tpromo_cost NUMBER(10, 2),\n" +
-                        "\tpromo_begin_date DATE,\n" +
-                        "\tpromo_end_date DATE,\n" +
-                        "\tCONSTRAINT promo_id_u UNIQUE (promo_id)\n" +
-                        "\t\tUSING INDEX\n" +
-                        "\t\tPCTFREE 20\n" +
-                        "\t\tTABLESPACE stocks\n" +
-                        "\t\tSTORAGE (\n" +
-                        "\t\t\tINITIAL 8M\n" +
-                        "\t\t)\n" +
+        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+                        "\t\"A\" NUMBER,\n" +
+                        "\t\"C\" VARCHAR2(7),\n" +
+                        "\t\"DC1\" VARCHAR2(120)\n" +
+                        ")\n" +
+                        "PCTFREE 0\n" +
+                        "PCTUSED 40\n" +
+                        "INITRANS 1\n" +
+                        "MAXTRANS 255\n" +
+                        "COMPRESS\n" +
+                        "NOLOGGING\n" +
+                        "TABLESPACE \"APP_DATA1K\"\n" +
+                        "STORAGE (\n" +
+                        "\tINITIAL 65536\n" +
+                        "\tFREELISTS 1\n" +
+                        "\tFREELIST GROUPS 1\n" +
+                        "\tBUFFER_POOL DEFAULT\n" +
                         ")",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
@@ -78,8 +77,8 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("promotions_var2", "promo_id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "A")));
     }
 }

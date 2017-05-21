@@ -2175,63 +2175,58 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleStorageClause x) {
         print0(ucase ? "STORAGE (" : "storage (");
 
-        boolean first = true;
+        incrementIndent();
         if (x.getInitial() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             print0(ucase ? "INITIAL " : "initial ");
             x.getInitial().accept(this);
-            first = false;
         }
 
         if (x.getMaxSize() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             print0(ucase ? "MAXSIZE " : "maxsize ");
             x.getMaxSize().accept(this);
-            first = false;
         }
 
         if (x.getFreeLists() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             print0(ucase ? "FREELISTS " : "freelists ");
             x.getFreeLists().accept(this);
-            first = false;
         }
 
         if (x.getFreeListGroups() != null) {
-            if (!first) {
-                print(' ');
-            }
-
+            println();
             print0(ucase ? "FREELIST GROUPS " : "freelist groups ");
             x.getFreeListGroups().accept(this);
-            first = false;
         }
 
         if (x.getBufferPool() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             print0(ucase ? "BUFFER_POOL " : "buffer_pool ");
             x.getBufferPool().accept(this);
-            first = false;
         }
 
         if (x.getObjno() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             print0(ucase ? "OBJNO " : "objno ");
             x.getObjno().accept(this);
-            first = false;
         }
 
+        if (x.getFlashCache() != null) {
+            println();
+            print0(ucase ? "FLASH_CACHE " : "flash_cache ");
+            print0(ucase ? x.getFlashCache().name() : x.getFlashCache().name().toLowerCase());
+        }
+
+        if (x.getCellFlashCache() != null) {
+            println();
+            print0(ucase ? "CELL_FLASH_CACHE " : "cell_flash_cache ");
+            print0(ucase ? x.getCellFlashCache().name() : x.getCellFlashCache().name().toLowerCase());
+        }
+        decrementIndent();
+        println();
         print(')');
+
         return false;
     }
 
@@ -2837,108 +2832,87 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleLobStorageClause x) {
         print0(ucase ? "LOB (" : "lob (");
         printAndAccept(x.getItems(), ",");
-        print0(ucase ? ") STORE AS " : ") store as ");
+        print0(ucase ? ") STORE AS" : ") store as");
+
 
         if (x.isSecureFile()) {
-            print0(ucase ? "SECUREFILE " : "securefile ");
+            print0(ucase ? " SECUREFILE" : " securefile");
         }
 
         if (x.isBasicFile()) {
-            print0(ucase ? "BASICFILE " : "basicfile ");
+            print0(ucase ? " BASICFILE" : " basicfile");
         }
-
-        boolean first = true;
-        print('(');
+        print0(" (");
+        incrementIndent();
         if (x.getTableSpace() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             print0(ucase ? "TABLESPACE " : "tablespace ");
             x.getTableSpace().accept(this);
-            first = false;
         }
 
         if (x.getEnable() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             if (x.getEnable().booleanValue()) {
                 print0(ucase ? "ENABLE STORAGE IN ROW" : "enable storage in row");
             } else {
                 print0(ucase ? "DISABLE STORAGE IN ROW" : "disable storage in row");
             }
-            first = false;
         }
 
         if (x.getStorageClause() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             x.getStorageClause().accept(this);
-            first = false;
         }
 
         if (x.getChunk() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             print0(ucase ? "CHUNK " : "chunk ");
             x.getChunk().accept(this);
-            first = false;
         }
 
         if (x.getCache() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             if (x.getCache().booleanValue()) {
                 print0(ucase ? "CACHE" : "cache");
             } else {
                 print0(ucase ? "NOCACHE" : "nocache");
             }
+        }
 
-            if (x.getLogging() != null) {
-                if (x.getLogging().booleanValue()) {
-                    print0(ucase ? " LOGGING" : " logging");
-                } else {
-                    print0(ucase ? " NOLOGGING" : " nologging");
-                }
+        if (x.getLogging() != null) {
+            println();
+            if (x.getLogging().booleanValue()) {
+                print0(ucase ? "LOGGING" : "logging");
+            } else {
+                print0(ucase ? "NOLOGGING" : "nologging");
             }
-            first = false;
         }
 
         if (x.getCompress() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             if (x.getCompress().booleanValue()) {
                 print0(ucase ? "COMPRESS" : "compress");
             } else {
                 print0(ucase ? "NOCOMPRESS" : "nocompress");
             }
-            first = false;
         }
 
         if (x.getKeepDuplicate() != null) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             if (x.getKeepDuplicate().booleanValue()) {
                 print0(ucase ? "KEEP_DUPLICATES" : "keep_duplicates");
             } else {
                 print0(ucase ? "DEDUPLICATE" : "deduplicate");
             }
-            first = false;
         }
 
         if (x.isRetention()) {
-            if (!first) {
-                print(' ');
-            }
+            println();
             print0(ucase ? "RETENTION" : "retention");
-            first = false;
         }
 
+        decrementIndent();
+        println();
         print(')');
         return false;
     }
@@ -3097,11 +3071,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
-
-
     public boolean visit(OracleCreateTableStatement.Organization x) {
+
+        String type = x.getType();
+
         print0(ucase ? "ORGANIZATION " : "organization ");
-        print0(ucase ? x.getType() : x.getType().toLowerCase());
+        print0(ucase ? type : type.toLowerCase());
 
         printOracleSegmentAttributes(x);
 
@@ -3110,10 +3085,75 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "PCTTHRESHOLD " : "pctthreshold ");
             print(x.getPctfree());
         }
+
+        if ("EXTERNAL".equalsIgnoreCase(type)) {
+            print0(" (");
+
+            incrementIndent();
+            if (x.getExternalType() != null) {
+                println();
+                print0(ucase ? "TYPE " : "type ");
+                x.getExternalType().accept(this);
+            }
+
+            if (x.getExternalDirectory() != null) {
+                println();
+                print0(ucase ? "DEFAULT DIRECTORY " : "default directory ");
+                x.getExternalDirectory().accept(this);
+            }
+
+            if (x.getExternalDirectoryRecordFormat() != null) {
+                println();
+                incrementIndent();
+                print0(ucase ? "ACCESS PARAMETERS (" : "access parameters (");
+                x.getExternalDirectoryRecordFormat().accept(this);
+                decrementIndent();
+                println();
+                print(')');
+            }
+
+            if (x.getExternalDirectoryLocation().size() > 0) {
+                println();
+                print0(ucase ? "LOCATION (" : " location(");
+                printAndAccept(x.getExternalDirectoryLocation(), ", ");
+                print(')');
+            }
+
+            decrementIndent();
+            println();
+            print(')');
+
+            if (x.getExternalRejectLimit() != null) {
+                println();
+                print0(ucase ? "REJECT LIMIT " : "reject limit ");
+                x.getExternalRejectLimit().accept(this);
+            }
+        }
+
         return false;
     }
 
     public void endVisit(OracleCreateTableStatement.Organization x) {
+
+    }
+
+    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
+        if (x.getDelimitedBy() != null) {
+            println();
+            print0(ucase ? "RECORDS DELIMITED BY " : "records delimited by ");
+            x.getDelimitedBy().accept(this);
+        }
+
+        if (x.getTerminatedBy() != null) {
+            println();
+            print0(ucase ? "FIELDS TERMINATED BY " : "fields terminated by ");
+            x.getTerminatedBy().accept(this);
+        }
+
+        return false;
+    }
+
+    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
 
     }
 }

@@ -582,14 +582,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLDataType x) {
+        printDataType(x);
+
+        return false;
+    }
+
+    protected void printDataType(SQLDataType x) {
         print0(x.getName());
         if (x.getArguments().size() > 0) {
             print('(');
             printAndAccept(x.getArguments(), ", ");
             print(')');
         }
-
-        return false;
     }
 
     public boolean visit(SQLCharacterDataType x) {
@@ -4153,6 +4157,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             print0(ucase ? "PCTFREE " : "pctfree ");
             print(x.getPctfree());
+        }
+
+        if (x.getPctused() != null) {
+            println();
+            print0(ucase ? "PCTUSED " : "pctused ");
+            print(x.getPctused());
         }
 
         if (x.getInitrans() != null) {

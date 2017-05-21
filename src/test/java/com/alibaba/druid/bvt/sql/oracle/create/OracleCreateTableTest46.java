@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.create;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,57 +22,64 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class OracleCreateTableTest19 extends OracleTest {
+import java.util.List;
+
+public class OracleCreateTableTest46 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "   CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" " //
-                + "   (    \"ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                + "    \"DASHBOARD_ID\" NUMBER(38,0) NOT NULL ENABLE, " //
-                + "    \"USER_ID\" NUMBER(38,0), " //
-                + "    \"ORDER_INDEX\" NUMBER(38,0), " //
-                + "     PRIMARY KEY (\"ID\")" //
-                + "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS " //
-                + "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645" //
-                + "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1" //
-                + "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)" //
-                + "  TABLESPACE \"USERS\"  ENABLE" //
-                + "   ) SEGMENT CREATION IMMEDIATE " //
-                + "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 " //
-                + " NOCOMPRESS LOGGING" //
-                + "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645" //
-                + "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1" //
-                + "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)" //
-                + "  TABLESPACE \"USERS\" ;";
+        " CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                "   (  \"ID\" NUMBER NOT NULL ENABLE, \n" +
+                "  \"GMT_CREATE\" DATE NOT NULL ENABLE, \n" +
+                "  \"GMT_MODIFIED\" DATE NOT NULL ENABLE, \n" +
+                "  \"SETTING_LEVEL\" VARCHAR2(8) NOT NULL ENABLE, \n" +
+                "  \"OWNER\" NUMBER DEFAULT 0 NOT NULL ENABLE NOVALIDATE, \n" +
+                "  \"ITEM_KEY\" VARCHAR2(64) NOT NULL ENABLE NOVALIDATE, \n" +
+                "  \"ITEM_VALUE\" VARCHAR2(64), \n" +
+                "  \"MODIFIER\" NUMBER NOT NULL ENABLE NOVALIDATE, \n" +
+                "  \"MEMO\" VARCHAR2(512), \n" +
+                "   CONSTRAINT \"AMAIL_USER_SETTING_PK\" PRIMARY KEY (\"ID\")\n" +
+                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
+                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                "  TABLESPACE \"APPDATA1M\"  ENABLE\n" +
+                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
+                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                "  TABLESPACE \"APPDATA1M\" ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statement = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" (\n" +
-                        "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
-                        "\t\"DASHBOARD_ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
-                        "\t\"USER_ID\" NUMBER(38, 0),\n" +
-                        "\t\"ORDER_INDEX\" NUMBER(38, 0),\n" +
-                        "\tPRIMARY KEY (\"ID\")\n" +
+        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+                        "\t\"ID\" NUMBER NOT NULL ENABLE,\n" +
+                        "\t\"GMT_CREATE\" DATE NOT NULL ENABLE,\n" +
+                        "\t\"GMT_MODIFIED\" DATE NOT NULL ENABLE,\n" +
+                        "\t\"SETTING_LEVEL\" VARCHAR2(8) NOT NULL ENABLE,\n" +
+                        "\t\"OWNER\" NUMBER DEFAULT 0 NOT NULL ENABLE,\n" +
+                        "\t\"ITEM_KEY\" VARCHAR2(64) NOT NULL ENABLE,\n" +
+                        "\t\"ITEM_VALUE\" VARCHAR2(64),\n" +
+                        "\t\"MODIFIER\" NUMBER NOT NULL ENABLE,\n" +
+                        "\t\"MEMO\" VARCHAR2(512),\n" +
+                        "\tCONSTRAINT \"AMAIL_USER_SETTING_PK\" PRIMARY KEY (\"ID\")\n" +
                         "\t\tUSING INDEX\n" +
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
                         "\t\tCOMPUTE STATISTICS\n" +
-                        "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\"\n" +
                         "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
-                        "\t\t\tFLASH_CACHE DEFAULT\n" +
-                        "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t\t)\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
@@ -85,19 +88,17 @@ public class OracleCreateTableTest19 extends OracleTest {
                         "MAXTRANS 255\n" +
                         "NOCOMPRESS\n" +
                         "LOGGING\n" +
-                        "TABLESPACE \"USERS\"\n" +
+                        "TABLESPACE \"APPDATA1M\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 65536\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
-                        "\tFLASH_CACHE DEFAULT\n" +
-                        "\tCELL_FLASH_CACHE DEFAULT\n" +
-                        ")", //
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
+                        ")",//
+                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statement.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -107,8 +108,8 @@ public class OracleCreateTableTest19 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(9, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SONAR.ACTIVE_DASHBOARDS", "ID")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "ID")));
     }
 }

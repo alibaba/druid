@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.create;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,22 +22,32 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class OracleCreateTableTest22 extends OracleTest {
+import java.util.List;
+
+public class OracleCreateTableTest54 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE promotions_var2" //
-                + "    ( promo_id         NUMBER(6)"//
-                + "    , promo_name       VARCHAR2(20)"//
-                + "    , promo_category   VARCHAR2(15)"//
-                + "    , promo_cost       NUMBER(10,2)"//
-                + "    , promo_begin_date DATE"//
-                + "    , promo_end_date   DATE"//
-                + "    , CONSTRAINT promo_id_u UNIQUE (promo_id)"//
-                + "   USING INDEX PCTFREE 20"//
-                + "      TABLESPACE stocks"//
-                + "      STORAGE (INITIAL 8M) );";
+        "       CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                "   (  \"PUSH\" NUMBER, \n" +
+                "  \"LOAD\" NUMBER, \n" +
+                "  \"TABLE_ID\" NUMBER, \n" +
+                "  \"TABLE_NAME\" VARCHAR2(50), \n" +
+                "  \"PRI_KEY\" VARCHAR2(50), \n" +
+                "  \"TEMP_TABLE_NAME\" VARCHAR2(50)\n" +
+                "   ) \n" +
+                "   ORGANIZATION EXTERNAL \n" +
+                "    ( TYPE ORACLE_LOADER\n" +
+                "      DEFAULT DIRECTORY \"DIR_MQ\"\n" +
+                "      ACCESS PARAMETERS\n" +
+                "      ( records delimited by newline fields terminated by '|'    )\n" +
+                "      LOCATION\n" +
+                "       ( 'retl-table.cfg'\n" +
+                "       )\n" +
+                "    )\n" +
+                "   REJECT LIMIT UNLIMITED     ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -50,21 +56,24 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE promotions_var2 (\n" +
-                        "\tpromo_id NUMBER(6),\n" +
-                        "\tpromo_name VARCHAR2(20),\n" +
-                        "\tpromo_category VARCHAR2(15),\n" +
-                        "\tpromo_cost NUMBER(10, 2),\n" +
-                        "\tpromo_begin_date DATE,\n" +
-                        "\tpromo_end_date DATE,\n" +
-                        "\tCONSTRAINT promo_id_u UNIQUE (promo_id)\n" +
-                        "\t\tUSING INDEX\n" +
-                        "\t\tPCTFREE 20\n" +
-                        "\t\tTABLESPACE stocks\n" +
-                        "\t\tSTORAGE (\n" +
-                        "\t\t\tINITIAL 8M\n" +
+        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+                        "\t\"PUSH\" NUMBER,\n" +
+                        "\t\"LOAD\" NUMBER,\n" +
+                        "\t\"TABLE_ID\" NUMBER,\n" +
+                        "\t\"TABLE_NAME\" VARCHAR2(50),\n" +
+                        "\t\"PRI_KEY\" VARCHAR2(50),\n" +
+                        "\t\"TEMP_TABLE_NAME\" VARCHAR2(50)\n" +
+                        ")\n" +
+                        "ORGANIZATION EXTERNAL (\n" +
+                        "\t\tTYPE ORACLE_LOADER\n" +
+                        "\t\tDEFAULT DIRECTORY \"DIR_MQ\"\n" +
+                        "\t\tACCESS PARAMETERS (\n" +
+                        "\t\t\tRECORDS DELIMITED BY NEWLINE\n" +
+                        "\t\t\tFIELDS TERMINATED BY '|'\n" +
                         "\t\t)\n" +
-                        ")",//
+                        "\t\tLOCATION ('retl-table.cfg')\n" +
+                        "\t)\n" +
+                        "\tREJECT LIMIT UNLIMITED",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -80,6 +89,6 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("promotions_var2", "promo_id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "LOAD")));
     }
 }

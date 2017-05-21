@@ -13,50 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.oracle.create;
-
-import java.util.List;
-
-import org.junit.Assert;
+package com.alibaba.druid.bvt.sql.oracle.select;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class OracleCreateTableTest21 extends OracleTest {
+import java.util.List;
 
-    public void test_types() throws Exception {
+public class OracleSelectTest61 extends OracleTest {
+
+    public void test_0() throws Exception {
         String sql = //
-        "CREATE TABLE divisions " //
-                + "    (div_no     NUMBER(2), " //
-                + "     div_name   VARCHAR2(14), "//
-                + "     location   VARCHAR2(13) ) " //
-                + "     STORAGE  ( INITIAL 8M MAXSIZE 1G );";
+                "Select column_expression from sys.ALL_IND_EXPRESSIONS where column_position =: cp"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statement = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE divisions (\n" +
-                        "\tdiv_no NUMBER(2),\n" +
-                        "\tdiv_name VARCHAR2(14),\n" +
-                        "\tlocation VARCHAR2(13)\n" +
-                        ")\n" +
-                        "STORAGE (\n" +
-                        "\tINITIAL 8M\n" +
-                        "\tMAXSIZE 1G\n" +
-                        ")",//
-                            SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
-
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statement.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -66,8 +48,25 @@ public class OracleCreateTableTest21 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("divisions", "div_no")));
+        {
+            String text = SQLUtils.toOracleString(stmt);
+
+            Assert.assertEquals("SELECT column_expression\n" +
+                    "FROM sys.ALL_IND_EXPRESSIONS\n" +
+                    "WHERE column_position = :cp", text);
+        }
+
+        {
+            String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
+
+            Assert.assertEquals("select column_expression\n" +
+                    "from sys.ALL_IND_EXPRESSIONS\n" +
+                    "where column_position = :cp", text);
+        }
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+
+        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

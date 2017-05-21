@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.SQLSubPartition;
 import com.alibaba.druid.sql.ast.SQLSubPartitionBy;
 import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
 import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -247,7 +248,80 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
             organization.setType("EXTERNAL");
             accept(Token.LPAREN);
-            throw new ParserException("TODO " + lexer.info());
+
+            if (identifierEquals("TYPE")) {
+                lexer.nextToken();
+                organization.setExternalType(this.exprParser.name());
+            }
+
+            accept(Token.DEFAULT);
+            acceptIdentifier("DIRECTORY");
+
+            organization.setExternalDirectory(this.exprParser.expr());
+
+            if (identifierEquals("ACCESS")) {
+                lexer.nextToken();
+                acceptIdentifier("PARAMETERS");
+
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+
+                    OracleCreateTableStatement.OracleExternalRecordFormat recordFormat = new OracleCreateTableStatement.OracleExternalRecordFormat();
+
+                    if (identifierEquals("RECORDS")) {
+                        lexer.nextToken();
+
+
+                        if (identifierEquals("DELIMITED")) {
+                            lexer.nextToken();
+                            accept(Token.BY);
+
+                            if (identifierEquals("NEWLINE")) {
+                                lexer.nextToken();
+                                recordFormat.setDelimitedBy(new SQLIdentifierExpr("NEWLINE"));
+                            } else {
+                                throw new ParserException("TODO " + lexer.info());
+                            }
+                        } else {
+                            throw new ParserException("TODO " + lexer.info());
+                        }
+                    }
+
+                    if (identifierEquals("FIELDS")) {
+                        lexer.nextToken();
+
+                        if (identifierEquals("TERMINATED")) {
+                            lexer.nextToken();
+                            accept(Token.BY);
+                            recordFormat.setTerminatedBy(this.exprParser.primary());
+                        } else {
+                            throw new ParserException("TODO " + lexer.info());
+                        }
+                    }
+
+                    organization.setExternalDirectoryRecordFormat(recordFormat);
+                    accept(Token.RPAREN);
+                } else if (lexer.token() == Token.USING) {
+                    lexer.nextToken();
+                    acceptIdentifier("CLOB");
+                    throw new ParserException("TODO " + lexer.info());
+                }
+            }
+
+            acceptIdentifier("LOCATION");
+            accept(Token.LPAREN);
+            this.exprParser.exprList(organization.getExternalDirectoryLocation(), organization);
+            accept(Token.RPAREN);
+
+            accept(Token.RPAREN);
+
+            if (lexer.token() == Token.REJECT) {
+                lexer.nextToken();
+                accept(Token.LIMIT);
+
+                organization.setExternalRejectLimit(this.exprParser.primary());
+            }
+            //
         } else {
             throw new ParserException("TODO " + lexer.info());
         }

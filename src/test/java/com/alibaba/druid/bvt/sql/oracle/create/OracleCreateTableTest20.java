@@ -73,12 +73,21 @@ public class OracleCreateTableTest20 extends OracleTest {
                         "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
+                        "PCTUSED 40\n" +
                         "INITRANS 1\n" +
                         "MAXTRANS 255\n" +
                         "NOCOMPRESS\n" +
                         "LOGGING\n" +
                         "TABLESPACE \"USERS\"\n" +
-                        "LOB (\"DATA\") STORE AS SECUREFILE (TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 NOCACHE LOGGING NOCOMPRESS KEEP_DUPLICATES)",//
+                        "LOB (\"DATA\") STORE AS SECUREFILE (\n" +
+                        "\tTABLESPACE \"USERS\"\n" +
+                        "\tENABLE STORAGE IN ROW\n" +
+                        "\tCHUNK 8192\n" +
+                        "\tNOCACHE\n" +
+                        "\tLOGGING\n" +
+                        "\tNOCOMPRESS\n" +
+                        "\tKEEP_DUPLICATES\n" +
+                        ")",//
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

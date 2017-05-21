@@ -68,6 +68,7 @@ public class OracleCreateTableTest18 extends OracleTest {
                         "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
+                        "PCTUSED 40\n" +
                         "INITRANS 1\n" +
                         "MAXTRANS 255\n" +
                         "NOCOMPRESS\n" +

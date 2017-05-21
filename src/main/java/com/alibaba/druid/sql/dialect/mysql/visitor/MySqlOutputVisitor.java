@@ -423,12 +423,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(SQLCharacterDataType x) {
-        print0(x.getName());
-        if (!x.getArguments().isEmpty()) {
-            print('(');
-            printAndAccept(x.getArguments(), ", ");
-            print(')');
-        }
+        printDataType(x);
 
         if (x.isHasBinary()) {
             print0(ucase ? " BINARY " : " binary ");

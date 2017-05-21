@@ -31,8 +31,8 @@ public class MappingTest_createTable extends TestCase {
     public void test_mapping_createTable_mysql() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.MYSQL, mapping);
         assertEquals("CREATE TABLE user_01 (\n" +
-                "\tsource_key int, \n" +
-                "\tsource_value varchar(32), \n" +
+                "\tsource_key int,\n" +
+                "\tsource_value varchar(32),\n" +
                 "\tPRIMARY KEY (source_key)\n" +
                 ")", result);
     }
