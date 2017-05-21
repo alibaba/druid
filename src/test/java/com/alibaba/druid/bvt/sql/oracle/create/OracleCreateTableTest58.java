@@ -79,12 +79,12 @@ public class OracleCreateTableTest58 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
+                        "\t\tLOGGING\n" +
                         "\t\tTABLESPACE \"APPINDX1K\"\n" +
-                        "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
                         "\t\t)\n" +
-                        "\t\tLOGGING\n" +
+                        "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
                         "PCTUSED 40\n" +

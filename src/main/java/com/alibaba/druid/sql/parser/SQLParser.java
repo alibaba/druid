@@ -120,6 +120,7 @@ public class SQLParser {
                 case END:
                 case DEFERRED:
                 case OUTER:
+                case DO:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     break;

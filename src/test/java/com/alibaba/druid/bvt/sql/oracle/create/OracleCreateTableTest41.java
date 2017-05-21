@@ -81,9 +81,7 @@ public class OracleCreateTableTest41 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tTABLESPACE \"USERS\"\n" +
-                        "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
                         "\t\t\tFREELISTS 1\n" +
@@ -91,7 +89,9 @@ public class OracleCreateTableTest41 extends OracleTest {
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
                         "\t\t\tFLASH_CACHE DEFAULT\n" +
                         "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
-                        "\t\t),\n" +
+                        "\t\t)\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE,\n" +
                         "\tSUPPLEMENTAL LOG GROUP \"GGS_16346\" (\"NUM\") ALWAYS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS,\n" +
@@ -115,8 +115,8 @@ public class OracleCreateTableTest41 extends OracleTest {
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
                         "LOB (\"CLOB_COL\") STORE AS BASICFILE (\n" +
+                        "\tLOGGING\n" +
                         "\tTABLESPACE \"USERS\"\n" +
-                        "\tENABLE STORAGE IN ROW\n" +
                         "\tSTORAGE (\n" +
                         "\t\tINITIAL 65536\n" +
                         "\t\tFREELISTS 1\n" +
@@ -125,9 +125,9 @@ public class OracleCreateTableTest41 extends OracleTest {
                         "\t\tFLASH_CACHE DEFAULT\n" +
                         "\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t)\n" +
+                        "\tENABLE STORAGE IN ROW\n" +
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
-                        "\tLOGGING\n" +
                         "\tRETENTION\n" +
                         ")",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));

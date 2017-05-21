@@ -56,6 +56,26 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
     public OracleCreateTableStatement parseCrateTable(boolean acceptCreate) {
         OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCrateTable(acceptCreate);
 
+        if (lexer.token() == Token.OF) {
+            lexer.nextToken();
+            stmt.setOf(this.exprParser.name());
+
+            if (identifierEquals("OIDINDEX")) {
+                lexer.nextToken();
+
+                OracleCreateTableStatement.OIDIndex oidIndex = new OracleCreateTableStatement.OIDIndex();
+
+                if (lexer.token() != Token.LPAREN) {
+                    oidIndex.setName(this.exprParser.name());
+                }
+                accept(Token.LPAREN);
+                this.getExprParser().parseSegmentAttributes(oidIndex);
+                accept(Token.RPAREN);
+
+                stmt.setOidIndex(oidIndex);
+            }
+        }
+
         for (;;) {
             this.getExprParser().parseSegmentAttributes(stmt);
 
@@ -101,31 +121,6 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 }
                 //stmt.setEnable(Boolean.FALSE);
                 continue;
-            } else if (lexer.token() == Token.NOCOMPRESS || identifierEquals("NOCOMPRESS")) {
-                lexer.nextToken();
-                stmt.setCompress(Boolean.FALSE);
-                continue;
-            } else if (identifierEquals("COMPRESS")) {
-                lexer.nextToken();
-                stmt.setCompress(Boolean.TRUE);
-
-                if (lexer.token() == Token.LITERAL_INT) {
-                    int compressLevel = ((SQLNumericLiteralExpr)this.exprParser.primary()).getNumber().intValue();
-                    stmt.setCompressLevel(compressLevel);
-                }
-                continue;
-            } else if (lexer.token() == Token.FOR) {
-                lexer.nextToken();
-                if (lexer.token() == Token.ALL) {
-                    lexer.nextToken();
-                    throw new ParserException("TODO : " + lexer.info());
-                } else if (identifierEquals("OLTP")) {
-                    lexer.nextToken();
-                    stmt.setForOLTP(true);
-                } else {
-                    throw new ParserException("TODO : " + lexer.info());
-                }
-                continue;
             } else if (lexer.token() == Token.ON) {
                 lexer.nextToken();
                 accept(Token.COMMIT);
@@ -151,10 +146,10 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 this.exprParser.names(stmt.getClusterColumns(), cluster);
                 accept(Token.RPAREN);
                 continue;
-            } else if (lexer.token() == Token.STORAGE) {
-                OracleStorageClause storage = ((OracleExprParser) this.exprParser).parseStorage();
-                stmt.setStorage(storage);
-                continue;
+//            } else if (lexer.token() == Token.STORAGE) {
+//                OracleStorageClause storage = ((OracleExprParser) this.exprParser).parseStorage();
+//                stmt.setStorage(storage);
+//                continue;
             } else if (lexer.token() == Token.LOB) {
                 OracleLobStorageClause lobStorage = ((OracleExprParser) this.exprParser).parseLobStorage();
                 stmt.setLobStorage(lobStorage);

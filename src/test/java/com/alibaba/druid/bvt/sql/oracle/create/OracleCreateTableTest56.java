@@ -71,15 +71,15 @@ public class OracleCreateTableTest56 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tTABLESPACE \"PERFSTAT\"\n" +
-                        "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 1048576\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
-                        "\t\t),\n" +
+                        "\t\t)\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE,\n" +
                         "\tCONSTRAINT \"STATS$BG_EVENT_SUMMARY_FK\" FOREIGN KEY (\"SNAP_ID\", \"DBID\", \"INSTANCE_NUMBER\")\n" +
                         "\t\tREFERENCES \"PERFSTAT\".\"STATS$SNAPSHOT\" (\"SNAP_ID\", \"DBID\", \"INSTANCE_NUMBER\")\n" +
                         "\t\tON DELETE CASCADE ENABLE\n" +

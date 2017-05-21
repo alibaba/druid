@@ -76,15 +76,15 @@ public class OracleCreateTableTest52 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tTABLESPACE \"APPDATA1M\"\n" +
-                        "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
                         "\t\t)\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
                         "PCTUSED 40\n" +

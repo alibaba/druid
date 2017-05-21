@@ -2093,6 +2093,17 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleCreateTableStatement x) {
         this.visit((SQLCreateTableStatement) x);
 
+        if (x.getOf() != null) {
+            println();
+            print0(ucase ? "OF " : "of ");
+            x.getOf().accept(this);
+        }
+
+        if (x.getOidIndex() != null) {
+            println();
+            x.getOidIndex().accept(this);
+        }
+
         if (x.getOrganization() != null) {
             println();
             incrementIndent();
@@ -2760,65 +2771,30 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getIndex() != null) {
             print(' ');
             x.getIndex().accept(this);
-        } else {
-            if (x.getPtcfree() != null) {
-                println();
-                print0(ucase ? "PCTFREE " : "pctfree ");
-                x.getPtcfree().accept(this);
-            }
+        }
 
-            if (x.getInitrans() != null) {
-                println();
-                print0(ucase ? "INITRANS " : "initrans ");
-                x.getInitrans().accept(this);
-            }
+        printOracleSegmentAttributes(x);
 
-            if (x.getMaxtrans() != null) {
-                println();
-                print0(ucase ? "MAXTRANS " : "maxtrans ");
-                x.getMaxtrans().accept(this);
-            }
+        if (x.isComputeStatistics()) {
+            println();
+            print0(ucase ? "COMPUTE STATISTICS" : "compute statistics");
+        }
 
-            if (x.isComputeStatistics()) {
+        if (x.getEnable() != null) {
+            if (x.getEnable().booleanValue()) {
                 println();
-                print0(ucase ? "COMPUTE STATISTICS" : "compute statistics");
-            }
-
-            if (x.getTablespace() != null) {
+                print0(ucase ? "ENABLE" : "enable");
+            } else {
                 println();
-                print0(ucase ? "TABLESPACE " : "tablespace ");
-                x.getTablespace().accept(this);
-            }
-
-            if (x.getEnable() != null) {
-                if (x.getEnable().booleanValue()) {
-                    println();
-                    print0(ucase ? "ENABLE" : "enable");
-                } else {
-                    println();
-                    print0(ucase ? "DISABLE" : "disable");
-                }
-            }
-
-            if (x.getStorage() != null) {
-                println();
-                x.getStorage().accept(this);
-            }
-
-            if (x.isNocompress()) {
-                println();
-                print0(ucase ? "NOCOMPRESS" : "nocompress");
-            }
-
-            if (x.getLogging() != null) {
-                println();
-                if (x.getLogging().booleanValue()) {
-                    print0(ucase ? "LOGGING" : "logging");
-                } else {
-                    print0(ucase ? "NOLOGGING" : "nologging");
-                }
+                print0(ucase ? "DISABLE" : "disable");
             }
         }
+
+        if (x.isReverse()) {
+            println();
+            print0(ucase ? "REVERSE" : "reverse");
+        }
+
 
         return false;
     }
@@ -2844,11 +2820,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         print0(" (");
         incrementIndent();
-        if (x.getTableSpace() != null) {
-            println();
-            print0(ucase ? "TABLESPACE " : "tablespace ");
-            x.getTableSpace().accept(this);
-        }
+        printOracleSegmentAttributes(x);
 
         if (x.getEnable() != null) {
             println();
@@ -2857,11 +2829,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             } else {
                 print0(ucase ? "DISABLE STORAGE IN ROW" : "disable storage in row");
             }
-        }
-
-        if (x.getStorageClause() != null) {
-            println();
-            x.getStorageClause().accept(this);
         }
 
         if (x.getChunk() != null) {
@@ -2876,24 +2843,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print0(ucase ? "CACHE" : "cache");
             } else {
                 print0(ucase ? "NOCACHE" : "nocache");
-            }
-        }
-
-        if (x.getLogging() != null) {
-            println();
-            if (x.getLogging().booleanValue()) {
-                print0(ucase ? "LOGGING" : "logging");
-            } else {
-                print0(ucase ? "NOLOGGING" : "nologging");
-            }
-        }
-
-        if (x.getCompress() != null) {
-            println();
-            if (x.getCompress().booleanValue()) {
-                print0(ucase ? "COMPRESS" : "compress");
-            } else {
-                print0(ucase ? "NOCOMPRESS" : "nocompress");
             }
         }
 
@@ -3154,6 +3103,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
+
+    }
+
+    public boolean visit(OracleCreateTableStatement.OIDIndex x) {
+        print0(ucase ? "OIDINDEX" : "oidindex");
+
+        if (x.getName() != null) {
+            print(' ');
+            x.getName().accept(this);
+        }
+        print(" (");
+        incrementIndent();
+        printOracleSegmentAttributes(x);
+        decrementIndent();
+        println();
+        print(")");
+        return false;
+    }
+
+    public void endVisit(OracleCreateTableStatement.OIDIndex x) {
 
     }
 }

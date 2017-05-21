@@ -63,8 +63,8 @@ public class OracleCreateTableTest18 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +

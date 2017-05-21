@@ -94,9 +94,7 @@ public class OracleCreateTableTest61 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tTABLESPACE \"NIRVANA1M_IND\"\n" +
-                        "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 1048576\n" +
                         "\t\t\tFREELISTS 1\n" +
@@ -104,7 +102,9 @@ public class OracleCreateTableTest61 extends OracleTest {
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
                         "\t\t\tFLASH_CACHE DEFAULT\n" +
                         "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
-                        "\t\t),\n" +
+                        "\t\t)\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE,\n" +
                         "\tCONSTRAINT \"FK_ADMIN_MA_REFERENCE_ADMIN_MA\" FOREIGN KEY (\"MAIL_CATEGORY_ID\")\n" +
                         "\t\tREFERENCES \"NIRVANA\".\"ADMIN_MAIL_CATEGORY\" (\"ID\") ENABLE\n" +
                         ")\n" +
@@ -124,8 +124,8 @@ public class OracleCreateTableTest61 extends OracleTest {
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
                         "LOB (\"CONTENT\") STORE AS BASICFILE (\n" +
+                        "\tLOGGING\n" +
                         "\tTABLESPACE \"NIRVANA1M\"\n" +
-                        "\tENABLE STORAGE IN ROW\n" +
                         "\tSTORAGE (\n" +
                         "\t\tINITIAL 1048576\n" +
                         "\t\tFREELISTS 1\n" +
@@ -134,9 +134,9 @@ public class OracleCreateTableTest61 extends OracleTest {
                         "\t\tFLASH_CACHE DEFAULT\n" +
                         "\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t)\n" +
+                        "\tENABLE STORAGE IN ROW\n" +
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
-                        "\tLOGGING\n" +
                         ")",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 

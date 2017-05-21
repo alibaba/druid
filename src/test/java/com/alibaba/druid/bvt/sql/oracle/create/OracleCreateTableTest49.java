@@ -178,13 +178,13 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")\n" +
                         "LOB (\"DETAIL\") STORE AS (\n" +
-                        "\tENABLE STORAGE IN ROW\n" +
+                        "\tLOGGING\n" +
                         "\tSTORAGE (\n" +
                         "\t\tBUFFER_POOL DEFAULT\n" +
                         "\t)\n" +
+                        "\tENABLE STORAGE IN ROW\n" +
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
-                        "\tLOGGING\n" +
                         ")\n" +
                         "PARTITION BY RANGE (\"GMT_CREATE\")\n" +
                         "(\n" +

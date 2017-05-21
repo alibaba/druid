@@ -26,22 +26,19 @@ import org.junit.Assert;
 
 import java.util.List;
 
-public class OracleCreateTableTest55 extends OracleTest {
+public class OracleCreateTableTest63 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "       CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"I\" NUMBER, \n" +
-                "  \"C\" CLOB\n" +
-                "   ) PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+        "   CREATE TABLE \"SC_001\".\"TB_001\" OF \"ZHANGZJ\".\"T_OBJECT\" \n" +
+                " OIDINDEX  ( PCTFREE 10 INITRANS 2 MAXTRANS 255 \n" +
                 "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
                 "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
-                "  TABLESPACE \"USERS\" \n" +
-                " LOB (\"C\") STORE AS (\n" +
-                "  TABLESPACE \"USERS\" DISABLE STORAGE IN ROW CHUNK 8192 PCTVERSION 10\n" +
-                "  NOCACHE LOGGING \n" +
+                "  TABLESPACE \"USERS\" ) \n" +
+                " PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
                 "  STORAGE(INITIAL 1048576 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT))     ";
+                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)\n" +
+                "  TABLESPACE \"USERS\"    ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -50,9 +47,19 @@ public class OracleCreateTableTest55 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
-                        "\t\"I\" NUMBER,\n" +
-                        "\t\"C\" CLOB\n" +
+        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\"\n" +
+                        "OF \"ZHANGZJ\".\"T_OBJECT\"\n" +
+                        "OIDINDEX (\n" +
+                        "\tPCTFREE 10\n" +
+                        "\tINITRANS 2\n" +
+                        "\tMAXTRANS 255\n" +
+                        "\tTABLESPACE \"USERS\"\n" +
+                        "\tSTORAGE (\n" +
+                        "\t\tINITIAL 1048576\n" +
+                        "\t\tFREELISTS 1\n" +
+                        "\t\tFREELIST GROUPS 1\n" +
+                        "\t\tBUFFER_POOL DEFAULT\n" +
+                        "\t)\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
                         "PCTUSED 40\n" +
@@ -66,19 +73,6 @@ public class OracleCreateTableTest55 extends OracleTest {
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
-                        ")\n" +
-                        "LOB (\"C\") STORE AS (\n" +
-                        "\tLOGGING\n" +
-                        "\tTABLESPACE \"USERS\"\n" +
-                        "\tSTORAGE (\n" +
-                        "\t\tINITIAL 1048576\n" +
-                        "\t\tFREELISTS 1\n" +
-                        "\t\tFREELIST GROUPS 1\n" +
-                        "\t\tBUFFER_POOL DEFAULT\n" +
-                        "\t)\n" +
-                        "\tDISABLE STORAGE IN ROW\n" +
-                        "\tCHUNK 8192\n" +
-                        "\tNOCACHE\n" +
                         ")",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
@@ -93,8 +87,8 @@ public class OracleCreateTableTest55 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "I")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "MEMBER_ID")));
     }
 }

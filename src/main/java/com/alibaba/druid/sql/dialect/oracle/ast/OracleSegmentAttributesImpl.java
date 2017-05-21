@@ -32,6 +32,7 @@ public abstract class OracleSegmentAttributesImpl extends SQLObjectImpl implemen
     private Integer freeLists;
     private Boolean compress;
     private Integer compressLevel;
+    private boolean compressForOltp;
     private Integer pctthreshold;
 
     private Boolean logging;
@@ -136,5 +137,13 @@ public abstract class OracleSegmentAttributesImpl extends SQLObjectImpl implemen
 
     public void setStorage(SQLObject storage) {
         this.storage = storage;
+    }
+
+    public boolean isCompressForOltp() {
+        return compressForOltp;
+    }
+
+    public void setCompressForOltp(boolean compressForOltp) {
+        this.compressForOltp = compressForOltp;
     }
 }

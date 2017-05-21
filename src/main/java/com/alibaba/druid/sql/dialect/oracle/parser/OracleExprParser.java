@@ -1030,23 +1030,9 @@ public class OracleExprParser extends SQLExprParser {
         OracleUsingIndexClause using = new OracleUsingIndexClause();
         
         for (;;) {
-            if (lexer.token() == Token.TABLESPACE) {
-                lexer.nextToken();
-                using.setTablespace(this.name());
-                continue;
-            } else if (lexer.token() == Token.PCTFREE) {
-                lexer.nextToken();
-                using.setPtcfree(this.expr());
-                continue;
-            } else if (lexer.token() == Token.INITRANS) {
-                lexer.nextToken();
-                using.setInitrans(this.expr());
-                continue;
-            } else if (lexer.token() == Token.MAXTRANS) {
-                lexer.nextToken();
-                using.setMaxtrans(this.expr());
-                continue;
-            } else if (lexer.token() == Token.COMPUTE) {
+            this.parseSegmentAttributes(using);
+
+            if (lexer.token() == Token.COMPUTE) {
                 lexer.nextToken();
                 acceptIdentifier("STATISTICS");
                 using.setComputeStatistics(true);
@@ -1055,13 +1041,13 @@ public class OracleExprParser extends SQLExprParser {
                 lexer.nextToken();
                 using.setEnable(true);
                 continue;
+            } else if (identifierEquals("REVERSE")) {
+                lexer.nextToken();
+                using.setReverse(true);
+                continue;
             } else if (lexer.token() == Token.DISABLE) {
                 lexer.nextToken();
                 using.setEnable(false);
-                continue;
-            } else if (lexer.token() == Token.STORAGE) {
-                OracleStorageClause storage = parseStorage();
-                using.setStorage(storage);
                 continue;
             } else if (identifierEquals("LOCAL")) {
                 lexer.nextToken();
@@ -1084,23 +1070,9 @@ public class OracleExprParser extends SQLExprParser {
                 }
                 accept(Token.RPAREN);
                 continue;
-            } else if (identifierEquals("NOLOGGING")) {
-                lexer.nextToken();
-                using.setLogging(Boolean.FALSE);
-                continue;
-            } else if (identifierEquals("COMPRESS")) {
-                throw new ParserException("TODO " + lexer.token());
             } else if (lexer.token() == Token.IDENTIFIER) {
                 using.setTablespace(this.name());
                 break;
-            } else if (lexer.token() == Token.NOCOMPRESS || identifierEquals("NOCOMPRESS")) {
-                lexer.nextToken();
-                using.setNocompress(true);
-                continue;
-            } else if (lexer.token() == Token.LOGGING || identifierEquals("LOGGING")) {
-                lexer.nextToken();
-                using.setLogging(Boolean.TRUE);
-                continue;
             } else {
                 break;
             }
@@ -1175,11 +1147,7 @@ public class OracleExprParser extends SQLExprParser {
                 lexer.nextToken();
                 
                 for (;;) {
-                    if (lexer.token() == Token.TABLESPACE) {
-                        lexer.nextToken();
-                        clause.setTableSpace(this.name());
-                        continue;
-                    }
+                    this.parseSegmentAttributes(clause);
                     
                     if (lexer.token() == Token.ENABLE) {
                         lexer.nextToken();
@@ -1212,13 +1180,7 @@ public class OracleExprParser extends SQLExprParser {
                         }
                         continue;
                     }
-                    
-                    if (lexer.token() == Token.NOCOMPRESS) {
-                        lexer.nextToken();
-                        clause.setCompress(false);
-                        continue;
-                    }
-                    
+
                     if (lexer.token() == Token.KEEP_DUPLICATES) {
                         lexer.nextToken();
                         clause.setKeepDuplicate(true);
@@ -1528,6 +1490,14 @@ public class OracleExprParser extends SQLExprParser {
                 } else if (identifierEquals("BASIC")) {
                     lexer.nextToken();
                     // TODO COMPRESS BASIC
+                } else if (lexer.token() == Token.FOR) {
+                    lexer.nextToken();
+                    if (identifierEquals("OLTP")) {
+                        lexer.nextToken();
+                        attributes.setCompressForOltp(true);
+                    } else {
+                        throw new ParserException("TODO : " + lexer.info());
+                    }
                 }
                 continue;
             } else if (identifierEquals("NOCOMPRESS")) {

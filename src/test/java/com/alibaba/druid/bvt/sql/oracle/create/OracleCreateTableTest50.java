@@ -236,10 +236,10 @@ public class OracleCreateTableTest50 extends OracleTest {
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
                         "\t\tTABLESPACE NOVALIDATE\n" +
-                        "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
                         "\t\t)\n" +
+                        "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
                         "PCTUSED 40\n" +

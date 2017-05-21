@@ -381,6 +381,7 @@ public class SQLExprParser extends SQLParser {
             case IDENTITY:
             case EXTRACT:
             case DESC:
+            case DO:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -1037,6 +1038,7 @@ public class SQLExprParser extends SQLParser {
                 case OVER:
                 case ORDER:
                 case DO:
+                case JOIN:
                     identName = lexer.stringVal();
                     lexer.nextToken();
                     break;
@@ -2249,7 +2251,7 @@ public class SQLExprParser extends SQLParser {
                 expr = this.primaryRest(expr);
                 expr = this.exprRest(expr);
             }
-        } else if (lexer.token() == Token.DO) {
+        } else if (lexer.token() == Token.DO || lexer.token() == Token.JOIN) {
             expr = this.name();
         } else {
             expr = expr();

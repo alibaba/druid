@@ -59,6 +59,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private Boolean                 logging;
     private Boolean                 compress;
     private Integer                 compressLevel;
+    private boolean                 compressForOltp;
     private boolean                 onCommit;
     private boolean                 preserveRows;
 
@@ -68,14 +69,15 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     private DeferredSegmentCreation deferredSegmentCreation;
 
-    private boolean                 forOLTP;
-
     private Boolean                 enableRowMovement;
 
     private List<SQLName>           clusterColumns = new ArrayList<SQLName>();
     private SQLName                 cluster;
 
     private Organization            organization;
+
+    private SQLName                 of;
+    private OIDIndex                oidIndex;
     
     public OracleCreateTableStatement() {
         super (JdbcConstants.ORACLE);
@@ -240,12 +242,34 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.storage = (OracleStorageClause) storage;
     }
 
-    public boolean isForOLTP() {
-        return forOLTP;
+    public SQLName getOf() {
+        return of;
     }
 
-    public void setForOLTP(boolean forOLTP) {
-        this.forOLTP = forOLTP;
+    public void setOf(SQLName of) {
+        if (of != null) {
+            of.setParent(this);
+        }
+        this.of = of;
+    }
+
+    public OIDIndex getOidIndex() {
+        return oidIndex;
+    }
+
+    public void setOidIndex(OIDIndex oidIndex) {
+        if (oidIndex != null) {
+            oidIndex.setParent(this);
+        }
+        this.oidIndex = oidIndex;
+    }
+
+    public boolean isCompressForOltp() {
+        return compressForOltp;
+    }
+
+    public void setCompressForOltp(boolean compressForOltp) {
+        this.compressForOltp = compressForOltp;
     }
 
     public Boolean getEnableRowMovement() {
@@ -403,6 +427,35 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
                 terminatedBy.setParent(this);
             }
             this.terminatedBy = terminatedBy;
+        }
+    }
+
+    public static class OIDIndex extends OracleSegmentAttributesImpl implements OracleSQLObject{
+        private SQLName name;
+
+        @Override
+        public void accept0(OracleASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, name);
+                acceptChild(visitor, tablespace);
+                acceptChild(visitor, storage);
+            }
+            visitor.endVisit(this);
+        }
+
+        protected void accept0(SQLASTVisitor visitor) {
+            accept0((OracleASTVisitor) visitor);
+        }
+
+        public SQLName getName() {
+            return name;
+        }
+
+        public void setName(SQLName name) {
+            if (name != null) {
+                name.setParent(this);
+            }
+            this.name = name;
         }
     }
 }

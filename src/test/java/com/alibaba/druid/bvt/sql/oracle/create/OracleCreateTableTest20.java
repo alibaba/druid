@@ -68,8 +68,8 @@ public class OracleCreateTableTest20 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
@@ -80,12 +80,12 @@ public class OracleCreateTableTest20 extends OracleTest {
                         "LOGGING\n" +
                         "TABLESPACE \"USERS\"\n" +
                         "LOB (\"DATA\") STORE AS SECUREFILE (\n" +
+                        "\tNOCOMPRESS\n" +
+                        "\tLOGGING\n" +
                         "\tTABLESPACE \"USERS\"\n" +
                         "\tENABLE STORAGE IN ROW\n" +
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
-                        "\tLOGGING\n" +
-                        "\tNOCOMPRESS\n" +
                         "\tKEEP_DUPLICATES\n" +
                         ")",//
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));

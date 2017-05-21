@@ -456,4 +456,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x);
 
     void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x);
+
+    boolean visit(OracleCreateTableStatement.OIDIndex x);
+
+    void endVisit(OracleCreateTableStatement.OIDIndex x);
 }

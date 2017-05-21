@@ -54,4 +54,8 @@ public interface OracleSegmentAttributes extends SQLObject {
 
     SQLObject getStorage();
     void setStorage(SQLObject storage);
+
+    boolean isCompressForOltp();
+
+    void setCompressForOltp(boolean compressForOltp);
 }

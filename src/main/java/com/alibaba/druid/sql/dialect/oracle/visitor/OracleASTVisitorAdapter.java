@@ -1102,4 +1102,11 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
 
     }
+    public boolean visit(OracleCreateTableStatement.OIDIndex x) {
+        return true;
+    }
+
+    public void endVisit(OracleCreateTableStatement.OIDIndex x) {
+
+    }
 }

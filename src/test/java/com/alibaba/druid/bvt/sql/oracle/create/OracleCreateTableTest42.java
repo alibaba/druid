@@ -65,11 +65,11 @@ public class OracleCreateTableTest42 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
-                        "\t\tTABLESPACE \"USERS\"\n" +
-                        "\t\tENABLE\n" +
                         "\t\tNOCOMPRESS\n" +
-                        "\t\tLOGGING,\n" +
+                        "\t\tLOGGING\n" +
+                        "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE,\n" +
                         "\tSUPPLEMENTAL LOG GROUP \"GGS_15754\" (\"GROUP_NAME\", \"GROUP_KEY\", \"LOG_CMPLT_CSN\", \"LOG_CMPLT_XIDS_SEQ\") ALWAYS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (PRIMARY KEY) COLUMNS,\n" +
                         "\tSUPPLEMENTAL LOG DATA (UNIQUE INDEX) COLUMNS,\n" +

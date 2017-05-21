@@ -67,9 +67,7 @@ public class OracleCreateTableTest19 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tTABLESPACE \"USERS\"\n" +
-                        "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
                         "\t\t\tFREELISTS 1\n" +
@@ -78,6 +76,8 @@ public class OracleCreateTableTest19 extends OracleTest {
                         "\t\t\tFLASH_CACHE DEFAULT\n" +
                         "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
                         "\t\t)\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
                         "PCTUSED 40\n" +

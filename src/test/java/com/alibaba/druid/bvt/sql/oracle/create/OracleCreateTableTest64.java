@@ -26,37 +26,42 @@ import org.junit.Assert;
 
 import java.util.List;
 
-public class OracleCreateTableTest44 extends OracleTest {
+public class OracleCreateTableTest64 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE TABLE \"SC_001\".\"TB_001\" \n" +
-                "   (  \"PK1\" NUMBER, \n" +
-                "  \"COL1\" CHAR(1), \n" +
-                "  \"COL2\" NCHAR(20), \n" +
-                "  \"COL3\" VARCHAR2(30), \n" +
-                "  \"COL4\" NVARCHAR2(30), \n" +
-                "  \"COL5\" NUMBER(*,0), \n" +
-                "  \"COL6\" FLOAT(10), \n" +
-                "  \"COL7\" DATE, \n" +
-                "  \"COL8\" TIMESTAMP (6), \n" +
-                "  \"COL9\" BLOB, \n" +
-                "  \"COL10\" LONG, \n" +
-                "   PRIMARY KEY (\"PK1\")\n" +
-                "  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS \n" +
-                "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\"  ENABLE\n" +
+        "   CREATE TABLE \"SC_001\".\"TB_001\" \n" +
+                "   (\t\"STOREID\" VARCHAR2(40) NOT NULL ENABLE, \n" +
+                "\t\"OPPTIME\" DATE, \n" +
+                "\t\"CREATETIME\" DATE, \n" +
+                "\t\"NAME\" VARCHAR2(254), \n" +
+                "\t\"FILEPATH\" VARCHAR2(254), \n" +
+                "\t\"FILENAME\" VARCHAR2(64), \n" +
+                "\t\"EVENTCODE\" VARCHAR2(200), \n" +
+                "\t\"FILECODE\" VARCHAR2(200), \n" +
+                "\t\"RESULTCODE\" VARCHAR2(200), \n" +
+                "\t\"RESULTMESSAGE\" VARCHAR2(4000), \n" +
+                "\t\"RESULTMEMO\" VARCHAR2(200), \n" +
+                "\t\"STATUSCODE\" VARCHAR2(200), \n" +
+                "\t\"STATUSMESSAGE\" VARCHAR2(4000), \n" +
+                "\t\"UPLOADSUCCESS\" VARCHAR2(200), \n" +
+                "\t\"BZ\" VARCHAR2(4000), \n" +
+                "\t\"DATACOUNT\" NUMBER, \n" +
+                "\t\"FILECONTS\" CLOB, \n" +
+                "\t\"XFJBH\" VARCHAR2(38)\n" +
                 "   ) SEGMENT CREATION IMMEDIATE \n" +
-                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 NOCOMPRESS LOGGING\n" +
+                "  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 \n" +
+                " NOCOMPRESS NOLOGGING\n" +
                 "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
-                "  TABLESPACE \"USERS\" \n" +
-                " LOB (\"COL9\") STORE AS BASICFILE (\n" +
-                "  TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
-                "  NOCACHE LOGGING \n" +
+                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)\n" +
+                "  TABLESPACE \"XINFANG\" \n" +
+                " LOB (\"FILECONTS\") STORE AS BASICFILE (\n" +
+                "  TABLESPACE \"XINFANG\" ENABLE STORAGE IN ROW CHUNK 8192 RETENTION \n" +
+                "  NOCACHE NOLOGGING \n" +
                 "  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645\n" +
-                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT))";
+                "  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1\n" +
+                "  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT))   ";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -66,41 +71,32 @@ public class OracleCreateTableTest44 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
-                        "\t\"PK1\" NUMBER,\n" +
-                        "\t\"COL1\" CHAR(1),\n" +
-                        "\t\"COL2\" NCHAR(20),\n" +
-                        "\t\"COL3\" VARCHAR2(30),\n" +
-                        "\t\"COL4\" NVARCHAR2(30),\n" +
-                        "\t\"COL5\" NUMBER(*, 0),\n" +
-                        "\t\"COL6\" FLOAT(10),\n" +
-                        "\t\"COL7\" DATE,\n" +
-                        "\t\"COL8\" TIMESTAMP(6),\n" +
-                        "\t\"COL9\" BLOB,\n" +
-                        "\t\"COL10\" LONG,\n" +
-                        "\tPRIMARY KEY (\"PK1\")\n" +
-                        "\t\tUSING INDEX\n" +
-                        "\t\tPCTFREE 10\n" +
-                        "\t\tINITRANS 2\n" +
-                        "\t\tMAXTRANS 255\n" +
-                        "\t\tTABLESPACE \"USERS\"\n" +
-                        "\t\tSTORAGE (\n" +
-                        "\t\t\tINITIAL 65536\n" +
-                        "\t\t\tFREELISTS 1\n" +
-                        "\t\t\tFREELIST GROUPS 1\n" +
-                        "\t\t\tBUFFER_POOL DEFAULT\n" +
-                        "\t\t\tFLASH_CACHE DEFAULT\n" +
-                        "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
-                        "\t\t)\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
-                        "\t\tENABLE\n" +
+                        "\t\"STOREID\" VARCHAR2(40) NOT NULL ENABLE,\n" +
+                        "\t\"OPPTIME\" DATE,\n" +
+                        "\t\"CREATETIME\" DATE,\n" +
+                        "\t\"NAME\" VARCHAR2(254),\n" +
+                        "\t\"FILEPATH\" VARCHAR2(254),\n" +
+                        "\t\"FILENAME\" VARCHAR2(64),\n" +
+                        "\t\"EVENTCODE\" VARCHAR2(200),\n" +
+                        "\t\"FILECODE\" VARCHAR2(200),\n" +
+                        "\t\"RESULTCODE\" VARCHAR2(200),\n" +
+                        "\t\"RESULTMESSAGE\" VARCHAR2(4000),\n" +
+                        "\t\"RESULTMEMO\" VARCHAR2(200),\n" +
+                        "\t\"STATUSCODE\" VARCHAR2(200),\n" +
+                        "\t\"STATUSMESSAGE\" VARCHAR2(4000),\n" +
+                        "\t\"UPLOADSUCCESS\" VARCHAR2(200),\n" +
+                        "\t\"BZ\" VARCHAR2(4000),\n" +
+                        "\t\"DATACOUNT\" NUMBER,\n" +
+                        "\t\"FILECONTS\" CLOB,\n" +
+                        "\t\"XFJBH\" VARCHAR2(38)\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
                         "PCTUSED 40\n" +
                         "INITRANS 1\n" +
                         "MAXTRANS 255\n" +
                         "NOCOMPRESS\n" +
-                        "LOGGING\n" +
-                        "TABLESPACE \"USERS\"\n" +
+                        "NOLOGGING\n" +
+                        "TABLESPACE \"XINFANG\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 65536\n" +
                         "\tFREELISTS 1\n" +
@@ -109,9 +105,9 @@ public class OracleCreateTableTest44 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
-                        "LOB (\"COL9\") STORE AS BASICFILE (\n" +
-                        "\tLOGGING\n" +
-                        "\tTABLESPACE \"USERS\"\n" +
+                        "LOB (\"FILECONTS\") STORE AS BASICFILE (\n" +
+                        "\tNOLOGGING\n" +
+                        "\tTABLESPACE \"XINFANG\"\n" +
                         "\tSTORAGE (\n" +
                         "\t\tINITIAL 65536\n" +
                         "\t\tFREELISTS 1\n" +
@@ -138,8 +134,8 @@ public class OracleCreateTableTest44 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(11, visitor.getColumns().size());
+        Assert.assertEquals(18, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "PK1")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "STOREID")));
     }
 }

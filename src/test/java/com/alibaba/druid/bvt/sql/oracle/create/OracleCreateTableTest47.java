@@ -84,15 +84,15 @@ public class OracleCreateTableTest47 extends OracleTest {
                         "\t\tPCTFREE 10\n" +
                         "\t\tINITRANS 2\n" +
                         "\t\tMAXTRANS 255\n" +
-                        "\t\tCOMPUTE STATISTICS\n" +
                         "\t\tTABLESPACE \"APPINDX1M\"\n" +
-                        "\t\tENABLE\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 4194304\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
                         "\t\t)\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE\n" +
                         ")\n" +
                         "PCTFREE 10\n" +
                         "PCTUSED 40\n" +
@@ -108,17 +108,17 @@ public class OracleCreateTableTest47 extends OracleTest {
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")\n" +
                         "LOB (\"CONTENT\") STORE AS (\n" +
+                        "\tLOGGING\n" +
                         "\tTABLESPACE \"APPDATA1M\"\n" +
-                        "\tENABLE STORAGE IN ROW\n" +
                         "\tSTORAGE (\n" +
                         "\t\tINITIAL 4194304\n" +
                         "\t\tFREELISTS 1\n" +
                         "\t\tFREELIST GROUPS 1\n" +
                         "\t\tBUFFER_POOL DEFAULT\n" +
                         "\t)\n" +
+                        "\tENABLE STORAGE IN ROW\n" +
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
-                        "\tLOGGING\n" +
                         ")",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
