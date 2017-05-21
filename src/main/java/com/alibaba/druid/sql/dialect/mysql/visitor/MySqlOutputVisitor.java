@@ -512,22 +512,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getLike().accept(this);
         }
 
-        int size = x.getTableElementList().size();
-        if (size > 0) {
-            print0(" (");
-            incrementIndent();
-            println();
-            for (int i = 0; i < size; ++i) {
-                if (i != 0) {
-                    print0(", ");
-                    println();
-                }
-                x.getTableElementList().get(i).accept(this);
-            }
-            decrementIndent();
-            println();
-            print(')');
-        }
+        printTableElements(x.getTableElementList());
 
         for (Map.Entry<String, SQLObject> option : x.getTableOptions().entrySet()) {
             String key = option.getKey();

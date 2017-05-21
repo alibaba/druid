@@ -18,11 +18,13 @@ package com.alibaba.druid.sql.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLPartition extends SQLObjectImpl {
+public class SQLPartition extends OracleSegmentAttributesImpl implements OracleSegmentAttributes {
 
     protected SQLName               name;
 
@@ -35,21 +37,16 @@ public class SQLPartition extends SQLObjectImpl {
     // for mysql
     protected SQLExpr           dataDirectory;
     protected SQLExpr           indexDirectory;
-    protected SQLName           tableSpace;
     protected SQLExpr           maxRows;
     protected SQLExpr           minRows;
     protected SQLExpr           engine;
     protected SQLExpr           comment;
 
-    private SQLExpr             ptcfree;
-    private SQLExpr             pctused;
-    private SQLExpr             initrans;
-    private SQLExpr             maxtrans;
-    private OracleStorageClause storage;
-    private SQLName             tablespace;
-    private Boolean             compress;
+    // for oracle
+    protected boolean segmentCreationImmediate;
+    protected boolean segmentCreationDeferred;
 
-    private OracleLobStorageClause lobStorage;
+    private SQLObject lobStorage;
 
 
     public SQLName getName() {
@@ -118,19 +115,6 @@ public class SQLPartition extends SQLObjectImpl {
         this.dataDirectory = dataDirectory;
     }
 
- 
-
-    public SQLName getTableSpace() {
-        return tableSpace;
-    }
-
-    public void setTableSpace(SQLName tableSpace) {
-        if (tableSpace != null) {
-            tableSpace.setParent(this);
-        }
-        this.tableSpace = tableSpace;
-    }
-
     public SQLExpr getMaxRows() {
         return maxRows;
     }
@@ -181,103 +165,41 @@ public class SQLPartition extends SQLObjectImpl {
             acceptChild(visitor, values);
             acceptChild(visitor, dataDirectory);
             acceptChild(visitor, indexDirectory);
-            acceptChild(visitor, tableSpace);
+            acceptChild(visitor, tablespace);
             acceptChild(visitor, maxRows);
             acceptChild(visitor, minRows);
             acceptChild(visitor, engine);
             acceptChild(visitor, comment);
 
-            acceptChild(visitor, ptcfree);
-            acceptChild(visitor, pctused);
-            acceptChild(visitor, initrans);
-            acceptChild(visitor, maxtrans);
             acceptChild(visitor, storage);
         }
         visitor.endVisit(this);
     }
 
-    public SQLExpr getPtcfree() {
-        return ptcfree;
-    }
-
-    public void setPtcfree(SQLExpr ptcfree) {
-        if (ptcfree != null) {
-            ptcfree.setParent(this);
-        }
-        this.ptcfree = ptcfree;
-    }
-
-    public SQLExpr getPctused() {
-        return pctused;
-    }
-
-    public void setPctused(SQLExpr pctused) {
-        if (pctused != null) {
-            pctused.setParent(this);
-        }
-        this.pctused = pctused;
-    }
-
-    public SQLExpr getInitrans() {
-        return initrans;
-    }
-
-    public void setInitrans(SQLExpr initrans) {
-        if (initrans != null) {
-            initrans.setParent(this);
-        }
-        this.initrans = initrans;
-    }
-
-    public SQLExpr getMaxtrans() {
-        return maxtrans;
-    }
-
-    public void setMaxtrans(SQLExpr maxtrans) {
-        if (maxtrans != null) {
-            maxtrans.setParent(this);
-        }
-        this.maxtrans = maxtrans;
-    }
-
-    public OracleStorageClause getStorage() {
-        return storage;
-    }
-
-    public void setStorage(OracleStorageClause storage) {
-        if (storage != null) {
-            storage.setParent(this);
-        }
-        this.storage = storage;
-    }
-
-    public SQLName getTablespace() {
-        return tablespace;
-    }
-
-    public void setTablespace(SQLName tablespace) {
-        if (tablespace != null) {
-            tablespace.setParent(this);
-        }
-        this.tablespace = tablespace;
-    }
-
-    public Boolean getCompress() {
-        return compress;
-    }
-
-    public void setCompress(Boolean compress) {
-        this.compress = compress;
-    }
-
-    public OracleLobStorageClause getLobStorage() {
+    public SQLObject getLobStorage() {
         return lobStorage;
     }
 
-    public void setLobStorage(OracleLobStorageClause lobStorage) {
+    public void setLobStorage(SQLObject lobStorage) {
         if (lobStorage != null) {
             lobStorage.setParent(this);
         }
         this.lobStorage = lobStorage;
+    }
+
+    public boolean isSegmentCreationImmediate() {
+        return segmentCreationImmediate;
+    }
+
+    public void setSegmentCreationImmediate(boolean segmentCreationImmediate) {
+        this.segmentCreationImmediate = segmentCreationImmediate;
+    }
+
+    public boolean isSegmentCreationDeferred() {
+        return segmentCreationDeferred;
+    }
+
+    public void setSegmentCreationDeferred(boolean segmentCreationDeferred) {
+        this.segmentCreationDeferred = segmentCreationDeferred;
     }
 }

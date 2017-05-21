@@ -38,7 +38,7 @@ public class MySqlCreateTableTest59 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE t3 (" //
-                            + "\n\ta long, " //
+                            + "\n\ta long," //
                             + "\n\tb long byte" //
                             + "\n)", output);
 

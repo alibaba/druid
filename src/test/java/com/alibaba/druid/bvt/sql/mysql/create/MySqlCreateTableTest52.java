@@ -56,13 +56,13 @@ public class MySqlCreateTableTest52 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE `ins_ebay_auth` ("//
-    +"\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id', " //
-    +"\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表', "//
-    +"\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效', "//
-    +"\n\t`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码', "// 
-    +"\n\t`ebay_name` varchar(50) NOT NULL COMMENT 'eBay唯一名', "// 
-    +"\n\t`create_time` datetime NOT NULL COMMENT '授权时间', "// 
-    +"\n\t`invalid_time` datetime NOT NULL COMMENT '授权失效时间', "// 
+    +"\n\t`auth_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id'," //
+    +"\n\t`usr_id` int(10) NOT NULL COMMENT '外键，用户表',"//
+    +"\n\t`status` char(1) COLLATE utf8_bin NOT NULL COMMENT '状态 0.有效?1.无效',"//
+    +"\n\t`ebay_token` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'eBay授权码',"//
+    +"\n\t`ebay_name` varchar(50) NOT NULL COMMENT 'eBay唯一名',"//
+    +"\n\t`create_time` datetime NOT NULL COMMENT '授权时间',"//
+    +"\n\t`invalid_time` datetime NOT NULL COMMENT '授权失效时间',"//
     +"\n\tPRIMARY KEY (`auth_id`)"
     +"\n) ENGINE = InnoDB CHARSET = utf8 COLLATE utf8_bin COMMENT = 'INS_EBAY_AUTH'", output);
     }

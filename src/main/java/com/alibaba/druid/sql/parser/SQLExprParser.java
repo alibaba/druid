@@ -191,6 +191,17 @@ public class SQLExprParser extends SQLParser {
         return intExpr;
     }
 
+    public int parseIntValue() {
+        if (lexer.token() == Token.LITERAL_INT) {
+            Number number = this.lexer.integerValue();
+            int intVal = ((Integer) number).intValue();
+            lexer.nextToken();
+            return intVal;
+        } else {
+            throw new ParserException("not int. " + lexer.info());
+        }
+    }
+
     public SQLExpr primary() {
         List<String> beforeComments = null;
         if (lexer.isKeepComments() && lexer.hasComment()) {

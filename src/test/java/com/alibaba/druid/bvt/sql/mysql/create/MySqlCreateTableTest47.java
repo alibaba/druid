@@ -54,11 +54,11 @@ public class MySqlCreateTableTest47 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE issuestatus ("//
-                            + "\n\tID VARCHAR(60) NOT NULL, "//
-                            + "\n\tSEQUENCE DECIMAL(18, 0), "//
-                            + "\n\tpname VARCHAR(60), "//
-                            + "\n\tDESCRIPTION TEXT, "//
-                            + "\n\tICONURL VARCHAR(255), "//
+                            + "\n\tID VARCHAR(60) NOT NULL,"//
+                            + "\n\tSEQUENCE DECIMAL(18, 0),"//
+                            + "\n\tpname VARCHAR(60),"//
+                            + "\n\tDESCRIPTION TEXT,"//
+                            + "\n\tICONURL VARCHAR(255),"//
                             + "\n\tCONSTRAINT PK_issuestatus PRIMARY KEY (ID)"//
                             + "\n)", output);
 

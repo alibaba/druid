@@ -63,7 +63,7 @@ public class MySqlCreateTableTest42 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE rc (" + //
-                            "\n\ta INT NOT NULL, " + //
+                            "\n\ta INT NOT NULL," + //
                             "\n\tb INT NOT NULL" + //
                             "\n)"
                             + "\nPARTITION BY RANGE COLUMNS (a, b)"

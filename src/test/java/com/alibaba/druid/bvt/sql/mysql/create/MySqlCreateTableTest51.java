@@ -52,7 +52,7 @@ public class MySqlCreateTableTest51 extends MysqlTest {
         String output = SQLUtils.toMySqlString(stmt);
 //        System.out.println(output);
         Assert.assertEquals("CREATE TABLE `test` (" //
-                            + "\n\t`Id` int(11) NOT NULL, "//
+                            + "\n\t`Id` int(11) NOT NULL,"//
                             + "\n\t`text` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL"//
                             + "\n) ENGINE = InnoDB CHARSET = gbk",//
                             output);

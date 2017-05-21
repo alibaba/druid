@@ -57,7 +57,7 @@ public class MySqlCreateTableTest22 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE t1 (" + //
-                            "\n\tc1 INT STORAGE DISK, " + //
+                            "\n\tc1 INT STORAGE DISK," + //
                             "\n\tc2 INT STORAGE MEMORY" + //
                             "\n) TABLESPACE ts_1 ENGINE = NDB", output);
 

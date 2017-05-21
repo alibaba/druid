@@ -1419,4 +1419,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public void endVisit(OracleSupplementalLogGrp x) {
 
     }
+
+    public boolean visit(OracleCreateTableStatement.Organization x) {
+        return false;
+    }
+
+    public void endVisit(OracleCreateTableStatement.Organization x) {
+
+    }
 }

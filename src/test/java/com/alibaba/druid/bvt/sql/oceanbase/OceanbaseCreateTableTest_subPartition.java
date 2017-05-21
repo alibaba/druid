@@ -43,7 +43,7 @@ public class OceanbaseCreateTableTest_subPartition extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE ts ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tpurchased DATE"
                     + "\n)"
                     + "\nPARTITION BY RANGE (YEAR(purchased))"
@@ -58,7 +58,7 @@ public class OceanbaseCreateTableTest_subPartition extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table ts ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tpurchased DATE"
                     + "\n)"
                     + "\npartition by range (YEAR(purchased))"

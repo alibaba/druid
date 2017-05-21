@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -1722,6 +1723,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    protected void printTableElements(List<SQLTableElement> tableElementList) {
+        int size = tableElementList.size();
+        if (size > 0) {
+            print0(" (");
+            incrementIndent();
+            println();
+            for (int i = 0; i < size; ++i) {
+                if (i != 0) {
+                    print0(",");
+                    println();
+                }
+                tableElementList.get(i).accept(this);
+            }
+            decrementIndent();
+            println();
+            print(')');
+        }
+    }
+
     public boolean visit(SQLCreateTableStatement x) {
         print0(ucase ? "CREATE TABLE " : "create table ");
         if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(x.getType())) {
@@ -1732,23 +1752,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printTableSourceExpr(x.getName());
 
-        int size = x.getTableElementList().size();
-
-        if (size > 0) {
-            print0(" (");
-            incrementIndent();
-            println();
-            for (int i = 0; i < size; ++i) {
-                if (i != 0) {
-                    print(',');
-                    println();
-                }
-                x.getTableElementList().get(i).accept(this);
-            }
-            decrementIndent();
-            println();
-            print(')');
-        }
+        printTableElements(x.getTableElementList());
 
         if (x.getInherits() != null) {
             print0(ucase ? " INHERITS (" : " inherits (");
@@ -3571,15 +3575,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             decrementIndent();
         }
 
-        if (x.getTableSpace() != null) {
-            print0(ucase ? " TABLESPACE " : " tablespace ");
-            x.getTableSpace().accept(this);
-        }
+        incrementIndent();
+        printOracleSegmentAttributes(x);
+
 
         if (x.getEngine() != null) {
-            print0(ucase ? " STORAGE ENGINE " : " storage engine ");
+            println();
+            print0(ucase ? "STORAGE ENGINE " : "storage engine ");
             x.getEngine().accept(this);
         }
+        decrementIndent();
 
         if (x.getMaxRows() != null) {
             print0(ucase ? " MAX_ROWS " : " max_rows ");
@@ -4139,6 +4144,54 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
 
             x.getConnectBy().accept(this);
+        }
+    }
+
+    public void printOracleSegmentAttributes(OracleSegmentAttributes x) {
+
+        if (x.getPctfree() != null) {
+            println();
+            print0(ucase ? "PCTFREE " : "pctfree ");
+            print(x.getPctfree());
+        }
+
+        if (x.getInitrans() != null) {
+            println();
+            print0(ucase ? "INITRANS " : "initrans ");
+            print(x.getInitrans());
+        }
+
+        if (x.getMaxtrans() != null) {
+            println();
+            print0(ucase ? "MAXTRANS " : "maxtrans ");
+            print(x.getMaxtrans());
+        }
+
+        if (x.getCompress() == Boolean.FALSE) {
+            println();
+            print0(ucase ? "NOCOMPRESS" : "nocompress");
+        } else if (x.getCompress() == Boolean.TRUE) {
+            println();
+            print0(ucase ? "COMPRESS" : "compress");
+        }
+
+        if (x.getLogging() == Boolean.TRUE) {
+            println();
+            print0(ucase ? "LOGGING" : "logging");
+        } else if (x.getLogging() == Boolean.FALSE) {
+            println();
+            print0(ucase ? "NOLOGGING" : "nologging");
+        }
+
+        if (x.getTablespace() != null) {
+            println();
+            print0(ucase ? "TABLESPACE " : "tablespace ");
+            x.getTablespace().accept(this);
+        }
+
+        if (x.getStorage() != null) {
+            println();
+            x.getStorage().accept(this);
         }
     }
 }

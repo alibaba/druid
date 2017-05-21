@@ -29,8 +29,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement {
 
-    private SQLName                name;
-
     private OracleUsingIndexClause using;
     private SQLName                exceptionsInto;
     private Boolean                enable;
@@ -59,14 +57,6 @@ public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstra
 
     public void setDeferrable(Boolean deferrable) {
         this.deferrable = deferrable;
-    }
-
-    public SQLName getName() {
-        return name;
-    }
-
-    public void setName(SQLName name) {
-        this.name = name;
     }
 
     public List<SQLExpr> getColumns() {

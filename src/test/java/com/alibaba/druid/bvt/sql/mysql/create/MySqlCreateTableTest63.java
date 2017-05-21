@@ -39,16 +39,16 @@ public class MySqlCreateTableTest63 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE t ("
-                    + "\n\tpk int PRIMARY KEY AUTO_INCREMENT, "
-                    + "\n\ta TIMESTAMP, "
+                    + "\n\tpk int PRIMARY KEY AUTO_INCREMENT,"
+                    + "\n\ta TIMESTAMP,"
                     + "\n\tKEY (a DESC)"
                     + "\n)", output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table t ("
-                    + "\n\tpk int primary key auto_increment, "
-                    + "\n\ta TIMESTAMP, "
+                    + "\n\tpk int primary key auto_increment,"
+                    + "\n\ta TIMESTAMP,"
                     + "\n\tkey (a desc)"
                     + "\n)", output);
         }

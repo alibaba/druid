@@ -40,7 +40,7 @@ public class OceanbaseCreateTableTest_subPartition3 extends MysqlTest {
 
         String result = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE ts ("
-                + "\n\tid INT, "
+                + "\n\tid INT,"
                 + "\n\tpurchased DATE"
                 + "\n)"
                 + "\nPARTITION BY RANGE (YEAR(purchased))"

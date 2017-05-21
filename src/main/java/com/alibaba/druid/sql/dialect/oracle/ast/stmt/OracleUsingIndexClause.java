@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -44,7 +45,7 @@ public class OracleUsingIndexClause extends OracleSQLObjectImpl {
     private boolean             nocompress        = false;
     private Boolean             logging           = null;
 
-    private List<PartitionedItem> localPartitionIndex = new ArrayList<PartitionedItem>();
+    private List<SQLPartition> localPartitionIndex = new ArrayList<SQLPartition>();
 
     public OracleUsingIndexClause(){
 
@@ -156,33 +157,7 @@ public class OracleUsingIndexClause extends OracleSQLObjectImpl {
         this.logging = logging;
     }
 
-    public List<PartitionedItem> getLocalPartitionIndex() {
+    public List<SQLPartition> getLocalPartitionIndex() {
         return localPartitionIndex;
-    }
-
-    public static class PartitionedItem extends OracleSQLObjectImpl {
-        private SQLName partition;
-        private SQLName tablespace;
-
-        @Override
-        public void accept0(OracleASTVisitor visitor) {
-
-        }
-
-        public SQLName getPartition() {
-            return partition;
-        }
-
-        public void setPartition(SQLName partition) {
-            this.partition = partition;
-        }
-
-        public SQLName getTablespace() {
-            return tablespace;
-        }
-
-        public void setTablespace(SQLName tablespace) {
-            this.tablespace = tablespace;
-        }
     }
 }

@@ -23,7 +23,7 @@ import java.util.List;
 
 public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLConstraint {
 
-    private SQLName name;
+    protected SQLName name;
     private Boolean enable;
     private Boolean validate;
     private Boolean rely;

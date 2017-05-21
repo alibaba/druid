@@ -43,19 +43,19 @@ public class MySqlCreateTableTest74 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
         
-        Column column = visitor.getColumn("test.simple_test", "col_key");
+        Column column = visitor.getColumn("test.simple_test","col_key");
         Assert.assertNotNull(column);
         Assert.assertEquals("bigint", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE test.simple_test (\n" +
-                    "\tcol_key bigint(20) NOT NULL AUTO_INCREMENT, \n" +
-                    "\tcol1 varchar(45) NULL, \n" +
-                    "\tcol2 tinyint(4) NULL, \n" +
-                    "\tcol3 datetime NULL, \n" +
-                    "\tcol4 timestamp NULL DEFAULT current_timestamp ON UPDATE current_timestamp, \n" +
-                    "\tPRIMARY KEY (col_key), \n" +
+                    "\tcol_key bigint(20) NOT NULL AUTO_INCREMENT,\n" +
+                    "\tcol1 varchar(45) NULL,\n" +
+                    "\tcol2 tinyint(4) NULL,\n" +
+                    "\tcol3 datetime NULL,\n" +
+                    "\tcol4 timestamp NULL DEFAULT current_timestamp ON UPDATE current_timestamp,\n" +
+                    "\tPRIMARY KEY (col_key),\n" +
                     "\tUNIQUE v1_unique (col_key ASC)\n" +
                     ")", output);
         }
@@ -63,12 +63,12 @@ public class MySqlCreateTableTest74 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table test.simple_test (\n" +
-                    "\tcol_key bigint(20) not null auto_increment, \n" +
-                    "\tcol1 varchar(45) null, \n" +
-                    "\tcol2 tinyint(4) null, \n" +
-                    "\tcol3 datetime null, \n" +
-                    "\tcol4 timestamp null default current_timestamp on update current_timestamp, \n" +
-                    "\tprimary key (col_key), \n" +
+                    "\tcol_key bigint(20) not null auto_increment,\n" +
+                    "\tcol1 varchar(45) null,\n" +
+                    "\tcol2 tinyint(4) null,\n" +
+                    "\tcol3 datetime null,\n" +
+                    "\tcol4 timestamp null default current_timestamp on update current_timestamp,\n" +
+                    "\tprimary key (col_key),\n" +
                     "\tunique v1_unique (col_key asc)\n" +
                     ")", output);
         }

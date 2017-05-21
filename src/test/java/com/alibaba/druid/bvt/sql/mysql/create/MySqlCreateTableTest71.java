@@ -47,9 +47,9 @@ public class MySqlCreateTableTest71 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE xx ("
-                    + "\n\tid bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'aa', "
-                    + "\n\tgmt_create datetime NOT NULL COMMENT '创建时间', "
-                    + "\n\tgmt_modified datetime NOT NULL COMMENT '修改时间', "
+                    + "\n\tid bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'aa',"
+                    + "\n\tgmt_create datetime NOT NULL COMMENT '创建时间',"
+                    + "\n\tgmt_modified datetime NOT NULL COMMENT '修改时间',"
                     + "\n\tPRIMARY KEY (id)"
                     + "\n) COMMENT = 're'", output);
         }
@@ -57,9 +57,9 @@ public class MySqlCreateTableTest71 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table xx ("
-                    + "\n\tid bigint unsigned not null auto_increment comment 'aa', "
-                    + "\n\tgmt_create datetime not null comment '创建时间', "
-                    + "\n\tgmt_modified datetime not null comment '修改时间', "
+                    + "\n\tid bigint unsigned not null auto_increment comment 'aa',"
+                    + "\n\tgmt_create datetime not null comment '创建时间',"
+                    + "\n\tgmt_modified datetime not null comment '修改时间',"
                     + "\n\tprimary key (id)"
                     + "\n) comment = 're'", output);
         }

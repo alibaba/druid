@@ -69,8 +69,8 @@ public class MySqlCreateTableTest45 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE th (" + //
-                            "\n\tid INT, " + //
-                            "\n\tname VARCHAR(30), " + //
+                            "\n\tid INT," + //
+                            "\n\tname VARCHAR(30)," + //
                             "\n\tadate DATE" + //
                             "\n)" + //
                             "\nPARTITION BY LIST (YEAR(adate))" + // 

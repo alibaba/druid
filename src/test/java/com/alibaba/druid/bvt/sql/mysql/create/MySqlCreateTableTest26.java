@@ -56,7 +56,7 @@ public class MySqlCreateTableTest26 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE lookup (" + //
-                            "\n\tid INT, " + //
+                            "\n\tid INT," + //
                             "\n\tINDEX USING BTREE(id)" + //
                             "\n) MAX_ROWS = 1024", output);
 

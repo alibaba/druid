@@ -50,7 +50,7 @@ public class MySqlCreateTableTest68 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE t1 ("
-                    + "\n\tyear_col INT, "
+                    + "\n\tyear_col INT,"
                     + "\n\tsome_data INT"
                     + "\n)"
                     + "\nPARTITION BY RANGE (year_col)"
@@ -67,7 +67,7 @@ public class MySqlCreateTableTest68 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table t1 ("
-                    + "\n\tyear_col INT, "
+                    + "\n\tyear_col INT,"
                     + "\n\tsome_data INT"
                     + "\n)"
                     + "\npartition by range (year_col)"

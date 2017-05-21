@@ -15,17 +15,24 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement {
+import java.util.ArrayList;
+import java.util.List;
+
+public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement, OracleSegmentAttributes {
 
     private SQLName                 tablespace;
 
@@ -41,13 +48,15 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     private boolean                 organizationIndex = false;
 
-    private SQLExpr                 ptcfree;
-    private SQLExpr                 pctused;
-    private SQLExpr                 initrans;
-    private SQLExpr                 maxtrans;
+    private Integer                 pctfree;
+    private Integer                 pctused;
+    private Integer                 initrans;
+    private Integer                 maxtrans;
+    private Integer                 pctincrease;
 
     private Boolean                 logging;
     private Boolean                 compress;
+    private Integer                 compressLevel;
     private boolean                 onCommit;
     private boolean                 preserveRows;
 
@@ -60,6 +69,11 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private boolean                 forOLTP;
 
     private Boolean                 enableRowMovement;
+
+    private List<SQLName>           clusterColumns = new ArrayList<SQLName>();
+    private SQLName                 cluster;
+
+    private Organization            organization;
     
     public OracleCreateTableStatement() {
         super (JdbcConstants.ORACLE);
@@ -129,44 +143,52 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.compress = compress;
     }
 
-    public SQLExpr getPtcfree() {
-        return ptcfree;
+    public Integer getCompressLevel() {
+        return compressLevel;
     }
 
-    public void setPtcfree(SQLExpr ptcfree) {
-        this.ptcfree = ptcfree;
+    public void setCompressLevel(Integer compressLevel) {
+        this.compressLevel = compressLevel;
     }
 
-    public SQLExpr getPctused() {
+    public Integer getPctfree() {
+        return pctfree;
+    }
+
+    public void setPctfree(Integer pctfree) {
+        this.pctfree = pctfree;
+    }
+
+    public Integer getPctused() {
         return pctused;
     }
 
-    public void setPctused(SQLExpr pctused) {
+    public void setPctused(Integer pctused) {
         this.pctused = pctused;
     }
 
-    public SQLExpr getInitrans() {
+    public Integer getInitrans() {
         return initrans;
     }
 
-    public void setInitrans(SQLExpr initrans) {
+    public void setInitrans(Integer initrans) {
         this.initrans = initrans;
     }
 
-    public SQLExpr getMaxtrans() {
+    public Integer getMaxtrans() {
         return maxtrans;
     }
 
-    public void setMaxtrans(SQLExpr maxtrans) {
+    public void setMaxtrans(Integer maxtrans) {
         this.maxtrans = maxtrans;
     }
 
-    public boolean isOrganizationIndex() {
-        return organizationIndex;
+    public Integer getPctincrease() {
+        return pctincrease;
     }
 
-    public void setOrganizationIndex(boolean organizationIndex) {
-        this.organizationIndex = organizationIndex;
+    public void setPctincrease(Integer pctincrease) {
+        this.pctincrease = pctincrease;
     }
 
     public Boolean getParallel() {
@@ -209,11 +231,11 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         return storage;
     }
 
-    public void setStorage(OracleStorageClause storage) {
+    public void setStorage(SQLObject storage) {
         if (storage != null) {
             storage.setParent(this);
         }
-        this.storage = storage;
+        this.storage = (OracleStorageClause) storage;
     }
 
     public boolean isForOLTP() {
@@ -232,6 +254,32 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.enableRowMovement = enableRowMovement;
     }
 
+    public List<SQLName> getClusterColumns() {
+        return clusterColumns;
+    }
+
+    public SQLName getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(SQLName cluster) {
+        if (cluster != null) {
+            cluster.setParent(this);
+        }
+        this.cluster = cluster;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        if (organization != null) {
+            organization.setParent(this);
+        }
+        this.organization = organization;
+    }
+
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             this.acceptChild(visitor, tableSource);
@@ -246,5 +294,30 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     public static enum DeferredSegmentCreation {
         IMMEDIATE, DEFERRED
+    }
+
+    public static class Organization extends OracleSegmentAttributesImpl implements OracleSegmentAttributes, OracleSQLObject {
+        public String type;
+
+        protected void accept0(SQLASTVisitor visitor) {
+            this.accept0((OracleASTVisitor) visitor);
+        }
+
+        public void accept0(OracleASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, tablespace);
+                acceptChild(visitor, storage);
+            }
+            visitor.endVisit(this);
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
     }
 }

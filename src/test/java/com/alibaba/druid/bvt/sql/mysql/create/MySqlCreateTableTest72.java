@@ -49,9 +49,9 @@ public class MySqlCreateTableTest72 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE \"MessageInstance\" ("
-                    + "\n\t\"id\" int(11) NOT NULL AUTO_INCREMENT, "
-                    + "\n\t\"messageId\" int(11) NOT NULL, "
-                    + "\n\tPRIMARY KEY ('id'), "
+                    + "\n\t\"id\" int(11) NOT NULL AUTO_INCREMENT,"
+                    + "\n\t\"messageId\" int(11) NOT NULL,"
+                    + "\n\tPRIMARY KEY ('id'),"
                     + "\n\tKEY \"ix_messageId\" ('messageId')"
                     + "\n)", output);
         }
@@ -59,9 +59,9 @@ public class MySqlCreateTableTest72 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table \"MessageInstance\" ("
-                    + "\n\t\"id\" int(11) not null auto_increment, "
-                    + "\n\t\"messageId\" int(11) not null, "
-                    + "\n\tprimary key ('id'), "
+                    + "\n\t\"id\" int(11) not null auto_increment,"
+                    + "\n\t\"messageId\" int(11) not null,"
+                    + "\n\tprimary key ('id'),"
                     + "\n\tkey \"ix_messageId\" ('messageId')"
                     + "\n)", output);
         }

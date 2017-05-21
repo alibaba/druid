@@ -41,7 +41,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE tnrange ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tname VARCHAR(5)"
                     + "\n)"
                     + "\nPARTITION BY RANGE (id)"
@@ -54,7 +54,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table tnrange ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tname VARCHAR(5)"
                     + "\n)"
                     + "\npartition by range (id)"

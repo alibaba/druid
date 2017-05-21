@@ -47,8 +47,8 @@ public class MySqlCreateTableTest73 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE total ("
-                    + "\n\tid INT NOT NULL AUTO_INCREMENT, "
-                    + "\n\tmessage CHAR(20), "
+                    + "\n\tid INT NOT NULL AUTO_INCREMENT,"
+                    + "\n\tmessage CHAR(20),"
                     + "\n\tINDEX(a)"
                     + "\n) ENGINE = MERGE UNION = (t1, t2) INSERT_METHOD = LAST", output);
         }
@@ -56,8 +56,8 @@ public class MySqlCreateTableTest73 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table total ("
-                    + "\n\tid INT not null auto_increment, "
-                    + "\n\tmessage CHAR(20), "
+                    + "\n\tid INT not null auto_increment,"
+                    + "\n\tmessage CHAR(20),"
                     + "\n\tindex(a)"
                     + "\n) engine = MERGE union = (t1, t2) insert_method = LAST", output);
         }

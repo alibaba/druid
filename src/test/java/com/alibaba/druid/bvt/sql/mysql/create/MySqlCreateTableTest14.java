@@ -45,24 +45,24 @@ public class MySqlCreateTableTest14 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
         
         Assert.assertEquals("CREATE TABLE `OptionList` ("
-                + "\n\t`ID` int(11) NOT NULL AUTO_INCREMENT, "
-                + "\n\t`OptionID` int(11) DEFAULT NULL COMMENT '选项ID', "
-                + "\n\t`QuizID` int(11) DEFAULT NULL COMMENT '竞猜题目ID', "
-                + "\n\t`OptionName` varchar(500) DEFAULT NULL COMMENT '选项名称', "
-                + "\n\t`OptionCount` int(11) DEFAULT NULL COMMENT '选择的人数', "
-                + "\n\tPRIMARY KEY (`ID`), "
-                + "\n\tKEY `quizId` USING BTREE (`QuizID`), "
+                + "\n\t`ID` int(11) NOT NULL AUTO_INCREMENT,"
+                + "\n\t`OptionID` int(11) DEFAULT NULL COMMENT '选项ID',"
+                + "\n\t`QuizID` int(11) DEFAULT NULL COMMENT '竞猜题目ID',"
+                + "\n\t`OptionName` varchar(500) DEFAULT NULL COMMENT '选项名称',"
+                + "\n\t`OptionCount` int(11) DEFAULT NULL COMMENT '选择的人数',"
+                + "\n\tPRIMARY KEY (`ID`),"
+                + "\n\tKEY `quizId` USING BTREE (`QuizID`),"
                 + "\n\tKEY `optionId` USING BTREE (`OptionID`)"
                 + "\n) ENGINE = InnoDB CHARSET = gbk COMMENT = ''", //
                             SQLUtils.toMySqlString(stmt));
         Assert.assertEquals("create table `OptionList` ("
-                + "\n\t`ID` int(11) not null auto_increment, "
-                + "\n\t`OptionID` int(11) default null comment '选项ID', "
-                + "\n\t`QuizID` int(11) default null comment '竞猜题目ID', "
-                + "\n\t`OptionName` varchar(500) default null comment '选项名称', "
-                + "\n\t`OptionCount` int(11) default null comment '选择的人数', "
-                + "\n\tprimary key (`ID`), "
-                + "\n\tkey `quizId` using BTREE (`QuizID`), "
+                + "\n\t`ID` int(11) not null auto_increment,"
+                + "\n\t`OptionID` int(11) default null comment '选项ID',"
+                + "\n\t`QuizID` int(11) default null comment '竞猜题目ID',"
+                + "\n\t`OptionName` varchar(500) default null comment '选项名称',"
+                + "\n\t`OptionCount` int(11) default null comment '选择的人数',"
+                + "\n\tprimary key (`ID`),"
+                + "\n\tkey `quizId` using BTREE (`QuizID`),"
                 + "\n\tkey `optionId` using BTREE (`OptionID`)"
                 + "\n) engine = InnoDB charset = gbk comment = ''", //
                             SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

@@ -37,7 +37,7 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE tnhash ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tname VARCHAR(5)"
                     + "\n)"
                     + "\nPARTITION BY HASH (id) PARTITIONS 2",
@@ -46,7 +46,7 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table tnhash ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tname VARCHAR(5)"
                     + "\n)"
                     + "\npartition by hash (id) partitions 2",

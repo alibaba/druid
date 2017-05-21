@@ -1086,4 +1086,12 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     public void endVisit(OracleSupplementalLogGrp x) {
 
     }
+
+    public boolean visit(OracleCreateTableStatement.Organization x) {
+        return true;
+    }
+
+    public void endVisit(OracleCreateTableStatement.Organization x) {
+
+    }
 }

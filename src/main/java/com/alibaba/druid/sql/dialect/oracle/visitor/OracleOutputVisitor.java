@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
@@ -2092,28 +2093,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleCreateTableStatement x) {
         this.visit((SQLCreateTableStatement) x);
 
-        if (x.isOrganizationIndex()) {
+        if (x.getOrganization() != null) {
             println();
-            print0(ucase ? "ORGANIZATION INDEX" : "organization index");
+            incrementIndent();
+            x.getOrganization().accept(this);
+            decrementIndent();
         }
 
-        if (x.getPtcfree() != null) {
-            println();
-            print0(ucase ? "PCTFREE " : "pctfree ");
-            x.getPtcfree().accept(this);
-        }
-
-        if (x.getInitrans() != null) {
-            println();
-            print0(ucase ? "INITRANS " : "initrans ");
-            x.getInitrans().accept(this);
-        }
-
-        if (x.getMaxtrans() != null) {
-            println();
-            print0(ucase ? "MAXTRANS " : "maxtrans ");
-            x.getMaxtrans().accept(this);
-        }
+        printOracleSegmentAttributes(x);
 
         if (x.isInMemoryMetadata()) {
             println();
@@ -2141,33 +2128,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "NOCACHE" : "nocache");
         }
 
-        if (x.getCompress() == Boolean.FALSE) {
-            println();
-            print0(ucase ? "NOCOMPRESS" : "nocompress");
-        } else if (x.getCompress() == Boolean.TRUE) {
-            println();
-            print0(ucase ? "COMPRESS" : "compress");
-        }
-
-        if (x.getLogging() == Boolean.TRUE) {
-            println();
-            print0(ucase ? "LOGGING" : "logging");
-        } else if (x.getLogging() == Boolean.FALSE) {
-            println();
-            print0(ucase ? "NOLOGGING" : "nologging");
-        }
-
-        if (x.getTablespace() != null) {
-            println();
-            print0(ucase ? "TABLESPACE " : "tablespace ");
-            x.getTablespace().accept(this);
-        }
-
-        if (x.getStorage() != null) {
-            println();
-            x.getStorage().accept(this);
-        }
-
         if (x.getLobStorage() != null) {
             println();
             x.getLobStorage().accept(this);
@@ -2186,6 +2146,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getPartitioning() != null) {
             println();
             x.getPartitioning().accept(this);
+        }
+
+        if (x.getCluster() != null) {
+            println();
+            print0(ucase ? "CLUSTER " : "cluster ");
+            x.getCluster().accept(this);
+            print0(" (");
+            printAndAccept(x.getClusterColumns(), ",");
+            print0(")");
         }
 
         if (x.getSelect() != null) {
@@ -3125,6 +3094,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleSupplementalLogGrp x) {
+
+    }
+
+
+
+    public boolean visit(OracleCreateTableStatement.Organization x) {
+        print0(ucase ? "ORGANIZATION " : "organization ");
+        print0(ucase ? x.getType() : x.getType().toLowerCase());
+
+        printOracleSegmentAttributes(x);
+
+        if (x.getPctthreshold() != null) {
+            println();
+            print0(ucase ? "PCTTHRESHOLD " : "pctthreshold ");
+            print(x.getPctfree());
+        }
+        return false;
+    }
+
+    public void endVisit(OracleCreateTableStatement.Organization x) {
 
     }
 }

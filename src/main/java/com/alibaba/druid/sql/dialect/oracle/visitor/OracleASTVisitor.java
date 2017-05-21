@@ -448,4 +448,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleSupplementalLogGrp x);
 
     void endVisit(OracleSupplementalLogGrp x);
+
+    boolean visit(OracleCreateTableStatement.Organization x);
+
+    void endVisit(OracleCreateTableStatement.Organization x);
 }

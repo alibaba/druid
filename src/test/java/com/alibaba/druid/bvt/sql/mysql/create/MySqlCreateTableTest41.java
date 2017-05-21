@@ -56,8 +56,8 @@ public class MySqlCreateTableTest41 extends MysqlTest {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE tk (" + //
-                            "\n\tcol1 INT, " + //
-                            "\n\tcol2 CHAR(5), " + //
+                            "\n\tcol1 INT," + //
+                            "\n\tcol2 CHAR(5)," + //
                             "\n\tcol3 DATE" + //
                             "\n)"
                             + "\nPARTITION BY LINEAR KEY (col3) PARTITIONS 5", output);

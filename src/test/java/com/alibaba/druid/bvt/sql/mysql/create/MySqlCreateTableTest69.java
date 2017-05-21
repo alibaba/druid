@@ -45,7 +45,7 @@ public class MySqlCreateTableTest69 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE t1 ("
-                    + "\n\ts1 INT, "
+                    + "\n\ts1 INT,"
                     + "\n\ts2 INT AS (EXP(s1)) SORTED"
                     + "\n)"
                     + "\nPARTITION BY LIST (s2)"
@@ -57,7 +57,7 @@ public class MySqlCreateTableTest69 extends MysqlTest {
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table t1 ("
-                    + "\n\ts1 INT, "
+                    + "\n\ts1 INT,"
                     + "\n\ts2 INT as (EXP(s1)) sorted"
                     + "\n)"
                     + "\npartition by list (s2)"
