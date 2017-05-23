@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -125,16 +124,6 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
     }
 
     @Override
-    public boolean visit(SQLServerDeclareStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerDeclareStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLServerSelect x) {
         return true;
     }
@@ -174,16 +163,14 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
         
     }
 
-	@Override
-	public boolean visit(SQLServerParameter x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean visit(SQLServerParameter x) {
+        return true;
+    }
 
-	@Override
-	public void endVisit(SQLServerParameter x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void endVisit(SQLServerParameter x) {
+
+    }
 
 }

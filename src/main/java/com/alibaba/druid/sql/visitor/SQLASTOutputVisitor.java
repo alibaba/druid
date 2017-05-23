@@ -33,8 +33,10 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements ParameterizedVisitor, PrintableVisitor {
@@ -4203,5 +4205,40 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             x.getStorage().accept(this);
         }
+    }
+
+    @Override
+    public boolean visit(SQLWhileStatement x) {
+        if (x.getLabelName() != null && !x.getLabelName().equals("")) {
+            print0(x.getLabelName());
+            print0(": ");
+        }
+        print0(ucase ? "WHILE " : "while ");
+        x.getCondition().accept(this);
+        print0(ucase ? " DO" : " do");
+        println();
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.setParent(x);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+        println();
+        print0(ucase ? "END WHILE" : "end while");
+        if (x.getLabelName() != null && !x.getLabelName().equals("")) print(' ');
+        print0(x.getLabelName());
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLDeclareStatement x) {
+        boolean printDeclare = !(x.getParent() instanceof OracleCreatePackageStatement);
+        if (printDeclare) {
+            print0(ucase ? "DECLARE " : "declare ");
+        }
+        this.printAndAccept(x.getItems(), ", ");
+        return false;
     }
 }

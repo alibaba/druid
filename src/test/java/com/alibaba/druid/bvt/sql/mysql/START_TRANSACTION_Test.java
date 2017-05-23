@@ -112,7 +112,7 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SET @@autocommit = 0;", text);
+        Assert.assertEquals("SET autocommit = 0;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

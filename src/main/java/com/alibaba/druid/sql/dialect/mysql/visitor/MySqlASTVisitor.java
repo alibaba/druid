@@ -32,7 +32,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -524,13 +523,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlOrderingExpr x);
 
     void endVisit(MySqlOrderingExpr x);
-
-    /**
-     * support procedure
-     */
-    boolean visit(MySqlWhileStatement x);
-
-    void endVisit(MySqlWhileStatement x);
 
     boolean visit(MySqlCaseStatement x);
 

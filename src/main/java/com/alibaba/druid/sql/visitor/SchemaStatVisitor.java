@@ -53,11 +53,11 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
+import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
@@ -1734,6 +1734,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         accept(x.getBlock());
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        String name = x.getName().toString();
+        this.variants.put(name, x);
+        accept(x.getBlock());
+        return false;
+    }
     
     @Override
     public boolean visit(SQLBlockStatement x) {
@@ -1977,6 +1985,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    //
-    //
+
+    @Override
+    public boolean visit(SQLDeclareStatement x) {
+        for (SQLDeclareItem item : x.getItems()) {
+            item.setParent(x);
+
+            SQLExpr name = item.getName();
+            this.variants.put(name.toString(), name);
+        }
+        return true;
+    }
 }

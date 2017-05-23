@@ -1447,4 +1447,14 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public void endVisit(OracleCreateTableStatement.OIDIndex x) {
 
     }
+
+    @Override
+    public boolean visit(OracleCreatePackageStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleCreatePackageStatement x) {
+
+    }
 }

@@ -86,7 +86,6 @@ public class Oracle_pl_for_2 extends OracleTest {
 							"\tLOOP\n" +
 							"\t\tDELETE FROM employees_temp\n" +
 							"\t\tWHERE department_id = depts(i);\n" +
-							"\t\t;\n" +
 							"\tEND LOOP;\n" +
 							"END;\n", //
 					output);
@@ -108,7 +107,6 @@ public class Oracle_pl_for_2 extends OracleTest {
 							"\tloop\n" +
 							"\t\tdelete from employees_temp\n" +
 							"\t\twhere department_id = depts(i);\n" +
-							"\t\t;\n" +
 							"\tend loop;\n" +
 							"end;\n", //
 					output);

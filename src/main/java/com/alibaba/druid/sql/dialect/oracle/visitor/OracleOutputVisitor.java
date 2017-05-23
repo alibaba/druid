@@ -116,14 +116,16 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x instanceof OraclePLSQLCommitStatement
                 || x instanceof OracleLabelStatement
                 || x instanceof OracleExceptionStatement.Item
-                || x instanceof OracleExceptionStatement) {
+                || x instanceof OracleExceptionStatement
+                || x instanceof OracleCreatePackageStatement) {
             return;
         }
 
 
         if (parent instanceof SQLCreateProcedureStatement
                 || parent instanceof OracleExceptionStatement.Item
-                || parent instanceof OracleForStatement) {
+                || parent instanceof OracleForStatement
+                || parent instanceof SQLCreateFunctionStatement) {
             return;
         }
 
@@ -1358,9 +1360,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getParameters().size() != 0) {
             incrementIndent();
             if (x.getParent() instanceof SQLCreateProcedureStatement) {
-                printIndent();
+                SQLCreateProcedureStatement procedureStatement = (SQLCreateProcedureStatement) x.getParent();
+                if (procedureStatement.isCreate()) {
+                    printIndent();
+                }
             }
-            if (!(x.getParent() instanceof SQLCreateProcedureStatement)) {
+            if (!(x.getParent() instanceof SQLCreateProcedureStatement
+                    || x.getParent() instanceof SQLCreateFunctionStatement)
+                    ) {
                 print0(ucase ? "DECLARE" : "declare");
                 println();
             }
@@ -2592,6 +2599,77 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         if (!create) {
             println();
+            print("IS");
+            println();
+        } else {
+            println();
+            if (block instanceof SQLBlockStatement) {
+                SQLBlockStatement blockStatement = (SQLBlockStatement) block;
+                if (blockStatement.getParameters().size() > 0 || authid != null) {
+                    println(ucase ? "AS" : "as");
+                }
+            }
+        }
+
+        String javaCallSpec = x.getJavaCallSpec();
+        if (javaCallSpec != null) {
+            print0(ucase ? "LANGUAGE JAVA NAME '" : "language java name '");
+            print0(javaCallSpec);
+            print('\'');
+            return false;
+        }
+
+        block.accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        boolean create = x.isCreate();
+        if (!create) {
+            print0(ucase ? "FUNCTION " : "function ");
+        } else if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE FUNCTION " : "create or replace function ");
+        } else {
+            print0(ucase ? "CREATE FUNCTION " : "create function ");
+        }
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        if (paramSize > 0) {
+            print0(" (");
+            incrementIndent();
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            decrementIndent();
+            println();
+            print(')');
+        }
+
+        println();
+        print(ucase ? "RETURN " : "return ");
+        x.getReturnDataType().accept(this);
+
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            print(ucase ? " AUTHID " : " authid ");
+            authid.accept(this);
+        }
+
+        SQLStatement block = x.getBlock();
+
+        if (!create) {
+            println();
             println("IS");
         } else {
             println();
@@ -3123,6 +3201,51 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public void endVisit(OracleCreateTableStatement.OIDIndex x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleCreatePackageStatement x) {
+        if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE PACKAGE " : "create or replace procedure ");
+        } else {
+            print0(ucase ? "CREATE PACKAGE " : "create procedure ");
+        }
+
+        if (x.isBody()) {
+            print0(ucase ? "BODY " : "body ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.isBody()) {
+            println();
+            print0(ucase ? "BEGIN" : "begin");
+        }
+
+        incrementIndent();
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
+            SQLStatement item = x.getStatements().get(i);
+            item.setParent(x);
+            item.accept(this);
+        }
+
+        decrementIndent();
+
+        if (x.isBody()) {
+            println();
+            print0(ucase ? "END " : "end ");
+            x.getName().accept(this);
+            print(';');
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreatePackageStatement x) {
 
     }
 }

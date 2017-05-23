@@ -17,8 +17,6 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import java.util.Map;
 
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
@@ -27,7 +25,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -150,22 +147,6 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public void endVisit(SQLServerOutput x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLServerDeclareStatement x) {
-        for (SQLDeclareItem item : x.getItems()) {
-            item.setParent(x);
-
-            SQLExpr name = item.getName();
-            this.variants.put(name.toString(), name);
-        }
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerDeclareStatement x) {
 
     }
 

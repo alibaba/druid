@@ -620,7 +620,7 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLBooleanExpr(false);
                 break;
             default:
-                throw new ParserException("ERROR. token : " + tok + ", pos : " + lexer.pos());
+                throw new ParserException("ERROR" + lexer.info());
         }
 
         SQLExpr expr = primaryRest(sqlExpr);
@@ -2253,6 +2253,7 @@ public class SQLExprParser extends SQLParser {
             }
         } else if (lexer.token() == Token.DO || lexer.token() == Token.JOIN) {
             expr = this.name();
+            expr = this.exprRest(expr);
         } else {
             expr = expr();
         }

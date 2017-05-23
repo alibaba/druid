@@ -17,6 +17,9 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SQLParameter extends SQLObjectImpl {
 
     private SQLExpr       name;
@@ -25,6 +28,9 @@ public class SQLParameter extends SQLObjectImpl {
     private ParameterType paramType;
     private boolean       noCopy = false;
     private boolean       constant = false;
+
+    private SQLName       cursorName;
+    private final List<SQLParameter> cursorParameters = new ArrayList<SQLParameter>();
 
     public SQLExpr getDefaultValue() {
         return defaultValue;
@@ -89,5 +95,20 @@ public class SQLParameter extends SQLObjectImpl {
 
     public void setConstant(boolean constant) {
         this.constant = constant;
+    }
+
+    public List<SQLParameter> getCursorParameters() {
+        return cursorParameters;
+    }
+
+    public SQLName getCursorName() {
+        return cursorName;
+    }
+
+    public void setCursorName(SQLName cursorName) {
+        if (cursorName != null) {
+            cursorName.setParent(this);
+        }
+        this.cursorName = cursorName;
     }
 }

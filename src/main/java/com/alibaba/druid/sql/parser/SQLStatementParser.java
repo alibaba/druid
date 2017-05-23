@@ -392,7 +392,7 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token() == Token.TO) {
             lexer.nextToken();
 
-            if (identifierEquals("SAVEPOINT")) {
+            if (identifierEquals("SAVEPOINT") || lexer.token() == Token.SAVEPOINT) {
                 lexer.nextToken();
             }
 
@@ -1650,6 +1650,10 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
+    public SQLStatement parseCreatePackage() {
+        throw new ParserException("TODO " + lexer.info());
+    }
+
     public SQLStatement parseCreate() {
         char markChar = lexer.current();
         int markBp = lexer.bp();
@@ -1694,6 +1698,11 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.token() == Token.VIEW) {
                 lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreateView();
+            }
+
+            if (identifierEquals("PACKAGE")) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreatePackage();
             }
 
             // lexer.reset(mark_bp, mark_ch, Token.CREATE);

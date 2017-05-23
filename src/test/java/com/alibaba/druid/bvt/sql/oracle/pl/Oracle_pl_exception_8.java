@@ -142,7 +142,6 @@ public class Oracle_pl_exception_8 extends OracleTest {
 							"\t\t\t\tsuffix := suffix + 1;\n" +
 							"\t\t\t\tname := name || TO_CHAR(suffix);\n" +
 							"\t\tEND;\n" +
-							"\t\t;\n" +
 							"\tEND LOOP;\n" +
 							"END;\n", //
 					output);
@@ -189,7 +188,6 @@ public class Oracle_pl_exception_8 extends OracleTest {
 							"\t\t\t\tsuffix := suffix + 1;\n" +
 							"\t\t\t\tname := name || TO_CHAR(suffix);\n" +
 							"\t\tend;\n" +
-							"\t\t;\n" +
 							"\tend loop;\n" +
 							"end;\n", //
 					output);
