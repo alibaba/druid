@@ -103,20 +103,15 @@ public class Oracle_pl_exception_8 extends OracleTest {
 			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
 			System.out.println(output);
 			assertEquals("DROP TABLE results;\n" +
-							"\n" +
 							"CREATE TABLE results (\n" +
 							"\tres_name VARCHAR(20),\n" +
 							"\tres_answer VARCHAR2(3)\n" +
 							");\n" +
-							"\n" +
 							"CREATE UNIQUE INDEX res_name_ix ON results(res_name);\n" +
-							"\n" +
 							"INSERT INTO results (res_name, res_answer)\n" +
 							"VALUES ('SMYTHE', 'YES');\n" +
-							"\n" +
 							"INSERT INTO results (res_name, res_answer)\n" +
 							"VALUES ('JONES', 'NO');\n" +
-							"\n" +
 							"DECLARE\n" +
 							"\tname VARCHAR2(20) := 'SMYTHE';\n" +
 							"\tanswer VARCHAR2(3) := 'NO';\n" +
@@ -126,8 +121,7 @@ public class Oracle_pl_exception_8 extends OracleTest {
 							"\tLOOP\n" +
 							"\t\tDBMS_OUTPUT.PUT('Try #' || i);\n" +
 							"\t\tBEGIN\n" +
-							"\t\t\tROLLBACK;\n" +
-							"\t\t\tstart_transaction;\n" +
+							"\t\t\tSAVEPOINT TO start_transaction;\n" +
 							"\t\t\tDELETE FROM results\n" +
 							"\t\t\tWHERE res_answer = 'NO';\n" +
 							"\t\t\tINSERT INTO results (res_name, res_answer)\n" +
@@ -143,26 +137,21 @@ public class Oracle_pl_exception_8 extends OracleTest {
 							"\t\t\t\tname := name || TO_CHAR(suffix);\n" +
 							"\t\tEND;\n" +
 							"\tEND LOOP;\n" +
-							"END;\n", //
+							"END;", //
 					output);
 		}
 		{
 			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 			assertEquals("drop table results;\n" +
-							"\n" +
 							"create table results (\n" +
 							"\tres_name VARCHAR(20),\n" +
 							"\tres_answer VARCHAR2(3)\n" +
 							");\n" +
-							"\n" +
 							"create UNIQUE index res_name_ix on results(res_name);\n" +
-							"\n" +
 							"insert into results (res_name, res_answer)\n" +
 							"values ('SMYTHE', 'YES');\n" +
-							"\n" +
 							"insert into results (res_name, res_answer)\n" +
 							"values ('JONES', 'NO');\n" +
-							"\n" +
 							"declare\n" +
 							"\tname VARCHAR2(20) := 'SMYTHE';\n" +
 							"\tanswer VARCHAR2(3) := 'NO';\n" +
@@ -172,8 +161,7 @@ public class Oracle_pl_exception_8 extends OracleTest {
 							"\tloop\n" +
 							"\t\tDBMS_OUTPUT.PUT('Try #' || i);\n" +
 							"\t\tbegin\n" +
-							"\t\t\trollback;\n" +
-							"\t\t\tstart_transaction;\n" +
+							"\t\t\tsavepoint to start_transaction;\n" +
 							"\t\t\tdelete from results\n" +
 							"\t\t\twhere res_answer = 'NO';\n" +
 							"\t\t\tinsert into results (res_name, res_answer)\n" +
@@ -189,7 +177,7 @@ public class Oracle_pl_exception_8 extends OracleTest {
 							"\t\t\t\tname := name || TO_CHAR(suffix);\n" +
 							"\t\tend;\n" +
 							"\tend loop;\n" +
-							"end;\n", //
+							"end;", //
 					output);
 		}
 	}

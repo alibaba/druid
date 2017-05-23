@@ -22,6 +22,8 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
 
     private String dbType;
 
+    private boolean afterSemi;
+
     public SQLStatementImpl(){
 
     }
@@ -45,5 +47,13 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public boolean isAfterSemi() {
+        return afterSemi;
+    }
+
+    public void setAfterSemi(boolean afterSemi) {
+        this.afterSemi = afterSemi;
     }
 }

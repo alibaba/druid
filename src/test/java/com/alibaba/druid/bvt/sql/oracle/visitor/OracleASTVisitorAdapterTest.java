@@ -76,7 +76,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.CheckOption;
@@ -163,7 +162,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleDropDbLinkStatement().accept(adapter);
         new OracleCreateDatabaseDbLinkStatement().accept(adapter);
         new SQLCreateProcedureStatement().accept(adapter);
-        new OracleSavePointStatement().accept(adapter);
         new SQLFetchStatement().accept(adapter);
         new OracleExitStatement().accept(adapter);
         new OracleExplainStatement().accept(adapter);

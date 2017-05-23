@@ -51,13 +51,13 @@ public class OracleDeleteTest_3 extends OracleTest {
         {
             String output = SQLUtils.toOracleString(stmt);
             Assert.assertEquals("DELETE FROM credit_corp_baseinfo o\n" +
-                            "WHERE o.applyid IN (24032, 23942, 23579, 23511, 23408, 23327, 23322, 23230, 23228, 23218)", //
+                            "WHERE o.applyid IN (24032, 23942, 23579, 23511, 23408, 23327, 23322, 23230, 23228, 23218);", //
                     output);
         }
         {
             String output = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("delete from credit_corp_baseinfo o\n" +
-                            "where o.applyid in (24032, 23942, 23579, 23511, 23408, 23327, 23322, 23230, 23228, 23218)", //
+                            "where o.applyid in (24032, 23942, 23579, 23511, 23408, 23327, 23322, 23230, 23228, 23218);", //
                     output);
         }
     }

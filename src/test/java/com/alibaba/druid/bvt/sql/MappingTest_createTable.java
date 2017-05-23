@@ -43,7 +43,7 @@ public class MappingTest_createTable extends TestCase {
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
                 "\tPRIMARY KEY (source_key)\n" +
-                ")", result);
+                ");", result);
     }
 
     public void test_mapping_createTable_pg() throws Exception {

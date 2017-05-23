@@ -397,10 +397,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleRaiseStatement x);
 
-    boolean visit(OracleSavePointStatement x);
-
-    void endVisit(OracleSavePointStatement x);
-
     boolean visit(OracleCreateDatabaseDbLinkStatement x);
 
     void endVisit(OracleCreateDatabaseDbLinkStatement x);

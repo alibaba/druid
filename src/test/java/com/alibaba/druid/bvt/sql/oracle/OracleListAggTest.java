@@ -38,7 +38,7 @@ public class OracleListAggTest extends OracleTest {
                                     + "\n\tAND prod_id BETWEEN 15 AND 18" //
                                     + "\n\tAND channel_id = 2" //
                                     + "\n\tAND time_id > '01-JAN-01'" //
-                                    + "\nGROUP BY prod_id",//
+                                    + "\nGROUP BY prod_id;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -103,7 +103,7 @@ public class OracleCreateTableTest36 extends OracleTest {
                 + "\n\t),"
                 + "\n\tPARTITION SALES_Q4_2000 VALUES LESS THAN (MAXVALUE)"
                 + "\n\t\tSUBPARTITIONS 4"
-                + "\n)",//
+                + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

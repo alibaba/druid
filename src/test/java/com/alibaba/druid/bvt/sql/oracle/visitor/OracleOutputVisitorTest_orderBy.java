@@ -50,7 +50,7 @@ public class OracleOutputVisitorTest_orderBy extends TestCase {
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT salary\nFROM employee\nORDER BY name;\n", buf.toString());
+        Assert.assertEquals("SELECT salary\nFROM employee\nORDER BY name", buf.toString());
 
     }
 }

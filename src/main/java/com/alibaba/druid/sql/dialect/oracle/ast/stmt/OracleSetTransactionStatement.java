@@ -18,11 +18,12 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatementImpl;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
-public class OracleSetTransactionStatement extends OracleSQLObjectImpl implements OracleStatement {
+public class OracleSetTransactionStatement extends OracleStatementImpl implements OracleStatement {
 
     private boolean readOnly = false;
-    private String  dbType;
 
     private SQLExpr name;
 
@@ -50,12 +51,4 @@ public class OracleSetTransactionStatement extends OracleSQLObjectImpl implement
         this.readOnly = readOnly;
     }
 
-    public String getDbType() {
-        return dbType;
-    }
-    
-    public void setDbType(String dbType) {
-        this.dbType = dbType;
-    }
-    
 }

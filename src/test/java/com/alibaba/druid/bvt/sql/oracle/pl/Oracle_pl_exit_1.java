@@ -76,7 +76,7 @@ public class Oracle_pl_exit_1 extends OracleTest {
 							"\t\tEXIT WHEN x > 3;\n" +
 							"\tEND LOOP;\n" +
 							"\tDBMS_OUTPUT.PUT_LINE('After loop:  x = ' || TO_CHAR(x));\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -90,7 +90,7 @@ public class Oracle_pl_exit_1 extends OracleTest {
 							"\t\texit when x > 3;\n" +
 							"\tend loop;\n" +
 							"\tDBMS_OUTPUT.PUT_LINE('After loop:  x = ' || TO_CHAR(x));\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

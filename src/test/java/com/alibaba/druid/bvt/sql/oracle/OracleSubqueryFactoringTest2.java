@@ -53,16 +53,14 @@ public class OracleSubqueryFactoringTest2 extends TestCase {
                           + "\tSEARCH DEPTH FIRST BY emp_last SET order1\n"
                           + "\tCYCLE hire_date SET is_cycle TO 'Y' DEFAULT 'N'\n"
                           + "SELECT lpad(' ', 2 * reportLevel) || emp_last AS emp_name, eid, mgr_id, salary, job_id\n"
-                          + "FROM org_chart\n" + "ORDER BY order1;\n";
+                          + "FROM org_chart\n" + "ORDER BY order1;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expected, text);
-
-        System.out.println(text);
+        assertEquals(expected, text);
     }
 
 }

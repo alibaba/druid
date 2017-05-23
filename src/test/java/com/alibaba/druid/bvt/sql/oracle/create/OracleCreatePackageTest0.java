@@ -134,8 +134,8 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\t\t, '18-JUN-02', 'IT_PROG', 90000000, 0, 100\n" +
                         "\t\t\t, 110);\n" +
                         "\t\ttot_emps := tot_emps + 1;\n" +
-                        "\t\tRETURN(new_empno);\n" +
-                        "\tEND\n" +
+                        "\t\tRETURN new_empno;\n" +
+                        "\tEND;\n" +
                         "\tFUNCTION create_dept (\n" +
                         "\t\tdepartment_id NUMBER, \n" +
                         "\t\tlocation_id NUMBER\n" +
@@ -150,8 +150,8 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\tINSERT INTO departments\n" +
                         "\t\tVALUES (new_deptno, 'department name', 100, 1700);\n" +
                         "\t\ttot_depts := tot_depts + 1;\n" +
-                        "\t\tRETURN(new_deptno);\n" +
-                        "\tEND\n" +
+                        "\t\tRETURN new_deptno;\n" +
+                        "\tEND;\n" +
                         "\tPROCEDURE remove_emp (\n" +
                         "\t\temployee_id NUMBER\n" +
                         "\t)\n" +
@@ -160,7 +160,7 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\tDELETE FROM employees\n" +
                         "\t\tWHERE employees.employee_id = remove_emp.employee_id;\n" +
                         "\t\ttot_emps := tot_emps - 1;\n" +
-                        "\tEND\n" +
+                        "\tEND;\n" +
                         "\tPROCEDURE remove_dept (\n" +
                         "\t\tdepartment_id NUMBER\n" +
                         "\t)\n" +
@@ -172,7 +172,7 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\tSELECT COUNT(*)\n" +
                         "\t\tINTO tot_emps\n" +
                         "\t\tFROM employees;\n" +
-                        "\tEND\n" +
+                        "\tEND;\n" +
                         "\tPROCEDURE increase_sal (\n" +
                         "\t\temployee_id NUMBER, \n" +
                         "\t\tsalary_incr NUMBER\n" +
@@ -191,7 +191,7 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\t\tSET salary = salary + salary_incr\n" +
                         "\t\t\tWHERE employee_id = employee_id;\n" +
                         "\t\tEND IF;\n" +
-                        "\tEND\n" +
+                        "\tEND;\n" +
                         "\tPROCEDURE increase_comm (\n" +
                         "\t\temployee_id NUMBER, \n" +
                         "\t\tcomm_incr NUMBER\n" +
@@ -209,7 +209,7 @@ public class OracleCreatePackageTest0 extends OracleTest {
                         "\t\t\tUPDATE employees\n" +
                         "\t\t\tSET commission_pct = commission_pct + comm_incr;\n" +
                         "\t\tEND IF;\n" +
-                        "\tEND\n" +
+                        "\tEND;\n" +
                         "END emp_mgmt;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 

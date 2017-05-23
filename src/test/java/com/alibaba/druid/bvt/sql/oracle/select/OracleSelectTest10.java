@@ -43,12 +43,12 @@ public class OracleSelectTest10 extends OracleTest {
         Assert.assertEquals("SELECT *"
                 + "\nFROM pivot_table"
                 + "\nUNPIVOT INCLUDE NULLS (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))"
-                + "\nORDER BY year, order_mode", result);
+                + "\nORDER BY year, order_mode;", result);
         
         Assert.assertEquals("select *"
                 + "\nfrom pivot_table"
                 + "\nunpivot include nulls (yearly_total for order_mode in (store as 'direct', internet as 'online'))"
-                + "\norder by year, order_mode", result_lcase);
+                + "\norder by year, order_mode;", result_lcase);
 
         Assert.assertEquals(1, statementList.size());
 

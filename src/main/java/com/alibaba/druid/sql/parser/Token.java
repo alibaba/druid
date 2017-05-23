@@ -116,6 +116,8 @@ public enum Token {
     ANY("ANY"),
     TRUNCATE("TRUNCATE"),
 
+    RETURN("RETURN"),
+
     // mysql
     TRUE("TRUE"), 
     FALSE("FALSE"),

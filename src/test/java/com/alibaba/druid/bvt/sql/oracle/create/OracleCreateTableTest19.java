@@ -93,7 +93,7 @@ public class OracleCreateTableTest19 extends OracleTest {
                         "\tBUFFER_POOL DEFAULT\n" +
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
-                        ")", //
+                        ");", //
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -26,7 +26,7 @@ public class OracleHintTest extends TestCase {
 	     stmt.accept(new OracleOutputVisitor(out, true));
 
 	     String newSQL = out.toString();	     
-	     Assert.assertEquals("SELECT /*+leading(e) index(e ORD_ORDER_ITEM_GS_BS_DI_IND)*/ DISTINCT e.id\nFROM ord_order_item e\nWHERE e.F1 = DATE '2011-10-01';\n", newSQL); 
+	     Assert.assertEquals("SELECT /*+leading(e) index(e ORD_ORDER_ITEM_GS_BS_DI_IND)*/ DISTINCT e.id\nFROM ord_order_item e\nWHERE e.F1 = DATE '2011-10-01'", newSQL);
 	     
 	}
 	

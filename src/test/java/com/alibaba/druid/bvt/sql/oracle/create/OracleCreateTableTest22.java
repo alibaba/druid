@@ -64,7 +64,7 @@ public class OracleCreateTableTest22 extends OracleTest {
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 8M\n" +
                         "\t\t)\n" +
-                        ")",//
+                        ");",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

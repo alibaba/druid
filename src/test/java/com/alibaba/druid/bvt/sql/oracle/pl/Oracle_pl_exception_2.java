@@ -78,7 +78,7 @@ public class Oracle_pl_exception_2 extends OracleTest {
 							"\tWHEN ZERO_DIVIDE THEN\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
 							"\t\tpe_ratio := NULL;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -94,7 +94,7 @@ public class Oracle_pl_exception_2 extends OracleTest {
 							"\twhen ZERO_DIVIDE then\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('Company had zero earnings.');\n" +
 							"\t\tpe_ratio := null;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

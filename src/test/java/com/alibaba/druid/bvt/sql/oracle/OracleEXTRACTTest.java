@@ -27,7 +27,7 @@ public class OracleEXTRACTTest extends TestCase {
     public void test_Extract() throws Exception {
         String sql = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07') FROM DUAL;";
 
-        String expect = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07')\n" + "FROM DUAL;\n";
+        String expect = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07')\n" + "FROM DUAL;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

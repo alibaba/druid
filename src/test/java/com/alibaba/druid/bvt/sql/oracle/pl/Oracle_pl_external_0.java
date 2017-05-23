@@ -65,7 +65,7 @@ public class Oracle_pl_external_0 extends OracleTest {
 							"\tempid NUMBER, \n" +
 							"\tpct NUMBER\n" +
 							")\n" +
-							"LANGUAGE JAVA NAME 'Adjuster.raiseSalary (int, float)'", //
+							"LANGUAGE JAVA NAME 'Adjuster.raiseSalary (int, float)';", //
 					output);
 		}
 		{
@@ -74,7 +74,7 @@ public class Oracle_pl_external_0 extends OracleTest {
 							"\tempid NUMBER, \n" +
 							"\tpct NUMBER\n" +
 							")\n" +
-							"language java name 'Adjuster.raiseSalary (int, float)'", //
+							"language java name 'Adjuster.raiseSalary (int, float)';", //
 					output);
 		}
 	}

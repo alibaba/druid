@@ -55,7 +55,7 @@ public class OracleCreateTableTest24 extends OracleTest {
                             + "\n\tcity VARCHAR2(30)," //
                             + "\n\tstate_province VARCHAR2(25)," //
                             + "\n\tcountry_id CHAR(2)" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

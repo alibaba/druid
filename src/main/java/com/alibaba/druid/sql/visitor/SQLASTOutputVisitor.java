@@ -524,17 +524,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
         printlnAndAccept(x.getItems(), " ");
 
-        if (x.getElseStatements() != null) {
+        if (x.getElseStatements().size() > 0) {
             println();
             print0(ucase ? "ELSE " : "else ");
-            printlnAndAccept(x.getElseStatements(), ";");
-            print(';');
+            printlnAndAccept(x.getElseStatements(), "");
         }
 
         decrementIndent();
 
         println();
         print0(ucase ? "END CASE" : "end case");
+        if (JdbcConstants.ORACLE.equals(dbType)) {
+            print(';');
+        }
         return false;
     }
 
@@ -2207,8 +2209,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLSavePointStatement x) {
-        print0(ucase ? "SAVEPOINT " : "savepoint ");
-        x.getName().accept(this);
+        print0(ucase ? "SAVEPOINT" : "savepoint");
+        if (x.getName() != null) {
+            print(' ');
+            x.getName().accept(this);
+        }
         return false;
     }
 
@@ -3393,10 +3398,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             item.setParent(x);
             item.accept(this);
 
-            if (JdbcConstants.ORACLE.equals(dbType)) {
-               print(";");
-            }
-
             if (i != size - 1) {
                 println();
             }
@@ -4240,5 +4241,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         this.printAndAccept(x.getItems(), ", ");
         return false;
+    }
+
+    @Override
+    public boolean visit(SQLReturnStatement x) {
+        print0(ucase ? "RETURN" : "return");
+
+        if (x.getExpr() != null) {
+            print(' ');
+            x.getExpr().accept(this);
+        }
+        return false;
+    }
+
+    public void postVisit(SQLObject x) {
+        if (x instanceof SQLStatement) {
+            SQLStatement stmt = (SQLStatement) x;
+            if (stmt.isAfterSemi()) {
+                print(';');
+            }
+        }
     }
 }

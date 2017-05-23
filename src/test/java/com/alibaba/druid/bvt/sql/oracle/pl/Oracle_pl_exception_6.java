@@ -69,7 +69,7 @@ public class Oracle_pl_exception_6 extends OracleTest {
 							"\tNULL;\n" +
 							"EXCEPTION\n" +
 							"\tWHEN VALUE_ERROR THEN DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -80,7 +80,7 @@ public class Oracle_pl_exception_6 extends OracleTest {
 							"\tnull;\n" +
 							"exception\n" +
 							"\twhen VALUE_ERROR then DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

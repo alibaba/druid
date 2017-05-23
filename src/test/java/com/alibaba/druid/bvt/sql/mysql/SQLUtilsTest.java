@@ -34,7 +34,7 @@ public class SQLUtilsTest extends TestCase {
                 + "\n\tELSE"
                 + "\n\t\tNULL;"
                 + "\n\tEND IF;"
-                + "\nEND", SQLUtils.formatOracle(sql));
+                + "\nEND;", SQLUtils.formatOracle(sql));
     }
     
     public void test_format_3() throws Exception {

@@ -100,44 +100,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return printPostSemi;
     }
 
-    public void postVisit(SQLObject x) {
-        if (!(x instanceof SQLStatement)) {
-            return;
-        }
-
-        SQLObject parent = x.getParent();
-
-        if ((!isPrintPostSemi()) //
-            && (!(parent instanceof SQLBlockStatement))
-                && (!(parent instanceof OracleForStatement))) {
-            return;
-        }
-
-        if (x instanceof OraclePLSQLCommitStatement
-                || x instanceof OracleLabelStatement
-                || x instanceof OracleExceptionStatement.Item
-                || x instanceof OracleExceptionStatement
-                || x instanceof OracleCreatePackageStatement) {
-            return;
-        }
-
-
-        if (parent instanceof SQLCreateProcedureStatement
-                || parent instanceof OracleExceptionStatement.Item
-                || parent instanceof OracleForStatement
-                || parent instanceof SQLCreateFunctionStatement) {
-            return;
-        }
-
-        if (isPrettyFormat()) {
-            if (parent != null) {
-                print(';');
-            } else {
-                println(";");
-            }
-        }
-    }
-
     private void printHints(List<SQLHint> hints) {
         if (hints.size() > 0) {
             print0("/*+ ");
@@ -1386,13 +1348,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         print0(ucase ? "BEGIN" : "begin");
         incrementIndent();
-        println();
+
         for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
-            if (i != 0) {
-                println();
-            }
+            println();
             SQLStatement stmt = x.getStatementList().get(i);
-            stmt.setParent(x);
             stmt.accept(this);
         }
         decrementIndent();
@@ -1404,7 +1363,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         println();
-        print0(ucase ? "END" : "end");
+        print0(ucase ? "END;" : "end;");
         return false;
     }
 
@@ -1519,7 +1478,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
             SQLStatement stmt = x.getStatements().get(i);
             stmt.accept(this);
-            print(";");
         }
 
         decrementIndent();
@@ -1908,9 +1866,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             stmt.accept(this);
             if (!all) {
                 if (i != size - 1) {
-                    println(";");
-                } else {
-                    print(';');
+                    println();
                 }
             }
         }
@@ -1947,7 +1903,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             item.setParent(x);
             item.accept(this);
         }
-        print(';');
 
         decrementIndent();
         return false;
@@ -1959,17 +1914,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
         incrementIndent();
-        println();
 
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
-            if (i != 0) {
-                println();
-            }
+            println();
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
         }
-        print(';');
 
         decrementIndent();
         return false;
@@ -1991,16 +1941,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print0(ucase ? "THEN" : "then");
 
         incrementIndent();
-        println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
-            if (i != size - 1) {
-                println();
-            }
         }
-        print(';');
         decrementIndent();
 
         for (SQLIfStatement.ElseIf elseIf : x.getElseIfList()) {
@@ -2013,7 +1958,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getElseItem().accept(this);
         }
         println();
-        print0(ucase ? "END IF" : "end if");
+        print0(ucase ? "END IF;" : "end if;");
         return false;
     }
 
@@ -2528,6 +2473,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(' ');
             x.getException().accept(this);
         }
+        print(';');
         return false;
     }
 
@@ -2542,18 +2488,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleSavePointStatement x) {
-        print0(ucase ? "ROLLBACK" : "rollback");
-        if (x.getTo() != null) {
+    public boolean visit(SQLSavePointStatement x) {
+        print0(ucase ? "SAVEPOINT" : "savepoint");
+        if (x.getName() != null) {
             print0(ucase ? " TO " : " to ");
-            x.getTo().accept(this);
+            x.getName().accept(this);
         }
         return false;
-    }
-
-    @Override
-    public void endVisit(OracleSavePointStatement x) {
-
     }
 
     @Override

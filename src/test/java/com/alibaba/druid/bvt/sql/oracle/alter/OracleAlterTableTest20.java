@@ -51,7 +51,7 @@ public class OracleAlterTableTest20 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE sales" //
-                            + "\n\tADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DIABLE", //
+                            + "\n\tADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DIABLE;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());

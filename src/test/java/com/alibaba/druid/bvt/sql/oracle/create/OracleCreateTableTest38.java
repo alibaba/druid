@@ -50,9 +50,9 @@ public class OracleCreateTableTest38 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE list_customers ("
+        assertEquals("CREATE TABLE list_customers ("
                 + "\n\tcustomer_id NUMBER(6),"
                 + "\n\tcust_first_name VARCHAR2(20),"
                 + "\n\tcust_last_name VARCHAR2(20),"
@@ -67,7 +67,7 @@ public class OracleCreateTableTest38 extends OracleTest {
                 + "\n\tPARTITION west VALUES ('AMERICA'), "
                 + "\n\tPARTITION east VALUES ('INDIA'), "
                 + "\n\tPARTITION rest VALUES (DEFAULT)"
-                + "\n)",//
+                + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -78,7 +78,7 @@ public class Oracle_pl_loop_0 extends OracleTest {
 							"\t\tEND IF;\n" +
 							"\tEND LOOP;\n" +
 							"\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -94,7 +94,7 @@ public class Oracle_pl_loop_0 extends OracleTest {
 							"\t\tend if;\n" +
 							"\tend loop;\n" +
 							"\tDBMS_OUTPUT.PUT_LINE(' After loop:  x = ' || TO_CHAR(x));\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

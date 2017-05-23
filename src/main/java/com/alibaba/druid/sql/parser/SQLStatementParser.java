@@ -2222,6 +2222,7 @@ public class SQLStatementParser extends SQLParser {
             }
         }
         accept(Token.SEMI);
+        stmt.setAfterSemi(true);
         return stmt;
     }
 
@@ -2256,6 +2257,7 @@ public class SQLStatementParser extends SQLParser {
         accept(Token.CLOSE);
         stmt.setCursorName(exprParser.name().getSimpleName());
         accept(Token.SEMI);
+        stmt.setAfterSemi(true);
         return stmt;
     }
 

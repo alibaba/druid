@@ -958,16 +958,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleSavePointStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleSavePointStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateDatabaseDbLinkStatement x) {
         return true;
     }

@@ -46,7 +46,7 @@ public class OracleGroupingSetTest extends TestCase {
                           + "\n\tAND times.calendar_month_desc IN ('2000-09', '2000-10')"
                           + "\n\tAND co.country_id IN ('UK', 'US')\n"
                           + "GROUP BY GROUPING SETS ((channel_desc, calendar_month_desc, co.country_id), (channel_desc, co.country_id), "
-                          + "(calendar_month_desc, co.country_id));\n";
+                          + "(calendar_month_desc, co.country_id));";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

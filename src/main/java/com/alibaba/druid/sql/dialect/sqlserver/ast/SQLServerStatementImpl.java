@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
+package com.alibaba.druid.sql.dialect.sqlserver.ast;
 
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleSavePointStatement extends OracleStatementImpl {
+public abstract class SQLServerStatementImpl extends SQLStatementImpl implements SQLServerStatement {
 
-    private SQLName to;
+    public SQLServerStatementImpl(){
+
+    }
 
     @Override
-    public void accept0(OracleASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, to);
-        }
-        visitor.endVisit(this);
+    protected void accept0(SQLASTVisitor visitor) {
+        this.accept0((SQLServerASTVisitor) visitor);
     }
 
-    public SQLName getTo() {
-        return to;
-    }
-
-    public void setTo(SQLName to) {
-        this.to = to;
-    }
-
+    public abstract void accept0(SQLServerASTVisitor visitor);
 }

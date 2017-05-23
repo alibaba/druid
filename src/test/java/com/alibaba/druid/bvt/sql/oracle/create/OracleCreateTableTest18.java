@@ -73,7 +73,7 @@ public class OracleCreateTableTest18 extends OracleTest {
                         "MAXTRANS 255\n" +
                         "NOCOMPRESS\n" +
                         "LOGGING\n" +
-                        "TABLESPACE \"USERS\"", //
+                        "TABLESPACE \"USERS\";", //
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

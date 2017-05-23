@@ -52,7 +52,7 @@ public class OracleCreateTableTest21 extends OracleTest {
                         "STORAGE (\n" +
                         "\tINITIAL 8M\n" +
                         "\tMAXSIZE 1G\n" +
-                        ")",//
+                        ");",//
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

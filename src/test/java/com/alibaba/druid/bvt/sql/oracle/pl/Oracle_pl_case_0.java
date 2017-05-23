@@ -82,7 +82,7 @@ public class Oracle_pl_case_0 extends OracleTest {
 							"\t\tWHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
 							"\t\tELSE DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
 							"\tEND CASE;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -99,7 +99,7 @@ public class Oracle_pl_case_0 extends OracleTest {
 							"\t\twhen grade = 'F' then DBMS_OUTPUT.PUT_LINE('Poor');\n" +
 							"\t\telse DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
 							"\tend case;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

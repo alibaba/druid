@@ -56,7 +56,7 @@ public class OracleCreateTableTest39 extends OracleTest {
                 + "\nPARTITION BY RANGE (credit_limit) INTERVAL 1000"
                 + "\n("
                 + "\n\tPARTITION p1 VALUES LESS THAN (5001)"
-                + "\n)",//
+                + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

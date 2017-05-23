@@ -70,7 +70,7 @@ public class OracleSelectTest45 extends OracleTest {
                 + "\n\tAND REFUND_STATE = '0'"
                 + "\n\tAND PRODUCT_ORDER_STATE >= 300"
                 + "\n\tAND BC_ID IN (?)"
-                + "\nGROUP BY BC_ID;\n", text);
+                + "\nGROUP BY BC_ID", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

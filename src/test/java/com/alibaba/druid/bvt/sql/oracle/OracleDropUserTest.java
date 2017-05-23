@@ -38,7 +38,7 @@ public class OracleDropUserTest extends OracleTest {
         print(statementList);
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("DROP USER sidney",
+        Assert.assertEquals("DROP USER sidney;",
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -62,7 +62,7 @@ public class OracleCreateTableTest27 extends OracleTest {
                         "\tdepartment_id,\n" +
                         "\tCONSTRAINT fk_deptno FOREIGN KEY (department_id)\n" +
                         "\t\tREFERENCES departments (department_id)\n" +
-                        ")",//
+                        ");",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

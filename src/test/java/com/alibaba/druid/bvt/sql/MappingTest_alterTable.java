@@ -30,7 +30,7 @@ public class MappingTest_alterTable extends TestCase {
     public void test_mapping_createTable_oracle() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.ORACLE, mapping);
         assertEquals("ALTER TABLE user_01\n" +
-                "\tDROP INDEX pk_user", result);
+                "\tDROP INDEX pk_user;", result);
     }
 
     public void test_mapping_createTable_pg() throws Exception {

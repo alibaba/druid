@@ -49,7 +49,7 @@ public class OracleOutputVisitorTest_dblink extends TestCase {
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT salary\nFROM master@emp;\n", buf.toString());
+        Assert.assertEquals("SELECT salary\nFROM master@emp", buf.toString());
 
     }
 }

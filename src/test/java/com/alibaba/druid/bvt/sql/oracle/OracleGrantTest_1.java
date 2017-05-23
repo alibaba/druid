@@ -38,7 +38,7 @@ public class OracleGrantTest_1 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("GRANT CREATE SESSION TO hr",//
+        Assert.assertEquals("GRANT CREATE SESSION TO hr;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

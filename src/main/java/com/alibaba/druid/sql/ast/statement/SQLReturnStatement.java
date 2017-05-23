@@ -13,39 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.odps.ast;
+package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
 
-public class OdpsShowPartitionsStmt extends SQLStatementImpl {
+public class SQLReturnStatement extends SQLStatementImpl {
 
-    private SQLExprTableSource tableSource;
-    
-    public OdpsShowPartitionsStmt() {
-        super (JdbcConstants.ODPS);
+    private SQLExpr expr;
+
+    public SQLReturnStatement() {
+
     }
 
-    public SQLExprTableSource getTableSource() {
-        return tableSource;
+    public SQLReturnStatement(String dbType) {
+        super (dbType);
     }
 
-    public void setTableSource(SQLExprTableSource tableSource) {
-        this.tableSource = tableSource;
+    public SQLExpr getExpr() {
+        return expr;
+    }
+
+    public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
+        this.expr = expr;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OdpsASTVisitor) visitor);
-    }
-    
-    protected void accept0(OdpsASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, tableSource);
+            acceptChild(visitor, expr);
         }
         visitor.endVisit(this);
     }

@@ -66,12 +66,10 @@ public class Oracle_pl_forall_0 extends OracleTest {
 			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
 			System.out.println(output);
 			assertEquals("DROP TABLE employees_temp;\n" +
-							"\n" +
 							"CREATE TABLE employees_temp\n" +
 							"AS\n" +
 							"SELECT *\n" +
 							"FROM employees;\n" +
-							"\n" +
 							"DECLARE\n" +
 							"\tTYPE NumList IS VARRAY(20) OF NUMBER;\n" +
 							"\tdepts NumList := NumList(10, 30, 70);\n" +
@@ -79,18 +77,16 @@ public class Oracle_pl_forall_0 extends OracleTest {
 							"\tFORALL i IN depts.FIRST..depts.LAST\n" +
 							"\t\tDELETE FROM employees_temp\n" +
 							"\t\tWHERE department_id = depts(i);\n" +
-							"END;\n", //
+							"END;", //
 					output);
 		}
 		{
 			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 			assertEquals("drop table employees_temp;\n" +
-							"\n" +
 							"create table employees_temp\n" +
 							"as\n" +
 							"select *\n" +
 							"from employees;\n" +
-							"\n" +
 							"declare\n" +
 							"\ttype NumList is VARRAY(20) OF NUMBER;\n" +
 							"\tdepts NumList := NumList(10, 30, 70);\n" +
@@ -98,7 +94,7 @@ public class Oracle_pl_forall_0 extends OracleTest {
 							"\tforall i in depts.FIRST..depts.LAST\n" +
 							"\t\tdelete from employees_temp\n" +
 							"\t\twhere department_id = depts(i);\n" +
-							"end;\n", //
+							"end;", //
 					output);
 		}
 	}

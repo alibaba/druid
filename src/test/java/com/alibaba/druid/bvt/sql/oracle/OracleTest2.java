@@ -27,7 +27,7 @@ public class OracleTest2 extends TestCase {
     public void test_isEmpty() throws Exception {
         String sql = "SELECT NAME FROM V$ARCHIVED_LOG;";
 
-        String expect = "SELECT NAME\nFROM V$ARCHIVED_LOG;\n";
+        String expect = "SELECT NAME\nFROM V$ARCHIVED_LOG;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

@@ -56,7 +56,7 @@ public class OracleAlterTableTest19 extends OracleTest {
                 "\tADD CONSTRAINT wh_unq UNIQUE (warehouse_id, warehouse_name)\n" +
                 "\t\tUSING INDEX\n" +
                 "\t\tPCTFREE 5\n" +
-                "\t\tEXCEPTIONS INTO wrong_id", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                "\t\tEXCEPTIONS INTO wrong_id;", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());
 

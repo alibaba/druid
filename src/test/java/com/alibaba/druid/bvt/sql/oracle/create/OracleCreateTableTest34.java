@@ -43,7 +43,7 @@ public class OracleCreateTableTest34 extends OracleTest {
         Assert.assertEquals("CREATE TABLE long_tab ("//
                             + "\n\tpic_id NUMBER,"//
                             + "\n\tlong_pics LONG RAW"//
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

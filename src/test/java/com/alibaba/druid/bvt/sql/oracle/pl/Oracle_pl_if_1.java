@@ -65,7 +65,7 @@ public class Oracle_pl_if_1 extends OracleTest {
 							"\tOR l_salary IS NULL\n" +
 							"THEN\n" +
 							"\tgive_bonus(l_employee_id, 500);\n" +
-							"END IF", //
+							"END IF;", //
 					output);
 		}
 		{
@@ -74,7 +74,7 @@ public class Oracle_pl_if_1 extends OracleTest {
 							"\tor l_salary is null\n" +
 							"then\n" +
 							"\tgive_bonus(l_employee_id, 500);\n" +
-							"end if", //
+							"end if;", //
 					output);
 		}
 	}

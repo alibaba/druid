@@ -1291,16 +1291,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleSavePointStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleSavePointStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateDatabaseDbLinkStatement x) {
         return false;
     }

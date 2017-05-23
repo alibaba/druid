@@ -72,7 +72,7 @@ public class Oracle_pl_0 extends OracleTest {
 							"\tDELETE FROM employees\n" +
 							"\tWHERE employees.employee_id = remove_emp.employee_id;\n" +
 							"\ttot_emps := tot_emps - 1;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -86,7 +86,7 @@ public class Oracle_pl_0 extends OracleTest {
 							"\tdelete from employees\n" +
 							"\twhere employees.employee_id = remove_emp.employee_id;\n" +
 							"\ttot_emps := tot_emps - 1;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

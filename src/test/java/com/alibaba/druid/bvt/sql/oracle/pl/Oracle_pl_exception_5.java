@@ -78,7 +78,7 @@ public class Oracle_pl_exception_5 extends OracleTest {
 							"\t\t\tRAISE past_due;\n" +
 							"\t\tEND IF;\n" +
 							"\tEND;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -93,7 +93,7 @@ public class Oracle_pl_exception_5 extends OracleTest {
 							"\t\t\traise past_due;\n" +
 							"\t\tend if;\n" +
 							"\tend;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

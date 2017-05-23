@@ -74,7 +74,7 @@ public class OracleCreateTableTest40 extends OracleTest {
                 + "\n\tPARTITION p1 VALUES LESS THAN (1000),"
                 + "\n\tPARTITION p2 VALUES LESS THAN (2500),"
                 + "\n\tPARTITION p3 VALUES LESS THAN (MAXVALUE)"
-                + "\n)",//
+                + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

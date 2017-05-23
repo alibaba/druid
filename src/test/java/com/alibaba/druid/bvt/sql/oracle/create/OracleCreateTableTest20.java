@@ -87,7 +87,7 @@ public class OracleCreateTableTest20 extends OracleTest {
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
                         "\tKEEP_DUPLICATES\n" +
-                        ")",//
+                        ");",//
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

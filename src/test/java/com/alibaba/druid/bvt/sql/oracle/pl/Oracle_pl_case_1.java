@@ -82,11 +82,10 @@ public class Oracle_pl_case_1 extends OracleTest {
 							"\t\tWHEN grade = 'C' THEN DBMS_OUTPUT.PUT_LINE('Good'); \n" +
 							"\t\tWHEN grade = 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
 							"\t\tWHEN grade = 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\tELSE ;\n" +
 							"\tEND CASE;\n" +
 							"EXCEPTION\n" +
 							"\tWHEN CASE_NOT_FOUND THEN DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -101,11 +100,10 @@ public class Oracle_pl_case_1 extends OracleTest {
 							"\t\twhen grade = 'C' then DBMS_OUTPUT.PUT_LINE('Good'); \n" +
 							"\t\twhen grade = 'D' then DBMS_OUTPUT.PUT_LINE('Fair'); \n" +
 							"\t\twhen grade = 'F' then DBMS_OUTPUT.PUT_LINE('Poor');\n" +
-							"\t\telse ;\n" +
 							"\tend case;\n" +
 							"exception\n" +
 							"\twhen CASE_NOT_FOUND then DBMS_OUTPUT.PUT_LINE('No such grade');\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

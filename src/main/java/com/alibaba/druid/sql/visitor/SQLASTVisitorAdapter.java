@@ -558,7 +558,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLSavePointStatement x) {
-        return true;
+        return false;
     }
 
     @Override
@@ -1619,6 +1619,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLDeclareStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLReturnStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLReturnStatement x) {
 
     }
 }

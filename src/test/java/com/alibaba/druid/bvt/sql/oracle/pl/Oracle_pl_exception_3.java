@@ -104,7 +104,7 @@ public class Oracle_pl_exception_3 extends OracleTest {
 							"\tWHEN salary_too_high THEN\n" +
 							"\t\tcurrent_salary := max_salary;\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('Revising salary from ' || erroneous_salary || ' to ' || current_salary || '.');\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -130,7 +130,7 @@ public class Oracle_pl_exception_3 extends OracleTest {
 							"\twhen salary_too_high then\n" +
 							"\t\tcurrent_salary := max_salary;\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('Revising salary from ' || erroneous_salary || ' to ' || current_salary || '.');\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

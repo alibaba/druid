@@ -111,7 +111,7 @@ public class Oracle_pl_exception_0 extends OracleTest {
 							"\tWHEN OTHERS THEN\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('Unexpected error');\n" +
 							"\t\tRAISE;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -140,7 +140,7 @@ public class Oracle_pl_exception_0 extends OracleTest {
 							"\twhen OTHERS then\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('Unexpected error');\n" +
 							"\t\traise;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}
