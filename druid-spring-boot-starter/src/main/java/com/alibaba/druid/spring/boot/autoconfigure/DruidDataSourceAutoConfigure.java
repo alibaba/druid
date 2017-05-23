@@ -29,7 +29,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * @author lihengming<89921218@qq.com>
+ * @author lihengming [89921218@qq.com]
  */
 @Configuration
 @ConditionalOnClass(com.alibaba.druid.pool.DruidDataSource.class)

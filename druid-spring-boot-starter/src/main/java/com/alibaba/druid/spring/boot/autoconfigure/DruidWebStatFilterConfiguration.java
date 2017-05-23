@@ -21,7 +21,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author lihengming<89921218@qq.com>
+ * @author lihengming [89921218@qq.com]
  */
 @ConditionalOnProperty(name = "spring.datasource.druid.WebStatFilter.enabled", havingValue = "true", matchIfMissing = true)
 public class DruidWebStatFilterConfiguration {
