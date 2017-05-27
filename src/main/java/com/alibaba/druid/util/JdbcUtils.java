@@ -448,6 +448,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "org.apache.phoenix.queryserver.client.Driver";
         } else if (rawUrl.startsWith("jdbc:phoenix://")) {
             return JdbcConstants.PHOENIX_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:kylin:")) {
+            return JdbcConstants.KYLIN_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
