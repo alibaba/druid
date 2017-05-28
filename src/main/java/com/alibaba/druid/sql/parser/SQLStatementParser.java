@@ -1700,6 +1700,11 @@ public class SQLStatementParser extends SQLParser {
                 return parseCreateView();
             }
 
+            if (lexer.token() == Token.TRIGGER) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateTrigger();
+            }
+
             if (identifierEquals("PACKAGE")) {
                 lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreatePackage();
@@ -1722,6 +1727,7 @@ public class SQLStatementParser extends SQLParser {
         } else if (token == Token.VIEW) {
             return parseCreateView();
         } else if (token == Token.TRIGGER) {
+            lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateTrigger();
         } else if (token == Token.PROCEDURE) {
             SQLCreateProcedureStatement stmt = parseCreateProcedure();
@@ -1737,9 +1743,20 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreateTrigger() {
-        accept(Token.TRIGGER);
+        accept(Token.CREATE);
 
         SQLCreateTriggerStatement stmt = new SQLCreateTriggerStatement(getDbType());
+
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            accept(Token.REPLACE);
+
+            stmt.setOrReplace(true);
+        }
+
+        accept(Token.TRIGGER);
+
+
         stmt.setName(this.exprParser.name());
 
         if (identifierEquals("BEFORE")) {

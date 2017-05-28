@@ -26,7 +26,7 @@ public class SQLLoopStatement extends SQLStatementImpl {
 
     private String             labelName;
 
-    private List<SQLStatement> statements = new ArrayList<SQLStatement>();
+    private final List<SQLStatement> statements = new ArrayList<SQLStatement>();
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -38,10 +38,6 @@ public class SQLLoopStatement extends SQLStatementImpl {
 
     public List<SQLStatement> getStatements() {
         return statements;
-    }
-
-    public void setStatements(List<SQLStatement> statements) {
-        this.statements = statements;
     }
 
     public String getLabelName() {

@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement {
@@ -258,5 +260,25 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             visitor.endVisit(this);
         }
 
+    }
+
+    public String computeAlias() {
+        String alias = null;
+
+        if (name instanceof SQLIdentifierExpr) {
+            alias = ((SQLIdentifierExpr) name).getName();
+        } else if (name instanceof SQLPropertyExpr) {
+            alias = ((SQLPropertyExpr) name).getName();
+        }
+
+        if (alias.length() > 2) {
+            char c0 = alias.charAt(0);
+            char x0 = alias.charAt(alias.length() - 1);
+            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
+                alias = alias.substring(1, alias.length() - 1);
+            }
+        }
+
+        return alias;
     }
 }

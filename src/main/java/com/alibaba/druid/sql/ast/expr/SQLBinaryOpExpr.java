@@ -145,6 +145,10 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+    public SQLBinaryOpExpr clone() {
+        return new SQLBinaryOpExpr(left, operator, right, dbType);
+    }
+
     public String toString() {
         return SQLUtils.toSQLString(this, getDbType());
     }

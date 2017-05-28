@@ -1904,8 +1904,11 @@ public class SQLExprParser extends SQLParser {
         SQLColumnDefinition column = createColumnDefinition();
         column.setName(name());
 
-        if (lexer.token() != Token.SET //
-            && lexer.token() != Token.DROP) {
+        final Token token = lexer.token();
+        if (token != Token.SET //
+                && token != Token.DROP
+                && token != Token.PRIMARY
+                && token != Token.RPAREN) {
             column.setDataType(parseDataType());
         }
         return parseColumnRest(column);

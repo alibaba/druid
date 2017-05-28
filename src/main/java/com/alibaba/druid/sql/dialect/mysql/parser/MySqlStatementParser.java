@@ -395,9 +395,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.TRIGGER) {
-            if (replace) {
-                lexer.reset(markBp, markChar, Token.CREATE);
-            }
+            lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateTrigger();
         }
         // parse create procedure
@@ -3011,18 +3009,24 @@ public class MySqlStatementParser extends SQLStatementParser {
             item.addColumn(name);
 
             while (lexer.token() == Token.COMMA) {
-                lexer.mark();
+                char markChar = lexer.current();
+                int markBp = lexer.bp();
+
                 lexer.nextToken();
                 if (identifierEquals("CHANGE")) {
-                    lexer.reset();
+                    lexer.reset(markBp, markChar, Token.COMMA);
                     break;
                 }
 
                 if (lexer.token() == Token.IDENTIFIER) {
+                    if ("ADD".equalsIgnoreCase(lexer.stringVal())) {
+                        lexer.reset(markBp, markChar, Token.COMMA);
+                        break;
+                    }
                     name = exprParser.name();
                     name.setParent(item);
                 } else {
-                    lexer.reset();
+                    lexer.reset(markBp, markChar, Token.COMMA);
                     break;
                 }
             }
@@ -3561,6 +3565,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.END);
         accept(Token.IF);
         accept(Token.SEMI);
+        stmt.setAfterSemi(true);
 
         return stmt;
     }
@@ -3770,6 +3775,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.END);
         accept(Token.LOOP);
         accept(Token.SEMI);
+        loopStmt.setAfterSemi(true);
         return loopStmt;
     }
 
@@ -3787,6 +3793,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             acceptIdentifier(label);
         }
         accept(Token.SEMI);
+        loopStmt.setAfterSemi(true);
         return loopStmt;
     }
 

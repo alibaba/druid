@@ -82,4 +82,8 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuable
     public Object getValue() {
         return this.number;
     }
+
+    public SQLIntegerExpr clone() {
+        return new SQLIntegerExpr(this.number);
+    }
 }

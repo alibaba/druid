@@ -112,8 +112,8 @@ public class OracleCreatePackageTest0 extends OracleTest {
 
         Assert.assertEquals("CREATE OR REPLACE PACKAGE BODY emp_mgmt\n" +
                         "BEGIN\n" +
-                        "\ttot_emps NUMBER\n" +
-                        "\ttot_depts NUMBER\n" +
+                        "\ttot_emps NUMBER;\n" +
+                        "\ttot_depts NUMBER;\n" +
                         "\tFUNCTION hire (\n" +
                         "\t\tlast_name VARCHAR2, \n" +
                         "\t\tjob_id VARCHAR2, \n" +

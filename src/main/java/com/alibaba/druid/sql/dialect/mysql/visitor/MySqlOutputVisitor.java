@@ -15,14 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -380,12 +373,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLDataType x) {
-        print0(x.getName());
-        if (!x.getArguments().isEmpty()) {
-            print('(');
-            printAndAccept(x.getArguments(), ", ");
-            print(')');
-        }
+        printDataType(x);
 
         if (Boolean.TRUE == x.getAttribute("UNSIGNED")) {
             print0(ucase ? " UNSIGNED" : " unsigned");
@@ -3284,6 +3272,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(SQLIfStatement.Else x) {
         print0(ucase ? "ELSE " : "else ");
+        incrementIndent();
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
@@ -3293,6 +3282,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 println();
             }
         }
+        decrementIndent();
         println();
         return false;
     }
@@ -3616,5 +3606,25 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlDeclareConditionStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropColumnItem x) {
+
+        for (int i = 0; i < x.getColumns().size(); ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+
+            SQLName columnn = x.getColumns().get(i);
+
+            print0(ucase ? "DROP COLUMN " : "drop column ");
+            columnn.accept(this);
+
+            if (x.isCascade()) {
+                print0(ucase ? " CASCADE" : " cascade");
+            }
+        }
+        return false;
     }
 } //

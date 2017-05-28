@@ -19,9 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -84,6 +86,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot.Item;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.CheckOption;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.ReadOnly;
+import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
@@ -1271,12 +1274,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleConntinueStatement x) {
+    public boolean visit(OracleContinueStatement x) {
         return false;
     }
 
     @Override
-    public void endVisit(OracleConntinueStatement x) {
+    public void endVisit(OracleContinueStatement x) {
 
     }
 
@@ -1445,6 +1448,22 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleCreatePackageStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleExecuteImmediateStatement x) {
+        String sql = x.getDynamicSql().getText();
+
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, getDbType());
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleExecuteImmediateStatement x) {
 
     }
 }

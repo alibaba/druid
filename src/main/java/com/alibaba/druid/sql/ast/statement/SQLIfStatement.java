@@ -47,6 +47,9 @@ public class SQLIfStatement extends SQLStatementImpl {
     }
 
     public void setCondition(SQLExpr condition) {
+        if (condition != null) {
+            condition.setParent(this);
+        }
         this.condition = condition;
     }
 

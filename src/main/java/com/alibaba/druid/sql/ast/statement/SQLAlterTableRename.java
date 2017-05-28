@@ -21,15 +21,29 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableRename extends SQLObjectImpl implements SQLAlterTableItem {
 
-    protected SQLExpr to;
+    protected SQLExprTableSource to;
 
-    public SQLExpr getTo() {
+    public SQLAlterTableRename() {
+
+    }
+
+    public SQLAlterTableRename(SQLExpr to) {
+        this.setTo(to);
+    }
+
+    public SQLExprTableSource getTo() {
         return to;
     }
 
-    public void setTo(SQLExpr to) {
+    public void setTo(SQLExprTableSource to) {
+        if (to != null) {
+            to.setParent(this);
+        }
         this.to = to;
-        to.setParent(this);
+    }
+
+    public void setTo(SQLExpr to) {
+        this.setTo(new SQLExprTableSource(to));
     }
 
     @Override

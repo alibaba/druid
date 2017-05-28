@@ -367,6 +367,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.setUseUnfairLock(value);
             }
         }
+        {
+            String property = properties.getProperty("druid.driverClassName");
+            if (property != null) {
+                this.setDriverClassName(property);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.initialSize");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    super.setInitialSize(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.initialSize'", e);
+                }
+            }
+        }
     }
 
     public boolean isUseGlobalDataSourceStat() {

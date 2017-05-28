@@ -17,6 +17,8 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectItem extends SQLObjectImpl {
@@ -61,6 +63,27 @@ public class SQLSelectItem extends SQLObjectImpl {
         if (expr != null) {
             expr.setParent(this);
         }
+    }
+
+    public String computeAlias() {
+        String alias = this.getAlias();
+        if (alias == null) {
+            if (expr instanceof SQLIdentifierExpr) {
+                alias = ((SQLIdentifierExpr) expr).getName();
+            } else if (expr instanceof SQLPropertyExpr) {
+                alias = ((SQLPropertyExpr) expr).getName();
+            }
+        }
+
+        if (alias.length() > 2) {
+            char c0 = alias.charAt(0);
+            char x0 = alias.charAt(alias.length() - 1);
+            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
+                alias = alias.substring(1, alias.length() - 1);
+            }
+        }
+
+        return alias;
     }
 
     public String getAlias() {

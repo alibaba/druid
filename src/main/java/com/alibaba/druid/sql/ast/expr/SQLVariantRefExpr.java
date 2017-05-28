@@ -104,4 +104,7 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         this.global = global;
     }
 
+    public SQLVariantRefExpr clone() {
+        return new SQLVariantRefExpr(name, global);
+    }
 }

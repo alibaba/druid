@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private SQLName name;
+    private boolean ifExists;
     
     public SQLDropSequenceStatement() {
         
@@ -47,4 +48,11 @@ public class SQLDropSequenceStatement extends SQLStatementImpl implements SQLDDL
         this.name = name;
     }
 
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
+    }
 }

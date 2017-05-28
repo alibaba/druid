@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
@@ -1469,7 +1468,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getStatements().size() > 1) {
             println();
         } else {
-            print(' ');
+            if (x.getStatements().size() == 1
+                    && x.getStatements().get(0) instanceof SQLIfStatement) {
+                println();
+            } else {
+                print(' ');
+            }
         }
 
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
@@ -1594,6 +1598,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(SQLAlterTableStatement x) {
+        if (x.getItems().size() == 1) {
+            SQLAlterTableItem item = x.getItems().get(0);
+            if (item instanceof SQLAlterTableRename) {
+                SQLExpr to = ((SQLAlterTableRename) item).getTo().getExpr();
+
+                print0(ucase ? "RENAME " : "rename ");
+                x.getName().accept(this);
+                print0(ucase ? " TO " : "to ");
+                to.accept(this);
+                return false;
+            }
+        }
+
         print0(ucase ? "ALTER TABLE " : "alter table ");
         printTableSourceExpr(x.getName());
         incrementIndent();
@@ -1958,7 +1975,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getElseItem().accept(this);
         }
         println();
-        print0(ucase ? "END IF;" : "end if;");
+        print0(ucase ? "END IF" : "end if");
         return false;
     }
 
@@ -2043,7 +2060,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleCreateTableStatement x) {
-        this.visit((SQLCreateTableStatement) x);
+        printCreateTable(x);
 
         if (x.getOf() != null) {
             println();
@@ -2431,6 +2448,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleExitStatement x) {
         print0(ucase ? "EXIT" : "exit");
+
+        if (x.getLabel() != null) {
+            print(' ');
+            print0(x.getLabel());
+        }
+
         if (x.getWhen() != null) {
             print0(ucase ? " WHEN " : " when ");
             x.getWhen().accept(this);
@@ -2445,13 +2468,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
 
     @Override
-    public boolean visit(OracleConntinueStatement x) {
+    public boolean visit(OracleContinueStatement x) {
         print0(ucase ? "CONTINUE" : "continue");
 
-        SQLName label = x.getLabel();
+        String label = x.getLabel();
         if (label != null) {
             print(' ');
-            label.accept(this);
+            print0(label);
         }
 
         if (x.getWhen() != null) {
@@ -2462,7 +2485,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleConntinueStatement x) {
+    public void endVisit(OracleContinueStatement x) {
 
     }
 
@@ -3187,6 +3210,27 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleCreatePackageStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAssignItem x) {
+        x.getTarget().accept(this);
+        print0(" := ");
+        x.getValue().accept(this);
+        return false;
+    }
+
+
+    @Override
+    public boolean visit(OracleExecuteImmediateStatement x) {
+        print0(ucase ? "EXECUTE IMMEDIATE " : "execute immediate ");
+        x.getDynamicSql().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleExecuteImmediateStatement x) {
 
     }
 }

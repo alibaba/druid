@@ -31,6 +31,11 @@ public class SQLLimit extends SQLObjectImpl {
         this.setRowCount(rowCount);
     }
 
+    public SQLLimit(SQLExpr offset, SQLExpr rowCount) {
+        this.setOffset(offset);
+        this.setRowCount(rowCount);
+    }
+
     private SQLExpr rowCount;
     private SQLExpr offset;
 

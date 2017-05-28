@@ -15,44 +15,41 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleConntinueStatement extends OracleStatementImpl {
+public class OracleExecuteImmediateStatement extends OracleStatementImpl {
 
-    private SQLExpr when;
-    private SQLName label;
+    private SQLCharExpr dynamicSql;
 
-    public SQLExpr getWhen() {
-        return when;
+    public OracleExecuteImmediateStatement(){
     }
 
-    public void setWhen(SQLExpr when) {
-        if (when != null) {
-            when.setParent(this);
-        }
-        this.when = when;
-    }
-
-    public SQLName getLabel() {
-        return label;
-    }
-
-    public void setLabel(SQLName label) {
-        if (label != null) {
-            label.setParent(this);
-        }
-        this.label = label;
+    public OracleExecuteImmediateStatement(String dynamicSql){
+        this.setDynamicSql(dynamicSql);
     }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, label);
-            acceptChild(visitor, when);
+//            acceptChild(visitor, label);
         }
         visitor.endVisit(this);
     }
 
+    public SQLCharExpr getDynamicSql() {
+        return dynamicSql;
+    }
+
+    public void setDynamicSql(SQLCharExpr dynamicSql) {
+        if (dynamicSql != null) {
+            dynamicSql.setParent(this);
+        }
+        this.dynamicSql = dynamicSql;
+    }
+
+    public void setDynamicSql(String dynamicSql) {
+        this.setDynamicSql(new SQLCharExpr(dynamicSql));
+    }
 }

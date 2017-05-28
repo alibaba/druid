@@ -389,9 +389,9 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleExitStatement x);
 
-    boolean visit(OracleConntinueStatement x);
+    boolean visit(OracleContinueStatement x);
 
-    void endVisit(OracleConntinueStatement x);
+    void endVisit(OracleContinueStatement x);
 
     boolean visit(OracleRaiseStatement x);
 
@@ -460,4 +460,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleCreatePackageStatement x);
 
     void endVisit(OracleCreatePackageStatement x);
+
+    boolean visit(OracleExecuteImmediateStatement x);
+
+    void endVisit(OracleExecuteImmediateStatement x);
 }

@@ -173,16 +173,6 @@ public class Utils {
         return null;
     }
 
-    public static Boolean getBoolean(GenericServlet servlet, String key) {
-        String property = servlet.getInitParameter(key);
-        if ("true".equals(property)) {
-            return Boolean.TRUE;
-        } else if ("false".equals(property)) {
-            return Boolean.FALSE;
-        }
-        return null;
-    }
-
     public static Integer getInteger(Properties properties, String key) {
         String property = properties.getProperty(key);
 

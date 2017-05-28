@@ -1159,6 +1159,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printSelectList(x.getSelectList());
 
+        if (x.getInto() != null) {
+            println();
+            print0(ucase ? "INTO " : "into ");
+            x.getInto().accept(this);
+        }
+
         if (x.getFrom() != null) {
             println();
             print0(ucase ? "FROM " : "from ");
@@ -1751,6 +1757,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCreateTableStatement x) {
+        printCreateTable(x);
+
+        return false;
+    }
+
+    protected void printCreateTable(SQLCreateTableStatement x) {
         print0(ucase ? "CREATE TABLE " : "create table ");
         if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(x.getType())) {
             print0(ucase ? "GLOBAL TEMPORARY " : "global temporary ");
@@ -1767,8 +1779,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getInherits().accept(this);
             print(')');
         }
-
-        return false;
     }
 
     public boolean visit(SQLUniqueConstraint x) {
@@ -1912,7 +1922,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLSetStatement x) {
-        print0(ucase ? "SET " : "set ");
+        if (!JdbcConstants.ORACLE.equals(dbType)) {
+            print0(ucase ? "SET " : "set ");
+        }
         printAndAccept(x.getItems(), ", ");
 
         if (x.getHints() != null && x.getHints().size() > 0) {
@@ -2749,6 +2761,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLDropSequenceStatement x) {
         print0(ucase ? "DROP SEQUENCE " : "drop sequence ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
         x.getName().accept(this);
         return false;
     }
@@ -2761,6 +2776,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLDropTriggerStatement x) {
         print0(ucase ? "DROP TRIGGER " : "drop trigger ");
+        if (x.isIfExists()) {
+            print0(ucase ? "IF EXISTS " : "if exists ");
+        }
+
         x.getName().accept(this);
         return false;
     }
@@ -3406,6 +3425,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         decrementIndent();
         println();
         print0(ucase ? "END LOOP" : "end loop");
+        if (x.getLabelName() != null) {
+            print(' ');
+            print0(x.getLabelName());
+        }
         return false;
     }
 
@@ -3469,13 +3492,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             dataType.accept(this);
 
-            if (x.getDefaultValue() != null) {
-                print0(" := ");
-                x.getDefaultValue().accept(this);
-            }
+            printParamDefaultValue(x);
         }
 
         return false;
+    }
+
+    protected void printParamDefaultValue(SQLParameter x) {
+        if (x.getDefaultValue() != null) {
+            print0(" := ");
+            x.getDefaultValue().accept(this);
+        }
     }
 
     @Override

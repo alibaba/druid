@@ -34,7 +34,7 @@ import com.alibaba.druid.proxy.jdbc.StatementExecuteType;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.Utils;
 
-public final class JdbcSqlStat implements JdbcSqlStatMBean {
+public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlStat> {
 
     private final String                                sql;
     private long                                        sqlHash;
@@ -1074,4 +1074,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         this.removed = removed;
     }
 
+    @Override
+    public int compareTo(JdbcSqlStat o) {
+        if (o.sqlHash == this.sqlHash) {
+            return 0;
+        }
+        
+        return this.id < o.id ? -1 : 1;
+    }
 }
