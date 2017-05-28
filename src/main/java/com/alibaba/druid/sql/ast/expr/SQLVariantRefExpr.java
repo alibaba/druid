@@ -105,6 +105,8 @@ public class SQLVariantRefExpr extends SQLExprImpl {
     }
 
     public SQLVariantRefExpr clone() {
-        return new SQLVariantRefExpr(name, global);
+        SQLVariantRefExpr var =  new SQLVariantRefExpr(name, global);
+        var.index = index;
+        return var;
     }
 }

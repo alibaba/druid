@@ -1436,7 +1436,13 @@ public class OracleStatementParser extends SQLStatementParser {
 
         accept(Token.END);
 
-        if (lexer.token() != Token.SEMI) {
+        Token token = lexer.token();
+
+        if (token == Token.EOF) {
+            return block;
+        }
+
+        if (token != Token.SEMI) {
             String endLabel = lexer.stringVal();
             accept(Token.IDENTIFIER);
             block.setEndLabel(endLabel);
