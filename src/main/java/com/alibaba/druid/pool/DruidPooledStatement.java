@@ -288,7 +288,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     public void close() throws SQLException {
         if (!this.closed) {
             clearResultSet();
-            stmt.close();
+            if (stmt != null) {
+                stmt.close();
+            }
             this.closed = true;
 
             if (conn.getConnectionHolder() != null) {

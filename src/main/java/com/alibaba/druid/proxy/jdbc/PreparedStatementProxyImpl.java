@@ -47,7 +47,7 @@ import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
  */
 public class PreparedStatementProxyImpl extends StatementProxyImpl implements PreparedStatementProxy {
 
-    protected final PreparedStatement statement;
+    private PreparedStatement statement;
     protected final String            sql;
     private JdbcParameter[]           parameters     = new JdbcParameter[16];
     private int                       parametersSize = 0;
@@ -68,6 +68,11 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         }
   
         return paramMap;
+    }
+
+    protected void setStatement(PreparedStatement statement) {
+        super.statement = statement;
+        this.statement = statement;
     }
 
     void setParameter(int jdbcIndex, JdbcParameter parameter) {
