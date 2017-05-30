@@ -18,7 +18,7 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author lihengming<89921218@qq.com>
+ * @author lihengming [89921218@qq.com]
  */
 @ConfigurationProperties("spring.datasource.druid")
 public class DruidStatProperties {

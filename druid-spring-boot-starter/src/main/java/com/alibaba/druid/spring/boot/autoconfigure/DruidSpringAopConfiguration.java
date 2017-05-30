@@ -25,7 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author lihengming<89921218@qq.com>
+ * @author lihengming [89921218@qq.com]
  */
 @ConditionalOnProperty("spring.datasource.druid.aop-patterns")
 public class DruidSpringAopConfiguration {

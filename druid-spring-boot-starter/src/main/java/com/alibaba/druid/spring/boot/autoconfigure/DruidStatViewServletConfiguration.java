@@ -21,7 +21,7 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author lihengming<89921218@qq.com>
+ * @author lihengming [89921218@qq.com]
  */
 @ConditionalOnProperty(name = "spring.datasource.druid.StatViewServlet.enabled", havingValue = "true", matchIfMissing = true)
 public class DruidStatViewServletConfiguration {
