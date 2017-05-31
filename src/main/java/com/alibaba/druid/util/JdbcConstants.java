@@ -93,6 +93,10 @@ public interface JdbcConstants {
     public static final String ENTERPRISEDB        = "edb";
     public static final String ENTERPRISEDB_DRIVER = "com.edb.Driver";
 
+    public static final String KYLIN               = "kylin";
+    public static final String KYLIN_DRIVER        = "org.apache.kylin.jdbc.Driver";
+
+
     public static final String SQLITE              = "sqlite";
     public static final String SQLITE_DRIVER       = "org.sqlite.JDBC";
 }

@@ -491,6 +491,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.kylin</groupId>
+			<artifactId>kylin-jdbc</artifactId>
+			<version>2.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>2.2.2</version>
