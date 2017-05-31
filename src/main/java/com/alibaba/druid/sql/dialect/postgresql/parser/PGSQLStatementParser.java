@@ -15,20 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
@@ -37,9 +31,26 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class PGSQLStatementParser extends SQLStatementParser {
-
+    public static final String TIME_ZONE = "TIME ZONE";
+    public static final String TIME = "TIME";
+    public static final String LOCAL = "LOCAL";
+    public static final String TRANSACTION = "TRANSACTION";
+    
+    public PGSQLStatementParser(PGExprParser parser) {
+        super(parser);
+    }
+    
     public PGSQLStatementParser(String sql){
         super(new PGExprParser(sql));
     }
@@ -210,15 +221,36 @@ public class PGSQLStatementParser extends SQLStatementParser {
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
-        if (lexer.token() == Token.WITH) {
-            SQLStatement stmt = parseWith();
-            statementList.add(stmt);
+        switch (lexer.token()) {
+        case BEGIN:
+            statementList.add(handleBegin());
             return true;
+        case START:
+            return handleStart(statementList);
+        case WITH:
+            statementList.add(parseWith());
+            return true;
+        default:
+            return false;
         }
-
-        return false;
     }
 
+    private SQLStatement handleBegin() {
+        SQLStatement statement = new PGBeginStatement(true);
+        lexer.nextToken();
+        return statement;
+    }
+
+    private boolean handleStart(List<SQLStatement> statementList) {
+        lexer.nextToken();
+        if (lexer.token() == Token.IDENTIFIER && TRANSACTION.equalsIgnoreCase(lexer.stringVal())) {
+            statementList.add(new PGBeginStatement(false));
+            lexer.nextToken();
+            return true;
+        }
+        return false;
+    }
+    
     public PGWithClause parseWithClause() {
         lexer.nextToken();
 
@@ -371,7 +403,76 @@ public class PGSQLStatementParser extends SQLStatementParser {
     public SQLStatement parseShow() {
         accept(Token.SHOW);
         PGShowStatement stmt = new PGShowStatement();
-        stmt.setExpr(this.exprParser.expr());
+        switch (lexer.token()) {
+        case ALL:
+            stmt.setExpr(new SQLIdentifierExpr(Token.ALL.name()));
+            lexer.nextToken();
+            break;
+        default:
+            stmt.setExpr(this.exprParser.expr());
+            break;
+        }
         return stmt;
     }
+    
+    @Override
+    public SQLStatement parseCommit() {
+        SQLStatement statment = new PGCommitStatement();
+        lexer.nextToken();
+        return statment;
+    }
+    
+    private SQLStatement handleTimeZoneSet(String range) {
+        // ZONE
+        lexer.nextToken();
+        // VALUE
+        lexer.nextToken();
+        String value = lexer.stringVal();
+        List<SQLExpr> exprs = new ArrayList<SQLExpr>();
+        if (lexer.token() == Token.IDENTIFIER) {
+            exprs.add(new SQLIdentifierExpr(value.toUpperCase()));
+        } else {
+            exprs.add(new SQLCharExpr(value));
+        }
+        lexer.nextToken();
+        return new PGSetStatement(range, TIME_ZONE, exprs);
+    }
+
+    @Override
+    public SQLStatement parseSet() {
+        accept(Token.SET);
+        Token token = lexer.token();
+        String range = "";
+        if (token == Token.SESSION) {
+            lexer.nextToken();
+            range = Token.SESSION.name();
+        } else if (token == Token.IDENTIFIER && LOCAL.equalsIgnoreCase(lexer.stringVal())) {
+            range = LOCAL;
+            lexer.nextToken();
+        }
+        String parameter = lexer.stringVal();
+        if (TIME.equalsIgnoreCase(parameter)) {
+            // SET [ SESSION | LOCAL ] TIME ZONE { timezone | LOCAL | DEFAULT }
+            return handleTimeZoneSet(range);
+        }
+        // TO | =
+        lexer.nextToken();
+
+        // value | 'value' | DEFAULT
+        List<SQLExpr> values = new ArrayList<SQLExpr>();
+        while (!lexer.isEOF()) {
+            lexer.nextToken();
+            if (lexer.token() == Token.LITERAL_CHARS) {
+                values.add(new SQLCharExpr(lexer.stringVal()));
+            } else if (lexer.token() == Token.LITERAL_INT) {
+                values.add(new SQLIdentifierExpr(lexer.numberString()));
+            } else {
+                values.add(new SQLIdentifierExpr(lexer.stringVal()));
+            }
+            // skip comma
+            lexer.nextToken();
+        }
+        return new PGSetStatement(range, parameter, values);
+    }
+
 }
