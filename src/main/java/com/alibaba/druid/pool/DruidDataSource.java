@@ -141,6 +141,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private ScheduledFuture<?>               destroySchedulerFuture;
     private DestroyTask                      destroyTask;
 
+    private ScheduledFuture<?>               createSchedulerFuture;
+
     private CreateConnectionThread           createConnectionThread;
     private DestroyConnectionThread          destroyConnectionThread;
     private LogStatsThread                   logStatsThread;
@@ -1536,6 +1538,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 destroyConnectionThread.interrupt();
             }
 
+            if (createSchedulerFuture != null) {
+                createSchedulerFuture.cancel(true);
+            }
+
             if (destroySchedulerFuture != null) {
                 destroySchedulerFuture.cancel(true);
             }
@@ -2050,7 +2056,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
 
                         this.errorCount = 0; // reset errorCount
-                        createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
+                        createSchedulerFuture = createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
                         return;
                     }
                 } catch (RuntimeException e) {
