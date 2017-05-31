@@ -119,7 +119,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
@@ -430,10 +429,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlRenameTableStatement x);
 
     void endVisit(MySqlRenameTableStatement x);
-
-    boolean visit(MySqlUnionQuery x);
-
-    void endVisit(MySqlUnionQuery x);
 
     boolean visit(MySqlUseIndexHint x);
 

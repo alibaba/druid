@@ -27,8 +27,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHintImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -476,14 +474,9 @@ public class MySqlSelectParser extends SQLSelectParser {
         accept(Token.RPAREN);
     }
 
-    protected MySqlUnionQuery createSQLUnionQuery() {
-        return new MySqlUnionQuery();
-    }
-
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
         if (lexer.token() == Token.LIMIT) {
-            MySqlUnionQuery mysqlUnionQuery = (MySqlUnionQuery) union;
-            mysqlUnionQuery.setLimit(this.exprParser.parseLimit());
+            union.setLimit(this.exprParser.parseLimit());
         }
         return super.unionRest(union);
     }
