@@ -50,7 +50,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
@@ -191,10 +190,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlReplaceStatement x);
 
     boolean visit(MySqlReplaceStatement x);
-
-    void endVisit(MySqlCommitStatement x);
-
-    boolean visit(MySqlCommitStatement x);
 
     void endVisit(MySqlRollbackStatement x);
 

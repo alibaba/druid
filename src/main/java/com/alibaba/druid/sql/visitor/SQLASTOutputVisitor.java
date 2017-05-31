@@ -4289,4 +4289,62 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
     }
+
+    @Override
+    public boolean visit(SQLArgument x) {
+        SQLParameter.ParameterType type = x.getType();
+        if (type != null) {
+            print0(type.name());
+            print(' ');
+        }
+
+        x.getExpr().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCommitStatement x) {
+        print0(ucase ? "COMMIT" : "commit");
+
+        if (x.isWrite()) {
+            print0(ucase ? " WRITE" : " write");
+            if (x.getWait() != null) {
+                if (x.getWait().booleanValue()) {
+                    print0(ucase ? " WAIT" : " wait");
+                } else {
+                    print0(ucase ? " NOWAIT" : " nowait");
+                }
+            }
+
+            if (x.getImmediate() != null) {
+                if (x.getImmediate().booleanValue()) {
+                    print0(ucase ? " IMMEDIATE" : " immediate");
+                } else {
+                    print0(ucase ? " BATCH" : " batch");
+                }
+            }
+        }
+
+        if (x.isWork()) {
+            print0(ucase ? " WORK" : " work");
+        }
+
+        if (x.getChain() != null) {
+            if (x.getChain().booleanValue()) {
+                print0(ucase ? " AND CHAIN" : " and chain");
+            } else {
+                print0(ucase ? " AND NO CHAIN" : " and no chain");
+            }
+        }
+
+        if (x.getRelease() != null) {
+            if (x.getRelease().booleanValue()) {
+                print0(ucase ? " AND RELEASE" : " and release");
+            } else {
+                print0(ucase ? " AND NO RELEASE" : " and no release");
+            }
+        }
+
+        return false;
+    }
 }

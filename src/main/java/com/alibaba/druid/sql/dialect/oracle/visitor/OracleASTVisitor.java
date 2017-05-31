@@ -345,10 +345,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleLabelStatement x);
 
-    boolean visit(OracleCommitStatement x);
-
-    void endVisit(OracleCommitStatement x);
-
     boolean visit(OracleAlterTriggerStatement x);
 
     void endVisit(OracleAlterTriggerStatement x);

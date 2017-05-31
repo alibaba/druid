@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -130,16 +129,6 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
     
     @Override
     public void endVisit(SQLServerSelect x) {
-        
-    }
-
-    @Override
-    public boolean visit(SQLServerCommitStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerCommitStatement x) {
         
     }
 

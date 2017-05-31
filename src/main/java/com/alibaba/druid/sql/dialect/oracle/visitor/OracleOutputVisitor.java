@@ -2241,37 +2241,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(OracleCommitStatement x) {
-        print0(ucase ? "COMMIT" : "commit");
-
-        if (x.isWrite()) {
-            print0(ucase ? " WRITE" : " write");
-            if (x.getWait() != null) {
-                if (x.getWait().booleanValue()) {
-                    print0(ucase ? " WAIT" : " wait");
-                } else {
-                    print0(ucase ? " NOWAIT" : " nowait");
-                }
-            }
-
-            if (x.getImmediate() != null) {
-                if (x.getImmediate().booleanValue()) {
-                    print0(ucase ? " IMMEDIATE" : " immediate");
-                } else {
-                    print0(ucase ? " BATCH" : " batch");
-                }
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleCommitStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTriggerStatement x) {
         print0(ucase ? "ALTER TRIGGER " : "alter trigger ");
         x.getName().accept(this);
@@ -3226,6 +3195,24 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleExecuteImmediateStatement x) {
         print0(ucase ? "EXECUTE IMMEDIATE " : "execute immediate ");
         x.getDynamicSql().accept(this);
+
+        List<SQLExpr> into = x.getInto();
+        if (into.size() > 0) {
+            print0(ucase ? " INTO " : " into ");
+            printAndAccept(into, ", ");
+        }
+
+        List<SQLArgument> using = x.getArguments();
+        if (using.size() > 0) {
+            print0(ucase ? " USING " : " using ");
+            printAndAccept(using, ", ");
+        }
+
+        List<SQLExpr> returnInto = x.getReturnInto();
+        if (returnInto.size() > 0) {
+            print0(ucase ? " RETURNNING INTO " : " returnning into ");
+            printAndAccept(returnInto, ", ");
+        }
         return false;
     }
 

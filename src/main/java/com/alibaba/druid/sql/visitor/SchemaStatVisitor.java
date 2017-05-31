@@ -24,20 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionByHash;
-import com.alibaba.druid.sql.ast.SQLPartitionByList;
-import com.alibaba.druid.sql.ast.SQLPartitionByRange;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
-import com.alibaba.druid.sql.ast.SQLSubPartition;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
@@ -445,8 +432,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        x.getLeft().setParent(x);
-        x.getRight().setParent(x);
+        SQLObject parent = x.getParent();
+
+        if (parent instanceof SQLIfStatement) {
+            return true;
+        }
 
         switch (x.getOperator()) {
             case Equality:
@@ -1750,8 +1740,20 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
             SQLExpr name = param.getName();
             this.variants.put(name.toString(), name);
+
+            param.accept(this);
         }
-        return true;
+
+        for (SQLStatement stmt : x.getStatementList()) {
+            stmt.accept(this);
+        }
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            exception.accept(this);
+        }
+
+        return false;
     }
     
     @Override

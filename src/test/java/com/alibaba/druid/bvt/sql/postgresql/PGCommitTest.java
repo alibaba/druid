@@ -16,12 +16,12 @@
 package com.alibaba.druid.bvt.sql.postgresql;
 
 import com.alibaba.druid.sql.PGTest;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGCommitStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
 
 public class PGCommitTest extends PGTest {
     public void testCommit() throws Exception {
         String sql = "commit;";
         String expected = "COMMIT";
-        testParseSql(sql, expected, expected, PGCommitStatement.class);
+        testParseSql(sql, expected, expected, SQLCommitStatement.class);
     }
 }

@@ -637,24 +637,13 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public void endVisit(PGBeginStatement x) {
+    public void endVisit(PGStartTransactionStatement x) {
         
     }
 
     @Override
-    public boolean visit(PGBeginStatement x) {
-        print0(x.isBegin ? "BEGIN" : "START TRANSACTION");
-        return false;
-    }
-
-    @Override
-    public void endVisit(PGCommitStatement x) {
-        
-    }
-
-    @Override
-    public boolean visit(PGCommitStatement x) {
-        print0(ucase ? "COMMIT" : "commit");
+    public boolean visit(PGStartTransactionStatement x) {
+        print0(ucase ? "START TRANSACTION" : "start transaction");
         return false;
     }
 

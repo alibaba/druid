@@ -52,8 +52,8 @@ public class MySqlParameterizedOutputVisitorTest_10 extends TestCase {
             stmt.accept(visitor);
         }
         System.out.println(visitor.getParameters());
-      /*  Assert.assertEquals(2, visitor.getParameters().size());
-        Assert.assertEquals(3, visitor.getParameters().get(0));
-        Assert.assertEquals(4, visitor.getParameters().get(1));*/
+      /*  Assert.assertEquals(2, visitor.getArguments().size());
+        Assert.assertEquals(3, visitor.getArguments().get(0));
+        Assert.assertEquals(4, visitor.getArguments().get(1));*/
     }
 }

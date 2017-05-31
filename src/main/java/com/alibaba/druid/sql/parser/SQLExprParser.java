@@ -2097,6 +2097,10 @@ public class SQLExprParser extends SQLParser {
         item.setTarget(var);
         if (lexer.token() == Token.COLONEQ) {
             lexer.nextToken();
+        } else if (lexer.token() == Token.TRUE || identifierEquals("TRUE")) {
+            lexer.nextToken();
+            item.setValue(new SQLBooleanExpr(true));
+            return item;
         } else {
             accept(Token.EQ);
         }

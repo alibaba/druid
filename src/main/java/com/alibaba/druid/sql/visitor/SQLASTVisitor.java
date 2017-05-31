@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
 
 public interface SQLASTVisitor {
 
@@ -717,4 +718,12 @@ public interface SQLASTVisitor {
     boolean visit(SQLReturnStatement x);
 
     void endVisit(SQLReturnStatement x);
+
+    boolean visit(SQLArgument x);
+
+    void endVisit(SQLArgument x);
+
+    boolean visit(SQLCommitStatement x);
+
+    void endVisit(SQLCommitStatement x);
 }

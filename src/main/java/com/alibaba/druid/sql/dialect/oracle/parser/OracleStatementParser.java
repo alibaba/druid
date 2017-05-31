@@ -402,7 +402,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 if (identifierEquals("WORK")) {
                     lexer.nextToken();
                 }
-                OracleCommitStatement stmt = new OracleCommitStatement();
+                SQLCommitStatement stmt = new SQLCommitStatement();
                 stmt.setParent(parent);
 
                 if (identifierEquals("WRITE")) {
@@ -623,9 +623,54 @@ public class OracleStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             OracleExecuteImmediateStatement stmt = new OracleExecuteImmediateStatement();
-            String dyanmiacSql = lexer.stringVal();
-            accept(Token.LITERAL_CHARS);
+
+            SQLExpr dyanmiacSql = this.exprParser.primary();
             stmt.setDynamicSql(dyanmiacSql);
+
+            if (lexer.token() == Token.INTO) {
+                lexer.nextToken();
+
+                this.exprParser.exprList(stmt.getInto(), stmt);
+            }
+
+            if (lexer.token() == Token.USING) {
+                lexer.nextToken();
+
+                for (;;) {
+                    SQLArgument arg = new SQLArgument();
+
+                    if (lexer.token() == Token.IN) {
+                        lexer.nextToken();
+                        if (lexer.token() == Token.OUT) {
+                            lexer.nextToken();
+                            arg.setType(SQLParameter.ParameterType.INOUT);
+                        } else {
+                            arg.setType(SQLParameter.ParameterType.IN);
+                        }
+                    } else if (lexer.token() == Token.OUT) {
+                        lexer.nextToken();
+                        arg.setType(SQLParameter.ParameterType.OUT);
+                    }
+
+                    arg.setExpr(this.exprParser.primary());
+                    arg.setParent(stmt);
+                    stmt.getArguments().add(arg);
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+            }
+
+            if (lexer.token() == Token.RETURNING) {
+                lexer.nextToken();
+                accept(Token.INTO);
+
+                this.exprParser.exprList(stmt.getReturnInto(), stmt);
+            }
+
             return stmt;
         }
         throw new ParserException("TODO : " + lexer.info());
@@ -1457,7 +1502,7 @@ public class OracleStatementParser extends SQLStatementParser {
             SQLParameter parameter = new SQLParameter();
 
             SQLName name;
-            SQLDataType dataType;
+            SQLDataType dataType = null;
             if (lexer.token() == Token.CURSOR) {
                 lexer.nextToken();
 
@@ -1557,7 +1602,8 @@ public class OracleStatementParser extends SQLStatementParser {
             parameter.setDataType(dataType);
 
             parameters.add(parameter);
-            if (lexer.token() == Token.COMMA || lexer.token() == Token.SEMI) {
+            Token token = lexer.token();
+            if (token == Token.COMMA || token == Token.SEMI) {
                 lexer.nextToken();
             }
 

@@ -54,7 +54,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDat
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
@@ -185,7 +185,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleGotoStatement().accept(adapter);
         new OracleLabelStatement().accept(adapter);
         new SQLParameter().accept(adapter);
-        new OracleCommitStatement().accept(adapter);
+        new SQLCommitStatement().accept(adapter);
         new OracleAlterTriggerStatement().accept(adapter);
         new OracleAlterSynonymStatement().accept(adapter);
         new AsOfSnapshotClause().accept(adapter);

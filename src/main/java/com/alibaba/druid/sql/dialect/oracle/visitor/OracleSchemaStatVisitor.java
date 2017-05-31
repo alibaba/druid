@@ -24,24 +24,13 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCheck;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -86,7 +75,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot.Item;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.CheckOption;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.ReadOnly;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
@@ -280,19 +268,24 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public boolean visit(SQLIdentifierExpr x) {
-        if ("ROWNUM".equalsIgnoreCase(x.getName())) {
+        String name = x.getName();
+        if ("ROWNUM".equalsIgnoreCase(name)) {
             return false;
         }
 
-        if ("SYSDATE".equalsIgnoreCase(x.getName())) {
+        if ("SYSDATE".equalsIgnoreCase(name)) {
             return false;
         }
 
-        if ("+".equalsIgnoreCase(x.getName())) {
+        if ("+".equalsIgnoreCase(name)) {
             return false;
         }
 
-        if ("LEVEL".equals(x.getName())) {
+        if ("LEVEL".equals(name)) {
+            return false;
+        }
+
+        if ("SQLCODE".equalsIgnoreCase(name)) {
             return false;
         }
 
@@ -910,7 +903,23 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement.Item x) {
-        return true;
+        SQLExpr when = x.getWhen();
+        if (when instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr ident = (SQLIdentifierExpr) when;
+            if (ident.getName().equalsIgnoreCase("OTHERS")) {
+                // skip
+            } else {
+                this.visit(ident);
+            }
+        } else if (when != null) {
+            when.accept(this);
+        }
+
+        for (SQLStatement stmt : x.getStatements()) {
+            stmt.accept(this);
+        }
+
+        return false;
     }
 
     @Override
@@ -1160,16 +1169,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleLabelStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleCommitStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleCommitStatement x) {
 
     }
 
@@ -1453,11 +1452,48 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleExecuteImmediateStatement x) {
-        String sql = x.getDynamicSql().getText();
+        SQLExpr dynamicSql = x.getDynamicSql();
 
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, getDbType());
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(this);
+        String sql = null;
+
+        if (dynamicSql instanceof SQLIdentifierExpr) {
+            String varName = ((SQLIdentifierExpr) dynamicSql).getName();
+
+            SQLExpr valueExpr = null;
+            if (x.getParent() instanceof SQLBlockStatement) {
+                List<SQLStatement> statementList = ((SQLBlockStatement) x.getParent()).getStatementList();
+                for (int i = 0, size = statementList.size(); i < size; ++i) {
+                    SQLStatement stmt = statementList.get(i);
+                    if (stmt == x) {
+                        break;
+                    }
+
+                    if (stmt instanceof SQLSetStatement) {
+                        List<SQLAssignItem> items = ((SQLSetStatement) stmt).getItems();
+                        for (SQLAssignItem item : items) {
+                            if (item.getTarget().equals(dynamicSql)) {
+                                valueExpr = item.getValue();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (valueExpr != null) {
+                dynamicSql = valueExpr;
+            }
+        }
+
+        if (dynamicSql instanceof SQLCharExpr) {
+            sql = ((SQLCharExpr) dynamicSql).getText();
+        }
+
+        if (sql != null) {
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, getDbType());
+            for (SQLStatement stmt : stmtList) {
+                stmt.accept(this);
+            }
         }
         return false;
     }

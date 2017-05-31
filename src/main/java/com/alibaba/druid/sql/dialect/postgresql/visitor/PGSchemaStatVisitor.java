@@ -396,22 +396,12 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(PGBeginStatement x) {
+    public void endVisit(PGStartTransactionStatement x) {
         
     }
 
     @Override
-    public boolean visit(PGBeginStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(PGCommitStatement x) {
-        
-    }
-
-    @Override
-    public boolean visit(PGCommitStatement x) {
+    public boolean visit(PGStartTransactionStatement x) {
         return false;
     }
 

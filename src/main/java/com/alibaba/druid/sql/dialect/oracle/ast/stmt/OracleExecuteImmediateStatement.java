@@ -15,13 +15,23 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLArgument;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OracleExecuteImmediateStatement extends OracleStatementImpl {
 
-    private SQLCharExpr dynamicSql;
+    private SQLExpr dynamicSql;
+
+    private final List<SQLArgument> arguments = new ArrayList<SQLArgument>();
+
+    private final List<SQLExpr> into = new ArrayList<SQLExpr>();
+
+    private final List<SQLExpr> returnInto = new ArrayList<SQLExpr>();
 
     public OracleExecuteImmediateStatement(){
     }
@@ -38,11 +48,11 @@ public class OracleExecuteImmediateStatement extends OracleStatementImpl {
         visitor.endVisit(this);
     }
 
-    public SQLCharExpr getDynamicSql() {
+    public SQLExpr getDynamicSql() {
         return dynamicSql;
     }
 
-    public void setDynamicSql(SQLCharExpr dynamicSql) {
+    public void setDynamicSql(SQLExpr dynamicSql) {
         if (dynamicSql != null) {
             dynamicSql.setParent(this);
         }
@@ -51,5 +61,17 @@ public class OracleExecuteImmediateStatement extends OracleStatementImpl {
 
     public void setDynamicSql(String dynamicSql) {
         this.setDynamicSql(new SQLCharExpr(dynamicSql));
+    }
+
+    public List<SQLArgument> getArguments() {
+        return arguments;
+    }
+
+    public List<SQLExpr> getInto() {
+        return into;
+    }
+
+    public List<SQLExpr> getReturnInto() {
+        return returnInto;
     }
 }

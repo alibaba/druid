@@ -58,7 +58,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
@@ -1219,38 +1218,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.isWork()) {
             print0(ucase ? " WORK" : " work");
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlCommitStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlCommitStatement x) {
-        print0(ucase ? "COMMIT" : "commit");
-
-        if (x.isWork()) {
-            print0(ucase ? " WORK" : " work");
-        }
-
-        if (x.getChain() != null) {
-            if (x.getChain().booleanValue()) {
-                print0(ucase ? " AND CHAIN" : " and chain");
-            } else {
-                print0(ucase ? " AND NO CHAIN" : " and no chain");
-            }
-        }
-
-        if (x.getRelease() != null) {
-            if (x.getRelease().booleanValue()) {
-                print0(ucase ? " AND RELEASE" : " and release");
-            } else {
-                print0(ucase ? " AND NO RELEASE" : " and no release");
-            }
         }
 
         return false;

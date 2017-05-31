@@ -20,11 +20,8 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-// 暂时不支持END命令
-public class PGCommitStatement extends SQLStatementImpl implements PGSQLStatement {
-
-    // COMMIT
-    public PGCommitStatement() {
+public class PGStartTransactionStatement extends SQLStatementImpl implements PGSQLStatement {
+    public PGStartTransactionStatement() {
         super(JdbcConstants.POSTGRESQL);
     }
 

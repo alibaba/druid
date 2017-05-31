@@ -72,7 +72,7 @@ public class MySqlCreateProcedureTest11 extends MysqlTest {
         
         assertEquals(3, visitor.getTables().size());
         assertEquals(3, visitor.getColumns().size());
-        assertEquals(2, visitor.getConditions().size());
+        assertEquals(0, visitor.getConditions().size());
     }
 
     

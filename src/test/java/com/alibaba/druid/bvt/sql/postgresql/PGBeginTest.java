@@ -16,17 +16,13 @@
 package com.alibaba.druid.bvt.sql.postgresql;
 
 import com.alibaba.druid.sql.PGTest;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGBeginStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGStartTransactionStatement;
 
 public class PGBeginTest extends PGTest {
     public void testBegin() throws Exception {
-        String sql = "begin;";
-        String expected = "BEGIN";
-        testParseSql(sql, expected, expected, PGBeginStatement.class);
-
-        sql = "start transaction;";
-        expected = "START TRANSACTION";
-        testParseSql(sql, expected, expected, PGBeginStatement.class);
+        String sql = "start transaction;";
+        String expected = "START TRANSACTION";
+        testParseSql(sql, expected, expected, PGStartTransactionStatement.class);
     }
 
 }

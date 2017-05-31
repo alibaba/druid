@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
@@ -1629,6 +1630,27 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLReturnStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLArgument x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLArgument x) {
+
+    }
+
+
+    @Override
+    public boolean visit(SQLCommitStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCommitStatement x) {
 
     }
 }

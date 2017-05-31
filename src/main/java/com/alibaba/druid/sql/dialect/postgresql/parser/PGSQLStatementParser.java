@@ -39,14 +39,12 @@ import com.alibaba.druid.sql.parser.Token;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class PGSQLStatementParser extends SQLStatementParser {
     public static final String TIME_ZONE = "TIME ZONE";
     public static final String TIME = "TIME";
     public static final String LOCAL = "LOCAL";
-    public static final String TRANSACTION = "TRANSACTION";
-    
+
     public PGSQLStatementParser(PGExprParser parser) {
         super(parser);
     }
@@ -222,11 +220,14 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         switch (lexer.token()) {
-        case BEGIN:
-            statementList.add(handleBegin());
+        case START: {
+            lexer.nextToken();
+            acceptIdentifier("TRANSACTION");
+            PGStartTransactionStatement stmt = new PGStartTransactionStatement();
+            statementList.add(stmt);
+            lexer.nextToken();
             return true;
-        case START:
-            return handleStart(statementList);
+        }
         case WITH:
             statementList.add(parseWith());
             return true;
@@ -235,21 +236,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         }
     }
 
-    private SQLStatement handleBegin() {
-        SQLStatement statement = new PGBeginStatement(true);
-        lexer.nextToken();
-        return statement;
-    }
 
-    private boolean handleStart(List<SQLStatement> statementList) {
-        lexer.nextToken();
-        if (lexer.token() == Token.IDENTIFIER && TRANSACTION.equalsIgnoreCase(lexer.stringVal())) {
-            statementList.add(new PGBeginStatement(false));
-            lexer.nextToken();
-            return true;
-        }
-        return false;
-    }
     
     public PGWithClause parseWithClause() {
         lexer.nextToken();
@@ -417,9 +404,10 @@ public class PGSQLStatementParser extends SQLStatementParser {
     
     @Override
     public SQLStatement parseCommit() {
-        SQLStatement statment = new PGCommitStatement();
+        SQLCommitStatement stmt = new SQLCommitStatement();
+        stmt.setDbType(this.dbType);
         lexer.nextToken();
-        return statment;
+        return stmt;
     }
     
     private SQLStatement handleTimeZoneSet(String range) {
