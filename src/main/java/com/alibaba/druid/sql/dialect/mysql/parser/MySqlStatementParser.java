@@ -79,7 +79,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
@@ -1644,10 +1643,10 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     @Override
-    public MySqlRollbackStatement parseRollback() {
+    public SQLRollbackStatement parseRollback() {
         acceptIdentifier("ROLLBACK");
 
-        MySqlRollbackStatement stmt = new MySqlRollbackStatement();
+        SQLRollbackStatement stmt = new SQLRollbackStatement();
 
         if (identifierEquals("WORK")) {
             lexer.nextToken();

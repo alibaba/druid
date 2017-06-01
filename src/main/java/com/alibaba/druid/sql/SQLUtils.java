@@ -23,8 +23,7 @@ import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
@@ -735,6 +734,60 @@ public class SQLUtils {
         }
 
         return buf.hashCode();
+    }
+
+    public static SQLExpr not(SQLExpr expr) {
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
+            SQLBinaryOperator op = binaryOpExpr.getOperator();
+
+            SQLBinaryOperator notOp = null;
+
+            switch (op){
+                case Equality:
+                    notOp = SQLBinaryOperator.LessThanOrEqualOrGreaterThan;
+                    break;
+                case LessThanOrEqualOrGreaterThan:
+                    notOp = SQLBinaryOperator.Equality;
+                    break;
+                case LessThan:
+                    notOp = SQLBinaryOperator.GreaterThanOrEqual;
+                    break;
+                case LessThanOrEqual:
+                    notOp = SQLBinaryOperator.GreaterThan;
+                    break;
+                case GreaterThan:
+                    notOp = SQLBinaryOperator.LessThanOrEqual;
+                    break;
+                case GreaterThanOrEqual:
+                    notOp = SQLBinaryOperator.LessThan;
+                    break;
+                case Is:
+                    notOp = SQLBinaryOperator.IsNot;
+                    break;
+                case IsNot:
+                    notOp = SQLBinaryOperator.Is;
+                    break;
+                default:
+                    break;
+            }
+
+
+            if (notOp != null) {
+                return new SQLBinaryOpExpr(binaryOpExpr.getLeft(), notOp, binaryOpExpr.getRight());
+            }
+        }
+
+        if (expr instanceof SQLInListExpr) {
+            SQLInListExpr inListExpr = (SQLInListExpr) expr;
+
+            SQLInListExpr newInListExpr = new SQLInListExpr(inListExpr);
+            newInListExpr.getTargetList().addAll(inListExpr.getTargetList());
+            newInListExpr.setNot(!inListExpr.isNot());
+            return newInListExpr;
+        }
+
+        return new SQLUnaryExpr(SQLUnaryOperator.Not, expr);
     }
 }
 

@@ -34,7 +34,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
@@ -107,7 +106,6 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlLoadXmlStatement().accept(adapter);
         new MySqlReplaceStatement().accept(adapter);
         new SQLStartTransactionStatement().accept(adapter);
-        new MySqlRollbackStatement().accept(adapter);
         new MySqlShowColumnsStatement().accept(adapter);
         new MySqlShowDatabasesStatement().accept(adapter);
         new MySqlShowWarningsStatement().accept(adapter);

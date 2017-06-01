@@ -68,7 +68,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
@@ -189,10 +188,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlReplaceStatement x);
 
     boolean visit(MySqlReplaceStatement x);
-
-    void endVisit(MySqlRollbackStatement x);
-
-    boolean visit(MySqlRollbackStatement x);
 
     void endVisit(MySqlShowColumnsStatement x);
 

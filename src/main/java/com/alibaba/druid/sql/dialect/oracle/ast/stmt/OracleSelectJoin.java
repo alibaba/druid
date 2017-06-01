@@ -91,6 +91,25 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        OracleSelectJoin that = (OracleSelectJoin) o;
+
+        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) return false;
+        return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pivot != null ? pivot.hashCode() : 0;
+        result = 31 * result + (flashback != null ? flashback.hashCode() : 0);
+        return result;
+    }
+
     public String toString () {
         return SQLUtils.toOracleString(this);
     }
