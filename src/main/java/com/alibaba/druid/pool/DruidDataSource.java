@@ -2001,6 +2001,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // addLast
                 lock.lock();
                 try {
+                    if (closed) {
+                        return;
+                    }
+
                     boolean emptyWait = true;
 
                     if (createError != null && poolingCount == 0) {
