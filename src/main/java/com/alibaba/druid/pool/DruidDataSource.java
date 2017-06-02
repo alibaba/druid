@@ -139,10 +139,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private DruidConnectionHolder[]          keepAliveConnections;
 
     // threads
-    private ScheduledFuture<?>               destroySchedulerFuture;
+    private volatile ScheduledFuture<?>      destroySchedulerFuture;
     private DestroyTask                      destroyTask;
 
-    private Future<?>                        createSchedulerFuture;
+    private volatile Future<?>               createSchedulerFuture;
 
     private CreateConnectionThread           createConnectionThread;
     private DestroyConnectionThread          destroyConnectionThread;
