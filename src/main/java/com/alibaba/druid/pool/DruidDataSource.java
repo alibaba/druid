@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -141,7 +142,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private ScheduledFuture<?>               destroySchedulerFuture;
     private DestroyTask                      destroyTask;
 
-    private ScheduledFuture<?>               createSchedulerFuture;
+    private Future<?>                        createSchedulerFuture;
 
     private CreateConnectionThread           createConnectionThread;
     private DestroyConnectionThread          destroyConnectionThread;
@@ -803,7 +804,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     for (int i = 0; i < minIdle; ++i) {
                         createTaskCount++;
                         CreateConnectionTask task = new CreateConnectionTask();
-                        createScheduler.submit(task);
+                        this.createSchedulerFuture = createScheduler.submit(task);
                     }
                 } else {
                     this.emptySignal();
@@ -3134,7 +3135,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         createTaskCount++;
         CreateConnectionTask task = new CreateConnectionTask();
-        createScheduler.submit(task);
+        this.createSchedulerFuture = createScheduler.submit(task);
     }
 
     @Override
