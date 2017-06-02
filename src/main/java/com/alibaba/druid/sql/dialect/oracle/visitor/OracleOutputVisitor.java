@@ -243,14 +243,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(SQLSelect x) {
-        if (x instanceof OracleSelect) {
-            return visit((OracleSelect) x);
-        }
-
-        return super.visit(x);
-    }
-
-    public boolean visit(OracleSelect x) {
         if (x.getWithSubQuery() != null) {
             x.getWithSubQuery().accept(this);
             println();
@@ -896,11 +888,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleBinaryDoubleExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelect x) {
 
     }
 

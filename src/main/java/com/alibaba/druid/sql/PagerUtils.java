@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;

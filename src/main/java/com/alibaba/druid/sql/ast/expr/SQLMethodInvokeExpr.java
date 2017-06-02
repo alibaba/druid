@@ -144,4 +144,24 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
         result = 31 * result + (from != null ? from.hashCode() : 0);
         return result;
     }
+
+    public SQLMethodInvokeExpr clone() {
+        SQLMethodInvokeExpr x = new SQLMethodInvokeExpr();
+
+        x.methodName = methodName;
+
+        if (owner != null) {
+            x.setOwner(owner.clone());
+        }
+
+        for (SQLExpr param : parameters) {
+            x.addParameter(param.clone());
+        }
+
+        if (from != null) {
+            x.setFrom(from.clone());
+        }
+
+        return x;
+    }
 }

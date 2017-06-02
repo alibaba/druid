@@ -35,10 +35,7 @@ import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
-import com.alibaba.druid.sql.ast.statement.SQLCheck;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLUnique;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
@@ -66,7 +63,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint.Initially;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -426,16 +422,16 @@ public class OracleExprParser extends SQLExprParser {
                 return primaryRest(sqlExpr);
                 
            case CURSOR:
-                    lexer.nextToken();
-                    accept(Token.LPAREN);
-                    
-                    OracleSelect select = createSelectParser().select();
-                    OracleCursorExpr cursorExpr = new OracleCursorExpr(select);
-                    
-                    accept(Token.RPAREN);
-                    
-                    sqlExpr = cursorExpr;
-                    return  primaryRest(sqlExpr);
+                lexer.nextToken();
+                accept(Token.LPAREN);
+
+                SQLSelect select = createSelectParser().select();
+                OracleCursorExpr cursorExpr = new OracleCursorExpr(select);
+
+                accept(Token.RPAREN);
+
+                sqlExpr = cursorExpr;
+                return  primaryRest(sqlExpr);
            case MODEL:
            case PCTFREE:
            case INITRANS:

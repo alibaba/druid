@@ -130,6 +130,14 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         item.setParent(this);
     }
 
+    public void addSelectItem(SQLExpr expr) {
+        this.addSelectItem(new SQLSelectItem(expr));
+    }
+
+    public void addSelectItem(SQLExpr expr, String alias) {
+        this.addSelectItem(new SQLSelectItem(expr, alias));
+    }
+
     public SQLTableSource getFrom() {
         return this.from;
     }
@@ -308,4 +316,64 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return true;
     }
 
+    public SQLSelectQueryBlock clone() {
+        SQLSelectQueryBlock x = new SQLSelectQueryBlock();
+        clone(x);
+        return x;
+    }
+
+    public void clone(SQLSelectQueryBlock x) {
+
+        x.distionOption = distionOption;
+
+        for (SQLSelectItem item : this.selectList) {
+            x.addSelectItem(item.clone());
+        }
+
+        if (from != null) {
+            x.setFrom(from.clone());
+        }
+
+        if (into != null) {
+            x.setInto(into.clone());
+        }
+
+        if (where != null) {
+            x.setWhere(where.clone());
+        }
+
+        if (startWith != null) {
+            x.setStartWith(startWith.clone());
+        }
+
+        if (connectBy != null) {
+            x.setConnectBy(connectBy.clone());
+        }
+
+        x.prior = prior;
+        x.noCycle = noCycle;
+
+        if (orderBySiblings != null) {
+            x.setOrderBySiblings(orderBySiblings.clone());
+        }
+
+        if (groupBy != null) {
+            x.setGroupBy(groupBy.clone());
+        }
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        x.parenthesized = parenthesized;
+        x.forUpdate = forUpdate;
+        x.noWait = noWait;
+        if (waitTime != null) {
+            x.setWaitTime(waitTime.clone());
+        }
+
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+    }
 }

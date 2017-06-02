@@ -96,4 +96,8 @@ public class SQLOrderBy extends SQLObjectImpl {
     protected SQLSelectOrderByItem createItem() {
         return new SQLSelectOrderByItem();
     }
+
+    public SQLOrderBy clone() {
+        throw new UnsupportedOperationException();
+    }
 }

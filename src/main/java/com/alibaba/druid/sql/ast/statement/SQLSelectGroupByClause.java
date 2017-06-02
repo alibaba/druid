@@ -81,4 +81,8 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
             this.items.add(sqlExpr);
         }
     }
+
+    public SQLSelectGroupByClause clone() {
+        throw new UnsupportedOperationException();
+    }
 }

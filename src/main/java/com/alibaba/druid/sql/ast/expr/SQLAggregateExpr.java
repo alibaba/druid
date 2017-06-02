@@ -176,4 +176,29 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+    public SQLAggregateExpr clone() {
+        SQLAggregateExpr x = new SQLAggregateExpr(methodName);
+
+        x.option = option;
+
+        for (SQLExpr arg : arguments) {
+            x.addArgument(arg.clone());
+        }
+
+        if (keep != null) {
+            x.setKeep(keep.clone());
+        }
+
+        if (over != null) {
+            x.setOver(over.clone());
+        }
+
+        if (withinGroup != null) {
+            x.setWithinGroup(withinGroup.clone());
+        }
+
+        x.ignoreNulls = ignoreNulls;
+
+        return x;
+    }
 }

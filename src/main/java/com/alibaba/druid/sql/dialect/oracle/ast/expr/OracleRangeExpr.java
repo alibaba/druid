@@ -58,4 +58,18 @@ public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
         this.upBound = upBound;
     }
 
+
+    public OracleRangeExpr clone() {
+        OracleRangeExpr x = new OracleRangeExpr();
+
+        if (lowBound != null) {
+            x.setLowBound(lowBound.clone());
+        }
+
+        if (upBound != null) {
+            x.setUpBound(upBound.clone());
+        }
+
+        return x;
+    }
 }

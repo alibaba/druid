@@ -30,11 +30,11 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement.DeferredSegmentCreation;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSupplementalIdKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSupplementalLogGrp;
 import com.alibaba.druid.sql.parser.*;
@@ -211,7 +211,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
 
-            OracleSelect select = new OracleSelectParser(exprParser).select();
+            SQLSelect select = new OracleSelectParser(exprParser).select();
             stmt.setSelect(select);
         }
 

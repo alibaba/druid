@@ -178,14 +178,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         return false;
     }
 
-    public void endVisit(OracleSelect x) {
-        endVisit((SQLSelect) x);
-    }
-
-    public boolean visit(OracleSelect x) {
-        return visit((SQLSelect) x);
-    }
-
     public void endVisit(SQLSelect x) {
         if (x.getQuery() != null) {
             String table = (String) x.getQuery().getAttribute(ATTR_TABLE);

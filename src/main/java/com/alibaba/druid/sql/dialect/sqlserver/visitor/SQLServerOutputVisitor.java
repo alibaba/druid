@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
@@ -417,13 +416,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
     }
     
-    @Override
-    public void endVisit(SQLServerSelect x) {
-        
-    }
-
-    @Override
-    public boolean visit(SQLServerSelect x) {
+    public boolean visit(SQLSelect x) {
         super.visit(x);
         if (x.isForBrowse()) {
             println();

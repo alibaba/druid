@@ -45,6 +45,18 @@ public class OracleAnalytic extends SQLOver implements OracleExpr {
         return this.windowing;
     }
 
+    public OracleAnalytic clone() {
+        OracleAnalytic x = new OracleAnalytic();
+
+        cloneTo(x);
+
+        if (windowing != null) {
+            x.setWindowing(windowing.clone());
+        }
+
+        return x;
+    }
+
     public void setWindowing(OracleAnalyticWindowing windowing) {
         this.windowing = windowing;
     }

@@ -144,4 +144,13 @@ public class SQLSelectItem extends SQLObjectImpl {
         this.connectByRoot = connectByRoot;
     }
 
+    public SQLSelectItem clone() {
+        SQLSelectItem x = new SQLSelectItem();
+        x.alias = alias;
+        if (expr != null) {
+            x.expr = expr.clone();
+        }
+        x.connectByRoot = connectByRoot;
+        return x;
+    }
 }

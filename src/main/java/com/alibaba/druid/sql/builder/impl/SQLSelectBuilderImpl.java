@@ -37,10 +37,8 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.util.JdbcConstants;
@@ -323,13 +321,6 @@ public class SQLSelectBuilderImpl implements SQLSelectBuilder {
     }
 
     protected SQLSelect createSelect() {
-        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
-            return new SQLServerSelect();
-        }
-        if (JdbcConstants.ORACLE.equals(dbType)) {
-            return new OracleSelect();
-        }
-
         return new SQLSelect();
     }
 

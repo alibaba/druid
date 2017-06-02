@@ -28,12 +28,38 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
-    private final List<SQLCommentHint>         hints = new ArrayList<SQLCommentHint>(1);
+    private final List<SQLCommentHint> hints       = new ArrayList<SQLCommentHint>(1);
 
-    private ModelClause                        modelClause;
+    private ModelClause                modelClause;
 
-    private final List<SQLExpr> forUpdateOf         = new ArrayList<SQLExpr>(1);
-    private boolean             skipLocked = false;
+    private final List<SQLExpr>        forUpdateOf = new ArrayList<SQLExpr>(1);
+    private boolean                    skipLocked  = false;
+
+    public OracleSelectQueryBlock clone() {
+        OracleSelectQueryBlock x = new OracleSelectQueryBlock();
+
+        super.clone(x);
+
+        for (SQLCommentHint hint : hints) {
+            SQLCommentHint hint1 = hint.clone();
+            hint1.setParent(x);
+            x.getHints().add(hint1);
+        }
+
+        if (modelClause != null) {
+            x.setModelClause(modelClause.clone());
+        }
+
+        for (SQLExpr item : forUpdateOf) {
+            SQLExpr item1 = item.clone();
+            item1.setParent(x);
+            forUpdateOf.add(item1);
+        }
+
+        x.skipLocked = skipLocked;
+
+        return x;
+    }
 
     public OracleSelectQueryBlock(){
 

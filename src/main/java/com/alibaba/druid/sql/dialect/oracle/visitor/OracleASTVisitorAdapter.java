@@ -65,13 +65,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements OracleASTVisitor {
 
-    public boolean visit(OracleSelect x) {
-        return true;
-    }
-
-    public void endVisit(OracleSelect x) {
-    }
-
     @Override
     public void endVisit(OraclePLSQLCommitStatement astNode) {
 

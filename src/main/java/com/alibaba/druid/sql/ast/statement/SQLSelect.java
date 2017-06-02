@@ -19,11 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelect extends SQLObjectImpl {
@@ -32,7 +28,16 @@ public class SQLSelect extends SQLObjectImpl {
     protected SQLSelectQuery        query;
     protected SQLOrderBy            orderBy;
 
-    protected List<SQLHint>           hints;
+    protected List<SQLHint>         hints;
+
+    protected SQLObject             restriction;
+
+    protected boolean               forBrowse;
+    protected List<String>          forXmlOptions = new ArrayList<String>(4);
+    protected SQLExpr               xmlPath;
+
+    protected SQLExpr                rowCount;
+    protected SQLExpr                offset;
 
     public SQLSelect(){
 
@@ -86,8 +91,11 @@ public class SQLSelect extends SQLObjectImpl {
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.query);
+            acceptChild(visitor, this.restriction);
             acceptChild(visitor, this.orderBy);
             acceptChild(visitor, this.hints);
+            acceptChild(visitor, this.offset);
+            acceptChild(visitor, this.rowCount);
         }
 
         visitor.endVisit(this);
@@ -135,13 +143,85 @@ public class SQLSelect extends SQLObjectImpl {
     }
 
     public SQLSelect clone() {
-        SQLSelect clone = new SQLSelect();
+        SQLSelect x = new SQLSelect();
 
-        clone.withSubQuery = this.withSubQuery;
-        clone.query = this.query;
-        clone.orderBy = this.orderBy;
-        clone.hints = this.hints;
+        x.withSubQuery = this.withSubQuery;
+        x.query = this.query;
+        if (orderBy != null) {
+            x.setOrderBy(this.orderBy);
+        }
+        if (restriction != null) {
+            x.setRestriction(restriction.clone());
+        }
 
-        return clone;
+        if (this.hints != null) {
+            for (SQLHint hint : this.hints) {
+                x.hints.add(hint);
+            }
+        }
+
+        return x;
     }
+
+    public SQLObject getRestriction() {
+        return this.restriction;
+    }
+
+    public void setRestriction(SQLObject restriction) {
+        if (restriction != null) {
+            restriction.setParent(this);
+        }
+        this.restriction = restriction;
+    }
+
+    public boolean isForBrowse() {
+        return forBrowse;
+    }
+
+    public void setForBrowse(boolean forBrowse) {
+        this.forBrowse = forBrowse;
+    }
+
+    public List<String> getForXmlOptions() {
+        return forXmlOptions;
+    }
+
+    public void setForXmlOptions(List<String> forXmlOptions) {
+        this.forXmlOptions = forXmlOptions;
+    }
+
+    public SQLExpr getRowCount() {
+        return rowCount;
+    }
+
+    public void setRowCount(SQLExpr rowCount) {
+        if (rowCount != null) {
+            rowCount.setParent(this);
+        }
+
+        this.rowCount = rowCount;
+    }
+
+    public SQLExpr getOffset() {
+        return offset;
+    }
+
+    public void setOffset(SQLExpr offset) {
+        if (offset != null) {
+            offset.setParent(this);
+        }
+        this.offset = offset;
+    }
+
+    public SQLExpr getXmlPath() {
+        return xmlPath;
+    }
+
+    public void setXmlPath(SQLExpr xmlPath) {
+        if (xmlPath != null) {
+            xmlPath.setParent(this);
+        }
+        this.xmlPath = xmlPath;
+    }
+
 }

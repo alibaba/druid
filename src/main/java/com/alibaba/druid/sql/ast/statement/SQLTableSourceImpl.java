@@ -62,4 +62,9 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     public void setHints(List<SQLHint> hints) {
         this.hints = hints;
     }
+
+    public SQLTableSource clone() {
+        throw new UnsupportedOperationException();
+    }
+
 }

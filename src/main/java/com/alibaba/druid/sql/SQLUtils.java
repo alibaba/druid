@@ -745,7 +745,7 @@ public class SQLUtils {
 
             switch (op){
                 case Equality:
-                    notOp = SQLBinaryOperator.LessThanOrEqualOrGreaterThan;
+                    notOp = SQLBinaryOperator.LessThanOrGreater;
                     break;
                 case LessThanOrEqualOrGreaterThan:
                     notOp = SQLBinaryOperator.Equality;

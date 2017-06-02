@@ -208,8 +208,45 @@ public class SQLOver extends SQLObjectImpl {
         return result;
     }
 
-    public SQLExpr clone() {
-        throw new UnsupportedOperationException();
+    public void cloneTo(SQLOver x) {
+        for (SQLExpr item : partitionBy) {
+            SQLExpr item1 = item.clone();
+            item1.setParent(x);
+            x.partitionBy.add(item);
+        }
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        if (of != null) {
+            x.setOf(of.clone());
+        }
+
+        if (windowing != null) {
+            x.setWindowing(windowing.clone());
+        }
+        x.windowingType = windowingType;
+        x.windowingPreceding = windowingPreceding;
+        x.windowingFollowing = windowingFollowing;
+
+        if (windowingBetweenBegin != null) {
+            x.setWindowingBetweenBegin(windowingBetweenBegin.clone());
+        }
+        x.windowingBetweenBeginPreceding = windowingBetweenBeginPreceding;
+        x.windowingBetweenBeginFollowing = windowingBetweenBeginFollowing;
+
+        if (windowingBetweenEnd != null) {
+            x.setWindowingBetweenEnd(windowingBetweenEnd.clone());
+        }
+        x.windowingBetweenEndPreceding = windowingBetweenEndPreceding;
+        x.windowingBetweenEndFollowing = windowingBetweenEndFollowing;
+    }
+
+    public SQLOver clone() {
+        SQLOver x = new SQLOver();
+        cloneTo(x);
+        return x;
     }
 
     public static enum WindowingType {

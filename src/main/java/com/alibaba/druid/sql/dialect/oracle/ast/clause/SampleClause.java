@@ -63,4 +63,21 @@ public class SampleClause extends OracleSQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public SampleClause clone() {
+        SampleClause x = new SampleClause();
+
+        x.block = block;
+
+        for (SQLExpr item : percent) {
+            SQLExpr item1 = item.clone();
+            item1.setParent(x);
+            x.percent.add(item1);
+        }
+
+        if (seedValue != null) {
+            x.setSeedValue(seedValue.clone());
+        }
+
+        return x;
+    }
 }

@@ -33,7 +33,7 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
 
     public abstract void accept0(OracleASTVisitor visitor);
 
-    public SQLExpr clone() {
+    public OracleSQLObject clone() {
         throw new UnsupportedOperationException();
     }
 }

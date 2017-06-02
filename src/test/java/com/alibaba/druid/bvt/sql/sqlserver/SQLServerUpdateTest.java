@@ -40,16 +40,17 @@ public class SQLServerUpdateTest extends TestCase {
                      "     ) b " + //
                      "where a.FId = b.FId and a.FId = ?";
 
-        String expect = "UPDATE reg_student_charge_item" +
-        		"\nSET FAmountReceived = b.amount" +
-        		"\nFROM reg_student_charge_item a, (SELECT a.FId, CASE WHEN SUM(b.FChargeAmount) IS NULL THEN 0 ELSE SUM(b.FChargeAmount) END AS amount" +
-        		"\n\t\tFROM reg_student_charge_item a" +
-        		"\n\t\t\tLEFT JOIN reg_student_charge_daybook b ON a.FId = b.FChargeItemId" +
-        		"\n\t\tWHERE a.FId = ?" +
-        		"\n\t\tGROUP BY a.FId" +
-        		"\n\t\t) b" +
-        		"\nWHERE a.FId = b.FId" +
-        		"\n\tAND a.FId = ?";
+        String expect = "UPDATE reg_student_charge_item\n" +
+                "SET FAmountReceived = b.amount\n" +
+                "FROM reg_student_charge_item a, (\n" +
+                "\t\tSELECT a.FId, CASE WHEN SUM(b.FChargeAmount) IS NULL THEN 0 ELSE SUM(b.FChargeAmount) END AS amount\n" +
+                "\t\tFROM reg_student_charge_item a\n" +
+                "\t\t\tLEFT JOIN reg_student_charge_daybook b ON a.FId = b.FChargeItemId\n" +
+                "\t\tWHERE a.FId = ?\n" +
+                "\t\tGROUP BY a.FId\n" +
+                "\t) b\n" +
+                "WHERE a.FId = b.FId\n" +
+                "\tAND a.FId = ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

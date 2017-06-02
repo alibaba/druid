@@ -57,7 +57,7 @@ public class OracleAnalyticWindowing extends SQLObjectImpl implements OracleExpr
         this.type = type;
     }
 
-    public SQLExpr clone() {
+    public OracleAnalyticWindowing clone() {
         OracleAnalyticWindowing x = new OracleAnalyticWindowing();
         x.type = type;
         if (expr != null) {

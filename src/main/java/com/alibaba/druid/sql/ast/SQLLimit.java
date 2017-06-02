@@ -70,4 +70,8 @@ public class SQLLimit extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public SQLLimit clone() {
+        throw new UnsupportedOperationException();
+    }
+
 }

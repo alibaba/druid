@@ -47,7 +47,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -71,8 +70,8 @@ public class OracleSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
-    public OracleSelect select() {
-        OracleSelect select = new OracleSelect();
+    public SQLSelect select() {
+        SQLSelect select = new SQLSelect();
 
         withSubquery(select);
 
@@ -376,7 +375,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             accept(Token.ON);
             accept(Token.LPAREN);
-            OracleSelect subQuery = this.select();
+            SQLSelect subQuery = this.select();
             accept(Token.RPAREN);
             referenceModelClause.setSubQuery(subQuery);
 

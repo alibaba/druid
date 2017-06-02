@@ -1982,11 +1982,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printJoinType(x.getJoinType());
         }
         print(' ');
-        x.getRight().accept(this);
+
+        SQLTableSource right = x.getRight();
+        boolean isSubquery = false;
+
+        if(right instanceof SQLSubqueryTableSource) {
+            isSubquery = true;
+        }
+        right.accept(this);
 
         if (x.getCondition() != null) {
+            if (isSubquery) {
+                println();
+            } else {
+                print(' ');
+            }
             incrementIndent();
-            print0(ucase ? " ON " : " on ");
+            print0(ucase ? "ON " : "on ");
             x.getCondition().accept(this);
             decrementIndent();
         }
@@ -2035,10 +2047,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLSomeExpr x) {
         print0(ucase ? "SOME (" : "some (");
-
         incrementIndent();
+        println();
         x.getSubQuery().accept(this);
         decrementIndent();
+        println();
         print(')');
         return false;
     }
@@ -2046,10 +2059,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAnyExpr x) {
         print0(ucase ? "ANY (" : "any (");
-
         incrementIndent();
+        println();
         x.getSubQuery().accept(this);
         decrementIndent();
+        println();
         print(')');
         return false;
     }
@@ -2057,10 +2071,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(SQLAllExpr x) {
         print0(ucase ? "ALL (" : "all (");
-
         incrementIndent();
+        println();
         x.getSubQuery().accept(this);
         decrementIndent();
+        println();
         print(')');
         return false;
     }
@@ -2095,9 +2110,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLSubqueryTableSource x) {
         print('(');
         incrementIndent();
-        x.getSelect().accept(this);
         println();
+        this.visit(x.getSelect());
         decrementIndent();
+        println();
         print(')');
 
         if (x.getAlias() != null) {

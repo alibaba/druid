@@ -57,4 +57,14 @@ public class OracleArgumentExpr extends OracleSQLObjectImpl implements SQLExpr {
         visitor.endVisit(this);
     }
 
+    public OracleArgumentExpr clone() {
+        OracleArgumentExpr x = new OracleArgumentExpr();
+        x.argumentName = argumentName;
+
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+
+        return x;
+    }
 }

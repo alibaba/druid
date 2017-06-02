@@ -107,4 +107,43 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
         result = 31 * result + (partitions != null ? partitions.hashCode() : 0);
         return result;
     }
+
+    public String computeAlias() {
+        String alias = this.getAlias();
+
+        if (alias == null) {
+            if (expr instanceof SQLName) {
+                alias =((SQLName) expr).getSimpleName();
+            }
+        }
+
+        if (alias.length() > 2) {
+            char c0 = alias.charAt(0);
+            char x0 = alias.charAt(alias.length() - 1);
+            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
+                alias = alias.substring(1, alias.length() - 1);
+            }
+        }
+
+        return alias;
+    }
+
+    public SQLExprTableSource clone() {
+        SQLExprTableSource x = new SQLExprTableSource();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(SQLExprTableSource x) {
+        if (expr != null) {
+            x.expr = expr.clone();
+        }
+
+        if (partitions != null) {
+            for (SQLName p : partitions) {
+                SQLName p1 = p.clone();
+                x.addPartition(p1);
+            }
+        }
+    }
 }

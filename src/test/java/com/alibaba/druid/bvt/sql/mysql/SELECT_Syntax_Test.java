@@ -162,7 +162,12 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 = SOME (SELECT s1\n\tFROM t2);", text);
+        assertEquals("SELECT s1\n" +
+                "FROM t1\n" +
+                "WHERE s1 = SOME (\n" +
+                "\tSELECT s1\n" +
+                "\tFROM t2\n" +
+                ");", text);
     }
 
     public void test_10() throws Exception {
@@ -173,7 +178,12 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 = ANY (SELECT s1\n\tFROM t2);", text);
+        Assert.assertEquals("SELECT s1\n" +
+                "FROM t1\n" +
+                "WHERE s1 = ANY (\n" +
+                "\tSELECT s1\n" +
+                "\tFROM t2\n" +
+                ");", text);
     }
 
     public void test_11() throws Exception {
@@ -184,7 +194,12 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 > ALL (SELECT s1\n\tFROM t2);", text);
+        assertEquals("SELECT s1\n" +
+                "FROM t1\n" +
+                "WHERE s1 > ALL (\n" +
+                "\tSELECT s1\n" +
+                "\tFROM t2\n" +
+                ");", text);
     }
 
     public void test_12() throws Exception {

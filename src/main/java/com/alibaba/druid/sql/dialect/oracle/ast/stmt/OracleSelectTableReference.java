@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
@@ -32,6 +33,31 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     protected SampleClause             sampleClause;
 
     protected FlashbackQueryClause     flashback;
+
+    public OracleSelectTableReference clone() {
+        OracleSelectTableReference x = new OracleSelectTableReference();
+        cloneTo(x);
+
+        x.only = only;
+
+        if (pivot != null) {
+            x.setPivot(pivot.clone());
+        }
+
+        if (partition != null) {
+            x.setPartition(partition.clone());
+        }
+
+        if (sampleClause != null) {
+            x.setSampleClause(sampleClause.clone());
+        }
+
+        if (flashback != null) {
+            setFlashback(flashback.clone());
+        }
+
+        return x;
+    }
 
     public OracleSelectTableReference(){
 
@@ -140,4 +166,5 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     public String toString () {
         return SQLUtils.toOracleString(this);
     }
+
 }

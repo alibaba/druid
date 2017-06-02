@@ -50,6 +50,19 @@ public class SQLKeep extends SQLObjectImpl {
         this.orderBy = orderBy;
     }
 
+
+    public SQLKeep clone() {
+        SQLKeep x = new SQLKeep();
+
+        x.denseRank = denseRank;
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        return x;
+    }
+
     public static enum DenseRank {
                                   FIRST, //
                                   LAST

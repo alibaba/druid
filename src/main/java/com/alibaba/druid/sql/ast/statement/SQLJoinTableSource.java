@@ -40,6 +40,13 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
 
     }
 
+    public SQLJoinTableSource(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition){
+        this.setLeft(left);
+        this.setJoinType(joinType);
+        this.setRight(right);
+        this.setCondition(condition);
+    }
+
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.left);
