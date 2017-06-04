@@ -172,7 +172,7 @@ public class MySqlLexer extends Lexer {
 
             this.ch = charAt(pos);
 
-            stringVal = subString(mark, bufPos);
+            stringVal = subString(mark + 1, bufPos - 2);
             token = Token.VARIANT;
         } else if (charAt(pos + 1) == '{') {
             ++pos;
@@ -241,7 +241,7 @@ public class MySqlLexer extends Lexer {
 
             this.ch = charAt(pos);
 
-            stringVal = subString(mark, bufPos);
+            stringVal = subString(mark + 1, bufPos - 2);
             Token tok = keywods.getKeyword(stringVal);
             if (tok != null) {
                 token = tok;
