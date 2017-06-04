@@ -56,19 +56,20 @@ public class SQLServerInsertTest7 extends TestCase {
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String formatSql = "INSERT INTO MMS_SETTLEMENT_COM"
-                + "\n\t(handler, handleTime, MID, MERCHANTNAME, TOTALAMT"
-                + "\n\t, ACTUALAMT, paymentMoney, STATUS, SERIAL_NUM, REMARKS)"
-                + "\nSELECT 'admin', getdate(), MID, MERCHANTNAME, SUM(CONVERT(DECIMAL(18, 2), isnull(TOTALAMT, 0))) AS TOTALAMT"
-                + "\n\t, SUM(CONVERT(DECIMAL(18, 2), isnull(ACTUALAMT, 0))) AS ACTUALAMT, SUM(CONVERT(DECIMAL(18, 2), isnull(paymentMoney, 0))) AS paymentMoney, 2, 126, ("
-                + "\n\t\tSELECT REMARKS + ''"
-                + "\n\t\tFROM MMS_SETTLEMENT_COM"
-                + "\n\t\tWHERE MID = A.MID"
-                + "\n\t\tFOR XML PATH('')"
-                + "\n\t\t) AS REMARKS"
-                + "\nFROM MMS_SETTLEMENT_COM A"
-                + "\nWHERE ID IN (304, 305, 306, 297, 108, 184)"
-                + "\nGROUP BY MID, MERCHANTNAME";
+        String formatSql = "INSERT INTO MMS_SETTLEMENT_COM\n" +
+                "\t(handler, handleTime, MID, MERCHANTNAME, TOTALAMT\n" +
+                "\t, ACTUALAMT, paymentMoney, STATUS, SERIAL_NUM, REMARKS)\n" +
+                "SELECT 'admin', getdate(), MID, MERCHANTNAME, SUM(CONVERT(DECIMAL(18, 2), isnull(TOTALAMT, 0))) AS TOTALAMT\n" +
+                "\t, SUM(CONVERT(DECIMAL(18, 2), isnull(ACTUALAMT, 0))) AS ACTUALAMT, SUM(CONVERT(DECIMAL(18, 2), isnull(paymentMoney, 0))) AS paymentMoney, 2, 126\n" +
+                "\t, (\n" +
+                "\t\tSELECT REMARKS + ''\n" +
+                "\t\tFROM MMS_SETTLEMENT_COM\n" +
+                "\t\tWHERE MID = A.MID\n" +
+                "\t\tFOR XML PATH('')\n" +
+                "\t) AS REMARKS\n" +
+                "FROM MMS_SETTLEMENT_COM A\n" +
+                "WHERE ID IN (304, 305, 306, 297, 108, 184)\n" +
+                "GROUP BY MID, MERCHANTNAME";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 

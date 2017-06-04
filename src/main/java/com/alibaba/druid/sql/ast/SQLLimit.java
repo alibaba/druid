@@ -71,7 +71,17 @@ public class SQLLimit extends SQLObjectImpl {
     }
 
     public SQLLimit clone() {
-        throw new UnsupportedOperationException();
+        SQLLimit x = new SQLLimit();
+
+        if (offset != null) {
+            x.setOffset(offset.clone());
+        }
+
+        if (rowCount != null) {
+            x.setRowCount(rowCount.clone());
+        }
+
+        return x;
     }
 
 }

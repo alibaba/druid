@@ -28,20 +28,24 @@ public class OdpsSelectTest18 extends TestCase {
 
     public void test_select() throws Exception {
         String sql = "select a, b, c from tableA where a in ( select a from tableB limit 10 )";//
-        Assert.assertEquals("SELECT a\n" +
+        assertEquals("SELECT a\n" +
                 "\t, b\n" +
                 "\t, c\n" +
                 "FROM tableA\n" +
-                "WHERE a IN (SELECT a\n" +
+                "WHERE a IN (\n" +
+                "\tSELECT a\n" +
                 "\tFROM tableB\n" +
-                "\tLIMIT 10)", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select a\n" +
+                "\tLIMIT 10\n" +
+                ")", SQLUtils.formatOdps(sql));
+        assertEquals("select a\n" +
                 "\t, b\n" +
                 "\t, c\n" +
                 "from tableA\n" +
-                "where a in (select a\n" +
+                "where a in (\n" +
+                "\tselect a\n" +
                 "\tfrom tableB\n" +
-                "\tlimit 10)", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\tlimit 10\n" +
+                ")", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
         
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);

@@ -165,4 +165,33 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
             return joinType.name;
         }
     }
+
+
+    public void cloneTo(SQLJoinTableSource x) {
+        x.alias = alias;
+
+        if (left != null) {
+            x.setLeft(left.clone());
+        }
+
+        x.joinType = joinType;
+
+        if (right != null) {
+            x.setRight(right.clone());
+        }
+
+        for (SQLExpr item : using) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.using.add(item2);
+        }
+
+        x.natural = natural;
+    }
+
+    public SQLJoinTableSource clone() {
+        SQLJoinTableSource x = new SQLJoinTableSource();
+        cloneTo(x);
+        return x;
+    }
 }

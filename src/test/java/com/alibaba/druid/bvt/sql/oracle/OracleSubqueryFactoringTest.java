@@ -53,7 +53,7 @@ public class OracleSubqueryFactoringTest extends TestCase {
                           + "WHERE dept_total > (\n" //
                           + "\tSELECT avg\n" //
                           + "\tFROM avg_cost\n" //
-                          + "\t)\n" //
+                          + ")\n" //
                           + "ORDER BY department_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

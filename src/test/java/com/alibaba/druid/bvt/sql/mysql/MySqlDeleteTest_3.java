@@ -58,8 +58,8 @@ public class MySqlDeleteTest_3 extends MysqlTest {
                 "\t\t\t\t\tSELECT *\n" +
                 "\t\t\t\t\tFROM t5\n" +
                 "\t\t\t\t) t5)\n" +
-                "\t\t\t\t)\n" +
                 "\t\t\t)\n" +
+                "\t\t)\n" +
                 "\t)", SQLUtils.toMySqlString(stmt));
         assertEquals("delete from t1\n" +
                 "where s11 > any (\n" +
@@ -77,8 +77,8 @@ public class MySqlDeleteTest_3 extends MysqlTest {
                 "\t\t\t\t\tselect *\n" +
                 "\t\t\t\t\tfrom t5\n" +
                 "\t\t\t\t) t5)\n" +
-                "\t\t\t\t)\n" +
                 "\t\t\t)\n" +
+                "\t\t)\n" +
                 "\t)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());

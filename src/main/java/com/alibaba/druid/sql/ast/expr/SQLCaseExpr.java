@@ -147,6 +147,17 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
             return true;
         }
 
+
+        public Item clone() {
+            Item x = new Item();
+            if (conditionExpr != null) {
+                x.setConditionExpr(conditionExpr.clone());
+            }
+            if (valueExpr != null) {
+                x.setValueExpr(valueExpr.clone());
+            }
+            return x;
+        }
     }
 
     @Override
@@ -195,4 +206,22 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+
+    public SQLCaseExpr clone() {
+        SQLCaseExpr x = new SQLCaseExpr();
+
+        for (Item item : items) {
+            x.addItem(item.clone());
+        }
+
+        if (valueExpr != null) {
+            x.setValueExpr(valueExpr.clone());
+        }
+
+        if (elseExpr != null) {
+            x.setElseExpr(elseExpr.clone());
+        }
+
+        return x;
+    }
 }

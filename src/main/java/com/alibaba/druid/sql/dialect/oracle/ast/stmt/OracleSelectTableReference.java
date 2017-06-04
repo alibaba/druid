@@ -34,31 +34,6 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
 
     protected FlashbackQueryClause     flashback;
 
-    public OracleSelectTableReference clone() {
-        OracleSelectTableReference x = new OracleSelectTableReference();
-        cloneTo(x);
-
-        x.only = only;
-
-        if (pivot != null) {
-            x.setPivot(pivot.clone());
-        }
-
-        if (partition != null) {
-            x.setPartition(partition.clone());
-        }
-
-        if (sampleClause != null) {
-            x.setSampleClause(sampleClause.clone());
-        }
-
-        if (flashback != null) {
-            setFlashback(flashback.clone());
-        }
-
-        return x;
-    }
-
     public OracleSelectTableReference(){
 
     }
@@ -167,4 +142,29 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
         return SQLUtils.toOracleString(this);
     }
 
+
+    public OracleSelectTableReference clone() {
+        OracleSelectTableReference x = new OracleSelectTableReference();
+        cloneTo(x);
+
+        x.only = only;
+
+        if (pivot != null) {
+            x.setPivot(pivot.clone());
+        }
+
+        if (partition != null) {
+            x.setPartition(partition.clone());
+        }
+
+        if (sampleClause != null) {
+            x.setSampleClause(sampleClause.clone());
+        }
+
+        if (flashback != null) {
+            setFlashback(flashback.clone());
+        }
+
+        return x;
+    }
 }

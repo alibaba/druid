@@ -29,7 +29,8 @@ public class MySqlParameterizedOutputVisitorTest_31 extends TestCase {
                 "\t, `udata`.`status` AS `status`, `udata`.`charging_period` AS `chargingPeriod`, `udata`.`sn` AS `sn`, `udata`.`cpd` AS `chargingPeriodDesc`, `udata`.`task_total_num` AS `taskTotalNum`\n" +
                 "\t, `udata`.`tcn` AS `taCoNu`, `udata`.`task_type` AS `taskType`, `udata`.`ilbu` AS `isLaBiUs`\n" +
                 "FROM udata `udata`\n" +
-                "WHERE `udata`.`id` IN (SELECT MAX(`udata`.`id`)\n" +
+                "WHERE `udata`.`id` IN (\n" +
+                "\t\tSELECT MAX(`udata`.`id`)\n" +
                 "\t\tFROM udata `udata`\n" +
                 "\t\tWHERE `udata`.`uid` = ?\n" +
                 "\t\t\tAND `udata`.`user_type` = ?\n" +
@@ -38,7 +39,8 @@ public class MySqlParameterizedOutputVisitorTest_31 extends TestCase {
                 "\t\t\tAND `udata`.`charging_period` = ?\n" +
                 "\t\t\tAND `udata`.`task_type` = ?\n" +
                 "\t\t\tAND `udata`.`task_total_num` <= `udata`.`tcn`\n" +
-                "\t\tGROUP BY `udata`.`charging_period`, `udata`.`start_period_time`, `udata`.`ept`)\n" +
+                "\t\tGROUP BY `udata`.`charging_period`, `udata`.`start_period_time`, `udata`.`ept`\n" +
+                "\t)\n" +
                 "\tAND (`udata`.`uid` = ?\n" +
                 "\t\tAND `udata`.`user_type` = ?)\n" +
                 "ORDER BY `udata`.`start_period_time` DESC\n" +
@@ -77,7 +79,8 @@ public class MySqlParameterizedOutputVisitorTest_31 extends TestCase {
                 "\t, `udata`.`status` AS `status`, `udata`.`charging_period` AS `chargingPeriod`, `udata`.`sn` AS `sn`, `udata`.`cpd` AS `chargingPeriodDesc`, `udata`.`task_total_num` AS `taskTotalNum`\n" +
                 "\t, `udata`.`tcn` AS `taCoNu`, `udata`.`task_type` AS `taskType`, `udata`.`ilbu` AS `isLaBiUs`\n" +
                 "FROM udata_0888 `udata`\n" +
-                "WHERE `udata`.`id` IN (SELECT MAX(`udata`.`id`)\n" +
+                "WHERE `udata`.`id` IN (\n" +
+                "\t\tSELECT MAX(`udata`.`id`)\n" +
                 "\t\tFROM udata_0888 `udata`\n" +
                 "\t\tWHERE `udata`.`uid` = 1039100792\n" +
                 "\t\t\tAND `udata`.`user_type` = 2\n" +
@@ -86,7 +89,8 @@ public class MySqlParameterizedOutputVisitorTest_31 extends TestCase {
                 "\t\t\tAND `udata`.`charging_period` = 1\n" +
                 "\t\t\tAND `udata`.`task_type` = 1\n" +
                 "\t\t\tAND `udata`.`task_total_num` <= `udata`.`tcn`\n" +
-                "\t\tGROUP BY `udata`.`charging_period`, `udata`.`start_period_time`, `udata`.`ept`)\n" +
+                "\t\tGROUP BY `udata`.`charging_period`, `udata`.`start_period_time`, `udata`.`ept`\n" +
+                "\t)\n" +
                 "\tAND (`udata`.`uid` = '1039100792'\n" +
                 "\t\tAND `udata`.`user_type` = 2)\n" +
                 "ORDER BY `udata`.`start_period_time` DESC\n" +

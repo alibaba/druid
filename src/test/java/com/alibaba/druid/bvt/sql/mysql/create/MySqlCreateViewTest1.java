@@ -53,17 +53,17 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\tFROM actvty_audit\n" +
                         "\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\tAND rankjurisdiction = 1\n" +
-                        "\t\t) > 0 THEN '县站已审核' ELSE NULL END AS 'countyAudit', CASE WHEN (\n" +
+                        "\t) > 0 THEN '县站已审核' ELSE NULL END AS 'countyAudit', CASE WHEN (\n" +
                         "\t\tSELECT audit\n" +
                         "\t\tFROM actvty_audit\n" +
                         "\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\tAND rankjurisdiction = 2\n" +
-                        "\t\t) > 0 THEN '市馆已审核' ELSE NULL END AS 'cityAudit', CASE WHEN (\n" +
+                        "\t) > 0 THEN '市馆已审核' ELSE NULL END AS 'cityAudit', CASE WHEN (\n" +
                         "\t\tSELECT audit\n" +
                         "\t\tFROM actvty_audit\n" +
                         "\t\tWHERE enroll_id = a.enroll_id\n" +
                         "\t\t\tAND rankjurisdiction = 3\n" +
-                        "\t\t) > 0 THEN '省馆已审核' ELSE NULL END AS 'provinceAudit'\n" +
+                        "\t) > 0 THEN '省馆已审核' ELSE NULL END AS 'provinceAudit'\n" +
                         "FROM actvty_audit a\n" +
                         "GROUP BY a.enroll_id", //
                 SQLUtils.toMySqlString(stmt));
@@ -78,17 +78,17 @@ public class MySqlCreateViewTest1 extends MysqlTest {
                         "\t\tfrom actvty_audit\n" +
                         "\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\tand rankjurisdiction = 1\n" +
-                        "\t\t) > 0 then '县站已审核' else null end as 'countyAudit', case when (\n" +
+                        "\t) > 0 then '县站已审核' else null end as 'countyAudit', case when (\n" +
                         "\t\tselect audit\n" +
                         "\t\tfrom actvty_audit\n" +
                         "\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\tand rankjurisdiction = 2\n" +
-                        "\t\t) > 0 then '市馆已审核' else null end as 'cityAudit', case when (\n" +
+                        "\t) > 0 then '市馆已审核' else null end as 'cityAudit', case when (\n" +
                         "\t\tselect audit\n" +
                         "\t\tfrom actvty_audit\n" +
                         "\t\twhere enroll_id = a.enroll_id\n" +
                         "\t\t\tand rankjurisdiction = 3\n" +
-                        "\t\t) > 0 then '省馆已审核' else null end as 'provinceAudit'\n" +
+                        "\t) > 0 then '省馆已审核' else null end as 'provinceAudit'\n" +
                         "from actvty_audit a\n" +
                         "group by a.enroll_id", //
                 SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

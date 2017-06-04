@@ -75,7 +75,7 @@ public class SQLServerSelectTest14 extends TestCase {
                 "\t\t\tFROM config.sys_params t\n" +
                 "\t\t\tWHERE t.param_type = 2\n" +
                 "\t\t\t\tAND t.param_value = a.tran_type\n" +
-                "\t\t\t) AS tranTypeName\n" +
+                "\t\t) AS tranTypeName\n" +
                 "\tFROM bussiness.account_detail a\n" +
                 "\tWHERE 1 = 1\n" +
                 "\t\tAND a.time_add >= 2\n" +

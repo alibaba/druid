@@ -64,7 +64,11 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     }
 
     public SQLTableSource clone() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public String computeAlias() {
+        return alias;
     }
 
 }

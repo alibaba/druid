@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -271,14 +272,6 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             alias = ((SQLPropertyExpr) name).getName();
         }
 
-        if (alias.length() > 2) {
-            char c0 = alias.charAt(0);
-            char x0 = alias.charAt(alias.length() - 1);
-            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
-                alias = alias.substring(1, alias.length() - 1);
-            }
-        }
-
-        return alias;
+        return SQLUtils.normalize(alias);
     }
 }

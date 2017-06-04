@@ -807,7 +807,7 @@ public class OracleStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        SQLBlockStatement block = this.parseBlock();
+        SQLStatement block = this.parseBlock();
 
         stmt.setBlock(block);
 
@@ -1460,7 +1460,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLBlockStatement parseBlock() {
+    public SQLStatement parseBlock() {
         SQLBlockStatement block = new SQLBlockStatement();
         block.setDbType(JdbcConstants.ORACLE);
 
@@ -1473,6 +1473,15 @@ public class OracleStatementParser extends SQLStatementParser {
             for (SQLParameter param : block.getParameters()) {
                 param.setParent(block);
             }
+        }
+
+        if (lexer.token() == Token.PROCEDURE) {
+            SQLCreateProcedureStatement stmt = this.parseCreateProcedure();
+            for (SQLParameter param : block.getParameters()) {
+                param.setParent(stmt);
+                stmt.getParameters().add(param);
+            }
+            return stmt;
         }
 
         accept(Token.BEGIN);
@@ -2113,7 +2122,7 @@ public class OracleStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        SQLBlockStatement block = this.parseBlock();
+        SQLStatement block = this.parseBlock();
 
         stmt.setBlock(block);
 

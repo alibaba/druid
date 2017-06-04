@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.visitor;
+package com.alibaba.druid.util;
 
-public interface ParameterizedVisitor extends PrintableVisitor {
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-    int getReplaceCount();
-
-    void incrementReplaceCunt();
-
-    String getDbType();
-
+/**
+ * Created by wenshao on 03/06/2017.
+ */
+public interface ResultSetConsumer<T> {
+    T apply(ResultSet rs) throws SQLException;
+    void accept(T object);
 }

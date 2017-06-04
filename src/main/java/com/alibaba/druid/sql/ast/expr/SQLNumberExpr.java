@@ -76,4 +76,8 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr {
         }
         return true;
     }
+
+    public SQLNumberExpr clone() {
+        return new SQLNumberExpr(number);
+    }
 }

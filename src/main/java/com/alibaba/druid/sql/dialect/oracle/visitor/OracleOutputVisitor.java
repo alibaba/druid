@@ -383,7 +383,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleSelectQueryBlock x) {
         print0(ucase ? "SELECT " : "select ");
 
-        if (x.getHints().size() > 0) {
+        if (x.getHintsSize() > 0) {
             printAndAccept(x.getHints(), ", ");
             print(' ');
         }
@@ -437,7 +437,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.isForUpdate()) {
             println();
             print0(ucase ? "FOR UPDATE" : "for update");
-            if (x.getForUpdateOf().size() > 0) {
+            if (x.getForUpdateOfSize() > 0) {
                 print('(');
                 printAndAccept(x.getForUpdateOf(), ", ");
                 print(')');

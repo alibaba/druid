@@ -16,6 +16,8 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -151,5 +153,140 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
 
     public String toString() {
         return SQLUtils.toSQLString(this, getDbType());
+    }
+
+    public static SQLExpr combine(List<SQLExpr> items, SQLBinaryOperator op) {
+        if (items == null || op == null) {
+            return null;
+        }
+
+        int size = items.size();
+        if (size == 0) {
+            return null;
+        }
+
+        if (size == 1) {
+            return items.get(0);
+        }
+
+        SQLBinaryOpExpr expr = new SQLBinaryOpExpr(items.get(0), op, items.get(1));
+
+        for (int i = 2; i < size; ++i) {
+            SQLExpr item = items.get(i);
+            expr = new SQLBinaryOpExpr(expr, op, item);
+        }
+
+        return expr;
+    }
+
+    public static List<SQLExpr> split(SQLBinaryOpExpr x) {
+        return split(x, x.getOperator());
+    }
+
+    public static List<SQLExpr> split(SQLBinaryOpExpr x, SQLBinaryOperator op) {
+        if (x.getOperator() != op) {
+            List<SQLExpr> groupList = new ArrayList<SQLExpr>(1);
+            groupList.add(x);
+            return groupList;
+        }
+
+        List<SQLExpr> groupList = new ArrayList<SQLExpr>();
+        split(groupList, x, op);
+        return groupList;
+    }
+
+    public static void split(List<SQLExpr> outList, SQLExpr expr, SQLBinaryOperator op) {
+        if (expr == null) {
+            return;
+        }
+
+        if (!(expr instanceof SQLBinaryOpExpr)) {
+            outList.add(expr);
+            return;
+        }
+
+        SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) expr;
+
+        if (binaryExpr.getOperator() != op) {
+            outList.add(binaryExpr);
+            return;
+        }
+
+        List<SQLExpr> rightList = new ArrayList<SQLExpr>();
+        rightList.add(binaryExpr.getRight());
+        for (SQLExpr left = binaryExpr.getLeft();;) {
+            if (left instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr leftBinary = (SQLBinaryOpExpr) left;
+                if (leftBinary.operator == op) {
+                    left = ((SQLBinaryOpExpr) leftBinary).getLeft();
+                    rightList.add(leftBinary.getRight());
+                } else {
+                    outList.add(leftBinary);
+                    break;
+                }
+            } else {
+                outList.add(left);
+                break;
+            }
+        }
+
+        for (int i = rightList.size() - 1; i >= 0; --i) {
+            SQLExpr right  = rightList.get(i);
+
+            if (right instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryRight = (SQLBinaryOpExpr) right;
+                if (binaryRight.operator == op) {
+                    {
+                        SQLExpr rightLeft = binaryRight.getLeft();
+                        if (rightLeft instanceof SQLBinaryOpExpr) {
+                            SQLBinaryOpExpr rightLeftBinary = (SQLBinaryOpExpr) rightLeft;
+                            if (rightLeftBinary.operator == op) {
+                                split(outList, rightLeftBinary, op);
+                            } else {
+                                outList.add(rightLeftBinary);
+                            }
+                        } else {
+                            outList.add(rightLeft);
+                        }
+                    }
+                    {
+                        SQLExpr rightRight = binaryRight.getRight();
+                        if (rightRight instanceof SQLBinaryOpExpr) {
+                            SQLBinaryOpExpr rightRightBinary = (SQLBinaryOpExpr) rightRight;
+                            if (rightRightBinary.operator == op) {
+                                split(outList, rightRightBinary, op);
+                            } else {
+                                outList.add(rightRightBinary);
+                            }
+                        } else {
+                            outList.add(rightRight);
+                        }
+                    }
+                } else {
+                    outList.add(binaryRight);
+                }
+            } else {
+                outList.add(right);
+            }
+        }
+    }
+
+    public static SQLExpr and(SQLExpr a, SQLExpr b) {
+        if (a == null) {
+            return b;
+        }
+
+        if (b == null) {
+            return a;
+        }
+
+        if (b instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr bb = (SQLBinaryOpExpr) b;
+            if (bb.operator == SQLBinaryOperator.BooleanAnd) {
+                return and(and(a, bb.left), bb.right);
+            }
+        }
+
+        return new SQLBinaryOpExpr(a, SQLBinaryOperator.BooleanAnd, b);
     }
 }

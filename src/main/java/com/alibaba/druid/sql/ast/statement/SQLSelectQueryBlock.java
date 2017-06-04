@@ -318,11 +318,11 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
 
     public SQLSelectQueryBlock clone() {
         SQLSelectQueryBlock x = new SQLSelectQueryBlock();
-        clone(x);
+        cloneTo(x);
         return x;
     }
 
-    public void clone(SQLSelectQueryBlock x) {
+    public void cloneTo(SQLSelectQueryBlock x) {
 
         x.distionOption = distionOption;
 

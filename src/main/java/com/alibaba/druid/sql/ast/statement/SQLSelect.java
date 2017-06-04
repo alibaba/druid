@@ -33,7 +33,7 @@ public class SQLSelect extends SQLObjectImpl {
     protected SQLObject             restriction;
 
     protected boolean               forBrowse;
-    protected List<String>          forXmlOptions = new ArrayList<String>(4);
+    protected List<String>          forXmlOptions = null;
     protected SQLExpr               xmlPath;
 
     protected SQLExpr                rowCount;
@@ -148,7 +148,7 @@ public class SQLSelect extends SQLObjectImpl {
         x.withSubQuery = this.withSubQuery;
         x.query = this.query;
         if (orderBy != null) {
-            x.setOrderBy(this.orderBy);
+            x.setOrderBy(this.orderBy.clone());
         }
         if (restriction != null) {
             x.setRestriction(restriction.clone());
@@ -160,7 +160,37 @@ public class SQLSelect extends SQLObjectImpl {
             }
         }
 
+        x.forBrowse = forBrowse;
+
+        if (forXmlOptions != null) {
+            x.forXmlOptions = new ArrayList<String>(forXmlOptions);
+        }
+
+        if (xmlPath != null) {
+            x.setXmlPath(xmlPath.clone());
+        }
+
+        if (rowCount != null) {
+            x.setRowCount(rowCount.clone());
+        }
+
+        if (offset != null) {
+            x.setOffset(offset.clone());
+        }
+
         return x;
+    }
+
+    public boolean isSimple() {
+        return withSubQuery == null
+                && orderBy == null
+                && (hints == null || hints.size() == 0)
+                && restriction == null
+                && (!forBrowse)
+                && (forXmlOptions == null || forXmlOptions.size() == 0)
+                && xmlPath == null
+                && rowCount == null
+                && offset == null;
     }
 
     public SQLObject getRestriction() {
@@ -183,11 +213,18 @@ public class SQLSelect extends SQLObjectImpl {
     }
 
     public List<String> getForXmlOptions() {
+        if (forXmlOptions == null) {
+            forXmlOptions = new ArrayList<String>(4);
+        }
+
         return forXmlOptions;
     }
 
-    public void setForXmlOptions(List<String> forXmlOptions) {
-        this.forXmlOptions = forXmlOptions;
+    public int getForXmlOptionsSize() {
+        if (forXmlOptions == null) {
+            return 0;
+        }
+        return forXmlOptions.size();
     }
 
     public SQLExpr getRowCount() {

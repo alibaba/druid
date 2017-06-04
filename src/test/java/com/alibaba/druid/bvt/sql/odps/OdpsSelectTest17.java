@@ -42,13 +42,14 @@ public class OdpsSelectTest17 extends TestCase {
                 ") top )\n" +
                 "ORDER BY cnt DESC\n" +
                 "LIMIT 800";//
-        Assert.assertEquals("SELECT prov\n" +
+        assertEquals("SELECT prov\n" +
                 "\t, name\n" +
                 "\t, cnt\n" +
                 "FROM mock_app.adl_mock_v_fct\n" +
                 "WHERE ds = 20160920\n" +
                 "\tAND name != 'none'\n" +
-                "\tAND prov IN (SELECT prov\n" +
+                "\tAND prov IN (\n" +
+                "\t\tSELECT prov\n" +
                 "\t\tFROM (\n" +
                 "\t\t\tSELECT prov\n" +
                 "\t\t\t\t, SUM(cnt) AS cnt\n" +
@@ -57,16 +58,18 @@ public class OdpsSelectTest17 extends TestCase {
                 "\t\t\tGROUP BY prov\n" +
                 "\t\t\tORDER BY cnt DESC\n" +
                 "\t\t\tLIMIT 5\n" +
-                "\t\t) top)\n" +
+                "\t\t) top\n" +
+                "\t)\n" +
                 "ORDER BY cnt DESC\n" +
                 "LIMIT 800", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select prov\n" +
+        assertEquals("select prov\n" +
                 "\t, name\n" +
                 "\t, cnt\n" +
                 "from mock_app.adl_mock_v_fct\n" +
                 "where ds = 20160920\n" +
                 "\tand name != 'none'\n" +
-                "\tand prov in (select prov\n" +
+                "\tand prov in (\n" +
+                "\t\tselect prov\n" +
                 "\t\tfrom (\n" +
                 "\t\t\tselect prov\n" +
                 "\t\t\t\t, sum(cnt) as cnt\n" +
@@ -75,7 +78,8 @@ public class OdpsSelectTest17 extends TestCase {
                 "\t\t\tgroup by prov\n" +
                 "\t\t\torder by cnt desc\n" +
                 "\t\t\tlimit 5\n" +
-                "\t\t) top)\n" +
+                "\t\t) top\n" +
+                "\t)\n" +
                 "order by cnt desc\n" +
                 "limit 800", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
         

@@ -42,4 +42,8 @@ public class SQLNCharExpr extends SQLTextLiteralExpr {
         visitor.visit(this);
         visitor.endVisit(this);
     }
+
+    public SQLNCharExpr clone() {
+        return new SQLNCharExpr(text);
+    }
 }

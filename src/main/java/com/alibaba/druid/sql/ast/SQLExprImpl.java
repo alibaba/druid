@@ -26,6 +26,6 @@ public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
     public abstract int hashCode();
 
     public SQLExpr clone() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(this.getClass().getName());
     }
 }

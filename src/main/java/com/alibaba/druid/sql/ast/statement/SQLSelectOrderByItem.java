@@ -119,4 +119,15 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
             throw new IllegalArgumentException();
         }
     }
+
+    public SQLSelectOrderByItem clone() {
+        SQLSelectOrderByItem x = new SQLSelectOrderByItem();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        x.collate = collate;
+        x.type = type;
+        x.nullsOrderType = nullsOrderType;
+        return x;
+    }
 }

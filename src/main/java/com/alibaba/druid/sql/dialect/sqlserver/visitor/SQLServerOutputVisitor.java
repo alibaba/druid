@@ -423,7 +423,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             print0(ucase ? "FOR BROWSE" : "for browse");
         }
         
-        if (x.getForXmlOptions().size() > 0) {
+        if (x.getForXmlOptionsSize() > 0) {
             println();
             print0(ucase ? "FOR XML " : "for xml ");
             for (int i = 0; i < x.getForXmlOptions().size(); ++i) {

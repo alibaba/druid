@@ -28,32 +28,36 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
-    private final List<SQLCommentHint> hints       = new ArrayList<SQLCommentHint>(1);
+    private List<SQLCommentHint>       hints;
 
     private ModelClause                modelClause;
 
-    private final List<SQLExpr>        forUpdateOf = new ArrayList<SQLExpr>(1);
+    private List<SQLExpr>              forUpdateOf;
     private boolean                    skipLocked  = false;
 
     public OracleSelectQueryBlock clone() {
         OracleSelectQueryBlock x = new OracleSelectQueryBlock();
 
-        super.clone(x);
+        super.cloneTo(x);
 
-        for (SQLCommentHint hint : hints) {
-            SQLCommentHint hint1 = hint.clone();
-            hint1.setParent(x);
-            x.getHints().add(hint1);
+        if (hints != null) {
+            for (SQLCommentHint hint : hints) {
+                SQLCommentHint hint1 = hint.clone();
+                hint1.setParent(x);
+                x.getHints().add(hint1);
+            }
         }
 
         if (modelClause != null) {
             x.setModelClause(modelClause.clone());
         }
 
-        for (SQLExpr item : forUpdateOf) {
-            SQLExpr item1 = item.clone();
-            item1.setParent(x);
-            forUpdateOf.add(item1);
+        if (forUpdateOf != null) {
+            for (SQLExpr item : forUpdateOf) {
+                SQLExpr item1 = item.clone();
+                item1.setParent(x);
+                forUpdateOf.add(item1);
+            }
         }
 
         x.skipLocked = skipLocked;
@@ -74,11 +78,33 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public List<SQLCommentHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLCommentHint>(1);
+        }
         return this.hints;
     }
 
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+
+        return hints.size();
+    }
+
     public List<SQLExpr> getForUpdateOf() {
+        if (forUpdateOf == null) {
+            forUpdateOf = new ArrayList<SQLExpr>(1);
+        }
         return forUpdateOf;
+    }
+
+    public int getForUpdateOfSize() {
+        if (forUpdateOf == null) {
+            return 0;
+        }
+
+        return forUpdateOf.size();
     }
 
     public boolean isSkipLocked() {

@@ -479,21 +479,7 @@ public class SQLUtils {
     }
 
     public static List<SQLExpr> split(SQLBinaryOpExpr x) {
-        List<SQLExpr> groupList = new ArrayList<SQLExpr>();
-        groupList.add(x.getRight());
-
-        SQLExpr left = x.getLeft();
-        for (;;) {
-            if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
-                SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
-                groupList.add(binaryLeft.getRight());
-                left = binaryLeft.getLeft();
-            } else {
-                groupList.add(left);
-                break;
-            }
-        }
-        return groupList;
+        return SQLBinaryOpExpr.split(x);
     }
 
     public static String translateOracleToMySql(String sql) {
@@ -788,6 +774,41 @@ public class SQLUtils {
         }
 
         return new SQLUnaryExpr(SQLUnaryOperator.Not, expr);
+    }
+
+    public static String normalize(String name) {
+        if (name.length() > 2) {
+            char c0 = name.charAt(0);
+            char x0 = name.charAt(name.length() - 1);
+            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
+                name = name.substring(1, name.length() - 1);
+            }
+        }
+
+        return name;
+    }
+
+    public static boolean isValue(SQLExpr expr) {
+        if (expr instanceof SQLLiteralExpr) {
+            return true;
+        }
+
+        if (expr instanceof SQLVariantRefExpr) {
+            return true;
+        }
+
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
+            SQLBinaryOperator op = binaryOpExpr.getOperator();
+            if (op == SQLBinaryOperator.Add
+                    || op == SQLBinaryOperator.Subtract
+                    || op == SQLBinaryOperator.Multiply) {
+                return isValue(binaryOpExpr.getLeft())
+                        && isValue(binaryOpExpr.getRight());
+            }
+        }
+
+        return false;
     }
 }
 

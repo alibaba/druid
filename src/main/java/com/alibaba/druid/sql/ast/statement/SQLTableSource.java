@@ -29,4 +29,6 @@ public interface SQLTableSource extends SQLObject {
     List<SQLHint> getHints();
 
     SQLTableSource clone();
+
+    String computeAlias();
 }

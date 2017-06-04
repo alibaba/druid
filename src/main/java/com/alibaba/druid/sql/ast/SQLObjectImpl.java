@@ -209,6 +209,6 @@ public abstract class SQLObjectImpl implements SQLObject {
     }
 
     public SQLObject clone() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(this.getClass().getName());
     }
 }

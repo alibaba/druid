@@ -120,7 +120,7 @@ public class WallVisitorUtils {
     public static boolean check(WallVisitor visitor, SQLBinaryOpExpr x) {
 
         if (x.getOperator() == SQLBinaryOperator.BooleanOr || x.getOperator() == SQLBinaryOperator.BooleanAnd) {
-            List<SQLExpr> groupList = SQLUtils.split(x);
+            List<SQLExpr> groupList = SQLBinaryOpExpr.split(x);
             for (SQLExpr item : groupList) {
                 item.accept(visitor);
             }
@@ -128,7 +128,7 @@ public class WallVisitorUtils {
         }
 
         if (x.getOperator() == SQLBinaryOperator.Add || x.getOperator() == SQLBinaryOperator.Concat) {
-            List<SQLExpr> groupList = SQLUtils.split(x);
+            List<SQLExpr> groupList = SQLBinaryOpExpr.split(x);
             if (groupList.size() >= 4) {
                 int chrCount = 0;
                 for (int i = 0; i < groupList.size(); ++i) {
@@ -922,7 +922,7 @@ public class WallVisitorUtils {
 
     public static Object getValue(WallVisitor visitor, SQLBinaryOpExpr x) {
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            List<SQLExpr> groupList = SQLUtils.split(x);
+            List<SQLExpr> groupList = SQLBinaryOpExpr.split(x);
 
             boolean allFalse = true;
             for (int i = groupList.size() - 1; i >= 0; --i) {
@@ -951,7 +951,7 @@ public class WallVisitorUtils {
 
         if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
 
-            List<SQLExpr> groupList = SQLUtils.split(x);
+            List<SQLExpr> groupList = SQLBinaryOpExpr.split(x);
 
             int dalConst = 0;
             Boolean allTrue = Boolean.TRUE;

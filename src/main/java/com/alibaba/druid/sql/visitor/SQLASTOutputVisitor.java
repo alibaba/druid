@@ -251,16 +251,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printSelectList(List<SQLSelectItem> selectList) {
         incrementIndent();
-        for (int i = 0, size = selectList.size(); i < size; ++i) {
+        for (int i = 0, lineItemCount = 0, size = selectList.size()
+             ; i < size; ++i, ++lineItemCount) {
+            SQLSelectItem selectItem = selectList.get(i);
+            SQLExpr selectItemExpr = selectItem.getExpr();
             if (i != 0) {
-                if (i % selectListNumberOfLine == 0) {
+                if (lineItemCount == selectListNumberOfLine
+                        || selectItemExpr instanceof SQLQueryExpr) {
+                    lineItemCount = 0;
                     println();
                 }
 
                 print0(", ");
             }
 
-            selectList.get(i).accept(this);
+            if (selectItem.getClass() == SQLSelectItem.class) {
+                this.visit(selectItem);
+            } else {
+                selectItem.accept(this);
+            }
         }
         decrementIndent();
     }
@@ -623,8 +632,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         incrementIndent();
         println();
         x.getSubQuery().accept(this);
-        println();
         decrementIndent();
+        println();
         print(')');
         return false;
     }
@@ -816,6 +825,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLIntegerExpr x) {
+        int val = x.getNumber().intValue();
+        if (val == 1
+                && JdbcConstants.ORACLE.equals(dbType)) {
+            SQLObject parent = x.getParent();
+            if (parent instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
+                SQLExpr left = binaryOpExpr.getLeft();
+                if (left instanceof SQLIdentifierExpr
+                        && binaryOpExpr.getOperator() == SQLBinaryOperator.Equality) {
+                    String name = ((SQLIdentifierExpr) left).getName();
+                    if ("rownum".equals(name)) {
+                        print(1);
+                        return false;
+                    }
+                }
+            }
+        }
         if (this.parameterized
             && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
@@ -1074,8 +1100,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             incrementIndent();
             println();
             x.getSubQuery().accept(this);
-            println();
             decrementIndent();
+            println();
             print(')');
         }
         return false;
@@ -1984,22 +2010,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print(' ');
 
         SQLTableSource right = x.getRight();
-        boolean isSubquery = false;
-
-        if(right instanceof SQLSubqueryTableSource) {
-            isSubquery = true;
-        }
         right.accept(this);
 
-        if (x.getCondition() != null) {
-            if (isSubquery) {
+        SQLExpr condition = x.getCondition();
+        if (condition != null) {
+            boolean newLine = false;
+
+            if(right instanceof SQLSubqueryTableSource) {
+                newLine = true;
+            } else if (condition instanceof SQLBinaryOpExpr) {
+                SQLBinaryOperator op = ((SQLBinaryOpExpr) condition).getOperator();
+                if (op == SQLBinaryOperator.BooleanAnd || op == SQLBinaryOperator.BooleanOr) {
+                    newLine = true;
+                }
+            }
+            if (newLine) {
                 println();
             } else {
                 print(' ');
             }
             incrementIndent();
             print0(ucase ? "ON " : "on ");
-            x.getCondition().accept(this);
+            condition.accept(this);
             decrementIndent();
         }
 
@@ -2090,8 +2122,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         incrementIndent();
+        println();
         x.getSubQuery().accept(this);
         decrementIndent();
+        println();
         print(')');
 
         return false;

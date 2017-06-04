@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLNotNullConstraint;
@@ -822,8 +823,10 @@ public class SQLExprParser extends SQLParser {
                 methodInvokeExpr = new SQLMethodInvokeExpr(methodName);
             }
 
-            if (isAggreateFunction(methodName)) {
-                SQLAggregateExpr aggregateExpr = parseAggregateExpr(methodName);
+            String aggMethodName = SQLUtils.normalize(methodName);
+
+            if (isAggreateFunction(aggMethodName)) {
+                SQLAggregateExpr aggregateExpr = parseAggregateExpr(aggMethodName);
                 if (distinct) {
                     aggregateExpr.setOption(SQLAggregateOption.DISTINCT);
                 }

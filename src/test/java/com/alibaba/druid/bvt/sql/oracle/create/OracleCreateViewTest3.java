@@ -104,7 +104,7 @@ public class OracleCreateViewTest3 extends OracleTest {
                         "\t\tAND outer.dbinc_key = bdf.dbinc_key\n" +
                         "\t\tAND outer.file# = file#\n" +
                         "\t\tAND outer.stamp < bs.stamp\n" +
-                        "\t)",//
+                        ")",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

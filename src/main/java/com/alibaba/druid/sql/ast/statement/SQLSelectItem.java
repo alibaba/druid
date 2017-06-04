@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -75,15 +76,7 @@ public class SQLSelectItem extends SQLObjectImpl {
             }
         }
 
-        if (alias.length() > 2) {
-            char c0 = alias.charAt(0);
-            char x0 = alias.charAt(alias.length() - 1);
-            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
-                alias = alias.substring(1, alias.length() - 1);
-            }
-        }
-
-        return alias;
+        return SQLUtils.normalize(alias);
     }
 
     public String getAlias() {

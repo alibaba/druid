@@ -47,6 +47,14 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return this.owner;
     }
 
+    public String getOwnernName() {
+        if (owner instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) owner).getName();
+        }
+
+        return null;
+    }
+
     public void setOwner(SQLExpr owner) {
         if (owner != null) {
             owner.setParent(this);
@@ -123,4 +131,11 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return propertyExpr;
     }
 
+    public boolean matchOwner(String alias) {
+        if (owner instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) owner).getName().equalsIgnoreCase(alias);
+        }
+
+        return false;
+    }
 }

@@ -35,7 +35,7 @@ public class MySqlFormatTest2 extends TestCase {
                 + "\n\t\tFROM ce_queue cq2"
                 + "\n\t\tWHERE cq.component_uuid = cq2.component_uuid"
                 + "\n\t\t\tAND cq2.status <> ?"
-                + "\n\t\t)"
+                + "\n\t)"
                 + "\nORDER BY cq.created_at ASC, cq.id ASC", SQLUtils.format(text, JdbcUtils.MYSQL));
     }
 }

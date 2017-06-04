@@ -117,7 +117,12 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM t1\nWHERE column1 = (\n\tSELECT column1\n\tFROM t2\n\t);", text);
+        assertEquals("SELECT *\n" +
+                "FROM t1\n" +
+                "WHERE column1 = (\n" +
+                "\tSELECT column1\n" +
+                "\tFROM t2\n" +
+                ");", text);
     }
 
     public void test_7() throws Exception {
@@ -133,7 +138,7 @@ public class SELECT_Syntax_Test extends TestCase {
                 + "\nWHERE EXISTS (" //
                 + "\n\tSELECT *" //
                 + "\n\tFROM t2"
-                + "\n\t);", text);
+                + "\n);", text);
     }
 
     public void test_8() throws Exception {
@@ -150,7 +155,7 @@ public class SELECT_Syntax_Test extends TestCase {
                 + "\n\tSELECT *"
                 + "\n\tFROM cities_stores"
                 + "\n\tWHERE cities_stores.store_type = stores.store_type"
-                + "\n\t);",
+                + "\n);",
                             text);
     }
 
@@ -209,8 +214,18 @@ public class SELECT_Syntax_Test extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 NOT IN (SELECT s1\n\tFROM t2)", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select s1\nfrom t1\nwhere s1 not in (select s1\n\tfrom t2)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SELECT s1\n" +
+                "FROM t1\n" +
+                "WHERE s1 NOT IN (\n" +
+                "\tSELECT s1\n" +
+                "\tFROM t2\n" +
+                ")", SQLUtils.toMySqlString(stmt));
+        assertEquals("select s1\n" +
+                "from t1\n" +
+                "where s1 not in (\n" +
+                "\tselect s1\n" +
+                "\tfrom t2\n" +
+                ")", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_13() throws Exception {
@@ -220,8 +235,18 @@ public class SELECT_Syntax_Test extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 IN (SELECT s1\n\tFROM t2)", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select s1\nfrom t1\nwhere s1 in (select s1\n\tfrom t2)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SELECT s1\n" +
+                "FROM t1\n" +
+                "WHERE s1 IN (\n" +
+                "\tSELECT s1\n" +
+                "\tFROM t2\n" +
+                ")", SQLUtils.toMySqlString(stmt));
+        assertEquals("select s1\n" +
+                "from t1\n" +
+                "where s1 in (\n" +
+                "\tselect s1\n" +
+                "\tfrom t2\n" +
+                ")", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_14() throws Exception {

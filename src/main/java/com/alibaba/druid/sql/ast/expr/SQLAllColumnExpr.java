@@ -40,4 +40,8 @@ public class SQLAllColumnExpr extends SQLExprImpl {
     public boolean equals(Object o) {
         return o instanceof SQLAllColumnExpr;
     }
+
+    public SQLAllColumnExpr clone() {
+        return new SQLAllColumnExpr();
+    }
 }

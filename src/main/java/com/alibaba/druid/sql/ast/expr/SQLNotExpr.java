@@ -86,4 +86,12 @@ public class SQLNotExpr extends SQLExprImpl implements Serializable {
         }
         return true;
     }
+
+    public SQLNotExpr clone() {
+        SQLNotExpr x = new SQLNotExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        return x;
+    }
 }
