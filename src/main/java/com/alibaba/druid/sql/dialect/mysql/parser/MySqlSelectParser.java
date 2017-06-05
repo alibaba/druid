@@ -78,6 +78,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
+            select.setBracket(true);
             accept(Token.RPAREN);
 
             return queryRest(select);
@@ -210,9 +211,12 @@ public class MySqlSelectParser extends SQLSelectParser {
             SQLTableSource tableSource;
             if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
                 SQLSelect select = select();
+
                 accept(Token.RPAREN);
+
                 SQLSelectQuery query = queryRest(select.getQuery());
                 if (query instanceof SQLUnionQuery) {
+                    select.getQuery().setBracket(true);
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
                     tableSource = new SQLSubqueryTableSource(select);

@@ -256,8 +256,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             SQLSelectItem selectItem = selectList.get(i);
             SQLExpr selectItemExpr = selectItem.getExpr();
             if (i != 0) {
-                if (lineItemCount == selectListNumberOfLine
-                        || selectItemExpr instanceof SQLQueryExpr) {
+                if (selectItemExpr instanceof SQLMethodInvokeExpr) {
+                    SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) selectItemExpr;
+                    int paramCount =  methodInvokeExpr.getParameters().size();
+                    lineItemCount += paramCount;
+                    if (lineItemCount >= selectListNumberOfLine) {
+                        lineItemCount = paramCount;
+                        println();
+                    }
+                } else if (lineItemCount >= selectListNumberOfLine
+                        || selectItemExpr instanceof SQLQueryExpr
+                        || selectItemExpr instanceof SQLCaseExpr) {
                     lineItemCount = 0;
                     println();
                 }
@@ -498,28 +507,53 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCaseExpr x) {
+        incrementIndent();
         print0(ucase ? "CASE " : "case ");
         if (x.getValueExpr() != null) {
             x.getValueExpr().accept(this);
-            print0(" ");
         }
 
-        printAndAccept(x.getItems(), " ");
-
-        if (x.getElseExpr() != null) {
-            print0(ucase ? " ELSE " : " else ");
-            x.getElseExpr().accept(this);
+        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+            println();
+            x.getItems().get(i).accept(this);
         }
 
-        print0(ucase ? " END" : " end");
+        SQLExpr elExpr = x.getElseExpr();
+        if (elExpr != null) {
+            println();
+            print0(ucase ? "ELSE " : "else ");
+            if (elExpr instanceof SQLCaseExpr) {
+                incrementIndent();
+                println();
+                elExpr.accept(this);
+                decrementIndent();
+            } else {
+                elExpr.accept(this);
+            }
+        }
+
+        decrementIndent();
+        println();
+        print0(ucase ? "END" : "end");
+
         return false;
     }
 
     public boolean visit(SQLCaseExpr.Item x) {
         print0(ucase ? "WHEN " : "when ");
-        x.getConditionExpr().accept(this);
+        SQLExpr expr = x.getConditionExpr();
+        expr.accept(this);
         print0(ucase ? " THEN " : " then ");
-        x.getValueExpr().accept(this);
+        SQLExpr valueExpr = x.getValueExpr();
+        if (valueExpr instanceof SQLCaseExpr) {
+            incrementIndent();
+            println();
+            valueExpr.accept(this);
+            decrementIndent();
+        } else {
+            valueExpr.accept(this);
+        }
+
         return false;
     }
 
@@ -861,13 +895,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
-        if (x.getOwner() != null) {
-            x.getOwner().accept(this);
-            print('.');
+        SQLExpr owner = x.getOwner();
+        if (owner != null) {
+            printMethodOwner(owner);
         }
+
         printFunctionName(x.getMethodName());
         print('(');
-        printAndAccept(x.getParameters(), ", ");
+
+        List<SQLExpr> parameters = x.getParameters();
+        for (int i = 0, size = parameters.size(); i < size; ++i) {
+            if (i != 0) {
+                print0(", ");
+            }
+            SQLExpr param = x.getParameters().get(i);
+            param.accept(this);
+        }
 
         SQLExpr from = x.getFrom();
         if (from != null) {
@@ -877,6 +920,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         print(')');
         return false;
+    }
+
+    protected void printMethodOwner(SQLExpr owner) {
+        owner.accept(this);
+        print('.');
     }
 
     protected void printFunctionName(String name) {
@@ -1859,33 +1907,35 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLUnionQuery x) {
         SQLUnionOperator operator = x.getOperator();
 
-        boolean mysqlUnion = (JdbcConstants.MYSQL.equals(dbType) //
-                && (operator == SQLUnionOperator.UNION || operator == SQLUnionOperator.UNION_ALL));
+        boolean bracket = x.isBracket();
 
-        if (mysqlUnion) {
+        if (bracket) {
             print('(');
         }
         x.getLeft().accept(this);
-        if (mysqlUnion) {
-            print(')');
-        }
+
         println();
         print0(ucase ? operator.name : operator.name_lcase);
         println();
 
-        boolean needParen = x.getOrderBy() != null || mysqlUnion;
+        SQLSelectQuery right = x.getRight();
+        boolean needParen = x.getOrderBy() != null && !right.isBracket();
 
         if (needParen) {
             print('(');
-            x.getRight().accept(this);
+            right.accept(this);
             print(')');
         } else {
-            x.getRight().accept(this);
+            right.accept(this);
         }
 
         if (x.getOrderBy() != null) {
             println();
             x.getOrderBy().accept(this);
+        }
+
+        if (bracket) {
+            print(')');
         }
 
         return false;

@@ -71,8 +71,10 @@ public class OracleCreateViewTest4 extends OracleTest {
                         "\t\"ROW_WAIT_ROW#\"\n" +
                         ")\n" +
                         "AS\n" +
-                        "SELECT owner AS obj_owner, object_name AS obj_name, object_type AS obj_type, dbms_rowid.rowid_create(1, row_wait_obj#, ROW_WAIT_FILE#, ROW_WAIT_BLOCK#, ROW_WAIT_ROW#) AS obj_rowid, a.username AS db_user\n" +
-                        "\t, a.SID AS SID, a.TYPE AS lock_type, a.row_wait_file#, a.row_wait_block#, a.row_wait_row#\n" +
+                        "SELECT owner AS obj_owner, object_name AS obj_name, object_type AS obj_type\n" +
+                        "\t, dbms_rowid.rowid_create(1, row_wait_obj#, ROW_WAIT_FILE#, ROW_WAIT_BLOCK#, ROW_WAIT_ROW#) AS obj_rowid\n" +
+                        "\t, a.username AS db_user, a.SID AS SID, a.TYPE AS lock_type, a.row_wait_file#, a.row_wait_block#\n" +
+                        "\t, a.row_wait_row#\n" +
                         "FROM TB_001, (\n" +
                         "\tSELECT /*+ no_merge(a) no_merge(b) */ a.username, a.SID, a.row_wait_obj#, a.ROW_WAIT_FILE#, a.ROW_WAIT_BLOCK#\n" +
                         "\t\t, a.ROW_WAIT_ROW#, b.TYPE\n" +

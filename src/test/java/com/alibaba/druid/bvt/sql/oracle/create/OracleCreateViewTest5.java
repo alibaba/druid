@@ -62,7 +62,8 @@ public class OracleCreateViewTest5 extends OracleTest {
                         "\t\"LOCK_MODE\"\n" +
                         ")\n" +
                         "AS\n" +
-                        "SELECT /*+ no_merge(lo) */ DO.object_name, lo.SESSION_ID, lo.oracle_username, lo.OS_USER_NAME, DECODE(locked_mode, 1, 'SELECT', 2, 'SELECT FOR UPDATE / LOCK ROW SHARE', 3, 'INSERT/UPDATE/DELETE/LOCK ROW EXCLUSIVE', 4, 'CREATE INDEX/LOCK SHARE', 5, 'LOCK SHARE ROW EXCLUSIVE', 6, 'ALTER TABLE/DROP TABLE/DROP INDEX/TRUNCATE TABLE/LOCK EXCLUSIVE') AS sql_actions\n" +
+                        "SELECT /*+ no_merge(lo) */ DO.object_name, lo.SESSION_ID, lo.oracle_username, lo.OS_USER_NAME\n" +
+                        "\t, DECODE(locked_mode, 1, 'SELECT', 2, 'SELECT FOR UPDATE / LOCK ROW SHARE', 3, 'INSERT/UPDATE/DELETE/LOCK ROW EXCLUSIVE', 4, 'CREATE INDEX/LOCK SHARE', 5, 'LOCK SHARE ROW EXCLUSIVE', 6, 'ALTER TABLE/DROP TABLE/DROP INDEX/TRUNCATE TABLE/LOCK EXCLUSIVE') AS sql_actions\n" +
                         "\t, DECODE(locked_mode, 1, 'NULL', 2, 'SS - SUB SHARE', 3, 'SX - SUB EXCLUSIVE', 4, 'S - SHARE', 5, 'SSX - SHARE/SUB EXCLUSIVE', 6, 'X - EXCLUSIVE') AS Lock_mode\n" +
                         "FROM sys.V_$LOCKED_OBJECT lo, TB_002 DO\n" +
                         "WHERE DO.object_id = lo.object_id",//

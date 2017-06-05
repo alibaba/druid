@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
 public class PGValuesQuery extends PGSQLObjectImpl implements SQLSelectQuery {
+    private boolean          bracket  = false;
 
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
@@ -39,4 +40,13 @@ public class PGValuesQuery extends PGSQLObjectImpl implements SQLSelectQuery {
         visitor.endVisit(this);
     }
 
+    @Override
+    public boolean isBracket() {
+        return bracket;
+    }
+
+    @Override
+    public void setBracket(boolean bracket) {
+        this.bracket = bracket;
+    }
 }

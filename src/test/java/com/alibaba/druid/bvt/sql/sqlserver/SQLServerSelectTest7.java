@@ -80,7 +80,11 @@ public class SQLServerSelectTest7 extends TestCase {
 				"\t\tFROM sec_portal_menu t, menu_view x\n" +
 				"\t\tWHERE t.parent_id = x.menu_id\n" +
 				"\t)\n" +
-				"SELECT t.menu_id AS \"id\", t.menu_name AS \"name\", t.parent_id AS \"pId\", CASE t.level WHEN 1 THEN 'true' ELSE 'false' END AS \"open\", t.link_type AS \"linkType\"\n" +
+				"SELECT t.menu_id AS \"id\", t.menu_name AS \"name\", t.parent_id AS \"pId\"\n" +
+				"\t, CASE t.level\n" +
+				"\t\tWHEN 1 THEN 'true'\n" +
+				"\t\tELSE 'false'\n" +
+				"\tEND AS \"open\", t.link_type AS \"linkType\"\n" +
 				"FROM menu_view t\n" +
 				"WHERE 1 = 1\n" +
 				"\tAND t.deleted = 0\n" +

@@ -35,7 +35,11 @@ public class ControlFlowFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CASE 1 WHEN 1 THEN 'one' WHEN 2 THEN 'two' ELSE 'more' END;", text);
+        Assert.assertEquals("SELECT CASE 1\n" +
+                "\t\tWHEN 1 THEN 'one'\n" +
+                "\t\tWHEN 2 THEN 'two'\n" +
+                "\t\tELSE 'more'\n" +
+                "\tEND;", text);
     }
 
     public void test_1() throws Exception {

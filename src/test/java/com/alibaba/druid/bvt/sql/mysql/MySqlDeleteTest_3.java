@@ -50,14 +50,14 @@ public class MySqlDeleteTest_3 extends MysqlTest {
                 "\t\t\tSELECT *\n" +
                 "\t\t\tFROM t3\n" +
                 "\t\t\tWHERE ROW(5 * t2.s1, 77) = (\n" +
-                "\t\t\t\t(SELECT 50, 11 * s1\n" +
-                "\t\t\t\tFROM t4)\n" +
+                "\t\t\t\tSELECT 50, 11 * s1\n" +
+                "\t\t\t\tFROM t4\n" +
                 "\t\t\t\tUNION\n" +
-                "\t\t\t\t(SELECT 50, 77\n" +
+                "\t\t\t\tSELECT 50, 77\n" +
                 "\t\t\t\tFROM (\n" +
                 "\t\t\t\t\tSELECT *\n" +
                 "\t\t\t\t\tFROM t5\n" +
-                "\t\t\t\t) t5)\n" +
+                "\t\t\t\t) t5\n" +
                 "\t\t\t)\n" +
                 "\t\t)\n" +
                 "\t)", SQLUtils.toMySqlString(stmt));
@@ -69,14 +69,14 @@ public class MySqlDeleteTest_3 extends MysqlTest {
                 "\t\t\tselect *\n" +
                 "\t\t\tfrom t3\n" +
                 "\t\t\twhere ROW(5 * t2.s1, 77) = (\n" +
-                "\t\t\t\t(select 50, 11 * s1\n" +
-                "\t\t\t\tfrom t4)\n" +
+                "\t\t\t\tselect 50, 11 * s1\n" +
+                "\t\t\t\tfrom t4\n" +
                 "\t\t\t\tunion\n" +
-                "\t\t\t\t(select 50, 77\n" +
+                "\t\t\t\tselect 50, 77\n" +
                 "\t\t\t\tfrom (\n" +
                 "\t\t\t\t\tselect *\n" +
                 "\t\t\t\t\tfrom t5\n" +
-                "\t\t\t\t) t5)\n" +
+                "\t\t\t\t) t5\n" +
                 "\t\t\t)\n" +
                 "\t\t)\n" +
                 "\t)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));

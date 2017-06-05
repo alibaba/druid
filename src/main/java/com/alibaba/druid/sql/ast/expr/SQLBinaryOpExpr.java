@@ -289,4 +289,12 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
 
         return new SQLBinaryOpExpr(a, SQLBinaryOperator.BooleanAnd, b);
     }
+
+    public static SQLBinaryOpExpr isNotNull(SQLExpr expr) {
+        return new SQLBinaryOpExpr(expr, SQLBinaryOperator.IsNot, new SQLNullExpr());
+    }
+
+    public static SQLBinaryOpExpr isNull(SQLExpr expr) {
+        return new SQLBinaryOpExpr(expr, SQLBinaryOperator.Is, new SQLNullExpr());
+    }
 }

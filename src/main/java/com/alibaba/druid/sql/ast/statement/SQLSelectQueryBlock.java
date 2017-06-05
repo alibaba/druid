@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery {
-
+    private boolean                     bracket         = false;
     protected int                       distionOption;
     protected final List<SQLSelectItem> selectList      = new ArrayList<SQLSelectItem>();
 
@@ -375,5 +375,15 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         if (limit != null) {
             x.setLimit(limit.clone());
         }
+    }
+
+    @Override
+    public boolean isBracket() {
+        return bracket;
+    }
+
+    @Override
+    public void setBracket(boolean bracket) {
+        this.bracket = bracket;
     }
 }

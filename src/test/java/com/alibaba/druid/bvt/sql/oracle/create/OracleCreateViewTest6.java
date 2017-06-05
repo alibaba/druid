@@ -119,13 +119,16 @@ public class OracleCreateViewTest6 extends OracleTest {
                         "\t\"IS_MERGED\"\n" +
                         ")\n" +
                         "AS\n" +
-                        "SELECT ID, GMT_CREATE, utl_raw.cast_to_raw(CREATOR) AS CREATOR, GMT_MODIFIED, utl_raw.cast_to_raw(MODIFIER) AS MODIFIER\n" +
-                        "\t, IS_DELETED, utl_raw.cast_to_raw(CONTRACT_PARTY) AS CONTRACT_PARTY, utl_raw.cast_to_raw(COMPANY_NAME) AS COMPANY_NAME, utl_raw.cast_to_raw(PRODUCT_TYPE) AS PRODUCT_TYPE, utl_raw.cast_to_raw(PERIOD) AS PERIOD\n" +
-                        "\t, JOIN, OVER, CONTRACT_TERM, CONTRACT_CASH, EXEC_CASH\n" +
-                        "\t, CANCELED_CASH, RECEIVERD_CASH, O_S_CASH, utl_raw.cast_to_raw(REMARK) AS REMARK, FENTAN_CHECK\n" +
-                        "\t, TOTAL_CASH, NOT_CONFIRMED, PRE_RECEIVED, NOT_RECEIVED, CONTRACT_DATE\n" +
-                        "\t, utl_raw.cast_to_raw(OWNER_1) AS OWNER_1, AREA_ID_1, utl_raw.cast_to_raw(FIRST_OWNER) AS FIRST_OWNER, FIRST_AREA_ID, utl_raw.cast_to_raw(CONTRACT_ID) AS CONTRACT_ID\n" +
-                        "\t, utl_raw.cast_to_raw(IS_RENEW_UPGRADE) AS IS_RENEW_UPGRADE, CATEGORY_ID_1, CATEGORY_ID_2, FIRST_RECEIPT_DATE, utl_raw.cast_to_raw(RECEIPT_REMARK) AS RECEIPT_REMARK\n" +
+                        "SELECT ID, GMT_CREATE, utl_raw.cast_to_raw(CREATOR) AS CREATOR, GMT_MODIFIED\n" +
+                        "\t, utl_raw.cast_to_raw(MODIFIER) AS MODIFIER, IS_DELETED, utl_raw.cast_to_raw(CONTRACT_PARTY) AS CONTRACT_PARTY\n" +
+                        "\t, utl_raw.cast_to_raw(COMPANY_NAME) AS COMPANY_NAME, utl_raw.cast_to_raw(PRODUCT_TYPE) AS PRODUCT_TYPE\n" +
+                        "\t, utl_raw.cast_to_raw(PERIOD) AS PERIOD, JOIN, OVER, CONTRACT_TERM\n" +
+                        "\t, CONTRACT_CASH, EXEC_CASH, CANCELED_CASH, RECEIVERD_CASH, O_S_CASH\n" +
+                        "\t, utl_raw.cast_to_raw(REMARK) AS REMARK, FENTAN_CHECK, TOTAL_CASH, NOT_CONFIRMED\n" +
+                        "\t, PRE_RECEIVED, NOT_RECEIVED, CONTRACT_DATE, utl_raw.cast_to_raw(OWNER_1) AS OWNER_1\n" +
+                        "\t, AREA_ID_1, utl_raw.cast_to_raw(FIRST_OWNER) AS FIRST_OWNER, FIRST_AREA_ID\n" +
+                        "\t, utl_raw.cast_to_raw(CONTRACT_ID) AS CONTRACT_ID, utl_raw.cast_to_raw(IS_RENEW_UPGRADE) AS IS_RENEW_UPGRADE, CATEGORY_ID_1\n" +
+                        "\t, CATEGORY_ID_2, FIRST_RECEIPT_DATE, utl_raw.cast_to_raw(RECEIPT_REMARK) AS RECEIPT_REMARK\n" +
                         "\t, utl_raw.cast_to_raw(CONTRACT_SERIAL) AS CONTRACT_SERIAL, IS_MERGED\n" +
                         "FROM TB_002",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));

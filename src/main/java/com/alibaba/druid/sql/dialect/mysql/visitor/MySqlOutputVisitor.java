@@ -193,6 +193,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(MySqlSelectQueryBlock x) {
+        final boolean bracket = x.isBracket();
+        if (bracket) {
+            print('(');
+        }
+
         if ((!isParameterized()) && isPrettyFormat() && x.hasBeforeComment()) {
             printComment(x.getBeforeCommentsDirect(), "\n");
         }
@@ -307,6 +312,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.isLockInShareMode()) {
             println();
             print0(ucase ? "LOCK IN SHARE MODE" : "lock in share mode");
+        }
+
+        if (bracket) {
+            print(')');
         }
 
         return false;
@@ -716,10 +725,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
+        SQLExpr owner = x.getOwner();
         if ("SUBSTRING".equalsIgnoreCase(x.getMethodName())) {
-            if (x.getOwner() != null) {
-                x.getOwner().accept(this);
-                print('.');
+            if (owner != null) {
+                printMethodOwner(owner);
             }
             print0(x.getMethodName());
             print('(');
@@ -741,9 +750,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if ("TRIM".equalsIgnoreCase(x.getMethodName())) {
-            if (x.getOwner() != null) {
-                x.getOwner().accept(this);
-                print('.');
+            if (owner != null) {
+                printMethodOwner(owner);
             }
             print0(x.getMethodName());
             print('(');
@@ -768,9 +776,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (("CONVERT".equalsIgnoreCase(x.getMethodName())) || "CHAR".equalsIgnoreCase(x.getMethodName())) {
-            if (x.getOwner() != null) {
-                x.getOwner().accept(this);
-                print('.');
+            if (owner != null) {
+                printMethodOwner(owner);
             }
             print0(x.getMethodName());
             print('(');
@@ -2569,37 +2576,37 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     }
 
-    public boolean visit(SQLUnionQuery x) {
-        print('(');
-        x.getLeft().accept(this);
-        print(')');
-        println();
-        print0(ucase ? x.getOperator().name : x.getOperator().name_lcase);
-        println();
-
-        SQLSelectQuery right = x.getRight();
-        boolean needParen = ! (right instanceof SQLUnionQuery);
-
-        if (needParen) {
-            print('(');
-            right.accept(this);
-            print(')');
-        } else {
-            right.accept(this);
-        }
-
-        if (x.getOrderBy() != null) {
-            println();
-            x.getOrderBy().accept(this);
-        }
-
-        if (x.getLimit() != null) {
-            println();
-            x.getLimit().accept(this);
-        }
-
-        return false;
-    }
+//    public boolean visit(SQLUnionQuery x) {
+//        print('(');
+//        x.getLeft().accept(this);
+//        print(')');
+//        println();
+//        print0(ucase ? x.getOperator().name : x.getOperator().name_lcase);
+//        println();
+//
+//        SQLSelectQuery right = x.getRight();
+//        boolean needParen = ! (right instanceof SQLUnionQuery);
+//
+//        if (needParen) {
+//            print('(');
+//            right.accept(this);
+//            print(')');
+//        } else {
+//            right.accept(this);
+//        }
+//
+//        if (x.getOrderBy() != null) {
+//            println();
+//            x.getOrderBy().accept(this);
+//        }
+//
+//        if (x.getLimit() != null) {
+//            println();
+//            x.getLimit().accept(this);
+//        }
+//
+//        return false;
+//    }
 
     @Override
     public boolean visit(MySqlUseIndexHint x) {

@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
+    private boolean          bracket  = false;
+
     private SQLSelectQuery   left;
     private SQLSelectQuery   right;
     private SQLUnionOperator operator = SQLUnionOperator.UNION;
@@ -95,5 +97,13 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
             limit.setParent(this);
         }
         this.limit = limit;
+    }
+
+    public boolean isBracket() {
+        return bracket;
+    }
+
+    public void setBracket(boolean bracket) {
+        this.bracket = bracket;
     }
 }

@@ -810,5 +810,54 @@ public class SQLUtils {
 
         return false;
     }
+
+    public static SQLCaseExpr decodeToCase(SQLMethodInvokeExpr x) {
+        if (x == null) {
+            return null;
+        }
+
+        if (!"decode".equalsIgnoreCase(x.getMethodName())) {
+            throw new IllegalArgumentException(x.getMethodName());
+        }
+
+        List<SQLExpr> parameters = x.getParameters();
+        SQLCaseExpr caseExpr = new SQLCaseExpr();
+
+        caseExpr.setValueExpr(parameters.get(0));
+
+        for (int i = 1; i + 1 < parameters.size(); i += 2) {
+            SQLCaseExpr.Item item = new SQLCaseExpr.Item();
+            SQLExpr conditionExpr = parameters.get(i);
+
+            item.setConditionExpr(conditionExpr);
+
+            SQLExpr valueExpr = parameters.get(i + 1);
+
+            if (valueExpr instanceof SQLMethodInvokeExpr) {
+                SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) valueExpr;
+                if ("decode".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
+                    valueExpr = decodeToCase(methodInvokeExpr);
+                }
+            }
+
+            item.setValueExpr(valueExpr);
+            caseExpr.addItem(item);
+        }
+
+        if (parameters.size() % 2 == 0) {
+            SQLExpr defaultExpr = parameters.get(parameters.size() - 1);
+
+            if (defaultExpr instanceof SQLMethodInvokeExpr) {
+                SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) defaultExpr;
+                if ("decode".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
+                    defaultExpr = decodeToCase(methodInvokeExpr);
+                }
+            }
+
+            caseExpr.setElseExpr(defaultExpr);
+        }
+
+        return caseExpr;
+    }
 }
 

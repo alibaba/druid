@@ -134,7 +134,9 @@ public class BitFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT b + 0, BIN(b + 0), OCT(b + 0), HEX(b + 0)\nFROM t;", text);
+        Assert.assertEquals("SELECT b + 0, BIN(b + 0), OCT(b + 0)\n" +
+                "\t, HEX(b + 0)\n" +
+                "FROM t;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

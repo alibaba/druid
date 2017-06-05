@@ -19,11 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -238,32 +234,6 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         }
         println();
         x.getQuery().accept(this);
-
-        return false;
-    }
-
-    public boolean visit(SQLCaseExpr x) {
-        incrementIndent();
-        print0(ucase ? "CASE " : "case ");
-        if (x.getValueExpr() != null) {
-            x.getValueExpr().accept(this);
-            println();
-        }
-
-        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
-            println();
-            x.getItems().get(i).accept(this);
-        }
-
-        if (x.getElseExpr() != null) {
-            println();
-            print0(ucase ? "ELSE " : "else ");
-            x.getElseExpr().accept(this);
-        }
-
-        decrementIndent();
-        println();
-        print0(ucase ? "END" : "end");
 
         return false;
     }
@@ -685,16 +655,9 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         return false;
     }
 
-    public boolean visit(SQLMethodInvokeExpr x) {
-        if (x.getOwner() != null) {
-            x.getOwner().accept(this);
-            print(':');
-        }
-        printFunctionName(x.getMethodName());
-        print('(');
-        printAndAccept(x.getParameters(), ", ");
-        print(')');
-        return false;
+    protected void printMethodOwner(SQLExpr owner) {
+        owner.accept(this);
+        print(':');
     }
 
     protected void printJoinType(JoinType joinType) {

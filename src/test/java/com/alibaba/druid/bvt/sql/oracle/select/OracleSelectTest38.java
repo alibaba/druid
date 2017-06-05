@@ -62,7 +62,13 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t(\n" +
                     "\t\t\tSELECT substr(xzqh, 1, 6) AS xzqh, swrslx, SUM(swrs_count) AS acd_totle\n" +
                     "\t\t\tFROM (\n" +
-                    "\t\t\t\tSELECT xzqh, sglx, CASE WHEN swrs7 < 3 THEN '1' WHEN swrs7 < 5 THEN '2' WHEN swrs7 <= 9 THEN '3' ELSE '4' END AS swrslx, 1 AS swrs_count\n" +
+                    "\t\t\t\tSELECT xzqh, sglx\n" +
+                    "\t\t\t\t\t, CASE \n" +
+                    "\t\t\t\t\t\tWHEN swrs7 < 3 THEN '1'\n" +
+                    "\t\t\t\t\t\tWHEN swrs7 < 5 THEN '2'\n" +
+                    "\t\t\t\t\t\tWHEN swrs7 <= 9 THEN '3'\n" +
+                    "\t\t\t\t\t\tELSE '4'\n" +
+                    "\t\t\t\t\tEND AS swrslx, 1 AS swrs_count\n" +
                     "\t\t\t\tFROM acduser.vw_acd_info\n" +
                     "\t\t\t\tWHERE sglx = '1'\n" +
                     "\t\t\t\t\tAND sgfssj >= ?\n" +
@@ -73,7 +79,10 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t, kreis_code, kreis_name, px1, py1, px2\n" +
                     "\t\t, py2\n" +
                     "\tFROM (\n" +
-                    "\t\tSELECT xzqh, nvl(MAX(decode(swrslx, '1', acd_totle)), 0) AS less3, nvl(MAX(decode(swrslx, '2', acd_totle)), 0) AS f3to5, nvl(MAX(decode(swrslx, '3', acd_totle)), 0) AS f5to9, nvl(MAX(decode(swrslx, '4', acd_totle)), 0) AS more9\n" +
+                    "\t\tSELECT xzqh, nvl(MAX(decode(swrslx, '1', acd_totle)), 0) AS less3\n" +
+                    "\t\t\t, nvl(MAX(decode(swrslx, '2', acd_totle)), 0) AS f3to5\n" +
+                    "\t\t\t, nvl(MAX(decode(swrslx, '3', acd_totle)), 0) AS f5to9\n" +
+                    "\t\t\t, nvl(MAX(decode(swrslx, '4', acd_totle)), 0) AS more9\n" +
                     "\t\tFROM (\n" +
                     "\t\t\tSELECT *\n" +
                     "\t\t\tFROM acduser.vw_kreis_statics_t\n" +
@@ -103,7 +112,13 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t(\n" +
                     "\t\t\tselect substr(xzqh, 1, 6) as xzqh, swrslx, sum(swrs_count) as acd_totle\n" +
                     "\t\t\tfrom (\n" +
-                    "\t\t\t\tselect xzqh, sglx, case when swrs7 < 3 then '1' when swrs7 < 5 then '2' when swrs7 <= 9 then '3' else '4' end as swrslx, 1 as swrs_count\n" +
+                    "\t\t\t\tselect xzqh, sglx\n" +
+                    "\t\t\t\t\t, case \n" +
+                    "\t\t\t\t\t\twhen swrs7 < 3 then '1'\n" +
+                    "\t\t\t\t\t\twhen swrs7 < 5 then '2'\n" +
+                    "\t\t\t\t\t\twhen swrs7 <= 9 then '3'\n" +
+                    "\t\t\t\t\t\telse '4'\n" +
+                    "\t\t\t\t\tend as swrslx, 1 as swrs_count\n" +
                     "\t\t\t\tfrom acduser.vw_acd_info\n" +
                     "\t\t\t\twhere sglx = '1'\n" +
                     "\t\t\t\t\tand sgfssj >= ?\n" +
@@ -114,7 +129,10 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t, kreis_code, kreis_name, px1, py1, px2\n" +
                     "\t\t, py2\n" +
                     "\tfrom (\n" +
-                    "\t\tselect xzqh, nvl(max(decode(swrslx, '1', acd_totle)), 0) as less3, nvl(max(decode(swrslx, '2', acd_totle)), 0) as f3to5, nvl(max(decode(swrslx, '3', acd_totle)), 0) as f5to9, nvl(max(decode(swrslx, '4', acd_totle)), 0) as more9\n" +
+                    "\t\tselect xzqh, nvl(max(decode(swrslx, '1', acd_totle)), 0) as less3\n" +
+                    "\t\t\t, nvl(max(decode(swrslx, '2', acd_totle)), 0) as f3to5\n" +
+                    "\t\t\t, nvl(max(decode(swrslx, '3', acd_totle)), 0) as f5to9\n" +
+                    "\t\t\t, nvl(max(decode(swrslx, '4', acd_totle)), 0) as more9\n" +
                     "\t\tfrom (\n" +
                     "\t\t\tselect *\n" +
                     "\t\t\tfrom acduser.vw_kreis_statics_t\n" +

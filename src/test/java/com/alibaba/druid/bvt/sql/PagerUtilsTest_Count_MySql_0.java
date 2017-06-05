@@ -60,11 +60,11 @@ public class PagerUtilsTest_Count_MySql_0 extends TestCase {
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
         Assert.assertEquals("SELECT COUNT(*)\n" +
                 "FROM (\n" +
-                "\t(SELECT id, name\n" +
-                "\tFROM t1)\n" +
+                "\tSELECT id, name\n" +
+                "\tFROM t1\n" +
                 "\tUNION\n" +
-                "\t(SELECT id, name\n" +
-                "\tFROM t2)\n" +
+                "\tSELECT id, name\n" +
+                "\tFROM t2\n" +
                 ") ALIAS_COUNT", result);
     }
 }
