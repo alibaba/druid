@@ -330,5 +330,8 @@ public class Utils {
         b[off + 1] = (byte) (val >>> 48);
         b[off + 0] = (byte) (val >>> 56);
     }
-   
+
+    public static boolean equals(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
+    }
 }

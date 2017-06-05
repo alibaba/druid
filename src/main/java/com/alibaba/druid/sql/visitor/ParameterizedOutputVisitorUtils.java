@@ -163,8 +163,10 @@ public class ParameterizedOutputVisitorUtils {
         SQLObject parent = x.getParent();
 
         if (left instanceof SQLLiteralExpr && right instanceof SQLLiteralExpr) {
-            if (x.getOperator() == SQLBinaryOperator.Equality //
-                || x.getOperator() == SQLBinaryOperator.NotEqual) {
+            SQLBinaryOperator op = x.getOperator();
+            if (op == SQLBinaryOperator.Equality
+                    || op == SQLBinaryOperator.NotEqual
+                    || op == SQLBinaryOperator.LessThanOrGreater) {
                 if((left instanceof SQLIntegerExpr) && (right instanceof SQLIntegerExpr) ) {
                     if (((SQLIntegerExpr) left).getNumber().intValue() < 100) {
                         left.putAttribute(ATTR_PARAMS_SKIP, true);

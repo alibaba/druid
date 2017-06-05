@@ -777,6 +777,10 @@ public class SQLUtils {
     }
 
     public static String normalize(String name) {
+        if (name == null) {
+            return null;
+        }
+
         if (name.length() > 2) {
             char c0 = name.charAt(0);
             char x0 = name.charAt(name.length() - 1);
@@ -858,6 +862,50 @@ public class SQLUtils {
         }
 
         return caseExpr;
+    }
+
+    public static boolean replaceInParent(SQLExpr expr, SQLExpr target) {
+        if (expr == null) {
+            return false;
+        }
+
+        SQLObject parent = expr.getParent();
+
+        if (parent instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryParent = (SQLBinaryOpExpr) expr.getParent();
+            if (binaryParent.getLeft() == expr) {
+                binaryParent.setLeft(target);
+                return true;
+            } else if (binaryParent.getRight() == expr) {
+                binaryParent.setRight(target);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        if (parent instanceof SQLSelectOrderByItem){
+            SQLSelectOrderByItem orderByItem = (SQLSelectOrderByItem) parent;
+            if (orderByItem.getExpr() == expr) {
+                orderByItem.setExpr(target);
+                return true;
+            }
+            return false;
+        }
+
+        if (parent instanceof SQLMethodInvokeExpr) {
+            SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) parent;
+            List<SQLExpr> parameters = methodInvokeExpr.getParameters();
+            for (int i = 0; i < parameters.size(); ++i) {
+                if (parameters.get(i) == expr) {
+                    parameters.set(i, target);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return false;
     }
 }
 

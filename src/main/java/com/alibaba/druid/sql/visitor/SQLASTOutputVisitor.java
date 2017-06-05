@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements ParameterizedVisitor, PrintableVisitor {
 
@@ -347,7 +348,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (parameters != null
                 && parameters.size() > 0
-                && x.getOperator() == SQLBinaryOperator.Equality
+                && operator == SQLBinaryOperator.Equality
                 && x.getRight() instanceof SQLVariantRefExpr
                 ) {
             SQLVariantRefExpr right = (SQLVariantRefExpr) x.getRight();
@@ -866,8 +867,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (parent instanceof SQLBinaryOpExpr) {
                 SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
                 SQLExpr left = binaryOpExpr.getLeft();
+                SQLBinaryOperator op = binaryOpExpr.getOperator();
                 if (left instanceof SQLIdentifierExpr
-                        && binaryOpExpr.getOperator() == SQLBinaryOperator.Equality) {
+                        && op == SQLBinaryOperator.Equality) {
                     String name = ((SQLIdentifierExpr) left).getName();
                     if ("rownum".equals(name)) {
                         print(1);
@@ -900,7 +902,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printMethodOwner(owner);
         }
 
-        printFunctionName(x.getMethodName());
+        String function = x.getMethodName();
+        printFunctionName(function);
         print('(');
 
         List<SQLExpr> parameters = x.getParameters();
@@ -909,6 +912,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(", ");
             }
             SQLExpr param = x.getParameters().get(i);
+
+            if (parameterized) {
+                if (JdbcUtils.ORACLE.equalsIgnoreCase(dbType)) {
+                    if (size == 2 && i == 1 && param instanceof SQLCharExpr) {
+                        if ("TO_CHAR".equalsIgnoreCase(function)
+                                || "TO_DATE".equalsIgnoreCase(function)) {
+                            param.putAttribute(ParameterizedOutputVisitorUtils.ATTR_PARAMS_SKIP, true);
+                        }
+                    }
+                }
+            }
+
             param.accept(this);
         }
 

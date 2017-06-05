@@ -1921,7 +1921,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         value.setTransactionHistogram(this.getTransactionHistogram().toArrayAndReset());
 
         value.setConnectionHoldTimeHistogram(this.getDataSourceStat().getConnectionHoldHistogram().toArrayAndReset());
-        value.removeAbandoned = this.isRemoveAbandoned();
+        value.setRemoveAbandoned(this.isRemoveAbandoned());
         value.setClobOpenCount(this.getDataSourceStat().getClobOpenCountAndReset());
         value.setBlobOpenCount(this.getDataSourceStat().getBlobOpenCountAndReset());
 

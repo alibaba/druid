@@ -135,6 +135,9 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.startWith);
             acceptChild(visitor, this.connectBy);
             acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.waitTime);
+            acceptChild(visitor, this.limit);
             acceptChild(visitor, this.modelClause);
             acceptChild(visitor, this.forUpdateOf);
         }

@@ -183,7 +183,6 @@ public class SQLSelect extends SQLObjectImpl {
 
     public boolean isSimple() {
         return withSubQuery == null
-                && orderBy == null
                 && (hints == null || hints.size() == 0)
                 && restriction == null
                 && (!forBrowse)

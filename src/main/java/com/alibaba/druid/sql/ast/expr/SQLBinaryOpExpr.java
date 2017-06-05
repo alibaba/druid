@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.Utils;
 
 public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
 
@@ -147,6 +148,25 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+
+    public boolean equalsIgoreOrder(SQLBinaryOpExpr other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+
+        if (operator != other.operator) {
+            return false;
+        }
+
+        return (Utils.equals(this.left, other.left)
+                    && Utils.equals(this.right, other.right))
+                || (Utils.equals(this.left, other.right)
+                    && Utils.equals(this.right, other.left));
+    }
+
     public SQLBinaryOpExpr clone() {
         return new SQLBinaryOpExpr(left, operator, right, dbType);
     }
@@ -155,7 +175,7 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
         return SQLUtils.toSQLString(this, getDbType());
     }
 
-    public static SQLExpr combine(List<SQLExpr> items, SQLBinaryOperator op) {
+    public static SQLExpr combine(List<? extends SQLExpr> items, SQLBinaryOperator op) {
         if (items == null || op == null) {
             return null;
         }
