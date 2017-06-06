@@ -17,9 +17,10 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAssignItem extends SQLObjectImpl {
+public class SQLAssignItem extends SQLObjectImpl implements SQLReplaceable {
 
     private SQLExpr target;
     private SQLExpr value;
@@ -69,4 +70,17 @@ public class SQLAssignItem extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.target == expr) {
+            setTarget(target);
+            return true;
+        }
+
+        if (this.value == expr) {
+            setValue(target);
+            return true;
+        }
+        return false;
+    }
 }

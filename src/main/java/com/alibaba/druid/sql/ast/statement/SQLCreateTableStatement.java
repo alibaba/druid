@@ -186,7 +186,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return null;
     }
 
-    public SQLTableElement findKey(String columnName) {
+    public SQLTableElement findIndex(String columnName) {
         for (SQLTableElement element : tableElementList) {
             List<SQLExpr> keyColumns = null;
             if (element instanceof SQLUniqueConstraint) {

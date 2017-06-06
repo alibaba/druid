@@ -18,11 +18,12 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSelectItem extends SQLObjectImpl {
+public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr expr;
     protected String  alias;
@@ -145,5 +146,15 @@ public class SQLSelectItem extends SQLObjectImpl {
         }
         x.connectByRoot = connectByRoot;
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == expr) {
+            setExpr(target);
+            return true;
+        }
+
+        return false;
     }
 }

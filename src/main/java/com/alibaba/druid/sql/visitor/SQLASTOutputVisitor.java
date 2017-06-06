@@ -924,6 +924,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 }
             }
 
+            if (param instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) param;
+                SQLBinaryOperator op = binaryOpExpr.getOperator();
+                if (op == SQLBinaryOperator.BooleanAnd || op == SQLBinaryOperator.BooleanOr) {
+                    incrementIndent();
+                    param.accept(this);
+                    decrementIndent();
+                    continue;
+                }
+            }
+
             param.accept(this);
         }
 

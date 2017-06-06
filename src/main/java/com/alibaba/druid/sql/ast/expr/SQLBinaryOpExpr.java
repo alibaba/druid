@@ -22,10 +22,12 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.Utils;
 
-public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
+public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
     private static final long serialVersionUID = 1L;
     private SQLExpr           left;
@@ -310,11 +312,74 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
         return new SQLBinaryOpExpr(a, SQLBinaryOperator.BooleanAnd, b);
     }
 
+    public static SQLExpr andIfNotExists(SQLExpr a, SQLExpr b) {
+        if (a == null) {
+            return b;
+        }
+
+        if (b == null) {
+            return a;
+        }
+
+        List<SQLExpr> groupListA = new ArrayList<SQLExpr>();
+        List<SQLExpr> groupListB = new ArrayList<SQLExpr>();
+        split(groupListA, a, SQLBinaryOperator.BooleanAnd);
+        split(groupListB, a, SQLBinaryOperator.BooleanAnd);
+
+        for (SQLExpr itemB : groupListB) {
+            boolean exist = false;
+            for (SQLExpr itemA : groupListA) {
+                if (itemA.equals(itemB)) {
+                    exist = true;
+                } else if (itemA instanceof SQLBinaryOpExpr
+                        && itemB instanceof SQLBinaryOpExpr) {
+                    if (((SQLBinaryOpExpr) itemA).equalsIgoreOrder((SQLBinaryOpExpr) itemB)) {
+                        exist = true;
+                    }
+                }
+            }
+            if (!exist) {
+                groupListA.add(itemB);
+            }
+        }
+        return combine(groupListA, SQLBinaryOperator.BooleanAnd);
+    }
+
     public static SQLBinaryOpExpr isNotNull(SQLExpr expr) {
         return new SQLBinaryOpExpr(expr, SQLBinaryOperator.IsNot, new SQLNullExpr());
     }
 
     public static SQLBinaryOpExpr isNull(SQLExpr expr) {
         return new SQLBinaryOpExpr(expr, SQLBinaryOperator.Is, new SQLNullExpr());
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr taget) {
+        SQLObject parent = getParent();
+
+        if (left == expr) {
+            if (taget == null) {
+                if (parent instanceof SQLReplaceable) {
+                    return ((SQLReplaceable) parent).replace(this, right);
+                } else {
+                    return false;
+                }
+            }
+            this.setLeft(taget);
+            return true;
+        }
+
+        if (right == expr) {
+            if (taget == null) {
+                if (parent instanceof SQLReplaceable) {
+                    return ((SQLReplaceable) parent).replace(this, left);
+                } else {
+                    return false;
+                }
+            }
+            this.setRight(taget);
+            return true;
+        }
+
+        return false;
     }
 }

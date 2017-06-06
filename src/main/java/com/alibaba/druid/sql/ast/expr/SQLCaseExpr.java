@@ -22,9 +22,10 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCaseExpr extends SQLExprImpl implements Serializable {
+public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
     private static final long serialVersionUID = 1L;
     private final List<Item>  items            = new ArrayList<Item>();
@@ -77,7 +78,22 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
         visitor.endVisit(this);
     }
 
-    public static class Item extends SQLObjectImpl implements Serializable {
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (valueExpr == expr) {
+            setValueExpr(target);
+            return true;
+        }
+
+        if (elseExpr == expr) {
+            setElseExpr(target);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static class Item extends SQLObjectImpl implements SQLReplaceable, Serializable {
 
         private static final long serialVersionUID = 1L;
         private SQLExpr           conditionExpr;
@@ -157,6 +173,21 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
                 x.setValueExpr(valueExpr.clone());
             }
             return x;
+        }
+
+        @Override
+        public boolean replace(SQLExpr expr, SQLExpr target) {
+            if (valueExpr == expr) {
+                setValueExpr(target);
+                return true;
+            }
+
+            if (conditionExpr == expr) {
+                setConditionExpr(target);
+                return true;
+            }
+
+            return false;
         }
     }
 

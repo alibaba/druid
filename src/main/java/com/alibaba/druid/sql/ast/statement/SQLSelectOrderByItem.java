@@ -18,9 +18,10 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSelectOrderByItem extends SQLObjectImpl {
+public class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr                  expr;
     protected String                   collate;
@@ -102,6 +103,15 @@ public class SQLSelectOrderByItem extends SQLObjectImpl {
         } else if (!expr.equals(other.expr)) return false;
         if (type != other.type) return false;
         return true;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (this.expr == expr) {
+            this.setExpr(target);
+            return true;
+        }
+        return false;
     }
 
     public static enum NullsOrderType {

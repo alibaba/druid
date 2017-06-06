@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLJoinTableSource extends SQLTableSourceImpl {
+public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
     protected SQLTableSource      left;
     protected JoinType            joinType;
@@ -137,6 +138,16 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         if (right != null ? !right.equals(that.right) : that.right != null) return false;
         if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
         return using != null ? using.equals(that.using) : that.using == null;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (condition == expr) {
+            setCondition(target);
+            return true;
+        }
+
+        return false;
     }
 
     public static enum JoinType {

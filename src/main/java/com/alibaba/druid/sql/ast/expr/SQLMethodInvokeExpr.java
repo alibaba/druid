@@ -21,10 +21,11 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
+public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
     private static final long   serialVersionUID = 1L;
     private String              methodName;
@@ -163,5 +164,17 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
         }
 
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < parameters.size(); ++i) {
+            if (parameters.get(i) == expr) {
+                parameters.set(i, target);
+                target.setParent(this);
+                return true;
+            }
+        }
+        return false;
     }
 }

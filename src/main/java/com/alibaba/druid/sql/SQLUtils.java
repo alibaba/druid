@@ -22,17 +22,10 @@ import java.util.Map;
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -871,38 +864,8 @@ public class SQLUtils {
 
         SQLObject parent = expr.getParent();
 
-        if (parent instanceof SQLBinaryOpExpr) {
-            SQLBinaryOpExpr binaryParent = (SQLBinaryOpExpr) expr.getParent();
-            if (binaryParent.getLeft() == expr) {
-                binaryParent.setLeft(target);
-                return true;
-            } else if (binaryParent.getRight() == expr) {
-                binaryParent.setRight(target);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        if (parent instanceof SQLSelectOrderByItem){
-            SQLSelectOrderByItem orderByItem = (SQLSelectOrderByItem) parent;
-            if (orderByItem.getExpr() == expr) {
-                orderByItem.setExpr(target);
-                return true;
-            }
-            return false;
-        }
-
-        if (parent instanceof SQLMethodInvokeExpr) {
-            SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) parent;
-            List<SQLExpr> parameters = methodInvokeExpr.getParameters();
-            for (int i = 0; i < parameters.size(); ++i) {
-                if (parameters.get(i) == expr) {
-                    parameters.set(i, target);
-                    return true;
-                }
-            }
-            return false;
+        if (parent instanceof SQLReplaceable) {
+            return ((SQLReplaceable) parent).replace(expr, target);
         }
 
         return false;

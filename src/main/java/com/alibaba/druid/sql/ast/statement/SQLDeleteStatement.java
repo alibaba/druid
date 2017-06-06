@@ -17,11 +17,12 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDeleteStatement extends SQLStatementImpl {
+public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceable {
 
     protected SQLTableSource tableSource;
     protected SQLExpr        where;
@@ -120,5 +121,14 @@ public class SQLDeleteStatement extends SQLStatementImpl {
             from.setParent(this);
         }
         this.from = from;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (where == expr) {
+            setWhere(target);
+            return true;
+        }
+        return false;
     }
 }
