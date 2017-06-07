@@ -3587,4 +3587,46 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        print0(ucase ? "CREATE FUNCTION " : "create function ");
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        if (paramSize > 0) {
+            print0(" (");
+            incrementIndent();
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            decrementIndent();
+            println();
+            print(')');
+        }
+
+        println();
+        print(ucase ? "RETURNS " : "returns ");
+        x.getReturnDataType().accept(this);
+
+        if (x.isDeterministic()) {
+            print(ucase ? " DETERMINISTIC" : " deterministic");
+        }
+
+        SQLStatement block = x.getBlock();
+
+        println();
+
+        block.accept(this);
+        return false;
+    }
 } //

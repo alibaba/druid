@@ -1363,7 +1363,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print0(ucase ? "LOCK TABLE " : "lock table ");
         x.getTable().accept(this);
         print0(ucase ? " IN " : " in ");
-        print0(x.getLockMode().name());
+        print0(x.getLockMode().toString());
         print0(ucase ? " MODE " : " mode ");
         if (x.isNoWait()) {
             print0(ucase ? "NOWAIT" : "nowait");
@@ -1752,24 +1752,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "INDEX ONLY TOPLEVEL" : "index only toplevel");
         }
 
-        if (x.getPtcfree() != null) {
-            println();
-            print0(ucase ? "PCTFREE " : "pctfree ");
-            x.getPtcfree().accept(this);
-        }
-
-        if (x.getInitrans() != null) {
-            println();
-            print0(ucase ? "INITRANS " : "initrans ");
-            x.getInitrans().accept(this);
-        }
-
-        if (x.getMaxtrans() != null) {
-            println();
-            print0(ucase ? "MAXTRANS " : "maxtrans ");
-            x.getMaxtrans().accept(this);
-        }
-
         if (x.isComputeStatistics()) {
             println();
             print0(ucase ? "COMPUTE STATISTICS" : "compute statistics");
@@ -1791,6 +1773,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? " PARALLEL " : " parallel ");
             x.getParallel().accept(this);
         }
+
+        this.printOracleSegmentAttributes(x);
+
         return false;
     }
 

@@ -40,6 +40,12 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl {
 
     SQLDataType                returnDataType;
 
+    // for mysql
+
+    private String             comment;
+
+    private boolean            deterministic  = false;
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -130,5 +136,21 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl {
             returnDataType.setParent(this);
         }
         this.returnDataType = returnDataType;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public boolean isDeterministic() {
+        return deterministic;
+    }
+
+    public void setDeterministic(boolean deterministic) {
+        this.deterministic = deterministic;
     }
 }

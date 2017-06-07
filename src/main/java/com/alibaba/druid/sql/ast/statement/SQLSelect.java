@@ -80,6 +80,14 @@ public class SQLSelect extends SQLObjectImpl {
         this.query = query;
     }
 
+    public SQLSelectQueryBlock getQueryBlock() {
+        if (query instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) query;
+        }
+
+        return null;
+    }
+
     public SQLOrderBy getOrderBy() {
         return this.orderBy;
     }

@@ -1442,12 +1442,38 @@ public class OracleStatementParser extends SQLStatementParser {
         stmt.setTable(this.exprParser.name());
 
         accept(Token.IN);
-        if (lexer.token() == Token.SHARE) {
-            stmt.setLockMode(LockMode.SHARE);
+
+        Token token = lexer.token();
+        if (token == Token.SHARE) {
             lexer.nextToken();
-        } else if (lexer.token() == Token.EXCLUSIVE) {
+
+            if (lexer.token() == Token.ROW) {
+                lexer.nextToken();
+                accept(Token.EXCLUSIVE);
+                stmt.setLockMode(LockMode.SHARE_ROW_EXCLUSIVE);
+            } else if (lexer.token() == Token.UPDATE) {
+                lexer.nextToken();
+                stmt.setLockMode(LockMode.SHARE_UPDATE);
+            } else {
+                stmt.setLockMode(LockMode.SHARE);
+            }
+        } else if (token == Token.EXCLUSIVE) {
             stmt.setLockMode(LockMode.EXCLUSIVE);
             lexer.nextToken();
+        } else if(token == Token.ROW) {
+            lexer.nextToken();
+            token = lexer.token();
+            if (token == Token.SHARE) {
+                stmt.setLockMode(LockMode.ROW_SHARE);
+                lexer.nextToken();
+            } else if (token == Token.EXCLUSIVE) {
+                stmt.setLockMode(LockMode.ROW_EXCLUSIVE);
+                lexer.nextToken();
+            } else {
+                throw new ParserException(lexer.info());
+            }
+        } else {
+            throw new ParserException(lexer.info());
         }
         accept(Token.MODE);
 
@@ -1944,23 +1970,9 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.RPAREN);
 
         for (;;) {
-            if (lexer.token() == Token.TABLESPACE) {
-                lexer.nextToken();
-                stmt.setTablespace(this.exprParser.name());
-                continue;
-            } else if (lexer.token() == Token.PCTFREE) {
-                lexer.nextToken();
-                stmt.setPtcfree(this.exprParser.expr());
-                continue;
-            } else if (lexer.token() == Token.INITRANS) {
-                lexer.nextToken();
-                stmt.setInitrans(this.exprParser.expr());
-                continue;
-            } else if (lexer.token() == Token.MAXTRANS) {
-                lexer.nextToken();
-                stmt.setMaxtrans(this.exprParser.expr());
-                continue;
-            } else if (lexer.token() == Token.COMPUTE) {
+            this.getExprParser().parseSegmentAttributes(stmt);
+
+            if (lexer.token() == Token.COMPUTE) {
                 lexer.nextToken();
                 acceptIdentifier("STATISTICS");
                 stmt.setComputeStatistics(true);

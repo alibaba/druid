@@ -27,32 +27,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLServerInsertStatement extends SQLInsertStatement implements SQLServerObject {
 
-    private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
-
     private boolean            defaultValues;
 
     private SQLServerTop       top;
 
     private SQLServerOutput    output;
-
-    public ValuesClause getValues() {
-        if (valuesList.size() == 0) {
-            return null;
-        }
-        return valuesList.get(0);
-    }
-
-    public void setValues(ValuesClause values) {
-        if (valuesList.size() == 0) {
-            valuesList.add(values);
-        } else {
-            valuesList.set(0, values);
-        }
-    }
-
-    public List<ValuesClause> getValuesList() {
-        return valuesList;
-    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {

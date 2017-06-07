@@ -3606,7 +3606,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 }
             } else {
                 if (x.getParamType() == SQLParameter.ParameterType.IN) {
-                    print0(ucase ? "IN " : "in ");
+                    boolean skip = JdbcConstants.MYSQL.equals(dbType)
+                            && x.getParent() instanceof SQLCreateFunctionStatement;
+
+                    if (!skip) {
+                        print0(ucase ? "IN " : "in ");
+                    }
                 } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
                     print0(ucase ? "OUT " : "out ");
                 } else if (x.getParamType() == SQLParameter.ParameterType.INOUT) {

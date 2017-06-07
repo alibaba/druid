@@ -361,11 +361,35 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (identifierEquals("RETURN")) {
+                SQLStatement stmt = parseReturn();
+                statementList.add(stmt);
+                continue;
+            }
+
             // throw new ParserException("syntax error, " + lexer.token() + " "
             // + lexer.stringVal() + ", pos "
             // + lexer.pos());
             printError(lexer.token());
         }
+    }
+
+    public SQLStatement parseReturn() {
+        if (lexer.token() == Token.RETURN
+                || identifierEquals("RETURN")) {
+            lexer.nextToken();
+        }
+
+        SQLReturnStatement stmt = new SQLReturnStatement();
+        if (lexer.token() != Token.SEMI) {
+            SQLExpr expr = this.exprParser.expr();
+            stmt.setExpr(expr);
+        }
+
+        accept(Token.SEMI);
+        stmt.setAfterSemi(true);
+
+        return stmt;
     }
 
     public SQLStatement parseUpsert() {
@@ -1539,7 +1563,7 @@ public class SQLStatementParser extends SQLParser {
                 accept(Token.LPAREN);
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
                 this.exprParser.exprList(values.getValues(), values);
-                insertStatement.getValuesList().add(values);
+                insertStatement.addValueCause(values);
                 accept(Token.RPAREN);
                 
                 if (lexer.token() == Token.COMMA) {

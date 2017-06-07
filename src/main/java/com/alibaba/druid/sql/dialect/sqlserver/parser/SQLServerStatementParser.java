@@ -283,7 +283,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 accept(Token.LPAREN);
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
                 this.exprParser.exprList(values.getValues(), values);
-                insertStatement.getValuesList().add(values);
+                insertStatement.addValueCause(values);
                 accept(Token.RPAREN);
 
                 if (!parseCompleteValues && insertStatement.getValuesList().size() >= parseValuesSize) {

@@ -42,7 +42,7 @@ public class SchemaObject {
     }
 
     public static enum Type {
-        Sequence, Table, Index
+        Sequence, Table, Index, Function
     }
 
     public SQLStatement getStatement() {

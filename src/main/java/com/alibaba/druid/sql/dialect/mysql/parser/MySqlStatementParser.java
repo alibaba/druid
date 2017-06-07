@@ -15,16 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
-import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLParameter;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.SQLParameter.ParameterType;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -353,6 +345,13 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.reset(markBp, markChar, Token.CREATE);
             }
             return parseCreateProcedure();
+        }
+
+        if (lexer.token() == Token.FUNCTION) {
+            if (replace) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+            }
+            return parseCreateFunction();
         }
 
         throw new ParserException("TODO " + lexer.info());
@@ -1750,6 +1749,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+            values.setParent(stmt);
             stmt.getValuesList().add(values);
             for (; ; ) {
                 stmt.addColumn(this.exprParser.name());
@@ -2100,7 +2100,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-            insertStatement.getValuesList().add(values);
+            insertStatement.addValueCause(values);
 
             for (; ; ) {
                 SQLName name = this.exprParser.name();
@@ -3141,6 +3141,61 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
 
+    public SQLCreateFunctionStatement parseCreateFunction() {
+        SQLCreateFunctionStatement stmt = new SQLCreateFunctionStatement();
+        stmt.setDbType(dbType);
+
+        if (lexer.token() != Token.FUNCTION) {
+            if (identifierEquals("DEFINER")) {
+                lexer.nextToken();
+                accept(Token.EQ);
+                SQLName definer = this.exprParser.name();
+                stmt.setDefiner(definer);
+            } else {
+                accept(Token.CREATE);
+                if (lexer.token() == Token.OR) {
+                    lexer.nextToken();
+                    accept(Token.REPLACE);
+                    stmt.setOrReplace(true);
+                }
+            }
+        }
+
+        accept(Token.FUNCTION);
+
+        stmt.setName(this.exprParser.name());
+
+        if (lexer.token() == Token.LPAREN) {// match "("
+            lexer.nextToken();
+            parserParameters(stmt.getParameters(), stmt);
+            accept(Token.RPAREN);// match ")"
+        }
+
+        acceptIdentifier("RETURNS");
+        SQLDataType dataType = this.exprParser.parseDataType();
+        stmt.setReturnDataType(dataType);
+
+        for (;;) {
+            if (identifierEquals("DETERMINISTIC")) {
+                lexer.nextToken();
+                stmt.setDeterministic(true);
+                continue;
+            }
+
+            break;
+        }
+
+        SQLStatement block;
+        if (lexer.token() == Token.BEGIN) {
+            block = this.parseBlock();
+        } else {
+            block = this.parseStatement();
+        }
+
+        stmt.setBlock(block);
+
+        return stmt;
+    }
     /**
      * parse create procedure statement
      */
@@ -3173,7 +3228,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.LPAREN) {// match "("
             lexer.nextToken();
-            parserParameters(stmt.getParameters());
+            parserParameters(stmt.getParameters(), stmt);
             accept(Token.RPAREN);// match ")"
         }
         SQLStatement block;
@@ -3194,7 +3249,7 @@ public class MySqlStatementParser extends SQLStatementParser {
      *
      * @param parameters
      */
-    private void parserParameters(List<SQLParameter> parameters) {
+    private void parserParameters(List<SQLParameter> parameters, SQLObject parent) {
         if (lexer.token() == Token.RPAREN) {
             return;
         }

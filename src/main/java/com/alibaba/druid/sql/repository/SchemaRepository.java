@@ -17,13 +17,17 @@ package com.alibaba.druid.sql.repository;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
-import com.alibaba.druid.util.JdbcUtils;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,9 +37,11 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * Created by wenshao on 03/06/2017.
  */
 public class SchemaRepository {
-    public Map<String, SchemaObject> objects = new ConcurrentSkipListMap<String, SchemaObject>();
+    private final Map<String, SchemaObject> objects = new ConcurrentSkipListMap<String, SchemaObject>();
 
-    public final SchemaVisitor visitor = new SchemaVisitor();
+    private final Map<String, SchemaObject> functions  = new ConcurrentSkipListMap<String, SchemaObject>();
+
+    private final SchemaVisitor visitor = new SchemaVisitor();
 
     public SchemaObject findTable(String tableName) {
         String lowerName = tableName.toLowerCase();
@@ -46,6 +52,11 @@ public class SchemaRepository {
         }
 
         return null;
+    }
+
+    public SchemaObject findFunction(String functionName) {
+        String lowerName = functionName.toLowerCase();
+        return functions.get(lowerName);
     }
 
     public void acceptDDL(String ddl, String dbType) {
@@ -103,6 +114,15 @@ public class SchemaRepository {
 
             return false;
         }
+
+        public boolean visit(SQLCreateFunctionStatement x) {
+            String name = x.getName().getSimpleName();
+            SchemaObject object = new SchemaObject(name, SchemaObject.Type.Function, x);
+
+            functions.put(name.toLowerCase(), object);
+
+            return false;
+        }
     }
 
     public SchemaObject findTable(SQLTableSource tableSource, String alias) {
@@ -133,5 +153,104 @@ public class SchemaRepository {
         }
 
         return null;
+    }
+
+    public SQLColumnDefinition findColumn(SQLTableSource tableSource, SQLSelectItem selectItem) {
+        if (selectItem == null) {
+            return null;
+        }
+
+        return findColumn(tableSource, selectItem.getExpr());
+    }
+
+    public SQLColumnDefinition findColumn(SQLTableSource tableSource, SQLExpr expr) {
+        SchemaObject object = findTable(tableSource, expr);
+        if (object != null) {
+            if (expr instanceof SQLAggregateExpr) {
+                SQLAggregateExpr aggregateExpr = (SQLAggregateExpr) expr;
+                String function = aggregateExpr.getMethodName();
+                if ("min".equalsIgnoreCase(function)
+                        || "max".equalsIgnoreCase(function)) {
+                    SQLExpr arg = aggregateExpr.getArguments().get(0);
+                    expr = arg;
+                }
+            }
+
+            if (expr instanceof SQLName) {
+                return object.findColumn(((SQLName) expr).getSimpleName());
+            }
+        }
+
+        return null;
+    }
+
+    public SchemaObject findTable(SQLTableSource tableSource, SQLSelectItem selectItem) {
+        if (selectItem == null) {
+            return null;
+        }
+
+        return findTable(tableSource, selectItem.getExpr());
+    }
+
+    public SchemaObject findTable(SQLTableSource tableSource, SQLExpr expr) {
+        if (expr instanceof SQLAggregateExpr) {
+            SQLAggregateExpr aggregateExpr = (SQLAggregateExpr) expr;
+            String function = aggregateExpr.getMethodName();
+            if ("min".equalsIgnoreCase(function)
+                    || "max".equalsIgnoreCase(function)) {
+                SQLExpr arg = aggregateExpr.getArguments().get(0);
+                return findTable(tableSource, arg);
+            }
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            String ownerName = ((SQLPropertyExpr) expr).getOwnernName();
+            return findTable(tableSource, ownerName);
+        }
+
+        if (expr instanceof SQLAllColumnExpr || expr instanceof SQLIdentifierExpr) {
+            if (tableSource instanceof SQLExprTableSource) {
+                return findTable(tableSource, tableSource.computeAlias());
+            }
+            return null;
+        }
+
+        return null;
+    }
+
+    public Map<String, SchemaObject> getTables(SQLTableSource x) {
+        Map<String, SchemaObject> tables = new LinkedHashMap<String, SchemaObject>();
+        computeTable(x, tables);
+        return tables;
+    }
+
+    private void computeTable(SQLTableSource x, Map<String, SchemaObject> tables) {
+        if (x == null) {
+            return;
+        }
+
+        if (x instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) x).getExpr();
+            if (expr instanceof SQLIdentifierExpr) {
+                String tableName = ((SQLIdentifierExpr) expr).getName();
+                SchemaObject table = findTable(tableName);
+                if (table != null) {
+                    tables.put(tableName, table);
+
+                    String alias = x.getAlias();
+                    if (alias != null && !alias.equalsIgnoreCase(tableName)) {
+                        tables.put(alias, table);
+                    }
+                }
+            }
+
+            return;
+        }
+
+        if (x instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) x;
+            computeTable(join.getLeft(), tables);
+            computeTable(join.getRight(), tables);
+        }
     }
 }

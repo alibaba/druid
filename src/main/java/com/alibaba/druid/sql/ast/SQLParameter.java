@@ -37,6 +37,9 @@ public class SQLParameter extends SQLObjectImpl {
     }
 
     public void setDefaultValue(SQLExpr deaultValue) {
+        if (deaultValue != null) {
+            deaultValue.setParent(this);
+        }
         this.defaultValue = deaultValue;
     }
 
@@ -45,6 +48,9 @@ public class SQLParameter extends SQLObjectImpl {
     }
 
     public void setName(SQLExpr name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
     }
 

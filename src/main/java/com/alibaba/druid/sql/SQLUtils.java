@@ -425,7 +425,7 @@ public class SQLUtils {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();
         if (parser.getLexer().token() != Token.EOF) {
-            throw new DruidRuntimeException("syntax error : " + sql);
+            throw new ParserException("syntax error : " + sql);
         }
         return stmtList;
     }
@@ -434,7 +434,7 @@ public class SQLUtils {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, keepComments);
         List<SQLStatement> stmtList = parser.parseStatementList();
         if (parser.getLexer().token() != Token.EOF) {
-            throw new DruidRuntimeException("syntax error : " + sql);
+            throw new ParserException("syntax error : " + sql);
         }
         return stmtList;
     }

@@ -18,9 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
@@ -30,7 +28,17 @@ public class SQLDeclareStatement extends SQLStatementImpl {
 
     protected List<SQLDeclareItem> items = new ArrayList<SQLDeclareItem>();
     
-    private String dbType;
+    public SQLDeclareStatement() {
+
+    }
+
+    public SQLDeclareStatement(SQLExpr name, SQLDataType dataType) {
+        this.addItem(new SQLDeclareItem(name, dataType));
+    }
+
+    public SQLDeclareStatement(SQLExpr name, SQLDataType dataType, SQLExpr value) {
+        this.addItem(new SQLDeclareItem(name, dataType, value));
+    }
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -49,13 +57,5 @@ public class SQLDeclareStatement extends SQLStatementImpl {
             item.setParent(this);
         }
         this.items.add(item);
-    }
-
-    public String getDbType() {
-        return dbType;
-    }
-    
-    public void setDbType(String dbType) {
-        this.dbType = dbType;
     }
 }

@@ -48,4 +48,10 @@ public class SQLLoopStatement extends SQLStatementImpl {
         this.labelName = labelName;
     }
 
+    public void addStatement(SQLStatement stmt) {
+        if (stmt != null) {
+            stmt.setParent(this);
+        }
+        statements.add(stmt);
+    }
 }
