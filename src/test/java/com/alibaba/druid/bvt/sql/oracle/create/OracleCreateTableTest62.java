@@ -110,6 +110,10 @@ public class OracleCreateTableTest62 extends OracleTest {
                         "\t\tTABLESPACE \"NIRVANA1M\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 1048576\n" +
+                        "\t\t\tNEXT 131072\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +

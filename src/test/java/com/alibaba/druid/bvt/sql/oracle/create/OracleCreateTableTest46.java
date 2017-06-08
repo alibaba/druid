@@ -57,7 +57,7 @@ public class OracleCreateTableTest46 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+        assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
                         "\t\"ID\" NUMBER NOT NULL ENABLE,\n" +
                         "\t\"GMT_CREATE\" DATE NOT NULL ENABLE,\n" +
                         "\t\"GMT_MODIFIED\" DATE NOT NULL ENABLE,\n" +
@@ -75,6 +75,10 @@ public class OracleCreateTableTest46 extends OracleTest {
                         "\t\tTABLESPACE \"APPDATA1M\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -91,6 +95,10 @@ public class OracleCreateTableTest46 extends OracleTest {
                         "TABLESPACE \"APPDATA1M\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 65536\n" +
+                        "\tNEXT 1048576\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +

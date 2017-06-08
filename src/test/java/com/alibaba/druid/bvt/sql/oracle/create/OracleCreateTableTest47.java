@@ -87,6 +87,10 @@ public class OracleCreateTableTest47 extends OracleTest {
                         "\t\tTABLESPACE \"APPINDX1M\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 4194304\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -103,6 +107,10 @@ public class OracleCreateTableTest47 extends OracleTest {
                         "TABLESPACE \"APPDATA1M\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 4194304\n" +
+                        "\tNEXT 1048576\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
@@ -112,6 +120,10 @@ public class OracleCreateTableTest47 extends OracleTest {
                         "\tTABLESPACE \"APPDATA1M\"\n" +
                         "\tSTORAGE (\n" +
                         "\t\tINITIAL 4194304\n" +
+                        "\t\tNEXT 1048576\n" +
+                        "\t\tMINEXTENTS 1\n" +
+                        "\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\tPCTINCREASE 0\n" +
                         "\t\tFREELISTS 1\n" +
                         "\t\tFREELIST GROUPS 1\n" +
                         "\t\tBUFFER_POOL DEFAULT\n" +

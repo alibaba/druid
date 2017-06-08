@@ -65,6 +65,10 @@ public class OracleCreateTableTest60 extends OracleTest {
                         "TABLESPACE \"ZEUS_IND\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 50331648\n" +
+                        "\tNEXT 4194304\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +

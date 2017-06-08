@@ -123,7 +123,7 @@ public class OracleCreateTableTest49 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+        assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
                         "\t\"ID\" NUMBER NOT NULL ENABLE,\n" +
                         "\t\"GMT_CREATE\" DATE,\n" +
                         "\t\"GMT_MODIFIED\" DATE,\n" +
@@ -197,6 +197,10 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\t\tTABLESPACE \"APP_DATA1K\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -210,6 +214,10 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\t\tTABLESPACE \"APP_DATA1K\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -223,6 +231,10 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\t\tTABLESPACE \"APPDATA1M\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +

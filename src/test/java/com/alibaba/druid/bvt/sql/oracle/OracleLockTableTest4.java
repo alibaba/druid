@@ -45,7 +45,7 @@ public class OracleLockTableTest4 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        assertTrue(visitor.getTables().containsKey(new TableStat.Name("FIN_SETTLEMENT_DETAIL")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("TAB9527")));
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(0, visitor.getColumns().size());

@@ -99,6 +99,10 @@ public class OracleCreateTableTest64 extends OracleTest {
                         "TABLESPACE \"XINFANG\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 65536\n" +
+                        "\tNEXT 1048576\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
@@ -110,6 +114,10 @@ public class OracleCreateTableTest64 extends OracleTest {
                         "\tTABLESPACE \"XINFANG\"\n" +
                         "\tSTORAGE (\n" +
                         "\t\tINITIAL 65536\n" +
+                        "\t\tNEXT 1048576\n" +
+                        "\t\tMINEXTENTS 1\n" +
+                        "\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\tPCTINCREASE 0\n" +
                         "\t\tFREELISTS 1\n" +
                         "\t\tFREELIST GROUPS 1\n" +
                         "\t\tBUFFER_POOL DEFAULT\n" +

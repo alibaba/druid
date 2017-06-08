@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -128,10 +127,21 @@ public class SchemaRepository {
     public SchemaObject findTable(SQLTableSource tableSource, String alias) {
         if (tableSource instanceof SQLExprTableSource) {
             if (alias.equalsIgnoreCase(tableSource.computeAlias())) {
-                SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
+                SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
+
+                SchemaObject tableObject = exprTableSource.getSchemaObject();
+                if (tableObject !=  null) {
+                    return tableObject;
+                }
+
+                SQLExpr expr = exprTableSource.getExpr();
                 if (expr instanceof SQLIdentifierExpr) {
                     String tableName = ((SQLIdentifierExpr) expr).getName();
-                    SchemaObject tableObject = findTable(tableName);
+
+                    tableObject = findTable(tableName);
+                    if (tableObject != null) {
+                        exprTableSource.setSchemaObject(tableObject);
+                    }
                     return tableObject;
                 }
             }
@@ -220,20 +230,31 @@ public class SchemaRepository {
 
     public Map<String, SchemaObject> getTables(SQLTableSource x) {
         Map<String, SchemaObject> tables = new LinkedHashMap<String, SchemaObject>();
-        computeTable(x, tables);
+        computeTables(x, tables);
         return tables;
     }
 
-    private void computeTable(SQLTableSource x, Map<String, SchemaObject> tables) {
+    private void computeTables(SQLTableSource x, Map<String, SchemaObject> tables) {
         if (x == null) {
             return;
         }
 
         if (x instanceof SQLExprTableSource) {
-            SQLExpr expr = ((SQLExprTableSource) x).getExpr();
+            SQLExprTableSource exprTableSource = (SQLExprTableSource) x;
+
+            SQLExpr expr = exprTableSource.getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 String tableName = ((SQLIdentifierExpr) expr).getName();
-                SchemaObject table = findTable(tableName);
+
+                SchemaObject table = exprTableSource.getSchemaObject();
+                if (table == null) {
+                    table = findTable(tableName);
+
+                    if (table != null) {
+                        exprTableSource.setSchemaObject(table);
+                    }
+                }
+
                 if (table != null) {
                     tables.put(tableName, table);
 
@@ -249,8 +270,8 @@ public class SchemaRepository {
 
         if (x instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) x;
-            computeTable(join.getLeft(), tables);
-            computeTable(join.getRight(), tables);
+            computeTables(join.getLeft(), tables);
+            computeTables(join.getRight(), tables);
         }
     }
 

@@ -2134,6 +2134,30 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getInitial().accept(this);
         }
 
+        if (x.getNext() != null) {
+            println();
+            print0(ucase ? "NEXT " : "next ");
+            x.getNext().accept(this);
+        }
+
+        if (x.getMinExtents() != null) {
+            println();
+            print0(ucase ? "MINEXTENTS " : "minextents ");
+            x.getMinExtents().accept(this);
+        }
+
+        if (x.getMaxExtents() != null) {
+            println();
+            print0(ucase ? "MAXEXTENTS " : "maxextents ");
+            x.getMaxExtents().accept(this);
+        }
+
+        if (x.getPctIncrease() != null) {
+            println();
+            print0(ucase ? "PCTINCREASE " : "pctincrease ");
+            x.getPctIncrease().accept(this);
+        }
+
         if (x.getMaxSize() != null) {
             println();
             print0(ucase ? "MAXSIZE " : "maxsize ");

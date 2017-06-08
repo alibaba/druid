@@ -184,6 +184,8 @@ public class TableStat {
 
         private String name;
 
+        private int hash;
+
         public Name(String name){
             this.name = name;
         }
@@ -193,7 +195,11 @@ public class TableStat {
         }
 
         public int hashCode() {
-            return StringUtils.lowerHashCode(name);
+            int h = hash;
+            if (h == 0 && name != null && name.length() > 0) {
+                hash = h = StringUtils.lowerHashCode(name);
+            }
+            return h;
         }
 
         public boolean equals(Object o) {
