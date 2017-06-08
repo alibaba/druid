@@ -15,25 +15,9 @@
  */
 package com.alibaba.druid.sql.repository;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-
 /**
- * Created by wenshao on 03/06/2017.
+ * Created by wenshao on 08/06/2017.
  */
-public interface SchemaObject {
-
-    SQLStatement getStatement();
-
-    SQLColumnDefinition findColumn(String columName);
-
-    boolean matchIndex(String columnName);
-
-    boolean matchKey(String columnName);
-
-    SchemaObjectType getType();
-
-    String getName();
-
-    long getRowCount();
+public enum SchemaObjectType {
+    Sequence, Table, View, Index, Function
 }

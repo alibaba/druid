@@ -1479,6 +1479,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.NOWAIT) {
             lexer.nextToken();
+            stmt.setNoWait(true);
         } else if (lexer.token() == Token.WAIT) {
             lexer.nextToken();
             stmt.setWait(exprParser.expr());

@@ -21,13 +21,14 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLExprTableSource extends SQLTableSourceImpl {
 
-    protected SQLExpr expr;
-
-    private List<SQLName>   partitions;
+    protected SQLExpr     expr;
+    private List<SQLName> partitions;
+    private SchemaObject  schemaObject;
 
     public SQLExprTableSource(){
 
@@ -140,5 +141,13 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
                 x.addPartition(p1);
             }
         }
+    }
+
+    public SchemaObject getSchemaObject() {
+        return schemaObject;
+    }
+
+    public void setSchemaObject(SchemaObject schemaObject) {
+        this.schemaObject = schemaObject;
     }
 }

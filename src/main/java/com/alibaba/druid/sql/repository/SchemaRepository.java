@@ -47,7 +47,7 @@ public class SchemaRepository {
         String lowerName = tableName.toLowerCase();
         SchemaObject object = objects.get(lowerName);
 
-        if (object != null && object.type == SchemaObject.Type.Table) {
+        if (object != null && object.getType() == SchemaObjectType.Table) {
             return object;
         }
 
@@ -73,7 +73,7 @@ public class SchemaRepository {
     public boolean isSequence(String name) {
         SchemaObject object = objects.get(name);
         return object != null
-                && object.type == SchemaObject.Type.Sequence;
+                && object.getType() == SchemaObjectType.Sequence;
     }
 
     public class SchemaVisitor extends OracleASTVisitorAdapter {
@@ -86,7 +86,7 @@ public class SchemaRepository {
 
         public boolean visit(SQLCreateSequenceStatement x) {
             String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObject(name, SchemaObject.Type.Sequence);
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Sequence);
 
             objects.put(name.toLowerCase(), object);
             return false;
@@ -99,7 +99,7 @@ public class SchemaRepository {
 
         public boolean visit(SQLCreateTableStatement x) {
             String name = x.computeName();
-            SchemaObject object = new SchemaObject(name, SchemaObject.Type.Table, x);
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
 
             objects.put(name.toLowerCase(), object);
 
@@ -108,7 +108,7 @@ public class SchemaRepository {
 
         public boolean visit(SQLCreateIndexStatement x) {
             String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObject(name, SchemaObject.Type.Index);
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Index);
 
             objects.put(name.toLowerCase(), object);
 
@@ -117,7 +117,7 @@ public class SchemaRepository {
 
         public boolean visit(SQLCreateFunctionStatement x) {
             String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObject(name, SchemaObject.Type.Function, x);
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function, x);
 
             functions.put(name.toLowerCase(), object);
 
@@ -252,5 +252,25 @@ public class SchemaRepository {
             computeTable(join.getLeft(), tables);
             computeTable(join.getRight(), tables);
         }
+    }
+
+    public int getTableCount() {
+        int count = 0;
+        for (SchemaObject object : this.objects.values()) {
+            if (object.getType() == SchemaObjectType.Table) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int getViewCount() {
+        int count = 0;
+        for (SchemaObject object : this.objects.values()) {
+            if (object.getType() == SchemaObjectType.View) {
+                count++;
+            }
+        }
+        return count;
     }
 }
