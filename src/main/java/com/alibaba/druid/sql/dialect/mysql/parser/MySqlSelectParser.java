@@ -16,8 +16,10 @@
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
@@ -371,7 +373,20 @@ public class MySqlSelectParser extends SQLSelectParser {
                     }
                 }
             } else {
-                queryBlock.setInto(this.exprParser.name());
+                SQLExpr intoExpr = this.exprParser.name();
+                if (lexer.token() == Token.COMMA) {
+                    SQLListExpr list = new SQLListExpr();
+                    list.addItem(intoExpr);
+
+                    while (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        SQLName name = this.exprParser.name();
+                        list.addItem(name);
+                    }
+
+                    intoExpr = list;
+                }
+                queryBlock.setInto(intoExpr);
             }
         }
     }

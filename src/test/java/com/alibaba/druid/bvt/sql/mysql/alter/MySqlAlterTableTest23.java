@@ -33,6 +33,6 @@ public class MySqlAlterTableTest23 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE xxxxx"
-        		+ "\n\tMODIFY COLUMN xxx DEFAULT '0'", output);
+        		+ "\n\tMODIFY COLUMN xxx DEFAULT '0';", output);
     }
 }

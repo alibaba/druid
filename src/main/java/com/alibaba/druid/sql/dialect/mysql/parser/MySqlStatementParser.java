@@ -553,12 +553,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
-        if (lexer.token() == Token.KILL) {
-            SQLStatement stmt = parseKill();
-            statementList.add(stmt);
-            return true;
-        }
-
         if (identifierEquals("PREPARE")) {
             MySqlPrepareStatement stmt = parsePrepare();
             statementList.add(stmt);
@@ -733,6 +727,33 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (lexer.token() == Token.IDENTIFIER) {
+            String label = lexer.stringVal();
+            char ch = lexer.current();
+            int bp = lexer.bp();
+            lexer.nextToken();
+            if (lexer.token() == Token.VARIANT && lexer.stringVal().equals(":")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.LOOP) {
+                    // parse loop statement
+                    statementList.add(this.parseLoop(label));
+                } else if (lexer.token() == Token.WHILE) {
+                    // parse while statement with label
+                    statementList.add(this.parseWhile(label));
+                } else if (lexer.token() == Token.BEGIN) {
+                    // parse begin-end statement with label
+                    statementList.add(this.parseBlock(label));
+                } else if (lexer.token() == Token.REPEAT) {
+                    // parse repeat statement with label
+                    statementList.add(this.parseRepeat(label));
+                }
+                return true;
+            } else {
+                lexer.reset(bp, ch, Token.IDENTIFIER);
+            }
+
+        }
+
         return false;
     }
 
@@ -740,7 +761,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         SQLBlockStatement block = new SQLBlockStatement();
 
         accept(Token.BEGIN);
-        parseProcedureStatementList(block.getStatementList());
+        this.parseStatementList(block.getStatementList(), -1, block);
         accept(Token.END);
 
         return block;
@@ -3369,7 +3390,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             // insert
             if (lexer.token() == Token.INSERT) {
-                statementList.add(parseInsert());
+                SQLStatement stmt = parseInsert();
+                statementList.add(stmt);
                 continue;
             }
 
@@ -3432,7 +3454,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             // while statement
             if (lexer.token() == Token.WHILE) {
-                statementList.add(this.parseWhile());
+                SQLStatement stmt = this.parseWhile();
+                statementList.add(stmt);
                 continue;
             }
 
@@ -3731,7 +3754,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             stmt.addVar(item);
             if (lexer.token() == Token.COMMA) {
-                accept(Token.COMMA);
+                lexer.nextToken();
+                stmt.setAfterSemi(true);
                 continue;
             } else if (lexer.token() != Token.EOF) {
                 // var type
@@ -3842,15 +3866,16 @@ public class MySqlStatementParser extends SQLStatementParser {
      * @return
      */
     public MySqlRepeatStatement parseRepeat() {
-        MySqlRepeatStatement repeatStmt = new MySqlRepeatStatement();
+        MySqlRepeatStatement stmt = new MySqlRepeatStatement();
         accept(Token.REPEAT);
-        parseProcedureStatementList(repeatStmt.getStatements());
+        parseStatementList(stmt.getStatements(), -1, stmt);
         accept(Token.UNTIL);
-        repeatStmt.setCondition(exprParser.expr());
+        stmt.setCondition(exprParser.expr());
         accept(Token.END);
         accept(Token.REPEAT);
         accept(Token.SEMI);
-        return repeatStmt;
+        stmt.setAfterSemi(true);
+        return stmt;
     }
 
     /**

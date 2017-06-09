@@ -45,6 +45,6 @@ public class MySqlInsertTest_9 extends MysqlTest {
         stmt.accept(visitor);
 
         Assert.assertEquals("INSERT INTO sequence"
-                + "\nVALUES ('seq_wlb_order_log', 268234128 + 10000000, now())", SQLUtils.toMySqlString(insertStmt));
+                + "\nVALUES ('seq_wlb_order_log', 268234128 + 10000000, now());", SQLUtils.toMySqlString(insertStmt));
     }
 }

@@ -25,7 +25,7 @@ public class MappingTest_createTable_2 extends TestCase {
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
                 "\tPRIMARY KEY (source_key)\n" +
-                ")", result);
+                ");", result);
     }
 
     public void test_mapping_createTable_mysql() throws Exception {
@@ -34,7 +34,7 @@ public class MappingTest_createTable_2 extends TestCase {
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
                 "\tPRIMARY KEY (source_key)\n" +
-                ")", result);
+                ");", result);
     }
 
     public void test_mapping_createTable_oracle() throws Exception {
@@ -52,7 +52,7 @@ public class MappingTest_createTable_2 extends TestCase {
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
                 "\tPRIMARY KEY (source_key)\n" +
-                ")", result);
+                ");", result);
     }
 
     public void test_mapping_createTable_sqlserver() throws Exception {
@@ -61,7 +61,7 @@ public class MappingTest_createTable_2 extends TestCase {
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
                 "\tPRIMARY KEY (source_key)\n" +
-                ")", result);
+                ");", result);
     }
 
     public void test_mapping_createTable_db2() throws Exception {
@@ -70,6 +70,6 @@ public class MappingTest_createTable_2 extends TestCase {
                 "\tsource_key int,\n" +
                 "\tsource_value varchar(32),\n" +
                 "\tPRIMARY KEY (source_key)\n" +
-                ")", result);
+                ");", result);
     }
 }

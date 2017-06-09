@@ -41,7 +41,7 @@ public class MySqlGrantTest_7 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT SELECT(col1), INSERT(col1, col2) ON mydb.mytbl TO 'someuser'@'somehost'", //
+        Assert.assertEquals("GRANT SELECT(col1), INSERT(col1, col2) ON mydb.mytbl TO 'someuser'@'somehost';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

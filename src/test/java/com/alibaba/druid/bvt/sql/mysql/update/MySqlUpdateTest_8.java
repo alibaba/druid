@@ -60,14 +60,14 @@ public class MySqlUpdateTest_8 extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("UPDATE haskell_function"
                     + "\nSET `arity` = arity - '1'"
-                    + "\nWHERE id = 1", //
+                    + "\nWHERE id = 1;", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("update haskell_function"
                     + "\nset `arity` = arity - '1'"
-                    + "\nwhere id = 1", //
+                    + "\nwhere id = 1;", //
                                 output);
         }
     }

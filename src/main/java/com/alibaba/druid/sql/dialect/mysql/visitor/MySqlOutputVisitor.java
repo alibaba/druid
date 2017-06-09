@@ -3129,9 +3129,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 println();
             }
             SQLStatement stmt = x.getStatementList().get(i);
-            stmt.setParent(x);
             stmt.accept(this);
-            print(';');
         }
         decrementIndent();
         println();
@@ -3377,15 +3375,16 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         print0(ucase ? "REPEAT " : "repeat ");
+        incrementIndent();
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
             if (i != size - 1) {
                 println();
             }
         }
+        decrementIndent();
         println();
         print0(ucase ? "UNTIL " : "until ");
         x.getCondition().accept(this);

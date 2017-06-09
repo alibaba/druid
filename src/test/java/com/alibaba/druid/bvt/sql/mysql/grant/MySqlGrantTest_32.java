@@ -41,7 +41,7 @@ public class MySqlGrantTest_32 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT SUPER ON mydb.* TO 'someuser'@'somehost'", //
+        Assert.assertEquals("GRANT SUPER ON mydb.* TO 'someuser'@'somehost';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

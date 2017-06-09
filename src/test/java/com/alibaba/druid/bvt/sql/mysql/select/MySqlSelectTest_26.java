@@ -53,12 +53,12 @@ public class MySqlSelectTest_26 extends MysqlTest {
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT truncate(12.0123, 2)", //
+            Assert.assertEquals("SELECT truncate(12.0123, 2);", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select truncate(12.0123, 2)", //
+            Assert.assertEquals("select truncate(12.0123, 2);", //
                                 output);
         }
     }

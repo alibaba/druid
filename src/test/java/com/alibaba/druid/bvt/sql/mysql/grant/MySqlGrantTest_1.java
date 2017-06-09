@@ -41,7 +41,7 @@ public class MySqlGrantTest_1 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT SELECT ON db2.invoice TO 'jeffrey'@'localhost'", //
+        Assert.assertEquals("GRANT SELECT ON db2.invoice TO 'jeffrey'@'localhost';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

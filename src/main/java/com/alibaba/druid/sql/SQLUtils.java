@@ -290,11 +290,11 @@ public class SQLUtils {
             SQLStatement stmt = statementList.get(i);
 
             if (i > 0) {
-                if (printStmtSeperator) {
+                SQLStatement preStmt = statementList.get(i - 1);
+                if (printStmtSeperator && !preStmt.isAfterSemi()) {
                     visitor.print(";");
                 }
 
-                SQLStatement preStmt = statementList.get(i - 1);
                 List<String> comments = preStmt.getAfterCommentsDirect();
                 if (comments != null){
                     for (int j = 0; j < comments.size(); ++j) {
@@ -325,11 +325,6 @@ public class SQLUtils {
             stmt.accept(visitor);
 
             if (i == size - 1) {
-                Boolean semi = (Boolean) stmt.getAttribute("format.semi");
-                if (semi != null && semi.booleanValue() && printStmtSeperator) {
-                    visitor.print(";");
-                }
-
                 List<String> comments = stmt.getAfterCommentsDirect();
                 if (comments != null){
                     for (int j = 0; j < comments.size(); ++j) {

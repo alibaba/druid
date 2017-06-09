@@ -41,7 +41,7 @@ public class MySqlAlterTableTest14 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE tbl_name" + //
-                            "\n\tIMPORT TABLESPACE", output);
+                            "\n\tIMPORT TABLESPACE;", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

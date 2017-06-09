@@ -51,7 +51,7 @@ public class PGSelectTest18 extends PGTest {
                     + "\n\t)"
                     + "\nSELECT n"
                     + "\nFROM t"
-                    + "\nLIMIT 100", result);
+                    + "\nLIMIT 100;", result);
         }
         {
             String result = SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -66,7 +66,7 @@ public class PGSelectTest18 extends PGTest {
                     + "\n\t)"
                     + "\nselect n"
                     + "\nfrom t"
-                    + "\nlimit 100", result);
+                    + "\nlimit 100;", result);
         }
         
         Assert.assertEquals(1, statementList.size());

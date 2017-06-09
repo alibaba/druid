@@ -66,7 +66,7 @@ public class MySqlSelectTest_14 extends MysqlTest {
                         "WHERE column1 = (\n" +
                         "\tSELECT column1\n" +
                         "\tFROM t2\n" +
-                        ")", //
+                        ");", //
                             output);
         
         String output_lcase = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -75,7 +75,7 @@ public class MySqlSelectTest_14 extends MysqlTest {
                             + "\nwhere column1 = ("//
                             + "\n\tselect column1"//
                             + "\n\tfrom t2"//
-                            + "\n)", //
+                            + "\n);", //
                             output_lcase);
     }
 }

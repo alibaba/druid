@@ -41,7 +41,7 @@ public class MySqlAlterTableTest11 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE t1" +
-        		"\n\tMODIFY COLUMN b BIGINT NOT NULL", output);
+        		"\n\tMODIFY COLUMN b BIGINT NOT NULL;", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());

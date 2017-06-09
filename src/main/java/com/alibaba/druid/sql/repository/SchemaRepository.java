@@ -285,6 +285,10 @@ public class SchemaRepository {
         return count;
     }
 
+    public Map<String, SchemaObject> getObjects() {
+        return this.objects;
+    }
+
     public int getViewCount() {
         int count = 0;
         for (SchemaObject object : this.objects.values()) {

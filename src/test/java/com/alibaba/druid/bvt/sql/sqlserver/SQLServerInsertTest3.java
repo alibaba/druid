@@ -29,7 +29,7 @@ public class SQLServerInsertTest3 extends TestCase {
                      "VALUES (N'F2', N'Square Feet', GETDATE());;";
 
         String expect = "INSERT INTO Production.UnitMeasure" + //
-                        "\nVALUES (N'F2', N'Square Feet', GETDATE())";
+                        "\nVALUES (N'F2', N'Square Feet', GETDATE());";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

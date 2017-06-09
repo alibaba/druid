@@ -645,7 +645,7 @@ public class DALParserTest extends TestCase {
         MySqlShowGrantsStatement show = (MySqlShowGrantsStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW GRANTS FOR 'root'@'localhost'", output);
+        assertEquals("SHOW GRANTS FOR 'root'@'localhost';", output);
     }
     
     public void test_show_grants_1() throws Exception {
@@ -953,7 +953,7 @@ public class DALParserTest extends TestCase {
         MySqlShowVariantsStatement show = (MySqlShowVariantsStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW VARIABLES LIKE '%size%'", output);
+        assertEquals("SHOW VARIABLES LIKE '%size%';", output);
     }
     
     public void test_show_variants_1() throws Exception {
@@ -962,7 +962,7 @@ public class DALParserTest extends TestCase {
         MySqlShowVariantsStatement show = (MySqlShowVariantsStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW GLOBAL VARIABLES LIKE '%size%'", output);
+        assertEquals("SHOW GLOBAL VARIABLES LIKE '%size%';", output);
     }
     
     public void test_show_variants_2() throws Exception {
@@ -971,7 +971,7 @@ public class DALParserTest extends TestCase {
         MySqlShowVariantsStatement show = (MySqlShowVariantsStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW SESSION VARIABLES LIKE '%size%'", output);
+        assertEquals("SHOW SESSION VARIABLES LIKE '%size%';", output);
     }
     
 //

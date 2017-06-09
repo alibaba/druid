@@ -389,7 +389,8 @@ public class SQLSelectParser extends SQLParser {
         
         lexer.nextToken();
         
-        queryBlock.setFrom(parseTableSource());
+        queryBlock.setFrom(
+                parseTableSource());
     }
 
     public SQLTableSource parseTableSource() {

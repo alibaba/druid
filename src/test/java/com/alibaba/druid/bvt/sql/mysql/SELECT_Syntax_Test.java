@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -37,8 +38,8 @@ public class SELECT_Syntax_Test extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH ROLLUP", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with rollup", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH ROLLUP;", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with rollup;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_1() throws Exception {
@@ -60,8 +61,8 @@ public class SELECT_Syntax_Test extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH CUBE", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with cube", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        Assert.assertEquals("SELECT year, SUM(profit)\nFROM sales\nGROUP BY year WITH CUBE;", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select year, sum(profit)\nfrom sales\ngroup by year with cube;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_2() throws Exception {
@@ -219,13 +220,13 @@ public class SELECT_Syntax_Test extends TestCase {
                 "WHERE s1 NOT IN (\n" +
                 "\tSELECT s1\n" +
                 "\tFROM t2\n" +
-                ")", SQLUtils.toMySqlString(stmt));
+                ");", SQLUtils.toMySqlString(stmt));
         assertEquals("select s1\n" +
                 "from t1\n" +
                 "where s1 not in (\n" +
                 "\tselect s1\n" +
                 "\tfrom t2\n" +
-                ")", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                ");", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_13() throws Exception {
@@ -240,13 +241,13 @@ public class SELECT_Syntax_Test extends TestCase {
                 "WHERE s1 IN (\n" +
                 "\tSELECT s1\n" +
                 "\tFROM t2\n" +
-                ")", SQLUtils.toMySqlString(stmt));
+                ");", SQLUtils.toMySqlString(stmt));
         assertEquals("select s1\n" +
                 "from t1\n" +
                 "where s1 in (\n" +
                 "\tselect s1\n" +
                 "\tfrom t2\n" +
-                ")", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                ");", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_14() throws Exception {
@@ -256,8 +257,8 @@ public class SELECT_Syntax_Test extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 IN (?, ?, ?)", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select s1\nfrom t1\nwhere s1 in (?, ?, ?)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 IN (?, ?, ?);", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select s1\nfrom t1\nwhere s1 in (?, ?, ?);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_15() throws Exception {
@@ -267,18 +268,11 @@ public class SELECT_Syntax_Test extends TestCase {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 NOT IN (?, ?, ?)", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("select s1\nfrom t1\nwhere s1 not in (?, ?, ?)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        Assert.assertEquals("SELECT s1\nFROM t1\nWHERE s1 NOT IN (?, ?, ?);", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("select s1\nfrom t1\nwhere s1 not in (?, ?, ?);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

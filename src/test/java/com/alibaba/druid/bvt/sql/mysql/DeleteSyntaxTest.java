@@ -34,7 +34,7 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("DELETE FROM somelog\nWHERE user = 'jcole'\nORDER BY timestamp_column\nLIMIT 1", SQLUtils.toMySqlString(stmt));
+        assertEquals("DELETE FROM somelog\nWHERE user = 'jcole'\nORDER BY timestamp_column\nLIMIT 1;", SQLUtils.toMySqlString(stmt));
     }
 
     public void test_1() throws Exception {
@@ -45,10 +45,10 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("DELETE t1" + //
+        assertEquals("DELETE t1" + //
                             "\nFROM t1" + //
                             "\n\tLEFT JOIN t2 ON t1.id = t2.id" + //
-                            "\nWHERE t2.id IS NULL", SQLUtils.toMySqlString(stmt));
+                            "\nWHERE t2.id IS NULL;", SQLUtils.toMySqlString(stmt));
     }
 
     public void test_2() throws Exception {
@@ -59,7 +59,7 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("DELETE a1, a2\nFROM t1 a1" + //
+        assertEquals("DELETE a1, a2\nFROM t1 a1" + //
                             "\n\tINNER JOIN t2 a2" + //
                             "\nWHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
     }

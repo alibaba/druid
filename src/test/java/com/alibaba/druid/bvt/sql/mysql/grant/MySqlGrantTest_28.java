@@ -41,7 +41,7 @@ public class MySqlGrantTest_28 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT REPLICATION SLAVE ON mydb.* TO 'someuser'@'somehost'", //
+        Assert.assertEquals("GRANT REPLICATION SLAVE ON mydb.* TO 'someuser'@'somehost';", //
                             output);
 //
 //        System.out.println("Tables : " + visitor.getTables());

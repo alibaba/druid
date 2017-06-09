@@ -37,13 +37,13 @@ public class OceanbaseAlterTableRemovePartitioningTest extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE tnrange"
-                    + "\n\tREMOVE PARTITIONING",
+                    + "\n\tREMOVE PARTITIONING;",
                                 result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table tnrange"
-                    + "\n\tremove partitioning",
+                    + "\n\tremove partitioning;",
                                 result);
         }
 

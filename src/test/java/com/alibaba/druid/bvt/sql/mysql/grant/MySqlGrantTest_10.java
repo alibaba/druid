@@ -41,7 +41,7 @@ public class MySqlGrantTest_10 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT PROXY ON 'localuser'@'localhost' TO 'externaluser'@'somehost'", //
+        Assert.assertEquals("GRANT PROXY ON 'localuser'@'localhost' TO 'externaluser'@'somehost';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

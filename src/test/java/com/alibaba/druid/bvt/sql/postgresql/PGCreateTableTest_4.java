@@ -44,14 +44,14 @@ public class PGCreateTableTest_4 extends PGTest {
                 + "\n\tname text,"
                 + "\n\tprice numeric"
                 + "\n\t\tCHECK (price > 0)"
-                + "\n)", SQLUtils.toPGString(stmt));
+                + "\n);", SQLUtils.toPGString(stmt));
         
         Assert.assertEquals("create table products ("
                 + "\n\tproduct_no integer,"
                 + "\n\tname text,"
                 + "\n\tprice numeric"
                 + "\n\t\tcheck (price > 0)"
-                + "\n)", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                + "\n);", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
 

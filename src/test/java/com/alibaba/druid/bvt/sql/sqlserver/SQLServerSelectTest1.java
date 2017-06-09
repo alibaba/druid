@@ -28,7 +28,7 @@ public class SQLServerSelectTest1 extends TestCase {
     public void test_isEmpty() throws Exception {
         String sql = "USE AdventureWorks2008R2;";
 
-        String expect = "USE AdventureWorks2008R2";
+        String expect = "USE AdventureWorks2008R2;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

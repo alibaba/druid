@@ -65,8 +65,9 @@ public class OdpsStatementParser extends SQLStatementParser {
     }
 
     public SQLSelectStatement parseSelect() {
-        OdpsSelectParser selectParser = new OdpsSelectParser(this.exprParser);
-        return new SQLSelectStatement(selectParser.select(), JdbcConstants.ODPS);
+        return new SQLSelectStatement(
+                new OdpsSelectParser(this.exprParser)
+                        .select(), JdbcConstants.ODPS);
     }
 
     public SQLCreateTableStatement parseCreateTable() {

@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -72,14 +74,6 @@ public class MiscellaneousFunctionsTest extends TestCase {
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

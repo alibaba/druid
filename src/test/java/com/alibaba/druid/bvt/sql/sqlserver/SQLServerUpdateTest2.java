@@ -32,7 +32,7 @@ public class SQLServerUpdateTest2 extends TestCase {
 
         String expect = "UPDATE Cities" + //
                         "\nSET Location = CONVERT(Point, '12.3:46.2')" + //
-                        "\nWHERE Name = 'Anchorage'";
+                        "\nWHERE Name = 'Anchorage';";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

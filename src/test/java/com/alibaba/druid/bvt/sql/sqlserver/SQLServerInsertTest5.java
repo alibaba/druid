@@ -77,7 +77,7 @@ public class SQLServerInsertTest5 extends TestCase {
                            + "\nVALUES ('a1', 'b1'),"//
                            + "\n('a2', 'b2'),"//
                            + "\n('a3', 'b3'),"//
-                           + "\n('a4', 'b4')";
+                           + "\n('a4', 'b4');";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 }

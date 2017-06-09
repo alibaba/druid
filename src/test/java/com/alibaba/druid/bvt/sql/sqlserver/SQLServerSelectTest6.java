@@ -48,7 +48,7 @@ public class SQLServerSelectTest6 extends TestCase {
         		"\n\t)" +
         		"\nSELECT ManagerID, DirectReports" +
         		"\nFROM DirReps" +
-        		"\nORDER BY ManagerID";
+        		"\nORDER BY ManagerID;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

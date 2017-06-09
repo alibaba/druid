@@ -50,12 +50,12 @@ public class MySqlSelectTest_39 extends MysqlTest {
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT DATE_ADD(now(), INTERVAL -1 DAY)", //
+            Assert.assertEquals("SELECT DATE_ADD(now(), INTERVAL -1 DAY);", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select DATE_ADD(now(), interval -1 day)", //
+            Assert.assertEquals("select DATE_ADD(now(), interval -1 day);", //
                                 output);
         }
 

@@ -30,11 +30,11 @@ public class MySqlAlterTableAlterColumnTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         
-        Assert.assertEquals("ALTER TABLE `cube_template`\n" +
-                "\tADD COLUMN `stat_report_json` VARCHAR(256) CHARSET utf8  COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '模板的统计报表json数组'", SQLUtils.toMySqlString(stmt));
+        assertEquals("ALTER TABLE `cube_template`\n" +
+                "\tADD COLUMN `stat_report_json` VARCHAR(256) CHARSET utf8  COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '模板的统计报表json数组';", SQLUtils.toMySqlString(stmt));
         
-        Assert.assertEquals("alter table `cube_template`\n" +
-                "\tadd column `stat_report_json` VARCHAR(256) charset utf8  COLLATE utf8_general_ci not null default '' comment '模板的统计报表json数组'", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("alter table `cube_template`\n" +
+                "\tadd column `stat_report_json` VARCHAR(256) charset utf8  COLLATE utf8_general_ci not null default '' comment '模板的统计报表json数组';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

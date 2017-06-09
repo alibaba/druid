@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
 public class PGCommitTest extends PGTest {
     public void testCommit() throws Exception {
         String sql = "commit;";
-        String expected = "COMMIT";
+        String expected = "COMMIT;";
         testParseSql(sql, expected, expected, SQLCommitStatement.class);
     }
 }

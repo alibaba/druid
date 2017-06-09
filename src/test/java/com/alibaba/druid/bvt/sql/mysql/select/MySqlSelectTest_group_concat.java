@@ -68,7 +68,7 @@ public class MySqlSelectTest_group_concat extends MysqlTest {
                             + "\nFROM ad_texts" //
                             + "\nWHERE customer_id = 13001" //
                             + "\n\tAND description1 LIKE '%爱丽%'" //
-                            + "\nORDER BY id ASC", //
+                            + "\nORDER BY id ASC;", //
                             output);
     }
 }

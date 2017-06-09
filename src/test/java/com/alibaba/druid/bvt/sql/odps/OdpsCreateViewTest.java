@@ -20,7 +20,7 @@ public class OdpsCreateViewTest extends TestCase {
         Assert.assertEquals("CREATE VIEW sale_detail" //
                             + "\nAS" //
                             + "\nSELECT *" //
-                            + "\nFROM dual", output);
+                            + "\nFROM dual;", output);
     }
     
     public void test_create_or_replace() throws Exception {
@@ -32,7 +32,7 @@ public class OdpsCreateViewTest extends TestCase {
         Assert.assertEquals("CREATE OR REPLACE VIEW sale_detail" //
                             + "\nAS" //
                             + "\nSELECT *" //
-                            + "\nFROM dual", output);
+                            + "\nFROM dual;", output);
     }
     
     
@@ -45,7 +45,7 @@ public class OdpsCreateViewTest extends TestCase {
         Assert.assertEquals("CREATE VIEW IF NOT EXISTS sale_detail" //
                             + "\nAS" //
                             + "\nSELECT *" //
-                            + "\nFROM dual", output);
+                            + "\nFROM dual;", output);
     }
     
     public void test_create_comments() throws Exception {
@@ -58,7 +58,7 @@ public class OdpsCreateViewTest extends TestCase {
                             + "\nCOMMENT 'aaaa'" //
                             + "\nAS" //
                             + "\nSELECT *" //
-                            + "\nFROM dual", output);
+                            + "\nFROM dual;", output);
     }
     
     public void test_create_column_comments() throws Exception {
@@ -74,6 +74,6 @@ public class OdpsCreateViewTest extends TestCase {
                             + "\n)" //
                             + "\nAS" //
                             + "\nSELECT *" //
-                            + "\nFROM dual", output);
+                            + "\nFROM dual;", output);
     }
 }

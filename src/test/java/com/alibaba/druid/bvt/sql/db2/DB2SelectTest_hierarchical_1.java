@@ -42,7 +42,7 @@ public class DB2SelectTest_hierarchical_1 extends MysqlTest {
                     "FROM employees\n" +
                     "START WITH employee_id = 100\n" +
                     "CONNECT BY PRIOR employee_id = manager_id\n" +
-                    "ORDER SIBLINGS BY last_name", result);
+                    "ORDER SIBLINGS BY last_name;", result);
         }
         {
             String result = SQLUtils.toSQLString(stmt, dbType, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -50,7 +50,7 @@ public class DB2SelectTest_hierarchical_1 extends MysqlTest {
                     "from employees\n" +
                     "start with employee_id = 100\n" +
                     "connect by prior employee_id = manager_id\n" +
-                    "order siblings by last_name", result);
+                    "order siblings by last_name;", result);
         }
 
         assertEquals(1, stmtList.size());

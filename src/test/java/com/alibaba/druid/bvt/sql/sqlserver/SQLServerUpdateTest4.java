@@ -30,7 +30,7 @@ public class SQLServerUpdateTest4 extends TestCase {
         		"SET VacationHours = VacationHours * 1.25 ;";
 
         String expect = "UPDATE TOP (10) HumanResources.Employee" +
-        		"\nSET VacationHours = VacationHours * 1.25";
+        		"\nSET VacationHours = VacationHours * 1.25;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

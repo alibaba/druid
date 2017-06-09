@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -112,7 +114,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CHARSET(CHAR(0x65)), CHARSET(CHAR(0x65 USING utf8));", text);
+        Assert.assertEquals("SELECT CHARSET(CHAR(0x65)), CHARSET(CHAR(0x65 USING utf8))", text);
     }
 
     public void test_8() throws Exception {
@@ -123,7 +125,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CONCAT(CAST(int_col AS CHAR), char_col);", text);
+        Assert.assertEquals("SELECT CONCAT(CAST(int_col AS CHAR), char_col)", text);
     }
 
     public void test_9() throws Exception {
@@ -134,7 +136,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CONCAT('My', 'S', 'QL');", text);
+        Assert.assertEquals("SELECT CONCAT('My', 'S', 'QL')", text);
     }
 
     public void test_10() throws Exception {
@@ -365,7 +367,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT LTRIM('  barbar');", text);
+        Assert.assertEquals("SELECT LTRIM('  barbar')", text);
     }
 
     public void test_31() throws Exception {
@@ -376,7 +378,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT MAKE_SET(1, 'a', 'b', 'c');", text);
+        Assert.assertEquals("SELECT MAKE_SET(1, 'a', 'b', 'c')", text);
     }
 
     public void test_32() throws Exception {
@@ -387,7 +389,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT MAKE_SET(1 | 4, 'hello', 'nice', 'world');", text);
+        Assert.assertEquals("SELECT MAKE_SET(1 | 4, 'hello', 'nice', 'world')", text);
     }
 
     public void test_33() throws Exception {
@@ -398,7 +400,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT MAKE_SET(1 | 4, 'hello', 'nice', NULL, 'world');", text);
+        Assert.assertEquals("SELECT MAKE_SET(1 | 4, 'hello', 'nice', NULL, 'world')", text);
     }
 
     public void test_34() throws Exception {
@@ -409,7 +411,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ORD('2');", text);
+        Assert.assertEquals("SELECT ORD('2')", text);
     }
 
     public void test_35() throws Exception {
@@ -420,7 +422,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT QUOTE('Don''t!');", text);
+        Assert.assertEquals("SELECT QUOTE('Don''t!')", text);
     }
 
     public void test_36() throws Exception {
@@ -431,7 +433,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT REPEAT('MySQL', 3);", text);
+        Assert.assertEquals("SELECT REPEAT('MySQL', 3)", text);
     }
 
     public void test_37() throws Exception {
@@ -442,7 +444,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT REVERSE('abc');", text);
+        Assert.assertEquals("SELECT REVERSE('abc')", text);
     }
 
     public void test_38() throws Exception {
@@ -453,7 +455,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT RIGHT('foobarbar', 4);", text);
+        Assert.assertEquals("SELECT RIGHT('foobarbar', 4)", text);
     }
 
     public void test_39() throws Exception {
@@ -464,7 +466,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT RPAD('hi', 5, '?');", text);
+        Assert.assertEquals("SELECT RPAD('hi', 5, '?')", text);
     }
 
     public void test_40() throws Exception {
@@ -475,7 +477,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT RTRIM('barbar   ');", text);
+        Assert.assertEquals("SELECT RTRIM('barbar   ')", text);
     }
 
     public void test_41() throws Exception {
@@ -486,7 +488,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SOUNDEX('Hello');", text);
+        Assert.assertEquals("SELECT SOUNDEX('Hello')", text);
     }
 
     public void test_42() throws Exception {
@@ -497,7 +499,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SPACE(6);", text);
+        Assert.assertEquals("SELECT SPACE(6)", text);
     }
 
     public void test_43() throws Exception {
@@ -508,7 +510,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SUBSTRING('Quadratically', 5);", text);
+        Assert.assertEquals("SELECT SUBSTRING('Quadratically', 5)", text);
     }
 
     public void test_44() throws Exception {
@@ -519,7 +521,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SUBSTRING('Sakila', -4, 2);", text);
+        Assert.assertEquals("SELECT SUBSTRING('Sakila', -4, 2)", text);
     }
 
     public void test_45() throws Exception {
@@ -530,7 +532,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SUBSTRING('foobarbar', 4);", text);
+        Assert.assertEquals("SELECT SUBSTRING('foobarbar', 4)", text);
     }
 
     public void test_46() throws Exception {
@@ -541,7 +543,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SUBSTRING('Quadratically', 5, 6);", text);
+        Assert.assertEquals("SELECT SUBSTRING('Quadratically', 5, 6)", text);
     }
 
     public void test_47() throws Exception {
@@ -552,7 +554,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SUBSTRING_INDEX('www.mysql.com', '.', -2);", text);
+        Assert.assertEquals("SELECT SUBSTRING_INDEX('www.mysql.com', '.', -2)", text);
     }
 
     public void test_48() throws Exception {
@@ -563,7 +565,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TRIM('  bar   ');", text);
+        Assert.assertEquals("SELECT TRIM('  bar   ')", text);
     }
 
     public void test_49() throws Exception {
@@ -574,7 +576,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TRIM(LEADING 'x' FROM 'xxxbarxxx');", text);
+        Assert.assertEquals("SELECT TRIM(LEADING 'x' FROM 'xxxbarxxx')", text);
     }
 
     public void test_50() throws Exception {
@@ -633,13 +635,6 @@ public class StringFunctionsTest extends TestCase {
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

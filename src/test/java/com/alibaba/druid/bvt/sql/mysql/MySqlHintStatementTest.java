@@ -34,7 +34,7 @@ public class MySqlHintStatementTest extends TestCase {
                      + " ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"//
                      + " \n/*!40101 SET character_set_client = @saved_cs_client */;";
         String rs = SQLUtils.formatMySql(sql);
-        Assert.assertEquals("DROP TABLE IF EXISTS `item_similarity`;"
+        assertEquals("DROP TABLE IF EXISTS `item_similarity`;"
                 + "\n"
                 + "\n/*!40101 SET @saved_cs_client     = @@character_set_client */;"
                 + "\n"

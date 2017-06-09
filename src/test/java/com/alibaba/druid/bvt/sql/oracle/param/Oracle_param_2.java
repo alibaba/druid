@@ -41,7 +41,7 @@ public class Oracle_param_2 extends TestCase {
 
         String psql = out.toString();
         assertEquals("SELECT TO_DATE(?, 'YYYY-MM-DD')\n" +
-                "FROM dual", psql);
+                "FROM dual;", psql);
         String params_json = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
         System.out.println(params_json);
         JSONArray jsonArray = JSON.parseArray(params_json);
@@ -50,6 +50,6 @@ public class Oracle_param_2 extends TestCase {
 
         String rsql = SQLUtils.toSQLString(SQLUtils.parseStatements(psql, dbType), dbType, jsonArray);
         assertEquals("SELECT TO_DATE('2013-02-11', 'YYYY-MM-DD')\n" +
-                "FROM dual", rsql);
+                "FROM dual;", rsql);
     }
 }

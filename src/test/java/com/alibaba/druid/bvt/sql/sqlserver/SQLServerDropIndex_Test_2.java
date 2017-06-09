@@ -43,7 +43,7 @@ public class SQLServerDropIndex_Test_2 extends TestCase {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
-        Assert.assertEquals("DROP INDEX IX_ProductVendor_VendorID ON Purchasing.ProductVendor", output);
+        Assert.assertEquals("DROP INDEX IX_ProductVendor_VendorID ON Purchasing.ProductVendor;", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

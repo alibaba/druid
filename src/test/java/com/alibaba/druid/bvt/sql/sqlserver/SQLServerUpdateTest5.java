@@ -31,7 +31,7 @@ public class SQLServerUpdateTest5 extends TestCase {
         String expect = "UPDATE TOP (10) HumanResources.Employee"
                 + "\nSET VacationHours = VacationHours * 1.25, ModifiedDate = GETDATE()"
                 + "\nOUTPUT inserted.BusinessEntityID, deleted.VacationHours, inserted.VacationHours, inserted.ModifiedDate"
-                + "\n\tINTO @MyTableVar";
+                + "\n\tINTO @MyTableVar;";
         
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);

@@ -48,7 +48,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
                     + "\n("
                     + "\n\tPARTITION p1 VALUES LESS THAN (1),"
                     + "\n\tPARTITION p2 VALUES LESS THAN MAXVALUE"
-                    + "\n)",
+                    + "\n);",
                                 result);
         }
         {
@@ -61,7 +61,7 @@ public class OceanbaseCreateTableTest_rangePartition5 extends MysqlTest {
                     + "\n("
                     + "\n\tpartition p1 values less than (1),"
                     + "\n\tpartition p2 values less than maxvalue"
-                    + "\n)",
+                    + "\n);",
                                 result);
         }
 

@@ -23,20 +23,20 @@ public class PGSetTest3 extends PGTest {
         Class<?> type = PGSetStatement.class;
 
         String sql = "SET TIME ZONE 'Europe/Rome';";
-        String expectedSql = "SET TIME ZONE 'Europe/Rome'";
-        String expectedPattern = "SET TIME ZONE ?";
+        String expectedSql = "SET TIME ZONE 'Europe/Rome';";
+        String expectedPattern = "SET TIME ZONE ?;";
         testParseSql(sql, expectedSql, expectedPattern, type);
 
         sql = "SET configuration_parameter TO DEFAULT;";
-        expectedSql = "SET configuration_parameter TO DEFAULT";
+        expectedSql = "SET configuration_parameter TO DEFAULT;";
         testParseSql(sql, expectedSql, expectedSql, type);
 
         sql = "SET search_path TO my_schema, public;";
-        expectedSql = "SET search_path TO my_schema, public";
+        expectedSql = "SET search_path TO my_schema, public;";
         testParseSql(sql, expectedSql, expectedSql, type);
 
         sql = "SET search_path =  my_schema, public;";
-        expectedSql = "SET search_path TO my_schema, public";
+        expectedSql = "SET search_path TO my_schema, public;";
         testParseSql(sql, expectedSql, expectedSql, type);
 
         sql = "SET a=1";

@@ -44,7 +44,7 @@ public class SQLServerAlterTableTest_9 extends TestCase {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("ALTER TABLE dbo.doc_exy"//
-                            + "\n\tALTER COLUMN column_a DECIMAL(5, 2)", output);
+                            + "\n\tALTER COLUMN column_a DECIMAL(5, 2);", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());

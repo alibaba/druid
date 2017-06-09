@@ -37,13 +37,13 @@ public class OceanbaseAlterTableRebuildPartitionTest2 extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE tnrange"
-                    + "\n\tREBUILD PARTITION ALL",
+                    + "\n\tREBUILD PARTITION ALL;",
                                 result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table tnrange"
-                    + "\n\trebuild partition all",
+                    + "\n\trebuild partition all;",
                                 result);
         }
         

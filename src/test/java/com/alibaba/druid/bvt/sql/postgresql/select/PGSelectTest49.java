@@ -46,7 +46,7 @@ public class PGSelectTest49 extends TestCase {
                 "UPDATE goods_detail\n" +
                 "SET gd_number = gd_number - gdnumber\n" +
                 "FROM sel\n" +
-                "WHERE gd_id = gdid", SQLUtils.toPGString(stmt));
+                "WHERE gd_id = gdid;", SQLUtils.toPGString(stmt));
         
         assertEquals("with\n" +
                 "\tsel\n" +
@@ -57,7 +57,7 @@ public class PGSelectTest49 extends TestCase {
                 "update goods_detail\n" +
                 "set gd_number = gd_number - gdnumber\n" +
                 "from sel\n" +
-                "where gd_id = gdid", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "where gd_id = gdid;", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());
 
