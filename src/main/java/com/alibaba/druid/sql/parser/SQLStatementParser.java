@@ -103,6 +103,8 @@ public class SQLStatementParser extends SQLParser {
                 case EOF:
                 case END:
                 case UNTIL:
+                case ELSE:
+                case WHEN:
                     if (lexer.isKeepComments() && lexer.hasComment() && statementList.size() > 0) {
                         SQLStatement stmt = statementList.get(statementList.size() - 1);
                         stmt.addAfterComment(lexer.readAndResetComments());
@@ -289,6 +291,12 @@ public class SQLStatementParser extends SQLParser {
                     statementList.add(stmt);
                     continue;
                 }
+                case LEAVE: {
+                    SQLStatement stmt = parseLeave();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
                 default:
                     break;
             }
@@ -432,6 +440,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseRepeat() {
+        throw new ParserException("not supported. " + lexer.info());
+    }
+
+    public SQLStatement parseLeave() {
         throw new ParserException("not supported. " + lexer.info());
     }
 

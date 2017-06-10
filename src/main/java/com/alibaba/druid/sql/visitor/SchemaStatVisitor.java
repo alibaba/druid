@@ -574,12 +574,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         if (expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+            if (isParam(identifierExpr)) {
+                return null;
+            }
             Column attrColumn = (Column) expr.getAttribute(ATTR_COLUMN);
             if (attrColumn != null) {
                 return attrColumn;
             }
 
-            String column = ((SQLIdentifierExpr) expr).getName();
+            String column = identifierExpr.getName();
             String table = getCurrentTable();
             if (table != null && aliasMap.containsKey(table)) {
                 table = aliasMap.get(table);
@@ -715,12 +719,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
-        if (x.getInto() != null && x.getInto().getExpr() instanceof SQLName) {
-            SQLName into = (SQLName) x.getInto().getExpr();
-            String ident = into.toString();
-            TableStat stat = getTableStat(ident);
-            if (stat != null) {
-                stat.incrementInsertCount();
+        SQLExprTableSource into = x.getInto();
+        if (into != null && into.getExpr() instanceof SQLName) {
+            SQLName intoExpr = (SQLName) into.getExpr();
+
+            boolean isParam = intoExpr instanceof SQLIdentifierExpr && isParam((SQLIdentifierExpr) intoExpr);
+
+            if (!isParam) {
+                String ident = intoExpr.toString();
+                TableStat stat = getTableStat(ident);
+                if (stat != null) {
+                    stat.incrementInsertCount();
+                }
             }
         }
 
@@ -759,6 +769,36 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         return true;
+    }
+
+    public static boolean isParam(SQLIdentifierExpr x) {
+        if (x.isParameter() != null) {
+            return x.isParameter();
+        }
+
+        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof SQLCreateProcedureStatement) {
+                SQLCreateProcedureStatement stmt = (SQLCreateProcedureStatement) parent;
+                for (SQLParameter parameter : stmt.getParameters()) {
+                    if (x.equals(parameter.getName())) {
+                        x.setParameter(true);
+                        return true;
+                    }
+                }
+                break;
+            }
+
+            if (parent instanceof SQLBlockStatement) {
+                SQLBlockStatement stmt = (SQLBlockStatement) parent;
+                for (SQLParameter parameter : stmt.getParameters()) {
+                    if (x.equals(parameter.getName())) {
+                        x.setParameter(true);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public void endVisit(SQLSelectQueryBlock x) {
@@ -945,6 +985,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLIdentifierExpr x) {
+        if (isParam(x)) {
+            return false;
+        }
+
         String currentTable = getCurrentTable();
 
         if (containsSubQuery(currentTable)) {
@@ -1208,7 +1252,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLExprTableSource x) {
         if (isSimpleExprTableSource(x)) {
-            String ident = x.getExpr().toString();
+            SQLExpr expr = x.getExpr();
+            if (expr instanceof SQLIdentifierExpr && isParam((SQLIdentifierExpr) expr)) {
+                return false;
+            }
+
+            String ident = expr.toString();
 
             if (variants.containsKey(ident)) {
                 return false;

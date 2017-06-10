@@ -2030,6 +2030,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (identifierEquals("USING")) {
             lexer.nextToken();
             exprParser.exprList(stmt.getParameters(), stmt);
+        } else if (lexer.token() == Token.IDENTIFIER) {
+            exprParser.exprList(stmt.getParameters(), stmt);
         }
 
         return stmt;
@@ -3252,8 +3254,31 @@ public class MySqlStatementParser extends SQLStatementParser {
             parserParameters(stmt.getParameters(), stmt);
             accept(Token.RPAREN);// match ")"
         }
-        SQLStatement block;
 
+        for (;;) {
+            if (identifierEquals("DETERMINISTIC")) {
+                lexer.nextToken();
+                stmt.setDeterministic(true);
+                continue;
+            }
+            if (identifierEquals("CONTAINS")) {
+                lexer.nextToken();
+                acceptIdentifier("SQL");
+                stmt.setContainsSql(true);
+                continue;
+            }
+
+            if (identifierEquals("SQL")) {
+                lexer.nextToken();
+                acceptIdentifier("SECURITY");
+                SQLName authid = this.exprParser.name();
+                stmt.setAuthid(authid);
+            }
+
+            break;
+        }
+
+        SQLStatement block;
         if (lexer.token() == Token.BEGIN) {
             block = this.parseBlock();
         } else {
@@ -3565,7 +3590,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.THEN);
 
-        this.parseProcedureStatementList(stmt.getStatements());
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
 
         while (lexer.token() == Token.ELSE) {
             lexer.nextToken();
@@ -3578,12 +3603,13 @@ public class MySqlStatementParser extends SQLStatementParser {
                 elseIf.setCondition(this.exprParser.expr());
 
                 accept(Token.THEN);
-                this.parseProcedureStatementList(elseIf.getStatements());
+                this.parseStatementList(elseIf.getStatements(), -1, elseIf);
+
 
                 stmt.getElseIfList().add(elseIf);
             } else {
                 SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
-                this.parseProcedureStatementList(elseItem.getStatements());
+                this.parseStatementList(elseItem.getStatements(), -1, elseItem);
                 stmt.setElseItem(elseItem);
                 break;
             }
@@ -3610,7 +3636,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.DO);
 
-        this.parseProcedureStatementList(stmt.getStatements());
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
 
         accept(Token.END);
 
@@ -3638,7 +3664,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         accept(Token.DO);
 
-        this.parseProcedureStatementList(stmt.getStatements());
+        this.parseStatementList(stmt.getStatements(), -1, stmt);
 
         accept(Token.END);
 
@@ -3672,14 +3698,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                 accept(Token.THEN);
 
                 // when block
-                parseProcedureStatementList(when.getStatements());
+                this.parseStatementList(when.getStatements(), -1, when);
 
                 stmt.addWhenStatement(when);
             }
             if (lexer.token() == Token.ELSE) {
                 // parse else block
                 SQLIfStatement.Else elseStmt = new SQLIfStatement.Else();
-                parseProcedureStatementList(elseStmt.getStatements());
+                this.parseStatementList(elseStmt.getStatements(), -1, elseStmt);
                 stmt.setElseItem(elseStmt);
             }
         } else// grammar 2
@@ -3696,7 +3722,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 accept(Token.THEN);
 
                 // when block
-                parseProcedureStatementList(when.getStatements());
+                this.parseStatementList(when.getStatements(), -1, when);
 
                 stmt.addWhenStatement(when);
             }
@@ -3704,7 +3730,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 accept(Token.ELSE);
                 // else block
                 SQLIfStatement.Else elseStmt = new SQLIfStatement.Else();
-                parseProcedureStatementList(elseStmt.getStatements());
+                this.parseStatementList(elseStmt.getStatements(), -1, elseStmt);
                 stmt.setElseItem(elseStmt);
             }
         }
@@ -3799,7 +3825,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     public SQLLoopStatement parseLoop() {
         SQLLoopStatement loopStmt = new SQLLoopStatement();
         accept(Token.LOOP);
-        parseProcedureStatementList(loopStmt.getStatements());
+        this.parseStatementList(loopStmt.getStatements(), -1, loopStmt);
         accept(Token.END);
         accept(Token.LOOP);
         accept(Token.SEMI);
@@ -3814,7 +3840,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         SQLLoopStatement loopStmt = new SQLLoopStatement();
         loopStmt.setLabelName(label);
         accept(Token.LOOP);
-        parseProcedureStatementList(loopStmt.getStatements());
+        this.parseStatementList(loopStmt.getStatements(), -1, loopStmt);
         accept(Token.END);
         accept(Token.LOOP);
         if (lexer.token() != Token.SEMI) {
@@ -3832,7 +3858,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         SQLBlockStatement block = new SQLBlockStatement();
         block.setLabelName(label);
         accept(Token.BEGIN);
-        parseProcedureStatementList(block.getStatementList());
+        this.parseStatementList(block.getStatementList(), -1, block);
         accept(Token.END);
         acceptIdentifier(label);
         return block;
@@ -3888,7 +3914,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlRepeatStatement repeatStmt = new MySqlRepeatStatement();
         repeatStmt.setLabelName(label);
         accept(Token.REPEAT);
-        parseProcedureStatementList(repeatStmt.getStatements());
+        this.parseStatementList(repeatStmt.getStatements(), -1, repeatStmt);
         accept(Token.UNTIL);
         repeatStmt.setCondition(exprParser.expr());
         accept(Token.END);

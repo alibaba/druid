@@ -77,7 +77,7 @@ public class OracleBlockTest7 extends OracleTest {
          Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees_temp")));
 
         Assert.assertEquals(6, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        Assert.assertEquals(1, visitor.getConditions().size());
 
          Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
     }

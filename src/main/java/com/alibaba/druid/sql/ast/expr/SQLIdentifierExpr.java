@@ -24,6 +24,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     private String           name;
 
     private transient String lowerName;
+    private transient Boolean parameter;
 
     public SQLIdentifierExpr(){
 
@@ -53,8 +54,12 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return lowerName;
     }
 
-    public void setLowerName(String lowerName) {
-        this.lowerName = lowerName;
+    public Boolean isParameter() {
+        return parameter;
+    }
+
+    public void setParameter(Boolean parameter) {
+        this.parameter = parameter;
     }
 
     public void output(StringBuffer buf) {

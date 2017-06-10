@@ -3141,45 +3141,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    /**
-     * visit procedure create node
-     */
-    @Override
-    public boolean visit(SQLCreateProcedureStatement x) {
-        if (x.isOrReplace()) {
-            print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
-        } else {
-            print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
-        }
-        x.getName().accept(this);
-
-        int paramSize = x.getParameters().size();
-
-        print0(" (");
-        if (paramSize > 0) {
-            incrementIndent();
-            println();
-
-            for (int i = 0; i < paramSize; ++i) {
-                if (i != 0) {
-                    print0(", ");
-                    println();
-                }
-                SQLParameter param = x.getParameters().get(i);
-                param.accept(this);
-            }
-
-            decrementIndent();
-            println();
-        }
-        print(')');
-
-        println();
-        x.getBlock().setParent(x);
-        x.getBlock().accept(this);
-        return false;
-    }
-
     @Override
     public boolean visit(SQLIfStatement x) {
         print0(ucase ? "IF " : "if ");
@@ -3584,6 +3545,72 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print0(ucase ? " CASCADE" : " cascade");
             }
         }
+        return false;
+    }
+
+    /**
+     * visit procedure create node
+     */
+    @Override
+    public boolean visit(SQLCreateProcedureStatement x) {
+        if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE PROCEDURE " : "create or replace procedure ");
+        } else {
+            print0(ucase ? "CREATE PROCEDURE " : "create procedure ");
+        }
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        print0(" (");
+        if (paramSize > 0) {
+            incrementIndent();
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                    println();
+                }
+                SQLParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            decrementIndent();
+            println();
+        }
+        print(')');
+
+        if (x.isDeterministic()) {
+            println();
+            print(ucase ? "DETERMINISTIC" : "deterministic");
+        }
+
+        if (x.isContainsSql()) {
+            println();
+            print0(ucase ? "CONTAINS SQL" : "contains sql");
+        }
+
+        if (x.isNoSql()) {
+            println();
+            print(ucase ? "NO SQL" : "no sql");
+        }
+
+        if (x.isModifiesSqlData()) {
+            println();
+            print(ucase ? "MODIFIES SQL DATA" : "modifies sql data");
+        }
+
+        SQLName authid = x.getAuthid();
+        if (authid != null) {
+            println();
+            print(ucase ? "SQL SECURITY " : "sql security ");
+            authid.accept(this);
+        }
+
+        println();
+        x.getBlock().setParent(x);
+        x.getBlock().accept(this);
         return false;
     }
 
