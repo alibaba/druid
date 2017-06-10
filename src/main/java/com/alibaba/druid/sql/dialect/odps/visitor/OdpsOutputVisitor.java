@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
@@ -74,7 +72,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             
             if (this.isPrettyFormat() && x.hasBodyBeforeComment()) {
                 print(' ');
-                printComment(x.getBodyBeforeCommentsDirect(), "");
+                printlnComment(x.getBodyBeforeCommentsDirect());
             }
             
             incrementIndent();
@@ -88,7 +86,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                 }
                 if (this.isPrettyFormat() && element.hasAfterComment()) {
                     print(' ');
-                    printComment(element.getAfterCommentsDirect(), "\n");
+                    printlnComment(element.getAfterCommentsDirect());
                 }
 
                 if (i != size - 1) {
@@ -121,7 +119,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                 }
                 if (this.isPrettyFormat() && column.hasAfterComment()) {
                     print(' ');
-                    printComment(column.getAfterCommentsDirect(), "\n");
+                    printlnComment(column.getAfterCommentsDirect());
                 }
 
                 if (i != partitionSize - 1) {
@@ -204,8 +202,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     @Override
     public boolean visit(OdpsInsert x) {
         if (x.hasBeforeComment()) {
-            printComment(x.getBeforeCommentsDirect(), "\n");
-            println();
+            printlnComments(x.getBeforeCommentsDirect());
         }
         if (x.isOverwrite()) {
             print0(ucase ? "INSERT OVERWRITE TABLE " : "insert overwrite table ");
@@ -238,31 +235,31 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         return false;
     }
 
-    protected void printSelectList(List<SQLSelectItem> selectList) {
-        incrementIndent();
-        for (int i = 0, size = selectList.size(); i < size; ++i) {
-            SQLSelectItem selectItem = selectList.get(i);
-
-            if (i != 0) {
-                SQLSelectItem preSelectItem = selectList.get(i - 1);
-                if (preSelectItem.hasAfterComment()) {
-                    print(' ');
-                    printComment(preSelectItem.getAfterCommentsDirect(), "\n");
-                }
-
-                println();
-                print0(", ");
-            }
-
-            selectItem.accept(this);
-
-            if (i == selectList.size() - 1 && selectItem.hasAfterComment()) {
-                print(' ');
-                printComment(selectItem.getAfterCommentsDirect(), "\n");
-            }
-        }
-        decrementIndent();
-    }
+//    protected void printSelectList(List<SQLSelectItem> selectList) {
+//        incrementIndent();
+//        for (int i = 0, size = selectList.size(); i < size; ++i) {
+//            SQLSelectItem selectItem = selectList.get(i);
+//
+//            if (i != 0) {
+//                SQLSelectItem preSelectItem = selectList.get(i - 1);
+//                if (preSelectItem.hasAfterComment()) {
+//                    print(' ');
+//                    printlnComment(preSelectItem.getAfterCommentsDirect());
+//                }
+//
+//                println();
+//                print0(", ");
+//            }
+//
+//            selectItem.accept(this);
+//
+//            if (i == selectList.size() - 1 && selectItem.hasAfterComment()) {
+//                print(' ');
+//                printlnComments(selectItem.getAfterCommentsDirect());
+//            }
+//        }
+//        decrementIndent();
+//    }
 
     @Override
     public boolean visit(SQLSubqueryTableSource x) {
@@ -414,8 +411,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     @Override
     public boolean visit(OdpsSelectQueryBlock x) {
         if (isPrettyFormat() && x.hasBeforeComment()) {
-            printComment(x.getBeforeCommentsDirect(), "\n");
-            println();
+            printlnComments(x.getBeforeCommentsDirect());
         }
 
         print0(ucase ? "SELECT " : "select ");
@@ -453,7 +449,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             x.getWhere().accept(this);
             if (x.getWhere().hasAfterComment() && isPrettyFormat()) {
                 print(' ');
-                printComment(x.getWhere().getAfterCommentsDirect(), "\n");
+                printlnComment(x.getWhere().getAfterCommentsDirect());
             }
         }
 

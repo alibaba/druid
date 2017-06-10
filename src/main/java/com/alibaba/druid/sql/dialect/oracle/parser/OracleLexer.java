@@ -125,6 +125,8 @@ public class OracleLexer extends Lexer {
 
     public OracleLexer(String input){
         super(input);
+        this.skipComment = true;
+        this.keepComments = true;
         super.keywods = DEFAULT_ORACLE_KEYWORDS;
     }
 
@@ -280,7 +282,7 @@ public class OracleLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark + 1, bufPos);
+            stringVal = subString(mark, ch != EOI ? bufPos : bufPos + 1);
             token = Token.LINE_COMMENT;
             commentCount++;
             if (keepComments) {

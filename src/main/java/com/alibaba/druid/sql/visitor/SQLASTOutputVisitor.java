@@ -257,7 +257,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             SQLSelectItem selectItem = selectList.get(i);
             SQLExpr selectItemExpr = selectItem.getExpr();
             if (i != 0) {
-                if (selectItemExpr instanceof SQLMethodInvokeExpr) {
+                SQLSelectItem preSelectItem = selectList.get(i - 1);
+                if (preSelectItem.getAfterCommentsDirect() != null) {
+                    lineItemCount = 0;
+                    println();
+                } else if (selectItemExpr instanceof SQLMethodInvokeExpr) {
                     SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) selectItemExpr;
                     int paramCount =  methodInvokeExpr.getParameters().size();
                     lineItemCount += paramCount;
@@ -279,6 +283,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 this.visit(selectItem);
             } else {
                 selectItem.accept(this);
+            }
+
+            if (selectItem.hasAfterComment()) {
+                print(' ');
+                printlnComment(selectItem.getAfterCommentsDirect());
             }
         }
         decrementIndent();
@@ -405,12 +414,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
             if (isPrettyFormat() && item.hasAfterComment()) {
                 print(' ');
-                printComment(item.getAfterCommentsDirect(), "\n");
+                printlnComment(item.getAfterCommentsDirect());
             }
 
             if (i != groupList.size() - 1 && isPrettyFormat() && item.getParent().hasAfterComment()) {
                 print(' ');
-                printComment(item.getParent().getAfterCommentsDirect(), "\n");
+                printlnComment(item.getParent().getAfterCommentsDirect());
             }
 
             boolean printOpSpace = true;
@@ -478,7 +487,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.getRight().hasAfterComment() && isPrettyFormat()) {
             print(' ');
-            printlnComments(x.getRight().getAfterCommentsDirect());
+            printlnComment(x.getRight().getAfterCommentsDirect());
         }
     }
 
@@ -1240,7 +1249,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLSelectQueryBlock x) {
         if (isPrettyFormat() && x.hasBeforeComment()) {
-            printComment(x.getBeforeCommentsDirect(), "\n");
+            printlnComments(x.getBeforeCommentsDirect());
         }
 
         print0(ucase ? "SELECT " : "select ");
@@ -1461,7 +1470,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (isPrettyFormat() && x.hasAfterComment()) {
             print(' ');
-            printComment(x.getAfterCommentsDirect(), "\n");
+            printlnComment(x.getAfterCommentsDirect());
         }
 
         return false;
@@ -2620,12 +2629,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLWithSubqueryClause x) {
-        print0(ucase ? "WITH" : "with");
+        print0(ucase ? "WITH " : "with ");
         if (x.getRecursive() == Boolean.TRUE) {
-            print0(ucase ? " RECURSIVE" : " recursive");
+            print0(ucase ? "RECURSIVE " : " recursive ");
         }
         incrementIndent();
-        println();
         printlnAndAccept(x.getEntries(), ", ");
         decrementIndent();
         return false;
@@ -2640,9 +2648,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printAndAccept(x.getColumns(), ", ");
             print(')');
         }
-        println();
-        print0(ucase ? "AS" : "as");
-        println();
+        print(' ');
+        print0(ucase ? "AS " : "as ");
         print('(');
         incrementIndent();
         println();
@@ -3267,13 +3274,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
-    protected void printComment(List<String> comments, String seperator) {
+    protected void printlnComment(List<String> comments) {
         if (comments != null) {
             for (int i = 0; i < comments.size(); ++i) {
-                if (i != 0) {
-                    print0(seperator);
-                }
                 String comment = comments.get(i);
+                if (i != 0 && comment.startsWith("--")) {
+                    println();
+                }
                 print0(comment);
             }
         }

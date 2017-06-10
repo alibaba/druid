@@ -56,10 +56,7 @@ public class OracleSelectTest38 extends OracleTest {
             String result = SQLUtils.toOracleString(stmt);
             Assert.assertEquals("SELECT *\n" +
                     "FROM (\n" +
-                    "\tWITH\n" +
-                    "\t\tvw_kreis_statics_t\n" +
-                    "\t\tAS\n" +
-                    "\t\t(\n" +
+                    "\tWITH vw_kreis_statics_t AS (\n" +
                     "\t\t\tSELECT substr(xzqh, 1, 6) AS xzqh, swrslx, SUM(swrs_count) AS acd_totle\n" +
                     "\t\t\tFROM (\n" +
                     "\t\t\t\tSELECT xzqh, sglx\n" +
@@ -106,10 +103,7 @@ public class OracleSelectTest38 extends OracleTest {
             String result = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select *\n" +
                     "from (\n" +
-                    "\twith\n" +
-                    "\t\tvw_kreis_statics_t\n" +
-                    "\t\tas\n" +
-                    "\t\t(\n" +
+                    "\twith vw_kreis_statics_t as (\n" +
                     "\t\t\tselect substr(xzqh, 1, 6) as xzqh, swrslx, sum(swrs_count) as acd_totle\n" +
                     "\t\t\tfrom (\n" +
                     "\t\t\t\tselect xzqh, sglx\n" +

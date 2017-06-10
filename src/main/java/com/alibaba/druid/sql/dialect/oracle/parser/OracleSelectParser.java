@@ -247,6 +247,10 @@ public class OracleSelectParser extends SQLSelectParser {
         }
 
         OracleSelectQueryBlock queryBlock = new OracleSelectQueryBlock();
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            queryBlock.addBeforeComment(lexer.readAndResetComments());
+        }
+
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
 

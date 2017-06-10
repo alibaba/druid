@@ -42,17 +42,14 @@ public class OdpsSelectTest17 extends TestCase {
                 ") top )\n" +
                 "ORDER BY cnt DESC\n" +
                 "LIMIT 800";//
-        assertEquals("SELECT prov\n" +
-                "\t, name\n" +
-                "\t, cnt\n" +
+        assertEquals("SELECT prov, name, cnt\n" +
                 "FROM mock_app.adl_mock_v_fct\n" +
                 "WHERE ds = 20160920\n" +
                 "\tAND name != 'none'\n" +
                 "\tAND prov IN (\n" +
                 "\t\tSELECT prov\n" +
                 "\t\tFROM (\n" +
-                "\t\t\tSELECT prov\n" +
-                "\t\t\t\t, SUM(cnt) AS cnt\n" +
+                "\t\t\tSELECT prov, SUM(cnt) AS cnt\n" +
                 "\t\t\tFROM mock_app.adl_mock_v_fct\n" +
                 "\t\t\tWHERE ds = 20160920\n" +
                 "\t\t\tGROUP BY prov\n" +
@@ -62,17 +59,14 @@ public class OdpsSelectTest17 extends TestCase {
                 "\t)\n" +
                 "ORDER BY cnt DESC\n" +
                 "LIMIT 800", SQLUtils.formatOdps(sql));
-        assertEquals("select prov\n" +
-                "\t, name\n" +
-                "\t, cnt\n" +
+        assertEquals("select prov, name, cnt\n" +
                 "from mock_app.adl_mock_v_fct\n" +
                 "where ds = 20160920\n" +
                 "\tand name != 'none'\n" +
                 "\tand prov in (\n" +
                 "\t\tselect prov\n" +
                 "\t\tfrom (\n" +
-                "\t\t\tselect prov\n" +
-                "\t\t\t\t, sum(cnt) as cnt\n" +
+                "\t\t\tselect prov, sum(cnt) as cnt\n" +
                 "\t\t\tfrom mock_app.adl_mock_v_fct\n" +
                 "\t\t\twhere ds = 20160920\n" +
                 "\t\t\tgroup by prov\n" +

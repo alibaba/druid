@@ -68,10 +68,7 @@ public class SQLServerSelectTest7 extends TestCase {
 
         String text = TestUtils.outputSqlServer(stmt);
 
-        assertEquals("WITH\n" +
-				"\tmenu_view\n" +
-				"\tAS\n" +
-				"\t(\n" +
+        assertEquals("WITH menu_view AS (\n" +
 				"\t\tSELECT t.*, 1 AS level\n" +
 				"\t\tFROM sec_portal_menu t\n" +
 				"\t\tWHERE t.parent_id = ?\n" +

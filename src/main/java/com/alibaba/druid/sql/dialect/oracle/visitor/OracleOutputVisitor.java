@@ -243,8 +243,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(SQLSelect x) {
-        if (x.getWithSubQuery() != null) {
-            x.getWithSubQuery().accept(this);
+        SQLWithSubqueryClause with = x.getWithSubQuery();
+        if (with != null) {
+            with.accept(this);
             println();
         }
 
@@ -381,6 +382,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleSelectQueryBlock x) {
+        if (isPrettyFormat() && x.hasBeforeComment()) {
+            printlnComments(x.getBeforeCommentsDirect());
+        }
+
         print0(ucase ? "SELECT " : "select ");
 
         if (x.getHintsSize() > 0) {
@@ -803,9 +808,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             printAndAccept(x.getColumns(), ", ");
             print(')');
         }
-        println();
-        print0(ucase ? "AS" : "as");
-        println();
+
+        print0(ucase ? " AS " : " as ");
         print('(');
         incrementIndent();
         println();

@@ -33,20 +33,12 @@ public class OdpsSelectTest_over_rows_1 extends TestCase {
                 "          RANGE BETWEEN 365 PRECEDING AND 365 FOLLOWING) department_total\n" +
                 "  from employee\n" +
                 "  order by department_id, hire_date;";//
-        Assert.assertEquals("SELECT last_name\n" +
-                "\t, first_name\n" +
-                "\t, department_id\n" +
-                "\t, hire_date\n" +
-                "\t, salary\n" +
+        Assert.assertEquals("SELECT last_name, first_name, department_id, hire_date, salary\n" +
                 "\t, SUM(salary) OVER (PARTITION BY department_id ORDER BY hire_date RANGE BETWEEN 365 PRECEDING AND 365 FOLLOWING) AS department_total\n" +
                 "FROM employee\n" +
                 "ORDER BY department_id, \n" +
                 "\thire_date;", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select last_name\n" +
-                "\t, first_name\n" +
-                "\t, department_id\n" +
-                "\t, hire_date\n" +
-                "\t, salary\n" +
+        Assert.assertEquals("select last_name, first_name, department_id, hire_date, salary\n" +
                 "\t, sum(salary) over (partition by department_id order by hire_date range between 365 preceding and 365 following) as department_total\n" +
                 "from employee\n" +
                 "order by department_id, \n" +

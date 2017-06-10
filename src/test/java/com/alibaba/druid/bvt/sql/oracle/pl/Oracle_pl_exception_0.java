@@ -95,12 +95,16 @@ public class Oracle_pl_exception_0 extends OracleTest {
 							"\ttemp VARCHAR2(30);\n" +
 							"BEGIN\n" +
 							"\ttemp := t_column;\n" +
+							"\t-- For error message if next SELECT fails\n" +
+							"\t-- Fails if table t_name does not have column t_column:\n" +
 							"\tSELECT COLUMN_NAME\n" +
 							"\tINTO temp\n" +
 							"\tFROM USER_TAB_COLS\n" +
 							"\tWHERE TABLE_NAME = UPPER(t_name)\n" +
 							"\t\tAND COLUMN_NAME = UPPER(t_column);\n" +
 							"\ttemp := t_name;\n" +
+							"\t-- For error message if next SELECT fails\n" +
+							"\t-- Fails if there is no table named t_name:\n" +
 							"\tSELECT OBJECT_NAME\n" +
 							"\tINTO temp\n" +
 							"\tFROM USER_OBJECTS\n" +
@@ -124,12 +128,16 @@ public class Oracle_pl_exception_0 extends OracleTest {
 							"\ttemp VARCHAR2(30);\n" +
 							"begin\n" +
 							"\ttemp := t_column;\n" +
+							"\t-- For error message if next SELECT fails\n" +
+							"\t-- Fails if table t_name does not have column t_column:\n" +
 							"\tselect COLUMN_NAME\n" +
 							"\tinto temp\n" +
 							"\tfrom USER_TAB_COLS\n" +
 							"\twhere TABLE_NAME = UPPER(t_name)\n" +
 							"\t\tand COLUMN_NAME = UPPER(t_column);\n" +
 							"\ttemp := t_name;\n" +
+							"\t-- For error message if next SELECT fails\n" +
+							"\t-- Fails if there is no table named t_name:\n" +
 							"\tselect OBJECT_NAME\n" +
 							"\tinto temp\n" +
 							"\tfrom USER_OBJECTS\n" +

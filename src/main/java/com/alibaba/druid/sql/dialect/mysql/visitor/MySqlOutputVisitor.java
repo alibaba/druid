@@ -199,7 +199,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if ((!isParameterized()) && isPrettyFormat() && x.hasBeforeComment()) {
-            printComment(x.getBeforeCommentsDirect(), "\n");
+            printlnComments(x.getBeforeCommentsDirect());
         }
 
         print0(ucase ? "SELECT " : "select ");

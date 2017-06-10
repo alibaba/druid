@@ -50,13 +50,14 @@ public class MySqlSelectTest_40 extends MysqlTest {
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("/*0abcde*/SELECT MAX(id)\n" +
+            Assert.assertEquals("/*0abcde*/\n" +
+                            "SELECT MAX(id)\n" +
                             "FROM base_request_log", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("/*0abcde*/select max(id)\n" +
+            Assert.assertEquals("/*0abcde*/\nselect max(id)\n" +
                             "from base_request_log", //
                                 output);
         }

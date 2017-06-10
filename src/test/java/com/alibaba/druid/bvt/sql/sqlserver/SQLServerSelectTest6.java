@@ -37,25 +37,20 @@ public class SQLServerSelectTest6 extends TestCase {
                      "FROM DirReps " + //
                      "ORDER BY ManagerID;";
 
-        String expect = "WITH" +
-        		"\n\tDirReps (ManagerID, DirectReports)" +
-        		"\n\tAS" +
-        		"\n\t(" +
-        		"\n\t\tSELECT ManagerID, COUNT(*)" +
-        		"\n\t\tFROM HumanResources.Employee e" +
-        		"\n\t\tWHERE ManagerID IS NOT NULL" +
-        		"\n\t\tGROUP BY ManagerID" +
-        		"\n\t)" +
-        		"\nSELECT ManagerID, DirectReports" +
-        		"\nFROM DirReps" +
-        		"\nORDER BY ManagerID;";
-
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
         String text = TestUtils.outputSqlServer(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals("WITH DirReps (ManagerID, DirectReports) AS (\n" +
+				"\t\tSELECT ManagerID, COUNT(*)\n" +
+				"\t\tFROM HumanResources.Employee e\n" +
+				"\t\tWHERE ManagerID IS NOT NULL\n" +
+				"\t\tGROUP BY ManagerID\n" +
+				"\t)\n" +
+				"SELECT ManagerID, DirectReports\n" +
+				"FROM DirReps\n" +
+				"ORDER BY ManagerID;", text);
 
 //        System.out.println(text);
     }
