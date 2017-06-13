@@ -37,7 +37,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -172,6 +171,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private boolean                          logDifferentThread      = true;
 
     private volatile boolean                 keepAlive               = false;
+
+    protected boolean killWhenSocketReadTimeout = false;
 
     public DruidDataSource(){
         this(false);
@@ -387,6 +388,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
         }
+        {
+            Boolean value = getBoolean(properties, "druid.killWhenSocketReadTimeout");
+            if (value != null) {
+                setKillWhenSocketReadTimeout(value);
+            }
+        }
+    }
+
+    public boolean isKillWhenSocketReadTimeout() {
+        return killWhenSocketReadTimeout;
+    }
+
+    public void setKillWhenSocketReadTimeout(boolean killWhenSocketTimeOut) {
+        this.killWhenSocketReadTimeout = killWhenSocketTimeOut;
     }
 
     public boolean isUseGlobalDataSourceStat() {

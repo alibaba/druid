@@ -17,7 +17,11 @@ package com.alibaba.druid.pool;
 
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.MySqlUtils;
 
+import java.net.SocketTimeoutException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +65,81 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     protected SQLException checkException(Throwable error) throws SQLException {
+        handleScoketTimeout(error);
+
         exceptionCount++;
         return conn.handleException(error);
+    }
+
+    private void handleScoketTimeout(Throwable error) throws SQLException {
+        if (this.conn == null
+                || this.conn.transactionInfo != null
+                || this.conn.holder == null) {
+            return;
+        }
+
+        DruidDataSource dataSource = null;
+
+        if (this.conn.holder.dataSource instanceof DruidDataSource) {
+            dataSource = (DruidDataSource) this.conn.holder.dataSource;
+        }
+        if (dataSource == null) {
+            return;
+        }
+
+        if (!dataSource.killWhenSocketReadTimeout) {
+            return;
+        }
+
+        SQLException sqlException = null;
+        if (error instanceof SQLException) {
+            sqlException = (SQLException) error;
+        }
+
+        if (sqlException == null) {
+            return;
+        }
+
+
+        Throwable cause = error.getCause();
+        boolean socketReadTimeout = cause instanceof SocketTimeoutException
+                && "Read timed out".equals(cause.getMessage());
+        if (!socketReadTimeout) {
+            return;
+        }
+
+        if (!JdbcConstants.MYSQL.equals(dataSource.dbType)) {
+            return;
+        }
+
+        String killQuery = MySqlUtils.buildKillQuerySql(this.conn.getConnection(), (SQLException) error);
+
+        if (killQuery == null) {
+            return;
+        }
+
+        DruidPooledConnection killQueryConn = null;
+        Statement killQueryStmt = null;
+
+
+        try {
+            killQueryConn = dataSource.getConnection(1000);
+            if (killQueryConn == null) {
+                return;
+            }
+
+            killQueryStmt = killQueryConn.createStatement();
+            killQueryStmt.execute(killQuery);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(killQuery + " success.");
+            }
+        } catch (Exception ex) {
+            LOG.warn(killQuery + " error.", ex);
+        } finally {
+            JdbcUtils.close(killQueryStmt);
+            JdbcUtils.close(killQueryConn);
+        }
     }
 
     public DruidPooledConnection getPoolableConnection() {

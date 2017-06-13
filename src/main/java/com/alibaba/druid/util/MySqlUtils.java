@@ -15,8 +15,14 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.mysql.jdbc.ConnectionImpl;
+import com.mysql.jdbc.MySQLConnection;
+import com.mysql.jdbc.MysqlIO;
+
 import javax.sql.XAConnection;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -86,5 +92,16 @@ public class MySqlUtils {
         }
 
         throw new SQLFeatureNotSupportedException();
+    }
+
+    public static String buildKillQuerySql(Connection connection, SQLException error) throws SQLException {
+        try {
+            ConnectionImpl connImpl = (ConnectionImpl) connection;
+            long threadId = connImpl.getId();
+            return  "KILL QUERY " + threadId;
+        } catch (Exception e) {
+            // skip
+        }
+        return null;
     }
 }
