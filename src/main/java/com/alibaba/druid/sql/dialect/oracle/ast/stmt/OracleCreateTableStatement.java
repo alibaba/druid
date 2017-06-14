@@ -48,8 +48,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private OracleStorageClause     storage;
     private OracleLobStorageClause  lobStorage;
 
-    private boolean                 organizationIndex = false;
-
     private Integer                 pctfree;
     private Integer                 pctused;
     private Integer                 initrans;

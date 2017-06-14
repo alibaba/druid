@@ -24,8 +24,8 @@ public class MySqlSetCharSetStatement extends MySqlStatementImpl {
     private String  collate;
 
     public void accept0(MySqlASTVisitor visitor) {
-        visitor.visit(this);
-        visitor.endVisit(this);
+//        visitor.visit(this);
+//        visitor.endVisit(this);
     }
 
     public String getCharSet() {

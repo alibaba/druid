@@ -61,12 +61,30 @@ public class SQLParser {
     }
 
     protected String tableAlias() {
-        if (lexer.token() == Token.CONNECT || lexer.token() == Token.START) {
+        return tableAlias(false);
+    }
+
+    protected String tableAlias(boolean must) {
+        final Token token = lexer.token();
+        if (token == Token.CONNECT
+                || token == Token.START
+                || token == Token.SELECT
+                || token == Token.FROM
+                || token == Token.WHERE) {
+            if (must) {
+                throw new ParserException("illegal alias. " + lexer.info());
+            }
             return null;
         }
 
-        if (identifierEquals("START") || identifierEquals("CONNECT")) {
-            return null;
+        if (token == Token.IDENTIFIER) {
+            String ident = lexer.stringVal;
+            if (ident.equalsIgnoreCase("START") || ident.equalsIgnoreCase("CONNECT")) {
+                if (must) {
+                    throw new ParserException("illegal alias. " + lexer.info());
+                }
+                return null;
+            }
         }
 
         return this.as();

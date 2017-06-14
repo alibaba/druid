@@ -59,8 +59,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
@@ -2453,9 +2451,7 @@ public class WallVisitorUtils {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
             errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;
-        } else if (x instanceof MySqlSetCharSetStatement //
-                   || x instanceof MySqlSetNamesStatement //
-                   || x instanceof SQLSetStatement //
+        } else if (x instanceof SQLSetStatement //
                    || x instanceof SQLServerSetStatement) {
             allow = config.isSetAllow();
             denyMessage = "set not allow";
@@ -2571,8 +2567,7 @@ public class WallVisitorUtils {
                 List<SQLStatement> statementList = parser.parseStatementList();
                 if (statementList != null && statementList.size() > 0)  {
                     SQLStatement statement = statementList.get(0);
-                    if (statement instanceof SQLSetStatement || statement instanceof MySqlSetCharSetStatement
-                        || statement instanceof MySqlSetNamesStatement) {
+                    if (statement instanceof SQLSetStatement) {
                         isWhite = true;
                     }
                 }

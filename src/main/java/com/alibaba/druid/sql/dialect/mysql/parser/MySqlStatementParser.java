@@ -71,8 +71,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
@@ -2333,48 +2331,48 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             return stmt;
-        } else if (identifierEquals("NAMES")) {
-            lexer.nextToken();
-
-            MySqlSetNamesStatement stmt = new MySqlSetNamesStatement();
-            if (lexer.token() == Token.DEFAULT) {
-                lexer.nextToken();
-                stmt.setDefault(true);
-            } else {
-                String charSet = lexer.stringVal();
-                stmt.setCharSet(charSet);
-                lexer.nextToken();
-                if (identifierEquals(COLLATE2)) {
-                    lexer.nextToken();
-
-                    String collate = lexer.stringVal();
-                    stmt.setCollate(collate);
-                    lexer.nextToken();
-                }
-            }
-            return stmt;
-        } else if (identifierEquals(CHARACTER)) {
-            lexer.nextToken();
-
-            accept(Token.SET);
-
-            MySqlSetCharSetStatement stmt = new MySqlSetCharSetStatement();
-            if (lexer.token() == Token.DEFAULT) {
-                lexer.nextToken();
-                stmt.setDefault(true);
-            } else {
-                String charSet = lexer.stringVal();
-                stmt.setCharSet(charSet);
-                lexer.nextToken();
-                if (identifierEquals(COLLATE2)) {
-                    lexer.nextToken();
-
-                    String collate = lexer.stringVal();
-                    stmt.setCollate(collate);
-                    lexer.nextToken();
-                }
-            }
-            return stmt;
+//        } else if (identifierEquals("NAMES")) {
+//            lexer.nextToken();
+//
+//            MySqlSetNamesStatement stmt = new MySqlSetNamesStatement();
+//            if (lexer.token() == Token.DEFAULT) {
+//                lexer.nextToken();
+//                stmt.setDefault(true);
+//            } else {
+//                String charSet = lexer.stringVal();
+//                stmt.setCharSet(charSet);
+//                lexer.nextToken();
+//                if (identifierEquals(COLLATE2)) {
+//                    lexer.nextToken();
+//
+//                    String collate = lexer.stringVal();
+//                    stmt.setCollate(collate);
+//                    lexer.nextToken();
+//                }
+//            }
+//            return stmt;
+//        } else if (identifierEquals(CHARACTER)) {
+//            lexer.nextToken();
+//
+//            accept(Token.SET);
+//
+//            MySqlSetCharSetStatement stmt = new MySqlSetCharSetStatement();
+//            if (lexer.token() == Token.DEFAULT) {
+//                lexer.nextToken();
+//                stmt.setDefault(true);
+//            } else {
+//                String charSet = lexer.stringVal();
+//                stmt.setCharSet(charSet);
+//                lexer.nextToken();
+//                if (identifierEquals(COLLATE2)) {
+//                    lexer.nextToken();
+//
+//                    String collate = lexer.stringVal();
+//                    stmt.setCollate(collate);
+//                    lexer.nextToken();
+//                }
+//            }
+//            return stmt;
         } else {
             SQLSetStatement stmt = new SQLSetStatement(getDbType());
 

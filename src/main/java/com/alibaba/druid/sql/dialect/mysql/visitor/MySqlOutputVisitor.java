@@ -79,8 +79,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
@@ -1769,46 +1767,35 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlSetTransactionStatement x) {
 
     }
+//
+//    @Override
+//    public boolean visit(MySqlSetNamesStatement x) {
+//        print0(ucase ? "SET NAMES " : "set names ");
+//        if (x.isDefault()) {
+//            print0(ucase ? "DEFAULT" : "default");
+//        } else {
+//            print0(x.getCharSet());
+//            if (x.getCollate() != null) {
+//                print0(ucase ? " COLLATE " : " collate ");
+//                print0(x.getCollate());
+//            }
+//        }
+//        return false;
+//    }
 
-    @Override
-    public boolean visit(MySqlSetNamesStatement x) {
-        print0(ucase ? "SET NAMES " : "set names ");
-        if (x.isDefault()) {
-            print0(ucase ? "DEFAULT" : "default");
-        } else {
-            print0(x.getCharSet());
-            if (x.getCollate() != null) {
-                print0(ucase ? " COLLATE " : " collate ");
-                print0(x.getCollate());
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlSetNamesStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlSetCharSetStatement x) {
-        print0(ucase ? "SET CHARACTER SET " : "set character set ");
-        if (x.isDefault()) {
-            print0(ucase ? "DEFAULT" : "default");
-        } else {
-            print0(x.getCharSet());
-            if (x.getCollate() != null) {
-                print0(ucase ? " COLLATE " : " collate ");
-                print0(x.getCollate());
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlSetCharSetStatement x) {
-
-    }
+//    public boolean visit(MySqlSetCharSetStatement x) {
+//        print0(ucase ? "SET CHARACTER SET " : "set character set ");
+//        if (x.isDefault()) {
+//            print0(ucase ? "DEFAULT" : "default");
+//        } else {
+//            print0(x.getCharSet());
+//            if (x.getCollate() != null) {
+//                print0(ucase ? " COLLATE " : " collate ");
+//                print0(x.getCollate());
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     public void endVisit(MySqlShowAuthorsStatement x) {
@@ -2938,9 +2925,24 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(SQLAssignItem x) {
-        x.getTarget().accept(this);
-        if (!"NAMES".equalsIgnoreCase(x.getTarget().toString())) {
+
+
+        String tagetString = x.getTarget().toString();
+
+        boolean mysqlSpecial = false;
+
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            mysqlSpecial = "NAMES".equalsIgnoreCase(tagetString)
+                    || "CHARACTER SET".equalsIgnoreCase(tagetString)
+                    || "CHARSET".equalsIgnoreCase(tagetString);
+        }
+
+        if (!mysqlSpecial) {
+            x.getTarget().accept(this);
             print0(" = ");
+        } else {
+            print0(ucase ? tagetString.toUpperCase() : tagetString.toLowerCase());
+            print(' ');
         }
         x.getValue().accept(this);
         return false;

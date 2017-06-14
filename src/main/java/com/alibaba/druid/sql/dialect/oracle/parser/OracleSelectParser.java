@@ -628,10 +628,10 @@ public class OracleSelectParser extends SQLSelectParser {
     private void parseTableSourceQueryTableExpr(OracleSelectTableReference tableReference) {
         tableReference.setExpr(this.exprParser.expr());
 
-        {
-            FlashbackQueryClause clause = flashback();
-            tableReference.setFlashback(clause);
-        }
+//        {
+//            FlashbackQueryClause clause = flashback();
+//            tableReference.setFlashback(clause);
+//        }
 
         if (identifierEquals("SAMPLE")) {
             lexer.nextToken();
@@ -726,40 +726,31 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     private FlashbackQueryClause flashback() {
-        if (lexer.token() == Token.AS) {
+        accept(Token.OF);
+
+        if (identifierEquals("SCN")) {
+            AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
+            clause.setType(AsOfFlashbackQueryClause.Type.SCN);
             lexer.nextToken();
-        }
+            clause.setExpr(exprParser.expr());
 
-        if (lexer.token() == Token.OF) {
+            return clause;
+        } else if (identifierEquals("SNAPSHOT")) {
             lexer.nextToken();
+            accept(Token.LPAREN);
+            AsOfSnapshotClause clause = new AsOfSnapshotClause();
+            clause.setExpr(this.expr());
+            accept(Token.RPAREN);
 
-            if (identifierEquals("SCN")) {
-                AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
-                clause.setType(AsOfFlashbackQueryClause.Type.SCN);
-                lexer.nextToken();
-                clause.setExpr(exprParser.expr());
+            return clause;
+        } else {
+            AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
+            acceptIdentifier("TIMESTAMP");
+            clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
+            clause.setExpr(exprParser.expr());
 
-                return clause;
-            } else if (identifierEquals("SNAPSHOT")) {
-                lexer.nextToken();
-                accept(Token.LPAREN);
-                AsOfSnapshotClause clause = new AsOfSnapshotClause();
-                clause.setExpr(this.expr());
-                accept(Token.RPAREN);
-
-                return clause;
-            } else {
-                AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
-                acceptIdentifier("TIMESTAMP");
-                clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
-                clause.setExpr(exprParser.expr());
-
-                return clause;
-            }
-
+            return clause;
         }
-
-        return null;
     }
 
     protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {
@@ -784,9 +775,10 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (lexer.token() == Token.OF) {
                 tableSource.setFlashback(flashback());
+                return parseTableSourceRest(tableSource);
             }
 
-            tableSource.setAlias(tableAlias());
+            tableSource.setAlias(tableAlias(true));
         } else if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
                 tableSource.setAlias(tableAlias());

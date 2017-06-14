@@ -35,8 +35,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
@@ -119,9 +117,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlOutFileExpr().accept(adapter);
         new MySqlUpdateStatement().accept(adapter);
         new MySqlSetTransactionStatement().accept(adapter);
-        new MySqlSetNamesStatement().accept(adapter);
         new MySqlShowMasterLogsStatement().accept(adapter);
-        new MySqlSetCharSetStatement().accept(adapter);
         new MySqlShowAuthorsStatement().accept(adapter);
         new MySqlShowCollationStatement().accept(adapter);
         new MySqlShowBinLogEventsStatement().accept(adapter);

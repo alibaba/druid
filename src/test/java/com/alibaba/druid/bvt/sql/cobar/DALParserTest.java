@@ -26,8 +26,6 @@ import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
@@ -181,7 +179,7 @@ public class DALParserTest extends TestCase {
     public void test_setNames() throws Exception {
         String sql = "SET names default ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetNamesStatement set = (MySqlSetNamesStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
         Assert.assertEquals("SET NAMES DEFAULT", output);
@@ -190,16 +188,16 @@ public class DALParserTest extends TestCase {
     public void test_setNames_1() throws Exception {
         String sql = "SET NAMEs 'utf8' collatE \"latin1_danish_ci\" ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetNamesStatement set = (MySqlSetNamesStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET NAMES utf8 COLLATE latin1_danish_ci", output);
+        Assert.assertEquals("SET NAMES 'utf8' COLLATE latin1_danish_ci", output);
     }
     
     public void test_setNames_2() throws Exception {
         String sql = "SET NAMEs utf8 ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetNamesStatement set = (MySqlSetNamesStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
         Assert.assertEquals("SET NAMES utf8", output);
@@ -208,16 +206,16 @@ public class DALParserTest extends TestCase {
     public void test_setCharSet() throws Exception {
         String sql = "SET CHARACTEr SEt 'utf8'  ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetCharSetStatement set = (MySqlSetCharSetStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET CHARACTER SET utf8", output);
+        Assert.assertEquals("SET CHARACTER SET 'utf8'", output);
     }
     
     public void test_setCharSet_1() throws Exception {
         String sql = "SET CHARACTEr SEt DEFaULT  ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetCharSetStatement set = (MySqlSetCharSetStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
         Assert.assertEquals("SET CHARACTER SET DEFAULT", output);

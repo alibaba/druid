@@ -690,7 +690,37 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         if ("NAMES".equalsIgnoreCase(ident)) {
-            // skip
+            String charset = lexer.stringVal();
+
+            boolean chars = false;
+            if (lexer.token() == Token.IDENTIFIER) {
+                lexer.nextToken();
+            } else if (lexer.token() == Token.DEFAULT) {
+                charset = "DEFAULT";
+                lexer.nextToken();
+            } else {
+                chars = true;
+                accept(Token.LITERAL_CHARS);
+            }
+
+            if (identifierEquals("COLLATE")) {
+                MySqlCharExpr charsetExpr = new MySqlCharExpr(charset);
+                lexer.nextToken();
+
+                String collate = lexer.stringVal();
+                lexer.nextToken();
+                charsetExpr.setCollate(collate);
+
+                item.setValue(charsetExpr);
+            } else {
+                item.setValue(chars
+                        ? new SQLCharExpr(charset)
+                        : new SQLIdentifierExpr(charset)
+                );
+            }
+
+            item.setTarget(var);
+            return item;
         } else if ("CHARACTER".equalsIgnoreCase(ident)) {
             var = new SQLIdentifierExpr("CHARACTER SET");
             accept(Token.SET);
