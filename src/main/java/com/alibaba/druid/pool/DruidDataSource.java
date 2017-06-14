@@ -1484,7 +1484,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             boolean result;
             final long lastActiveTimeMillis = System.currentTimeMillis();
-            lock.lockInterruptibly();
+            lock.lock();
+//            ====== begin =======
+//            lockInterruptibly的实现有如下问题:
+//            会导致当前线程被Interrupt时,holder无法正常被回收
+//            因此改成 lock.lock();
+//            comment by wubiliang(未立)
+//            原来的代码是
+//            lock.lockInterruptibly();
+//          ====== end =======
             try {
                 activeCount--;
                 closeCount++;
