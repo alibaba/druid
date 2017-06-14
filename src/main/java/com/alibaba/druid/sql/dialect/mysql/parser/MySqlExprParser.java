@@ -692,11 +692,16 @@ public class MySqlExprParser extends SQLExprParser {
         if ("NAMES".equalsIgnoreCase(ident)) {
             String charset = lexer.stringVal();
 
+            SQLExpr varExpr = null;
             boolean chars = false;
+            final Token token = lexer.token();
             if (lexer.token() == Token.IDENTIFIER) {
                 lexer.nextToken();
             } else if (lexer.token() == Token.DEFAULT) {
                 charset = "DEFAULT";
+                lexer.nextToken();
+            } else if (lexer.token() == Token.QUES) {
+                varExpr = new SQLVariantRefExpr("?");
                 lexer.nextToken();
             } else {
                 chars = true;
@@ -713,10 +718,14 @@ public class MySqlExprParser extends SQLExprParser {
 
                 item.setValue(charsetExpr);
             } else {
-                item.setValue(chars
-                        ? new SQLCharExpr(charset)
-                        : new SQLIdentifierExpr(charset)
-                );
+                if (varExpr != null) {
+                    item.setValue(varExpr);
+                } else {
+                    item.setValue(chars
+                            ? new SQLCharExpr(charset)
+                            : new SQLIdentifierExpr(charset)
+                    );
+                }
             }
 
             item.setTarget(var);
