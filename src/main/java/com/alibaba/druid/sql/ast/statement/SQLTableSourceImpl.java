@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 
@@ -26,6 +27,8 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     protected String        alias;
 
     protected List<SQLHint> hints;
+
+    protected SQLExpr       flashback;
 
     public SQLTableSourceImpl(){
 
@@ -71,4 +74,14 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         return alias;
     }
 
+    public SQLExpr getFlashback() {
+        return flashback;
+    }
+
+    public void setFlashback(SQLExpr flashback) {
+        if (flashback != null) {
+            flashback.setParent(this);
+        }
+        this.flashback = flashback;
+    }
 }

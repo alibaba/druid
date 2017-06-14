@@ -10,9 +10,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
@@ -105,9 +102,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new OracleSelectUnPivot().accept(adapter);
         new SQLTimestampExpr().accept(adapter);
         new PartitionExtensionClause().accept(adapter);
-        new VersionsFlashbackQueryClause().accept(adapter);
-        new VersionsFlashbackQueryClause().accept(adapter);
-        new AsOfFlashbackQueryClause().accept(adapter);
         new SQLGroupingSetExpr().accept(adapter);
         new OracleWithSubqueryEntry().accept(adapter);
         new OracleFileSpecification().accept(adapter);
@@ -188,7 +182,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new SQLCommitStatement().accept(adapter);
         new OracleAlterTriggerStatement().accept(adapter);
         new OracleAlterSynonymStatement().accept(adapter);
-        new AsOfSnapshotClause().accept(adapter);
         new OracleAlterViewStatement().accept(adapter);
         new OracleAlterTableMoveTablespace().accept(adapter);
         new OracleSizeExpr().accept(adapter);

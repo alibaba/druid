@@ -15,8 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 
 public interface OracleSelectTableSource extends SQLTableSource {
 
@@ -24,7 +24,7 @@ public interface OracleSelectTableSource extends SQLTableSource {
 
     void setPivot(OracleSelectPivotBase pivot);
 
-    FlashbackQueryClause getFlashback();
+    SQLExpr getFlashback();
 
-    void setFlashback(FlashbackQueryClause flashback);
+    void setFlashback(SQLExpr flashback);
 }

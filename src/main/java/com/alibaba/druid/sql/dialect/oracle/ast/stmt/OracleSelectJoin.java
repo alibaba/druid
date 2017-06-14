@@ -18,14 +18,12 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelectTableSource {
 
     protected OracleSelectPivotBase pivot;
-    protected FlashbackQueryClause  flashback;
 
     public OracleSelectJoin(String alias){
         super(alias);
@@ -35,13 +33,6 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     }
 
-    public FlashbackQueryClause getFlashback() {
-        return flashback;
-    }
-
-    public void setFlashback(FlashbackQueryClause flashback) {
-        this.flashback = flashback;
-    }
 
     public OracleSelectPivotBase getPivot() {
         return pivot;

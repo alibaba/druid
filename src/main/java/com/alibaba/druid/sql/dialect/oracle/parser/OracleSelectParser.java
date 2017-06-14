@@ -20,17 +20,9 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
@@ -695,61 +687,47 @@ public class OracleSelectParser extends SQLSelectParser {
         }
 
         if (identifierEquals("VERSIONS")) {
+            SQLBetweenExpr betweenExpr = new SQLBetweenExpr();
+            betweenExpr.setTestExpr(new SQLIdentifierExpr("VERSIONS"));
             lexer.nextToken();
 
-            if (lexer.token() == Token.BETWEEN) {
+            accept(Token.BETWEEN);
+
+
+            SQLFlashbackExpr start = new SQLFlashbackExpr();
+            if (identifierEquals("SCN")) {
                 lexer.nextToken();
-
-                VersionsFlashbackQueryClause clause = new VersionsFlashbackQueryClause();
-                if (identifierEquals("SCN")) {
-                    clause.setType(AsOfFlashbackQueryClause.Type.SCN);
-                    lexer.nextToken();
-                } else {
-                    acceptIdentifier("TIMESTAMP");
-                    clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
-                }
-
-                SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) exprParser.expr();
-                if (binaryExpr.getOperator() != SQLBinaryOperator.BooleanAnd) {
-                    throw new ParserException("syntax error : " + binaryExpr.getOperator());
-                }
-
-                clause.setBegin(binaryExpr.getLeft());
-                clause.setEnd(binaryExpr.getRight());
-
-                tableReference.setFlashback(clause);
+                start.setType(SQLFlashbackExpr.Type.SCN);
             } else {
-                throw new ParserException("TODO");
+                acceptIdentifier("TIMESTAMP");
+                start.setType(SQLFlashbackExpr.Type.TIMESTAMP);
             }
+
+            SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) exprParser.expr();
+            if (binaryExpr.getOperator() != SQLBinaryOperator.BooleanAnd) {
+                throw new ParserException("syntax error : " + binaryExpr.getOperator());
+            }
+
+            start.setExpr(binaryExpr.getLeft());
+
+            betweenExpr.setBeginExpr(start);
+            betweenExpr.setEndExpr(binaryExpr.getRight());
+
+            tableReference.setFlashback(betweenExpr);
         }
 
     }
 
-    private FlashbackQueryClause flashback() {
+    private SQLExpr flashback() {
         accept(Token.OF);
-
         if (identifierEquals("SCN")) {
-            AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
-            clause.setType(AsOfFlashbackQueryClause.Type.SCN);
             lexer.nextToken();
-            clause.setExpr(exprParser.expr());
-
-            return clause;
+            return new SQLFlashbackExpr(SQLFlashbackExpr.Type.SCN, this.expr());
         } else if (identifierEquals("SNAPSHOT")) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            AsOfSnapshotClause clause = new AsOfSnapshotClause();
-            clause.setExpr(this.expr());
-            accept(Token.RPAREN);
-
-            return clause;
+            return this.expr();
         } else {
-            AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
-            acceptIdentifier("TIMESTAMP");
-            clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
-            clause.setExpr(exprParser.expr());
-
-            return clause;
+            lexer.nextToken();
+            return new SQLFlashbackExpr(SQLFlashbackExpr.Type.TIMESTAMP, this.expr());
         }
     }
 

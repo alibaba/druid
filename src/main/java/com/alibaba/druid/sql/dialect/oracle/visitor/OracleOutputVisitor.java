@@ -18,20 +18,13 @@ package com.alibaba.druid.sql.dialect.oracle.visitor;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
@@ -308,10 +301,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print(')');
             }
 
-            if (x.getFlashback() != null) {
-                println();
-                x.getFlashback().accept(this);
-            }
+            printFlashback(x.getFlashback());
         }
 
         return false;
@@ -489,10 +479,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getPivot().accept(this);
         }
 
-        if (x.getFlashback() != null) {
-            println();
-            x.getFlashback().accept(this);
-        }
+        printFlashback(x.getFlashback());
 
         if ((x.getAlias() != null) && (x.getAlias().length() != 0)) {
             print(' ');
@@ -536,14 +523,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getPivot().accept(this);
         }
 
-        if (x.getFlashback() != null) {
-            println();
-            x.getFlashback().accept(this);
-        }
+        printFlashback(x.getFlashback());
 
         printAlias(x.getAlias());
 
         return false;
+    }
+
+    private void printFlashback(SQLExpr flashback) {
+        if (flashback == null) {
+            return;
+        }
+
+        println();
+
+        if (flashback instanceof SQLBetweenExpr) {
+            flashback.accept(this);
+        } else {
+            print0(ucase ? "AS OF " : "as of ");
+            flashback.accept(this);
+        }
     }
 
     public boolean visit(OracleSelectUnPivot x) {
@@ -768,36 +767,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
-    @Override
-    public boolean visit(VersionsFlashbackQueryClause x) {
-        print0(ucase ? "VERSIONS BETWEEN " : "versions between ");
-        print0(x.getType().name());
-        print(' ');
-        x.getBegin().accept(this);
-        print0(ucase ? " AND " : " and ");
-        x.getEnd().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(VersionsFlashbackQueryClause x) {
-
-    }
-
-    @Override
-    public boolean visit(AsOfFlashbackQueryClause x) {
-        print0(ucase ? "AS OF " : "as of ");
-        print0(x.getType().name());
-        print0(" (");
-        x.getExpr().accept(this);
-        print(')');
-        return false;
-    }
-
-    @Override
-    public void endVisit(AsOfFlashbackQueryClause x) {
-
-    }
+//    @Override
+//    public boolean visit(VersionsFlashbackQueryClause x) {
+//        print0(ucase ? "VERSIONS BETWEEN " : "versions between ");
+//        print0(x.getType().name());
+//        print(' ');
+//        x.getBegin().accept(this);
+//        print0(ucase ? " AND " : " and ");
+//        x.getEnd().accept(this);
+//        return false;
+//    }
+//
+//    @Override
+//    public void endVisit(VersionsFlashbackQueryClause x) {
+//
+//    }
+//
+//    @Override
+//    public boolean visit(AsOfFlashbackQueryClause x) {
+//        print0(ucase ? "AS OF " : "as of ");
+//        print0(x.getType().name());
+//        print0(" (");
+//        x.getExpr().accept(this);
+//        print(')');
+//        return false;
+//    }
+//
+//    @Override
+//    public void endVisit(AsOfFlashbackQueryClause x) {
+//
+//    }
 
     @Override
     public boolean visit(OracleWithSubqueryEntry x) {
@@ -2288,18 +2287,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
-    @Override
-    public boolean visit(AsOfSnapshotClause x) {
-        print0(ucase ? "AS OF SNAPSHOT(" : "as of snapshot(");
-        x.getExpr().accept(this);
-        print(')');
-        return false;
-    }
-
-    @Override
-    public void endVisit(AsOfSnapshotClause x) {
-
-    }
+//    @Override
+//    public boolean visit(AsOfSnapshotClause x) {
+//        print0(ucase ? "AS OF SNAPSHOT(" : "as of snapshot(");
+//        x.getExpr().accept(this);
+//        print(')');
+//        return false;
+//    }
+//
+//    @Override
+//    public void endVisit(AsOfSnapshotClause x) {
+//
+//    }
 
     @Override
     public boolean visit(OracleAlterViewStatement x) {

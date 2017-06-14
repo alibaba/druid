@@ -726,4 +726,10 @@ public interface SQLASTVisitor {
     boolean visit(SQLCommitStatement x);
 
     void endVisit(SQLCommitStatement x);
+
+
+    boolean visit(SQLFlashbackExpr x);
+
+    void endVisit(SQLFlashbackExpr x);
+    //
 }

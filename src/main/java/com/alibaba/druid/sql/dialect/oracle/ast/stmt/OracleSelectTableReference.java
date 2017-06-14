@@ -17,8 +17,6 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -32,18 +30,8 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     protected PartitionExtensionClause partition;
     protected SampleClause             sampleClause;
 
-    protected FlashbackQueryClause     flashback;
-
     public OracleSelectTableReference(){
 
-    }
-
-    public FlashbackQueryClause getFlashback() {
-        return flashback;
-    }
-
-    public void setFlashback(FlashbackQueryClause flashback) {
-        this.flashback = flashback;
     }
 
     public PartitionExtensionClause getPartition() {

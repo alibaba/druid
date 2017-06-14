@@ -4485,4 +4485,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         return false;
     }
+
+    public boolean visit(SQLFlashbackExpr x) {
+        print0(x.getType().name());
+        print(' ');
+        SQLExpr expr = x.getExpr();
+        if (expr instanceof SQLBinaryOpExpr) {
+            print('(');
+            expr.accept(this);
+            print(')');
+        } else {
+            expr.accept(this);
+        }
+        return false;
+    }
 }

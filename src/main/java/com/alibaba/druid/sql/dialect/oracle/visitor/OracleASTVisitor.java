@@ -19,9 +19,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
@@ -128,14 +125,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(PartitionExtensionClause x);
 
     void endVisit(PartitionExtensionClause x);
-
-    boolean visit(VersionsFlashbackQueryClause x);
-
-    void endVisit(VersionsFlashbackQueryClause x);
-
-    boolean visit(AsOfFlashbackQueryClause x);
-
-    void endVisit(AsOfFlashbackQueryClause x);
 
     boolean visit(OracleWithSubqueryEntry x);
 
@@ -352,10 +341,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleAlterViewStatement x);
 
     void endVisit(OracleAlterViewStatement x);
-
-    boolean visit(AsOfSnapshotClause x);
-
-    void endVisit(AsOfSnapshotClause x);
 
     boolean visit(OracleAlterTableMoveTablespace x);
 
