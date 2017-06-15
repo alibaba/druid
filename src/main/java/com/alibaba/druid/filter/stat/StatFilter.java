@@ -278,7 +278,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
-        dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
     }
 
     @Override
