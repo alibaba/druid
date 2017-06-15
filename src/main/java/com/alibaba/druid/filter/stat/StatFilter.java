@@ -66,10 +66,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     private static final String       SYS_PROP_MERGE_SQL         = "druid.stat.mergeSql";
 
     public final static String        ATTR_NAME_CONNECTION_STAT  = "stat.conn";
-    public final static String        ATTR_NAME_STATEMENT_STAT   = "stat.stmt";
-    public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
     public final static String        ATTR_TRANSACTION           = "stat.tx";
-    public final static String        ATTR_RESULTSET_CLOSED      = "stat.rs.closed";
 
     private final Lock                lock                       = new ReentrantLock();
 
@@ -207,38 +204,38 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
         ConnectionProxy connection = null;
-        {
-            long startNano = System.nanoTime();
-            long startTime = System.currentTimeMillis();
 
-            long nanoSpan;
-            long nowTime = System.currentTimeMillis();
+        long startNano = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
-            JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
-            dataSourceStat.getConnectionStat().beforeConnect();
-            try {
-                connection = chain.connection_connect(info);
-                nanoSpan = System.nanoTime() - startNano;
-            } catch (SQLException ex) {
-                dataSourceStat.getConnectionStat().connectError(ex);
-                throw ex;
-            }
-            dataSourceStat.getConnectionStat().afterConnected(nanoSpan);
+        long nanoSpan;
+        long nowTime = System.currentTimeMillis();
 
-            if (connection != null) {
-                JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
-
-                dataSourceStat.getConnections().put(connection.getId(), statEntry);
-
-                statEntry.setConnectTime(new Date(startTime));
-                statEntry.setConnectTimespanNano(nanoSpan);
-                statEntry.setEstablishNano(System.nanoTime());
-                statEntry.setEstablishTime(nowTime);
-                statEntry.setConnectStackTrace(new Exception());
-
-                dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
-            }
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
+        dataSourceStat.getConnectionStat().beforeConnect();
+        try {
+            connection = chain.connection_connect(info);
+            nanoSpan = System.nanoTime() - startNano;
+        } catch (SQLException ex) {
+            dataSourceStat.getConnectionStat().connectError(ex);
+            throw ex;
         }
+        dataSourceStat.getConnectionStat().afterConnected(nanoSpan);
+
+        if (connection != null) {
+            JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
+
+            dataSourceStat.getConnections().put(connection.getId(), statEntry);
+
+            statEntry.setConnectTime(new Date(startTime));
+            statEntry.setConnectTimespanNano(nanoSpan);
+            statEntry.setEstablishNano(System.nanoTime());
+            statEntry.setEstablishTime(nowTime);
+            statEntry.setConnectStackTrace(new Exception());
+
+            dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
+        }
+
         return connection;
     }
 
