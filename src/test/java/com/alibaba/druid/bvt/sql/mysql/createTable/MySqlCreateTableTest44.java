@@ -62,17 +62,16 @@ public class MySqlCreateTableTest44 extends MysqlTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("lc")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE lc (" + //
-                            "\n\ta INT NULL," + //
-                            "\n\tb INT NULL" + //
-                            "\n)" + //
-                            "\nPARTITION BY LIST COLUMNS (a, b)"
-                            + "\n(" + //
-                            "\n\tPARTITION p0 VALUES IN ((0, 0), (NULL, NULL)), " + //
-                            "\n\tPARTITION p1 VALUES IN ((0, 1), (0, 2), (0, 3), (1, 1), (1, 2)), " + //
-                            "\n\tPARTITION p2 VALUES IN ((1, 0), (2, 0), (2, 1), (3, 0), (3, 1)), " + //
-                            "\n\tPARTITION p3 VALUES IN ((1, 3), (2, 2), (2, 3), (3, 2), (3, 3))" + //
-                            "\n);", output);
+        Assert.assertEquals("CREATE TABLE lc (\n" +
+                "\ta INT NULL,\n" +
+                "\tb INT NULL\n" +
+                ")\n" +
+                "PARTITION BY LIST COLUMNS (a, b) (\n" +
+                "\tPARTITION p0 VALUES IN ((0, 0), (NULL, NULL)), \n" +
+                "\tPARTITION p1 VALUES IN ((0, 1), (0, 2), (0, 3), (1, 1), (1, 2)), \n" +
+                "\tPARTITION p2 VALUES IN ((1, 0), (2, 0), (2, 1), (3, 0), (3, 1)), \n" +
+                "\tPARTITION p3 VALUES IN ((1, 3), (2, 2), (2, 3), (3, 2), (3, 3))\n" +
+                ");", output);
 
     }
 }

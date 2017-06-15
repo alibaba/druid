@@ -23,8 +23,4 @@ public interface OracleSelectTableSource extends SQLTableSource {
     OracleSelectPivotBase getPivot();
 
     void setPivot(OracleSelectPivotBase pivot);
-
-    SQLExpr getFlashback();
-
-    void setFlashback(SQLExpr flashback);
 }

@@ -71,8 +71,7 @@ public class MySqlLexer extends Lexer {
     }
 
     public MySqlLexer(String input){
-        super(input);
-        super.keywods = DEFAULT_MYSQL_KEYWORDS;
+        this(input, true, true);
     }
 
     public MySqlLexer(String input, boolean skipComment, boolean keepComments){
@@ -407,7 +406,7 @@ public class MySqlLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark, bufPos + 1);
+            stringVal = subString(mark, bufPos);
             token = Token.LINE_COMMENT;
             commentCount++;
             if (keepComments) {

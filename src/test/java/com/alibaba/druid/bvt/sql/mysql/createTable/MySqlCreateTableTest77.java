@@ -15,53 +15,45 @@
  */
 package com.alibaba.druid.bvt.sql.mysql.createTable;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat.Column;
 
-public class MySqlCreateTableTest69 extends MysqlTest {
+public class MySqlCreateTableTest77 extends MysqlTest {
 
-    @Test
     public void test_one() throws Exception {
-        String sql = "CREATE TABLE t1 ("
-                + "  s1 INT,"
-                + "  s2 INT AS (EXP(s1)) STORED"
-                + ")"
-                + "PARTITION BY LIST (s2) ("
-                + "  PARTITION p1 VALUES IN (1)"
-                + ");";
+        String sql = "-- table-name-bean-name:some --\n" +
+                "CREATE TABLE `some_table` (\n" +
+                "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键'\n" +
+                ")";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseCreateTable();
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
+        
+        Column column = visitor.getColumn("some_table", "id");
+        assertNotNull(column);
+        assertEquals("bigint", column.getDataType());
 
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE t1 (\n" +
-                    "\ts1 INT,\n" +
-                    "\ts2 INT AS (EXP(s1)) SORTED\n" +
-                    ")\n" +
-                    "PARTITION BY LIST (s2) (\n" +
-                    "\tPARTITION p1 VALUES IN (1)\n" +
+            assertEquals("-- table-name-bean-name:some --\n" +
+                    "CREATE TABLE `some_table` (\n" +
+                    "\t`id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键'\n" +
                     ")", output);
         }
         
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table t1 (\n" +
-                    "\ts1 INT,\n" +
-                    "\ts2 INT as (EXP(s1)) sorted\n" +
-                    ")\n" +
-                    "partition by list (s2) (\n" +
-                    "\tpartition p1 values in (1)\n" +
+            assertEquals("-- table-name-bean-name:some --\n" +
+                    "create table `some_table` (\n" +
+                    "\t`id` bigint(20) unsigned not null auto_increment comment '主键'\n" +
                     ")", output);
-            }
+        }
     }
 }

@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.statement;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObject;
 
@@ -31,4 +32,7 @@ public interface SQLTableSource extends SQLObject {
     SQLTableSource clone();
 
     String computeAlias();
+
+    SQLExpr getFlashback();
+    void setFlashback(SQLExpr flashback);
 }

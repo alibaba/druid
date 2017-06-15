@@ -46,12 +46,19 @@ public class OracleCreateTableTest69 extends OracleTest {
 
         assertEquals(1, statementList.size());
 //
-//        assertEquals("CREATE TABLE HASH_TABLE (\n" +
-//                        "\tCOL NUMBER(8),\n" +
-//                        "\tINF VARCHAR2(100)\n" +
-//                        ")\n" +
-//                        "PARTITION BY HASH (COL)",//
-//                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE TABLE HASH_TABLE (\n" +
+                        "\tCOL NUMBER(8),\n" +
+                        "\tINF VARCHAR2(100)\n" +
+                        ")\n" +
+                        "PARTITION BY HASH (COL) (\n" +
+                        "\tPARTITION PART01\n" +
+                        "\t\tTABLESPACE HASH_TS01, \n" +
+                        "\tPARTITION PART02\n" +
+                        "\t\tTABLESPACE HASH_TS02, \n" +
+                        "\tPARTITION PART03\n" +
+                        "\t\tTABLESPACE HASH_TS03\n" +
+                        ")",//
+                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 //
 //        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
 //        stmt.accept(visitor);

@@ -3856,23 +3856,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printPartitionsCountAndSubPartitions(x);
 
-        List<SQLPartition> partitions = x.getPartitions();
-        int partitionsSize = partitions.size();
-        if (partitionsSize > 0) {
-            println();
-            incrementIndent();
-            print('(');
-            for (int i = 0; i < partitionsSize; ++i) {
-                println();
-                partitions.get(i).accept(this);
-                if (i != partitionsSize - 1) {
-                    print0(", ");
-                }
-            }
-            decrementIndent();
-            println();
-            print(')');
-        }
+        printSQLPartitions(x.getPartitions());
         return false;
     }
 
@@ -3894,7 +3878,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printPartitionsCountAndSubPartitions(x);
 
+        printSQLPartitions(x.getPartitions());
+
         return false;
+    }
+
+    private void printSQLPartitions(List<SQLPartition> partitions) {
+        int partitionsSize = partitions.size();
+        if (partitionsSize > 0) {
+            print0(" (");
+            incrementIndent();
+            for (int i = 0; i < partitionsSize; ++i) {
+                println();
+                partitions.get(i).accept(this);
+                if (i != partitionsSize - 1) {
+                    print0(", ");
+                }
+            }
+            decrementIndent();
+            println();
+            print(')');
+        }
     }
 
     protected void printPartitionsCountAndSubPartitions(SQLPartitionBy x) {

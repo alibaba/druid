@@ -66,8 +66,7 @@ public class OracleCreateTableTest43 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
-                        "PARTITION BY LIST (\"DNAME\")\n" +
-                        "(\n" +
+                        "PARTITION BY LIST (\"DNAME\") (\n" +
                         "\tPARTITION \"PART02\" VALUES ('SMT', 'SALE')\n" +
                         "\t\tPCTFREE 10\n" +
                         "\t\tPCTUSED 40\n" +
