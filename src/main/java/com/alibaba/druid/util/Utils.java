@@ -334,4 +334,117 @@ public class Utils {
     public static boolean equals(Object a, Object b) {
         return (a == b) || (a != null && a.equals(b));
     }
+
+    public static String hex(int hash) {
+        byte[] bytes = new byte[4];
+
+        bytes[3] = (byte) (hash       );
+        bytes[2] = (byte) (hash >>>  8);
+        bytes[1] = (byte) (hash >>> 16);
+        bytes[0] = (byte) (hash >>> 24);
+
+
+        char[] chars = new char[8];
+        for (int i = 0; i < 4; ++i) {
+            byte b = bytes[i];
+
+            int a = b & 0xFF;
+            int b0 = a >> 4;
+            int b1 = a & 0xf;
+
+            chars[i * 2] = (char) (b0 + (b0 < 10 ? 48 : 55));
+            chars[i * 2 + 1] = (char) (b1 + (b1 < 10 ? 48 : 55));
+        }
+
+        return new String(chars);
+    }
+
+    public static String hex(long hash) {
+        byte[] bytes = new byte[8];
+
+        bytes[7] = (byte) (hash       );
+        bytes[6] = (byte) (hash >>>  8);
+        bytes[5] = (byte) (hash >>> 16);
+        bytes[4] = (byte) (hash >>> 24);
+        bytes[3] = (byte) (hash >>> 32);
+        bytes[2] = (byte) (hash >>> 40);
+        bytes[1] = (byte) (hash >>> 48);
+        bytes[0] = (byte) (hash >>> 56);
+
+        char[] chars = new char[16];
+        for (int i = 0; i < 8; ++i) {
+            byte b = bytes[i];
+
+            int a = b & 0xFF;
+            int b0 = a >> 4;
+            int b1 = a & 0xf;
+
+            chars[i * 2] = (char) (b0 + (b0 < 10 ? 48 : 55));
+            chars[i * 2 + 1] = (char) (b1 + (b1 < 10 ? 48 : 55));
+        }
+
+        return new String(chars);
+    }
+
+    public static String hex_t(long hash) {
+        byte[] bytes = new byte[8];
+
+        bytes[7] = (byte) (hash       );
+        bytes[6] = (byte) (hash >>>  8);
+        bytes[5] = (byte) (hash >>> 16);
+        bytes[4] = (byte) (hash >>> 24);
+        bytes[3] = (byte) (hash >>> 32);
+        bytes[2] = (byte) (hash >>> 40);
+        bytes[1] = (byte) (hash >>> 48);
+        bytes[0] = (byte) (hash >>> 56);
+
+        char[] chars = new char[18];
+        chars[0] = 'T';
+        chars[1] = '_';
+        for (int i = 0; i < 8; ++i) {
+            byte b = bytes[i];
+
+            int a = b & 0xFF;
+            int b0 = a >> 4;
+            int b1 = a & 0xf;
+
+            chars[i * 2 + 2] = (char) (b0 + (b0 < 10 ? 48 : 55));
+            chars[i * 2 + 3] = (char) (b1 + (b1 < 10 ? 48 : 55));
+        }
+
+        return new String(chars);
+    }
+
+    public static long fnv_64(String input) {
+        if (input == null) {
+            return 0;
+        }
+
+        long hash = 0x811c9dc5;
+        for (int i = 0; i < input.length(); ++i) {
+            char c = input.charAt(i);
+            hash ^= c;
+            hash *= 0x1000193;
+        }
+
+        return hash;
+    }
+
+    public static long fnv_64_lower(String input) {
+        if (input == null) {
+            return 0;
+        }
+
+        long hash = 0x811c9dc5;
+        for (int i = 0; i < input.length(); ++i) {
+            char c = input.charAt(i);
+            if (c >= 'A' && c <= 'Z') {
+                c += 32;
+            }
+            hash ^= c;
+            hash *= 0x1000193;
+        }
+
+        return hash;
+    }
 }

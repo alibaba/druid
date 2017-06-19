@@ -426,7 +426,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return true;
         }
 
-        switch (x.getOperator()) {
+        final SQLBinaryOperator op = x.getOperator();
+        final SQLExpr left = x.getLeft();
+        final SQLExpr right = x.getRight();
+
+        switch (op) {
             case Equality:
             case NotEqual:
             case GreaterThan:
@@ -439,15 +443,32 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case NotLike:
             case Is:
             case IsNot:
-                handleCondition(x.getLeft(), x.getOperator().name, x.getRight());
-                handleCondition(x.getRight(), x.getOperator().name, x.getLeft());
+                handleCondition(left, x.getOperator().name, right);
+                handleCondition(right, x.getOperator().name, left);
 
-                handleRelationship(x.getLeft(), x.getOperator().name, x.getRight());
+                handleRelationship(left, x.getOperator().name, right);
                 break;
+            case BooleanOr:{
+                List<SQLExpr> list = SQLBinaryOpExpr.split(x, op);
+
+                for (SQLExpr item : list) {
+                    if (item instanceof SQLBinaryOpExpr) {
+                        visit((SQLBinaryOpExpr) item);
+                    } else {
+                        item.accept(this);
+                    }
+                }
+
+                return false;
+            }
             default:
                 break;
         }
-        return true;
+
+        left.accept(this);
+        right.accept(this);
+
+        return false;
     }
 
     protected void handleRelationship(SQLExpr left, String operator, SQLExpr right) {

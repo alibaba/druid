@@ -24,6 +24,7 @@ import java.sql.NClob;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -68,6 +69,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected boolean shardingSupport = false;
 
     protected transient int lines = 0;
+
+    protected boolean desensitize = false;
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
@@ -116,6 +119,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         return parameters;
+    }
+
+    public boolean isDesensitize() {
+        return desensitize;
+    }
+
+    public void setDesensitize(boolean desensitize) {
+        this.desensitize = desensitize;
     }
 
     public Set<String> getTables() {
@@ -1423,6 +1434,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             addTable(expr.toString());
         }
 
+        if (desensitize) {
+            SQLExpr owner = null;
+            String ident = null;
+            if (expr instanceof SQLIdentifierExpr) {
+                ident = ((SQLIdentifierExpr) expr).getName();
+            } else if (expr instanceof SQLPropertyExpr) {
+                SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+                propertyExpr.getOwner().accept(this);
+                print('.');
+
+                ident = propertyExpr.getName();
+            }
+
+            if (ident != null) {
+                String desensitizeTable = SQLUtils.desensitizeTable(ident);
+                print0(desensitizeTable);
+                return;
+            }
+        }
+
         if (tableMapping != null && expr instanceof SQLName) {
             String tableName = expr.toString();
 
@@ -2446,7 +2477,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "IF NOT EXISTS " : "if not exists ");
         }
 
-        x.getName().accept(this);
+        x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
             println();

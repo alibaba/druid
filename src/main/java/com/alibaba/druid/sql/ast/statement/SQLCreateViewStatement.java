@@ -30,13 +30,15 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
 
     private boolean     orReplace   = false;
     private boolean     force       = false;
-    protected SQLName   name;
+    // protected SQLName   name;
     protected SQLSelect subQuery;
     protected boolean   ifNotExists = false;
 
     protected String    algorithm;
     protected SQLName   definer;
     protected String    sqlSecurity;
+
+    protected SQLExprTableSource tableSource;
 
     protected final List<Column> columns = new ArrayList<Column>();
 
@@ -61,11 +63,26 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     }
 
     public SQLName getName() {
-        return name;
+        if (tableSource == null) {
+            return null;
+        }
+
+        return (SQLName) tableSource.getExpr();
     }
 
     public void setName(SQLName name) {
-        this.name = name;
+        this.setTableSource(new SQLExprTableSource(name));
+    }
+
+    public SQLExprTableSource getTableSource() {
+        return tableSource;
+    }
+
+    public void setTableSource(SQLExprTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
+        this.tableSource = tableSource;
     }
 
     public Level getWith() {
@@ -151,7 +168,7 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void output(StringBuffer buf) {
         buf.append("CREATE VIEW ");
-        this.name.output(buf);
+        this.getName().output(buf);
 
         if (this.columns.size() > 0) {
             buf.append(" (");
@@ -176,7 +193,7 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.name);
+            acceptChild(visitor, this.tableSource);
             acceptChild(visitor, this.columns);
             acceptChild(visitor, this.comment);
             acceptChild(visitor, this.subQuery);

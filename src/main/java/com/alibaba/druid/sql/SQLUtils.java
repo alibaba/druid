@@ -15,11 +15,9 @@
  */
 package com.alibaba.druid.sql;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
@@ -277,8 +275,9 @@ public class SQLUtils {
             option = DEFAULT_FORMAT_OPTION;
         }
         visitor.setUppCase(option.isUppCase());
-        visitor.setPrettyFormat(option.isPrettyFormat());
-        visitor.setParameterized(option.isParameterized());
+        visitor.setPrettyFormat(option.prettyFormat);
+        visitor.setParameterized(option.parameterized);
+        visitor.setDesensitize(option.desensitize);
 
         if (tableMapping != null) {
             visitor.setTableMapping(tableMapping);
@@ -630,6 +629,7 @@ public class SQLUtils {
         private boolean ucase = true;
         private boolean prettyFormat = true;
         private boolean parameterized = false;
+        private boolean desensitize = false;
 
         public FormatOption() {
 
@@ -647,6 +647,14 @@ public class SQLUtils {
             this.ucase = ucase;
             this.prettyFormat = prettyFormat;
             this.parameterized = parameterized;
+        }
+
+        public boolean isDesensitize() {
+            return desensitize;
+        }
+
+        public void setDesensitize(boolean desensitize) {
+            this.desensitize = desensitize;
         }
 
         public boolean isUppCase() {
@@ -864,6 +872,16 @@ public class SQLUtils {
         }
 
         return false;
+    }
+
+    public static String desensitizeTable(String tableName) {
+        if (tableName == null) {
+            return null;
+        }
+
+        tableName = normalize(tableName);
+        long hash = Utils.fnv_64_lower(tableName);
+        return Utils.hex_t(hash);
     }
 }
 
