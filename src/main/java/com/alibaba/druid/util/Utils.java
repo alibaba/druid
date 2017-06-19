@@ -15,21 +15,14 @@
  */
 package com.alibaba.druid.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.GenericServlet;
 
@@ -446,5 +439,32 @@ public class Utils {
         }
 
         return hash;
+    }
+
+    public static void loadFromFile(String path, Set<String> set) {
+        InputStream is = null;
+        BufferedReader reader = null;
+        try {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+            reader = new BufferedReader(new InputStreamReader(is));
+            for (; ; ) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                line = line.trim().toLowerCase();
+
+                if (line.length() == 0) {
+                    continue;
+                }
+                set.add(line);
+            }
+        } catch (Exception ex) {
+            // skip
+        } finally {
+            JdbcUtils.close(is);
+            JdbcUtils.close(reader);
+        }
     }
 }

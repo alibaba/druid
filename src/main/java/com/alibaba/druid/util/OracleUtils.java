@@ -19,6 +19,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
@@ -160,5 +162,25 @@ public class OracleUtils {
     public static ROWID getROWID(ResultSet rs, int columnIndex) throws SQLException {
         OracleResultSet oracleResultSet = rs.unwrap(OracleResultSet.class);
         return oracleResultSet.getROWID(columnIndex);
+    }
+
+    private static Set<String> builtinFunctions;
+
+    public static boolean isBuiltinFunction(String function) {
+        if (function == null) {
+            return false;
+        }
+
+        String function_lower = function.toLowerCase();
+
+        Set<String> functions = builtinFunctions;
+
+        if (functions == null) {
+            functions = new HashSet<String>();
+            Utils.loadFromFile("META-INF/druid/parser/oracle/builtin_functions", functions);
+            builtinFunctions = functions;
+        }
+
+        return functions.contains(function_lower);
     }
 }
