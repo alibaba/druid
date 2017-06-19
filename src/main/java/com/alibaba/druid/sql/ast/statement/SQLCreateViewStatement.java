@@ -166,30 +166,6 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         this.force = force;
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("CREATE VIEW ");
-        this.getName().output(buf);
-
-        if (this.columns.size() > 0) {
-            buf.append(" (");
-            for (int i = 0, size = this.columns.size(); i < size; ++i) {
-                if (i != 0) {
-                    buf.append(", ");
-                }
-                this.columns.get(i).output(buf);
-            }
-            buf.append(")");
-        }
-
-        buf.append(" AS ");
-        this.subQuery.output(buf);
-
-        if (this.with != null) {
-            buf.append(" WITH ");
-            buf.append(this.with.name());
-        }
-    }
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

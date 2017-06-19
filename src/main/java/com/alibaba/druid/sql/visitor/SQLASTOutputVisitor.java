@@ -2480,8 +2480,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         x.getTableSource().accept(this);
 
         if (x.getColumns().size() > 0) {
-            println();
-            print('(');
+            print0(" (");
             incrementIndent();
             println();
             for (int i = 0; i < x.getColumns().size(); ++i) {

@@ -95,8 +95,7 @@ public class OracleCreateViewTest1 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"XBO\".\"VW_SCY\"\n" +
-                        "(\n" +
+        Assert.assertEquals("CREATE OR REPLACE VIEW \"XBO\".\"VW_SCY\" (\n" +
                         "\t\"ID\", \n" +
                         "\t\"GMT_CREATE\", \n" +
                         "\t\"GMT_MODIFIED\", \n" +

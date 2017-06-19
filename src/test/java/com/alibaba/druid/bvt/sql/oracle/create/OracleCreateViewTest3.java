@@ -65,8 +65,7 @@ public class OracleCreateViewTest3 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"RMAN\".\"V_001\"\n" +
-                        "(\n" +
+        Assert.assertEquals("CREATE OR REPLACE VIEW \"RMAN\".\"V_001\" (\n" +
                         "\t\"DB_KEY\", \n" +
                         "\t\"DBINC_KEY\", \n" +
                         "\t\"FILE#\", \n" +
