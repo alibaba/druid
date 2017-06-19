@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Bean;
 public class DruidWebStatFilterConfiguration {
     @Bean
     public FilterRegistrationBean filterRegistrationBean(DruidStatProperties properties) {
-        DruidStatProperties.StatFilter config = properties.getStatFilter();
+        DruidStatProperties.WebStatFilter config = properties.getWebStatFilter();
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         WebStatFilter filter = new WebStatFilter();
         registrationBean.setFilter(filter);

@@ -24,7 +24,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class DruidStatProperties {
     private String[] aopPatterns;
     private StatViewServlet statViewServlet = new StatViewServlet();
-    private StatFilter statFilter = new StatFilter();
+    private WebStatFilter webStatFilter = new WebStatFilter();
 
 
     public String[] getAopPatterns() {
@@ -43,12 +43,12 @@ public class DruidStatProperties {
         this.statViewServlet = statViewServlet;
     }
 
-    public StatFilter getStatFilter() {
-        return statFilter;
+    public WebStatFilter getWebStatFilter() {
+        return webStatFilter;
     }
 
-    public void setStatFilter(StatFilter statFilter) {
-        this.statFilter = statFilter;
+    public void setWebStatFilter(WebStatFilter webStatFilter) {
+        this.webStatFilter = webStatFilter;
     }
 
     public static class StatViewServlet {
@@ -108,7 +108,7 @@ public class DruidStatProperties {
         }
     }
 
-    public static class StatFilter {
+    public static class WebStatFilter {
         private String urlPattern;
         private String exclusions;
         private String sessionStatMaxCount;
