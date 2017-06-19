@@ -11,5 +11,9 @@ public class OracleUtilsTest extends TestCase {
         assertTrue(OracleUtils.isBuiltinFunction("nvl"));
         assertTrue(OracleUtils.isBuiltinFunction("NVL"));
         assertFalse(OracleUtils.isBuiltinFunction("xxx_nvl"));
+
+        assertTrue(OracleUtils.isBuiltinTable("user_ts_quotas"));
+        assertTrue(OracleUtils.isBuiltinTable("user_TS_quotas"));
+        assertFalse(OracleUtils.isBuiltinTable("user_TS_quotas_xxxxxxxxxxxx"));
     }
 }

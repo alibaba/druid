@@ -183,4 +183,24 @@ public class OracleUtils {
 
         return functions.contains(function_lower);
     }
+
+    private static Set<String> builtinTables;
+
+    public static boolean isBuiltinTable(String table) {
+        if (table == null) {
+            return false;
+        }
+
+        String table_lower = table.toLowerCase();
+
+        Set<String> tables = builtinTables;
+
+        if (tables == null) {
+            tables = new HashSet<String>();
+            Utils.loadFromFile("META-INF/druid/parser/oracle/builtin_tables", tables);
+            builtinTables = tables;
+        }
+
+        return tables.contains(table_lower);
+    }
 }
