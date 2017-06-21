@@ -157,4 +157,28 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
         return false;
     }
+
+    public boolean match(String alias) {
+        if (alias == null) {
+            return false;
+        }
+
+        String alias_normalized = SQLUtils.normalize(alias);
+
+        if (alias_normalized.equalsIgnoreCase(this.alias)) {
+            return true;
+        }
+
+        if (expr instanceof SQLIdentifierExpr) {
+            String ident = ((SQLIdentifierExpr) expr).getName();
+            return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            String ident = ((SQLPropertyExpr) expr).getName();
+            return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));
+        }
+
+        return false;
+    }
 }

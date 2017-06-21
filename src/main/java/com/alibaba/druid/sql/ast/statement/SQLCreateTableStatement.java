@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
@@ -27,6 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.lang.Consumer;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
@@ -212,5 +214,17 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
 
         return null;
+    }
+
+    public void forEachColumn(Consumer<SQLColumnDefinition> columnConsumer) {
+        if (columnConsumer == null) {
+            return;
+        }
+
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLColumnDefinition) {
+                columnConsumer.accept((SQLColumnDefinition) element);
+            }
+        }
     }
 }

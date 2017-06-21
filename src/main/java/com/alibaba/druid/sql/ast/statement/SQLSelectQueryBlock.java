@@ -18,7 +18,9 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery, SQLReplaceable {
@@ -420,5 +422,21 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             return true;
         }
         return false;
+    }
+
+    public SQLSelectItem findSelectItem(String ident) {
+        if (ident == null) {
+            return null;
+        }
+
+        String ident_normalized = SQLUtils.normalize(ident);
+
+        for (SQLSelectItem item : this.selectList) {
+            if (item.match(ident_normalized)) {
+                return item;
+            }
+        }
+
+        return null;
     }
 }

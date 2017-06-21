@@ -582,7 +582,12 @@ public class Lexer {
                 break;
             case '^':
                 scanChar();
-                token = Token.CARET;
+                if (ch == '=') {
+                    scanChar();
+                    token = Token.CARETEQ;
+                } else {
+                    token = Token.CARET;
+                }
                 break;
             case '%':
                 scanChar();

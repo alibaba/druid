@@ -17,6 +17,8 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.List;
@@ -76,6 +78,17 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
 
     public void setHints(List<SQLCommentHint> hints) {
         this.hints = hints;
+    }
+
+    public int getLength() {
+        if (this.arguments.size() == 1) {
+            SQLExpr arg = this.arguments.get(0);
+            if (arg instanceof SQLIntegerExpr) {
+                return ((SQLIntegerExpr) arg).getNumber().intValue();
+            }
+        }
+
+        return -1;
     }
 
     @Override

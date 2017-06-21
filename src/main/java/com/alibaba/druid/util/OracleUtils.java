@@ -15,10 +15,8 @@
  */
 package com.alibaba.druid.util;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +26,7 @@ import javax.transaction.xa.XAException;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
+import oracle.jdbc.driver.DatabaseError;
 import oracle.jdbc.internal.OraclePreparedStatement;
 import oracle.jdbc.xa.client.OracleXAConnection;
 import oracle.sql.ROWID;
@@ -202,5 +201,25 @@ public class OracleUtils {
         }
 
         return tables.contains(table_lower);
+    }
+
+    private static Set<String> keywords;
+
+    public static boolean isKeyword(String name) {
+        if (name == null) {
+            return false;
+        }
+
+        String name_lower = name.toLowerCase();
+
+        Set<String> words = keywords;
+
+        if (words == null) {
+            words = new HashSet<String>();
+            Utils.loadFromFile("META-INF/druid/parser/oracle/keywords", words);
+            keywords = words;
+        }
+
+        return words.contains(name_lower);
     }
 }

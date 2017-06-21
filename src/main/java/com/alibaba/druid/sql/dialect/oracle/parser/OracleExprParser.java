@@ -982,7 +982,7 @@ public class OracleExprParser extends SQLExprParser {
             rightExp = equalityRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, getDbType());
-        } else if (lexer.token() == Token.BANGEQ) {
+        } else if (lexer.token() == Token.BANGEQ || lexer.token() == Token.CARETEQ) {
             lexer.nextToken();
             rightExp = shift();
 

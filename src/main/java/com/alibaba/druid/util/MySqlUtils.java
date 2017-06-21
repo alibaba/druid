@@ -29,6 +29,8 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MySqlUtils {
     static Class<?> utilClass;
@@ -103,5 +105,25 @@ public class MySqlUtils {
             // skip
         }
         return null;
+    }
+
+    private static Set<String> keywords;
+
+    public static boolean isKeyword(String name) {
+        if (name == null) {
+            return false;
+        }
+
+        String name_lower = name.toLowerCase();
+
+        Set<String> words = keywords;
+
+        if (words == null) {
+            words = new HashSet<String>();
+            Utils.loadFromFile("META-INF/druid/parser/mysql/keywords", words);
+            keywords = words;
+        }
+
+        return words.contains(name_lower);
     }
 }
