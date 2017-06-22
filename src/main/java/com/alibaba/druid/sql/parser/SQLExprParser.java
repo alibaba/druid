@@ -1781,6 +1781,10 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLDataType parseDataType() {
+        return parseDataType(true);
+    }
+
+    public SQLDataType parseDataType(boolean restrict) {
 
         if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
             return null;

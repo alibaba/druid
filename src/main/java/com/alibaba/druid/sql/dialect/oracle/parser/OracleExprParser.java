@@ -145,8 +145,8 @@ public class OracleExprParser extends SQLExprParser {
         //
         ;
     }
-    
-    public SQLDataType parseDataType() {
+
+    public SQLDataType parseDataType(boolean restrict) {
 
         if (lexer.token() == Token.CONSTRAINT || lexer.token() == Token.COMMA) {
             return null;
@@ -240,12 +240,12 @@ public class OracleExprParser extends SQLExprParser {
         
         if (isCharType(typeName)) {
             SQLCharacterDataType charType = new SQLCharacterDataType(typeName);
-            
+
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
-                
+
                 charType.addArgument(this.expr());
-                
+
                 if (identifierEquals("CHAR")) {
                     lexer.nextToken();
                     charType.setCharType(SQLCharacterDataType.CHAR_TYPE_CHAR);
@@ -253,8 +253,10 @@ public class OracleExprParser extends SQLExprParser {
                     lexer.nextToken();
                     charType.setCharType(SQLCharacterDataType.CHAR_TYPE_BYTE);
                 }
-                
+
                 accept(Token.RPAREN);
+            } else if (restrict) {
+                accept(Token.LPAREN);
             }
             
             return parseCharTypeRest(charType);
@@ -272,7 +274,6 @@ public class OracleExprParser extends SQLExprParser {
                 throw new ParserException("syntax error : " + lexer.token() + " " + lexer.stringVal());
             }
         }
-        
 
 
         SQLDataType dataType = new SQLDataTypeImpl(typeName);        
