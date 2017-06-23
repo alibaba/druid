@@ -767,7 +767,7 @@ public class OracleStatementParser extends SQLStatementParser {
         }
 
         accept(Token.RETURN);
-        SQLDataType returnDataType = this.exprParser.parseDataType();
+        SQLDataType returnDataType = this.exprParser.parseDataType(false);
         stmt.setReturnDataType(returnDataType);
 
         if (identifierEquals("AUTHID")) {
@@ -2192,7 +2192,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 SQLName name = this.exprParser.name();
                 varItem.setName(name);
 
-                varItem.setDataType(this.exprParser.parseDataType());
+                varItem.setDataType(this.exprParser.parseDataType(false));
                 varItem.setParent(varDecl);
 
                 varDecl.getItems().add(varItem);

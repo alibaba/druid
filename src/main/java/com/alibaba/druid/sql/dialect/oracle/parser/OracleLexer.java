@@ -115,6 +115,10 @@ public class OracleLexer extends Lexer {
         map.put("TABLESPACE", Token.TABLESPACE);
         map.put("PARTITION", Token.PARTITION);
 
+        map.put("，", Token.COMMA);
+        map.put("（", Token.LPAREN);
+        map.put("）", Token.RPAREN);
+
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
 

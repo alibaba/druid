@@ -168,35 +168,41 @@ public class Lexer {
         return ++varIndex;
     }
 
-    private static class SavePoint {
-
+    public static class SavePoint {
         int   bp;
         int   sp;
         int   np;
         char  ch;
         Token token;
+        String stringVal;
     }
 
     public Keywords getKeywods() {
         return keywods;
     }
 
-    public void mark() {
+    public SavePoint mark() {
         SavePoint savePoint = new SavePoint();
         savePoint.bp = pos;
         savePoint.sp = bufPos;
         savePoint.np = mark;
         savePoint.ch = ch;
         savePoint.token = token;
-        this.savePoint = savePoint;
+        savePoint.stringVal = stringVal;
+        return this.savePoint = savePoint;
     }
 
-    public void reset() {
+    public void reset(SavePoint savePoint) {
         this.pos = savePoint.bp;
         this.bufPos = savePoint.sp;
         this.mark = savePoint.np;
         this.ch = savePoint.ch;
         this.token = savePoint.token;
+        this.stringVal = savePoint.stringVal;
+    }
+
+    public void reset() {
+        this.reset(this.savePoint);
     }
 
     public Lexer(String input, boolean skipComment){
@@ -257,7 +263,7 @@ public class Lexer {
             return;
         }
 
-        if (ch == ')') {
+        if (ch == ')' || ch == '）') {
             scanChar();
             token = RPAREN;
             return;
@@ -271,7 +277,7 @@ public class Lexer {
             scanChar();
         }
 
-        if (ch == '(') {
+        if (ch == '(' || ch == '（') {
             scanChar();
             token = LPAREN;
             return;
@@ -378,10 +384,12 @@ public class Lexer {
                     token = COMMA;
                     return;
                 case '(':
+                case '（':
                     scanChar();
                     token = LPAREN;
                     return;
                 case ')':
+                case '）':
                     scanChar();
                     token = RPAREN;
                     return;

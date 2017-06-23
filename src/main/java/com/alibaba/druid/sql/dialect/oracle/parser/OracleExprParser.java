@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
 import java.math.BigInteger;
+import java.sql.Savepoint;
 
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.SQLKeep.DenseRank;
@@ -599,19 +600,19 @@ public class OracleExprParser extends SQLExprParser {
         }
         
         if (identifierEquals("DAY") || identifierEquals("YEAR")) {
-            lexer.mark();
+            Lexer.SavePoint savePoint = lexer.mark();
             
             String name = lexer.stringVal();
             lexer.nextToken();
             
             if (lexer.token() == Token.COMMA) {
-                lexer.reset();
+                lexer.reset(savePoint);
                 return expr;
             }
             
             OracleIntervalExpr interval = new OracleIntervalExpr();
             interval.setValue(expr);
-            OracleIntervalType type = OracleIntervalType.valueOf(name);
+            OracleIntervalType type = OracleIntervalType.valueOf(name.toUpperCase());
             interval.setType(type);
             
             if (lexer.token() == Token.LPAREN) {
@@ -623,8 +624,14 @@ public class OracleExprParser extends SQLExprParser {
                 lexer.nextToken();
                 accept(Token.RPAREN);
             }
-            
-            accept(Token.TO);
+
+            if (lexer.token() == Token.TO) {
+                lexer.nextToken();
+            } else {
+                lexer.reset(savePoint);
+                return expr;
+            }
+
             if (identifierEquals("SECOND")) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.SECOND);
