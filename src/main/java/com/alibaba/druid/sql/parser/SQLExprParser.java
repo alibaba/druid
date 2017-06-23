@@ -1382,6 +1382,15 @@ public class SQLExprParser extends SQLParser {
             SQLInListExpr inListExpr = new SQLInListExpr(expr);
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
+
+                if (lexer.token() == Token.WITH) {
+                    SQLSelect select = this.createSelectParser().select();
+                    SQLInSubQueryExpr queryExpr = new SQLInSubQueryExpr(select);
+                    queryExpr.setExpr(expr);
+                    accept(Token.RPAREN);
+                    return queryExpr;
+                }
+
                 exprList(inListExpr.getTargetList(), inListExpr);
                 accept(Token.RPAREN);
                 expr = inListExpr;

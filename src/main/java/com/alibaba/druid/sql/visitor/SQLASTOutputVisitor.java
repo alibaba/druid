@@ -2661,7 +2661,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLWithSubqueryClause x) {
         print0(ucase ? "WITH " : "with ");
         if (x.getRecursive() == Boolean.TRUE) {
-            print0(ucase ? "RECURSIVE " : " recursive ");
+            print0(ucase ? "RECURSIVE " : "recursive ");
         }
         incrementIndent();
         printlnAndAccept(x.getEntries(), ", ");
