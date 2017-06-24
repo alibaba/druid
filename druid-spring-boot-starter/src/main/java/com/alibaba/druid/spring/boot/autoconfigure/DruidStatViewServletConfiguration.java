@@ -17,12 +17,14 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 /**
  * @author lihengming [89921218@qq.com]
  */
+@ConditionalOnWebApplication
 @ConditionalOnProperty(name = "spring.datasource.druid.StatViewServlet.enabled", havingValue = "true", matchIfMissing = true)
 public class DruidStatViewServletConfiguration {
     @Bean

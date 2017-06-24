@@ -17,12 +17,14 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 
 import com.alibaba.druid.support.http.WebStatFilter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 /**
  * @author lihengming [89921218@qq.com]
  */
+@ConditionalOnWebApplication
 @ConditionalOnProperty(name = "spring.datasource.druid.WebStatFilter.enabled", havingValue = "true", matchIfMissing = true)
 public class DruidWebStatFilterConfiguration {
     @Bean
