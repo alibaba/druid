@@ -43,7 +43,7 @@ public class SQLParserUtils {
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType) {
         boolean keepComments;
-        if (JdbcConstants.ODPS.equals(dbType)) {
+        if (JdbcConstants.ODPS.equals(dbType) || JdbcConstants.MYSQL.equals(dbType)) {
             keepComments = true;
         } else {
             keepComments = false;

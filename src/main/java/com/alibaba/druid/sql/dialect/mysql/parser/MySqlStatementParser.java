@@ -281,6 +281,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         char markChar = lexer.current();
         int markBp = lexer.bp();
 
+        List<String> comments = null;
+        if (lexer.isKeepComments() && lexer.hasComment()) {
+            comments = lexer.readAndResetComments();
+        }
+
         accept(Token.CREATE);
 
         boolean replace = false;
@@ -299,6 +304,11 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlCreateTableParser parser = new MySqlCreateTableParser(this.exprParser);
             MySqlCreateTableStatement stmt = parser.parseCrateTable(false);
             stmt.setHints(hints);
+
+            if (comments != null) {
+                stmt.addBeforeComment(comments);
+            }
+
             return stmt;
         }
 
