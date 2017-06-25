@@ -268,7 +268,7 @@ public class SQLUtils {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
-            visitor.setParameters(parameters);
+            visitor.setInputParameters(parameters);
         }
 
         if (option == null) {

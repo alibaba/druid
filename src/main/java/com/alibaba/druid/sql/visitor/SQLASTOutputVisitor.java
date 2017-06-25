@@ -53,6 +53,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected boolean groupItemSingleLine = false;
 
     protected List<Object> parameters;
+    protected List<Object> inputParameters;
     protected Set<String> tables;
 
     protected boolean exportTables = false;
@@ -84,14 +85,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public SQLASTOutputVisitor(Appendable appender, boolean parameterized){
         this.appender = appender;
         this.parameterized = parameterized;
-    }
-
-    public int getParametersSize() {
-        if (parameters == null) {
-            return 0;
-        }
-
-        return this.parameters.size();
     }
 
     public int getReplaceCount() {
@@ -133,8 +126,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return this.tables;
     }
 
+    @Deprecated
     public void setParameters(List<Object> parameters) {
-        this.parameters = parameters;
+        if (parameters != null && parameters.size() > 0) {
+            this.inputParameters = parameters;
+        } else {
+            this.parameters = parameters;
+        }
+    }
+
+    public void setInputParameters(List<Object> parameters) {
+        this.inputParameters = parameters;
     }
 
     public int getIndentCount() {
@@ -366,15 +368,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLBinaryOperator operator = x.getOperator();
 
-        if (parameters != null
-                && parameters.size() > 0
+        if (inputParameters != null
+                && inputParameters.size() > 0
                 && operator == SQLBinaryOperator.Equality
                 && x.getRight() instanceof SQLVariantRefExpr
                 ) {
             SQLVariantRefExpr right = (SQLVariantRefExpr) x.getRight();
             int index = right.getIndex();
-            if (index >= 0 && index < parameters.size()) {
-                Object param = parameters.get(index);
+            if (index >= 0 && index < inputParameters.size()) {
+                Object param = inputParameters.get(index);
                 if (param instanceof Collection) {
                     x.getLeft().accept(this);
                     print0(" IN (");
@@ -1530,12 +1532,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLVariantRefExpr x) {
         int index = x.getIndex();
 
-        if (index < 0 || parameters == null || index >= parameters.size()) {
+        if (index < 0 || inputParameters == null || index >= inputParameters.size()) {
             print0(x.getName());
             return false;
         }
 
-        Object param = parameters.get(index);
+        Object param = inputParameters.get(index);
 
         SQLObject parent = x.getParent();
 

@@ -669,10 +669,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     public boolean visit(SQLVariantRefExpr x) {
         {
-            int parametersSize = this.getParametersSize();
             int index = x.getIndex();
 
-            if (index >= 0 && index < parametersSize) {
+            if (inputParameters != null && index < inputParameters.size()) {
 
                 return super.visit(x);
             }

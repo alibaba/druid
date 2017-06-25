@@ -74,7 +74,7 @@ public class MySqlParameterizedOutputVisitorTest_30 extends TestCase {
         StringBuilder buf = new StringBuilder();
         SQLASTOutputVisitor visitor1 = SQLUtils.createOutputVisitor(buf, dbType);
         visitor1.addTableMapping("udata", "udata_0888");
-        visitor1.setParameters(visitor.getParameters());
+        visitor1.setInputParameters(visitor.getParameters());
         pstmt.accept(visitor1);
 
         assertEquals("SELECT `udata`.`id` AS `id`, `udata`.`gmt_create` AS `gmtCreate`, `udata`.`gmt_modified` AS `gmtModified`, `udata`.`uid` AS `userId`, `udata`.`user_nick` AS `userNick`\n" +
