@@ -1131,7 +1131,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (mapTableName != null) {
             print0(mapTableName);
         } else {
-            owner.accept(this);
+            if (owner instanceof SQLIdentifierExpr && x.getParent() instanceof SQLExprTableSource) {
+                print0(((SQLIdentifierExpr) owner).getName());
+            } else {
+                owner.accept(this);
+            }
         }
         print('.');
 
