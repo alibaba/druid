@@ -9,7 +9,7 @@ Spring Boot with Druid support,help you simplify Druid config in Spring Boot.
   <dependency>
        <groupId>com.alibaba</groupId>
        <artifactId>druid-spring-boot-starter</artifactId>
-       <version>尚未发布中央仓库</version>
+       <version>1.1.0</version>
   </dependency>
 ```
 ### 配置项
