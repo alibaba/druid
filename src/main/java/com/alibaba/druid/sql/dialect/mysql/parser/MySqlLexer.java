@@ -262,22 +262,22 @@ public class MySqlLexer extends Lexer {
                 ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
-                    if (ch == '-' && pos < text.length() - 1) {
-                        if (mark > 0 && text.charAt(mark - 1) == '.') {
-                            break;
-                        }
-
-                        char next_char = text.charAt(pos + 1);
-                        if (isIdentifierChar(next_char)) {
-                            bufPos++;
-                            continue;
-                        }
-                    }
-                    if (last_ch == '-' && charAt(pos-2) != '-') {
-                        ch = last_ch;
-                        bufPos--;
-                        pos--;
-                    }
+//                    if (ch == '-' && pos < text.length() - 1) {
+//                        if (mark > 0 && text.charAt(mark - 1) == '.') {
+//                            break;
+//                        }
+//
+//                        char next_char = text.charAt(pos + 1);
+//                        if (isIdentifierChar(next_char)) {
+//                            bufPos++;
+//                            continue;
+//                        }
+//                    }
+//                    if (last_ch == '-' && charAt(pos-2) != '-') {
+//                        ch = last_ch;
+//                        bufPos--;
+//                        pos--;
+//                    }
                     break;
                 }
 

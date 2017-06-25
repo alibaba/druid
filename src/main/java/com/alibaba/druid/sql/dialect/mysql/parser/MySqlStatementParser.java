@@ -1583,6 +1583,16 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
             SQLName database = exprParser.name();
+            if (lexer.token() == Token.SUB && database instanceof SQLIdentifierExpr) {
+                lexer.mark();
+                lexer.nextToken();
+                String strVal = lexer.stringVal();
+                lexer.nextToken();
+                if (database instanceof SQLIdentifierExpr) {
+                    SQLIdentifierExpr ident = (SQLIdentifierExpr) database;
+                    ident.setName(ident.getName() + "-" + strVal);
+                }
+            }
             stmt.setDatabase(database);
         }
 
