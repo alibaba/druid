@@ -43,6 +43,12 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
     }
 
+    public SQLUnionQuery(SQLSelectQuery left, SQLUnionOperator operator, SQLSelectQuery right){
+        this.setLeft(left);
+        this.operator = operator;
+        this.setRight(right);
+    }
+
     public SQLSelectQuery getLeft() {
         return left;
     }
@@ -105,5 +111,28 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
     public void setBracket(boolean bracket) {
         this.bracket = bracket;
+    }
+
+    public SQLUnionQuery clone() {
+        SQLUnionQuery x = new SQLUnionQuery();
+
+        x.bracket = bracket;
+        if (left != null) {
+            x.setLeft(left.clone());
+        }
+        if (right != null) {
+            x.setRight(right.clone());
+        }
+        x.operator = operator;
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+
+        return x;
     }
 }

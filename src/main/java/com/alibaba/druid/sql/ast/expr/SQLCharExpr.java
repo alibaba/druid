@@ -52,4 +52,8 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
     public String toString() {
         return SQLUtils.toSQLString(this);
     }
+
+    public SQLCharExpr clone() {
+        return new SQLCharExpr(this.text);
+    }
 }

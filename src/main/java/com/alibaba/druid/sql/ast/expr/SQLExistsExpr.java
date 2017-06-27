@@ -100,4 +100,15 @@ public class SQLExistsExpr extends SQLExprImpl implements Serializable {
         }
         return true;
     }
+
+    public SQLExistsExpr clone () {
+        SQLExistsExpr x = new SQLExistsExpr();
+
+        x.not = not;
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+
+        return x;
+    }
 }

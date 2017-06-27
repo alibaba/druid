@@ -71,7 +71,14 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         return query;
     }
 
+    public void setQuery(SQLSelectQuery query) {
+        this.setQuery(new SQLSelect(query));
+    }
+
     public void setQuery(SQLSelect query) {
+        if (query != null) {
+            query.setParent(this);
+        }
         this.query = query;
     }
 

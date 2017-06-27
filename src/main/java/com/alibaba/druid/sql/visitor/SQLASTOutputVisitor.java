@@ -707,9 +707,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     private boolean printName(SQLName x, String name) {
         boolean shardingSupport = this.shardingSupport && parameterized;
+        return printName(x, name, shardingSupport);
+    }
+
+    private boolean printName(SQLName x, String name, boolean shardingSupport) {
+
         if (shardingSupport) {
             SQLObject parent = x.getParent();
             shardingSupport = parent instanceof SQLExprTableSource || parent instanceof SQLPropertyExpr;
+
+            if (parent instanceof SQLPropertyExpr && parent.getParent() instanceof SQLExprTableSource) {
+                shardingSupport = false;
+            }
         }
 
         if (shardingSupport) {
@@ -1133,11 +1142,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (mapTableName != null) {
             print0(mapTableName);
         } else {
-            if (owner instanceof SQLIdentifierExpr && x.getParent() instanceof SQLExprTableSource) {
-                print0(((SQLIdentifierExpr) owner).getName());
-            } else {
-                owner.accept(this);
-            }
+            owner.accept(this);
         }
         print('.');
 
@@ -1319,6 +1324,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (!JdbcConstants.INFORMIX.equals(dbType)) {
             printFetchFirst(x);
+        }
+
+        if (x.isForUpdate()) {
+            println();
+            print0(ucase ? "FOR UPDATE" : "for update");
         }
 
         return false;

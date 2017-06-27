@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -438,5 +439,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         return null;
+    }
+
+    public void addCondition(SQLExpr expr) {
+        if (expr == null) {
+            return;
+        }
+
+        this.setWhere(SQLBinaryOpExpr.and(where, expr));
     }
 }

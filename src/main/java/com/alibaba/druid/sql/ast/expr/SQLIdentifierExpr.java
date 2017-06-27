@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -97,6 +98,28 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
                 return false;
             }
         } else if (!name.equals(other.name)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean equalsIgnoreCase(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SQLIdentifierExpr)) {
+            return false;
+        }
+        SQLIdentifierExpr other = (SQLIdentifierExpr) obj;
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+
+        } else if (!SQLUtils.normalize(name).equalsIgnoreCase(SQLUtils.normalize(other.name))) {
             return false;
         }
         return true;

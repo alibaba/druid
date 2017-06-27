@@ -154,7 +154,10 @@ public class SQLSelect extends SQLObjectImpl {
         SQLSelect x = new SQLSelect();
 
         x.withSubQuery = this.withSubQuery;
-        x.query = this.query;
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+
         if (orderBy != null) {
             x.setOrderBy(this.orderBy.clone());
         }
