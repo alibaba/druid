@@ -87,4 +87,14 @@ public class SQLQueryExpr extends SQLExprImpl implements Serializable {
         }
         return true;
     }
+
+    public SQLQueryExpr clone() {
+        SQLQueryExpr x = new SQLQueryExpr();
+
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+
+        return x;
+    }
 }

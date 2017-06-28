@@ -144,8 +144,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleDbLinkExpr x) {
-        x.getExpr().accept(this);
-        print('@');
+        SQLExpr expr = x.getExpr();
+        if (expr != null) {
+            expr.accept(this);
+            print('@');
+        }
         print0(x.getDbLink());
         return false;
     }

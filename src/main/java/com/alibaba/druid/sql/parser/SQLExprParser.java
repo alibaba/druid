@@ -228,6 +228,10 @@ public class SQLExprParser extends SQLParser {
 
                     sqlExpr = listExpr;
                 }
+
+                if (sqlExpr instanceof SQLBinaryOpExpr) {
+                    ((SQLBinaryOpExpr) sqlExpr).setBracket(true);
+                }
                 
                 accept(Token.RPAREN);
                 break;

@@ -1695,7 +1695,7 @@ public class OracleStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.ALL) {
             lexer.nextToken();
             stmt.setOption(OracleMultiInsertStatement.Option.ALL);
-        } else if (lexer.token() == Token.FIRST) {
+        } else if (lexer.token() == Token.FIRST || identifierEquals("FIRST")) {
             lexer.nextToken();
             stmt.setOption(OracleMultiInsertStatement.Option.FIRST);
         }

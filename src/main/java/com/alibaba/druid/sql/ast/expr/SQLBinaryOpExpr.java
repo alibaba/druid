@@ -35,6 +35,8 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     private SQLBinaryOperator operator;
     private String            dbType;
 
+    private boolean          bracket  = false;
+
     public SQLBinaryOpExpr(){
 
     }
@@ -97,6 +99,14 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
 
     public void setOperator(SQLBinaryOperator operator) {
         this.operator = operator;
+    }
+
+    public boolean isBracket() {
+        return bracket;
+    }
+
+    public void setBracket(boolean bracket) {
+        this.bracket = bracket;
     }
 
     protected void accept0(SQLASTVisitor visitor) {

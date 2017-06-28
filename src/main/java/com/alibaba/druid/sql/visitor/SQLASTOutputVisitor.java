@@ -476,10 +476,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         if (x.getRight() instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr right = (SQLBinaryOpExpr) x.getRight();
-            boolean rightRational = right.getOperator() == SQLBinaryOperator.BooleanAnd
-                                    || right.getOperator() == SQLBinaryOperator.BooleanOr;
+            SQLBinaryOperator rightOp = right.getOperator();
+            SQLBinaryOperator op = x.getOperator();
+            boolean rightRational = rightOp == SQLBinaryOperator.BooleanAnd
+                                    || rightOp == SQLBinaryOperator.BooleanOr;
 
-            if (right.getOperator().priority >= x.getOperator().priority) {
+            if (rightOp.priority >= op.priority
+                    || (right.isBracket()
+                    && rightOp != op
+                    && rightOp.isLogical()
+                    && op.isLogical()
+            )) {
                 if (rightRational) {
                     incrementIndent();
                 }
@@ -507,10 +514,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     private void visitBinaryLeft(SQLExpr left, SQLBinaryOperator op) {
         if (left instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
-            boolean leftRational = binaryLeft.getOperator() == SQLBinaryOperator.BooleanAnd
-                                   || binaryLeft.getOperator() == SQLBinaryOperator.BooleanOr;
+            SQLBinaryOperator leftOp = binaryLeft.getOperator();
+            boolean leftRational = leftOp == SQLBinaryOperator.BooleanAnd
+                                   || leftOp == SQLBinaryOperator.BooleanOr;
 
-            if (binaryLeft.getOperator().priority > op.priority) {
+            if (leftOp.priority > op.priority
+                    || (binaryLeft.isBracket()
+                        && leftOp != op
+                        && leftOp.isLogical()
+                        && op.isLogical()
+            )) {
                 if (leftRational) {
                     incrementIndent();
                 }

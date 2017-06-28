@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEven
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -129,6 +130,14 @@ public class SQLStatementParser extends SQLParser {
 
                     continue;
                 }
+                case WITH:
+                if (!JdbcConstants.POSTGRESQL.equals(dbType)){
+                    SQLStatement stmt = parseSelect();
+                    stmt.setParent(parent);
+                    statementList.add(stmt);
+                    continue;
+                }
+                break;
                 case SELECT: {
                     SQLStatement stmt = parseSelect();
                     stmt.setParent(parent);

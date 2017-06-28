@@ -160,8 +160,8 @@ public class OracleCreateViewTest1 extends OracleTest {
                         "\t, c.aboutus_image_path, c.aboutus_image_title, c.chinese_name, c.rowid AS c_rid, v.rowid AS v_rid\n" +
                         "FROM tb_001 v, tb_002 c\n" +
                         "WHERE (v.service_type IN ('gs', 'cgs', 'hkgs', 'twgs')\n" +
-                        "\t\tOR v.service_type = 'cnfm'\n" +
-                        "\t\tAND v.stage = 'new_order')\n" +
+                        "\t\tOR (v.service_type = 'cnfm'\n" +
+                        "\t\t\tAND v.stage = 'new_order'))\n" +
                         "\tAND v.id = c.id",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
