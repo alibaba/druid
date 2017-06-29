@@ -236,7 +236,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         query.accept(this);
 
         if (x.getRestriction() != null) {
-            print(' ');
+            println();
+            print("WITH ");
             x.getRestriction().accept(this);
         }
 
@@ -2006,7 +2007,23 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         printAndAccept(x.getColumns(), ", ");
         print(')');
 
+        Boolean rely = x.getRely();
+        if (rely != null) {
+            if (rely.booleanValue()) {
+                print0(ucase ? " RELY" : " rely");
+            }
+        }
+
         printConstraintState(x);
+
+        Boolean validate = x.getValidate();
+        if (validate != null) {
+            if (validate.booleanValue()) {
+                print0(ucase ? " VALIDATE" : " validate");
+            } else {
+                print0(ucase ? " NOVALIDATE" : " novalidate");
+            }
+        }
 
         return false;
     }
@@ -2024,8 +2041,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getExceptionsInto().accept(this);
         }
 
-        if (x.getEnable() != null) {
-            if (x.getEnable().booleanValue()) {
+        Boolean enable = x.getEnable();
+        if (enable != null) {
+            if (enable.booleanValue()) {
                 print0(ucase ? " ENABLE" : " enable");
             } else {
                 print0(ucase ? " DIABLE" : " diable");

@@ -1998,6 +1998,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 SQLColumnUniqueKey uk = new SQLColumnUniqueKey();
                 uk.setName(name);
+
                 column.addConstraint(uk);
                 return parseColumnRest(column);
             }
@@ -2102,6 +2103,26 @@ public class SQLExprParser extends SQLParser {
         accept(Token.LPAREN);
         exprList(unique.getColumns(), unique);
         accept(Token.RPAREN);
+
+        if (lexer.token() == Token.DISABLE) {
+            lexer.nextToken();
+            unique.setEnable(false);
+        } else if (lexer.token() == Token.ENABLE) {
+            lexer.nextToken();
+            unique.setEnable(true);
+        } else if (identifierEquals("VALIDATE")) {
+            lexer.nextToken();
+            unique.setValidate(Boolean.TRUE);
+        } else if (identifierEquals("NOVALIDATE")) {
+            lexer.nextToken();
+            unique.setValidate(Boolean.FALSE);
+        } else if (identifierEquals("RELY")) {
+            lexer.nextToken();
+            unique.setRely(Boolean.TRUE);
+        } else if (identifierEquals("NORELY")) {
+            lexer.nextToken();
+            unique.setRely(Boolean.FALSE);
+        }
 
         return unique;
     }

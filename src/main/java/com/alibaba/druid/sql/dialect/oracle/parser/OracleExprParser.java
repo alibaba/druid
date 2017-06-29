@@ -1026,6 +1026,31 @@ public class OracleExprParser extends SQLExprParser {
             OracleUsingIndexClause using = parseUsingIndex();
             primaryKey.setUsing(using);
         }
+
+        for (;;) {
+            if (lexer.token() == Token.ENABLE) {
+                lexer.nextToken();
+                primaryKey.setEnable(Boolean.TRUE);
+            } else if (lexer.token() == Token.DISABLE) {
+                lexer.nextToken();
+                primaryKey.setEnable(Boolean.FALSE);
+            } else if (identifierEquals("VALIDATE")) {
+                lexer.nextToken();
+                primaryKey.setValidate(Boolean.TRUE);
+            } else if (identifierEquals("NOVALIDATE")) {
+                lexer.nextToken();
+                primaryKey.setValidate(Boolean.FALSE);
+            } else if (identifierEquals("RELY")) {
+                lexer.nextToken();
+                primaryKey.setRely(Boolean.TRUE);
+            } else if (identifierEquals("NORELY")) {
+                lexer.nextToken();
+                primaryKey.setRely(Boolean.FALSE);
+            } else {
+                break;
+            }
+        }
+        
         return primaryKey;
     }
 
@@ -1088,25 +1113,29 @@ public class OracleExprParser extends SQLExprParser {
     
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         column = super.parseColumnRest(column);
-        
-        if (lexer.token() == Token.ENABLE) {
-            lexer.nextToken();
-            column.setEnable(Boolean.TRUE);
-        } else if (lexer.token() == Token.ENABLE) {
-            lexer.nextToken();
-            column.setEnable(true);
-        } else if (identifierEquals("VALIDATE")) {
-            lexer.nextToken();
-            column.setValidate(Boolean.TRUE);
-        } else if (identifierEquals("NOVALIDATE")) {
-            lexer.nextToken();
-            column.setValidate(Boolean.FALSE);
-        } else if (identifierEquals("RELY")) {
-            lexer.nextToken();
-            column.setRely(Boolean.TRUE);
-        } else if (identifierEquals("NORELY")) {
-            lexer.nextToken();
-            column.setRely(Boolean.FALSE);
+
+        for (;;) {
+            if (lexer.token() == Token.ENABLE) {
+                lexer.nextToken();
+                column.setEnable(Boolean.TRUE);
+            } else if (lexer.token() == Token.DISABLE) {
+                lexer.nextToken();
+                column.setEnable(Boolean.FALSE);
+            } else if (identifierEquals("VALIDATE")) {
+                lexer.nextToken();
+                column.setValidate(Boolean.TRUE);
+            } else if (identifierEquals("NOVALIDATE")) {
+                lexer.nextToken();
+                column.setValidate(Boolean.FALSE);
+            } else if (identifierEquals("RELY")) {
+                lexer.nextToken();
+                column.setRely(Boolean.TRUE);
+            } else if (identifierEquals("NORELY")) {
+                lexer.nextToken();
+                column.setRely(Boolean.FALSE);
+            } else {
+                break;
+            }
         }
         
         return column;

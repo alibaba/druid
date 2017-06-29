@@ -2542,6 +2542,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
 
         x.getSubQuery().accept(this);
+
+        if (x.isWithCheckOption()) {
+            println();
+            print0(ucase ? "WITH CHECK OPTION" : "with check option");
+        }
+
         return false;
     }
 
@@ -3227,7 +3233,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "CREATE " : "create ");
 
         if (x.isOrReplace()) {
-            print0(ucase ? "OR REPLEACE " : "or repleace ");
+            print0(ucase ? "OR REPLACE " : "or replace ");
         }
 
         print0(ucase ? "TRIGGER " : "trigger ");

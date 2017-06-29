@@ -2139,17 +2139,25 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
 
             for (;;) {
-                SQLCreateViewStatement.Column column = new SQLCreateViewStatement.Column();
-                SQLExpr expr = this.exprParser.expr();
-                column.setExpr(expr);
 
-                if (lexer.token() == Token.COMMENT) {
-                    lexer.nextToken();
-                    column.setComment((SQLCharExpr) exprParser.primary());
+                if (lexer.token() == Token.CONSTRAINT) {
+                    SQLTableConstraint constraint = (SQLTableConstraint) this.exprParser.parseConstaint();
+                    createView.addColumn(constraint);
+                } else {
+                    SQLColumnDefinition column = new SQLColumnDefinition();
+                    SQLName expr = this.exprParser.name();
+                    column.setName(expr);
+
+                    this.exprParser.parseColumnRest(column);
+
+                    if (lexer.token() == Token.COMMENT) {
+                        lexer.nextToken();
+                        column.setComment((SQLCharExpr) exprParser.primary());
+                    }
+
+                    column.setParent(createView);
+                    createView.addColumn(column);
                 }
-
-                column.setParent(createView);
-                createView.addColumn(column);
 
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
@@ -2171,6 +2179,28 @@ public class SQLStatementParser extends SQLParser {
 
         SQLSelectParser selectParser = this.createSQLSelectParser();
         createView.setSubQuery(selectParser.select());
+
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+
+            if (identifierEquals("CASCADED")) {
+                createView.setWithCascaded(true);
+                lexer.nextToken();
+            } else if (identifierEquals("LOCAL")){
+                createView.setWithLocal(true);
+                lexer.nextToken();
+            } else if (identifierEquals("READ")) {
+                lexer.nextToken();
+                accept(Token.ONLY);
+                createView.setWithReadOnly(true);
+            }
+
+            if (lexer.token() == Token.CHECK) {
+                lexer.nextToken();
+                createView.setWithCheckOption(true);
+            }
+        }
+
         return createView;
     }
 

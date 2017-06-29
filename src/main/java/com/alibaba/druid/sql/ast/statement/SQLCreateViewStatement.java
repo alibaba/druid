@@ -40,9 +40,12 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
 
     protected SQLExprTableSource tableSource;
 
-    protected final List<Column> columns = new ArrayList<Column>();
+    protected final List<SQLTableElement> columns = new ArrayList<SQLTableElement>();
 
-    private Level with;
+    private boolean withCheckOption;
+    private boolean withCascaded;
+    private boolean withLocal;
+    private boolean withReadOnly;
 
     private SQLLiteralExpr comment;
 
@@ -85,12 +88,36 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         this.tableSource = tableSource;
     }
 
-    public Level getWith() {
-        return with;
+    public boolean isWithCheckOption() {
+        return withCheckOption;
     }
 
-    public void setWith(Level with) {
-        this.with = with;
+    public void setWithCheckOption(boolean withCheckOption) {
+        this.withCheckOption = withCheckOption;
+    }
+
+    public boolean isWithCascaded() {
+        return withCascaded;
+    }
+
+    public void setWithCascaded(boolean withCascaded) {
+        this.withCascaded = withCascaded;
+    }
+
+    public boolean isWithLocal() {
+        return withLocal;
+    }
+
+    public void setWithLocal(boolean withLocal) {
+        this.withLocal = withLocal;
+    }
+
+    public boolean isWithReadOnly() {
+        return withReadOnly;
+    }
+
+    public void setWithReadOnly(boolean withReadOnly) {
+        this.withReadOnly = withReadOnly;
     }
 
     public SQLSelect getSubQuery() {
@@ -98,14 +125,17 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 
-    public List<Column> getColumns() {
+    public List<SQLTableElement> getColumns() {
         return columns;
     }
     
-    public void addColumn(Column column) {
+    public void addColumn(SQLTableElement column) {
         if (column != null) {
             column.setParent(this);
         }
