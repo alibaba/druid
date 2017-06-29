@@ -1638,7 +1638,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         setCurrentTable(table);
 
         TableStat stat = getTableStat(table);
-        stat.incrementDropIndexCount();
+        stat.incrementCreateIndexCount();
 
         Map<String, String> aliasMap = getAliasMap();
         putAliasMap(aliasMap, table, table);

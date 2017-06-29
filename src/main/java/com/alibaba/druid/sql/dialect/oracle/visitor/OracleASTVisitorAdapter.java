@@ -37,20 +37,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -1065,6 +1052,15 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleExecuteImmediateStatement x) {
+
+    }
+    @Override
+    public boolean visit(OracleTreatExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleTreatExpr x) {
 
     }
 }

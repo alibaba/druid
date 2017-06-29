@@ -44,21 +44,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause.FlashCacheType;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint.Initially;
@@ -513,6 +499,22 @@ public class OracleExprParser extends SQLExprParser {
                 
                 accept(Token.RPAREN);
                 return primaryRest(methodExpr);
+            } else if ("treat".equalsIgnoreCase(methodName)) {
+                OracleTreatExpr treatExpr = new OracleTreatExpr();
+
+                treatExpr.setExpr(this.expr());
+
+                accept(Token.AS);
+
+                if (identifierEquals("REF")) {
+                    treatExpr.setRef(true);
+                    lexer.nextToken();
+                }
+
+                treatExpr.setType(this.expr());
+                accept(Token.RPAREN);
+
+                return primaryRest(treatExpr);
             }
         }
         

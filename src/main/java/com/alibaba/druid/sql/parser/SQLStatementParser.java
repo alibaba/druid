@@ -1839,6 +1839,9 @@ public class SQLStatementParser extends SQLParser {
             SQLCreateProcedureStatement stmt = parseCreateProcedure();
             stmt.setCreate(true);
             return stmt;
+        } else if (identifierEquals("BITMAP")) {
+            lexer.reset(markBp, markChar, Token.CREATE);
+            return parseCreateIndex(true);
         }
 
         throw new ParserException("TODO " + lexer.token());
