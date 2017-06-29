@@ -1471,6 +1471,11 @@ public class OracleExprParser extends SQLExprParser {
             subPartition.setValues(values);
         }
 
+        if (lexer.token() == Token.TABLESPACE) {
+            lexer.nextToken();
+            subPartition.setTableSpace(this.name());
+        }
+
         return subPartition;
     }
 

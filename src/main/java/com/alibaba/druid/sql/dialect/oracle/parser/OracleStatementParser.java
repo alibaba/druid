@@ -1956,20 +1956,33 @@ public class OracleStatementParser extends SQLStatementParser {
 
         accept(Token.ON);
 
+        if (identifierEquals("CLUSTER")) {
+            lexer.nextToken();
+            stmt.setCluster(true);
+        }
+
         stmt.setTable(this.exprParser.name());
 
-        accept(Token.LPAREN);
-
-        for (;;) {
-            SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
-            stmt.addItem(item);
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                continue;
-            }
-            break;
+        if (lexer.token() == Token.IDENTIFIER) {
+            String alias = lexer.stringVal();
+            stmt.getTable().setAlias(alias);
+            lexer.nextToken();
         }
-        accept(Token.RPAREN);
+
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+
+            for (; ; ) {
+                SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+                stmt.addItem(item);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            accept(Token.RPAREN);
+        }
 
         for (;;) {
             this.getExprParser().parseSegmentAttributes(stmt);
@@ -2005,6 +2018,32 @@ public class OracleStatementParser extends SQLStatementParser {
                 acceptIdentifier("TOPLEVEL");
                 stmt.setIndexOnlyTopLevel(true);
                 continue;
+            } else if (identifierEquals("SORT")) {
+                lexer.nextToken();
+                stmt.setSort(Boolean.TRUE);
+                continue;
+            } else if (identifierEquals("NOSORT")) {
+                lexer.nextToken();
+                stmt.setSort(Boolean.FALSE);
+                continue;
+            } else if (identifierEquals("LOCAL")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                for (;;) {
+                    SQLPartition partition = this.getExprParser().parsePartition();
+                    partition.setParent(stmt);
+                    stmt.getLocalPartitions().add(partition);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    } else if (lexer.token() == Token.RPAREN) {
+                        lexer.nextToken();
+                        break;
+                    }
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
+
+                break;
             } else {
                 break;
             }

@@ -39,25 +39,22 @@ public class OceanbaseCreateTableTest_subPartition3 extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
 
         String result = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLE ts ("
-                + "\n\tid INT,"
-                + "\n\tpurchased DATE"
-                + "\n)"
-                + "\nPARTITION BY RANGE (YEAR(purchased))"
-                + "\nSUBPARTITION BY HASH (TO_DAYS(purchased))"
-                + "\n("
-                + "\n\tPARTITION p0 VALUES LESS THAN (1990)"
-                + "\n\t("
-                + "\n\t\tSUBPARTITION s0,"
-                + "\n\t\tSUBPARTITION s1"
-                + "\n\t),"
-                + "\n\tPARTITION p1 VALUES LESS THAN (2000),"
-                + "\n\tPARTITION p2 VALUES LESS THAN MAXVALUE"
-                + "\n\t("
-                + "\n\t\tSUBPARTITION s2,"
-                + "\n\t\tSUBPARTITION s3"
-                + "\n\t)"
-                + "\n)",
+        Assert.assertEquals("CREATE TABLE ts (\n" +
+                        "\tid INT,\n" +
+                        "\tpurchased DATE\n" +
+                        ")\n" +
+                        "PARTITION BY RANGE (YEAR(purchased))\n" +
+                        "SUBPARTITION BY HASH (TO_DAYS(purchased)) (\n" +
+                        "\tPARTITION p0 VALUES LESS THAN (1990) (\n" +
+                        "\t\tSUBPARTITION s0,\n" +
+                        "\t\tSUBPARTITION s1\n" +
+                        "\t),\n" +
+                        "\tPARTITION p1 VALUES LESS THAN (2000),\n" +
+                        "\tPARTITION p2 VALUES LESS THAN MAXVALUE (\n" +
+                        "\t\tSUBPARTITION s2,\n" +
+                        "\t\tSUBPARTITION s3\n" +
+                        "\t)\n" +
+                        ")",
                             result);
         print(stmtList);
 

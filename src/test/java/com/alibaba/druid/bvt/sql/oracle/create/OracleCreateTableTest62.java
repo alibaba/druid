@@ -98,8 +98,7 @@ public class OracleCreateTableTest62 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
-                        "PARTITION BY RANGE (\"GMT_VOUCHER_RECEIVE\")\n" +
-                        "(\n" +
+                        "PARTITION BY RANGE (\"GMT_VOUCHER_RECEIVE\") (\n" +
                         "\tPARTITION \"PONLY\" VALUES LESS THAN (MAXVALUE)\n" +
                         "\t\tPCTFREE 10\n" +
                         "\t\tPCTUSED 40\n" +

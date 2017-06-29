@@ -944,6 +944,7 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
 
             SQLExpr seperator = this.primary();
+            seperator.setParent(aggregateExpr);
 
             aggregateExpr.putAttribute("SEPARATOR", seperator);
         }

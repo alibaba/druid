@@ -128,7 +128,7 @@ public class ParameterizedOutputVisitorUtils {
         if (parent instanceof SQLDataType //
             || parent instanceof SQLColumnDefinition //
             || parent instanceof SQLServerTop //
-            //|| parent instanceof SQLAssignItem //
+            || parent instanceof SQLAggregateExpr //
             || parent instanceof SQLSelectOrderByItem //
         ) {
             return false;

@@ -1748,10 +1748,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         x.getName().accept(this);
         print0(ucase ? " ON " : " on ");
+
+        if (x.isCluster()) {
+            print0(ucase ? "CLUSTER " : "cluster ");
+        }
+
         x.getTable().accept(this);
-        print('(');
-        printAndAccept(x.getItems(), ", ");
-        print(')');
+
+        List<SQLSelectOrderByItem> items = x.getItems();
+        if (items.size() > 0) {
+            print('(');
+            printAndAccept(items, ", ");
+            print(')');
+        }
 
         if (x.isIndexOnlyTopLevel()) {
             println();
@@ -1780,7 +1789,27 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getParallel().accept(this);
         }
 
+        Boolean sort = x.getSort();
+        if (sort != null) {
+            if (sort.booleanValue()) {
+                print0(ucase ? " SORT" : " sort");
+            } else {
+                print0(ucase ? " NOSORT" : " nosort");
+            }
+        }
+
         this.printOracleSegmentAttributes(x);
+
+        if (x.getLocalPartitions().size() > 0) {
+            println();
+            print0(ucase ? "LOCAL (" : "local (");
+            incrementIndent();
+            println();
+            printlnAndAccept(x.getLocalPartitions(), ",");
+            decrementIndent();
+            println();
+            print(')');
+        }
 
         return false;
     }

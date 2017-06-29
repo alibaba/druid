@@ -1484,7 +1484,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (tableMapping != null && expr instanceof SQLName) {
-            String tableName = expr.toString();
+            String tableName;
+            if (expr instanceof SQLIdentifierExpr) {
+                tableName = ((SQLIdentifierExpr) expr).normalizedName();
+            } else if (expr instanceof SQLPropertyExpr) {
+                tableName = ((SQLPropertyExpr) expr).normalizedName();
+            } else {
+                tableName = expr.toString();
+            }
 
             String destTableName = tableMapping.get(tableName);
             if (destTableName == null) {
@@ -3841,8 +3848,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (x.getSubPartitions().size() > 0) {
-            println();
-            print('(');
+            print(" (");
             incrementIndent();
             for (int i = 0; i < x.getSubPartitions().size(); ++i) {
                 if (i != 0) {
@@ -3883,8 +3889,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printPartitionsCountAndSubPartitions(x);
 
-        println();
-        print('(');
+        print(" (");
         incrementIndent();
         for (int i = 0, size = x.getPartitions().size(); i < size; ++i) {
             if (i != 0) {
@@ -4050,6 +4055,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.getValues() != null) {
             print(' ');
             x.getValues().accept(this);
+        }
+
+        SQLName tableSpace = x.getTableSpace();
+        if (tableSpace != null) {
+            print0(ucase ? " TABLESPACE " : " tablespace ");
+            tableSpace.accept(this);
         }
 
         return false;
@@ -4414,6 +4425,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else if (x.getCompress() == Boolean.TRUE) {
             println();
             print0(ucase ? "COMPRESS" : "compress");
+
+            if (x.getCompressLevel() != null) {
+                print(' ');
+                print(x.getCompressLevel());
+            }
         }
 
         if (x.getLogging() == Boolean.TRUE) {

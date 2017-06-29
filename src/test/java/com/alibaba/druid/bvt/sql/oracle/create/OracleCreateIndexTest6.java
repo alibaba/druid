@@ -15,10 +15,6 @@
  */
 package com.alibaba.druid.bvt.sql.oracle.create;
 
-import java.util.List;
-
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,37 +22,25 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class OracleCreateTableTest39 extends OracleTest {
+import java.util.List;
 
-    public void test_types() throws Exception {
+public class OracleCreateIndexTest6 extends OracleTest {
+
+    public void test_0() throws Exception {
         String sql = //
-        "CREATE TABLE customers_demo ("
-        + "  customer_id number(6),"
-        + "  cust_first_name varchar2(20),"
-        + "  cust_last_name varchar2(20),"
-        + "  credit_limit number(9,2))"
-        + "PARTITION BY RANGE (credit_limit)"
-        + "INTERVAL (1000)"
-        + "(PARTITION p1 VALUES LESS THAN (5001));";
+        "CREATE INDEX ord_customer_ix_demo\n" +
+                "   ON orders (order_mode)\n" +
+                "   NOSORT\n" +
+                "   NOLOGGING;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
-
-        Assert.assertEquals("CREATE TABLE customers_demo ("
-                + "\n\tcustomer_id number(6),"
-                + "\n\tcust_first_name varchar2(20),"
-                + "\n\tcust_last_name varchar2(20),"
-                + "\n\tcredit_limit number(9, 2)"
-                + "\n)"
-                + "\nPARTITION BY RANGE (credit_limit) INTERVAL 1000 ("
-                + "\n\tPARTITION p1 VALUES LESS THAN (5001)"
-                + "\n);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
@@ -67,10 +51,17 @@ public class OracleCreateTableTest39 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals("CREATE INDEX ord_customer_ix_demo ON orders(order_mode) NOSORT\n" +
+                "NOLOGGING;", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("customers_demo", "customer_id")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("orders")));
+
+        assertEquals(1, visitor.getColumns().size());
+
+         assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_mode")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+        // assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

@@ -22,9 +22,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
-    private String           name;
+    protected String          name;
 
-    private transient String lowerName;
+    private transient String  lowerName;
     private transient Boolean parameter;
 
     public SQLIdentifierExpr(){
@@ -131,5 +131,9 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
     public SQLIdentifierExpr clone() {
         return new SQLIdentifierExpr(this.name);
+    }
+
+    public String normalizedName() {
+        return SQLUtils.normalize(name);
     }
 }

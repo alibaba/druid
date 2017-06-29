@@ -70,7 +70,7 @@ public class OracleCreateTableTest59 extends OracleTest {
                         "\tPCTFREE 10\n" +
                         "\tINITRANS 2\n" +
                         "\tMAXTRANS 255\n" +
-                        "\tCOMPRESS\n" +
+                        "\tCOMPRESS 1\n" +
                         "\tLOGGING\n" +
                         "\tTABLESPACE \"ZEUS_IND\"\n" +
                         "\tSTORAGE (\n" +

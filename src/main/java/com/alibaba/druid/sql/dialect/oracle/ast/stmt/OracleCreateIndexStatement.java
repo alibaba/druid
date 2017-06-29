@@ -18,17 +18,22 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLPartition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement, OracleSegmentAttributes {
 
     private boolean online            = false;
 
     private boolean indexOnlyTopLevel = false;
+    private boolean cluster           = false;
 
     private boolean noParallel;
 
@@ -47,6 +52,7 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     private Integer pctthreshold;
 
     private Boolean logging;
+    private Boolean sort;
 
     protected SQLName tablespace;
     protected SQLObject storage;
@@ -82,6 +88,17 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
     public void setIndexOnlyTopLevel(boolean indexOnlyTopLevel) {
         this.indexOnlyTopLevel = indexOnlyTopLevel;
     }
+
+    public Boolean getSort() {
+        return sort;
+    }
+
+    public void setSort(Boolean sort) {
+        this.sort = sort;
+    }
+
+    private List<SQLPartition> localPartitions = new ArrayList<SQLPartition>();
+    private List<SQLPartition> globalPartitions = new ArrayList<SQLPartition>();
 
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
@@ -122,6 +139,14 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
 
     public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    public boolean isCluster() {
+        return cluster;
+    }
+
+    public void setCluster(boolean cluster) {
+        this.cluster = cluster;
     }
 
     //////////////
@@ -233,4 +258,11 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         this.compressForOltp = compressForOltp;
     }
 
+    public List<SQLPartition> getLocalPartitions() {
+        return localPartitions;
+    }
+
+    public List<SQLPartition> getGlobalPartitions() {
+        return globalPartitions;
+    }
 }

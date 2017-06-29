@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -137,5 +138,19 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         }
 
         return false;
+    }
+
+    public String normalizedName() {
+
+        String ownerName;
+        if (owner instanceof SQLIdentifierExpr) {
+            ownerName = ((SQLIdentifierExpr) owner).normalizedName();
+        } else if (owner instanceof SQLPropertyExpr) {
+            ownerName = ((SQLPropertyExpr) owner).normalizedName();
+        } else {
+            ownerName = owner.toString();
+        }
+
+        return ownerName + '.' + SQLUtils.normalize(name);
     }
 }
