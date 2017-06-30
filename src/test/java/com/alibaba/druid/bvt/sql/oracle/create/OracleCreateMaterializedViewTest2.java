@@ -25,14 +25,21 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-public class OracleCreateViewTest10_with_read_only extends OracleTest {
+public class OracleCreateMaterializedViewTest2 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE VIEW customer_ro (name, language, credit)\n" +
-                "      AS SELECT cust_last_name, nls_language, credit_limit\n" +
-                "      FROM customers\n" +
-                "      WITH READ ONLY;";
+        "CREATE MATERIALIZED VIEW sales_by_month_by_state\n" +
+                "     TABLESPACE example\n" +
+                "     PARALLEL 4\n" +
+                "     BUILD IMMEDIATE\n" +
+                "     REFRESH COMPLETE\n" +
+                "     ENABLE QUERY REWRITE\n" +
+                "     AS SELECT t.calendar_month_desc, c.cust_state_province,\n" +
+                "        SUM(s.amount_sold) AS sum_sales\n" +
+                "        FROM times t, sales s, customers c\n" +
+                "        WHERE s.time_id = t.time_id AND s.cust_id = c.cust_id\n" +
+                "        GROUP BY t.calendar_month_desc, c.cust_state_province;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -41,15 +48,18 @@ public class OracleCreateViewTest10_with_read_only extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE VIEW customer_ro (\n" +
-                        "\tname, \n" +
-                        "\tlanguage, \n" +
-                        "\tcredit\n" +
-                        ")\n" +
+        assertEquals("CREATE MATERIALIZED VIEW sales_by_month_by_state\n" +
+                        "TABLESPACE example\n" +
+                        "PARALLEL 4\n" +
+                        "BUILD IMMEDIATE\n" +
+                        "REFRESH COMPLETE\n" +
+                        "ENABLE QUERY REWRITE\n" +
                         "AS\n" +
-                        "SELECT cust_last_name, nls_language, credit_limit\n" +
-                        "FROM customers\n" +
-                        "WITH READ ONLY;",//
+                        "SELECT t.calendar_month_desc, c.cust_state_province, SUM(s.amount_sold) AS sum_sales\n" +
+                        "FROM times t, sales s, customers c\n" +
+                        "WHERE s.time_id = t.time_id\n" +
+                        "\tAND s.cust_id = c.cust_id\n" +
+                        "GROUP BY t.calendar_month_desc, c.cust_state_province;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -61,10 +71,10 @@ public class OracleCreateViewTest10_with_read_only extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getTables().size());
 
-        assertEquals(3, visitor.getColumns().size());
+        assertEquals(8, visitor.getColumns().size());
 
-        assertTrue(visitor.getColumns().contains(new TableStat.Column("customers", "cust_last_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("times", "calendar_month_desc")));
     }
 }

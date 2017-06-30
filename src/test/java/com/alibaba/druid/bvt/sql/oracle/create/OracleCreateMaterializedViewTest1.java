@@ -25,14 +25,18 @@ import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.List;
 
-public class OracleCreateViewTest10_with_read_only extends OracleTest {
+public class OracleCreateMaterializedViewTest1 extends OracleTest {
 
     public void test_types() throws Exception {
         String sql = //
-        "CREATE VIEW customer_ro (name, language, credit)\n" +
-                "      AS SELECT cust_last_name, nls_language, credit_limit\n" +
-                "      FROM customers\n" +
-                "      WITH READ ONLY;";
+        "CREATE MATERIALIZED VIEW sales_mv\n" +
+                "   BUILD IMMEDIATE\n" +
+                "   REFRESH FAST ON COMMIT\n" +
+                "   AS SELECT t.calendar_year, p.prod_id, \n" +
+                "      SUM(s.amount_sold) AS sum_sales\n" +
+                "      FROM times t, products p, sales s\n" +
+                "      WHERE t.time_id = s.time_id AND p.prod_id = s.prod_id\n" +
+                "      GROUP BY t.calendar_year, p.prod_id;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -41,15 +45,15 @@ public class OracleCreateViewTest10_with_read_only extends OracleTest {
 
         assertEquals(1, statementList.size());
 
-        assertEquals("CREATE VIEW customer_ro (\n" +
-                        "\tname, \n" +
-                        "\tlanguage, \n" +
-                        "\tcredit\n" +
-                        ")\n" +
+        assertEquals("CREATE MATERIALIZED VIEW sales_mv\n" +
+                        "BUILD IMMEDIATE\n" +
+                        "REFRESH FAST ON COMMIT\n" +
                         "AS\n" +
-                        "SELECT cust_last_name, nls_language, credit_limit\n" +
-                        "FROM customers\n" +
-                        "WITH READ ONLY;",//
+                        "SELECT t.calendar_year, p.prod_id, SUM(s.amount_sold) AS sum_sales\n" +
+                        "FROM times t, products p, sales s\n" +
+                        "WHERE t.time_id = s.time_id\n" +
+                        "\tAND p.prod_id = s.prod_id\n" +
+                        "GROUP BY t.calendar_year, p.prod_id;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -61,10 +65,10 @@ public class OracleCreateViewTest10_with_read_only extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getTables().size());
 
-        assertEquals(3, visitor.getColumns().size());
+        assertEquals(7, visitor.getColumns().size());
 
-        assertTrue(visitor.getColumns().contains(new TableStat.Column("customers", "cust_last_name")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("times", "calendar_year")));
     }
 }

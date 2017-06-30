@@ -1662,4 +1662,14 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLFlashbackExpr x) {
 
     }
+
+    @Override
+    public boolean visit(SQLCreateMaterializedViewStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCreateMaterializedViewStatement x) {
+
+    }
 }

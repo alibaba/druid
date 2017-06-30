@@ -4584,4 +4584,64 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         return false;
     }
+
+    public boolean visit(SQLCreateMaterializedViewStatement x) {
+        print0(ucase ? "CREATE MATERIALIZED VIEW " : "create materialized view ");
+        x.getName().accept(this);
+        this.printOracleSegmentAttributes(x);
+        println();
+
+        Boolean parallel = x.getParallel();
+        if (parallel != null) {
+            if (parallel) {
+                print(ucase ? "PARALLEL" : "parallel");
+                Integer parallelValue = x.getParallelValue();
+                if (parallelValue != null) {
+                    print(' ');
+                    print(parallelValue);
+                }
+            } else {
+                print(ucase ? "NOPARALLEL" : "noparallel");
+            }
+            println();
+        }
+
+        if (x.isBuildImmediate()) {
+            println(ucase ? "BUILD IMMEDIATE" : "build immediate");
+        }
+
+        if (x.isRefresh()) {
+            print(ucase ? "REFRESH" : "refresh");
+
+            if (x.isRefreshFast()) {
+                print(ucase ? " FAST" : " fast");
+            } else if (x.isRefreshComlete()) {
+                print(ucase ? " COMPLETE" : " complete");
+            } else if (x.isRefreshForce()) {
+                print(ucase ? " FORCE" : " force");
+            }
+
+            if (x.isRefreshOnCommit()) {
+                print(ucase ? " ON COMMIT" : " on commit");
+            } else if (x.isRefreshOnDemand()) {
+                print(ucase ? " ON DEMAND" : " on demand");
+            }
+
+            println();
+        }
+
+        Boolean enableQueryRewrite = x.getEnableQueryRewrite();
+        if (enableQueryRewrite != null) {
+            if (enableQueryRewrite) {
+                print(ucase ? "ENABLE QUERY REWRITE" : "enable query rewrite");
+            } else {
+                print(ucase ? "DISABLE QUERY REWRITE" : "disable query rewrite");
+            }
+            println();
+        }
+
+        println(ucase ? "AS" : "as");
+        x.getQuery().accept(this);
+        return false;
+    }
 }

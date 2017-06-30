@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -1842,9 +1843,87 @@ public class SQLStatementParser extends SQLParser {
         } else if (identifierEquals("BITMAP")) {
             lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateIndex(true);
+        } else if (identifierEquals("MATERIALIZED")) {
+            lexer.reset(markBp, markChar, Token.CREATE);
+            return parseCreateMaterializedView();
         }
 
         throw new ParserException("TODO " + lexer.token());
+    }
+
+    public SQLStatement parseCreateMaterializedView() {
+        accept(Token.CREATE);
+        acceptIdentifier("MATERIALIZED");
+        accept(Token.VIEW);
+
+        SQLCreateMaterializedViewStatement stmt = new SQLCreateMaterializedViewStatement();
+        stmt.setName(this.exprParser.name());
+
+        for (;;) {
+            if (exprParser instanceof OracleExprParser) {
+                ((OracleExprParser) exprParser).parseSegmentAttributes(stmt);
+            }
+
+            if (identifierEquals("REFRESH")) {
+                lexer.nextToken();
+
+                for (; ; ) {
+                    if (identifierEquals("FAST")) {
+                        lexer.nextToken();
+                        stmt.setRefreshFast(true);
+                    } else if (identifierEquals("COMPLETE")) {
+                        lexer.nextToken();
+                        stmt.setRefreshComlete(true);
+                    } else if (identifierEquals("FORCE")) {
+                        lexer.nextToken();
+                        stmt.setRefreshForce(true);
+                    } else if (lexer.token() == Token.ON) {
+                        lexer.nextToken();
+                        if (lexer.token() == Token.COMMIT) {
+                            lexer.nextToken();
+                            stmt.setRefreshOnCommit(true);
+                        } else {
+                            acceptIdentifier("DEMAND");
+                            stmt.setRefreshOnDemand(true);
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            } else if (identifierEquals("BUILD")) {
+                lexer.nextToken();
+
+                if (identifierEquals("IMMEDIATE") || lexer.token() == Token.IMMEDIATE) {
+                    lexer.nextToken();
+                    stmt.setBuildImmediate(true);
+                } else {
+                    acceptIdentifier("DEFERRED");
+                    stmt.setBuildDeferred(true);
+                }
+            } else if (identifierEquals("PARALLEL")) {
+                lexer.nextToken();
+                stmt.setParallel(true);
+                if (lexer.token() == Token.LITERAL_INT) {
+                    stmt.setParallelValue(lexer.integerValue().intValue());
+                    lexer.nextToken();
+                }
+            } else {
+                break;
+            }
+        }
+
+        if (lexer.token() == Token.ENABLE) {
+            lexer.nextToken();
+            acceptIdentifier("QUERY");
+            acceptIdentifier("REWRITE");
+            stmt.setEnableQueryRewrite(true);
+        }
+
+        accept(Token.AS);
+        SQLSelect select = this.createSQLSelectParser().select();
+        stmt.setQuery(select);
+
+        return stmt;
     }
 
     public SQLStatement parseCreateDbLink() {
