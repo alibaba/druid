@@ -18,7 +18,6 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,15 +32,16 @@ import java.sql.SQLException;
  */
 @Configuration
 @ConditionalOnClass(com.alibaba.druid.pool.DruidDataSource.class)
-@EnableConfigurationProperties(DruidStatProperties.class)
+@EnableConfigurationProperties({DruidStatProperties.class, DruidDataSourceProperties.class})
 @Import({DruidSpringAopConfiguration.class, DruidStatViewServletConfiguration.class, DruidWebStatFilterConfiguration.class})
 public class DruidDataSourceAutoConfigure {
 
     @Bean
-    @ConfigurationProperties("spring.datasource.druid")
     @ConditionalOnMissingBean
-    public DataSource dataSource(Environment env) {
-        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+    public DataSource dataSource(DruidDataSourceProperties properties, Environment env) {
+        DruidDataSource dataSource = DruidDataSourceBuilder
+                .create()
+                .build(properties);
 
         //if not found prefix 'spring.datasource.druid' settings,'spring.datasource' prefix settings will be used.
         if (dataSource.getUsername() == null) {

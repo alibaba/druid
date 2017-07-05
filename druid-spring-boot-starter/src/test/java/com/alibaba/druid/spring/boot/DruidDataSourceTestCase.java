@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.spring.boot;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import org.junit.Test;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import javax.sql.DataSource;
 
@@ -50,47 +48,50 @@ public class DruidDataSourceTestCase {
     public void testDataSourcePropertiesOverridden() throws Exception {
         this.context.register(DruidDataSourceConfiguration.class);
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "url=jdbc:h2:file:./demo-db");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "initial-size=2");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-active=30");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "min-idle=2");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-wait=1234");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "pool-prepared-statements=true");
+        //EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-open-prepared-statements=5");//Duplicated with following
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-pool-prepared-statement-per-connection-size=5");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "validation-query=select 'x'");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "validation-query-timeout=1");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-on-borrow=true");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-while-idle=true");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-on-return=true");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "time-between-eviction-runs-millis=10000");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "min-evictable-idle-time-millis=12345");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-evictable-idle-time-millis=123456");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "filters=stat,log4j");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "maxActive=30");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "initialSize=2");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "maxWait=1234");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "minIdle=2");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "timeBetweenEvictionRunsMillis=10000");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "minEvictableIdleTimeMillis=12345");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "testWhileIdle=true");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "testOnBorrow=true");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "testOnReturn=true");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "poolPreparedStatements=true");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "maxOpenPreparedStatements=15");
 
         this.context.refresh();
         DruidDataSource ds = this.context.getBean(DruidDataSource.class);
 
         assertThat(ds.getUrl()).isEqualTo("jdbc:h2:file:./demo-db");
-        assertThat(ds.getProxyFilters().size()).isEqualTo(2);
-        assertThat(ds.getMaxActive()).isEqualTo(30);
         assertThat(ds.getInitialSize()).isEqualTo(2);
-        assertThat(ds.getMaxWait()).isEqualTo(1234);
+        assertThat(ds.getMaxActive()).isEqualTo(30);
         assertThat(ds.getMinIdle()).isEqualTo(2);
-        assertThat(ds.getTimeBetweenEvictionRunsMillis()).isEqualTo(10000);
-        assertThat(ds.getMinEvictableIdleTimeMillis()).isEqualTo(12345);
+        assertThat(ds.getMaxWait()).isEqualTo(1234);
+        assertThat(ds.isPoolPreparedStatements()).isTrue();
+        //assertThat(ds.getMaxOpenPreparedStatements()).isEqualTo(5); //Duplicated with following
+        assertThat(ds.getMaxPoolPreparedStatementPerConnectionSize()).isEqualTo(5);
+        assertThat(ds.getValidationQuery()).isEqualTo("select 'x'");
+        assertThat(ds.getValidationQueryTimeout()).isEqualTo(1);
         assertThat(ds.isTestWhileIdle()).isTrue();
         assertThat(ds.isTestOnBorrow()).isTrue();
         assertThat(ds.isTestOnReturn()).isTrue();
-        assertThat(ds.isPoolPreparedStatements()).isTrue();
-        assertThat(ds.getMaxOpenPreparedStatements()).isEqualTo(15);
+        assertThat(ds.getTimeBetweenEvictionRunsMillis()).isEqualTo(10000);
+        assertThat(ds.getMinEvictableIdleTimeMillis()).isEqualTo(12345);
+        assertThat(ds.getMaxEvictableIdleTimeMillis()).isEqualTo(123456);
+        assertThat(ds.getProxyFilters().size()).isEqualTo(2);
     }
 
 
     @Configuration
-    @EnableConfigurationProperties
+    @Import(DruidDataSourceAutoConfigure.class)
     protected static class DruidDataSourceConfiguration {
 
-        @Bean
-        @ConfigurationProperties(prefix = "spring.datasource.druid")
-        public DataSource dataSource() {
-            return DruidDataSourceBuilder.create().build();
-        }
 
     }
 }
