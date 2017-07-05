@@ -20,41 +20,45 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import org.junit.Assert;
 
 import java.util.List;
 
-public class OracleCreateTriggerTest2 extends OracleTest {
+public class OracleCreateFunctionTest_0 extends OracleTest {
 
-    public void test_0() throws Exception {
+    public void test_types() throws Exception {
         String sql = //
-        "CREATE OR REPLACE TRIGGER projects_idt\n" +
-                "          BEFORE INSERT ON projects\n" +
-                "          FOR EACH ROW\n" +
-                "        BEGIN\n" +
-                "           IF :new.id IS null THEN\n" +
-                "             SELECT projects_seq.nextval INTO :new.id FROM dual;\n" +
-                "           END IF;\n" +
-                "        END;";
+        "CREATE FUNCTION get_bal(acc_no IN NUMBER) \n" +
+                "   RETURN NUMBER \n" +
+                "   IS acc_bal NUMBER(11,2);\n" +
+                "   BEGIN \n" +
+                "      SELECT order_total \n" +
+                "      INTO acc_bal \n" +
+                "      FROM orders \n" +
+                "      WHERE customer_id = acc_no; \n" +
+                "      RETURN(acc_bal); \n" +
+                "    END;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE TRIGGER projects_idt\n" +
-                        "\tBEFORE INSERT\n" +
-                        "\tON projects\n" +
-                        "\tFOR EACH ROW\n" +
+        assertEquals("CREATE FUNCTION get_bal (\n" +
+                        "\tacc_no IN NUMBER\n" +
+                        ")\n" +
+                        "RETURN NUMBER\n" +
+                        "AS\n" +
+                        "acc_bal NUMBER(11, 2);\n" +
                         "BEGIN\n" +
-                        "\tIF :new.id IS NULL THEN\n" +
-                        "\t\tSELECT projects_seq.NEXTVAL\n" +
-                        "\t\tINTO :new.id\n" +
-                        "\t\tFROM dual;\n" +
-                        "\tEND IF;\n" +
+                        "\tSELECT order_total\n" +
+                        "\tINTO acc_bal\n" +
+                        "\tFROM orders\n" +
+                        "\tWHERE customer_id = acc_no;\n" +
+                        "\tRETURN acc_bal;\n" +
                         "END;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
@@ -67,14 +71,10 @@ public class OracleCreateTriggerTest2 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("cdc.en_complaint_ipr_stat_fdt0")));
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertEquals(0, visitor.getColumns().size());
-
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("orders", "order_total")));
     }
 }

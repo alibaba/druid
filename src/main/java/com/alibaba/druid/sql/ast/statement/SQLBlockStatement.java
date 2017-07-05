@@ -73,6 +73,9 @@ public class SQLBlockStatement extends SQLStatementImpl {
     }
 
     public void setException(SQLStatement exception) {
+        if (exception != null) {
+            exception.setParent(this);
+        }
         this.exception = exception;
     }
 

@@ -59,7 +59,8 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
             Assert.assertEquals("WITH RECURSIVE cte AS (\n" +
                             "\t\tSELECT 1 AS n, 1 AS p, -1 AS q\n" +
                             "\t\tUNION ALL\n" +
-                            "\t\tSELECT n + 1, q * 2, p * 2\n" +
+                            "\t\tSELECT n + 1, q * 2\n" +
+                            "\t\t\t, p * 2\n" +
                             "\t\tFROM cte\n" +
                             "\t\tWHERE n < 5\n" +
                             "\t)\n" +
@@ -72,7 +73,8 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
             Assert.assertEquals("with recursive cte as (\n" +
                             "\t\tselect 1 as n, 1 as p, -1 as q\n" +
                             "\t\tunion all\n" +
-                            "\t\tselect n + 1, q * 2, p * 2\n" +
+                            "\t\tselect n + 1, q * 2\n" +
+                            "\t\t\t, p * 2\n" +
                             "\t\tfrom cte\n" +
                             "\t\twhere n < 5\n" +
                             "\t)\n" +
@@ -86,7 +88,8 @@ public class MySqlSelectTest_44_with_cte extends MysqlTest {
             Assert.assertEquals("WITH RECURSIVE cte AS (\n" +
                             "\t\tSELECT ? AS n, ? AS p, ? AS q\n" +
                             "\t\tUNION ALL\n" +
-                            "\t\tSELECT n + ?, q * ?, p * ?\n" +
+                            "\t\tSELECT n + ?, q * ?\n" +
+                            "\t\t\t, p * ?\n" +
                             "\t\tFROM cte\n" +
                             "\t\tWHERE n < ?\n" +
                             "\t)\n" +

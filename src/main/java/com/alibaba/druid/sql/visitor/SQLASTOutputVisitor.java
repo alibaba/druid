@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -263,21 +264,55 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
     }
 
+    private static int paramCount(SQLExpr x) {
+        if (x instanceof SQLMethodInvokeExpr) {
+            List<SQLExpr> params = ((SQLMethodInvokeExpr) x).getParameters();
+            int paramCount = 1;
+            for (SQLExpr param : params) {
+                paramCount += paramCount(param);
+            }
+            return paramCount;
+        }
+
+        if (x instanceof SQLAggregateExpr) {
+            List<SQLExpr> params = ((SQLAggregateExpr) x).getArguments();
+            int paramCount = 1;
+            for (SQLExpr param : params) {
+                paramCount += paramCount(param);
+            }
+            return paramCount;
+        }
+
+        if (x instanceof SQLBinaryOpExpr) {
+            return paramCount(((SQLBinaryOpExpr) x).getLeft())
+                    + paramCount(((SQLBinaryOpExpr) x).getRight());
+        }
+
+        return 1;
+    }
+
     protected void printSelectList(List<SQLSelectItem> selectList) {
         incrementIndent();
         for (int i = 0, lineItemCount = 0, size = selectList.size()
              ; i < size; ++i, ++lineItemCount) {
             SQLSelectItem selectItem = selectList.get(i);
             SQLExpr selectItemExpr = selectItem.getExpr();
+
+            int paramCount = paramCount(selectItemExpr);
+            if (selectItemExpr instanceof SQLMethodInvokeExpr
+                    || selectItemExpr instanceof SQLAggregateExpr
+                    || selectItemExpr instanceof SQLBinaryOpExpr) {
+                lineItemCount += (paramCount - 1);
+            }
+
             if (i != 0) {
                 SQLSelectItem preSelectItem = selectList.get(i - 1);
                 if (preSelectItem.getAfterCommentsDirect() != null) {
                     lineItemCount = 0;
                     println();
-                } else if (selectItemExpr instanceof SQLMethodInvokeExpr) {
-                    SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) selectItemExpr;
-                    int paramCount =  methodInvokeExpr.getParameters().size();
-                    lineItemCount += paramCount;
+                } else if (selectItemExpr instanceof SQLMethodInvokeExpr
+                        || selectItemExpr instanceof SQLAggregateExpr
+                        || selectItemExpr instanceof SQLBinaryOpExpr) {
                     if (lineItemCount >= selectListNumberOfLine) {
                         lineItemCount = paramCount;
                         println();
@@ -1198,19 +1233,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             parent = parent.getParent();
         }
 
-        if (parent instanceof SQLStatement) {
+        if (parent instanceof ValuesClause) {
+            println();
+            print('(');
+            x.getSubQuery().accept(this);
+            print(')');
+            println();
+        } else if (parent instanceof SQLStatement
+                && !(parent instanceof OracleForStatement)) {
             incrementIndent();
 
             println();
             x.getSubQuery().accept(this);
 
             decrementIndent();
-        } else if (parent instanceof ValuesClause) {
-            println();
-            print('(');
-            x.getSubQuery().accept(this);
-            print(')');
-            println();
         } else if (parent instanceof SQLOpenStatement) {
             x.getSubQuery().accept(this);
         } else {

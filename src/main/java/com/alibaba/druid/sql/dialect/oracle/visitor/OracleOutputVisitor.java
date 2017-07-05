@@ -1865,7 +1865,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         x.getIndex().accept(this);
         print0(ucase ? " IN " : " in ");
-        x.getRange().accept(this);
+
+        SQLExpr range = x.getRange();
+        range.accept(this);
+
         if (!all) {
             println();
             print0(ucase ? "LOOP" : "loop");

@@ -88,8 +88,9 @@ public class OracleCreateViewTest2 extends OracleTest {
                         "AS\n" +
                         "SELECT db.db_key, db.db_id, bs.bs_key, bs.bs_recid AS recid, bs.bs_stamp AS stamp\n" +
                         "\t, bs.set_stamp, bs.set_count, bs.bck_type AS backup_type, bs.incr_level AS incremental_level, bs.pieces\n" +
-                        "\t, bs.start_time, bs.completion_time, abs((bs.completion_time - bs.start_time) * 86400) AS elapsed_seconds, bs.status\n" +
-                        "\t, bs.controlfile_included, bs.input_file_scan_only\n" +
+                        "\t, bs.start_time, bs.completion_time\n" +
+                        "\t, abs((bs.completion_time - bs.start_time) * 86400) AS elapsed_seconds\n" +
+                        "\t, bs.status, bs.controlfile_included, bs.input_file_scan_only\n" +
                         "\t, decode(keep_options, 0, 'NO', 'YES') AS keep\n" +
                         "\t, keep_until\n" +
                         "\t, decode(keep_options, 256, 'LOGS', 512, 'NOLOGS', 1024, 'CONSISTENT', NULL) AS keep_options\n" +

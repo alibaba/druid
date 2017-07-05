@@ -57,7 +57,8 @@ public class OracleSelectTest38 extends OracleTest {
             Assert.assertEquals("SELECT *\n" +
                     "FROM (\n" +
                     "\tWITH vw_kreis_statics_t AS (\n" +
-                    "\t\t\tSELECT substr(xzqh, 1, 6) AS xzqh, swrslx, SUM(swrs_count) AS acd_totle\n" +
+                    "\t\t\tSELECT substr(xzqh, 1, 6) AS xzqh, swrslx\n" +
+                    "\t\t\t\t, SUM(swrs_count) AS acd_totle\n" +
                     "\t\t\tFROM (\n" +
                     "\t\t\t\tSELECT xzqh, sglx\n" +
                     "\t\t\t\t\t, CASE \n" +
@@ -76,7 +77,8 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t, kreis_code, kreis_name, px1, py1, px2\n" +
                     "\t\t, py2\n" +
                     "\tFROM (\n" +
-                    "\t\tSELECT xzqh, nvl(MAX(decode(swrslx, '1', acd_totle)), 0) AS less3\n" +
+                    "\t\tSELECT xzqh\n" +
+                    "\t\t\t, nvl(MAX(decode(swrslx, '1', acd_totle)), 0) AS less3\n" +
                     "\t\t\t, nvl(MAX(decode(swrslx, '2', acd_totle)), 0) AS f3to5\n" +
                     "\t\t\t, nvl(MAX(decode(swrslx, '3', acd_totle)), 0) AS f5to9\n" +
                     "\t\t\t, nvl(MAX(decode(swrslx, '4', acd_totle)), 0) AS more9\n" +
@@ -104,7 +106,8 @@ public class OracleSelectTest38 extends OracleTest {
             assertEquals("select *\n" +
                     "from (\n" +
                     "\twith vw_kreis_statics_t as (\n" +
-                    "\t\t\tselect substr(xzqh, 1, 6) as xzqh, swrslx, sum(swrs_count) as acd_totle\n" +
+                    "\t\t\tselect substr(xzqh, 1, 6) as xzqh, swrslx\n" +
+                    "\t\t\t\t, sum(swrs_count) as acd_totle\n" +
                     "\t\t\tfrom (\n" +
                     "\t\t\t\tselect xzqh, sglx\n" +
                     "\t\t\t\t\t, case \n" +
@@ -123,7 +126,8 @@ public class OracleSelectTest38 extends OracleTest {
                     "\t\t, kreis_code, kreis_name, px1, py1, px2\n" +
                     "\t\t, py2\n" +
                     "\tfrom (\n" +
-                    "\t\tselect xzqh, nvl(max(decode(swrslx, '1', acd_totle)), 0) as less3\n" +
+                    "\t\tselect xzqh\n" +
+                    "\t\t\t, nvl(max(decode(swrslx, '1', acd_totle)), 0) as less3\n" +
                     "\t\t\t, nvl(max(decode(swrslx, '2', acd_totle)), 0) as f3to5\n" +
                     "\t\t\t, nvl(max(decode(swrslx, '3', acd_totle)), 0) as f5to9\n" +
                     "\t\t\t, nvl(max(decode(swrslx, '4', acd_totle)), 0) as more9\n" +

@@ -58,6 +58,9 @@ public class OracleForStatement extends OracleStatementImpl {
     }
 
     public void setRange(SQLExpr range) {
+        if (range != null) {
+            range.setParent(this);
+        }
         this.range = range;
     }
 

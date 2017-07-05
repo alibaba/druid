@@ -3619,6 +3619,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
 
                 elseIf.setCondition(this.exprParser.expr());
+                elseIf.setParent(stmt);
 
                 accept(Token.THEN);
                 this.parseStatementList(elseIf.getStatements(), -1, elseIf);

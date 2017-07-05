@@ -55,13 +55,18 @@ public class OdpsSelectTest22 extends TestCase {
                 "where UT.ad_clk > 0 or CLK.clk > 0\n" +
                 ") A\n" +
                 "group by bucket_id;";//
-        assertEquals("SELECT bucket_id, SUM(pv) AS pv, SUM(clk) AS clk, SUM(clk) / (SUM(pv) + 1E-10) AS ctr, SUM(ut_ad_clk) AS ut_ad_clk\n" +
-                "\t, SUM(ad_clk) AS ad_clk, SUM(cost) AS cost, SUM(cost) * 1000 / (SUM(pv) + 1E-10) / 100 AS rpm\n" +
+        assertEquals("SELECT bucket_id, SUM(pv) AS pv, SUM(clk) AS clk\n" +
+                "\t, SUM(clk) / (SUM(pv) + 1E-10) AS ctr\n" +
+                "\t, SUM(ut_ad_clk) AS ut_ad_clk, SUM(ad_clk) AS ad_clk\n" +
+                "\t, SUM(cost) AS cost\n" +
+                "\t, SUM(cost) * 1000 / (SUM(pv) + 1E-10) / 100 AS rpm\n" +
                 "FROM (\n" +
                 "\tSELECT bucket_id, UT.pv AS pv, UT.clk AS clk, UT.ad_clk AS ut_ad_clk, CLK.clk AS ad_clk\n" +
                 "\t\t, CLK.cost AS cost\n" +
                 "\tFROM (\n" +
-                "\t\tSELECT item_id, pv_id, SUM(pv) AS pv, SUM(clk) AS clk, SUM(IF(str_to_map(args, ',', '=')['sid'] IS NOT NULL, clk, 0)) AS ad_clk\n" +
+                "\t\tSELECT item_id, pv_id, SUM(pv) AS pv\n" +
+                "\t\t\t, SUM(clk) AS clk\n" +
+                "\t\t\t, SUM(IF(str_to_map(args, ',', '=')['sid'] IS NOT NULL, clk, 0)) AS ad_clk\n" +
                 "\t\t\t, str_to_map(args, ',', '=')['sid'] AS ad_session, split_part(str_to_map(args, ',', '=')['scm'], '.', 2) AS bucket_id\n" +
                 "\t\tFROM alimama_algo.fund_mlr_n_chicago_user_track_distinct_shark\n" +
                 "\t\tWHERE ds = 20170627\n" +
@@ -73,7 +78,8 @@ public class OdpsSelectTest22 extends TestCase {
                 "\t\t\tsplit_part(str_to_map(args, ',', '=')['scm'], '.', 2)\n" +
                 "\t) UT\n" +
                 "\tLEFT OUTER JOIN (\n" +
-                "\t\tSELECT pv_id AS ad_session, item_it AS item_id, SUM(click_price) AS cost, COUNT(*) AS clk\n" +
+                "\t\tSELECT pv_id AS ad_session, item_it AS item_id, SUM(click_price) AS cost\n" +
+                "\t\t\t, COUNT(*) AS clk\n" +
                 "\t\tFROM alimama_algo.fund_mlr_n_chicago_offline_click\n" +
                 "\t\tWHERE ds = 20170627\n" +
                 "\t\t\tAND hh = 0\n" +
@@ -88,13 +94,18 @@ public class OdpsSelectTest22 extends TestCase {
                 ") A\n" +
                 "GROUP BY bucket_id;", SQLUtils.formatOdps(sql));
 
-        assertEquals("select bucket_id, sum(pv) as pv, sum(clk) as clk, sum(clk) / (sum(pv) + 1E-10) as ctr, sum(ut_ad_clk) as ut_ad_clk\n" +
-                "\t, sum(ad_clk) as ad_clk, sum(cost) as cost, sum(cost) * 1000 / (sum(pv) + 1E-10) / 100 as rpm\n" +
+        assertEquals("select bucket_id, sum(pv) as pv, sum(clk) as clk\n" +
+                "\t, sum(clk) / (sum(pv) + 1E-10) as ctr\n" +
+                "\t, sum(ut_ad_clk) as ut_ad_clk, sum(ad_clk) as ad_clk\n" +
+                "\t, sum(cost) as cost\n" +
+                "\t, sum(cost) * 1000 / (sum(pv) + 1E-10) / 100 as rpm\n" +
                 "from (\n" +
                 "\tselect bucket_id, UT.pv as pv, UT.clk as clk, UT.ad_clk as ut_ad_clk, CLK.clk as ad_clk\n" +
                 "\t\t, CLK.cost as cost\n" +
                 "\tfrom (\n" +
-                "\t\tselect item_id, pv_id, sum(pv) as pv, sum(clk) as clk, sum(if(str_to_map(args, ',', '=')['sid'] is not null, clk, 0)) as ad_clk\n" +
+                "\t\tselect item_id, pv_id, sum(pv) as pv\n" +
+                "\t\t\t, sum(clk) as clk\n" +
+                "\t\t\t, sum(if(str_to_map(args, ',', '=')['sid'] is not null, clk, 0)) as ad_clk\n" +
                 "\t\t\t, str_to_map(args, ',', '=')['sid'] as ad_session, split_part(str_to_map(args, ',', '=')['scm'], '.', 2) as bucket_id\n" +
                 "\t\tfrom alimama_algo.fund_mlr_n_chicago_user_track_distinct_shark\n" +
                 "\t\twhere ds = 20170627\n" +
@@ -106,7 +117,8 @@ public class OdpsSelectTest22 extends TestCase {
                 "\t\t\tsplit_part(str_to_map(args, ',', '=')['scm'], '.', 2)\n" +
                 "\t) UT\n" +
                 "\tleft outer join (\n" +
-                "\t\tselect pv_id as ad_session, item_it as item_id, sum(click_price) as cost, count(*) as clk\n" +
+                "\t\tselect pv_id as ad_session, item_it as item_id, sum(click_price) as cost\n" +
+                "\t\t\t, count(*) as clk\n" +
                 "\t\tfrom alimama_algo.fund_mlr_n_chicago_offline_click\n" +
                 "\t\twhere ds = 20170627\n" +
                 "\t\t\tand hh = 0\n" +

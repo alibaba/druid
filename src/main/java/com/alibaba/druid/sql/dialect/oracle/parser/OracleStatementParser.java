@@ -740,6 +740,13 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public SQLCreateFunctionStatement parseCreateFunction() {
+        accept(Token.CREATE);
+        SQLCreateFunctionStatement stmt = (SQLCreateFunctionStatement) parseFunction();
+        stmt.setCreate(true);
+        return stmt;
+    }
+
     public SQLStatement parseFunction() {
         SQLCreateFunctionStatement stmt = new SQLCreateFunctionStatement();
         stmt.setDbType(dbType);
@@ -893,6 +900,7 @@ public class OracleStatementParser extends SQLStatementParser {
             SQLIfStatement.ElseIf elseIf = new SQLIfStatement.ElseIf();
 
             elseIf.setCondition(this.exprParser.expr());
+            elseIf.setParent(stmt);
 
             accept(Token.THEN);
             this.parseStatementList(elseIf.getStatements(), -1, stmt);
@@ -902,6 +910,8 @@ public class OracleStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.ELSE) {
             lexer.nextToken();
+
+
 
             SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
             this.parseStatementList(elseItem.getStatements(), -1, elseItem);

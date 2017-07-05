@@ -180,7 +180,8 @@ public class StringComparisonFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT STRCMP(@s1, @s2), STRCMP(@s3, @s4);", text);
+        Assert.assertEquals("SELECT STRCMP(@s1, @s2)\n" +
+                "\t, STRCMP(@s3, @s4);", text);
     }
 
     public void test_14() throws Exception {

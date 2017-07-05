@@ -36,11 +36,21 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * Created by wenshao on 03/06/2017.
  */
 public class SchemaRepository {
+    private String name;
+
     private final Map<String, SchemaObject> objects = new ConcurrentSkipListMap<String, SchemaObject>();
 
     private final Map<String, SchemaObject> functions  = new ConcurrentSkipListMap<String, SchemaObject>();
 
     private final SchemaVisitor visitor = new SchemaVisitor();
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public SchemaObject findTable(String tableName) {
         String lowerName = tableName.toLowerCase();
@@ -144,6 +154,16 @@ public class SchemaRepository {
                     }
                     return tableObject;
                 }
+
+                if (expr instanceof SQLPropertyExpr) {
+                    String tableName = ((SQLPropertyExpr) expr).getName();
+
+                    tableObject = findTable(tableName);
+                    if (tableObject != null) {
+                        exprTableSource.setSchemaObject(tableObject);
+                    }
+                    return tableObject;
+                }
             }
             return null;
         }
@@ -221,6 +241,16 @@ public class SchemaRepository {
         if (expr instanceof SQLAllColumnExpr || expr instanceof SQLIdentifierExpr) {
             if (tableSource instanceof SQLExprTableSource) {
                 return findTable(tableSource, tableSource.computeAlias());
+            }
+
+            if (tableSource instanceof SQLJoinTableSource) {
+                SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
+
+                SchemaObject table = findTable(join.getLeft(), expr);
+                if (table == null) {
+                    table = findTable(join.getRight(), expr);
+                }
+                return table;
             }
             return null;
         }

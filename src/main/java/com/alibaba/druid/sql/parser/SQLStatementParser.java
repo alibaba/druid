@@ -1840,6 +1840,10 @@ public class SQLStatementParser extends SQLParser {
             SQLCreateProcedureStatement stmt = parseCreateProcedure();
             stmt.setCreate(true);
             return stmt;
+        } else if (token == Token.FUNCTION) {
+            lexer.reset(markBp, markChar, Token.CREATE);
+            SQLStatement stmt = this.parseCreateFunction();
+            return stmt;
         } else if (identifierEquals("BITMAP")) {
             lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateIndex(true);
@@ -1848,6 +1852,10 @@ public class SQLStatementParser extends SQLParser {
             return parseCreateMaterializedView();
         }
 
+        throw new ParserException("TODO " + lexer.token());
+    }
+
+    public SQLCreateFunctionStatement parseCreateFunction() {
         throw new ParserException("TODO " + lexer.token());
     }
 
