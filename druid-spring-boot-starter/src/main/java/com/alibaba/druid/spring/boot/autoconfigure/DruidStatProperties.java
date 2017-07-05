@@ -52,12 +52,21 @@ public class DruidStatProperties {
     }
 
     public static class StatViewServlet {
+        private boolean enabled;
         private String urlPattern;
         private String allow;
         private String deny;
         private String loginUsername;
         private String loginPassword;
         private String resetEnable;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
 
         public String getUrlPattern() {
             return urlPattern;
@@ -109,6 +118,7 @@ public class DruidStatProperties {
     }
 
     public static class WebStatFilter {
+        private boolean enabled;
         private String urlPattern;
         private String exclusions;
         private String sessionStatMaxCount;
@@ -116,6 +126,14 @@ public class DruidStatProperties {
         private String principalSessionName;
         private String principalCookieName;
         private String profileEnable;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
 
         public String getUrlPattern() {
             return urlPattern;

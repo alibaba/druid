@@ -17,46 +17,129 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 
 
 import com.alibaba.druid.pool.DruidDataSource;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.boot.bind.RelaxedDataBinder;
-import org.springframework.boot.jdbc.DatabaseDriver;
+import org.springframework.core.env.Environment;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
 
 /**
  * @author lihengming [89921218@qq.com]
  */
 public class DruidDataSourceBuilder {
 
-    private Map<String, String> properties = new HashMap<String, String>();
-
     public static DruidDataSourceBuilder create() {
         return new DruidDataSourceBuilder();
     }
 
+    @Deprecated
     public DruidDataSource build() {
+        return new DruidDataSource();
+    }
+
+    /**
+     * Use Spring Environment by specify configuration properties prefix to build DruidDataSource.
+     * <p>
+     * Environment support .properties, .yml ,command etc.
+     * <p>
+     * Properties key style support max-active,MAX_ACTIVE,maxActive etc.
+     * <p>
+     * Please read the spring documents for details.
+     * @param env    Spring Environment
+     * @param prefix Spring Boot configuration properties prefix
+     * @return DruidDataSource
+     */
+    public DruidDataSource build(Environment env, String prefix) {
+        DruidDataSourceProperties properties = new DruidDataSourceProperties();
+        properties.setUrl(env.getProperty(prefix + "url"));
+        properties.setUsername(env.getProperty(prefix + "username"));
+        properties.setPassword(env.getProperty(prefix + "password"));
+        properties.setDriverClassName(env.getProperty(prefix + "driver-class-name"));
+        properties.setInitialSize(env.getProperty(prefix + "initial-size", Integer.class));
+        properties.setMaxActive(env.getProperty(prefix + "max-active", Integer.class));
+        properties.setMinIdle(env.getProperty(prefix + "min-idle", Integer.class));
+        properties.setMaxWait(env.getProperty(prefix + "max-wait", Long.class));
+        properties.setPoolPreparedStatements(env.getProperty(prefix + "pool-prepared-statements", Boolean.class));
+        properties.setMaxOpenPreparedStatements(env.getProperty(prefix + "max-open-prepared-statements", Integer.class));
+        properties.setMaxPoolPreparedStatementPerConnectionSize(
+                env.getProperty(prefix + "max-pool-prepared-statement-per-connection-size", Integer.class));
+        properties.setValidationQuery(env.getProperty(prefix + "validation-query"));
+        properties.setValidationQueryTimeout(env.getProperty(prefix + "validation-query-timeout", Integer.class));
+        properties.setTestOnBorrow(env.getProperty(prefix + "test-on-borrow", Boolean.class));
+        properties.setTestOnReturn(env.getProperty(prefix + "test-on-return", Boolean.class));
+        properties.setTestWhileIdle(env.getProperty(prefix + "test-while-idle", Boolean.class));
+        properties.setTimeBetweenEvictionRunsMillis(env.getProperty(prefix + "time-between-eviction-runs-millis", Long.class));
+        properties.setMinEvictableIdleTimeMillis(env.getProperty(prefix + "min-evictable-idle-time-millis", Long.class));
+        properties.setMaxEvictableIdleTimeMillis(env.getProperty(prefix + "max-evictable-idle-time-millis", Long.class));
+        properties.setFilters(env.getProperty(prefix + "filters"));
+        return build(properties);
+    }
+
+
+    DruidDataSource build(DruidDataSourceProperties properties) {
         DruidDataSource dataSource = new DruidDataSource();
-        maybeGetDriverClassName();
-        bind(dataSource);
-        return dataSource;
-    }
-
-    //use spring boot relaxed binding by reflection config druid . detail see Spring Boot Reference Relaxed binding section.
-    private void bind(DruidDataSource result) {
-        MutablePropertyValues properties = new MutablePropertyValues(this.properties);
-        new RelaxedDataBinder(result)
-                .withAlias("url", "jdbcUrl")
-                .withAlias("username", "user")
-                .bind(properties);
-    }
-
-    private void maybeGetDriverClassName() {
-        if (!this.properties.containsKey("driverClassName")
-                && this.properties.containsKey("url")) {
-            String url = this.properties.get("url");
-            String driverClass = DatabaseDriver.fromJdbcUrl(url).getDriverClassName();
-            this.properties.put("driverClassName", driverClass);
+        if (properties.getUrl() != null) {
+            dataSource.setUrl(properties.getUrl());
         }
+        if (properties.getUsername() != null) {
+            dataSource.setUsername(properties.getUsername());
+        }
+        if (properties.getPassword() != null) {
+            dataSource.setPassword(properties.getPassword());
+        }
+        if (properties.getDriverClassName() != null) {
+            dataSource.setDriverClassName(properties.getDriverClassName());
+        }
+        if (properties.getInitialSize() != null) {
+            dataSource.setInitialSize(properties.getInitialSize());
+        }
+        if (properties.getMaxActive() != null) {
+            dataSource.setMaxActive(properties.getMaxActive());
+        }
+        if (properties.getMinIdle() != null) {
+            dataSource.setMinIdle(properties.getMinIdle());
+        }
+        if (properties.getMaxWait() != null) {
+            dataSource.setMaxWait(properties.getMaxWait());
+        }
+        if (properties.getPoolPreparedStatements() != null) {
+            dataSource.setPoolPreparedStatements(properties.getPoolPreparedStatements());
+        }
+        if (properties.getMaxOpenPreparedStatements() != null) {
+            dataSource.setMaxOpenPreparedStatements(properties.getMaxOpenPreparedStatements());
+        }
+        if (properties.getMaxPoolPreparedStatementPerConnectionSize() != null) {
+            dataSource.setMaxPoolPreparedStatementPerConnectionSize(properties.getMaxPoolPreparedStatementPerConnectionSize());
+        }
+        if (properties.getValidationQuery() != null) {
+            dataSource.setValidationQuery(properties.getValidationQuery());
+        }
+        if (properties.getValidationQueryTimeout() != null) {
+            dataSource.setValidationQueryTimeout(properties.getValidationQueryTimeout());
+        }
+        if (properties.getTestWhileIdle() != null) {
+            dataSource.setTestWhileIdle(properties.getTestWhileIdle());
+        }
+        if (properties.getTestOnBorrow() != null) {
+            dataSource.setTestOnBorrow(properties.getTestOnBorrow());
+        }
+        if (properties.getTestOnReturn() != null) {
+            dataSource.setTestOnReturn(properties.getTestOnReturn());
+        }
+        if (properties.getTimeBetweenEvictionRunsMillis() != null) {
+            dataSource.setTimeBetweenEvictionRunsMillis(properties.getTimeBetweenEvictionRunsMillis());
+        }
+        if (properties.getMinEvictableIdleTimeMillis() != null) {
+            dataSource.setMinEvictableIdleTimeMillis(properties.getMinEvictableIdleTimeMillis());
+        }
+        if (properties.getMaxEvictableIdleTimeMillis() != null) {
+            dataSource.setMaxEvictableIdleTimeMillis(properties.getMaxEvictableIdleTimeMillis());
+        }
+        try {
+            if (properties.getFilters() != null) {
+                dataSource.setFilters(properties.getFilters());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dataSource;
     }
 }
