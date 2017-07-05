@@ -57,7 +57,7 @@ public class DruidDataSourceAutoConfigure {
             dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
         }
         // set filters default value on StatViewServlet enabled.
-        if (! "false".equals(env.getProperty("spring.datasource.druid.StatViewServlet.enabled"))) {
+        if (!"false".equals(env.getProperty("spring.datasource.druid.stat-view-servlet.enabled"))) {
             try {
                 dataSource.setFilters("stat");
             } catch (SQLException e) {
