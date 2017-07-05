@@ -47,8 +47,6 @@ public class DruidDataSourceProperties {
 
     private String filters;
 
-    private String proxyFilters;
-
     public String getUrl() {
         return url;
     }
@@ -209,11 +207,4 @@ public class DruidDataSourceProperties {
         this.filters = filters;
     }
 
-    public String getProxyFilters() {
-        return proxyFilters;
-    }
-
-    public void setProxyFilters(String proxyFilters) {
-        this.proxyFilters = proxyFilters;
-    }
 }
