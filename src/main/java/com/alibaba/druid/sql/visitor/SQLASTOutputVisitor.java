@@ -42,7 +42,14 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
+import static com.alibaba.druid.util.Utils.getBoolean;
+
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements ParameterizedVisitor, PrintableVisitor {
+    public static Boolean defaultPrintStatementAfterSemi;
+
+    static {
+        defaultPrintStatementAfterSemi = getBoolean(System.getProperties(), "druid.sql.output.printStatementAfterSemi"); // compatible for early versions
+    }
 
     protected final Appendable appender;
     private String indent = "\t";
@@ -73,6 +80,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     protected transient int lines = 0;
 
     protected boolean desensitize = false;
+
+    protected Boolean printStatementAfterSemi = defaultPrintStatementAfterSemi;
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
@@ -4543,7 +4552,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public void postVisit(SQLObject x) {
         if (x instanceof SQLStatement) {
             SQLStatement stmt = (SQLStatement) x;
-            if (stmt.isAfterSemi()) {
+            boolean printSemi = printStatementAfterSemi == null
+                    ? stmt.isAfterSemi()
+                    : printStatementAfterSemi.booleanValue();
+            if (printSemi) {
                 print(';');
             }
         }
@@ -4679,5 +4691,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println(ucase ? "AS" : "as");
         x.getQuery().accept(this);
         return false;
+    }
+
+    public Boolean getPrintStatementAfterSemi() {
+        return printStatementAfterSemi;
+    }
+
+    public void setPrintStatementAfterSemi(Boolean printStatementAfterSemi) {
+        this.printStatementAfterSemi = printStatementAfterSemi;
     }
 }
