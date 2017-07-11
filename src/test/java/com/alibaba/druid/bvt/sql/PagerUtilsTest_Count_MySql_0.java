@@ -40,7 +40,7 @@ public class PagerUtilsTest_Count_MySql_0 extends TestCase {
     public void test_mysql_4() throws Exception {
         String sql = "select distinct a.col1,a.col2 from test a";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
-        Assert.assertEquals("SELECT DISTINCT COUNT(*)\n" +
+        assertEquals("SELECT COUNT(DISTINCT a.col1, a.col2)\n" +
                 "FROM test a", result);
     }
 

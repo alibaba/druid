@@ -403,6 +403,7 @@ public class PagerUtils {
             SQLSelectItem countItem = createCountItem(dbType);
 
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+            List<SQLSelectItem> selectList = queryBlock.getSelectList();
 
             if (queryBlock.getGroupBy() != null
                     && queryBlock.getGroupBy().getItems().size() > 0) {
@@ -410,15 +411,18 @@ public class PagerUtils {
             }
             
             int option = queryBlock.getDistionOption();
-            if (option == SQLSetQuantifier.DISTINCT && queryBlock.getSelectList().size() == 1) {
-                SQLSelectItem firstItem = queryBlock.getSelectList().get(0);
-                SQLAggregateExpr exp = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
-                exp.addArgument(firstItem.getExpr());
-                firstItem.setExpr(exp);
+            if (option == SQLSetQuantifier.DISTINCT
+                    && selectList.size() >= 1) {
+                SQLAggregateExpr countExpr = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
+                for (int i = 0; i < selectList.size(); ++i) {
+                    countExpr.addArgument(selectList.get(i).getExpr());
+                }
+                selectList.clear();
                 queryBlock.setDistionOption(0);
+                queryBlock.addSelectItem(countExpr);
             } else {
-                queryBlock.getSelectList().clear();
-                queryBlock.getSelectList().add(countItem);
+                selectList.clear();
+                selectList.add(countItem);
             }
             return SQLUtils.toSQLString(select, dbType);
         } else if (query instanceof SQLUnionQuery) {
