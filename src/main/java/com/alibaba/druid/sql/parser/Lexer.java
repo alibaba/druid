@@ -343,6 +343,16 @@ public class Lexer {
             }
 
             if (isFirstIdentifierChar(ch)) {
+                if (ch == '（') {
+                    scanChar();
+                    token = LPAREN;
+                    return;
+                } else if (ch == '）') {
+                    scanChar();
+                    token = RPAREN;
+                    return;
+                }
+
                 if (ch == 'N') {
                     if (charAt(pos + 1) == '\'') {
                         ++pos;

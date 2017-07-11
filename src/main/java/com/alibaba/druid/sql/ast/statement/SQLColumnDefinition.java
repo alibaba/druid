@@ -103,6 +103,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setDataType(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
         this.dataType = dataType;
     }
 

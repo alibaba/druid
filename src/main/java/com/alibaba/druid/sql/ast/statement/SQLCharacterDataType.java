@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -98,5 +99,10 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
         }
 
         visitor.endVisit(this);
+    }
+
+    @Override
+    public String toString() {
+        return SQLUtils.toSQLString(this);
     }
 }

@@ -227,4 +227,14 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             }
         }
     }
+
+    public SQLPrimaryKey findPrimaryKey() {
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLPrimaryKey) {
+                return (SQLPrimaryKey) element;
+            }
+        }
+
+        return null;
+    }
 }

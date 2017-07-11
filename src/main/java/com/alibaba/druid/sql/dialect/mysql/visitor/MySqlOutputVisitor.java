@@ -328,9 +328,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             dataType.accept(this);
         }
 
-        if (x.getCharsetExpr() != null) {
+        final SQLExpr charsetExpr = x.getCharsetExpr();
+        if (charsetExpr != null) {
             print0(ucase ? " CHARSET " : " charset ");
-            x.getCharsetExpr().accept(this);
+            charsetExpr.accept(this);
         }
 
         for (SQLColumnConstraint item : x.getConstraints()) {
@@ -338,20 +339,23 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             item.accept(this);
         }
 
-        if (x.getDefaultExpr() != null) {
+        final SQLExpr defaultExpr = x.getDefaultExpr();
+        if (defaultExpr != null) {
             print0(ucase ? " DEFAULT " : " default ");
-            x.getDefaultExpr().accept(this);
+            defaultExpr.accept(this);
         }
 
-        if (x.getStorage() != null) {
+        final SQLExpr storage = x.getStorage();
+        if (storage != null) {
             print0(ucase ? " STORAGE " : " storage ");
-            x.getStorage().accept(this);
+            storage.accept(this);
         }
 
-        if (x.getOnUpdate() != null) {
+        SQLExpr onUpdate = x.getOnUpdate();
+        if (onUpdate != null) {
             print0(ucase ? " ON UPDATE " : " on update ");
 
-            x.getOnUpdate().accept(this);
+            onUpdate.accept(this);
         }
 
         if (x.isAutoIncrement()) {

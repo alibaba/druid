@@ -444,7 +444,9 @@ public class PagerUtils {
     }
 
     private static SQLSelectQueryBlock createQueryBlock(String dbType) {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType)
+                || JdbcConstants.MARIADB.equals(dbType)
+                || JdbcConstants.ALIYUN_ADS.equals(dbType)) {
             return new MySqlSelectQueryBlock();
         }
 

@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery, SQLReplaceable {
@@ -88,6 +89,18 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             where.setParent(this);
         }
         this.where = where;
+    }
+
+    public void addWhere(SQLExpr condition) {
+        if (condition == null) {
+            return;
+        }
+
+        if (where == null) {
+            where = condition;
+        } else {
+            where = SQLBinaryOpExpr.and(where, condition);
+        }
     }
     
     public SQLOrderBy getOrderBy() {
@@ -447,5 +460,15 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         this.setWhere(SQLBinaryOpExpr.and(where, expr));
+    }
+
+    public void limit(int rowCount, int offset) {
+        SQLLimit limit = new SQLLimit();
+        limit.setRowCount(new SQLIntegerExpr(rowCount));
+        if (offset > 0) {
+            limit.setOffset(new SQLIntegerExpr(offset));
+        }
+
+        setLimit(limit);
     }
 }

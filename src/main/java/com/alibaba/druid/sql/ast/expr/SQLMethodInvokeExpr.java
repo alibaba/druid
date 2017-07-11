@@ -48,6 +48,14 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         setOwner(owner);
     }
 
+    public SQLMethodInvokeExpr(String methodName, SQLExpr owner, SQLExpr... params){
+        this.methodName = methodName;
+        setOwner(owner);
+        for (SQLExpr param : params) {
+            this.addParameter(param);
+        }
+    }
+
     public String getMethodName() {
         return this.methodName;
     }

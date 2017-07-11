@@ -110,7 +110,11 @@ public class SchemaRepository {
             String name = x.computeName();
             SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
 
-            objects.put(name.toLowerCase(), object);
+            String name_lower = name.toLowerCase();
+            if (objects.containsKey(name_lower)) {
+                return false;
+            }
+            objects.put(name_lower, object);
 
             return false;
         }
