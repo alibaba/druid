@@ -404,7 +404,8 @@ public class PagerUtils {
 
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
 
-            if (queryBlock.getGroupBy() != null && queryBlock.getGroupBy().getItems().size() > 0) {
+            if (queryBlock.getGroupBy() != null
+                    && queryBlock.getGroupBy().getItems().size() > 0) {
                 return createCountUseSubQuery(select, dbType);
             }
             
@@ -489,16 +490,8 @@ public class PagerUtils {
     private static void clearOrderBy(SQLSelectQuery query) {
         if (query instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
-            if (queryBlock instanceof MySqlSelectQueryBlock) {
-                MySqlSelectQueryBlock mysqlQueryBlock = (MySqlSelectQueryBlock) queryBlock;
-                if (mysqlQueryBlock.getOrderBy() != null) {
-                    mysqlQueryBlock.setOrderBy(null);
-                }
-            } else if (queryBlock instanceof PGSelectQueryBlock) {
-                PGSelectQueryBlock pgQueryBlock = (PGSelectQueryBlock) queryBlock;
-                if (pgQueryBlock.getOrderBy() != null) {
-                    pgQueryBlock.setOrderBy(null);
-                }
+            if (queryBlock.getOrderBy() != null) {
+                queryBlock.setOrderBy(null);
             }
             return;
         }

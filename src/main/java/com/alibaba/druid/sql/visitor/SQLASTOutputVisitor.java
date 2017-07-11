@@ -1370,14 +1370,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printHierarchical(x);
 
-        if (x.getGroupBy() != null) {
+        SQLSelectGroupByClause groupBy = x.getGroupBy();
+        if (groupBy != null) {
             println();
-            x.getGroupBy().accept(this);
+            groupBy.accept(this);
         }
-        
-        if (x.getOrderBy() != null) {
+
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
             println();
-            x.getOrderBy().accept(this);
+            orderBy.accept(this);
         }
 
         if (!JdbcConstants.INFORMIX.equals(dbType)) {
@@ -1430,11 +1432,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 if (offset != null) {
                     print0(ucase ? "OFFSET " : "offset ");
                     offset.accept(this);
-                    print0(ucase ? " ROWS " : " rows ");
+                    print0(ucase ? " ROWS" : " rows");
                 }
-                print0(ucase ? "FETCH FIRST " : "fetch first ");
-                first.accept(this);
-                print0(ucase ? " ROWS ONLY" : " rows only");
+
+                if (first != null) {
+                    if (offset != null) {
+                        print(' ');
+                    }
+                    if (JdbcConstants.SQL_SERVER.equals(dbType) && offset != null) {
+                        print0(ucase ? "FETCH NEXT " : "fetch next ");
+                    } else {
+                        print0(ucase ? "FETCH FIRST " : "fetch first ");
+                    }
+                    first.accept(this);
+                    print0(ucase ? " ROWS ONLY" : " rows only");
+                }
             } else {
                 println();
                 limit.accept(this);

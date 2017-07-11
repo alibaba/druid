@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
@@ -82,9 +83,16 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             x.getWhere().accept(this);
         }
 
-        if (x.getGroupBy() != null) {
+        SQLSelectGroupByClause groupBy = x.getGroupBy();
+        if (groupBy != null) {
             println();
-            x.getGroupBy().accept(this);
+            groupBy.accept(this);
+        }
+
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            println();
+            orderBy.accept(this);
         }
 
         printFetchFirst(x);

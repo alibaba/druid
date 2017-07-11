@@ -163,6 +163,8 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
         parseGroupBy(queryBlock);
 
+        queryBlock.setOrderBy(this.exprParser.parseOrderBy());
+
         parseFetchClause(queryBlock);
 
         return queryRest(queryBlock);

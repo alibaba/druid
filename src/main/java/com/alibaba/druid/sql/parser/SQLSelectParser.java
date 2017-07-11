@@ -620,7 +620,8 @@ public class SQLSelectParser extends SQLParser {
 
         if (lexer.token() == Token.FETCH) {
             lexer.nextToken();
-            if (lexer.token() == Token.FIRST) {
+            if (lexer.token() == Token.FIRST
+                    || identifierEquals("NEXT")) {
                 lexer.nextToken();
             } else {
                 acceptIdentifier("FIRST");
