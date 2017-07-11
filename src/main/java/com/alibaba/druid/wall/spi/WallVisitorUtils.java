@@ -2396,7 +2396,9 @@ public class WallVisitorUtils {
         boolean allow = false;
         int errorCode;
         String denyMessage;
-        if (x instanceof SQLInsertStatement) {
+        if (x instanceof SQLCommentStatement) {
+            return;
+        } else if (x instanceof SQLInsertStatement) {
             allow = config.isInsertAllow();
             denyMessage = "insert not allow";
             errorCode = ErrorCode.INSERT_NOT_ALLOW;
