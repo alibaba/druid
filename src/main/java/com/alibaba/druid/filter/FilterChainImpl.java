@@ -44,6 +44,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
@@ -691,6 +692,51 @@ public class FilterChainImpl implements FilterChain {
         }
 
         connection.getRawObject().setTypeMap(map);
+    }
+
+    @Override
+    public String connection_getSchema(ConnectionProxy connection) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().connection_getSchema(this, connection);
+        }
+
+        return connection.getRawObject().getSchema();
+    }
+
+    @Override
+    public void connection_setSchema(ConnectionProxy connection, String schema) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter().connection_setSchema(this, connection, schema);
+            return;
+        }
+
+        connection.getRawObject().setSchema(schema);
+    }
+
+    public void connection_abort(ConnectionProxy connection, Executor executor) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter().connection_abort(this, connection, executor);
+            return;
+        }
+
+        connection.getRawObject().abort(executor);
+    }
+
+    public void connection_setNetworkTimeout(ConnectionProxy connection, Executor executor, int milliseconds) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter().connection_setNetworkTimeout(this, connection, executor, milliseconds);
+            return;
+        }
+
+        connection.getRawObject().setNetworkTimeout(executor, milliseconds);
+    }
+
+    public int connection_getNetworkTimeout(ConnectionProxy connection) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().connection_getNetworkTimeout(this, connection);
+        }
+
+        return connection.getRawObject().getNetworkTimeout();
     }
 
     // ///////////////////////////////////////

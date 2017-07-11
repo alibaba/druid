@@ -1635,7 +1635,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 stmt.execute(sql);
             }
 
-            if (JdbcConstants.MYSQL.equals(dbType)) {
+            if (JdbcConstants.MYSQL.equals(dbType)
+                ||JdbcConstants.ALIYUN_ADS.equals(dbType)) {
                 if (variables != null) {
                     ResultSet rs = null;
                     try {

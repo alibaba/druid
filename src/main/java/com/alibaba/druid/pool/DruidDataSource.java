@@ -700,8 +700,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
             }
 
-            if (JdbcConstants.MYSQL.equals(this.dbType) || //
-                JdbcConstants.MARIADB.equals(this.dbType)) {
+            if (JdbcConstants.MYSQL.equals(this.dbType)
+                    || JdbcConstants.MARIADB.equals(this.dbType)
+                    || JdbcConstants.ALIYUN_ADS.equals(this.dbType)) {
                 boolean cacheServerConfigurationSet = false;
                 if (this.connectProperties.containsKey("cacheServerConfiguration")) {
                     cacheServerConfigurationSet = true;
