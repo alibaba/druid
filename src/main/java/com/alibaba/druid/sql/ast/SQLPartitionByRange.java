@@ -29,6 +29,10 @@ public class SQLPartitionByRange extends SQLPartitionBy {
     // mysql
     protected SQLExpr       expr;
 
+    public SQLPartitionByRange() {
+
+    }
+
     public List<SQLName> getColumns() {
         return columns;
     }

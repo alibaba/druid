@@ -3933,9 +3933,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print(')');
         }
 
-        if (x.getInterval() != null) {
-            print0(ucase ? " INTERVAL " : " interval ");
-            x.getInterval().accept(this);
+        SQLExpr interval = x.getInterval();
+        if (interval != null) {
+            print0(ucase ? " INTERVAL (" : " interval (");
+            interval.accept(this);
+            print(')');
         }
 
         printPartitionsCountAndSubPartitions(x);
