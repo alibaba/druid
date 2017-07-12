@@ -1,7 +1,8 @@
 package com.alibaba.druid.bvt.proxy;
 
-import com.alibaba.druid.proxy.jdbc.JdbcParameter;
-import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
+import com.alibaba.druid.mock.MockConnection;
+import com.alibaba.druid.mock.MockPreparedStatement;
+import com.alibaba.druid.proxy.jdbc.*;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Field;
@@ -20,11 +21,27 @@ public class InsertValues extends TestCase {
             }
         }
 
-        PreparedStatementProxyImpl proxy = new PreparedStatementProxyImpl(null, null, sql, 0);
+        MockPreparedStatement mockPstmt = new MockPreparedStatement(new MockConnection(), sql);
+        DataSourceProxyConfig config = new DataSourceProxyConfig();
+        DataSourceProxyImpl ds = new DataSourceProxyImpl(null, config);
+        ConnectionProxyImpl conn = new ConnectionProxyImpl(ds, null, null, 0);
+        PreparedStatementProxyImpl proxy = new PreparedStatementProxyImpl(conn, mockPstmt, sql, 0);
 
         Field field = PreparedStatementProxyImpl.class.getDeclaredField("parameters");
         field.setAccessible(true);
         JdbcParameter[] params = (JdbcParameter[]) field.get(proxy);
         assertEquals(5000, params.length);
+
+        proxy.setInt(1000, 3);
+        proxy.setInt(1001, 3);
+        proxy.setInt(1002, 3);
+        proxy.setInt(1003, 3);
+        proxy.setInt(1004, 3);
+        proxy.setInt(1005, 3);
+        proxy.setInt(1005, 3);
+        proxy.setInt(1006, 3);
+        proxy.setInt(1007, 3);
+        proxy.setInt(1008, 3);
+        proxy.setInt(1009, 3);
     }
 }
