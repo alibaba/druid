@@ -524,7 +524,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlSelectQueryBlock x) {
-
+        super.endVisit((SQLSelectQueryBlock) x);
     }
 
     @Override

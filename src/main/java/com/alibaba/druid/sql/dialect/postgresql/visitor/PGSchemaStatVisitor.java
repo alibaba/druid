@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
@@ -246,7 +247,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public void endVisit(PGSelectQueryBlock x) {
-
+        super.endVisit((SQLSelectQueryBlock) x);
     }
 
     @Override

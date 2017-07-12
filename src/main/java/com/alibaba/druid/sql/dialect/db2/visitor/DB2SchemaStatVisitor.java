@@ -35,7 +35,7 @@ public class DB2SchemaStatVisitor extends SchemaStatVisitor implements DB2ASTVis
 
     @Override
     public void endVisit(DB2SelectQueryBlock x) {
-        
+        super.endVisit((SQLSelectQueryBlock) x);
     }
 
     @Override
