@@ -108,7 +108,10 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
             parametersSize = jdbcIndex;
         }
         if (parametersSize >= parameters.length) {
-            parameters = Arrays.copyOf(parameters, parametersSize + 16);
+            int oldCapacity = parameters.length;
+            int newCapacity = oldCapacity + (oldCapacity >> 1);
+
+            parameters = Arrays.copyOf(parameters, newCapacity);
         }
         parameters[index] = parameter;
         

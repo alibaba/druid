@@ -247,7 +247,9 @@ druid.lang = function() {
 		/**weburi-detail*/
 		'RefreshPeriod':['Refresh Period', '刷新时间'],
 		'SuspendRefresh':['Suspend Refresh', '暂停刷新'],
-		'RequestTimeMillis':['RequestTimeMillis', '请求时间'],
+		'RequestTimeMillis':['RequestTimeMillisTotal', '请求时间（和）'],
+		'RequestTimeMillisMax':['RequestTimeMillisMax', '请求最慢（单次）'],
+		'RequestTimeMillisMaxOccurTime':['RequestTimeMillisMaxOccurTime', '请求最慢发生时间'],
 		'JdbcExecutePeak':['JdbcExecutePeak', 'jdbc执行峰值'],
 		'JdbcFetchRowPeak':['JdbcFetchRowPeak', 'jdbc查询取回行数峰值'],
 		'JdbcUpdatePeak':['JdbcUpdatePeak', 'jdbc更新峰值'],

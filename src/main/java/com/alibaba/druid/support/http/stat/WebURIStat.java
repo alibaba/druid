@@ -178,9 +178,9 @@ public class WebURIStat {
         requestTimeNanoUpdater.addAndGet(this, nanos);
 
         for (;;) {
-            long current = requestTimeNanoUpdater.get(this);
+            long current = requestTimeNanoMaxUpdater.get(this);
             if (current < nanos) {
-                if (requestTimeNanoUpdater.compareAndSet(this, current, nanos)) {
+                if (requestTimeNanoMaxUpdater.compareAndSet(this, current, nanos)) {
                     // 可能不准确，但是绝大多数情况下都会正确，性能换取一致性
                     requestTimeNanoMaxOccurTime = System.currentTimeMillis();
 
