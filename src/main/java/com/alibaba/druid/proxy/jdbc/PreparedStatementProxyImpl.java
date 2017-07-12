@@ -49,7 +49,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     private PreparedStatement statement;
     protected final String            sql;
-    private JdbcParameter[]           parameters     = new JdbcParameter[16];
+    private JdbcParameter[]           parameters;
     private int                       parametersSize = 0;
     private Map<Integer, JdbcParameter> paramMap       = null;
 
@@ -57,6 +57,32 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         super(connection, statement, id);
         this.statement = statement;
         this.sql = sql;
+
+        char quote = 0;
+        int paramCount = 0;
+        for (int i = 0; i < sql.length();++i) {
+            char ch = sql.charAt(i);
+
+            if (ch == '\'') {
+                if (quote == 0) {
+                    quote = ch;
+                } else if (quote == '\'') {
+                    quote =0;
+                }
+            } else if (ch == '"') {
+                if (quote == 0) {
+                    quote = ch;
+                } else if (quote == '"') {
+                    quote =0;
+                }
+            }
+
+            if (quote == 0 && ch == '?') {
+                paramCount++;
+            }
+        }
+
+        parameters = new JdbcParameter[paramCount];
     }
 
     public Map<Integer, JdbcParameter> getParameters() {
