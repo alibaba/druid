@@ -339,51 +339,64 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setDate(int parameterIndex, Date x) throws SQLException {
-        setParameter(parameterIndex, createParameter(x));
+        setParameter(parameterIndex
+                , createParameter(x));
 
-        createChain().preparedStatement_setDate(this, parameterIndex, x);
+        createChain()
+                .preparedStatement_setDate(this, parameterIndex, x);
     }
 
     @Override
     public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
-        setParameter(parameterIndex, createParameter(Types.DATE, x, cal));
+        setParameter(parameterIndex
+                , createParameter(Types.DATE, x, cal));
 
-        createChain().preparedStatement_setDate(this, parameterIndex, x, cal);
+        createChain()
+                .preparedStatement_setDate(this, parameterIndex, x, cal);
     }
 
     @Override
     public void setDouble(int parameterIndex, double x) throws SQLException {
-        setParameter(parameterIndex, createParameter(Types.DOUBLE, x));
+        setParameter(parameterIndex
+                , createParameter(Types.DOUBLE, x));
 
-        createChain().preparedStatement_setDouble(this, parameterIndex, x);
+        createChain()
+                .preparedStatement_setDouble(this, parameterIndex, x);
     }
 
     @Override
     public void setFloat(int parameterIndex, float x) throws SQLException {
-        setParameter(parameterIndex, createParameter(Types.FLOAT, x));
+        setParameter(parameterIndex
+                , createParameter(Types.FLOAT, x));
 
         createChain().preparedStatement_setFloat(this, parameterIndex, x);
     }
 
     @Override
     public void setInt(int parameterIndex, int x) throws SQLException {
-        setParameter(parameterIndex, createParemeter(x));
+        setParameter(parameterIndex
+                , createParemeter(x));
 
-        createChain().preparedStatement_setInt(this, parameterIndex, x);
+        createChain()
+                .preparedStatement_setInt(this, parameterIndex, x);
     }
 
     @Override
     public void setLong(int parameterIndex, long x) throws SQLException {
-        setParameter(parameterIndex, createParameter(x));
+        setParameter(parameterIndex
+                , createParameter(x));
 
-        createChain().preparedStatement_setLong(this, parameterIndex, x);
+        createChain()
+                .preparedStatement_setLong(this, parameterIndex, x);
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader x) throws SQLException {
-        setParameter(parameterIndex, createParameter(TYPE.NCharacterInputStream, x));
+        setParameter(parameterIndex
+                , createParameter(TYPE.NCharacterInputStream, x));
 
-        createChain().preparedStatement_setNCharacterStream(this, parameterIndex, x);
+        createChain()
+                .preparedStatement_setNCharacterStream(this, parameterIndex, x);
     }
 
     @Override
@@ -586,9 +599,11 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setString(int parameterIndex, String x) throws SQLException {
-        setParameter(parameterIndex, createParameter(x));
+        setParameter(parameterIndex
+                , createParameter(x));
 
-        createChain().preparedStatement_setString(this, parameterIndex, x);
+        createChain()
+                .preparedStatement_setString(this, parameterIndex, x);
     }
 
     @Override
@@ -687,6 +702,10 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     private JdbcParameter createParameter(String x) {
         if (x == null) {
             return JdbcParameterNull.VARCHAR;
+        }
+
+        if (x.length() == 0) {
+            return JdbcParameterString.empty;
         }
         
         return new JdbcParameterString(x);
