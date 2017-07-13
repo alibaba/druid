@@ -110,6 +110,9 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         if (parametersSize >= parameters.length) {
             int oldCapacity = parameters.length;
             int newCapacity = oldCapacity + (oldCapacity >> 1);
+            if (newCapacity == 0) {
+                newCapacity = 4;
+            }
 
             parameters = Arrays.copyOf(parameters, newCapacity);
         }
