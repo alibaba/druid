@@ -19,9 +19,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.lang.Consumer;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
@@ -152,5 +159,82 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         
         return !comments.isEmpty();
     }
-    
+
+    public String computeName() {
+        if (tableSource == null) {
+            return null;
+        }
+
+        SQLExpr expr = tableSource.getExpr();
+        if (expr instanceof SQLName) {
+            String name = ((SQLName) expr).getSimpleName();
+            return SQLUtils.normalize(name);
+        }
+
+        return null;
+    }
+
+    public SQLColumnDefinition findColumn(String columName) {
+        for (SQLTableElement element : tableElementList) {
+            if (element instanceof SQLColumnDefinition) {
+                SQLColumnDefinition column = (SQLColumnDefinition) element;
+                String name = column.computeAlias();
+                if (columName.equalsIgnoreCase(name)) {
+                    return column;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public SQLTableElement findIndex(String columnName) {
+        for (SQLTableElement element : tableElementList) {
+            List<SQLExpr> keyColumns = null;
+            if (element instanceof SQLUniqueConstraint) {
+                SQLUniqueConstraint unique = (SQLUniqueConstraint) element;
+                keyColumns = unique.getColumns();
+            } else if (element instanceof MySqlTableIndex) {
+                keyColumns = ((MySqlTableIndex) element).getColumns();
+            }
+
+            if (keyColumns == null) {
+                continue;
+            }
+
+            for (SQLExpr columnExpr : keyColumns) {
+                if (columnExpr instanceof SQLIdentifierExpr) {
+                    String keyColumName = ((SQLIdentifierExpr) columnExpr).getName();
+                    keyColumName = SQLUtils.normalize(keyColumName);
+                    if (keyColumName.equalsIgnoreCase(columnName)) {
+                        return element;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void forEachColumn(Consumer<SQLColumnDefinition> columnConsumer) {
+        if (columnConsumer == null) {
+            return;
+        }
+
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLColumnDefinition) {
+                columnConsumer.accept((SQLColumnDefinition) element);
+            }
+        }
+    }
+
+    public SQLPrimaryKey findPrimaryKey() {
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLPrimaryKey) {
+                return (SQLPrimaryKey) element;
+            }
+        }
+
+        return null;
+    }
 }

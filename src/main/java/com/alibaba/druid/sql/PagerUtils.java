@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
@@ -404,21 +403,26 @@ public class PagerUtils {
             SQLSelectItem countItem = createCountItem(dbType);
 
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+            List<SQLSelectItem> selectList = queryBlock.getSelectList();
 
-            if (queryBlock.getGroupBy() != null && queryBlock.getGroupBy().getItems().size() > 0) {
+            if (queryBlock.getGroupBy() != null
+                    && queryBlock.getGroupBy().getItems().size() > 0) {
                 return createCountUseSubQuery(select, dbType);
             }
             
             int option = queryBlock.getDistionOption();
-            if (option == SQLSetQuantifier.DISTINCT && queryBlock.getSelectList().size() == 1) {
-                SQLSelectItem firstItem = queryBlock.getSelectList().get(0);
-                SQLAggregateExpr exp = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
-                exp.addArgument(firstItem.getExpr());
-                firstItem.setExpr(exp);
+            if (option == SQLSetQuantifier.DISTINCT
+                    && selectList.size() >= 1) {
+                SQLAggregateExpr countExpr = new SQLAggregateExpr("COUNT", SQLAggregateOption.DISTINCT);
+                for (int i = 0; i < selectList.size(); ++i) {
+                    countExpr.addArgument(selectList.get(i).getExpr());
+                }
+                selectList.clear();
                 queryBlock.setDistionOption(0);
+                queryBlock.addSelectItem(countExpr);
             } else {
-                queryBlock.getSelectList().clear();
-                queryBlock.getSelectList().add(countItem);
+                selectList.clear();
+                selectList.add(countItem);
             }
             return SQLUtils.toSQLString(select, dbType);
         } else if (query instanceof SQLUnionQuery) {
@@ -445,7 +449,9 @@ public class PagerUtils {
     }
 
     private static SQLSelectQueryBlock createQueryBlock(String dbType) {
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType)
+                || JdbcConstants.MARIADB.equals(dbType)
+                || JdbcConstants.ALIYUN_ADS.equals(dbType)) {
             return new MySqlSelectQueryBlock();
         }
 
@@ -488,16 +494,8 @@ public class PagerUtils {
     private static void clearOrderBy(SQLSelectQuery query) {
         if (query instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
-            if (queryBlock instanceof MySqlSelectQueryBlock) {
-                MySqlSelectQueryBlock mysqlQueryBlock = (MySqlSelectQueryBlock) queryBlock;
-                if (mysqlQueryBlock.getOrderBy() != null) {
-                    mysqlQueryBlock.setOrderBy(null);
-                }
-            } else if (queryBlock instanceof PGSelectQueryBlock) {
-                PGSelectQueryBlock pgQueryBlock = (PGSelectQueryBlock) queryBlock;
-                if (pgQueryBlock.getOrderBy() != null) {
-                    pgQueryBlock.setOrderBy(null);
-                }
+            if (queryBlock.getOrderBy() != null) {
+                queryBlock.setOrderBy(null);
             }
             return;
         }

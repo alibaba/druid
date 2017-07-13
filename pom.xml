@@ -10,7 +10,7 @@
  -->
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.32-SNAPSHOT</version>
+	<version>1.1.2-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -23,7 +23,7 @@
 		<junit.version>4.12</junit.version>
 
 		<gpg.skip>true</gpg.skip>
-		<javadoc.skip>false</javadoc.skip>
+		<javadoc.skip>true</javadoc.skip>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
@@ -467,7 +467,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.39</version>
+			<version>5.1.41</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -487,6 +487,13 @@
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
 			<version>11.2.0.3</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.kylin</groupId>
+			<artifactId>kylin-jdbc</artifactId>
+			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -666,5 +673,26 @@
 			<version>19.0</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-druid</artifactId>
+			<version>1.13.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-example-csv</artifactId>
+			<version>1.13.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>1.6</version>
+                        <scope>test</scope>
+		</dependency>
+
 	</dependencies>
 </project>

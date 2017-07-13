@@ -52,6 +52,6 @@ public class MySqlSetTest_1 extends TestCase {
 
         String text = SQLUtils.toMySqlString(stmt);
 
-        Assert.assertEquals("SET @@session.autocommit = ON", text);
+        Assert.assertEquals("SET @@session.autocommit = ON;", text);
     }
 }

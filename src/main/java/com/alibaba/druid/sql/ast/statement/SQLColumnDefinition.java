@@ -18,10 +18,13 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement {
@@ -33,6 +36,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     protected SQLExpr                         comment;
 
     protected Boolean                         enable;
+    protected Boolean                         validate;
+    protected Boolean                         rely;
 
     // for mysql
     protected boolean                         autoIncrement = false;
@@ -69,6 +74,22 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         this.enable = enable;
     }
 
+    public Boolean getValidate() {
+        return validate;
+    }
+
+    public void setValidate(Boolean validate) {
+        this.validate = validate;
+    }
+
+    public Boolean getRely() {
+        return rely;
+    }
+
+    public void setRely(Boolean rely) {
+        this.rely = rely;
+    }
+
     public SQLName getName() {
         return name;
     }
@@ -82,6 +103,9 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     }
 
     public void setDataType(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
         this.dataType = dataType;
     }
 
@@ -240,5 +264,17 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             visitor.endVisit(this);
         }
 
+    }
+
+    public String computeAlias() {
+        String alias = null;
+
+        if (name instanceof SQLIdentifierExpr) {
+            alias = ((SQLIdentifierExpr) name).getName();
+        } else if (name instanceof SQLPropertyExpr) {
+            alias = ((SQLPropertyExpr) name).getName();
+        }
+
+        return SQLUtils.normalize(alias);
     }
 }

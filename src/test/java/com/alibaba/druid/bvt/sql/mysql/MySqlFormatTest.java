@@ -26,8 +26,8 @@ public class MySqlFormatTest extends TestCase {
     public void test_0() throws Exception {
         String text = "CREATE TABLE customer (a INT, b CHAR (20), INDEX (a));";
         Assert.assertEquals("CREATE TABLE customer (\n" + //
-                            "\ta INT, \n" + //
-                            "\tb CHAR(20), \n" + //
+                            "\ta INT,\n" + //
+                            "\tb CHAR(20),\n" + //
                             "\tINDEX(a)\n" + //
                             ");", SQLUtils.format(text, JdbcUtils.MYSQL));
     }

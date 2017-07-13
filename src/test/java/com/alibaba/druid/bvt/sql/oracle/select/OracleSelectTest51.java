@@ -56,14 +56,14 @@ public class OracleSelectTest51 extends OracleTest {
             String text = SQLUtils.toOracleString(stmt);
 
             Assert.assertEquals("SELECT TRIM(TRAILING 'M' FROM RTRIM('  testM'))" //
-                                + "\nFROM dual", text);
+                                + "\nFROM dual;", text);
         }
         
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             
             Assert.assertEquals("select TRIM(TRAILING 'M' from RTRIM('  testM'))" //
-                                + "\nfrom dual", text);
+                                + "\nfrom dual;", text);
         }
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

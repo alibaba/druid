@@ -15,25 +15,15 @@
  */
 package com.alibaba.druid.sql;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
@@ -278,15 +268,16 @@ public class SQLUtils {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
-            visitor.setParameters(parameters);
+            visitor.setInputParameters(parameters);
         }
 
         if (option == null) {
             option = DEFAULT_FORMAT_OPTION;
         }
         visitor.setUppCase(option.isUppCase());
-        visitor.setPrettyFormat(option.isPrettyFormat());
-        visitor.setParameterized(option.isParameterized());
+        visitor.setPrettyFormat(option.prettyFormat);
+        visitor.setParameterized(option.parameterized);
+        visitor.setDesensitize(option.desensitize);
 
         if (tableMapping != null) {
             visitor.setTableMapping(tableMapping);
@@ -298,11 +289,11 @@ public class SQLUtils {
             SQLStatement stmt = statementList.get(i);
 
             if (i > 0) {
-                if (printStmtSeperator) {
+                SQLStatement preStmt = statementList.get(i - 1);
+                if (printStmtSeperator && !preStmt.isAfterSemi()) {
                     visitor.print(";");
                 }
 
-                SQLStatement preStmt = statementList.get(i - 1);
                 List<String> comments = preStmt.getAfterCommentsDirect();
                 if (comments != null){
                     for (int j = 0; j < comments.size(); ++j) {
@@ -333,11 +324,6 @@ public class SQLUtils {
             stmt.accept(visitor);
 
             if (i == size - 1) {
-                Boolean semi = (Boolean) stmt.getAttribute("format.semi");
-                if (semi != null && semi.booleanValue() && printStmtSeperator) {
-                    visitor.print(";");
-                }
-
                 List<String> comments = stmt.getAfterCommentsDirect();
                 if (comments != null){
                     for (int j = 0; j < comments.size(); ++j) {
@@ -433,7 +419,7 @@ public class SQLUtils {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();
         if (parser.getLexer().token() != Token.EOF) {
-            throw new DruidRuntimeException("syntax error : " + sql);
+            throw new ParserException("syntax error : " + sql);
         }
         return stmtList;
     }
@@ -442,7 +428,7 @@ public class SQLUtils {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, keepComments);
         List<SQLStatement> stmtList = parser.parseStatementList();
         if (parser.getLexer().token() != Token.EOF) {
-            throw new DruidRuntimeException("syntax error : " + sql);
+            throw new ParserException("syntax error : " + sql);
         }
         return stmtList;
     }
@@ -480,21 +466,7 @@ public class SQLUtils {
     }
 
     public static List<SQLExpr> split(SQLBinaryOpExpr x) {
-        List<SQLExpr> groupList = new ArrayList<SQLExpr>();
-        groupList.add(x.getRight());
-
-        SQLExpr left = x.getLeft();
-        for (;;) {
-            if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
-                SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
-                groupList.add(binaryLeft.getRight());
-                left = binaryLeft.getLeft();
-            } else {
-                groupList.add(left);
-                break;
-            }
-        }
-        return groupList;
+        return SQLBinaryOpExpr.split(x);
     }
 
     public static String translateOracleToMySql(String sql) {
@@ -657,6 +629,7 @@ public class SQLUtils {
         private boolean ucase = true;
         private boolean prettyFormat = true;
         private boolean parameterized = false;
+        private boolean desensitize = false;
 
         public FormatOption() {
 
@@ -674,6 +647,14 @@ public class SQLUtils {
             this.ucase = ucase;
             this.prettyFormat = prettyFormat;
             this.parameterized = parameterized;
+        }
+
+        public boolean isDesensitize() {
+            return desensitize;
+        }
+
+        public void setDesensitize(boolean desensitize) {
+            this.desensitize = desensitize;
         }
 
         public boolean isUppCase() {
@@ -735,6 +716,172 @@ public class SQLUtils {
         }
 
         return buf.hashCode();
+    }
+
+    public static SQLExpr not(SQLExpr expr) {
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
+            SQLBinaryOperator op = binaryOpExpr.getOperator();
+
+            SQLBinaryOperator notOp = null;
+
+            switch (op){
+                case Equality:
+                    notOp = SQLBinaryOperator.LessThanOrGreater;
+                    break;
+                case LessThanOrEqualOrGreaterThan:
+                    notOp = SQLBinaryOperator.Equality;
+                    break;
+                case LessThan:
+                    notOp = SQLBinaryOperator.GreaterThanOrEqual;
+                    break;
+                case LessThanOrEqual:
+                    notOp = SQLBinaryOperator.GreaterThan;
+                    break;
+                case GreaterThan:
+                    notOp = SQLBinaryOperator.LessThanOrEqual;
+                    break;
+                case GreaterThanOrEqual:
+                    notOp = SQLBinaryOperator.LessThan;
+                    break;
+                case Is:
+                    notOp = SQLBinaryOperator.IsNot;
+                    break;
+                case IsNot:
+                    notOp = SQLBinaryOperator.Is;
+                    break;
+                default:
+                    break;
+            }
+
+
+            if (notOp != null) {
+                return new SQLBinaryOpExpr(binaryOpExpr.getLeft(), notOp, binaryOpExpr.getRight());
+            }
+        }
+
+        if (expr instanceof SQLInListExpr) {
+            SQLInListExpr inListExpr = (SQLInListExpr) expr;
+
+            SQLInListExpr newInListExpr = new SQLInListExpr(inListExpr);
+            newInListExpr.getTargetList().addAll(inListExpr.getTargetList());
+            newInListExpr.setNot(!inListExpr.isNot());
+            return newInListExpr;
+        }
+
+        return new SQLUnaryExpr(SQLUnaryOperator.Not, expr);
+    }
+
+    public static String normalize(String name) {
+        if (name == null) {
+            return null;
+        }
+
+        if (name.length() > 2) {
+            char c0 = name.charAt(0);
+            char x0 = name.charAt(name.length() - 1);
+            if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
+                name = name.substring(1, name.length() - 1);
+            }
+        }
+
+        return name;
+    }
+
+    public static boolean isValue(SQLExpr expr) {
+        if (expr instanceof SQLLiteralExpr) {
+            return true;
+        }
+
+        if (expr instanceof SQLVariantRefExpr) {
+            return true;
+        }
+
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) expr;
+            SQLBinaryOperator op = binaryOpExpr.getOperator();
+            if (op == SQLBinaryOperator.Add
+                    || op == SQLBinaryOperator.Subtract
+                    || op == SQLBinaryOperator.Multiply) {
+                return isValue(binaryOpExpr.getLeft())
+                        && isValue(binaryOpExpr.getRight());
+            }
+        }
+
+        return false;
+    }
+
+    public static SQLCaseExpr decodeToCase(SQLMethodInvokeExpr x) {
+        if (x == null) {
+            return null;
+        }
+
+        if (!"decode".equalsIgnoreCase(x.getMethodName())) {
+            throw new IllegalArgumentException(x.getMethodName());
+        }
+
+        List<SQLExpr> parameters = x.getParameters();
+        SQLCaseExpr caseExpr = new SQLCaseExpr();
+
+        caseExpr.setValueExpr(parameters.get(0));
+
+        for (int i = 1; i + 1 < parameters.size(); i += 2) {
+            SQLCaseExpr.Item item = new SQLCaseExpr.Item();
+            SQLExpr conditionExpr = parameters.get(i);
+
+            item.setConditionExpr(conditionExpr);
+
+            SQLExpr valueExpr = parameters.get(i + 1);
+
+            if (valueExpr instanceof SQLMethodInvokeExpr) {
+                SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) valueExpr;
+                if ("decode".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
+                    valueExpr = decodeToCase(methodInvokeExpr);
+                }
+            }
+
+            item.setValueExpr(valueExpr);
+            caseExpr.addItem(item);
+        }
+
+        if (parameters.size() % 2 == 0) {
+            SQLExpr defaultExpr = parameters.get(parameters.size() - 1);
+
+            if (defaultExpr instanceof SQLMethodInvokeExpr) {
+                SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) defaultExpr;
+                if ("decode".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
+                    defaultExpr = decodeToCase(methodInvokeExpr);
+                }
+            }
+
+            caseExpr.setElseExpr(defaultExpr);
+        }
+
+        return caseExpr;
+    }
+
+    public static boolean replaceInParent(SQLExpr expr, SQLExpr target) {
+        if (expr == null) {
+            return false;
+        }
+
+        SQLObject parent = expr.getParent();
+
+        if (parent instanceof SQLReplaceable) {
+            return ((SQLReplaceable) parent).replace(expr, target);
+        }
+
+        return false;
+    }
+
+    public static String desensitizeTable(String tableName) {
+        if (tableName == null) {
+            return null;
+        }
+
+        tableName = normalize(tableName);
+        long hash = Utils.fnv_64_lower(tableName);
+        return Utils.hex_t(hash);
     }
 }
 

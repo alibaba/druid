@@ -15,15 +15,21 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     private SQLExpr owner;
     private String  name;
+
+    public SQLPropertyExpr(String owner, String name){
+        this(new SQLIdentifierExpr(owner), name);
+    }
 
     public SQLPropertyExpr(SQLExpr owner, String name){
         setOwner(owner);
@@ -40,6 +46,14 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     public SQLExpr getOwner() {
         return this.owner;
+    }
+
+    public String getOwnernName() {
+        if (owner instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) owner).getName();
+        }
+
+        return null;
     }
 
     public void setOwner(SQLExpr owner) {
@@ -109,4 +123,34 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return true;
     }
 
+    public SQLPropertyExpr clone() {
+        SQLPropertyExpr propertyExpr = new SQLPropertyExpr();
+        propertyExpr.name = this.name;
+        if (owner != null) {
+            propertyExpr.setOwner(owner.clone());
+        }
+        return propertyExpr;
+    }
+
+    public boolean matchOwner(String alias) {
+        if (owner instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) owner).getName().equalsIgnoreCase(alias);
+        }
+
+        return false;
+    }
+
+    public String normalizedName() {
+
+        String ownerName;
+        if (owner instanceof SQLIdentifierExpr) {
+            ownerName = ((SQLIdentifierExpr) owner).normalizedName();
+        } else if (owner instanceof SQLPropertyExpr) {
+            ownerName = ((SQLPropertyExpr) owner).normalizedName();
+        } else {
+            ownerName = owner.toString();
+        }
+
+        return ownerName + '.' + SQLUtils.normalize(name);
+    }
 }

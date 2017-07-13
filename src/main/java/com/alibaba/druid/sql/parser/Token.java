@@ -116,6 +116,8 @@ public enum Token {
     ANY("ANY"),
     TRUNCATE("TRUNCATE"),
 
+    RETURN("RETURN"),
+
     // mysql
     TRUE("TRUE"), 
     FALSE("FALSE"),
@@ -220,7 +222,6 @@ public enum Token {
     PCTINCREASE("PCTINCREASE"),
     FLASH_CACHE("FLASH_CACHE"),
     CELL_FLASH_CACHE("CELL_FLASH_CACHE"),
-    KEEP("KEEP"),
     NONE("NONE"),
     LOB("LOB"),
     STORE("STORE"),
@@ -333,7 +334,8 @@ public enum Token {
     SLASH("/"), 
     AMP("&"), 
     BAR("|"), 
-    CARET("^"), 
+    CARET("^"),
+    CARETEQ("^="),
     PERCENT("%"), 
     LTLT("<<"), 
     GTGT(">>"),

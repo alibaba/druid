@@ -29,7 +29,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private boolean     orReplace   = false;
-    protected SQLName   name;
+    private boolean     force       = false;
+    // protected SQLName   name;
     protected SQLSelect subQuery;
     protected boolean   ifNotExists = false;
 
@@ -37,9 +38,14 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     protected SQLName   definer;
     protected String    sqlSecurity;
 
-    protected final List<Column> columns = new ArrayList<Column>();
+    protected SQLExprTableSource tableSource;
 
-    private Level with;
+    protected final List<SQLTableElement> columns = new ArrayList<SQLTableElement>();
+
+    private boolean withCheckOption;
+    private boolean withCascaded;
+    private boolean withLocal;
+    private boolean withReadOnly;
 
     private SQLLiteralExpr comment;
 
@@ -60,19 +66,58 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     }
 
     public SQLName getName() {
-        return name;
+        if (tableSource == null) {
+            return null;
+        }
+
+        return (SQLName) tableSource.getExpr();
     }
 
     public void setName(SQLName name) {
-        this.name = name;
+        this.setTableSource(new SQLExprTableSource(name));
     }
 
-    public Level getWith() {
-        return with;
+    public SQLExprTableSource getTableSource() {
+        return tableSource;
     }
 
-    public void setWith(Level with) {
-        this.with = with;
+    public void setTableSource(SQLExprTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
+        this.tableSource = tableSource;
+    }
+
+    public boolean isWithCheckOption() {
+        return withCheckOption;
+    }
+
+    public void setWithCheckOption(boolean withCheckOption) {
+        this.withCheckOption = withCheckOption;
+    }
+
+    public boolean isWithCascaded() {
+        return withCascaded;
+    }
+
+    public void setWithCascaded(boolean withCascaded) {
+        this.withCascaded = withCascaded;
+    }
+
+    public boolean isWithLocal() {
+        return withLocal;
+    }
+
+    public void setWithLocal(boolean withLocal) {
+        this.withLocal = withLocal;
+    }
+
+    public boolean isWithReadOnly() {
+        return withReadOnly;
+    }
+
+    public void setWithReadOnly(boolean withReadOnly) {
+        this.withReadOnly = withReadOnly;
     }
 
     public SQLSelect getSubQuery() {
@@ -80,14 +125,17 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 
-    public List<Column> getColumns() {
+    public List<SQLTableElement> getColumns() {
         return columns;
     }
     
-    public void addColumn(Column column) {
+    public void addColumn(SQLTableElement column) {
         if (column != null) {
             column.setParent(this);
         }
@@ -140,34 +188,18 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         this.sqlSecurity = sqlSecurity;
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("CREATE VIEW ");
-        this.name.output(buf);
+    public boolean isForce() {
+        return force;
+    }
 
-        if (this.columns.size() > 0) {
-            buf.append(" (");
-            for (int i = 0, size = this.columns.size(); i < size; ++i) {
-                if (i != 0) {
-                    buf.append(", ");
-                }
-                this.columns.get(i).output(buf);
-            }
-            buf.append(")");
-        }
-
-        buf.append(" AS ");
-        this.subQuery.output(buf);
-
-        if (this.with != null) {
-            buf.append(" WITH ");
-            buf.append(this.with.name());
-        }
+    public void setForce(boolean force) {
+        this.force = force;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.name);
+            acceptChild(visitor, this.tableSource);
             acceptChild(visitor, this.columns);
             acceptChild(visitor, this.comment);
             acceptChild(visitor, this.subQuery);

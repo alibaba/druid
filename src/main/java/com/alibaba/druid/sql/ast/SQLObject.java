@@ -52,4 +52,6 @@ public interface SQLObject {
     boolean hasAfterComment();
 
     void output(StringBuffer buf);
+
+    SQLObject clone();
 }

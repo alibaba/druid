@@ -26,7 +26,7 @@ import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OdpsInsertStatement extends SQLStatementImpl implements SQLStatement {
+public class OdpsInsertStatement extends SQLStatementImpl {
 
     private SQLTableSource from;
 

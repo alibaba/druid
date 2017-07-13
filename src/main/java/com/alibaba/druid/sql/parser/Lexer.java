@@ -168,35 +168,41 @@ public class Lexer {
         return ++varIndex;
     }
 
-    private static class SavePoint {
-
+    public static class SavePoint {
         int   bp;
         int   sp;
         int   np;
         char  ch;
         Token token;
+        String stringVal;
     }
 
     public Keywords getKeywods() {
         return keywods;
     }
 
-    public void mark() {
+    public SavePoint mark() {
         SavePoint savePoint = new SavePoint();
         savePoint.bp = pos;
         savePoint.sp = bufPos;
         savePoint.np = mark;
         savePoint.ch = ch;
         savePoint.token = token;
-        this.savePoint = savePoint;
+        savePoint.stringVal = stringVal;
+        return this.savePoint = savePoint;
     }
 
-    public void reset() {
+    public void reset(SavePoint savePoint) {
         this.pos = savePoint.bp;
         this.bufPos = savePoint.sp;
         this.mark = savePoint.np;
         this.ch = savePoint.ch;
         this.token = savePoint.token;
+        this.stringVal = savePoint.stringVal;
+    }
+
+    public void reset() {
+        this.reset(this.savePoint);
     }
 
     public Lexer(String input, boolean skipComment){
@@ -243,7 +249,7 @@ public class Lexer {
     }
 
     public String info() {
-        return this.token + " " + this.stringVal();
+        return "pos " + this.pos + ", " + this.token + " " + this.stringVal();
     }
 
     public final void nextTokenComma() {
@@ -257,7 +263,7 @@ public class Lexer {
             return;
         }
 
-        if (ch == ')') {
+        if (ch == ')' || ch == '）') {
             scanChar();
             token = RPAREN;
             return;
@@ -271,7 +277,7 @@ public class Lexer {
             scanChar();
         }
 
-        if (ch == '(') {
+        if (ch == '(' || ch == '（') {
             scanChar();
             token = LPAREN;
             return;
@@ -337,6 +343,16 @@ public class Lexer {
             }
 
             if (isFirstIdentifierChar(ch)) {
+                if (ch == '（') {
+                    scanChar();
+                    token = LPAREN;
+                    return;
+                } else if (ch == '）') {
+                    scanChar();
+                    token = RPAREN;
+                    return;
+                }
+
                 if (ch == 'N') {
                     if (charAt(pos + 1) == '\'') {
                         ++pos;
@@ -378,10 +394,12 @@ public class Lexer {
                     token = COMMA;
                     return;
                 case '(':
+                case '（':
                     scanChar();
                     token = LPAREN;
                     return;
                 case ')':
+                case '）':
                     scanChar();
                     token = RPAREN;
                     return;
@@ -455,7 +473,12 @@ public class Lexer {
                         token = Token.QUESQUES;
                     } else if (ch == '|' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
-                        token = Token.QUESBAR;
+                        if (ch == '|') {
+                            unscan();
+                            token = Token.QUES;
+                        } else {
+                            token = Token.QUESBAR;
+                        }
                     } else if (ch == '&' && JdbcConstants.POSTGRESQL.equals(dbType)) {
                         scanChar();
                         token = Token.QUESAMP;
@@ -582,7 +605,12 @@ public class Lexer {
                 break;
             case '^':
                 scanChar();
-                token = Token.CARET;
+                if (ch == '=') {
+                    scanChar();
+                    token = Token.CARETEQ;
+                } else {
+                    token = Token.CARET;
+                }
                 break;
             case '%':
                 scanChar();

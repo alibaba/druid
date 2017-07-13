@@ -126,7 +126,7 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
 
     @Override
     public void endVisit(OdpsSelectQueryBlock x) {
-        
+        super.endVisit((SQLSelectQueryBlock) x);
     }
 
     @Override

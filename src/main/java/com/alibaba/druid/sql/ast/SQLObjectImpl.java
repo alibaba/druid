@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLObjectImpl implements SQLObject {
@@ -205,5 +206,9 @@ public abstract class SQLObjectImpl implements SQLObject {
         }
         
         return !comments.isEmpty();
+    }
+
+    public SQLObject clone() {
+        throw new UnsupportedOperationException(this.getClass().getName());
     }
 }

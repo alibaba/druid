@@ -20,17 +20,9 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
@@ -47,8 +39,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -72,8 +62,8 @@ public class OracleSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
-    public OracleSelect select() {
-        OracleSelect select = new OracleSelect();
+    public SQLSelect select() {
+        SQLSelect select = new SQLSelect();
 
         withSubquery(select);
 
@@ -82,35 +72,43 @@ public class OracleSelectParser extends SQLSelectParser {
 
         SQLOrderBy orderBy = this.parseOrderBy();
         select.setOrderBy(orderBy);
-        if (orderBy != null && query instanceof SQLSelectQueryBlock) {
-            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
-            parseFetchClause(queryBlock);
+
+        OracleSelectQueryBlock queryBlock = null;
+        if (query instanceof SQLSelectQueryBlock) {
+            queryBlock = (OracleSelectQueryBlock) query;
+            if (orderBy != null) {
+                parseFetchClause(queryBlock);
+            }
         }
 
         if (lexer.token() == (Token.FOR)) {
+            if (queryBlock == null) {
+                throw new ParserException("TODO");
+            }
+
             lexer.nextToken();
             accept(Token.UPDATE);
 
-            OracleSelectForUpdate forUpdate = new OracleSelectForUpdate();
+            queryBlock.setForUpdate(true);
+
+            // OracleSelectForUpdate forUpdate = new OracleSelectForUpdate();
 
             if (lexer.token() == Token.OF) {
                 lexer.nextToken();
-                this.exprParser.exprList(forUpdate.getOf(), forUpdate);
+                this.exprParser.exprList(queryBlock.getForUpdateOf(), queryBlock);
             }
 
             if (lexer.token() == Token.NOWAIT) {
                 lexer.nextToken();
-                forUpdate.setNotWait(true);
+                queryBlock.setNoWait(true);
             } else if (lexer.token() == Token.WAIT) {
                 lexer.nextToken();
-                forUpdate.setWait(this.exprParser.primary());
+                queryBlock.setWaitTime(this.exprParser.primary());
             } else if (identifierEquals("SKIP")) {
                 lexer.nextToken();
                 acceptIdentifier("LOCKED");
-                forUpdate.setSkipLocked(true);
+                queryBlock.setSkipLocked(true);
             }
-
-            select.setForUpdate(forUpdate);
         }
 
         if (select.getOrderBy() == null) {
@@ -241,6 +239,10 @@ public class OracleSelectParser extends SQLSelectParser {
         }
 
         OracleSelectQueryBlock queryBlock = new OracleSelectQueryBlock();
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            queryBlock.addBeforeComment(lexer.readAndResetComments());
+        }
+
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
 
@@ -369,7 +371,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             accept(Token.ON);
             accept(Token.LPAREN);
-            OracleSelect subQuery = this.select();
+            SQLSelect subQuery = this.select();
             accept(Token.RPAREN);
             referenceModelClause.setSubQuery(subQuery);
 
@@ -518,7 +520,7 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     private void parseQueryPartitionClause(ModelColumnClause modelColumnClause) {
-        if (identifierEquals("PARTITION")) {
+        if (lexer.token() == Token.PARTITION) {
             QueryPartitionClause queryPartitionClause = new QueryPartitionClause();
 
             lexer.nextToken();
@@ -568,6 +570,16 @@ public class OracleSelectParser extends SQLSelectParser {
 
     @Override
     public SQLTableSource parseTableSource() {
+        SQLTableSource tableSource = parseTableSourcePrimary();
+
+        if (tableSource instanceof OracleSelectTableSource) {
+            return parseTableSourceRest((OracleSelectTableSource) tableSource);
+        }
+
+        return parseTableSourceRest(tableSource);
+    }
+
+    public SQLTableSource parseTableSourcePrimary() {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
             OracleSelectSubqueryTableSource tableSource;
@@ -582,7 +594,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             parsePivot((OracleSelectTableSource) tableSource);
 
-            return parseTableSourceRest(tableSource);
+            return tableSource;
         }
 
         if (lexer.token() == (Token.SELECT)) {
@@ -602,16 +614,16 @@ public class OracleSelectParser extends SQLSelectParser {
             parsePivot(tableReference);
         }
 
-        return parseTableSourceRest(tableReference);
+        return tableReference;
     }
 
     private void parseTableSourceQueryTableExpr(OracleSelectTableReference tableReference) {
         tableReference.setExpr(this.exprParser.expr());
 
-        {
-            FlashbackQueryClause clause = flashback();
-            tableReference.setFlashback(clause);
-        }
+//        {
+//            FlashbackQueryClause clause = flashback();
+//            tableReference.setFlashback(clause);
+//        }
 
         if (identifierEquals("SAMPLE")) {
             lexer.nextToken();
@@ -637,7 +649,7 @@ public class OracleSelectParser extends SQLSelectParser {
             tableReference.setSampleClause(sample);
         }
 
-        if (identifierEquals("PARTITION")) {
+        if (lexer.token() == Token.PARTITION) {
             lexer.nextToken();
             PartitionExtensionClause partition = new PartitionExtensionClause();
 
@@ -675,71 +687,64 @@ public class OracleSelectParser extends SQLSelectParser {
         }
 
         if (identifierEquals("VERSIONS")) {
+            SQLBetweenExpr betweenExpr = new SQLBetweenExpr();
+            betweenExpr.setTestExpr(new SQLIdentifierExpr("VERSIONS"));
             lexer.nextToken();
 
-            if (lexer.token() == Token.BETWEEN) {
+            accept(Token.BETWEEN);
+
+
+            SQLFlashbackExpr start = new SQLFlashbackExpr();
+            if (identifierEquals("SCN")) {
                 lexer.nextToken();
-
-                VersionsFlashbackQueryClause clause = new VersionsFlashbackQueryClause();
-                if (identifierEquals("SCN")) {
-                    clause.setType(AsOfFlashbackQueryClause.Type.SCN);
-                    lexer.nextToken();
-                } else {
-                    acceptIdentifier("TIMESTAMP");
-                    clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
-                }
-
-                SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) exprParser.expr();
-                if (binaryExpr.getOperator() != SQLBinaryOperator.BooleanAnd) {
-                    throw new ParserException("syntax error : " + binaryExpr.getOperator());
-                }
-
-                clause.setBegin(binaryExpr.getLeft());
-                clause.setEnd(binaryExpr.getRight());
-
-                tableReference.setFlashback(clause);
+                start.setType(SQLFlashbackExpr.Type.SCN);
             } else {
-                throw new ParserException("TODO");
+                acceptIdentifier("TIMESTAMP");
+                start.setType(SQLFlashbackExpr.Type.TIMESTAMP);
             }
+
+            SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) exprParser.expr();
+            if (binaryExpr.getOperator() != SQLBinaryOperator.BooleanAnd) {
+                throw new ParserException("syntax error : " + binaryExpr.getOperator());
+            }
+
+            start.setExpr(binaryExpr.getLeft());
+
+            betweenExpr.setBeginExpr(start);
+            betweenExpr.setEndExpr(binaryExpr.getRight());
+
+            tableReference.setFlashback(betweenExpr);
         }
 
     }
 
-    private FlashbackQueryClause flashback() {
-        if (lexer.token() == Token.AS) {
+    private SQLExpr flashback() {
+        accept(Token.OF);
+        if (identifierEquals("SCN")) {
             lexer.nextToken();
+            return new SQLFlashbackExpr(SQLFlashbackExpr.Type.SCN, this.expr());
+        } else if (identifierEquals("SNAPSHOT")) {
+            return this.expr();
+        } else {
+            lexer.nextToken();
+            return new SQLFlashbackExpr(SQLFlashbackExpr.Type.TIMESTAMP, this.expr());
         }
+    }
 
-        if (lexer.token() == Token.OF) {
-            lexer.nextToken();
-
-            if (identifierEquals("SCN")) {
-                AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
-                clause.setType(AsOfFlashbackQueryClause.Type.SCN);
+    protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {
+        if (tableSource instanceof OracleSelectTableSource) {
+            if (lexer.token() == Token.AS) {
                 lexer.nextToken();
-                clause.setExpr(exprParser.expr());
 
-                return clause;
-            } else if (identifierEquals("SNAPSHOT")) {
-                lexer.nextToken();
-                accept(Token.LPAREN);
-                AsOfSnapshotClause clause = new AsOfSnapshotClause();
-                clause.setExpr(this.expr());
-                accept(Token.RPAREN);
+                if (lexer.token() == Token.OF) {
+                    ((OracleSelectTableSource)tableSource).setFlashback(flashback());
+                }
 
-                return clause;
-            } else {
-                AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
-                acceptIdentifier("TIMESTAMP");
-                clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
-                clause.setExpr(exprParser.expr());
-
-                return clause;
+                tableSource.setAlias(tableAlias());
             }
-
         }
 
-        return null;
+        return tableSource;
     }
 
     protected SQLTableSource parseTableSourceRest(OracleSelectTableSource tableSource) {
@@ -748,9 +753,10 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (lexer.token() == Token.OF) {
                 tableSource.setFlashback(flashback());
+                return parseTableSourceRest(tableSource);
             }
 
-            tableSource.setAlias(tableAlias());
+            tableSource.setAlias(tableAlias(true));
         } else if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
                 tableSource.setAlias(tableAlias());
@@ -761,7 +767,7 @@ public class OracleSelectParser extends SQLSelectParser {
             this.exprParser.parseHints(tableSource.getHints());
         }
 
-        OracleSelectJoin.JoinType joinType = null;
+        SQLJoinTableSource.JoinType joinType = null;
 
         if (lexer.token() == Token.LEFT) {
             lexer.nextToken();
@@ -769,7 +775,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 lexer.nextToken();
             }
             accept(Token.JOIN);
-            joinType = OracleSelectJoin.JoinType.LEFT_OUTER_JOIN;
+            joinType = SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
         }
 
         if (lexer.token() == Token.RIGHT) {
@@ -778,7 +784,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 lexer.nextToken();
             }
             accept(Token.JOIN);
-            joinType = OracleSelectJoin.JoinType.RIGHT_OUTER_JOIN;
+            joinType = SQLJoinTableSource.JoinType.RIGHT_OUTER_JOIN;
         }
 
         if (lexer.token() == Token.FULL) {
@@ -787,35 +793,39 @@ public class OracleSelectParser extends SQLSelectParser {
                 lexer.nextToken();
             }
             accept(Token.JOIN);
-            joinType = OracleSelectJoin.JoinType.FULL_OUTER_JOIN;
+            joinType = SQLJoinTableSource.JoinType.FULL_OUTER_JOIN;
         }
 
         if (lexer.token() == Token.INNER) {
             lexer.nextToken();
             accept(Token.JOIN);
-            joinType = OracleSelectJoin.JoinType.INNER_JOIN;
+            joinType = SQLJoinTableSource.JoinType.INNER_JOIN;
         }
         if (lexer.token() == Token.CROSS) {
             lexer.nextToken();
             accept(Token.JOIN);
-            joinType = OracleSelectJoin.JoinType.CROSS_JOIN;
+            joinType = SQLJoinTableSource.JoinType.CROSS_JOIN;
         }
 
         if (lexer.token() == Token.JOIN) {
             lexer.nextToken();
-            joinType = OracleSelectJoin.JoinType.JOIN;
+            joinType = SQLJoinTableSource.JoinType.JOIN;
         }
 
         if (lexer.token() == (Token.COMMA)) {
             lexer.nextToken();
-            joinType = OracleSelectJoin.JoinType.COMMA;
+            joinType = SQLJoinTableSource.JoinType.COMMA;
         }
 
         if (joinType != null) {
             OracleSelectJoin join = new OracleSelectJoin();
             join.setLeft(tableSource);
             join.setJoinType(joinType);
-            join.setRight(parseTableSource());
+
+            SQLTableSource right;
+            right = parseTableSourcePrimary();
+            right.setAlias(this.tableAlias());
+            join.setRight(right);
 
             if (lexer.token() == Token.ON) {
                 lexer.nextToken();

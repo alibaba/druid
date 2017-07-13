@@ -28,8 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -155,7 +154,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
     public SQLStatement parseDeclare() {
         this.accept(Token.DECLARE);
 
-        SQLServerDeclareStatement declareStatement = new SQLServerDeclareStatement();
+        SQLDeclareStatement declareStatement = new SQLDeclareStatement();
         
         for (;;) {
             SQLDeclareItem item = new  SQLDeclareItem();
@@ -284,7 +283,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 accept(Token.LPAREN);
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
                 this.exprParser.exprList(values.getValues(), values);
-                insertStatement.getValuesList().add(values);
+                insertStatement.addValueCause(values);
                 accept(Token.RPAREN);
 
                 if (!parseCompleteValues && insertStatement.getValuesList().size() >= parseValuesSize) {
@@ -483,10 +482,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
         return block;
     }
     
-    public SQLServerCommitStatement parseCommit() {
+    public SQLStatement parseCommit() {
         acceptIdentifier("COMMIT");
 
-        SQLServerCommitStatement stmt = new SQLServerCommitStatement();
+        SQLCommitStatement stmt = new SQLCommitStatement();
 
         if (identifierEquals("WORK")) {
             lexer.nextToken();

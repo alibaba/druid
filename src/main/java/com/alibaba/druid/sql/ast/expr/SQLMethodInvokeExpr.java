@@ -21,10 +21,11 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
+public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
     private static final long   serialVersionUID = 1L;
     private String              methodName;
@@ -45,6 +46,14 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
 
         this.methodName = methodName;
         setOwner(owner);
+    }
+
+    public SQLMethodInvokeExpr(String methodName, SQLExpr owner, SQLExpr... params){
+        this.methodName = methodName;
+        setOwner(owner);
+        for (SQLExpr param : params) {
+            this.addParameter(param);
+        }
     }
 
     public String getMethodName() {
@@ -143,5 +152,37 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
         result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
         result = 31 * result + (from != null ? from.hashCode() : 0);
         return result;
+    }
+
+    public SQLMethodInvokeExpr clone() {
+        SQLMethodInvokeExpr x = new SQLMethodInvokeExpr();
+
+        x.methodName = methodName;
+
+        if (owner != null) {
+            x.setOwner(owner.clone());
+        }
+
+        for (SQLExpr param : parameters) {
+            x.addParameter(param.clone());
+        }
+
+        if (from != null) {
+            x.setFrom(from.clone());
+        }
+
+        return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        for (int i = 0; i < parameters.size(); ++i) {
+            if (parameters.get(i) == expr) {
+                parameters.set(i, target);
+                target.setParent(this);
+                return true;
+            }
+        }
+        return false;
     }
 }

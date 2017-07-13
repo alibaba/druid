@@ -52,7 +52,7 @@ public class OracleAlterTableTest22 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE employees" //
-                            + "\n\tADD CONSTRAINT check_comp CHECK (salary + commission_pct * salary <= 5000) DIABLE", //
+                            + "\n\tADD CONSTRAINT check_comp CHECK (salary + commission_pct * salary <= 5000) DIABLE;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());

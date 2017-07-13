@@ -69,7 +69,7 @@ public class Oracle_pl_param_inout_0 extends OracleTest {
 							")\n" +
 							"BEGIN\n" +
 							"\tp.change_job(new_job);\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -80,7 +80,7 @@ public class Oracle_pl_param_inout_0 extends OracleTest {
 							")\n" +
 							"begin\n" +
 							"\tp.change_job(new_job);\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

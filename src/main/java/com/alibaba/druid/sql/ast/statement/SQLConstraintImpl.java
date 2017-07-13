@@ -23,8 +23,10 @@ import java.util.List;
 
 public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLConstraint {
 
-    private SQLName name;
+    protected SQLName name;
     private Boolean enable;
+    private Boolean validate;
+    private Boolean rely;
 
     public List<SQLCommentHint> hints;
 
@@ -58,4 +60,25 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
         this.enable = enable;
     }
 
+    public void cloneTo(SQLConstraint x) {
+        if (name != null) {
+            x.setName(name.clone());
+        }
+    }
+
+    public Boolean getValidate() {
+        return validate;
+    }
+
+    public void setValidate(Boolean validate) {
+        this.validate = validate;
+    }
+
+    public Boolean getRely() {
+        return rely;
+    }
+
+    public void setRely(Boolean rely) {
+        this.rely = rely;
+    }
 }

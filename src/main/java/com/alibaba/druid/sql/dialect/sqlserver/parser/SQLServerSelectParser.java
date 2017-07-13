@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -41,7 +40,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
     }
 
     public SQLSelect select() {
-        SQLServerSelect select = new SQLServerSelect();
+        SQLSelect select = new SQLSelect();
 
         withSubquery(select);
 
@@ -163,6 +162,8 @@ public class SQLServerSelectParser extends SQLSelectParser {
         parseWhere(queryBlock);
 
         parseGroupBy(queryBlock);
+
+        queryBlock.setOrderBy(this.exprParser.parseOrderBy());
 
         parseFetchClause(queryBlock);
 

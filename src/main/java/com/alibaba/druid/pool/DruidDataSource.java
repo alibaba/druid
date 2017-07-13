@@ -34,9 +34,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -138,8 +138,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private DruidConnectionHolder[]          keepAliveConnections;
 
     // threads
-    private ScheduledFuture<?>               destroySchedulerFuture;
+    private volatile ScheduledFuture<?>      destroySchedulerFuture;
     private DestroyTask                      destroyTask;
+
+    private volatile Future<?>               createSchedulerFuture;
 
     private CreateConnectionThread           createConnectionThread;
     private DestroyConnectionThread          destroyConnectionThread;
@@ -170,6 +172,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private volatile boolean                 keepAlive               = false;
 
+    protected boolean killWhenSocketReadTimeout = false;
+
     public DruidDataSource(){
         this(false);
     }
@@ -181,6 +185,24 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public void configFromPropety(Properties properties) {
+        {
+            String property = properties.getProperty("druid.url");
+            if (property != null) {
+                this.setUrl(property);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.username");
+            if (property != null) {
+                this.setUsername(property);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.password");
+            if (property != null) {
+                this.setPassword(property);
+            }
+        }
         {
             Boolean value = getBoolean(properties, "druid.testWhileIdle");
             if (value != null) {
@@ -349,6 +371,37 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.setUseUnfairLock(value);
             }
         }
+        {
+            String property = properties.getProperty("druid.driverClassName");
+            if (property != null) {
+                this.setDriverClassName(property);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.initialSize");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    super.setInitialSize(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.initialSize'", e);
+                }
+            }
+        }
+        {
+            Boolean value = getBoolean(properties, "druid.killWhenSocketReadTimeout");
+            if (value != null) {
+                setKillWhenSocketReadTimeout(value);
+            }
+        }
+    }
+
+    public boolean isKillWhenSocketReadTimeout() {
+        return killWhenSocketReadTimeout;
+    }
+
+    public void setKillWhenSocketReadTimeout(boolean killWhenSocketTimeOut) {
+        this.killWhenSocketReadTimeout = killWhenSocketTimeOut;
     }
 
     public boolean isUseGlobalDataSourceStat() {
@@ -647,8 +700,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
             }
 
-            if (JdbcConstants.MYSQL.equals(this.dbType) || //
-                JdbcConstants.MARIADB.equals(this.dbType)) {
+            if (JdbcConstants.MYSQL.equals(this.dbType)
+                    || JdbcConstants.MARIADB.equals(this.dbType)
+                    || JdbcConstants.ALIYUN_ADS.equals(this.dbType)) {
                 boolean cacheServerConfigurationSet = false;
                 if (this.connectProperties.containsKey("cacheServerConfiguration")) {
                     cacheServerConfigurationSet = true;
@@ -766,7 +820,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     for (int i = 0; i < minIdle; ++i) {
                         createTaskCount++;
                         CreateConnectionTask task = new CreateConnectionTask();
-                        createScheduler.submit(task);
+                        this.createSchedulerFuture = createScheduler.submit(task);
                     }
                 } else {
                     this.emptySignal();
@@ -1431,7 +1485,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             boolean result;
             final long lastActiveTimeMillis = System.currentTimeMillis();
-            lock.lockInterruptibly();
+            lock.lock();
+//            ====== begin =======
+//            lockInterruptibly的实现有如下问题:
+//            会导致当前线程被Interrupt时,holder无法正常被回收
+//            因此改成 lock.lock();
+//            comment by wubiliang(未立)
+//            原来的代码是
+//            lock.lockInterruptibly();
+//          ====== end =======
             try {
                 activeCount--;
                 closeCount++;
@@ -1499,6 +1561,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (destroyConnectionThread != null) {
                 destroyConnectionThread.interrupt();
+            }
+
+            if (createSchedulerFuture != null) {
+                createSchedulerFuture.cancel(true);
             }
 
             if (destroySchedulerFuture != null) {
@@ -1879,7 +1945,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         value.setTransactionHistogram(this.getTransactionHistogram().toArrayAndReset());
 
         value.setConnectionHoldTimeHistogram(this.getDataSourceStat().getConnectionHoldHistogram().toArrayAndReset());
-        value.removeAbandoned = this.isRemoveAbandoned();
+        value.setRemoveAbandoned(this.isRemoveAbandoned());
         value.setClobOpenCount(this.getDataSourceStat().getClobOpenCountAndReset());
         value.setBlobOpenCount(this.getDataSourceStat().getBlobOpenCountAndReset());
 
@@ -1959,6 +2025,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // addLast
                 lock.lock();
                 try {
+                    if (closed) {
+                        return;
+                    }
+
                     boolean emptyWait = true;
 
                     if (createError != null && poolingCount == 0) {
@@ -2015,7 +2085,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
 
                         this.errorCount = 0; // reset errorCount
-                        createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
+                        createSchedulerFuture = createScheduler.schedule(this, timeBetweenConnectErrorMillis, TimeUnit.MILLISECONDS);
                         return;
                     }
                 } catch (RuntimeException e) {
@@ -3093,7 +3163,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         createTaskCount++;
         CreateConnectionTask task = new CreateConnectionTask();
-        createScheduler.submit(task);
+        this.createSchedulerFuture = createScheduler.submit(task);
     }
 
     @Override

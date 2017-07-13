@@ -45,6 +45,6 @@ public class MySqlInsertTest_1 extends MysqlTest {
         stmt.accept(visitor);
 
         Assert.assertEquals("INSERT INTO tbl_name" + //
-                            "\nVALUES ()", SQLUtils.toMySqlString(insertStmt));
+                            "\nVALUES ();", SQLUtils.toMySqlString(insertStmt));
     }
 }

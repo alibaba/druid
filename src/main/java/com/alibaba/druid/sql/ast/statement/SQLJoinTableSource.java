@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLJoinTableSource extends SQLTableSourceImpl {
+public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
     protected SQLTableSource      left;
     protected JoinType            joinType;
@@ -38,6 +39,13 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
 
     public SQLJoinTableSource(){
 
+    }
+
+    public SQLJoinTableSource(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition){
+        this.setLeft(left);
+        this.setJoinType(joinType);
+        this.setRight(right);
+        this.setCondition(condition);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -117,6 +125,31 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLJoinTableSource that = (SQLJoinTableSource) o;
+
+        if (natural != that.natural) return false;
+        if (left != null ? !left.equals(that.left) : that.left != null) return false;
+        if (joinType != that.joinType) return false;
+        if (right != null ? !right.equals(that.right) : that.right != null) return false;
+        if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
+        return using != null ? using.equals(that.using) : that.using == null;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (condition == expr) {
+            setCondition(target);
+            return true;
+        }
+
+        return false;
+    }
+
     public static enum JoinType {
         COMMA(","), //
         JOIN("JOIN"), //
@@ -142,5 +175,34 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         public static String toString(JoinType joinType) {
             return joinType.name;
         }
+    }
+
+
+    public void cloneTo(SQLJoinTableSource x) {
+        x.alias = alias;
+
+        if (left != null) {
+            x.setLeft(left.clone());
+        }
+
+        x.joinType = joinType;
+
+        if (right != null) {
+            x.setRight(right.clone());
+        }
+
+        for (SQLExpr item : using) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.using.add(item2);
+        }
+
+        x.natural = natural;
+    }
+
+    public SQLJoinTableSource clone() {
+        SQLJoinTableSource x = new SQLJoinTableSource();
+        cloneTo(x);
+        return x;
     }
 }

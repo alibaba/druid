@@ -34,7 +34,7 @@ public class OracleIsASetTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT customer_id, cust_address_ntab\n" + "FROM customers_demo\n"
-                            + "WHERE cust_address_ntab IS A SET;\n", text);
+                            + "WHERE cust_address_ntab IS A SET;", text);
 
         System.out.println(text);
     }

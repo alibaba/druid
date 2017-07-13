@@ -79,7 +79,7 @@ public class Oracle_pl_for_0 extends OracleTest {
 							"\tLOOP\n" +
 							"\t\tdisplay_total_sales(l_current_year);\n" +
 							"\tEND LOOP;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -94,7 +94,7 @@ public class Oracle_pl_for_0 extends OracleTest {
 							"\tloop\n" +
 							"\t\tdisplay_total_sales(l_current_year);\n" +
 							"\tend loop;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

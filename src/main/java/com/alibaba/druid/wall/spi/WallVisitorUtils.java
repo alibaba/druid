@@ -52,7 +52,6 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
@@ -60,15 +59,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
@@ -122,7 +118,7 @@ public class WallVisitorUtils {
     public static boolean check(WallVisitor visitor, SQLBinaryOpExpr x) {
 
         if (x.getOperator() == SQLBinaryOperator.BooleanOr || x.getOperator() == SQLBinaryOperator.BooleanAnd) {
-            List<SQLExpr> groupList = SQLUtils.split(x);
+            List<SQLExpr> groupList = SQLBinaryOpExpr.split(x);
             for (SQLExpr item : groupList) {
                 item.accept(visitor);
             }
@@ -130,7 +126,7 @@ public class WallVisitorUtils {
         }
 
         if (x.getOperator() == SQLBinaryOperator.Add || x.getOperator() == SQLBinaryOperator.Concat) {
-            List<SQLExpr> groupList = SQLUtils.split(x);
+            List<SQLExpr> groupList = SQLBinaryOpExpr.split(x);
             if (groupList.size() >= 4) {
                 int chrCount = 0;
                 for (int i = 0; i < groupList.size(); ++i) {
@@ -924,7 +920,7 @@ public class WallVisitorUtils {
 
     public static Object getValue(WallVisitor visitor, SQLBinaryOpExpr x) {
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            List<SQLExpr> groupList = SQLUtils.split(x);
+            List<SQLExpr> groupList = SQLBinaryOpExpr.split(x);
 
             boolean allFalse = true;
             for (int i = groupList.size() - 1; i >= 0; --i) {
@@ -953,7 +949,7 @@ public class WallVisitorUtils {
 
         if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
 
-            List<SQLExpr> groupList = SQLUtils.split(x);
+            List<SQLExpr> groupList = SQLBinaryOpExpr.split(x);
 
             int dalConst = 0;
             Boolean allTrue = Boolean.TRUE;
@@ -2400,7 +2396,9 @@ public class WallVisitorUtils {
         boolean allow = false;
         int errorCode;
         String denyMessage;
-        if (x instanceof SQLInsertStatement) {
+        if (x instanceof SQLCommentStatement) {
+            return;
+        } else if (x instanceof SQLInsertStatement) {
             allow = config.isInsertAllow();
             denyMessage = "insert not allow";
             errorCode = ErrorCode.INSERT_NOT_ALLOW;
@@ -2455,9 +2453,7 @@ public class WallVisitorUtils {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
             errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;
-        } else if (x instanceof MySqlSetCharSetStatement //
-                   || x instanceof MySqlSetNamesStatement //
-                   || x instanceof SQLSetStatement //
+        } else if (x instanceof SQLSetStatement //
                    || x instanceof SQLServerSetStatement) {
             allow = config.isSetAllow();
             denyMessage = "set not allow";
@@ -2477,7 +2473,7 @@ public class WallVisitorUtils {
             allow = config.isShowAllow();
             denyMessage = "show not allow";
             errorCode = ErrorCode.SHOW_NOT_ALLOW;
-        } else if (x instanceof MySqlCommitStatement || x instanceof SQLServerCommitStatement) {
+        } else if (x instanceof SQLCommitStatement) {
             allow = config.isCommitAllow();
             denyMessage = "commit not allow";
             errorCode = ErrorCode.COMMIT_NOT_ALLOW;
@@ -2573,8 +2569,7 @@ public class WallVisitorUtils {
                 List<SQLStatement> statementList = parser.parseStatementList();
                 if (statementList != null && statementList.size() > 0)  {
                     SQLStatement statement = statementList.get(0);
-                    if (statement instanceof SQLSetStatement || statement instanceof MySqlSetCharSetStatement
-                        || statement instanceof MySqlSetNamesStatement) {
+                    if (statement instanceof SQLSetStatement) {
                         isWhite = true;
                     }
                 }

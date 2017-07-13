@@ -43,7 +43,7 @@ public class OracleCreateTableTest32 extends OracleTest {
         Assert.assertEquals("CREATE TABLE games (" //
                             + "\n\tscores NUMBER" //
                             + "\n\t\tCHECK (scores >= 0)" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

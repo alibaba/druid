@@ -91,7 +91,7 @@ public class Oracle_pl_exception_1 extends OracleTest {
 							"\tWHERE table_name LIKE 'XYZ%';\n" +
 							"EXCEPTION\n" +
 							"\tWHEN NO_DATA_FOUND THEN DBMS_OUTPUT.PUT_LINE('Table name not found in query ' || stmt_no);\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -113,7 +113,7 @@ public class Oracle_pl_exception_1 extends OracleTest {
 							"\twhere table_name like 'XYZ%';\n" +
 							"exception\n" +
 							"\twhen NO_DATA_FOUND then DBMS_OUTPUT.PUT_LINE('Table name not found in query ' || stmt_no);\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

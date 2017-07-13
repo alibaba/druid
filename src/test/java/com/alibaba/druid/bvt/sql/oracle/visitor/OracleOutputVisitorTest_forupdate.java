@@ -49,7 +49,7 @@ public class OracleOutputVisitorTest_forupdate extends TestCase {
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT salary\nFROM employee\nFOR UPDATE;\n", buf.toString());
+        Assert.assertEquals("SELECT salary\nFROM employee\nFOR UPDATE", buf.toString());
 
     }
 }

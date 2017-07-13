@@ -47,6 +47,9 @@ public class SQLIfStatement extends SQLStatementImpl {
     }
 
     public void setCondition(SQLExpr condition) {
+        if (condition != null) {
+            condition.setParent(this);
+        }
         this.condition = condition;
     }
 
@@ -54,17 +57,15 @@ public class SQLIfStatement extends SQLStatementImpl {
         return statements;
     }
 
-    public void setStatements(List<SQLStatement> statements) {
-        this.statements = statements;
-    }
-    
-    public List<ElseIf> getElseIfList() {
-        return elseIfList;
+    public void addStatement(SQLStatement statement) {
+        if (statement != null) {
+            statement.setParent(this);
+        }
+        this.statements.add(statement);
     }
 
-    
-    public void setElseIfList(List<ElseIf> elseIfList) {
-        this.elseIfList = elseIfList;
+    public List<ElseIf> getElseIfList() {
+        return elseIfList;
     }
 
     public Else getElseItem() {
@@ -72,6 +73,9 @@ public class SQLIfStatement extends SQLStatementImpl {
     }
 
     public void setElseItem(Else elseItem) {
+        if (elseItem != null) {
+            elseItem.setParent(this);
+        }
         this.elseItem = elseItem;
     }
 

@@ -91,7 +91,7 @@ public class Oracle_pl_for_4 extends OracleTest {
 							"\t\tEND LOOP;\n" +
 							"\tEND LOOP outer_loop;\n" +
 							"\tCLOSE c1;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -113,7 +113,7 @@ public class Oracle_pl_for_4 extends OracleTest {
 							"\t\tend loop;\n" +
 							"\tend loop outer_loop;\n" +
 							"\tclose c1;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

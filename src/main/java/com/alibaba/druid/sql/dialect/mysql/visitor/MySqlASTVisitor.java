@@ -32,7 +32,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlWhileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -51,7 +50,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
@@ -70,10 +68,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
@@ -121,7 +116,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSubPartitionByList;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
@@ -193,14 +187,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     boolean visit(MySqlReplaceStatement x);
 
-    void endVisit(MySqlCommitStatement x);
-
-    boolean visit(MySqlCommitStatement x);
-
-    void endVisit(MySqlRollbackStatement x);
-
-    boolean visit(MySqlRollbackStatement x);
-
     void endVisit(MySqlShowColumnsStatement x);
 
     boolean visit(MySqlShowColumnsStatement x);
@@ -268,14 +254,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlSetTransactionStatement x);
 
     void endVisit(MySqlSetTransactionStatement x);
-
-    boolean visit(MySqlSetNamesStatement x);
-
-    void endVisit(MySqlSetNamesStatement x);
-
-    boolean visit(MySqlSetCharSetStatement x);
-
-    void endVisit(MySqlSetCharSetStatement x);
 
     boolean visit(MySqlShowBinaryLogsStatement x);
 
@@ -437,10 +415,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlRenameTableStatement x);
 
-    boolean visit(MySqlUnionQuery x);
-
-    void endVisit(MySqlUnionQuery x);
-
     boolean visit(MySqlUseIndexHint x);
 
     void endVisit(MySqlUseIndexHint x);
@@ -524,13 +498,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlOrderingExpr x);
 
     void endVisit(MySqlOrderingExpr x);
-
-    /**
-     * support procedure
-     */
-    boolean visit(MySqlWhileStatement x);
-
-    void endVisit(MySqlWhileStatement x);
 
     boolean visit(MySqlCaseStatement x);
 

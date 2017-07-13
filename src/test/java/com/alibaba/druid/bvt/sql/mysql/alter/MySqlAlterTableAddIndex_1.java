@@ -36,10 +36,10 @@ public class MySqlAlterTableAddIndex_1 extends TestCase {
         parser.match(Token.EOF);
         
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD UNIQUE INDEX `ix2` (`fid` ASC)", SQLUtils.toMySqlString(stmt));
+                            "\n\tADD UNIQUE INDEX `ix2` (`fid` ASC);", SQLUtils.toMySqlString(stmt));
         
         Assert.assertEquals("alter table `test`.`tb1`" + //
-                "\n\tadd unique index `ix2` (`fid` asc)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\n\tadd unique index `ix2` (`fid` asc);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = new SQLUtils().createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);

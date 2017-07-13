@@ -18,14 +18,12 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelectTableSource {
 
     protected OracleSelectPivotBase pivot;
-    protected FlashbackQueryClause  flashback;
 
     public OracleSelectJoin(String alias){
         super(alias);
@@ -35,13 +33,6 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     }
 
-    public FlashbackQueryClause getFlashback() {
-        return flashback;
-    }
-
-    public void setFlashback(FlashbackQueryClause flashback) {
-        this.flashback = flashback;
-    }
 
     public OracleSelectPivotBase getPivot() {
         return pivot;
@@ -91,7 +82,41 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        OracleSelectJoin that = (OracleSelectJoin) o;
+
+        if (pivot != null ? !pivot.equals(that.pivot) : that.pivot != null) return false;
+        return flashback != null ? flashback.equals(that.flashback) : that.flashback == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pivot != null ? pivot.hashCode() : 0;
+        result = 31 * result + (flashback != null ? flashback.hashCode() : 0);
+        return result;
+    }
+
     public String toString () {
         return SQLUtils.toOracleString(this);
+    }
+
+    public SQLJoinTableSource clone() {
+        OracleSelectJoin x = new OracleSelectJoin();
+        cloneTo(x);
+
+        if (pivot != null) {
+            x.setPivot(pivot.clone());
+        }
+
+        if (flashback != null) {
+            x.setFlashback(flashback.clone());
+        }
+
+        return x;
     }
 }

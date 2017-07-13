@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLBlockStatement extends SQLStatementImpl {
     private String             labelName;
 
+    private String endLabel;
+
     private List<SQLParameter> parameters    = new ArrayList<SQLParameter>();
 
     private List<SQLStatement> statementList = new ArrayList<SQLStatement>();
@@ -71,6 +73,17 @@ public class SQLBlockStatement extends SQLStatementImpl {
     }
 
     public void setException(SQLStatement exception) {
+        if (exception != null) {
+            exception.setParent(this);
+        }
         this.exception = exception;
+    }
+
+    public String getEndLabel() {
+        return endLabel;
+    }
+
+    public void setEndLabel(String endLabel) {
+        this.endLabel = endLabel;
     }
 }

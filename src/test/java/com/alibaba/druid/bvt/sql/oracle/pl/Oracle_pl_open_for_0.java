@@ -126,7 +126,7 @@ public class Oracle_pl_open_for_0 extends OracleTest {
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal_multiple = ' || sal_multiple);\n" +
 							"\tEND LOOP;\n" +
 							"\tCLOSE cv;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -161,7 +161,7 @@ public class Oracle_pl_open_for_0 extends OracleTest {
 							"\t\tDBMS_OUTPUT.PUT_LINE('sal_multiple = ' || sal_multiple);\n" +
 							"\tend loop;\n" +
 							"\tclose cv;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

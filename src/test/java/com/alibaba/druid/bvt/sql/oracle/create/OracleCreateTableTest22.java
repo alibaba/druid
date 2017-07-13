@@ -50,17 +50,21 @@ public class OracleCreateTableTest22 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE promotions_var2 ("
-                + "\n\tpromo_id NUMBER(6),"
-                + "\n\tpromo_name VARCHAR2(20),"
-                + "\n\tpromo_category VARCHAR2(15),"
-                + "\n\tpromo_cost NUMBER(10, 2),"
-                + "\n\tpromo_begin_date DATE,"
-                + "\n\tpromo_end_date DATE,"
-                + "\n\tCONSTRAINT promo_id_u UNIQUE (promo_id)"
-                + "\n\tUSING INDEX PCTFREE 20 TABLESPACE stocks"
-                + "\n\tSTORAGE (INITIAL 8M)"
-                + "\n)",//
+        Assert.assertEquals("CREATE TABLE promotions_var2 (\n" +
+                        "\tpromo_id NUMBER(6),\n" +
+                        "\tpromo_name VARCHAR2(20),\n" +
+                        "\tpromo_category VARCHAR2(15),\n" +
+                        "\tpromo_cost NUMBER(10, 2),\n" +
+                        "\tpromo_begin_date DATE,\n" +
+                        "\tpromo_end_date DATE,\n" +
+                        "\tCONSTRAINT promo_id_u UNIQUE (promo_id)\n" +
+                        "\t\tUSING INDEX\n" +
+                        "\t\tPCTFREE 20\n" +
+                        "\t\tTABLESPACE stocks\n" +
+                        "\t\tSTORAGE (\n" +
+                        "\t\t\tINITIAL 8M\n" +
+                        "\t\t)\n" +
+                        ");",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

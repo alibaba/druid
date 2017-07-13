@@ -38,7 +38,7 @@ public class OracleDropTriggerTest extends OracleTest {
         print(statementList);
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("DROP TRIGGER hr.salary_check",
+        Assert.assertEquals("DROP TRIGGER hr.salary_check;",
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Types;
 
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -46,25 +47,6 @@ public class FilterChainImplTest extends TestCase {
 
     public void test_unwrap() throws Exception {
         Assert.assertNull(new FilterChainImpl(dataSource).unwrap(null, null));
-    }
-
-    public void test_unwrap_1() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((Connection) null, null));
-    }
-
-    public void test_unwrap_2() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
-                                                               (Statement) null));
-    }
-
-    public void test_unwrap_3() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
-                                                               (PreparedStatement) null, ""));
-    }
-
-    public void test_unwrap_4() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
-                                                               (CallableStatement) null, ""));
     }
 
     public void test_unwrap_5() throws Exception {

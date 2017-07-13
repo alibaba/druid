@@ -31,8 +31,7 @@ public class OracleEXTRACTTest2 extends TestCase {
 
         String expect = "SELECT warehouse_name, EXTRACT(warehouse_spec, '/Warehouse/Docks') AS \"Number of Docks\"\n" +
                 "FROM warehouses\n" +
-                "WHERE warehouse_spec IS NOT NULL;\n" +
-                "";
+                "WHERE warehouse_spec IS NOT NULL;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

@@ -69,7 +69,7 @@ public class OracleBlockTest5 extends OracleTest {
          Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab_ipay_out_order_ids")));
          Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ipay_contract")));
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
         Assert.assertEquals(3, visitor.getConditions().size());
 
 //         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));

@@ -38,6 +38,10 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         this.setSelect(select);
     }
 
+    public SQLSubqueryTableSource(SQLSelectQuery query){
+        this(new SQLSelect(query));
+    }
+
     public SQLSelect getSelect() {
         return this.select;
     }
@@ -61,5 +65,16 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         buf.append("(");
         this.select.output(buf);
         buf.append(")");
+    }
+
+    public SQLSubqueryTableSource clone() {
+        SQLSubqueryTableSource x = new SQLSubqueryTableSource();
+
+        x.alias = alias;
+
+        if (select != null) {
+            x.select = select.clone();
+        }
+        return x;
     }
 }

@@ -237,4 +237,24 @@ public class PGExprParser extends SQLExprParser {
 
         return super.primaryRest(expr);
     }
+
+    @Override
+    protected String alias() {
+        String alias = super.alias();
+        if (alias != null) {
+            return alias;
+        }
+        // 某些关键字在alias时,不作为关键字,仍然是作用为别名
+        switch (lexer.token()) {
+        case INTERSECT:
+            // 具体可以参考SQLParser::alias()的方法实现
+            alias = lexer.stringVal();
+            lexer.nextToken();
+            return alias;
+        // TODO other cases
+        default:
+            break;
+        }
+        return alias;
+    }
 }

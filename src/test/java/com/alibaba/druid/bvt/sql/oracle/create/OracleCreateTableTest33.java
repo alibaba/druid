@@ -45,7 +45,7 @@ public class OracleCreateTableTest33 extends OracleTest {
         Assert.assertEquals("CREATE TABLE games (" //
                             + "\n\tscores NUMBER," //
                             + "\n\tCONSTRAINT unq_num UNIQUE (scores) INITIALLY DEFERRED DEFERRABLE" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

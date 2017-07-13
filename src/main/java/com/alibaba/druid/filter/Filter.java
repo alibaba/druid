@@ -54,6 +54,7 @@ import java.sql.Timestamp;
 import java.sql.Wrapper;
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -187,6 +188,15 @@ public interface Filter extends Wrapper {
 
     Struct connection_createStruct(FilterChain chain, ConnectionProxy connection, String typeName, Object[] attributes)
                                                                                                                        throws SQLException;
+
+
+    String connection_getSchema(FilterChain chain, ConnectionProxy connection) throws SQLException;
+    void connection_setSchema(FilterChain chain, ConnectionProxy connection, String schema) throws SQLException;
+
+    void connection_abort(FilterChain chain, ConnectionProxy connection, Executor executor) throws SQLException;
+
+    void connection_setNetworkTimeout(FilterChain chain, ConnectionProxy connection, Executor executor, int milliseconds) throws SQLException;
+    int connection_getNetworkTimeout(FilterChain chain, ConnectionProxy connection) throws SQLException;
 
     // ///////////////
     boolean resultSet_next(FilterChain chain, ResultSetProxy resultSet) throws SQLException;

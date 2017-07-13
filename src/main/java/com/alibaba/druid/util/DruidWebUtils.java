@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.util;
 
+import javax.servlet.GenericServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,4 +58,13 @@ public class DruidWebUtils {
         }
     }
 
+    public static Boolean getBoolean(GenericServlet servlet, String key) {
+        String property = servlet.getInitParameter(key);
+        if ("true".equals(property)) {
+            return Boolean.TRUE;
+        } else if ("false".equals(property)) {
+            return Boolean.FALSE;
+        }
+        return null;
+    }
 }

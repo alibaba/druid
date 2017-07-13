@@ -33,13 +33,13 @@ public class PGSelectTest42 extends PGTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals("UPDATE sys_account\n" +
+        Assert.assertEquals("UPDATE sys_account a\n" +
                 "SET online = 2\n" +
                 "FROM auto_handler_online o\n" +
                 "WHERE a.id = o.account_id\n" +
                 "\tAND a.online != 2", SQLUtils.toPGString(stmt));
         
-        Assert.assertEquals("update sys_account\n" +
+        Assert.assertEquals("update sys_account a\n" +
                 "set online = 2\n" +
                 "from auto_handler_online o\n" +
                 "where a.id = o.account_id\n" +

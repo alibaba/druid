@@ -44,14 +44,15 @@ public class OracleCreateTriggerTest extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\"" //
-                            + "\n\tBEFORE INSERT"//
-                            + "\n\tON \"AO_4AEACD_WEBHOOK_DAO\""//
-                            + "\n\tFOR EACH ROW"//
-                            + "\nBEGIN"//
-                            + "\n\tSELECT \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\".NEXTVAL"//
-                            + "\n\tINTO :NEW.\"ID\"" //
-                            + "\n\tFROM DUAL;" + "\nEND",//
+        Assert.assertEquals("CREATE TRIGGER \"AO_4AEACD_WEBHOOK_D367380484\"\n" +
+                        "\tBEFORE INSERT\n" +
+                        "\tON \"AO_4AEACD_WEBHOOK_DAO\"\n" +
+                        "\tFOR EACH ROW\n" +
+                        "BEGIN\n" +
+                        "\tSELECT \"AO_4AEACD_WEBHOOK_DAO_ID_SEQ\".NEXTVAL\n" +
+                        "\tINTO :NEW.\"ID\"\n" +
+                        "\tFROM DUAL;\n" +
+                        "END;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

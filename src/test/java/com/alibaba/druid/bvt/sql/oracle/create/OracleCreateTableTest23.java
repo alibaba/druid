@@ -56,7 +56,7 @@ public class OracleCreateTableTest23 extends OracleTest {
                             + "\n\tpromo_cost NUMBER(10, 2)," //
                             + "\n\tpromo_begin_date DATE," //
                             + "\n\tpromo_end_date DATE" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

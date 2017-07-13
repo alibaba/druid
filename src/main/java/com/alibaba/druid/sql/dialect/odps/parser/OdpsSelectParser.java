@@ -178,7 +178,9 @@ public class OdpsSelectParser extends SQLSelectParser {
 
     protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
         accept(Token.VIEW);
-        tableSource.setAlias(null);
+        if ("LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
+            tableSource.setAlias(null);
+        }
         OdpsLateralViewTableSource lateralViewTabSrc = new OdpsLateralViewTableSource();
         lateralViewTabSrc.setTableSource(tableSource);
         

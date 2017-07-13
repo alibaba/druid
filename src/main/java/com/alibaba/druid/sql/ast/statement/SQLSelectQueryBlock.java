@@ -18,14 +18,15 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery {
-
+public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery, SQLReplaceable {
+    private boolean                     bracket         = false;
     protected int                       distionOption;
     protected final List<SQLSelectItem> selectList      = new ArrayList<SQLSelectItem>();
 
@@ -89,6 +90,18 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
         this.where = where;
     }
+
+    public void addWhere(SQLExpr condition) {
+        if (condition == null) {
+            return;
+        }
+
+        if (where == null) {
+            where = condition;
+        } else {
+            where = SQLBinaryOpExpr.and(where, condition);
+        }
+    }
     
     public SQLOrderBy getOrderBy() {
         return orderBy;
@@ -128,6 +141,14 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     public void addSelectItem(SQLSelectItem item) {
         this.selectList.add(item);
         item.setParent(this);
+    }
+
+    public void addSelectItem(SQLExpr expr) {
+        this.addSelectItem(new SQLSelectItem(expr));
+    }
+
+    public void addSelectItem(SQLExpr expr, String alias) {
+        this.addSelectItem(new SQLSelectItem(expr, alias));
     }
 
     public SQLTableSource getFrom() {
@@ -264,6 +285,9 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             acceptChild(visitor, this.startWith);
             acceptChild(visitor, this.connectBy);
             acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.waitTime);
+            acceptChild(visitor, this.limit);
         }
         visitor.endVisit(this);
     }
@@ -308,4 +332,143 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return true;
     }
 
+    public SQLSelectQueryBlock clone() {
+        SQLSelectQueryBlock x = new SQLSelectQueryBlock();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(SQLSelectQueryBlock x) {
+
+        x.distionOption = distionOption;
+
+        for (SQLSelectItem item : this.selectList) {
+            x.addSelectItem(item.clone());
+        }
+
+        if (from != null) {
+            x.setFrom(from.clone());
+        }
+
+        if (into != null) {
+            x.setInto(into.clone());
+        }
+
+        if (where != null) {
+            x.setWhere(where.clone());
+        }
+
+        if (startWith != null) {
+            x.setStartWith(startWith.clone());
+        }
+
+        if (connectBy != null) {
+            x.setConnectBy(connectBy.clone());
+        }
+
+        x.prior = prior;
+        x.noCycle = noCycle;
+
+        if (orderBySiblings != null) {
+            x.setOrderBySiblings(orderBySiblings.clone());
+        }
+
+        if (groupBy != null) {
+            x.setGroupBy(groupBy.clone());
+        }
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        x.parenthesized = parenthesized;
+        x.forUpdate = forUpdate;
+        x.noWait = noWait;
+        if (waitTime != null) {
+            x.setWaitTime(waitTime.clone());
+        }
+
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+    }
+
+    @Override
+    public boolean isBracket() {
+        return bracket;
+    }
+
+    @Override
+    public void setBracket(boolean bracket) {
+        this.bracket = bracket;
+    }
+
+    public SQLTableSource findTableSource(String alias) {
+        return findTableSource(from, alias);
+    }
+
+    private static SQLTableSource findTableSource(SQLTableSource from, String alias) {
+        if (from == null || alias == null) {
+            return null;
+        }
+
+        if (alias.equalsIgnoreCase(from.computeAlias())) {
+            return from;
+        }
+
+        if (from instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) from;
+            SQLTableSource result = findTableSource(join.getLeft(), alias);
+            if (result != null) {
+                return result;
+            }
+
+            return findTableSource(join.getRight(), alias);
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (where == expr) {
+            setWhere(target);
+            return true;
+        }
+        return false;
+    }
+
+    public SQLSelectItem findSelectItem(String ident) {
+        if (ident == null) {
+            return null;
+        }
+
+        String ident_normalized = SQLUtils.normalize(ident);
+
+        for (SQLSelectItem item : this.selectList) {
+            if (item.match(ident_normalized)) {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    public void addCondition(SQLExpr expr) {
+        if (expr == null) {
+            return;
+        }
+
+        this.setWhere(SQLBinaryOpExpr.and(where, expr));
+    }
+
+    public void limit(int rowCount, int offset) {
+        SQLLimit limit = new SQLLimit();
+        limit.setRowCount(new SQLIntegerExpr(rowCount));
+        if (offset > 0) {
+            limit.setOffset(new SQLIntegerExpr(offset));
+        }
+
+        setLimit(limit);
+    }
 }

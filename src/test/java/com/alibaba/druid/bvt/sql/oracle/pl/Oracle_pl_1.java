@@ -95,7 +95,7 @@ public class Oracle_pl_1 extends OracleTest {
 							"\tRETURNING first_name, last_name INTO emp_first_name, emp_last_name;\n" +
 							"\tCOMMIT;\n" +
 							"\tDBMS_OUTPUT.PUT_LINE(emp_first_name || ' ' || emp_last_name);\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -115,7 +115,7 @@ public class Oracle_pl_1 extends OracleTest {
 							"\treturning first_name, last_name into emp_first_name, emp_last_name;\n" +
 							"\tcommit;\n" +
 							"\tDBMS_OUTPUT.PUT_LINE(emp_first_name || ' ' || emp_last_name);\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

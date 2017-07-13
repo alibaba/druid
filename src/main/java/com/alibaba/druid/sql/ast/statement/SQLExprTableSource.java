@@ -18,15 +18,17 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLExprTableSource extends SQLTableSourceImpl {
 
-    protected SQLExpr expr;
-
-    private List<SQLName>   partitions;
+    protected SQLExpr     expr;
+    private List<SQLName> partitions;
+    private SchemaObject  schemaObject;
 
     public SQLExprTableSource(){
 
@@ -91,23 +93,61 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLExprTableSource that = (SQLExprTableSource) o;
+
+        if (expr != null ? !expr.equals(that.expr) : that.expr != null) return false;
+        return partitions != null ? partitions.equals(that.partitions) : that.partitions == null;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        SQLExprTableSource other = (SQLExprTableSource) obj;
-        if (expr == null) {
-            if (other.expr != null) return false;
-        } else if (!expr.equals(other.expr)) return false;
-        return true;
+    public int hashCode() {
+        int result = expr != null ? expr.hashCode() : 0;
+        result = 31 * result + (partitions != null ? partitions.hashCode() : 0);
+        return result;
     }
 
+    public String computeAlias() {
+        String alias = this.getAlias();
+
+        if (alias == null) {
+            if (expr instanceof SQLName) {
+                alias =((SQLName) expr).getSimpleName();
+            }
+        }
+
+        return SQLUtils.normalize(alias);
+    }
+
+    public SQLExprTableSource clone() {
+        SQLExprTableSource x = new SQLExprTableSource();
+        cloneTo(x);
+        return x;
+    }
+
+    public void cloneTo(SQLExprTableSource x) {
+        x.alias = alias;
+
+        if (expr != null) {
+            x.expr = expr.clone();
+        }
+
+        if (partitions != null) {
+            for (SQLName p : partitions) {
+                SQLName p1 = p.clone();
+                x.addPartition(p1);
+            }
+        }
+    }
+
+    public SchemaObject getSchemaObject() {
+        return schemaObject;
+    }
+
+    public void setSchemaObject(SchemaObject schemaObject) {
+        this.schemaObject = schemaObject;
+    }
 }

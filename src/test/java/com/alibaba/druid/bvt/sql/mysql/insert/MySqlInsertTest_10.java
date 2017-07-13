@@ -76,7 +76,7 @@ public class MySqlInsertTest_10 extends MysqlTest {
                            + "\nVALUES ('a1', 'b1'),"//
                            + "\n\t('a2', 'b2'),"//
                            + "\n\t('a3', 'b3'),"//
-                           + "\n\t('a4', 'b4')";
+                           + "\n\t('a4', 'b4');";
         Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 }

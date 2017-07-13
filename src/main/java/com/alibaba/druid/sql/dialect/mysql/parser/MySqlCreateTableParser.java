@@ -72,10 +72,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
     }
 
     public MySqlCreateTableStatement parseCrateTable(boolean acceptCreate) {
+        MySqlCreateTableStatement stmt = new MySqlCreateTableStatement();
         if (acceptCreate) {
+            if (lexer.hasComment() && lexer.isKeepComments()) {
+                stmt.addBeforeComment(lexer.readAndResetComments());
+            }
             accept(Token.CREATE);
         }
-        MySqlCreateTableStatement stmt = new MySqlCreateTableStatement();
 
         if (identifierEquals("TEMPORARY")) {
             lexer.nextToken();

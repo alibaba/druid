@@ -26,11 +26,11 @@ public class ExportParameterShardingTest extends TestCase {
         SQLStatement stmt = stmtList.get(0);
 
         StringBuilder out = new StringBuilder();
-        List<Object> parameters = new ArrayList<Object>();
         SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, dbType);
         visitor.setParameterized(true);
         visitor.setParameterizedMergeInList(true);
-        visitor.setParameters(parameters);
+        List<Object> parameters = visitor.getParameters();
+        //visitor.setParameters(parameters);
 
         stmt.accept(visitor);
 
@@ -52,7 +52,7 @@ public class ExportParameterShardingTest extends TestCase {
 
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = SQLUtils.createOutputVisitor(out, dbType);
-        visitor.setParameters(parameters);
+        visitor.setInputParameters(parameters);
 
         visitor.addTableMapping("t_user", "t_user_0000");
 

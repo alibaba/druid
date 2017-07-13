@@ -46,7 +46,7 @@ public class OracleInsertTest12 extends OracleTest {
                             + "\n\t(employee_id, last_name, email, hire_date, job_id" //
                             + "\n\t, salary, commission_pct)" //
                             + "\nVALUES (207, 'Gregory', 'pgregory@example.com', SYSDATE, 'PU_CLERK'" //
-                            + "\n\t, 1.2E+3, NULL)",//
+                            + "\n\t, 1.2E+3, NULL);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

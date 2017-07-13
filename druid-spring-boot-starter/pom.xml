@@ -4,12 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
     <artifactId>druid-spring-boot-starter</artifactId>
-    <version>1.0.29-SNAPSHOT</version>
+    <version>1.1.2</version>
     <packaging>jar</packaging>
     <name>druid-spring-boot-starter</name>
+    <description>Spring Boot with Druid support,help you simplify Druid config in Spring Boot.</description>
+    <url>https://github.com/alibaba/druid</url>
 
     <properties>
-        <druid.version>1.0.29</druid.version>
+        <druid.version>1.1.2-SNAPSHOT</druid.version>
         <spring-boot.version>1.5.3.RELEASE</spring-boot.version>
     </properties>
 
@@ -84,11 +86,23 @@
     </dependencies>
 
     <scm>
-        <connection>scm:git:git@gitlab.alibaba-inc.com:spring-boot-incubator/druid-spring-boot-starter.git</connection>
-        <developerConnection>scm:git:git@gitlab.alibaba-inc.com:spring-boot-incubator/druid-spring-boot-starter.git
-        </developerConnection>
-        <url>http://gitlab.alibaba-inc.com/spring-boot-incubator/druid-spring-boot-starter</url>
+        <url>https://wenshao@github.com/alibaba/druid.git</url>
+        <connection>scm:git:https://wenshao@github.com/alibaba/druid.git</connection>
     </scm>
+
+    <organization>
+        <name>Alibaba Group</name>
+        <url>http://code.alibabatech.com/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
 
     <build>
         <plugins>

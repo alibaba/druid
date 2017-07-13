@@ -56,23 +56,38 @@ public class OracleCreateTableTest20 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" (" //
-                                    + "\n\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,"//
-                                    + "\n\t\"CREATED_AT\" TIMESTAMP(6),"//
-                                    + "\n\t\"UPDATED_AT\" TIMESTAMP(6),"//
-                                    + "\n\t\"ACTIVE_RULE_ID\" NUMBER(38, 0),"//
-                                    + "\n\t\"USER_LOGIN\" VARCHAR2(40 BYTE),"//
-                                    + "\n\t\"DATA\" BLOB,"//
-                                    + "\n\tPRIMARY KEY (\"ID\")"//
-                                    + "\n\tUSING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS TABLESPACE \"USERS\" ENABLE"//
-                                    + "\n)"//
-                                    + "\nPCTFREE 10"//
-                                    + "\nINITRANS 1"//
-                                    + "\nMAXTRANS 255"//
-                                    + "\nNOCOMPRESS"//
-                                    + "\nLOGGING"//
-                                    + "\nTABLESPACE \"USERS\""//
-                                    + "\nLOB (\"DATA\") STORE AS SECUREFILE (TABLESPACE \"USERS\" ENABLE STORAGE IN ROW CHUNK 8192 NOCACHE LOGGING NOCOMPRESS KEEP_DUPLICATES)",//
+        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_RULE_NOTES\" (\n" +
+                        "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"CREATED_AT\" TIMESTAMP(6),\n" +
+                        "\t\"UPDATED_AT\" TIMESTAMP(6),\n" +
+                        "\t\"ACTIVE_RULE_ID\" NUMBER(38, 0),\n" +
+                        "\t\"USER_LOGIN\" VARCHAR2(40 BYTE),\n" +
+                        "\t\"DATA\" BLOB,\n" +
+                        "\tPRIMARY KEY (\"ID\")\n" +
+                        "\t\tUSING INDEX\n" +
+                        "\t\tPCTFREE 10\n" +
+                        "\t\tINITRANS 2\n" +
+                        "\t\tMAXTRANS 255\n" +
+                        "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE\n" +
+                        ")\n" +
+                        "PCTFREE 10\n" +
+                        "PCTUSED 40\n" +
+                        "INITRANS 1\n" +
+                        "MAXTRANS 255\n" +
+                        "NOCOMPRESS\n" +
+                        "LOGGING\n" +
+                        "TABLESPACE \"USERS\"\n" +
+                        "LOB (\"DATA\") STORE AS SECUREFILE (\n" +
+                        "\tNOCOMPRESS\n" +
+                        "\tLOGGING\n" +
+                        "\tTABLESPACE \"USERS\"\n" +
+                        "\tENABLE STORAGE IN ROW\n" +
+                        "\tCHUNK 8192\n" +
+                        "\tNOCACHE\n" +
+                        "\tKEEP_DUPLICATES\n" +
+                        ");",//
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

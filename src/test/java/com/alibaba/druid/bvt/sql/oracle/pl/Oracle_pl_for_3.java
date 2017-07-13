@@ -81,7 +81,7 @@ public class Oracle_pl_for_3 extends OracleTest {
 							"\t\tEXIT WHEN c1%NOTFOUND;\n" +
 							"\tEND LOOP;\n" +
 							"\tCLOSE c1;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -99,7 +99,7 @@ public class Oracle_pl_for_3 extends OracleTest {
 							"\t\texit when c1%NOTFOUND;\n" +
 							"\tend loop;\n" +
 							"\tclose c1;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

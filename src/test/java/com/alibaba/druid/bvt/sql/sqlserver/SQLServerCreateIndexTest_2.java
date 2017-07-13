@@ -41,7 +41,7 @@ public class SQLServerCreateIndexTest_2 extends TestCase {
 
         Assert.assertEquals(1, statementList.size());
         
-        Assert.assertEquals("CREATE UNIQUE CLUSTERED INDEX Idx1 ON t1 (c)", //
+        Assert.assertEquals("CREATE UNIQUE CLUSTERED INDEX Idx1 ON t1 (c);", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();

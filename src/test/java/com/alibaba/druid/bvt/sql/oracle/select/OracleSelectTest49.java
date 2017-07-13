@@ -56,8 +56,7 @@ public class OracleSelectTest49 extends OracleTest {
 
         Assert.assertEquals("SELECT *" //
                             + "\nFROM tab1 t" //
-                            + "\nORDER BY replace(to_char(t.SORTNUM), '0', '9');"
-                            + "\n", text);
+                            + "\nORDER BY replace(to_char(t.SORTNUM), '0', '9')", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

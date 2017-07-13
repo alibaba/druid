@@ -98,7 +98,7 @@ public class Oracle_pl_for_1 extends OracleTest {
 							"\tLOOP\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
 							"\tEND LOOP;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -122,7 +122,7 @@ public class Oracle_pl_for_1 extends OracleTest {
 							"\tloop\n" +
 							"\t\tDBMS_OUTPUT.PUT_LINE('Name = ' || names(i) || ', salary = ' || sals(i));\n" +
 							"\tend loop;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

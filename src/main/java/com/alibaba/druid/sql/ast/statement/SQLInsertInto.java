@@ -30,7 +30,7 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
     protected SQLSelect           query;
     
-    protected List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
+    protected final List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
 
     public SQLInsertInto(){
 
@@ -71,7 +71,14 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         return query;
     }
 
+    public void setQuery(SQLSelectQuery query) {
+        this.setQuery(new SQLSelect(query));
+    }
+
     public void setQuery(SQLSelect query) {
+        if (query != null) {
+            query.setParent(this);
+        }
         this.query = query;
     }
 
@@ -105,7 +112,10 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         return valuesList;
     }
 
-    public void setValuesList(List<ValuesClause> valuesList) {
-        this.valuesList = valuesList;
+    public void addValueCause(ValuesClause valueClause) {
+        if (valueClause != null) {
+            valueClause.setParent(this);
+        }
+        valuesList.add(valueClause);
     }
 }

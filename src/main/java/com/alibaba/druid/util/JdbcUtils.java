@@ -15,8 +15,10 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.sql.DataSource;
 import java.io.Closeable;
@@ -448,6 +450,8 @@ public final class JdbcUtils implements JdbcConstants {
             return "org.apache.phoenix.queryserver.client.Driver";
         } else if (rawUrl.startsWith("jdbc:phoenix://")) {
             return JdbcConstants.PHOENIX_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:kylin:")) {
+            return JdbcConstants.KYLIN_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -737,5 +741,32 @@ public final class JdbcUtils implements JdbcConstants {
         sql.append(")");
 
         return sql.toString();
+    }
+
+    public static <T> void executeQuery(DataSource dataSource
+            , ResultSetConsumer<T> consumer
+            , String sql
+            , Object... parameters) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            stmt = conn.prepareStatement(sql);
+            for (int i = 0; i < parameters.length; ++i) {
+                stmt.setObject(i + 1, parameters[i]);
+            }
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                if (consumer != null) {
+                    T object = consumer.apply(rs);
+                    consumer.accept(object);
+                }
+            }
+        } finally {
+            close(rs);
+            close(stmt);
+            close(conn);
+        }
     }
 }

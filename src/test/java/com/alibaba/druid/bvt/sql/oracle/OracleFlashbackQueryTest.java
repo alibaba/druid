@@ -28,7 +28,7 @@ public class OracleFlashbackQueryTest extends TestCase {
         String sql = "SELECT salary FROM employees AS OF TIMESTAMP (SYSTIMESTAMP - INTERVAL '1' DAY) WHERE last_name = 'Chung';";
 
         String expect = "SELECT salary\n" + "FROM employees\n" + "AS OF TIMESTAMP (SYSTIMESTAMP - INTERVAL '1' DAY)\n"
-                        + "WHERE last_name = 'Chung';\n";
+                        + "WHERE last_name = 'Chung';";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

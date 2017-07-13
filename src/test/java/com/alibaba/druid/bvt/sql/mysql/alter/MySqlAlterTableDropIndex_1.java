@@ -34,11 +34,11 @@ public class MySqlAlterTableDropIndex_1 extends TestCase {
         
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
                             "\n\tDROP INDEX `ix`," + //
-                            "\n\tDROP INDEX `ix2`", SQLUtils.toMySqlString(stmt));
+                            "\n\tDROP INDEX `ix2`;", SQLUtils.toMySqlString(stmt));
         
         Assert.assertEquals("alter table `test`.`tb1`" + //
                 "\n\tdrop index `ix`," + //
-                "\n\tdrop index `ix2`", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\n\tdrop index `ix2`;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

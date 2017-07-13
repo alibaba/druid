@@ -24,4 +24,9 @@ public interface SQLDataType extends SQLObject {
     void setName(String name);
 
     List<SQLExpr> getArguments();
+
+    Boolean getWithTimeZone();
+    void  setWithTimeZone(Boolean value);
+
+    boolean isWithLocalTimeZone();
 }

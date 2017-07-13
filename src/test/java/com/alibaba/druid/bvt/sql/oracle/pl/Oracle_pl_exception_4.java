@@ -89,7 +89,7 @@ public class Oracle_pl_exception_4 extends OracleTest {
 							"\tWHEN OTHERS THEN\n" +
 							"\t\tROLLBACK;\n" +
 							"\t\tRAISE;\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -110,7 +110,7 @@ public class Oracle_pl_exception_4 extends OracleTest {
 							"\twhen OTHERS then\n" +
 							"\t\trollback;\n" +
 							"\t\traise;\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

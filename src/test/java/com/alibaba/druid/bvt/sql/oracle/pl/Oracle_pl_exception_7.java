@@ -75,7 +75,7 @@ public class Oracle_pl_exception_7 extends OracleTest {
 							"\tEND;\n" +
 							"EXCEPTION\n" +
 							"\tWHEN VALUE_ERROR THEN DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
-							"END", //
+							"END;", //
 					output);
 		}
 		{
@@ -88,7 +88,7 @@ public class Oracle_pl_exception_7 extends OracleTest {
 							"\tend;\n" +
 							"exception\n" +
 							"\twhen VALUE_ERROR then DBMS_OUTPUT.PUT_LINE('Exception raised in declaration.');\n" +
-							"end", //
+							"end;", //
 					output);
 		}
 	}

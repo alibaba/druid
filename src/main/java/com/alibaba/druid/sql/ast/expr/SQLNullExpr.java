@@ -48,4 +48,8 @@ public class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
     public Object getValue() {
         return EVAL_VALUE_NULL;
     }
+
+    public SQLNullExpr clone() {
+        return new SQLNullExpr();
+    }
 }

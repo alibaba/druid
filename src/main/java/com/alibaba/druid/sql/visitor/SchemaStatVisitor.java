@@ -24,40 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.SQLParameter;
-import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionByHash;
-import com.alibaba.druid.sql.ast.SQLPartitionByList;
-import com.alibaba.druid.sql.ast.SQLPartitionByRange;
-import com.alibaba.druid.sql.ast.SQLPartitionValue;
-import com.alibaba.druid.sql.ast.SQLSubPartition;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLArrayExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
+import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
@@ -445,10 +420,17 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        x.getLeft().setParent(x);
-        x.getRight().setParent(x);
+        SQLObject parent = x.getParent();
 
-        switch (x.getOperator()) {
+        if (parent instanceof SQLIfStatement) {
+            return true;
+        }
+
+        final SQLBinaryOperator op = x.getOperator();
+        final SQLExpr left = x.getLeft();
+        final SQLExpr right = x.getRight();
+
+        switch (op) {
             case Equality:
             case NotEqual:
             case GreaterThan:
@@ -461,15 +443,32 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case NotLike:
             case Is:
             case IsNot:
-                handleCondition(x.getLeft(), x.getOperator().name, x.getRight());
-                handleCondition(x.getRight(), x.getOperator().name, x.getLeft());
+                handleCondition(left, x.getOperator().name, right);
+                handleCondition(right, x.getOperator().name, left);
 
-                handleRelationship(x.getLeft(), x.getOperator().name, x.getRight());
+                handleRelationship(left, x.getOperator().name, right);
                 break;
+            case BooleanOr:{
+                List<SQLExpr> list = SQLBinaryOpExpr.split(x, op);
+
+                for (SQLExpr item : list) {
+                    if (item instanceof SQLBinaryOpExpr) {
+                        visit((SQLBinaryOpExpr) item);
+                    } else {
+                        item.accept(this);
+                    }
+                }
+
+                return false;
+            }
             default:
                 break;
         }
-        return true;
+
+        left.accept(this);
+        right.accept(this);
+
+        return false;
     }
 
     protected void handleRelationship(SQLExpr left, String operator, SQLExpr right) {
@@ -526,6 +525,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 continue;
             }
             Object value = SQLEvalVisitorUtils.eval(getDbType(), item, parameters, false);
+            if (value == SQLEvalVisitor.EVAL_VALUE_NULL) {
+                value = null;
+            }
             condition.getValues().add(value);
         }
     }
@@ -584,12 +586,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         if (expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+            if (isParam(identifierExpr)) {
+                return null;
+            }
             Column attrColumn = (Column) expr.getAttribute(ATTR_COLUMN);
             if (attrColumn != null) {
                 return attrColumn;
             }
 
-            String column = ((SQLIdentifierExpr) expr).getName();
+            String column = identifierExpr.getName();
             String table = getCurrentTable();
             if (table != null && aliasMap.containsKey(table)) {
                 table = aliasMap.get(table);
@@ -725,12 +731,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
-        if (x.getInto() != null && x.getInto().getExpr() instanceof SQLName) {
-            SQLName into = (SQLName) x.getInto().getExpr();
-            String ident = into.toString();
-            TableStat stat = getTableStat(ident);
-            if (stat != null) {
-                stat.incrementInsertCount();
+        SQLExprTableSource into = x.getInto();
+        if (into != null && into.getExpr() instanceof SQLName) {
+            SQLName intoExpr = (SQLName) into.getExpr();
+
+            boolean isParam = intoExpr instanceof SQLIdentifierExpr && isParam((SQLIdentifierExpr) intoExpr);
+
+            if (!isParam) {
+                String ident = intoExpr.toString();
+                TableStat stat = getTableStat(ident);
+                if (stat != null) {
+                    stat.incrementInsertCount();
+                }
             }
         }
 
@@ -769,6 +781,36 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         return true;
+    }
+
+    public static boolean isParam(SQLIdentifierExpr x) {
+        if (x.isParameter() != null) {
+            return x.isParameter();
+        }
+
+        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof SQLCreateProcedureStatement) {
+                SQLCreateProcedureStatement stmt = (SQLCreateProcedureStatement) parent;
+                for (SQLParameter parameter : stmt.getParameters()) {
+                    if (x.equals(parameter.getName())) {
+                        x.setParameter(true);
+                        return true;
+                    }
+                }
+                break;
+            }
+
+            if (parent instanceof SQLBlockStatement) {
+                SQLBlockStatement stmt = (SQLBlockStatement) parent;
+                for (SQLParameter parameter : stmt.getParameters()) {
+                    if (x.equals(parameter.getName())) {
+                        x.setParameter(true);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public void endVisit(SQLSelectQueryBlock x) {
@@ -955,6 +997,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLIdentifierExpr x) {
+        if (isParam(x)) {
+            return false;
+        }
+
         String currentTable = getCurrentTable();
 
         if (containsSubQuery(currentTable)) {
@@ -1218,7 +1264,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLExprTableSource x) {
         if (isSimpleExprTableSource(x)) {
-            String ident = x.getExpr().toString();
+            SQLExpr expr = x.getExpr();
+            if (expr instanceof SQLIdentifierExpr && isParam((SQLIdentifierExpr) expr)) {
+                return false;
+            }
+
+            String ident = expr.toString();
 
             if (variants.containsKey(ident)) {
                 return false;
@@ -1587,7 +1638,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         setCurrentTable(table);
 
         TableStat stat = getTableStat(table);
-        stat.incrementDropIndexCount();
+        stat.incrementCreateIndexCount();
 
         Map<String, String> aliasMap = getAliasMap();
         putAliasMap(aliasMap, table, table);
@@ -1734,6 +1785,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         accept(x.getBlock());
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        String name = x.getName().toString();
+        this.variants.put(name, x);
+        accept(x.getBlock());
+        return false;
+    }
     
     @Override
     public boolean visit(SQLBlockStatement x) {
@@ -1742,8 +1801,20 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
             SQLExpr name = param.getName();
             this.variants.put(name.toString(), name);
+
+            param.accept(this);
         }
-        return true;
+
+        for (SQLStatement stmt : x.getStatementList()) {
+            stmt.accept(this);
+        }
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            exception.accept(this);
+        }
+
+        return false;
     }
     
     @Override
@@ -1977,6 +2048,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    //
-    //
+
+    @Override
+    public boolean visit(SQLDeclareStatement x) {
+        for (SQLDeclareItem item : x.getItems()) {
+            item.setParent(x);
+
+            SQLExpr name = item.getName();
+            this.variants.put(name.toString(), name);
+        }
+        return true;
+    }
 }

@@ -67,12 +67,10 @@ public class MySqlDeclareHandlerStatement extends MySqlStatementImpl{
 
 	@Override
 	public void accept0(MySqlASTVisitor visitor) {
-		// TODO Auto-generated method stub
-		 if (visitor.visit(this)) {
-	         acceptChild(visitor, spStatement);
-	        }
-	     visitor.endVisit(this);
-		
+		if (visitor.visit(this)) {
+			acceptChild(visitor, spStatement);
+		}
+		visitor.endVisit(this);
 	}
 
 }

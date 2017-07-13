@@ -690,7 +690,46 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         if ("NAMES".equalsIgnoreCase(ident)) {
-            // skip
+            String charset = lexer.stringVal();
+
+            SQLExpr varExpr = null;
+            boolean chars = false;
+            final Token token = lexer.token();
+            if (lexer.token() == Token.IDENTIFIER) {
+                lexer.nextToken();
+            } else if (lexer.token() == Token.DEFAULT) {
+                charset = "DEFAULT";
+                lexer.nextToken();
+            } else if (lexer.token() == Token.QUES) {
+                varExpr = new SQLVariantRefExpr("?");
+                lexer.nextToken();
+            } else {
+                chars = true;
+                accept(Token.LITERAL_CHARS);
+            }
+
+            if (identifierEquals("COLLATE")) {
+                MySqlCharExpr charsetExpr = new MySqlCharExpr(charset);
+                lexer.nextToken();
+
+                String collate = lexer.stringVal();
+                lexer.nextToken();
+                charsetExpr.setCollate(collate);
+
+                item.setValue(charsetExpr);
+            } else {
+                if (varExpr != null) {
+                    item.setValue(varExpr);
+                } else {
+                    item.setValue(chars
+                            ? new SQLCharExpr(charset)
+                            : new SQLIdentifierExpr(charset)
+                    );
+                }
+            }
+
+            item.setTarget(var);
+            return item;
         } else if ("CHARACTER".equalsIgnoreCase(ident)) {
             var = new SQLIdentifierExpr("CHARACTER SET");
             accept(Token.SET);
@@ -905,6 +944,7 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
 
             SQLExpr seperator = this.primary();
+            seperator.setParent(aggregateExpr);
 
             aggregateExpr.putAttribute("SEPARATOR", seperator);
         }
@@ -954,7 +994,7 @@ public class MySqlExprParser extends SQLExprParser {
                     lexer.nextToken();
                 }
                 SQLName tableSpace = this.name();
-                partitionDef.setTableSpace(tableSpace);
+                partitionDef.setTablespace(tableSpace);
             } else if (lexer.token() == Token.INDEX) {
                 lexer.nextToken();
                 acceptIdentifier("DIRECTORY");

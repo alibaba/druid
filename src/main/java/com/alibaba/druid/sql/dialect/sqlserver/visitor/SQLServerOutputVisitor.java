@@ -16,16 +16,14 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -85,9 +83,16 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             x.getWhere().accept(this);
         }
 
-        if (x.getGroupBy() != null) {
+        SQLSelectGroupByClause groupBy = x.getGroupBy();
+        if (groupBy != null) {
             println();
-            x.getGroupBy().accept(this);
+            groupBy.accept(this);
+        }
+
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            println();
+            orderBy.accept(this);
         }
 
         printFetchFirst(x);
@@ -386,18 +391,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public boolean visit(SQLServerDeclareStatement x) {
-        print0(ucase ? "DECLARE " : "declare ");
-        this.printAndAccept(x.getItems(), ", ");
-        return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerDeclareStatement x) {
-
-    }
-
-    @Override
     public boolean visit(SQLBlockStatement x) {
         print0(ucase ? "BEGIN" : "begin");
         incrementIndent();
@@ -431,20 +424,14 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
     }
     
-    @Override
-    public void endVisit(SQLServerSelect x) {
-        
-    }
-
-    @Override
-    public boolean visit(SQLServerSelect x) {
+    public boolean visit(SQLSelect x) {
         super.visit(x);
         if (x.isForBrowse()) {
             println();
             print0(ucase ? "FOR BROWSE" : "for browse");
         }
         
-        if (x.getForXmlOptions().size() > 0) {
+        if (x.getForXmlOptionsSize() > 0) {
             println();
             print0(ucase ? "FOR XML " : "for xml ");
             for (int i = 0; i < x.getForXmlOptions().size(); ++i) {
@@ -477,7 +464,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public boolean visit(SQLServerCommitStatement x) {
+    public boolean visit(SQLCommitStatement x) {
         print0(ucase ? "COMMIT" : "commit");
 
         if (x.isWork()) {
@@ -496,11 +483,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
 
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerCommitStatement x) {
-        
     }
 
     @Override

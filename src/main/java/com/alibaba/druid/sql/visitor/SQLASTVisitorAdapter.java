@@ -21,6 +21,9 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
@@ -556,7 +559,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLSavePointStatement x) {
-        return true;
+        return false;
     }
 
     @Override
@@ -1253,6 +1256,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCreateFunctionStatement x) {
+
+    }
+
+    @Override
     public boolean visit(SQLBlockStatement x) {
         return true;
     }
@@ -1587,5 +1600,76 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     @Override
     public boolean visit(SQLDescribeStatement x) {
         return true;
+    }
+
+    @Override
+    public boolean visit(SQLWhileStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLWhileStatement x) {
+
+    }
+
+
+    @Override
+    public boolean visit(SQLDeclareStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDeclareStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLReturnStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLReturnStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLArgument x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLArgument x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLCommitStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCommitStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLFlashbackExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLFlashbackExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLCreateMaterializedViewStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCreateMaterializedViewStatement x) {
+
     }
 }

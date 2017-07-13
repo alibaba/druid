@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -112,17 +114,10 @@ public class START_TRANSACTION_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SET @@autocommit = 0;", text);
+        Assert.assertEquals("SET autocommit = 0;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

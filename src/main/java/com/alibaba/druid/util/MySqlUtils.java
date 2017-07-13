@@ -15,14 +15,22 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.mysql.jdbc.ConnectionImpl;
+import com.mysql.jdbc.MySQLConnection;
+import com.mysql.jdbc.MysqlIO;
+
 import javax.sql.XAConnection;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MySqlUtils {
     static Class<?> utilClass;
@@ -86,5 +94,36 @@ public class MySqlUtils {
         }
 
         throw new SQLFeatureNotSupportedException();
+    }
+
+    public static String buildKillQuerySql(Connection connection, SQLException error) throws SQLException {
+        try {
+            ConnectionImpl connImpl = (ConnectionImpl) connection;
+            long threadId = connImpl.getId();
+            return  "KILL QUERY " + threadId;
+        } catch (Exception e) {
+            // skip
+        }
+        return null;
+    }
+
+    private static Set<String> keywords;
+
+    public static boolean isKeyword(String name) {
+        if (name == null) {
+            return false;
+        }
+
+        String name_lower = name.toLowerCase();
+
+        Set<String> words = keywords;
+
+        if (words == null) {
+            words = new HashSet<String>();
+            Utils.loadFromFile("META-INF/druid/parser/mysql/keywords", words);
+            keywords = words;
+        }
+
+        return words.contains(name_lower);
     }
 }

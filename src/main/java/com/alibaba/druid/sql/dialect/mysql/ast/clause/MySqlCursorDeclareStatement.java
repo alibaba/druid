@@ -42,12 +42,14 @@ public class MySqlCursorDeclareStatement extends MySqlStatementImpl{
 	}
 
 	public void setSelect(SQLSelectStatement select) {
+		if (select != null) {
+			select.setParent(this);
+		}
 		this.select = select;
 	}
 
 	@Override
 	public void accept0(MySqlASTVisitor visitor) {
-		// TODO Auto-generated method stub
 		 if (visitor.visit(this)) {
 	         acceptChild(visitor, select);
 	        }

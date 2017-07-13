@@ -18,5 +18,8 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLObject;
 
 public interface SQLSelectQuery extends SQLObject {
+    boolean isBracket();
+    void setBracket(boolean bracket);
 
+    SQLSelectQuery clone();
 }

@@ -418,4 +418,8 @@ public class ModelClause extends OracleSQLObjectImpl {
         }
 
     }
+
+    public ModelClause clone() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -20,7 +20,11 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSetStatement extends SQLStatementImpl {
@@ -43,6 +47,11 @@ public class SQLSetStatement extends SQLStatementImpl {
     public SQLSetStatement(SQLExpr target, SQLExpr value, String dbType){
         super (dbType);
         this.items.add(new SQLAssignItem(target, value));
+    }
+
+    public static SQLSetStatement plus(SQLName target) {
+        SQLExpr value = new SQLBinaryOpExpr(target.clone(), SQLBinaryOperator.Add, new SQLIntegerExpr(1));
+        return new SQLSetStatement(target, value);
     }
 
     public List<SQLAssignItem> getItems() {

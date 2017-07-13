@@ -26,8 +26,6 @@ import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
@@ -103,7 +101,7 @@ public class DALParserTest extends TestCase {
         SQLSetStatement set = (SQLSetStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET @@sysVar1 = ?", output);
+        Assert.assertEquals("SET sysVar1 = ?", output);
     }
     
     public void testSet_2() throws Exception {
@@ -112,7 +110,7 @@ public class DALParserTest extends TestCase {
         SQLSetStatement set = (SQLSetStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET @@`sysVar1` = ?, @@global.`var2` = 1", output);
+        Assert.assertEquals("SET `sysVar1` = ?, @@global.`var2` = 1", output);
     }
     
     public void testSet_3() throws Exception {
@@ -130,7 +128,7 @@ public class DALParserTest extends TestCase {
         SQLSetStatement set = (SQLSetStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET @@global.var1 = 1, @@var2 = 2", output);
+        Assert.assertEquals("SET @@global.var1 = 1, var2 = 2", output);
     }
     
     public void testSet_5() throws Exception {
@@ -139,7 +137,7 @@ public class DALParserTest extends TestCase {
         SQLSetStatement set = (SQLSetStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET @@global.var1 = 1, @@var2 = 2", output);
+        Assert.assertEquals("SET @@global.var1 = 1, var2 = 2", output);
     }
     
     public void testSetTxn_0() throws Exception {
@@ -181,7 +179,7 @@ public class DALParserTest extends TestCase {
     public void test_setNames() throws Exception {
         String sql = "SET names default ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetNamesStatement set = (MySqlSetNamesStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
         Assert.assertEquals("SET NAMES DEFAULT", output);
@@ -190,16 +188,16 @@ public class DALParserTest extends TestCase {
     public void test_setNames_1() throws Exception {
         String sql = "SET NAMEs 'utf8' collatE \"latin1_danish_ci\" ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetNamesStatement set = (MySqlSetNamesStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET NAMES utf8 COLLATE latin1_danish_ci", output);
+        Assert.assertEquals("SET NAMES 'utf8' COLLATE latin1_danish_ci", output);
     }
     
     public void test_setNames_2() throws Exception {
         String sql = "SET NAMEs utf8 ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetNamesStatement set = (MySqlSetNamesStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
         Assert.assertEquals("SET NAMES utf8", output);
@@ -208,16 +206,16 @@ public class DALParserTest extends TestCase {
     public void test_setCharSet() throws Exception {
         String sql = "SET CHARACTEr SEt 'utf8'  ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetCharSetStatement set = (MySqlSetCharSetStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET CHARACTER SET utf8", output);
+        Assert.assertEquals("SET CHARACTER SET 'utf8'", output);
     }
     
     public void test_setCharSet_1() throws Exception {
         String sql = "SET CHARACTEr SEt DEFaULT  ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        MySqlSetCharSetStatement set = (MySqlSetCharSetStatement) parser.parseStatementList().get(0);
+        SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
         Assert.assertEquals("SET CHARACTER SET DEFAULT", output);
@@ -645,7 +643,7 @@ public class DALParserTest extends TestCase {
         MySqlShowGrantsStatement show = (MySqlShowGrantsStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW GRANTS FOR 'root'@'localhost'", output);
+        assertEquals("SHOW GRANTS FOR 'root'@'localhost';", output);
     }
     
     public void test_show_grants_1() throws Exception {
@@ -953,7 +951,7 @@ public class DALParserTest extends TestCase {
         MySqlShowVariantsStatement show = (MySqlShowVariantsStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW VARIABLES LIKE '%size%'", output);
+        assertEquals("SHOW VARIABLES LIKE '%size%';", output);
     }
     
     public void test_show_variants_1() throws Exception {
@@ -962,7 +960,7 @@ public class DALParserTest extends TestCase {
         MySqlShowVariantsStatement show = (MySqlShowVariantsStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW GLOBAL VARIABLES LIKE '%size%'", output);
+        assertEquals("SHOW GLOBAL VARIABLES LIKE '%size%';", output);
     }
     
     public void test_show_variants_2() throws Exception {
@@ -971,7 +969,7 @@ public class DALParserTest extends TestCase {
         MySqlShowVariantsStatement show = (MySqlShowVariantsStatement) parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
-        Assert.assertEquals("SHOW SESSION VARIABLES LIKE '%size%'", output);
+        assertEquals("SHOW SESSION VARIABLES LIKE '%size%';", output);
     }
     
 //

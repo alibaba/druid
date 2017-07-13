@@ -55,7 +55,7 @@ public class OracleCreateTableTest25 extends OracleTest {
                             + "\n\tstate_province VARCHAR2(25)," //
                             + "\n\tcountry_id CHAR(2),"
                             + "\n\tCONSTRAINT loc_id_pk PRIMARY KEY (location_id)" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -67,10 +67,10 @@ public class OracleCreateTableTest25 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("locations_demo", "location_id")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("locations_demo", "location_id")));
     }
 }

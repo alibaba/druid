@@ -21,7 +21,7 @@ public class PGAlterTableSetDefault extends PGTest {
         print(statementList);
         
         Assert.assertEquals("ALTER TABLE products"
-                + "\n\tALTER COLUMN price SET DEFAULT 7.77", stmt.toString());
+                + "\n\tALTER COLUMN price SET DEFAULT 7.77;", stmt.toString());
 
         Assert.assertEquals(1, statementList.size());
 

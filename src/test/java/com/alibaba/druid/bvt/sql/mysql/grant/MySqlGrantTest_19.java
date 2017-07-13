@@ -41,7 +41,7 @@ public class MySqlGrantTest_19 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT FILE ON mydb.* TO 'someuser'@'somehost'", //
+        Assert.assertEquals("GRANT FILE ON mydb.* TO 'someuser'@'somehost';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

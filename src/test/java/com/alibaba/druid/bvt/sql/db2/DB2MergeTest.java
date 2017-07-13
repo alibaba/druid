@@ -63,12 +63,12 @@ public class DB2MergeTest extends DB2Test {
 
         Assert.assertEquals("MERGE INTO product T"
                 + "\nUSING sales S ON (S.id = T.id) "
-                + "\nWHEN MATCHED THEN UPDATE SET inventory = T.inventory - S.sold", //
+                + "\nWHEN MATCHED THEN UPDATE SET inventory = T.inventory - S.sold;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         
         Assert.assertEquals("merge into product T"
                 + "\nusing sales S on (S.id = T.id) "
-                + "\nwhen matched then update set inventory = T.inventory - S.sold", //
+                + "\nwhen matched then update set inventory = T.inventory - S.sold;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

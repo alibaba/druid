@@ -19,11 +19,7 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
@@ -40,20 +36,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -64,13 +47,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.Rea
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements OracleASTVisitor {
-
-    public boolean visit(OracleSelect x) {
-        return true;
-    }
-
-    public void endVisit(OracleSelect x) {
-    }
 
     @Override
     public void endVisit(OraclePLSQLCommitStatement astNode) {
@@ -104,11 +80,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleOuterExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleSelectForUpdate x) {
 
     }
 
@@ -195,12 +166,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleSelectForUpdate x) {
-
-        return true;
-    }
-
-    @Override
     public boolean visit(OracleSelectJoin x) {
 
         return true;
@@ -278,28 +243,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(PartitionExtensionClause x) {
-
-    }
-
-    @Override
-    public boolean visit(VersionsFlashbackQueryClause x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(VersionsFlashbackQueryClause x) {
-
-    }
-
-    @Override
-    public boolean visit(AsOfFlashbackQueryClause x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(AsOfFlashbackQueryClause x) {
 
     }
 
@@ -839,16 +782,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleCommitStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleCommitStatement x) {
-
-    }
-
-    @Override
     public boolean visit(OracleAlterTriggerStatement x) {
         return true;
     }
@@ -865,16 +798,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleAlterSynonymStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(AsOfSnapshotClause x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(AsOfSnapshotClause x) {
 
     }
 
@@ -949,12 +872,12 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleConntinueStatement x) {
+    public boolean visit(OracleContinueStatement x) {
         return true;
     }
 
     @Override
-    public void endVisit(OracleConntinueStatement x) {
+    public void endVisit(OracleContinueStatement x) {
 
     }
 
@@ -965,16 +888,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleRaiseStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleSavePointStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleSavePointStatement x) {
 
     }
 
@@ -995,16 +908,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleDropDbLinkStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(OracleDataTypeTimestamp x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleDataTypeTimestamp x) {
 
     }
 
@@ -1078,4 +981,75 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     }
 
+    @Override
+    public boolean visit(OracleSupplementalIdKey x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSupplementalIdKey x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleSupplementalLogGrp x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSupplementalLogGrp x) {
+
+    }
+
+    public boolean visit(OracleCreateTableStatement.Organization x) {
+        return true;
+    }
+
+    public void endVisit(OracleCreateTableStatement.Organization x) {
+
+    }
+
+    public boolean visit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
+        return true;
+    }
+
+    public void endVisit(OracleCreateTableStatement.OracleExternalRecordFormat x) {
+
+    }
+    public boolean visit(OracleCreateTableStatement.OIDIndex x) {
+        return true;
+    }
+
+    public void endVisit(OracleCreateTableStatement.OIDIndex x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleCreatePackageStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleCreatePackageStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleExecuteImmediateStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleExecuteImmediateStatement x) {
+
+    }
+    @Override
+    public boolean visit(OracleTreatExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleTreatExpr x) {
+
+    }
 }

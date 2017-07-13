@@ -23,6 +23,8 @@ public class SQLSubPartition extends SQLObjectImpl {
 
     protected SQLPartitionValue values;
 
+    private SQLName             tableSpace;
+
     public SQLName getName() {
         return name;
     }
@@ -45,10 +47,22 @@ public class SQLSubPartition extends SQLObjectImpl {
         this.values = values;
     }
 
+    public SQLName getTableSpace() {
+        return tableSpace;
+    }
+
+    public void setTableSpace(SQLName tableSpace) {
+        if (tableSpace != null) {
+            tableSpace.setParent(this);
+        }
+        this.tableSpace = tableSpace;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
+            acceptChild(visitor, tableSpace);
             acceptChild(visitor, values);
         }
         visitor.endVisit(this);

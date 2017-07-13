@@ -30,6 +30,6 @@ public class SQLServerStartTransactionTest extends TestCase {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
-        assertEquals("BEGIN TRANSACTION T1", SQLUtils.toSQLServerString(stmt));
+        assertEquals("BEGIN TRANSACTION T1;", SQLUtils.toSQLServerString(stmt));
     }
 }

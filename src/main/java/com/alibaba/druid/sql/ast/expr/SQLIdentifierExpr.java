@@ -15,15 +15,17 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
-    private String           name;
+    protected String          name;
 
-    private transient String lowerName;
+    private transient String  lowerName;
+    private transient Boolean parameter;
 
     public SQLIdentifierExpr(){
 
@@ -53,8 +55,12 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return lowerName;
     }
 
-    public void setLowerName(String lowerName) {
-        this.lowerName = lowerName;
+    public Boolean isParameter() {
+        return parameter;
+    }
+
+    public void setParameter(Boolean parameter) {
+        this.parameter = parameter;
     }
 
     public void output(StringBuffer buf) {
@@ -97,7 +103,37 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return true;
     }
 
+    public boolean equalsIgnoreCase(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SQLIdentifierExpr)) {
+            return false;
+        }
+        SQLIdentifierExpr other = (SQLIdentifierExpr) obj;
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+
+        } else if (!SQLUtils.normalize(name).equalsIgnoreCase(SQLUtils.normalize(other.name))) {
+            return false;
+        }
+        return true;
+    }
+
     public String toString() {
         return this.name;
+    }
+
+    public SQLIdentifierExpr clone() {
+        return new SQLIdentifierExpr(this.name);
+    }
+
+    public String normalizedName() {
+        return SQLUtils.normalize(name);
     }
 }

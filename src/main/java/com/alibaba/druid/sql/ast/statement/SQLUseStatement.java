@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLUseStatement extends SQLStatementImpl implements SQLStatement {
+public class SQLUseStatement extends SQLStatementImpl {
 
     private SQLName database;
     

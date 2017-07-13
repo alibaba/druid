@@ -72,12 +72,10 @@ public class Oracle_pl_for_2 extends OracleTest {
 			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE);
 			System.out.println(output);
 			assertEquals("DROP TABLE employees_temp;\n" +
-							"\n" +
 							"CREATE TABLE employees_temp\n" +
 							"AS\n" +
 							"SELECT *\n" +
 							"FROM employees;\n" +
-							"\n" +
 							"DECLARE\n" +
 							"\tTYPE NumList IS VARRAY(20) OF NUMBER;\n" +
 							"\tdepts NumList := NumList(10, 30, 70);\n" +
@@ -86,20 +84,17 @@ public class Oracle_pl_for_2 extends OracleTest {
 							"\tLOOP\n" +
 							"\t\tDELETE FROM employees_temp\n" +
 							"\t\tWHERE department_id = depts(i);\n" +
-							"\t\t;\n" +
 							"\tEND LOOP;\n" +
-							"END;\n", //
+							"END;", //
 					output);
 		}
 		{
 			String output = SQLUtils.toSQLString(statementList, JdbcConstants.ORACLE, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 			assertEquals("drop table employees_temp;\n" +
-							"\n" +
 							"create table employees_temp\n" +
 							"as\n" +
 							"select *\n" +
 							"from employees;\n" +
-							"\n" +
 							"declare\n" +
 							"\ttype NumList is VARRAY(20) OF NUMBER;\n" +
 							"\tdepts NumList := NumList(10, 30, 70);\n" +
@@ -108,9 +103,8 @@ public class Oracle_pl_for_2 extends OracleTest {
 							"\tloop\n" +
 							"\t\tdelete from employees_temp\n" +
 							"\t\twhere department_id = depts(i);\n" +
-							"\t\t;\n" +
 							"\tend loop;\n" +
-							"end;\n", //
+							"end;", //
 					output);
 		}
 	}

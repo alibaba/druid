@@ -94,7 +94,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("LOCK TABLES t1 READ", output);
+        Assert.assertEquals("LOCK TABLES t1 READ;", output);
     }
     
     public void test_lockTable_1() throws Exception {
@@ -103,7 +103,7 @@ public class MTSParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("LOCK TABLES t2 READ LOCAL", output);
+        Assert.assertEquals("LOCK TABLES t2 READ LOCAL;", output);
     }
     
     public void test_unlockTable() throws Exception {

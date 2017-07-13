@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLKeep;
@@ -115,6 +116,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         this.ignoreNulls = ignoreNulls;
     }
 
+    public String toString() {
+        return SQLUtils.toSQLString(this);
+    }
+
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -176,4 +181,29 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+    public SQLAggregateExpr clone() {
+        SQLAggregateExpr x = new SQLAggregateExpr(methodName);
+
+        x.option = option;
+
+        for (SQLExpr arg : arguments) {
+            x.addArgument(arg.clone());
+        }
+
+        if (keep != null) {
+            x.setKeep(keep.clone());
+        }
+
+        if (over != null) {
+            x.setOver(over.clone());
+        }
+
+        if (withinGroup != null) {
+            x.setWithinGroup(withinGroup.clone());
+        }
+
+        x.ignoreNulls = ignoreNulls;
+
+        return x;
+    }
 }

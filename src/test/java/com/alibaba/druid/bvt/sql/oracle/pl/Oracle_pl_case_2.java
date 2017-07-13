@@ -75,7 +75,7 @@ public class Oracle_pl_case_2 extends OracleTest {
 							"\tWHEN 'H' THEN award_bonus(l_employee_id); \n" +
 							"\tWHEN 'C' THEN award_commissioned_bonus(l_employee_id);\n" +
 							"\tELSE RAISE invalid_employee_type;\n" +
-							"END CASE", //
+							"END CASE;", //
 					output);
 		}
 		{
@@ -85,7 +85,7 @@ public class Oracle_pl_case_2 extends OracleTest {
 							"\twhen 'H' then award_bonus(l_employee_id); \n" +
 							"\twhen 'C' then award_commissioned_bonus(l_employee_id);\n" +
 							"\telse raise invalid_employee_type;\n" +
-							"end case", //
+							"end case;", //
 					output);
 		}
 	}

@@ -42,7 +42,7 @@ public class MySqlAlterTableTest9 extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE t2" + //
                             "\n\tDROP COLUMN c," + //
-                            "\n\tDROP COLUMN d", output);
+                            "\n\tDROP COLUMN d;", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());

@@ -52,21 +52,28 @@ public class OracleCreateTableTest18 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"AUTHORS\" (" //
-                                    + "\n\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE," //
-                                    + "\n\t\"PERSON_ID\" NUMBER(38, 0) NOT NULL ENABLE," //
-                                    + "\n\t\"LOGIN\" VARCHAR2(100 BYTE)," //
-                                    + "\n\t\"CREATED_AT\" TIMESTAMP(6)," //
-                                    + "\n\t\"UPDATED_AT\" TIMESTAMP(6)," //
-                                    + "\n\tPRIMARY KEY (\"ID\")"
-                                    + "\n\tUSING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS TABLESPACE \"USERS\" ENABLE" //
-                                    + "\n)"
-                                    + "\nPCTFREE 10"
-                                    + "\nINITRANS 1"
-                                    + "\nMAXTRANS 255"
-                                    + "\nNOCOMPRESS"
-                                    + "\nLOGGING"
-                                    + "\nTABLESPACE \"USERS\"", //
+        Assert.assertEquals("CREATE TABLE \"SONAR\".\"AUTHORS\" (\n" +
+                        "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"PERSON_ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"LOGIN\" VARCHAR2(100 BYTE),\n" +
+                        "\t\"CREATED_AT\" TIMESTAMP(6),\n" +
+                        "\t\"UPDATED_AT\" TIMESTAMP(6),\n" +
+                        "\tPRIMARY KEY (\"ID\")\n" +
+                        "\t\tUSING INDEX\n" +
+                        "\t\tPCTFREE 10\n" +
+                        "\t\tINITRANS 2\n" +
+                        "\t\tMAXTRANS 255\n" +
+                        "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE\n" +
+                        ")\n" +
+                        "PCTFREE 10\n" +
+                        "PCTUSED 40\n" +
+                        "INITRANS 1\n" +
+                        "MAXTRANS 255\n" +
+                        "NOCOMPRESS\n" +
+                        "LOGGING\n" +
+                        "TABLESPACE \"USERS\";", //
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

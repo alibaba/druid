@@ -21,7 +21,7 @@ public class PGAlterTableDropDefault extends PGTest {
         print(statementList);
         
         Assert.assertEquals("ALTER TABLE products"
-                + "\n\tALTER COLUMN price DROP DEFAULT", stmt.toString());
+                + "\n\tALTER COLUMN price DROP DEFAULT;", stmt.toString());
 
         Assert.assertEquals(1, statementList.size());
 
