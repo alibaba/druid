@@ -39,7 +39,6 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
@@ -200,7 +199,7 @@ public class OracleExprParser extends SQLExprParser {
         }
         
         if ("TIMESTAMP".equalsIgnoreCase(typeName)) {
-            OracleDataTypeTimestamp timestamp = new OracleDataTypeTimestamp();
+            SQLDataTypeImpl timestamp = new SQLDataTypeImpl(typeName);
             
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
@@ -214,9 +213,9 @@ public class OracleExprParser extends SQLExprParser {
                 if (identifierEquals("LOCAL")) {
                     lexer.nextToken();
                     timestamp.setWithLocalTimeZone(true);
-                } else {
-                    timestamp.setWithTimeZone(true);
                 }
+
+                timestamp.setWithTimeZone(true);
                 
                 acceptIdentifier("TIME");
                 acceptIdentifier("ZONE");

@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
@@ -368,10 +367,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleDropDbLinkStatement x);
 
     void endVisit(OracleDropDbLinkStatement x);
-
-    boolean visit(OracleDataTypeTimestamp x);
-
-    void endVisit(OracleDataTypeTimestamp x);
 
     boolean visit(OracleDataTypeIntervalYear x);
 

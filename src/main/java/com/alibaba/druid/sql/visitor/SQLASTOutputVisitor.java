@@ -721,6 +721,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             printAndAccept(x.getArguments(), ", ");
             print(')');
         }
+
+        Boolean withTimeZone = x.getWithTimeZone();
+        if (withTimeZone != null) {
+            if (withTimeZone) {
+                if (x.isWithLocalTimeZone()) {
+                    print0(ucase ? " WITH LOCAL TIME ZONE" : " with local time zone");
+                } else {
+                    print0(ucase ? " WITH TIME ZONE" : " with time zone");
+                }
+            } else {
+                print0(ucase ? " WITHOUT TIME ZONE" : " without time zone");
+            }
+        }
     }
 
     public boolean visit(SQLCharacterDataType x) {

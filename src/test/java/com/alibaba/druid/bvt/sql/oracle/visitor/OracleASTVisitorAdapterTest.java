@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
@@ -152,7 +151,6 @@ public class OracleASTVisitorAdapterTest extends TestCase {
         new SQLDropSequenceStatement().accept(adapter);
         new OracleDataTypeIntervalDay().accept(adapter);
         new OracleDataTypeIntervalYear().accept(adapter);
-        new OracleDataTypeTimestamp().accept(adapter);
         new OracleDropDbLinkStatement().accept(adapter);
         new OracleCreateDatabaseDbLinkStatement().accept(adapter);
         new SQLCreateProcedureStatement().accept(adapter);

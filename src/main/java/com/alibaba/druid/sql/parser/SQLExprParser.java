@@ -1844,8 +1844,10 @@ public class SQLExprParser extends SQLParser {
             typeName += ' ' + lexer.stringVal();
             lexer.nextToken();
         }
-        
+
         SQLDataType dataType = new SQLDataTypeImpl(typeName);
+
+
         return parseDataTypeRest(dataType);
     }
 
@@ -1859,6 +1861,20 @@ public class SQLExprParser extends SQLParser {
         if (identifierEquals("PRECISION") && dataType.getName().equalsIgnoreCase("DOUBLE")) {
             lexer.nextToken();
             dataType.setName("DOUBLE PRECISION");
+        }
+
+        if ("timestamp".equalsIgnoreCase(dataType.getName())) {
+            if (identifierEquals("WITHOUT")) {
+                lexer.nextToken();
+                acceptIdentifier("TIME");
+                acceptIdentifier("ZONE");
+                dataType.setWithTimeZone(false);
+            } else if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                acceptIdentifier("TIME");
+                acceptIdentifier("ZONE");
+                dataType.setWithTimeZone(true);
+            }
         }
 
         return dataType;
