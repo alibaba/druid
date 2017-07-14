@@ -20,7 +20,7 @@ Gradle
 compile 'com.alibaba:druid-spring-boot-starter:VERSION_CODE'
 
 ```
-注：请在 [这里][1] 选择一个发行版本号，或者在 [这里][2] 查看最新发行版本号，替换 `VERSION_CODE` ，例如 `1.1.1`。
+注：请在 [这里][1] 选择一个发行版本号，或者在 [这里][2] 查看最新发行版本号，**替换 `VERSION_CODE`** ，例如 `1.1.1`。
 
 [1]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.alibaba%22%20AND%20a%3A%22druid-spring-boot-starter%22
 [2]: https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/
