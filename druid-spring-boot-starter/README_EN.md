@@ -20,7 +20,7 @@ Gradle
 compile 'com.alibaba:druid-spring-boot-starter:VERSION_CODE'
 
 ```
-Note: Please select a real version name in [Here][1], or check the latest release version name in [Here][2], replace ```VERSION_CODE```,  such as ```1.1.1```
+Note: Please select a real version name in [Here][1], or check the latest release version name in [Here][2], replace ```VERSION_CODE```,  such as ```1.1.1``` .
 
 [1]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.alibaba%22%20AND%20a%3A%22druid-spring-boot-starter%22
 [2]: https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/

@@ -2,7 +2,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/)
 
 ## 中文 | [English](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README_EN.md)  
-Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控
+Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控。
 
 ## 如何使用
 在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖即可。
@@ -20,13 +20,13 @@ Gradle
 compile 'com.alibaba:druid-spring-boot-starter:VERSION_CODE'
 
 ```
-注：请在 [这里][1] 选择一个发行版本号，或者在 [这里][2] 查看最新发行版本号，替换 `VERSION_CODE` ，例如 `1.1.1`
+注：请在 [这里][1] 选择一个发行版本号，或者在 [这里][2] 查看最新发行版本号，替换 `VERSION_CODE` ，例如 `1.1.1`。
 
 [1]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.alibaba%22%20AND%20a%3A%22druid-spring-boot-starter%22
 [2]: https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/
 
 ## 配置属性
-Druid Spring Boot Starter 配置属性名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid数据库连接池和监控，如果没有配置则使用默认值。
+Druid Spring Boot Starter 配置属性的名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid数据库连接池和监控，如果没有配置则使用默认值。
 ```xml
 # JDBC配置
 spring.datasource.druid.url= # 或spring.datasource.url= 
