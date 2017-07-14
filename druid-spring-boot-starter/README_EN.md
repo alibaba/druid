@@ -2,12 +2,11 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-## 中文 | [English](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README_EN.md)  
+## English | [中文](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README.md)
 Spring Boot with Druid support,help you simplify Druid config in Spring Boot.
 
-## 如何使用
-在 Spring Boot 项目的```pom.xml```中添加以下依赖：
-
+## Usage
+Add the following dependency in pom.xml.
 ```xml
 <dependency>
    <groupId>com.alibaba</groupId>
@@ -15,23 +14,23 @@ Spring Boot with Druid support,help you simplify Druid config in Spring Boot.
    <version>1.1.1</version>
 </dependency>
 ```
-## 配置属性
-Druid Spring Boot Starter 配置属性名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid，如果没有配置则使用默认值。
+## Properties 
+Druid Spring Boot Starter properties name in full compliance with Druid configuration, you can configure Druid with the following configuration properties, using default values if not configured.
 ```xml
-# JDBC配置
-spring.datasource.druid.url= # 或spring.datasource.url= 
-spring.datasource.druid.username= # 或spring.datasource.username=
-spring.datasource.druid.password= # 或spring.datasource.password=
-spring.datasource.druid.driver-class-name= #或 spring.datasource.driver-class-name=
+# JDBC
+spring.datasource.druid.url= # or spring.datasource.url= 
+spring.datasource.druid.username= # or spring.datasource.username=
+spring.datasource.druid.password= # or spring.datasource.password=
+spring.datasource.druid.driver-class-name= # or spring.datasource.driver-class-name=
 
-# 连接池配置，说明请参考Druid Wiki，DruidDataSource配置属性列表
+# Connection pool properties, detail see Druid Wiki
 spring.datasource.druid.initial-size=
 spring.datasource.druid.max-active=
 spring.datasource.druid.min-idle=
 spring.datasource.druid.max-wait=
 spring.datasource.druid.pool-prepared-statements=
 spring.datasource.druid.max-pool-prepared-statement-per-connection-size= 
-spring.datasource.druid.max-open-prepared-statements= #等价于上面的max-pool-prepared-statement-per-connection-size
+spring.datasource.druid.max-open-prepared-statements= #Equivalent to the above 'max-pool-prepared-statement-per-connection-size'
 spring.datasource.druid.validation-query=
 spring.datasource.druid.validation-query-timeout=
 spring.datasource.druid.test-on-borrow=
@@ -40,10 +39,10 @@ spring.datasource.druid.test-while-idle=
 spring.datasource.druid.time-between-eviction-runs-millis=
 spring.datasource.druid.min-evictable-idle-time-millis=
 spring.datasource.druid.max-evictable-idle-time-millis=
-spring.datasource.druid.filters= #默认值stat，配置多个英文逗号分隔
+spring.datasource.druid.filters= #Druid filters, default value true, multiple separated by comma.
 
-# WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
-spring.datasource.druid.web-stat-filter.enabled= #是否启用StatFilter默认值true
+# WebStatFilter properties, detail see Druid Wiki
+spring.datasource.druid.web-stat-filter.enabled= #Enable StatFilter, default value true.
 spring.datasource.druid.web-stat-filter.urlPattern=
 spring.datasource.druid.web-stat-filter.exclusions=
 spring.datasource.druid.web-stat-filter.sessionStatMaxCount=
@@ -52,8 +51,8 @@ spring.datasource.druid.web-stat-filter.principalSessionName=
 spring.datasource.druid.web-stat-filter.principalCookieName=
 spring.datasource.druid.web-stat-filter.profileEnable=
 
-# StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
-spring.datasource.druid.stat-view-servlet.enabled= #是否启用StatViewServlet默认值true
+# StatViewServlet properties, detail see Druid Wiki
+spring.datasource.druid.stat-view-servlet.enabled= #Enable StatViewServlet, default value true.
 spring.datasource.druid.stat-view-servlet.urlPattern=
 spring.datasource.druid.stat-view-servlet.resetEnable=
 spring.datasource.druid.stat-view-servlet.loginUsername=
@@ -61,30 +60,30 @@ spring.datasource.druid.stat-view-servlet.loginPassword=
 spring.datasource.druid.stat-view-servlet.allow=
 spring.datasource.druid.stat-view-servlet.deny=
 
-# Spring监控配置，说明请参考Druid Github Wiki，配置_Druid和Spring关联监控配置
-spring.datasource.druid.aop-patterns= # Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔
-# 如果spring.datasource.druid.aop-patterns要代理的类没有定义interface请设置spring.aop.proxy-target-class=true
+# With Spring monitoring properties, detail see Druid Wiki
+spring.datasource.druid.aop-patterns= # Spring monitoring AOP point, such as x.y.z.service.*, multiple separated by comma.
+# If 'spring.datasource.druid.aop-patterns' to be the agent class does not define interface need set 'spring.aop.proxy-target-class = true' .
 ```
-注：配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的。
+Note: The format of the configuration file you can choose ```.properties``` or``` .yml```, the effect is the same.
+## How to Extended Configuration
+If the configuration properties provided by the auto-configuration do not meet your needs, you can use ```DruidDataSourceBuilder``` to create ``` DruidDataSource```, and then do some custom configuration, as follows.
 
-## 如何扩展配置
-如果自动配置提供的配置属性不能满足你的需要，你可以使用```DruidDataSourceBuilder```来创建```DruidDataSource```，然后进行一些自定义配置，像下面这样。
 ```java
 @Bean
 public DataSource dataSource(Environment env){
     DruidDataSource dataSource = DruidDataSourceBuilder
             .create()
-            .build(env,"spring.datasource.druid.");//使用自定义前缀
+            .build(env,"spring.datasource.druid.");//Use a custom prefix
     
-    //dataSource.setProxyFilters(filters);//添加自定义Filter
-    //...进行其他配置
+    //dataSource.setProxyFilters(filters);//Add a custom Filter
+    //...Other
     return dataSource;
 }
 ```
-注：[Issue #1800](https://github.com/alibaba/druid/issues/1800) 有一个自定义```WallConfig、Filter```的例子，可供参考。
+Note: [Issue # 1800] (https://github.com/alibaba/druid/issues/1800) has a custom ```WallConfig, Filter``` example for reference.
 
-## 如何配置多数据源
-1. 添加数据源相关配置
+## How to Configuration Multiple DataSource
+1. Add DataSource properties
 ```xml
 spring.datasource.druid.one.url=
 spring.datasource.druid.one.username=
@@ -100,7 +99,7 @@ spring.datasource.druid.two.driver-class-name=
 spring.datasource.druid.two.max-active=
 ...
 ```
-2. 使用```DruidDataSourceBuilder```创建数据源
+2. Use```DruidDataSourceBuilder```create DataSource
 ```java
 @Bean
 @Primary
@@ -117,9 +116,10 @@ public DataSource dataSourceTwo(Environment env){
 }
 ```
 
-## 演示
-克隆项目，运行```test```包内的```DemoApplication```。
-## 参考
-[Druid Wiki](https://github.com/alibaba/druid/wiki/%E9%A6%96%E9%A1%B5)
+## Samples
+Clone the project, run ```DemoApplication``` within the ```test``` package.
 
-[Spring Boot Reference](http://docs.spring.io/spring-boot/docs/1.5.1.RELEASE/reference/html/)
+## Reference
+- [Druid Wiki](https://github.com/alibaba/druid/wiki)
+
+- [Spring Boot Reference](http://docs.spring.io/spring-boot/docs/1.5.1.RELEASE/reference/html/)
