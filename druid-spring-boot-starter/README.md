@@ -5,15 +5,26 @@
 Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控
 
 ## 如何使用
-在 Spring Boot 项目的```pom.xml```中添加以下依赖：
+在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖即可。
 
+Maven
 ```xml
 <dependency>
    <groupId>com.alibaba</groupId>
    <artifactId>druid-spring-boot-starter</artifactId>
-   <version>1.1.1</version>
+   <version>VERSION_CODE</version>
 </dependency>
 ```
+Gradle
+```xml
+compile 'com.alibaba:druid-spring-boot-starter:VERSION_CODE'
+
+```
+注：请在 [这里][1] 选择一个发行版本号，或者在 [这里][2] 查看最新发行版本号，替换 `VERSION_CODE` ，例如 `1.1.1`
+
+[1]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.alibaba%22%20AND%20a%3A%22druid-spring-boot-starter%22
+[2]: https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/
+
 ## 配置属性
 Druid Spring Boot Starter 配置属性名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid数据库连接池和监控，如果没有配置则使用默认值。
 ```xml
