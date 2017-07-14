@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## 中文 | [English](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README_EN.md)  
-Spring Boot with Druid support,help you simplify Druid config in Spring Boot.
+Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控
 
 ## 如何使用
 在 Spring Boot 项目的```pom.xml```中添加以下依赖：
@@ -16,7 +16,7 @@ Spring Boot with Druid support,help you simplify Druid config in Spring Boot.
 </dependency>
 ```
 ## 配置属性
-Druid Spring Boot Starter 配置属性名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid，如果没有配置则使用默认值。
+Druid Spring Boot Starter 配置属性名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid数据库连接池和监控，如果没有配置则使用默认值。
 ```xml
 # JDBC配置
 spring.datasource.druid.url= # 或spring.datasource.url= 

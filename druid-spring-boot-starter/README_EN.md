@@ -15,7 +15,7 @@ Add the following dependency in pom.xml.
 </dependency>
 ```
 ## Properties 
-Druid Spring Boot Starter properties name in full compliance with Druid configuration, you can configure Druid with the following configuration properties, using default values if not configured.
+Druid Spring Boot Starter properties name in full compliance with Druid configuration, you can configure the Druid database connection pool and monitor the configuration properties through the following configuration properties, using default values if not configured.
 ```xml
 # JDBC
 spring.datasource.druid.url= # or spring.datasource.url= 
