@@ -1,19 +1,23 @@
 # Druid Spring Boot Starter
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/)
+[![GitHub release](https://img.shields.io/github/release/alibaba/druid.svg)](https://github.com/alibaba/druid/releases)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
+## 中文 | [English](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README_EN.md)  
 Spring Boot with Druid support,help you simplify Druid config in Spring Boot.
 
-### 如何使用
+## 如何使用
 在 Spring Boot 项目的```pom.xml```中添加以下依赖：
 
 ```xml
-  <dependency>
-       <groupId>com.alibaba</groupId>
-       <artifactId>druid-spring-boot-starter</artifactId>
-       <version>1.1.1</version>
-  </dependency>
+<dependency>
+   <groupId>com.alibaba</groupId>
+   <artifactId>druid-spring-boot-starter</artifactId>
+   <version>1.1.1</version>
+</dependency>
 ```
-### 配置项
-Druid Spring Boot Starter 配置项参数名称完全遵照Druid，你可以通过自定义配置去覆盖默认值。
+## 配置属性
+Druid Spring Boot Starter 配置属性名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid，如果没有配置则使用默认值。
 ```xml
 # JDBC配置
 spring.datasource.druid.url= # 或spring.datasource.url= 
@@ -62,7 +66,25 @@ spring.datasource.druid.stat-view-servlet.deny=
 spring.datasource.druid.aop-patterns= # Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔
 # 如果spring.datasource.druid.aop-patterns要代理的类没有定义interface请设置spring.aop.proxy-target-class=true
 ```
-### 如何配置多数据源
+注：配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的。
+
+## 如何扩展配置
+如果默认提供的自动配置不能满足你的需要，你可以使用```DruidDataSourceBuilder```来创建```DruidDataSource```，像下面这样。
+```java
+@Bean
+public DataSource dataSource(Environment env){
+    DruidDataSource dataSource = DruidDataSourceBuilder
+            .create()
+            .build(env,"spring.datasource.druid.");//使用自定义前缀
+    
+    //dataSource.setProxyFilters(filters);//添加自定义Filter
+    //...进行其他配置
+    return dataSource;
+}
+```
+注：[Issue #1800](https://github.com/alibaba/druid/issues/1800) 有一个自定义```WallConfig、Filter```的例子，可供参考。
+
+## 如何配置多数据源
 1. 添加数据源相关配置
 ```xml
 spring.datasource.druid.one.url=
@@ -96,9 +118,9 @@ public DataSource dataSourceTwo(Environment env){
 }
 ```
 
-### 演示
+## 演示
 克隆项目，运行```test```包内的```DemoApplication```。
-### 参考
+## 参考
 [Druid Wiki](https://github.com/alibaba/druid/wiki/%E9%A6%96%E9%A1%B5)
 
 [Spring Boot Reference](http://docs.spring.io/spring-boot/docs/1.5.1.RELEASE/reference/html/)
