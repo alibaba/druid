@@ -1,12 +1,12 @@
 # Druid Spring Boot Starter
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/)
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## English | [中文](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README.md)
 Spring Boot with Druid support,help you simplify Druid config in Spring Boot.
 
 ## Usage
 Add the following dependency in pom.xml.
+
 ```xml
 <dependency>
    <groupId>com.alibaba</groupId>
@@ -80,7 +80,7 @@ public DataSource dataSource(Environment env){
     return dataSource;
 }
 ```
-Note: [Issue # 1800] (https://github.com/alibaba/druid/issues/1800) has a custom ```WallConfig, Filter``` example for reference.
+Note: [Issue # 1800](https://github.com/alibaba/druid/issues/1800) has a custom ```WallConfig, Filter``` example for reference.
 
 ## How to Configuration Multiple DataSource
 1. Add DataSource properties
@@ -122,4 +122,4 @@ Clone the project, run ```DemoApplication``` within the ```test``` package.
 ## Reference
 - [Druid Wiki](https://github.com/alibaba/druid/wiki)
 
-- [Spring Boot Reference](http://docs.spring.io/spring-boot/docs/1.5.1.RELEASE/reference/html/)
+- [Spring Boot Reference](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)

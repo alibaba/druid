@@ -1,6 +1,5 @@
 # Druid Spring Boot Starter
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/)
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## 中文 | [English](https://github.com/alibaba/druid/blob/master/druid-spring-boot-starter/README_EN.md)  
 Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控
@@ -122,4 +121,4 @@ public DataSource dataSourceTwo(Environment env){
 ## 参考
 [Druid Wiki](https://github.com/alibaba/druid/wiki/%E9%A6%96%E9%A1%B5)
 
-[Spring Boot Reference](http://docs.spring.io/spring-boot/docs/1.5.1.RELEASE/reference/html/)
+[Spring Boot Reference](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
