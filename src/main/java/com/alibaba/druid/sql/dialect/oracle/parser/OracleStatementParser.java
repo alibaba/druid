@@ -987,19 +987,28 @@ public class OracleStatementParser extends SQLStatementParser {
 
     public SQLStatement parseSet() {
         accept(Token.SET);
-        acceptIdentifier("TRANSACTION");
 
-        OracleSetTransactionStatement stmt = new OracleSetTransactionStatement();
-
-        if (identifierEquals("READ")) {
+        if (identifierEquals("TRANSACTION")) {
             lexer.nextToken();
-            acceptIdentifier("ONLY");
-            stmt.setReadOnly(true);
+
+            OracleSetTransactionStatement stmt = new OracleSetTransactionStatement();
+
+            if (identifierEquals("READ")) {
+                lexer.nextToken();
+                acceptIdentifier("ONLY");
+                stmt.setReadOnly(true);
+            }
+
+            acceptIdentifier("NAME");
+
+            stmt.setName(this.exprParser.expr());
+            return stmt;
         }
 
-        acceptIdentifier("NAME");
+        SQLSetStatement stmt = new SQLSetStatement(getDbType());
+        parseAssignItems(stmt.getItems(), stmt);
 
-        stmt.setName(this.exprParser.expr());
+        stmt.putAttribute("parser.set", Boolean.TRUE);
         return stmt;
     }
 
