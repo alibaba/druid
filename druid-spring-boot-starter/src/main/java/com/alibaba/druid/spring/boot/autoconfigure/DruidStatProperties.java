@@ -52,7 +52,10 @@ public class DruidStatProperties {
     }
 
     public static class StatViewServlet {
-        private boolean enabled;
+        /**
+         * Enable StatViewServlet.
+         */
+        private boolean enabled = true;
         private String urlPattern;
         private String allow;
         private String deny;
@@ -118,7 +121,10 @@ public class DruidStatProperties {
     }
 
     public static class WebStatFilter {
-        private boolean enabled;
+        /**
+         * Enable WebStatFilter.
+         */
+        private boolean enabled = true;
         private String urlPattern;
         private String exclusions;
         private String sessionStatMaxCount;
