@@ -179,6 +179,8 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         NATURAL_JOIN("NATURAL JOIN"), //
         NATURAL_INNER_JOIN("NATURAL INNER JOIN"), //
         LEFT_OUTER_JOIN("LEFT JOIN"), //
+        LEFT_SEMI_JOIN("LEFT SEMI JOIN"), //
+        LEFT_ANTI_JOIN("LEFT ANTI JOIN"), //
         RIGHT_OUTER_JOIN("RIGHT JOIN"), //
         FULL_OUTER_JOIN("FULL JOIN"),//
         STRAIGHT_JOIN("STRAIGHT_JOIN"), //

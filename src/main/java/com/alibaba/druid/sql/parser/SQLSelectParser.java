@@ -471,12 +471,22 @@ public class SQLSelectParser extends SQLParser {
 
         if (lexer.token() == Token.LEFT) {
             lexer.nextToken();
-            if (lexer.token() == Token.OUTER) {
+
+            if (identifierEquals("SEMI")) {
                 lexer.nextToken();
+                joinType = SQLJoinTableSource.JoinType.LEFT_SEMI_JOIN;
+            } else if (identifierEquals("ANTI")) {
+                lexer.nextToken();
+                joinType = SQLJoinTableSource.JoinType.LEFT_ANTI_JOIN;
+            } else if (lexer.token() == Token.OUTER) {
+                lexer.nextToken();
+                joinType = SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
+            } else {
+                joinType = SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
             }
 
             accept(Token.JOIN);
-            joinType = SQLJoinTableSource.JoinType.LEFT_OUTER_JOIN;
+
         } else if (lexer.token() == Token.RIGHT) {
             lexer.nextToken();
             if (lexer.token() == Token.OUTER) {
