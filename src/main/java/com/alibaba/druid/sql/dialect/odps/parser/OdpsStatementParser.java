@@ -141,8 +141,13 @@ public class OdpsStatementParser extends SQLStatementParser {
         }
 
         if (identifierEquals("READ")) {
-            lexer.nextToken();
             OdpsReadStatement stmt = new OdpsReadStatement();
+
+            if (lexer.hasComment() && lexer.isKeepComments()) {
+                stmt.addBeforeComment(lexer.readAndResetComments());
+            }
+            lexer.nextToken();
+
             stmt.setTable(this.exprParser.name());
 
             if (lexer.token() == Token.LPAREN) {

@@ -224,6 +224,14 @@ public class OdpsLexer extends Lexer {
             ch = charAt(++pos);
 
             if (!isIdentifierChar(ch)) {
+                if (ch == '{' && charAt(pos - 1) == '$') {
+                    int endIndex = this.text.indexOf('}', pos);
+                    if (endIndex != -1) {
+                        bufPos += (endIndex - pos + 1);
+                        pos = endIndex;
+                        continue;
+                    }
+                }
                 break;
             }
 
@@ -350,7 +358,7 @@ public class OdpsLexer extends Lexer {
         
         super.scanVariable();
     }
-    
+
     protected final void scanString() {
         scanString2();
     }
