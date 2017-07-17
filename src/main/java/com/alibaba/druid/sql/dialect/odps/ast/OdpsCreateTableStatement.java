@@ -35,6 +35,11 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
 
+    protected final List<SQLName> clusteredBy = new ArrayList<SQLName>();
+    protected final List<SQLName> sortedBy = new ArrayList<SQLName>();
+
+    protected int buckets;
+
     protected SQLExpr lifecycle;
 
     public OdpsCreateTableStatement(){
@@ -90,10 +95,27 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, partitionColumns);
+            this.acceptChild(visitor, clusteredBy);
+            this.acceptChild(visitor, sortedBy);
             this.acceptChild(visitor, lifecycle);
             this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
     }
 
+    public List<SQLName> getClusteredBy() {
+        return clusteredBy;
+    }
+
+    public List<SQLName> getSortedBy() {
+        return sortedBy;
+    }
+
+    public int getBuckets() {
+        return buckets;
+    }
+
+    public void setBuckets(int buckets) {
+        this.buckets = buckets;
+    }
 }

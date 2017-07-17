@@ -136,6 +136,33 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             accept(Token.RPAREN);
         }
+
+        if (identifierEquals("CLUSTERED")) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+            this.exprParser.names(stmt.getClusteredBy());
+            accept(Token.RPAREN);
+        }
+
+        if (identifierEquals("SORTED")) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+            this.exprParser.names(stmt.getSortedBy());
+            accept(Token.RPAREN);
+        }
+
+        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
+            accept(Token.INTO);
+            if (lexer.token() == Token.LITERAL_INT) {
+                stmt.setBuckets(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("into buckets must be integer.");
+            }
+            acceptIdentifier("BUCKETS");
+        }
         
         if (identifierEquals("LIFECYCLE")) {
             lexer.nextToken();

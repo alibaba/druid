@@ -131,6 +131,30 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             print(')');
         }
 
+        List<SQLName> clusteredBy = x.getClusteredBy();
+        if (clusteredBy.size() > 0) {
+            println();
+            print0(ucase ? "CLUSTERED BY (" : "clustered by (");
+            printAndAccept(clusteredBy, ",");
+            print(')');
+        }
+
+        List<SQLName> sortedBy = x.getSortedBy();
+        if (sortedBy.size() > 0) {
+            println();
+            print0(ucase ? "SORTED BY (" : "sorted by (");
+            printAndAccept(sortedBy, ",");
+            print(')');
+        }
+
+        int buckets = x.getBuckets();
+        if (buckets > 0) {
+            println();
+            print0(ucase ? "INTO " : "into ");
+            print(buckets);
+            print0(ucase ? " BUCKETS" : " buckets");
+        }
+
         if (x.getLifecycle() != null) {
             println();
             print0(ucase ? "LIFECYCLE " : "lifecycle ");
