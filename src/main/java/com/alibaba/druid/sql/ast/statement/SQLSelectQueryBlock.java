@@ -162,6 +162,16 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         this.from = from;
     }
 
+    public void setFrom(String tableName) {
+        SQLExprTableSource from;
+        if (tableName == null || tableName.length() == 0) {
+            from = null;
+        } else {
+            from = new SQLExprTableSource(new SQLIdentifierExpr(tableName));
+        }
+        this.setFrom(from);
+    }
+
     public boolean isParenthesized() {
 		return parenthesized;
 	}

@@ -17,6 +17,8 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -118,5 +120,25 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         }
 
         return x;
+    }
+
+    public void setLeft(String tableName) {
+        SQLExprTableSource tableSource;
+        if (tableName == null || tableName.length() == 0) {
+            tableSource = null;
+        } else {
+            tableSource = new OracleSelectTableReference(new SQLIdentifierExpr(tableName));
+        }
+        this.setLeft(tableSource);
+    }
+
+    public void setRight(String tableName) {
+        SQLExprTableSource tableSource;
+        if (tableName == null || tableName.length() == 0) {
+            tableSource = null;
+        } else {
+            tableSource = new OracleSelectTableReference(new SQLIdentifierExpr(tableName));
+        }
+        this.setRight(tableSource);
     }
 }

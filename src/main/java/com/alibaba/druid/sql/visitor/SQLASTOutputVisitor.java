@@ -2009,12 +2009,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     protected void printCreateTable(SQLCreateTableStatement x) {
-        print0(ucase ? "CREATE TABLE " : "create table ");
-        if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(x.getType())) {
+        print0(ucase ? "CREATE " : "create ");
+
+        final SQLCreateTableStatement.Type tableType = x.getType();
+        if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(tableType)) {
             print0(ucase ? "GLOBAL TEMPORARY " : "global temporary ");
-        } else if (SQLCreateTableStatement.Type.LOCAL_TEMPORARY.equals(x.getType())) {
+        } else if (SQLCreateTableStatement.Type.LOCAL_TEMPORARY.equals(tableType)) {
             print0(ucase ? "LOCAL TEMPORARY " : "local temporary ");
         }
+        print0(ucase ? "TABLE " : "table ");
 
         printTableSourceExpr(x.getName());
 

@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
@@ -76,6 +77,26 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             left.setParent(this);
         }
         this.left = left;
+    }
+
+    public void setLeft(String tableName) {
+        SQLExprTableSource tableSource;
+        if (tableName == null || tableName.length() == 0) {
+            tableSource = null;
+        } else {
+            tableSource = new SQLExprTableSource(new SQLIdentifierExpr(tableName));
+        }
+        this.setLeft(tableSource);
+    }
+
+    public void setRight(String tableName) {
+        SQLExprTableSource tableSource;
+        if (tableName == null || tableName.length() == 0) {
+            tableSource = null;
+        } else {
+            tableSource = new SQLExprTableSource(new SQLIdentifierExpr(tableName));
+        }
+        this.setRight(tableSource);
     }
 
     public SQLTableSource getRight() {

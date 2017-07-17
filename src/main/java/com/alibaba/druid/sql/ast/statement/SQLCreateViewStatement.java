@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -75,6 +76,10 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
 
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
+    }
+
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
     }
 
     public SQLExprTableSource getTableSource() {

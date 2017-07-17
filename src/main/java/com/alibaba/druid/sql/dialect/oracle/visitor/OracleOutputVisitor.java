@@ -2137,6 +2137,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "PRESERVE ROWS" : "preserve rows");
         }
 
+        if (x.isMonitoring()) {
+            println();
+            print0(ucase ? "MONITORING" : "monitoring");
+        }
+
         if (x.getPartitioning() != null) {
             println();
             x.getPartitioning().accept(this);

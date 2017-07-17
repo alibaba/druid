@@ -150,6 +150,10 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
 //                OracleStorageClause storage = ((OracleExprParser) this.exprParser).parseStorage();
 //                stmt.setStorage(storage);
 //                continue;
+            } else if (identifierEquals("MONITORING")) {
+                lexer.nextToken();
+                stmt.setMonitoring(true);
+                continue;
             } else if (lexer.token() == Token.LOB) {
                 OracleLobStorageClause lobStorage = ((OracleExprParser) this.exprParser).parseLobStorage();
                 stmt.setLobStorage(lobStorage);

@@ -76,6 +76,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     private SQLName                 of;
     private OIDIndex                oidIndex;
+    private boolean                 monitoring;
     
     public OracleCreateTableStatement() {
         super (JdbcConstants.ORACLE);
@@ -260,6 +261,14 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             oidIndex.setParent(this);
         }
         this.oidIndex = oidIndex;
+    }
+
+    public boolean isMonitoring() {
+        return monitoring;
+    }
+
+    public void setMonitoring(boolean monitoring) {
+        this.monitoring = monitoring;
     }
 
     public boolean isCompressForOltp() {

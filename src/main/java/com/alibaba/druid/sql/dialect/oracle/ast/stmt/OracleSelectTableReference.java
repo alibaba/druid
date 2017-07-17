@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
@@ -32,6 +33,10 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
 
     public OracleSelectTableReference(){
 
+    }
+
+    public OracleSelectTableReference(SQLExpr expr) {
+        this.setExpr(expr);
     }
 
     public PartitionExtensionClause getPartition() {
