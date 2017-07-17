@@ -45,7 +45,7 @@ public class DruidDataSourceProperties {
 
     private Long maxEvictableIdleTimeMillis;
 
-    private String filters;
+    private String filters = "stat";
 
     public String getUrl() {
         return url;

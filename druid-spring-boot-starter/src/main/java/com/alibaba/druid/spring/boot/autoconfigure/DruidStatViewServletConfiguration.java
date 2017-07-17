@@ -30,24 +30,24 @@ public class DruidStatViewServletConfiguration {
     @Bean
     public ServletRegistrationBean servletRegistrationBean(DruidStatProperties properties) {
         DruidStatProperties.StatViewServlet config = properties.getStatViewServlet();
-        ServletRegistrationBean registration = new ServletRegistrationBean();
-        registration.setServlet(new StatViewServlet());
-        registration.addUrlMappings(config.getUrlPattern() != null ? config.getUrlPattern() : "/druid/*");
+        ServletRegistrationBean registrationBean = new ServletRegistrationBean();
+        registrationBean.setServlet(new StatViewServlet());
+        registrationBean.addUrlMappings(config.getUrlPattern() != null ? config.getUrlPattern() : "/druid/*");
         if (config.getAllow() != null) {
-            registration.addInitParameter("allow", config.getAllow());
+            registrationBean.addInitParameter("allow", config.getAllow());
         }
         if (config.getDeny() != null) {
-            registration.addInitParameter("deny", config.getDeny());
+            registrationBean.addInitParameter("deny", config.getDeny());
         }
         if (config.getLoginUsername() != null) {
-            registration.addInitParameter("loginUsername", config.getLoginUsername());
+            registrationBean.addInitParameter("loginUsername", config.getLoginUsername());
         }
         if (config.getLoginPassword() != null) {
-            registration.addInitParameter("loginPassword", config.getLoginPassword());
+            registrationBean.addInitParameter("loginPassword", config.getLoginPassword());
         }
         if (config.getResetEnable() != null) {
-            registration.addInitParameter("resetEnable", config.getResetEnable());
+            registrationBean.addInitParameter("resetEnable", config.getResetEnable());
         }
-        return registration;
+        return registrationBean;
     }
 }

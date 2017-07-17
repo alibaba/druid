@@ -25,7 +25,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 /**
  * @author lihengming [89921218@qq.com]
@@ -39,31 +38,25 @@ public class DruidDataSourceAutoConfigure {
     @Bean
     @ConditionalOnMissingBean
     public DataSource dataSource(DruidDataSourceProperties properties, Environment env) {
+
+        //if not found prefix 'spring.datasource.druid' jdbc properties ,'spring.datasource' prefix jdbc properties will be used.
+        if (properties.getUsername() == null) {
+            properties.setUsername(env.getProperty("spring.datasource.username"));
+        }
+        if (properties.getPassword() == null) {
+            properties.setPassword(env.getProperty("spring.datasource.password"));
+        }
+        if (properties.getUrl() == null) {
+            properties.setUrl(env.getProperty("spring.datasource.url"));
+        }
+        if (properties.getDriverClassName() == null) {
+            properties.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        }
+
         DruidDataSource dataSource = DruidDataSourceBuilder
                 .create()
                 .build(properties);
 
-        //if not found prefix 'spring.datasource.druid' settings,'spring.datasource' prefix settings will be used.
-        if (dataSource.getUsername() == null) {
-            dataSource.setUsername(env.getProperty("spring.datasource.username"));
-        }
-        if (dataSource.getPassword() == null) {
-            dataSource.setPassword(env.getProperty("spring.datasource.password"));
-        }
-        if (dataSource.getUrl() == null) {
-            dataSource.setUrl(env.getProperty("spring.datasource.url"));
-        }
-        if (dataSource.getDriverClassName() == null) {
-            dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        }
-        // set filters default value on StatViewServlet enabled.
-        if (!"false".equals(env.getProperty("spring.datasource.druid.stat-view-servlet.enabled"))) {
-            try {
-                dataSource.setFilters("stat");
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
         return dataSource;
     }
 }
