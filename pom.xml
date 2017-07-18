@@ -10,7 +10,7 @@
  -->
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.1.2-SNAPSHOT</version>
+	<version>1.1.2-preview-06</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -545,6 +545,18 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-core</artifactId>
+			<version>1.13.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>22.0</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!--
 			test dependences
@@ -667,12 +679,7 @@
 			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>19.0</version>
-			<scope>test</scope>
-		</dependency>
+
 
 		<dependency>
 			<groupId>org.apache.calcite</groupId>
@@ -691,7 +698,7 @@
 			<groupId>commons-dbutils</groupId>
 			<artifactId>commons-dbutils</artifactId>
 			<version>1.6</version>
-                        <scope>test</scope>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
