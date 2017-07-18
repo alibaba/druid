@@ -89,6 +89,10 @@ public class Lexer {
 
     protected String         dbType;
 
+    private int startPos;
+    private int posLine;
+    private int posColumn;
+
     public Lexer(String input){
         this(input, null);
     }
@@ -249,7 +253,35 @@ public class Lexer {
     }
 
     public String info() {
-        return "pos " + this.pos + ", " + this.token + " " + this.stringVal();
+        int line = 1;
+        int column = 1;
+        for (int i = 0; i < startPos; ++i, column++) {
+            char ch = text.charAt(i);
+            if (ch == '\n') {
+                column = 1;
+                line++;
+            }
+        }
+
+        this.posLine = line;
+        this.posColumn = posColumn;
+
+        StringBuilder buf = new StringBuilder();
+        buf
+                .append("pos ")
+                .append(pos)
+                .append(", line ")
+                .append(line)
+                .append(", column ")
+                .append(column)
+                .append(", token ")
+                .append(token);
+
+        if (token == Token.IDENTIFIER || token == Token.LITERAL_ALIAS || token == Token.LITERAL_CHARS) {
+            buf.append(" ").append(stringVal);
+        }
+
+        return buf.toString();
     }
 
     public final void nextTokenComma() {
@@ -286,6 +318,7 @@ public class Lexer {
     }
 
     public final void nextTokenValue() {
+        this.startPos = pos;
         if (ch == ' ') {
             scanChar();
         }
@@ -317,6 +350,7 @@ public class Lexer {
     }
 
     public final void nextToken() {
+        startPos = pos;
         bufPos = 0;
         if (comments != null && comments.size() > 0) {
             comments = null;
@@ -1548,5 +1582,28 @@ public class Lexer {
     
     public int getLine() {
         return line;
+    }
+
+    public void computeRowAndColumn() {
+        int line = 1;
+        int column = 1;
+        for (int i = 0; i < pos; ++i) {
+            char ch = text.charAt(i);
+            if (ch == '\n') {
+                column = 1;
+                line++;
+            }
+        }
+
+        this.posLine = line;
+        this.posColumn = posColumn;
+    }
+
+    public int getPosLine() {
+        return posLine;
+    }
+
+    public int getPosColumn() {
+        return posColumn;
     }
 }

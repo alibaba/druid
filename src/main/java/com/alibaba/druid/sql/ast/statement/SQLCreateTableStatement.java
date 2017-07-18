@@ -15,9 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
@@ -236,5 +234,166 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
 
         return null;
+    }
+
+    public List<SQLForeignKeyConstraint> findForeignKey() {
+        List<SQLForeignKeyConstraint> fkList = new ArrayList<SQLForeignKeyConstraint>();
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLForeignKeyConstraint) {
+                fkList.add((SQLForeignKeyConstraint) element);
+            }
+        }
+        return fkList;
+    }
+
+    public boolean hashForeignKey() {
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLForeignKeyConstraint) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isReferenced(SQLName tableName) {
+        if (tableName == null) {
+            return false;
+        }
+
+        return isReferenced(tableName.getSimpleName());
+    }
+
+    public boolean isReferenced(String tableName) {
+        if (tableName == null) {
+            return false;
+        }
+
+        tableName = SQLUtils.normalize(tableName);
+
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLForeignKeyConstraint) {
+                SQLForeignKeyConstraint fk = (SQLForeignKeyConstraint) element;
+                String refTableName = fk.getReferencedTableName().getSimpleName();
+
+                if (SQLUtils.nameEquals(tableName, refTableName)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static class DependencyComparator implements Comparator {
+        private final Map<String, SQLCreateTableStatement> tables = new HashMap<String, SQLCreateTableStatement>();
+        private final Set<String> referencedTableNames = new HashSet<String>();
+
+        public void add(SQLCreateTableStatement stmt) {
+            String tableName = stmt.getName().getSimpleName();
+            tableName = SQLUtils.normalize(tableName).toLowerCase();
+            tables.put(tableName, stmt);
+
+            for (SQLTableElement element : stmt.tableElementList) {
+                if (element instanceof SQLForeignKeyConstraint) {
+                    SQLForeignKeyConstraint fk = (SQLForeignKeyConstraint) element;
+                    String refTableName = fk.getReferencedTableName().getSimpleName();
+                    refTableName = SQLUtils.normalize(refTableName).toLowerCase();
+                    referencedTableNames.add(refTableName);
+                }
+            }
+        }
+
+        public int compare(Object a, Object b) {
+            return compareStmt((SQLCreateTableStatement)a, (SQLCreateTableStatement) b);
+        }
+
+        public int compareStmt(SQLCreateTableStatement a, SQLCreateTableStatement b) {
+            if (a == b) {
+                return 0;
+            }
+
+            if (a == null) {
+                return -1;
+            }
+
+            if (b == null) {
+                return 1;
+            }
+
+            int refVal = isReferenced(a, b);
+            if (refVal == -1) {
+                return 1;
+            }
+
+
+            refVal = isReferenced(b, a);
+
+            if (refVal == -1) {
+                return -1;
+            }
+
+            boolean a_referenced = isReferenced(a);
+            boolean b_referenced = isReferenced(b);
+
+            if (a_referenced != b_referenced) {
+                return a_referenced ? 1 : -1;
+            }
+
+            return 0;
+        }
+
+        boolean isReferenced(SQLCreateTableStatement stmt) {
+            String tableName = stmt.getName().getSimpleName();
+            tableName = SQLUtils.normalize(tableName).toLowerCase();
+            return referencedTableNames.contains(tableName);
+        }
+
+        int isReferenced(SQLCreateTableStatement a, SQLCreateTableStatement b) {
+            if (a == b) {
+                return 0;
+            }
+
+            if (a.isReferenced(b.getName())) {
+                return -1;
+            }
+
+            for (SQLTableElement element : a.tableElementList) {
+                if (element instanceof SQLForeignKeyConstraint) {
+                    SQLForeignKeyConstraint fk = (SQLForeignKeyConstraint) element;
+                    SQLName refTableName = fk.getReferencedTableName();
+
+                    SQLCreateTableStatement refStmt = findStatement(refTableName);
+                    if (refStmt != null) {
+                        int refVal = isReferenced(refStmt, b);
+                        if (refVal != 0) {
+                            return refVal;
+                        }
+                    }
+
+                }
+            }
+
+            return 0;
+        }
+
+        public SQLCreateTableStatement findStatement(SQLName name) {
+            if (name == null) {
+                return null;
+            }
+
+            String refTableName = name.getSimpleName();
+            refTableName = SQLUtils.normalize(refTableName).toLowerCase();
+            return tables.get(refTableName);
+        }
+    }
+
+    public static void sort(List<SQLCreateTableStatement> stmtList) {
+        final DependencyComparator comparator = new DependencyComparator();
+
+        for (SQLCreateTableStatement stmt : stmtList) {
+            comparator.add(stmt);
+        }
+
+        Collections.sort(stmtList, comparator);
     }
 }

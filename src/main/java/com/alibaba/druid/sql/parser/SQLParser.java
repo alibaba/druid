@@ -277,7 +277,7 @@ public class SQLParser {
         // + token + ", actual " + lexer.token() + " "
         // + lexer.stringVal() + ", pos " + this.lexer.pos());
         throw new ParserException("syntax error, error in :'" + arround + "',expect " + token + ", actual "
-                                  + lexer.token() + " " + lexer.stringVal());
+                                  + lexer.token() + " " + lexer.info());
     }
 
     public void accept(Token token) {

@@ -788,6 +788,25 @@ public class SQLUtils {
         return name;
     }
 
+    public static boolean nameEquals(String a, String b) {
+        if (a == b) {
+            return true;
+        }
+
+        if (a == null || b == null) {
+            return false;
+        }
+
+        if (a.equalsIgnoreCase(b)) {
+            return true;
+        }
+
+        String normalize_a = normalize(a);
+        String normalize_b = normalize(b);
+
+        return normalize_a.equalsIgnoreCase(normalize_b);
+    }
+
     public static boolean isValue(SQLExpr expr) {
         if (expr instanceof SQLLiteralExpr) {
             return true;

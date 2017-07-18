@@ -124,12 +124,16 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             } else if (lexer.token() == Token.ON) {
                 lexer.nextToken();
                 accept(Token.COMMIT);
-                stmt.setOnCommit(true);
-                continue;
-            } else if (identifierEquals("PRESERVE")) {
-                lexer.nextToken();
-                acceptIdentifier("ROWS");
-                stmt.setPreserveRows(true);
+
+                if (identifierEquals("PRESERVE")) {
+                    lexer.nextToken();
+                    acceptIdentifier("ROWS");
+                    stmt.setOnCommitPreserveRows(true);
+                } else {
+                    accept(Token.DELETE);
+                    acceptIdentifier("ROWS");
+                    stmt.setOnCommitDeleteRows(true);
+                }
                 continue;
             } else if (identifierEquals("STORAGE")) {
                 OracleStorageClause storage = ((OracleExprParser) this.exprParser).parseStorage();

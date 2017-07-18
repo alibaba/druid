@@ -995,13 +995,22 @@ public class OracleStatementParser extends SQLStatementParser {
 
             if (identifierEquals("READ")) {
                 lexer.nextToken();
-                acceptIdentifier("ONLY");
-                stmt.setReadOnly(true);
+
+                if (identifierEquals("ONLY")) {
+                    lexer.nextToken();
+                    stmt.setReadOnly(true);
+                } else {
+                    acceptIdentifier("WRITE");
+                    stmt.setWrite(true);
+                }
             }
 
-            acceptIdentifier("NAME");
+            if (identifierEquals("NAME")) {
+                lexer.nextToken();
 
-            stmt.setName(this.exprParser.expr());
+                stmt.setName(this.exprParser.expr());
+            }
+
             return stmt;
         }
 

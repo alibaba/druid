@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 public class OracleSetTransactionStatement extends OracleStatementImpl implements OracleStatement {
 
     private boolean readOnly = false;
+    private boolean write = false;
 
     private SQLExpr name;
 
@@ -51,4 +52,11 @@ public class OracleSetTransactionStatement extends OracleStatementImpl implement
         this.readOnly = readOnly;
     }
 
+    public boolean isWrite() {
+        return write;
+    }
+
+    public void setWrite(boolean write) {
+        this.write = write;
+    }
 }

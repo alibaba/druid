@@ -1503,11 +1503,16 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleSetTransactionStatement x) {
         if (x.isReadOnly()) {
-            print0(ucase ? "SET TRANSACTION READ ONLY NAME " : "set transaction read only name ");
+            print0(ucase ? "SET TRANSACTION READ ONLY" : "set transaction read only");
         } else {
-            print0(ucase ? "SET TRANSACTION NAME " : "set transaction name ");
+            print0(ucase ? "SET TRANSACTION" : "set transaction");
         }
-        x.getName().accept(this);
+
+        SQLExpr name = x.getName();
+        if (name != null) {
+            print0(ucase ? " NAME " : " name ");
+            name.accept(this);
+        }
         return false;
     }
 
@@ -2127,14 +2132,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getLobStorage().accept(this);
         }
 
-        if (x.isOnCommit()) {
+        if (x.isOnCommitPreserveRows()) {
             println();
-            print0(ucase ? "ON COMMIT" : "on commit");
-        }
-
-        if (x.isPreserveRows()) {
+            print0(ucase ? "ON COMMIT PRESERVE ROWS" : "on commit preserve rows");
+        } else if (x.isOnCommitDeleteRows()) {
             println();
-            print0(ucase ? "PRESERVE ROWS" : "preserve rows");
+            print0(ucase ? "ON COMMIT DELETE ROWS" : "on commit delete rows");
         }
 
         if (x.isMonitoring()) {

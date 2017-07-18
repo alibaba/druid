@@ -58,8 +58,9 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private Boolean                 compress;
     private Integer                 compressLevel;
     private boolean                 compressForOltp;
-    private boolean                 onCommit;
-    private boolean                 preserveRows;
+
+    private boolean                 onCommitPreserveRows;
+    private boolean                 onCommitDeleteRows;
 
     private Boolean                 cache;
 
@@ -114,20 +115,20 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.cache = cache;
     }
 
-    public boolean isOnCommit() {
-        return onCommit;
+    public boolean isOnCommitPreserveRows() {
+        return onCommitPreserveRows;
     }
 
-    public void setOnCommit(boolean onCommit) {
-        this.onCommit = onCommit;
+    public void setOnCommitPreserveRows(boolean onCommitPreserveRows) {
+        this.onCommitPreserveRows = onCommitPreserveRows;
     }
 
-    public boolean isPreserveRows() {
-        return preserveRows;
+    public boolean isOnCommitDeleteRows() {
+        return onCommitDeleteRows;
     }
 
-    public void setPreserveRows(boolean preserveRows) {
-        this.preserveRows = preserveRows;
+    public void setOnCommitDeleteRows(boolean onCommitDeleteRows) {
+        this.onCommitDeleteRows = onCommitDeleteRows;
     }
 
     public Boolean getLogging() {
