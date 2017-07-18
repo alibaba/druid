@@ -17,6 +17,9 @@ package com.alibaba.druid.pool.vendor;
 
 import com.alibaba.druid.pool.ExceptionSorter;
 
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.util.Properties;
@@ -70,8 +73,7 @@ public class MySqlExceptionSorter implements ExceptionSorter {
         }
         
         String className = e.getClass().getName();
-        if ("com.mysql.jdbc.CommunicationsException".equals(className)
-                || "com.mysql.jdbc.exceptions.jdbc4.CommunicationsException".equals(className)) {
+        if (className.endsWith(".CommunicationsException")) {
             return true;
         }
 
@@ -91,7 +93,20 @@ public class MySqlExceptionSorter implements ExceptionSorter {
                 return true;
             }
         }
-        
+
+        Throwable cause = e.getCause();
+        for (int i = 0; i < 5 && cause != null; ++i) {
+            if (cause instanceof SocketTimeoutException || cause instanceof IOException) {
+                return true;
+            }
+
+            className = cause.getClass().getName();
+            if (className.endsWith(".CommunicationsException")) {
+                return true;
+            }
+
+            cause = cause.getCause();
+        }
         
         return false;
     }
