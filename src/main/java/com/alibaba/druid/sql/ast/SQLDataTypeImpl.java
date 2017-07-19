@@ -101,4 +101,23 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     public void setWithLocalTimeZone(boolean withLocalTimeZone) {
         this.withLocalTimeZone = withLocalTimeZone;
     }
+
+    public SQLDataTypeImpl clone() {
+        SQLDataTypeImpl x = new SQLDataTypeImpl();
+
+        cloneTo(x);
+
+        return x;
+    }
+
+    public void cloneTo(SQLDataTypeImpl x) {
+        x.name = name;
+
+        for (SQLExpr arg : arguments) {
+            x.addArgument(arg.clone());
+        }
+
+        x.withTimeZone = withTimeZone;
+        x.withLocalTimeZone = withLocalTimeZone;
+    }
 }

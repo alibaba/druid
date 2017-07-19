@@ -239,6 +239,7 @@ longtext
 loop
 low_priority
 match
+maxvalue
 max_connections_per_hour
 max_queries_per_hour
 max_rows
@@ -257,6 +258,7 @@ migrate
 minute
 minute_microsecond
 minute_second
+minvalue
 mod
 modifies
 modify
@@ -326,6 +328,7 @@ processlist
 purge
 quarter
 query
+range
 read
 reads
 read_only

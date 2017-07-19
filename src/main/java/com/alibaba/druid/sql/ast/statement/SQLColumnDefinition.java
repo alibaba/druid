@@ -264,6 +264,13 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             visitor.endVisit(this);
         }
 
+        public Identity clone () {
+            Identity x = new Identity();
+            x.seed = seed;
+            x.increment = increment;
+            x.notForReplication = notForReplication;
+            return x;
+        }
     }
 
     public String computeAlias() {
@@ -276,5 +283,62 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         }
 
         return SQLUtils.normalize(alias);
+    }
+
+    public SQLColumnDefinition clone() {
+        SQLColumnDefinition x = new SQLColumnDefinition();
+
+        if(name != null) {
+            x.setName(name.clone());
+        }
+
+        if (dataType != null) {
+            x.setDataType(dataType.clone());
+        }
+
+        if (defaultExpr != null) {
+            x.setDefaultExpr(defaultExpr.clone());
+        }
+
+        for (SQLColumnConstraint item : constraints) {
+            SQLColumnConstraint itemCloned = item.clone();
+            itemCloned.setParent(x);
+            x.constraints.add(itemCloned);
+        }
+
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
+
+        x.enable = enable;
+        x.validate = validate;
+        x.rely = rely;
+
+        x.autoIncrement = autoIncrement;
+
+        if (onUpdate != null) {
+            x.setOnUpdate(onUpdate.clone());
+        }
+
+        if (storage != null) {
+            x.setStorage(storage.clone());
+        }
+
+        if (charsetExpr != null) {
+            x.setCharsetExpr(charsetExpr.clone());
+        }
+
+        if (asExpr != null) {
+            x.setAsExpr(asExpr.clone());
+        }
+
+        x.sorted = sorted;
+        x.virtual = virtual;
+
+        if (identity != null) {
+            x.setIdentity(identity.clone());
+        }
+
+        return x;
     }
 }

@@ -50,4 +50,16 @@ public class SQLColumnCheck extends SQLConstraintImpl implements SQLColumnConstr
         visitor.endVisit(this);
     }
 
+    public SQLColumnCheck clone() {
+        SQLColumnCheck x = new SQLColumnCheck();
+
+        super.cloneTo(x);
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        return x;
+    }
+
 }

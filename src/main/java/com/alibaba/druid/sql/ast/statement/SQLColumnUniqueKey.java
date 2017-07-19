@@ -27,4 +27,9 @@ public class SQLColumnUniqueKey extends SQLConstraintImpl implements SQLColumnCo
         visitor.endVisit(this);
     }
 
+    public SQLColumnUniqueKey clone() {
+        SQLColumnUniqueKey x = new SQLColumnUniqueKey();
+        super.cloneTo(x);
+        return x;
+    }
 }

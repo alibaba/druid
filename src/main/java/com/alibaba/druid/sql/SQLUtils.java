@@ -902,5 +902,17 @@ public class SQLUtils {
         long hash = Utils.fnv_64_lower(tableName);
         return Utils.hex_t(hash);
     }
+
+    /**
+     * 重新排序建表语句
+     * @param sql
+     * @param dbType
+     * @return
+     */
+    public static String sort(String sql, String dbType) {
+        List stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
+        SQLCreateTableStatement.sort(stmtList);
+        return SQLUtils.toSQLString(stmtList, dbType);
+    }
 }
 

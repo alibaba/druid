@@ -34,6 +34,15 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
 
     }
 
+    public void cloneTo(SQLConstraintImpl x) {
+        if (name != null) {
+            x.setName(name.clone());
+        }
+
+        x.enable = enable;
+        x.validate = validate;
+        x.rely = rely;
+    }
 
     public List<SQLCommentHint> getHints() {
         return hints;

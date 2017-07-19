@@ -26,6 +26,16 @@ package com.alibaba.druid.util;
 import java.util.*;
 
 public class ListDG {
+    public static class Edge {
+        public Object from;
+        public Object to;
+
+        public Edge(Object from, Object to) {
+            this.from = from;
+            this.to = to;
+        }
+    }
+
     // 邻接表中表对应的链表的顶点
     private class ENode {
         int ivex;       // 该边所指向的顶点的位置
@@ -47,7 +57,7 @@ public class ListDG {
      *     vexs  -- 顶点数组
      *     edges -- 边数组
      */
-    public ListDG(List vexs, List<Object[]> edges) {
+    public ListDG(List vexs, List<Edge> edges) {
 
         // 初始化"顶点数"和"边数"
         int vlen = vexs.size();
@@ -67,11 +77,11 @@ public class ListDG {
         // 初始化"边"
         for (int i = 0; i < elen; i++) {
             // 读取边的起始顶点和结束顶点
-            Object c1 = edges.get(i)[0];
-            Object c2 = edges.get(i)[1];
+            Object c1 = edges.get(i).from;
+            Object c2 = edges.get(i).to;
             // 读取边的起始顶点和结束顶点
-            int p1 = getPosition(edges.get(i)[0]);
-            int p2 = getPosition(edges.get(i)[1]);
+            int p1 = getPosition(edges.get(i).from);
+            int p2 = getPosition(edges.get(i).to);
 
             // 初始化node1
             ENode node1 = new ENode();
@@ -112,7 +122,6 @@ public class ListDG {
         ENode node;
 
         visited[i] = true;
-        System.out.printf("%c ", mVexs.get(i).data);
         node = mVexs.get(i).firstEdge;
         while (node != null) {
             if (!visited[node.ivex])
@@ -131,12 +140,10 @@ public class ListDG {
         for (int i = 0; i < mVexs.size(); i++)
             visited[i] = false;
 
-        System.out.printf("== DFS: ");
         for (int i = 0; i < mVexs.size(); i++) {
             if (!visited[i])
                 DFS(i, visited);
         }
-        System.out.printf("\n");
     }
 
     /*
@@ -151,7 +158,6 @@ public class ListDG {
         for (int i = 0; i < mVexs.size(); i++)
             visited[i] = false;
 
-        System.out.printf("== BFS: ");
         for (int i = 0; i < mVexs.size(); i++) {
             if (!visited[i]) {
                 visited[i] = true;
@@ -174,7 +180,6 @@ public class ListDG {
                 }
             }
         }
-        System.out.printf("\n");
     }
 
     /*
@@ -189,11 +194,10 @@ public class ListDG {
                 System.out.printf("%d(%c) ", node.ivex, mVexs.get(node.ivex).data);
                 node = node.nextEdge;
             }
-            System.out.printf("\n");
         }
     }
 
-    public int topologicalSort() {
+    public boolean topologicalSort() {
         return topologicalSort(new Object[mVexs.size()]);
     }
 
@@ -201,11 +205,10 @@ public class ListDG {
      * 拓扑排序
      *
      * 返回值：
-     *     -1 -- 失败(由于内存不足等原因导致)
-     *      0 -- 成功排序，并输入结果
-     *      1 -- 失败(该有向图是有环的)
+     *     true 成功排序，并输入结果
+     *     false 失败(该有向图是有环的)
      */
-    public int topologicalSort(Object[] tops) {
+    public boolean topologicalSort(Object[] tops) {
         int index = 0;
         int num = mVexs.size();
         int[] ins;               // 入度数组
@@ -250,30 +253,22 @@ public class ListDG {
         }
 
         if(index != num) {
-            // System.out.printf("Graph has a cycle\n");
-            return 1;
+            return false;
         }
 
-        // 打印拓扑排序结果
-//        System.out.printf("== TopSort: ");
-//        for(int i = 0; i < num; i ++) {
-//            System.out.printf("%c ", tops[i]);
-//        }
-//        System.out.printf("\n");
-
-        return 0;
+        return true;
     }
 
     public static void main(String[] args) {
         Object[] vexs = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
-        Object[][] edges = new Object[][]{
-                {vexs[0], vexs[6]},
-                {vexs[1], vexs[0]},
-                {vexs[1], vexs[3]},
-                {vexs[2], vexs[5]},
-                {vexs[2], vexs[6]},
-                {vexs[3], vexs[4]},
-                {vexs[3], vexs[5]}};
+        Edge[] edges = new Edge[]{
+                new Edge(vexs[0], vexs[6]),
+                new Edge(vexs[1], vexs[0]),
+                new Edge(vexs[1], vexs[3]),
+                new Edge(vexs[2], vexs[5]),
+                new Edge(vexs[2], vexs[6]),
+                new Edge(vexs[3], vexs[4]),
+                new Edge(vexs[3], vexs[5])};
         ListDG pG;
 
         // 自定义"图"(输入矩阵队列)

@@ -80,7 +80,7 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
         visitor.endVisit(this);        
     }
 
-    public void cloneTo(SQLForeignKeyConstraint x) {
+    public void cloneTo(SQLForeignKeyImpl x) {
         super.cloneTo(x);
 
         if (referencedTableName != null) {
@@ -98,5 +98,11 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
             columnClone.setParent(x);
             x.getReferencedColumns().add(columnClone);
         }
+    }
+
+    public SQLForeignKeyImpl clone() {
+        SQLForeignKeyImpl x = new SQLForeignKeyImpl();
+        cloneTo(x);
+        return x;
     }
 }

@@ -91,6 +91,10 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 stmt.setParallel(false);
                 continue;
+            } else if (identifierEquals("PARALLEL")) {
+                lexer.nextToken();
+                stmt.setParallel(true);
+                continue;
             } else if (lexer.token() == Token.CACHE) {
                 lexer.nextToken();
                 stmt.setCache(Boolean.TRUE);

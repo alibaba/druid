@@ -2053,7 +2053,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             if (enable.booleanValue()) {
                 print0(ucase ? " ENABLE" : " enable");
             } else {
-                print0(ucase ? " DIABLE" : " diable");
+                print0(ucase ? " DISABLE" : " disable");
             }
         }
 

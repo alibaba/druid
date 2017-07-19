@@ -101,6 +101,20 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
         visitor.endVisit(this);
     }
 
+
+    public SQLCharacterDataType clone() {
+        SQLCharacterDataType x = new SQLCharacterDataType(name);
+
+        super.cloneTo(x);
+
+        x.charSetName = charSetName;
+        x.collate = collate;
+        x.charType = charType;
+        x.hasBinary = hasBinary;
+
+        return x;
+    }
+
     @Override
     public String toString() {
         return SQLUtils.toSQLString(this);

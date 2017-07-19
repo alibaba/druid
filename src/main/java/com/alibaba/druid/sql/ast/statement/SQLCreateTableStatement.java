@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
 
@@ -283,8 +284,32 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return false;
     }
 
+    public SQLAlterTableStatement foreignKeyToAlterTable() {
+        SQLAlterTableStatement stmt = new SQLAlterTableStatement();
+        for (int i = this.tableElementList.size() - 1; i >= 0; --i) {
+            SQLTableElement element = this.tableElementList.get(i);
+            if (element instanceof SQLForeignKeyConstraint) {
+                SQLForeignKeyConstraint fk = (SQLForeignKeyConstraint) element;
+                this.tableElementList.remove(i);
+                stmt.addItem(new SQLAlterTableAddConstraint(fk));
+            }
+        }
+
+        if (stmt.getItems().size() == 0) {
+            return null;
+        }
+
+        stmt.setDbType(getDbType());
+        stmt.setTableSource(this.tableSource.clone());
+
+        Collections.reverse(stmt.getItems());
+
+        return stmt;
+    }
+
     public static void sort(List<SQLStatement> stmtList) {
         Map<String, SQLCreateTableStatement> tables = new HashMap<String, SQLCreateTableStatement>();
+        Map<String, List<SQLCreateTableStatement>> referencedTables = new HashMap<String, List<SQLCreateTableStatement>>();
 
         for (SQLStatement stmt : stmtList) {
             if (stmt instanceof SQLCreateTableStatement) {
@@ -295,7 +320,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             }
         }
 
-        List<Object[]> edges = new ArrayList<Object[]>();
+        List<ListDG.Edge> edges = new ArrayList<ListDG.Edge>();
 
         for (SQLCreateTableStatement stmt : tables.values()) {
             for (SQLTableElement element : stmt.getTableElementList()) {
@@ -306,9 +331,15 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
                     SQLCreateTableStatement refTable = tables.get(refTableName);
                     if (refTable != null) {
-                        Object[] edge = new Object[] {stmt, refTable};
-                        edges.add(edge);
+                        edges.add(new ListDG.Edge(stmt, refTable));
                     }
+
+                    List<SQLCreateTableStatement> referencedList = referencedTables.get(refTableName);
+                    if (referencedList == null) {
+                        referencedList = new ArrayList<SQLCreateTableStatement>();
+                        referencedTables.put(refTableName, referencedList);
+                    }
+                    referencedList.add(stmt);
                 }
             }
         }
@@ -316,9 +347,71 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         ListDG dg = new ListDG(stmtList, edges);
 
         SQLStatement[] tops = new SQLStatement[stmtList.size()];
-        dg.topologicalSort(tops);
-        for (int i = 0, size = stmtList.size(); i < size; ++i) {
-            stmtList.set(i, tops[size - i - 1]);
+        if (dg.topologicalSort(tops)) {
+            for (int i = 0, size = stmtList.size(); i < size; ++i) {
+                stmtList.set(i, tops[size - i - 1]);
+            }
+            return;
         }
+
+        List<SQLAlterTableStatement> alterList = new ArrayList<SQLAlterTableStatement>();
+
+        for (int i = edges.size() - 1; i >= 0; --i) {
+            ListDG.Edge edge = edges.get(i);
+            SQLCreateTableStatement from = (SQLCreateTableStatement) edge.from;
+            String fromTableName = from.getName().getSimpleName();
+            fromTableName = SQLUtils.normalize(fromTableName).toLowerCase();
+            if (referencedTables.containsKey(fromTableName)) {
+                edges.remove(i);
+
+                Arrays.fill(tops, null);
+                tops = new SQLStatement[stmtList.size()];
+
+                dg = new ListDG(stmtList, edges);
+                if (dg.topologicalSort(tops)) {
+                    for (int j = 0, size = stmtList.size(); j < size; ++j) {
+                        SQLStatement stmt = tops[size - j - 1];
+                        stmtList.set(j, stmt);
+                    }
+
+                    SQLAlterTableStatement alter = from.foreignKeyToAlterTable();
+                    alterList.add(alter);
+
+                    stmtList.add(alter);
+                    return;
+                }
+                edges.add(i, edge);
+            }
+        }
+
+        for (int i = edges.size() - 1; i >= 0; --i) {
+            ListDG.Edge edge = edges.get(i);
+            SQLCreateTableStatement from = (SQLCreateTableStatement) edge.from;
+            String fromTableName = from.getName().getSimpleName();
+            fromTableName = SQLUtils.normalize(fromTableName).toLowerCase();
+            if (referencedTables.containsKey(fromTableName)) {
+                SQLAlterTableStatement alter = from.foreignKeyToAlterTable();
+
+                edges.remove(i);
+                if (alter != null) {
+                    alterList.add(alter);
+                }
+
+                Arrays.fill(tops, null);
+                tops = new SQLStatement[stmtList.size()];
+
+                dg = new ListDG(stmtList, edges);
+                if (dg.topologicalSort(tops)) {
+                    for (int j = 0, size = stmtList.size(); j < size; ++j) {
+                        SQLStatement stmt = tops[size - j - 1];
+                        stmtList.set(j, stmt);
+                    }
+
+                    stmtList.addAll(alterList);
+                    return;
+                }
+            }
+        }
+
     }
 }
