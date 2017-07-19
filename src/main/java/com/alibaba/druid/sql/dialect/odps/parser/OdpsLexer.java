@@ -197,7 +197,7 @@ public class OdpsLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier");
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
@@ -214,7 +214,7 @@ public class OdpsLexer extends Lexer {
 
         final boolean firstFlag = isFirstIdentifierChar(first);
         if (!firstFlag) {
-            throw new ParserException("illegal identifier");
+            throw new ParserException("illegal identifier. " + info());
         }
 
         mark = pos;

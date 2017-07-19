@@ -525,7 +525,7 @@ public class Lexer {
                     token = Token.SEMI;
                     return;
                 case '`':
-                    throw new ParserException("TODO"); // TODO
+                    throw new ParserException("TODO. " + info()); // TODO
                 case '@':
                     scanVariable();
                     return;
@@ -737,7 +737,7 @@ public class Lexer {
                 }
                 break;
             default:
-                throw new ParserException("TODO");
+                throw new ParserException("TODO. " + info());
         }
     }
 
@@ -806,7 +806,7 @@ public class Lexer {
             }
 
             if (endIndex == -1) {
-                throw new ParserException("unclosed str");
+                throw new ParserException("unclosed str. " + info());
             }
 
             String stringVal = subString(startIndex, endIndex - startIndex);
@@ -978,7 +978,7 @@ public class Lexer {
             }
 
             if (endIndex == -1) {
-                throw new ParserException("unclosed str");
+                throw new ParserException("unclosed str. " + info());
             }
 
             String stringVal = subString(startIndex, endIndex - startIndex);
@@ -1081,7 +1081,7 @@ public class Lexer {
 
     public void scanVariable() {
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
-            throw new ParserException("illegal variable");
+            throw new ParserException("illegal variable. " + info());
         }
 
         mark = pos;
@@ -1120,7 +1120,7 @@ public class Lexer {
             }
             
             if (ch != '}') {
-                throw new ParserException("syntax error");
+                throw new ParserException("syntax error. " + info());
             }
             ++pos;
             bufPos++;
@@ -1181,7 +1181,7 @@ public class Lexer {
             
 			// multiline comment结束符错误
 			if (ch == EOI) {
-				throw new ParserException("unterminated /* comment.");
+				throw new ParserException("unterminated /* comment. " + info());
 			}
             scanChar();
             bufPos++;
@@ -1230,7 +1230,7 @@ public class Lexer {
             
 			// single line comment结束符错误
 			if (ch == EOI) {
-				throw new ParserException("syntax error at end of input.");
+				throw new ParserException("syntax error at end of input. " + info());
 			}
 
             scanChar();
@@ -1258,7 +1258,7 @@ public class Lexer {
 
         final boolean firstFlag = isFirstIdentifierChar(first);
         if (!firstFlag) {
-            throw new ParserException("illegal identifier");
+            throw new ParserException("illegal identifier. " + info());
         }
 
         mark = pos;
@@ -1520,7 +1520,7 @@ public class Lexer {
     public BigDecimal decimalValue() {
         String value = subString(mark, bufPos);
         if (!StringUtils.isNumber(value)){
-            throw new ParserException(value+" is not a number!");
+            throw new ParserException(value+" is not a number! " + info());
         }
         return new BigDecimal(value.toCharArray());
     }

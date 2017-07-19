@@ -542,7 +542,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     continue;
                 }
 
-                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                throw new ParserException("TODO : " + lexer.info());
             }
 
             if (lexer.token() == Token.NULL) {
@@ -1031,7 +1031,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 parseAssignItems(stmt.getItems(), stmt);
             } else {
-                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                throw new ParserException("TODO : " + lexer.info());
             }
             return stmt;
         } else if (lexer.token() == Token.PROCEDURE) {
@@ -1195,7 +1195,7 @@ public class OracleStatementParser extends SQLStatementParser {
                                 lexer.nextToken();
                                 file.setAutoExtendOn(this.exprParser.expr());
                             } else {
-                                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                                throw new ParserException("TODO : " + lexer.info());
                             }
                         }
 
@@ -1211,16 +1211,16 @@ public class OracleStatementParser extends SQLStatementParser {
 
                     stmt.setItem(item);
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
             } else {
-                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                throw new ParserException("TODO : " + lexer.info());
             }
 
             return stmt;
         }
 
-        throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+        throw new ParserException("TODO : " + lexer.info());
     }
 
     private SQLStatement parseAlterTable() {
@@ -1251,7 +1251,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     SQLAlterTableAddColumn item = parseAlterTableAddColumn();
                     stmt.addItem(item);
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
 
                 continue;
@@ -1266,7 +1266,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                     stmt.addItem(item);
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
             } else if (identifierEquals("RENAME")) {
                 stmt.addItem(parseAlterTableRename());
@@ -1306,7 +1306,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     item.setName(this.exprParser.name());
                     stmt.addItem(item);
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
                 continue;
             } else if (lexer.token() == Token.DROP) {
@@ -1320,7 +1320,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     item.setConstraintName(this.exprParser.name());
                     stmt.addItem(item);
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
             } else if (lexer.token() == Token.ENABLE) {
                 lexer.nextToken();
@@ -1330,7 +1330,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     item.setConstraintName(this.exprParser.name());
                     stmt.addItem(item);
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
             }
 
@@ -1345,7 +1345,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 acceptIdentifier("INDEXES");
                 stmt.setUpdateGlobalIndexes(true);
             } else {
-                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                throw new ParserException("TODO : " + lexer.info());
             }
         }
 
@@ -1382,7 +1382,7 @@ public class OracleStatementParser extends SQLStatementParser {
             item.setIndexName(indexName);
             stmt.addItem(item);
         } else {
-            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO : " + lexer.info());
         }
     }
 
@@ -1399,7 +1399,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 this.exprParser.exprList(item.getAt(), item);
                 accept(Token.RPAREN);
             } else {
-                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                throw new ParserException("TODO : " + lexer.info());
             }
 
             if (lexer.token() == Token.INTO) {
@@ -1418,21 +1418,21 @@ public class OracleStatementParser extends SQLStatementParser {
                             spec.getSegmentAttributeItems().add(new TableSpaceItem(tablespace));
                             continue;
                         } else if (identifierEquals("PCTREE")) {
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
                         } else if (identifierEquals("PCTUSED")) {
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
                         } else if (identifierEquals("INITRANS")) {
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
 
                         } else if (identifierEquals("STORAGE")) {
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
 
                         } else if (identifierEquals("LOGGING")) {
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
                         } else if (identifierEquals("NOLOGGING")) {
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
                         } else if (identifierEquals("FILESYSTEM_LIKE_LOGGING")) {
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
 
                         }
 
@@ -1458,7 +1458,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
             stmt.addItem(item);
         } else {
-            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO : " + lexer.info());
         }
     }
 
@@ -1896,11 +1896,11 @@ public class OracleStatementParser extends SQLStatementParser {
             deleteStatement.setReturning(clause);
         }
         if (identifierEquals("RETURN") || identifierEquals("RETURNING")) {
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         if (identifierEquals("LOG")) {
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         return deleteStatement;
@@ -2068,7 +2068,7 @@ public class OracleStatementParser extends SQLStatementParser {
                         lexer.nextToken();
                         break;
                     }
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
 
                 break;

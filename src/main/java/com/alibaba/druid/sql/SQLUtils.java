@@ -428,7 +428,7 @@ public class SQLUtils {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, keepComments);
         List<SQLStatement> stmtList = parser.parseStatementList();
         if (parser.getLexer().token() != Token.EOF) {
-            throw new ParserException("syntax error : " + sql);
+            throw new ParserException("syntax error. " + sql);
         }
         return stmtList;
     }

@@ -67,7 +67,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 lexer.nextToken();
                 createTable.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
             } else {
-                throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
+                throw new ParserException("syntax error " + lexer.info());
             }
         } else if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("LOCAL")) {
             lexer.nextToken();
@@ -75,7 +75,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 lexer.nextToken();
                 createTable.setType(SQLCreateTableStatement.Type.LOCAL_TEMPORARY);
             } else {
-                throw new ParserException("syntax error");
+                throw new ParserException("syntax error. " + lexer.info());
             }
         }
 
@@ -105,7 +105,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
                     constraint.setParent(createTable);
                     createTable.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO " + token);
+                    throw new ParserException("TODO "  + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);

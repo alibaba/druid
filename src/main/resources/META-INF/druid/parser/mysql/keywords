@@ -412,6 +412,7 @@ sounds
 source
 spatial
 specific
+sql
 sqlexception
 sqlstate
 sqlwarning

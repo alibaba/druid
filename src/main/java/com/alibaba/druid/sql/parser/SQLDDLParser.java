@@ -34,16 +34,16 @@ public class SQLDDLParser extends SQLStatementParser {
 
         if (lexer.token() == Token.IDENTIFIER) {
             this.exprParser.name();
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         if (lexer.token() == Token.PRIMARY) {
             lexer.nextToken();
             accept(Token.KEY);
 
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
-        throw new ParserException("TODO");
+        throw new ParserException("TODO " + lexer.info());
     }
 }

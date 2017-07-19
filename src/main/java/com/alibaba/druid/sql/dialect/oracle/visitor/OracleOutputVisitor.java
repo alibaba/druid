@@ -2852,6 +2852,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.isBasicFile()) {
             print0(ucase ? " BASICFILE" : " basicfile");
         }
+
+        SQLName segementName = x.getSegementName();
+        if (segementName != null) {
+            print(' ');
+            segementName.accept(this);
+        }
         print0(" (");
         incrementIndent();
         printOracleSegmentAttributes(x);

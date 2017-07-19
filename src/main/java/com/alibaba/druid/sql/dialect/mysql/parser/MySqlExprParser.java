@@ -158,7 +158,7 @@ public class MySqlExprParser extends SQLExprParser {
             case VALUES:
                 lexer.nextToken();
                 if (lexer.token() != Token.LPAREN) {
-                    throw new ParserException("syntax error, illegal values clause");
+                    throw new ParserException("syntax error, illegal values clause. " + lexer.info());
                 }
                 return this.methodRest(new SQLIdentifierExpr("VALUES"), true);
             case BINARY:
@@ -234,7 +234,7 @@ public class MySqlExprParser extends SQLExprParser {
                 if ("USING".equalsIgnoreCase(lexer.stringVal())) {
                     lexer.nextToken();
                     if (lexer.token() != Token.IDENTIFIER) {
-                        throw new ParserException("syntax error, illegal hex");
+                        throw new ParserException("syntax error, illegal hex. " + lexer.info());
                     }
                     String charSet = lexer.stringVal();
                     lexer.nextToken();
@@ -250,7 +250,7 @@ public class MySqlExprParser extends SQLExprParser {
                 }
 
                 if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("syntax error");
+                    throw new ParserException("syntax error. " + lexer.info());
                 }
 
                 String collate = lexer.stringVal();
@@ -267,7 +267,7 @@ public class MySqlExprParser extends SQLExprParser {
                     lexer.nextToken();
 
                     if (lexer.token() != Token.IDENTIFIER) {
-                        throw new ParserException("syntax error");
+                        throw new ParserException("syntax error. " + lexer.info());
                     }
 
                     String collate = lexer.stringVal();
@@ -297,7 +297,7 @@ public class MySqlExprParser extends SQLExprParser {
                 lexer.nextToken();
 
                 if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("syntax error");
+                    throw new ParserException("syntax error. " + lexer.info());
                 }
 
                 String unitVal = lexer.stringVal();
@@ -340,7 +340,7 @@ public class MySqlExprParser extends SQLExprParser {
                     } else if (lexer.token() == Token.RPAREN) {
                         break;
                     } else {
-                        throw new ParserException("syntax error");
+                        throw new ParserException("syntax error. " + lexer.info());
                     }
                 }
 
@@ -415,10 +415,10 @@ public class MySqlExprParser extends SQLExprParser {
                         acceptIdentifier("MODE");
                         matchAgainstExpr.setSearchModifier(SearchModifier.IN_BOOLEAN_MODE);
                     } else {
-                        throw new ParserException("TODO");
+                        throw new ParserException("syntax error. " + lexer.info());
                     }
                 } else if (lexer.token() == Token.WITH) {
-                    throw new ParserException("TODO");
+                    throw new ParserException("TODO. " + lexer.info());
                 }
 
                 accept(Token.RPAREN);
@@ -437,7 +437,7 @@ public class MySqlExprParser extends SQLExprParser {
                 if (identifierEquals("USING")) {
                     lexer.nextToken();
                     if (lexer.token() != Token.IDENTIFIER) {
-                        throw new ParserException("syntax error");
+                        throw new ParserException("syntax error. " + lexer.info());
                     }
                     String charset = lexer.stringVal();
                     lexer.nextToken();
@@ -484,8 +484,7 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         if (lexer.token() == Token.ERROR) {
-            throw new ParserException("syntax error, token: " + lexer.token() + " " + lexer.stringVal() + ", pos : "
-                                      + lexer.pos());
+            throw new ParserException("syntax error. " + lexer.info());
         }
 
         return super.primaryRest(expr);
@@ -527,7 +526,7 @@ public class MySqlExprParser extends SQLExprParser {
             SQLExpr value = expr();
 
             if (lexer.token() != Token.IDENTIFIER) {
-                throw new ParserException("Syntax error");
+                throw new ParserException("Syntax error. " + lexer.info());
             }
 
             String unit = lexer.stringVal();
@@ -580,7 +579,7 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         if (lexer.token() == Token.PARTITION) {
-            throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("syntax error " + lexer.info());
         }
 
         if (identifierEquals("STORAGE")) {
@@ -900,7 +899,7 @@ public class MySqlExprParser extends SQLExprParser {
                 fk.setOnUpdate(option);
             } else {
                 throw new ParserException("syntax error, expect DELETE or UPDATE, actual " + lexer.token() + " "
-                                          + lexer.stringVal());
+                                          + lexer.info());
             }
         }
         return fk;
@@ -925,11 +924,11 @@ public class MySqlExprParser extends SQLExprParser {
                 lexer.nextToken();
             } else {
                 throw new ParserException("syntax error, expect ACTION, actual " + lexer.token() + " "
-                                          + lexer.stringVal());
+                                          + lexer.info());
             }
         } else {
             throw new ParserException("syntax error, expect ACTION, actual " + lexer.token() + " "
-                                      + lexer.stringVal());
+                                      + lexer.info());
         }
         
         return option;

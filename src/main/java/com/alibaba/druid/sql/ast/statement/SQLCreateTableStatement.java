@@ -18,14 +18,11 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.*;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
@@ -173,6 +170,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public SQLColumnDefinition findColumn(String columName) {
+        columName = SQLUtils.normalize(columName);
+
         for (SQLTableElement element : tableElementList) {
             if (element instanceof SQLColumnDefinition) {
                 SQLColumnDefinition column = (SQLColumnDefinition) element;
@@ -284,116 +283,42 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return false;
     }
 
-    public static class DependencyComparator implements Comparator {
-        private final Map<String, SQLCreateTableStatement> tables = new HashMap<String, SQLCreateTableStatement>();
-        private final Set<String> referencedTableNames = new HashSet<String>();
+    public static void sort(List<SQLStatement> stmtList) {
+        Map<String, SQLCreateTableStatement> tables = new HashMap<String, SQLCreateTableStatement>();
 
-        public void add(SQLCreateTableStatement stmt) {
-            String tableName = stmt.getName().getSimpleName();
-            tableName = SQLUtils.normalize(tableName).toLowerCase();
-            tables.put(tableName, stmt);
+        for (SQLStatement stmt : stmtList) {
+            if (stmt instanceof SQLCreateTableStatement) {
+                SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
+                String tableName = createTableStmt.getName().getSimpleName();
+                tableName = SQLUtils.normalize(tableName).toLowerCase();
+                tables.put(tableName, createTableStmt);
+            }
+        }
 
-            for (SQLTableElement element : stmt.tableElementList) {
+        List<Object[]> edges = new ArrayList<Object[]>();
+
+        for (SQLCreateTableStatement stmt : tables.values()) {
+            for (SQLTableElement element : stmt.getTableElementList()) {
                 if (element instanceof SQLForeignKeyConstraint) {
                     SQLForeignKeyConstraint fk = (SQLForeignKeyConstraint) element;
                     String refTableName = fk.getReferencedTableName().getSimpleName();
                     refTableName = SQLUtils.normalize(refTableName).toLowerCase();
-                    referencedTableNames.add(refTableName);
-                }
-            }
-        }
 
-        public int compare(Object a, Object b) {
-            return compareStmt((SQLCreateTableStatement)a, (SQLCreateTableStatement) b);
-        }
-
-        public int compareStmt(SQLCreateTableStatement a, SQLCreateTableStatement b) {
-            if (a == b) {
-                return 0;
-            }
-
-            if (a == null) {
-                return -1;
-            }
-
-            if (b == null) {
-                return 1;
-            }
-
-            int refVal = isReferenced(a, b);
-            if (refVal == -1) {
-                return 1;
-            }
-
-
-            refVal = isReferenced(b, a);
-
-            if (refVal == -1) {
-                return -1;
-            }
-
-            boolean a_referenced = isReferenced(a);
-            boolean b_referenced = isReferenced(b);
-
-            if (a_referenced != b_referenced) {
-                return a_referenced ? 1 : -1;
-            }
-
-            return 0;
-        }
-
-        boolean isReferenced(SQLCreateTableStatement stmt) {
-            String tableName = stmt.getName().getSimpleName();
-            tableName = SQLUtils.normalize(tableName).toLowerCase();
-            return referencedTableNames.contains(tableName);
-        }
-
-        int isReferenced(SQLCreateTableStatement a, SQLCreateTableStatement b) {
-            if (a == b) {
-                return 0;
-            }
-
-            if (a.isReferenced(b.getName())) {
-                return -1;
-            }
-
-            for (SQLTableElement element : a.tableElementList) {
-                if (element instanceof SQLForeignKeyConstraint) {
-                    SQLForeignKeyConstraint fk = (SQLForeignKeyConstraint) element;
-                    SQLName refTableName = fk.getReferencedTableName();
-
-                    SQLCreateTableStatement refStmt = findStatement(refTableName);
-                    if (refStmt != null) {
-                        int refVal = isReferenced(refStmt, b);
-                        if (refVal != 0) {
-                            return refVal;
-                        }
+                    SQLCreateTableStatement refTable = tables.get(refTableName);
+                    if (refTable != null) {
+                        Object[] edge = new Object[] {stmt, refTable};
+                        edges.add(edge);
                     }
-
                 }
             }
-
-            return 0;
         }
 
-        public SQLCreateTableStatement findStatement(SQLName name) {
-            if (name == null) {
-                return null;
-            }
+        ListDG dg = new ListDG(stmtList, edges);
 
-            String refTableName = name.getSimpleName();
-            refTableName = SQLUtils.normalize(refTableName).toLowerCase();
-            return tables.get(refTableName);
+        SQLStatement[] tops = new SQLStatement[stmtList.size()];
+        dg.topologicalSort(tops);
+        for (int i = 0, size = stmtList.size(); i < size; ++i) {
+            stmtList.set(i, tops[size - i - 1]);
         }
-    }
-
-    public static void sort(List<SQLCreateTableStatement> stmtList) {
-        final DependencyComparator comparator = new DependencyComparator();
-
-        for (SQLCreateTableStatement stmt : stmtList) {
-            comparator.add(stmt);
-        }
-
-        Collections.sort(stmtList, comparator);
     }
 }

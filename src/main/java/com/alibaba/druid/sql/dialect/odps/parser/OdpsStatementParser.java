@@ -122,7 +122,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                 return true;
             }
 
-            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO " + lexer.info());
         }
 
         if (identifierEquals("REMOVE")) {
@@ -137,7 +137,7 @@ public class OdpsStatementParser extends SQLStatementParser {
                 return true;
             }
 
-            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO " + lexer.info());
         }
 
         if (identifierEquals("READ")) {
@@ -222,7 +222,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             expr_condition.setExpr(this.exprParser.expr());
             return expr_condition;
         } else {
-            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO " + lexer.info());
         }
     }
 
@@ -378,7 +378,7 @@ public class OdpsStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+        throw new ParserException("TODO " + lexer.info());
     }
 
     public SQLStatement parseSet() {

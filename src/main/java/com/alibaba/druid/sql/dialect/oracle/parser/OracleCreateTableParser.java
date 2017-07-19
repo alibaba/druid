@@ -199,7 +199,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                                 lexer.nextToken();
                                 break;
                             }
-                            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            throw new ParserException("TODO : " + lexer.info());
                         }
                     }
                     stmt.setPartitioning(partitionByHash);
@@ -210,7 +210,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                     stmt.setPartitioning(partitionByList);
                     continue;
                 } else {
-                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO : " + lexer.info());
                 }
             }
             break;
@@ -493,7 +493,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             return byList;
         }
 
-        throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+        throw new ParserException("TODO : " + lexer.info());
     }
 
     protected void parseCreateTableSupplementalLogingProps(SQLCreateTableStatement stmt) {

@@ -79,7 +79,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             for (;;) {
                 if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("expect identifier");
+                    throw new ParserException("expect identifier. " + lexer.info());
                 }
                 
                 SQLColumnDefinition column = this.exprParser.parseColumn();
@@ -114,7 +114,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             for (;;) {
                 if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("expect identifier");
+                    throw new ParserException("expect identifier. " + lexer.info());
                 }
                 
                 SQLColumnDefinition column = this.exprParser.parseColumn();
@@ -159,7 +159,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
                 stmt.setBuckets(lexer.integerValue().intValue());
                 lexer.nextToken();
             } else {
-                throw new ParserException("into buckets must be integer.");
+                throw new ParserException("into buckets must be integer. " + lexer.info());
             }
             acceptIdentifier("BUCKETS");
         }

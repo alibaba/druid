@@ -110,7 +110,7 @@ public class DB2SelectParser extends SQLSelectParser {
                 } else if (identifierEquals("UR")) {
                     queryBlock.setIsolation(Isolation.UR);
                 } else {
-                    throw new ParserException("TODO");
+                    throw new ParserException("TODO. " + lexer.info());
                 }
                 lexer.nextToken();
                 continue;

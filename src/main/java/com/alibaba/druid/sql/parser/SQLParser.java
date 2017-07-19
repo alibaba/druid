@@ -56,7 +56,7 @@ public class SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new ParserException("syntax error, expect " + text + ", actual " + lexer.token());
+            throw new ParserException("syntax error, expect " + text + ", actual " + lexer.token() + ", " + lexer.info());
         }
     }
 
@@ -118,7 +118,7 @@ public class SQLParser {
                 return null;
             }
 
-            throw new ParserException("Error : " + lexer.token());
+            throw new ParserException("Error : " + lexer.info());
         }
 
         if (lexer.token() == Token.LITERAL_ALIAS) {
@@ -296,14 +296,14 @@ public class SQLParser {
             return intVal;
         } else {
             throw new ParserException("syntax error, expect int, actual " + lexer.token() + " "
-                    + lexer.stringVal());
+                    + lexer.info());
         }
     }
 
     public void match(Token token) {
         if (lexer.token() != token) {
             throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token() + " "
-                                      + lexer.stringVal());
+                                      + lexer.info());
         }
     }
 

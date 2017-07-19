@@ -160,7 +160,7 @@ public class MySqlSelectIntoParser extends SQLSelectParser {
 
         if (lexer.token() == Token.PROCEDURE) {
             lexer.nextToken();
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         parseInto(queryBlock);

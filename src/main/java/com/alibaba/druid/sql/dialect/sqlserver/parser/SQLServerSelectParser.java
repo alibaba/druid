@@ -90,7 +90,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
                     }
                 }
             } else {
-                throw new ParserException("syntax error, not support option : " + lexer.token());
+                throw new ParserException("syntax error, not support option : " + lexer.token() + ", " + lexer.info());
             }
         }
         

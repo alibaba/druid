@@ -419,7 +419,7 @@ public class SQLSelectParser extends SQLParser {
         }
 
         if (lexer.token() == Token.SELECT) {
-            throw new ParserException("TODO");
+            throw new ParserException("TODO " + lexer.info());
         }
 
         SQLExprTableSource tableReference = new SQLExprTableSource();
@@ -608,7 +608,7 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new ParserException("syntax error, expect " + ident + ", actual " + lexer.token());
+            throw new ParserException("syntax error, expect " + ident + ", actual " + lexer.token() + ", " + lexer.info());
         }
     }
 

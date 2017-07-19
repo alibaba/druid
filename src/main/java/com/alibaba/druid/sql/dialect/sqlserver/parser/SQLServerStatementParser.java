@@ -186,7 +186,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                             constraint.setParent(item);
                             item.getTableElementList().add((SQLTableElement) constraint);
                         } else if (lexer.token() == Token.TABLESPACE) {
-                            throw new ParserException("TODO " + lexer.token());
+                            throw new ParserException("TODO " + lexer.info());
                         } else {
                             SQLColumnDefinition column = this.exprParser.parseColumn();
                             item.getTableElementList().add(column);
@@ -370,7 +370,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                     stmt.setLevel("READ COMMITTED");
                     lexer.nextToken();
                 } else {
-                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal() + ", " + lexer.info());
                 }
             } else if (identifierEquals("SERIALIZABLE")) {
                 stmt.setLevel("SERIALIZABLE");
@@ -384,10 +384,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
                     stmt.setLevel("REPEATABLE READ");
                     lexer.nextToken();
                 } else {
-                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal() + ", " + lexer.info());
                 }
             } else {
-                throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal() + ", " + lexer.info());
             }
 
             return stmt;

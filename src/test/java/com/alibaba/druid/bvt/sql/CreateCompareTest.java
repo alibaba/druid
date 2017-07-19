@@ -62,21 +62,24 @@ public class CreateCompareTest extends TestCase {
                 "\tint bigint\n" +
                 ");";
 
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
-
-        List<SQLCreateTableStatement> createStmtList = new ArrayList<SQLCreateTableStatement>();
-        for (SQLStatement item : stmtList) {
-            createStmtList.add((SQLCreateTableStatement) item);
-        }
-
-        SQLCreateTableStatement.sort(createStmtList);
-
-        assertEquals("t9", createStmtList.get(9).getName().getSimpleName());
-        assertEquals("t8", createStmtList.get(8).getName().getSimpleName());
-        assertEquals("t7", createStmtList.get(7).getName().getSimpleName());
-        assertEquals("t6", createStmtList.get(6).getName().getSimpleName());
-        assertEquals("t5", createStmtList.get(5).getName().getSimpleName());
+        List stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
 
 
+        SQLCreateTableStatement.sort(stmtList);
+
+        assertEquals("t9", ((SQLCreateTableStatement)stmtList.get(9)).getName().getSimpleName());
+        assertEquals("t3", ((SQLCreateTableStatement)stmtList.get(8)).getName().getSimpleName());
+        assertEquals("t0", ((SQLCreateTableStatement)stmtList.get(7)).getName().getSimpleName());
+        assertEquals("t1", ((SQLCreateTableStatement)stmtList.get(6)).getName().getSimpleName());
+        assertEquals("t8", ((SQLCreateTableStatement)stmtList.get(5)).getName().getSimpleName());
+        assertEquals("t7", ((SQLCreateTableStatement)stmtList.get(4)).getName().getSimpleName());
+        assertEquals("t6", ((SQLCreateTableStatement)stmtList.get(3)).getName().getSimpleName());
+        assertEquals("t5", ((SQLCreateTableStatement)stmtList.get(2)).getName().getSimpleName());
+        assertEquals("t4", ((SQLCreateTableStatement)stmtList.get(1)).getName().getSimpleName());
+        assertEquals("t2", ((SQLCreateTableStatement)stmtList.get(0)).getName().getSimpleName());
+
+
+        String sortedSql = SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
+        System.out.println(sortedSql);
     }
 }

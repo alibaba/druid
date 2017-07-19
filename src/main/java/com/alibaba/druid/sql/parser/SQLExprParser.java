@@ -238,7 +238,7 @@ public class SQLExprParser extends SQLParser {
             case INSERT:
                 lexer.nextToken();
                 if (lexer.token() != Token.LPAREN) {
-                    throw new ParserException("syntax error");
+                    throw new ParserException("syntax error. " + lexer.info());
                 }
                 sqlExpr = new SQLIdentifierExpr("INSERT");
                 break;
@@ -263,7 +263,7 @@ public class SQLExprParser extends SQLParser {
                 }
                 break;
             case NEW:
-                throw new ParserException("TODO");
+                throw new ParserException("TODO " + lexer.info());
             case LITERAL_INT:
                 sqlExpr = new SQLIntegerExpr(lexer.integerValue());
                 lexer.nextToken();
@@ -520,7 +520,7 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
                         break;
                     default:
-                        throw new ParserException("TODO : " + lexer.token());
+                        throw new ParserException("TODO : " + lexer.info());
                 }
                 break;
             case PLUS:
@@ -546,7 +546,7 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Plus, sqlExpr);
                         break;
                     default:
-                        throw new ParserException("TODO");
+                        throw new ParserException("TODO " + lexer.info());
                 }
                 break;
             case TILDE:
@@ -702,7 +702,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     protected SQLExpr parseInterval() {
-        throw new ParserException("TODO");
+        throw new ParserException("TODO. " + lexer.info());
     }
 
     public SQLSelectParser createSelectParser() {
@@ -861,7 +861,7 @@ public class SQLExprParser extends SQLParser {
             return primaryRest(methodInvokeExpr);
         }
 
-        throw new ParserException("not support token:" + lexer.token());
+        throw new ParserException("not support token:" + lexer.token() + ", " + lexer.info());
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
@@ -879,7 +879,7 @@ public class SQLExprParser extends SQLParser {
                 name = lexer.stringVal();
                 lexer.nextToken();
             } else {
-                throw new ParserException("error : " + lexer.stringVal());
+                throw new ParserException("error : " + lexer.info());
             }
 
             if (lexer.token() == Token.LPAREN) {
@@ -1073,7 +1073,7 @@ public class SQLExprParser extends SQLParser {
 
             if (lexer.token() != Token.LITERAL_ALIAS && lexer.token() != Token.IDENTIFIER
                 && (!lexer.getKeywods().containsValue(lexer.token()))) {
-                throw new ParserException("error, " + lexer.token());
+                throw new ParserException("error, " + lexer.info());
             }
 
             if (lexer.token() == Token.LITERAL_ALIAS) {
@@ -1280,7 +1280,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 item.setNullsOrderType(SQLSelectOrderByItem.NullsOrderType.NullsLast);
             } else {
-                throw new ParserException("TODO " + lexer.token());
+                throw new ParserException("TODO " + lexer.info());
             }
         }
 
@@ -1788,7 +1788,7 @@ public class SQLExprParser extends SQLParser {
 
             return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotILike, rightExp, getDbType());
         } else {
-            throw new ParserException("TODO " + lexer.token());
+            throw new ParserException("TODO " + lexer.info());
         }
         return expr;
     }
@@ -1932,7 +1932,7 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
         } else {
             throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token() + " "
-                                      + lexer.stringVal());
+                                      + lexer.info());
         }
     }
 
@@ -2055,7 +2055,7 @@ public class SQLExprParser extends SQLParser {
                 return parseColumnRest(column);
             }
 
-            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO : " + lexer.info());
         }
 
         if (lexer.token == Token.CHECK) {
@@ -2224,7 +2224,7 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.token() == Token.CHECK) {
             constraint = parseCheck();
         } else {
-            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO : " + lexer.info());
         }
 
         constraint.setName(name);

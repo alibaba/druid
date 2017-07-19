@@ -503,7 +503,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                     partitionClauseRest(clause);
                 } else {
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO. " + lexer.info());
                 }
 
                 if (lexer.token() == Token.LPAREN) {
@@ -532,7 +532,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.token() == (Token.ON)) {
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         if (lexer.token() == (Token.AS)) {
@@ -839,6 +839,6 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             return (SQLTableConstraint) fk;
         }
 
-        throw new ParserException("TODO :" + lexer.token());
+        throw new ParserException("TODO. " + lexer.info());
     }
 }

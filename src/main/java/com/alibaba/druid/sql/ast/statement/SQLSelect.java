@@ -98,6 +98,7 @@ public class SQLSelect extends SQLObjectImpl {
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.withSubQuery);
             acceptChild(visitor, this.query);
             acceptChild(visitor, this.restriction);
             acceptChild(visitor, this.orderBy);

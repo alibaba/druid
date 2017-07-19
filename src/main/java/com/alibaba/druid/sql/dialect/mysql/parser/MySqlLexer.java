@@ -83,7 +83,7 @@ public class MySqlLexer extends Lexer {
 
     public void scanSharp() {
         if (ch != '#') {
-            throw new ParserException("illegal stat");
+            throw new ParserException("illegal stat. " + info());
         }
 
         if (charAt(pos + 1) == '{') {
@@ -139,7 +139,7 @@ public class MySqlLexer extends Lexer {
 
     public void scanVariable() {
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
-            throw new ParserException("illegal variable");
+            throw new ParserException("illegal variable. " + info());
         }
 
         mark = pos;
@@ -162,7 +162,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier");
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
@@ -185,7 +185,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier");
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
@@ -231,7 +231,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier");
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
@@ -251,7 +251,7 @@ public class MySqlLexer extends Lexer {
 
             final boolean firstFlag = isFirstIdentifierChar(first);
             if (!firstFlag) {
-                throw new ParserException("illegal identifier");
+                throw new ParserException("illegal identifier. " + info());
             }
 
             mark = pos;

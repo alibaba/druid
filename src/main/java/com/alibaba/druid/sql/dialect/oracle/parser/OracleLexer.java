@@ -142,7 +142,7 @@ public class OracleLexer extends Lexer {
         }
 
         if (ch != ':' && ch != '#' && ch != '$') {
-            throw new ParserException("illegal variable");
+            throw new ParserException("illegal variable. " + info());
         }
 
         mark = pos;
@@ -174,13 +174,13 @@ public class OracleLexer extends Lexer {
 
         if (quoteFlag) {
             if (ch != '"') {
-                throw new ParserException("syntax error");
+                throw new ParserException("syntax error. " + info());
             }
             ++pos;
             bufPos++;
         } else if (mybatisFlag) {
             if (ch != '}') {
-                throw new ParserException("syntax error");
+                throw new ParserException("syntax error" + info());
             }
             ++pos;
             bufPos++;

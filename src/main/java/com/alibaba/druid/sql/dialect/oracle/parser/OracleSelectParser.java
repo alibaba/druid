@@ -83,7 +83,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
         if (lexer.token() == (Token.FOR)) {
             if (queryBlock == null) {
-                throw new ParserException("TODO");
+                throw new ParserException("TODO. " + lexer.info());
             }
 
             lexer.nextToken();
@@ -124,7 +124,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 if (identifierEquals("ONLY")) {
                     lexer.nextToken();
                 } else {
-                    throw new ParserException("syntax error");
+                    throw new ParserException("syntax error. " + lexer.info());
                 }
 
                 select.setRestriction(new OracleSelectRestriction.ReadOnly());
@@ -134,14 +134,14 @@ public class OracleSelectParser extends SQLSelectParser {
                 if (identifierEquals("OPTION")) {
                     lexer.nextToken();
                 } else {
-                    throw new ParserException("syntax error");
+                    throw new ParserException("syntax error. " + lexer.info());
                 }
 
                 OracleSelectRestriction.CheckOption checkOption = new OracleSelectRestriction.CheckOption();
 
                 if (lexer.token() == Token.CONSTRAINT) {
                     lexer.nextToken();
-                    throw new ParserException("TODO");
+                    throw new ParserException("TODO. " + lexer.info());
                 }
 
                 select.setRestriction(checkOption);
@@ -588,7 +588,7 @@ public class OracleSelectParser extends SQLSelectParser {
             } else if (lexer.token() == (Token.LPAREN)) {
                 tableSource = new OracleSelectSubqueryTableSource(select());
             } else {
-                throw new ParserException("TODO :" + lexer.token());
+                throw new ParserException("TODO :" + lexer.info());
             }
             accept(Token.RPAREN);
 
@@ -598,7 +598,7 @@ public class OracleSelectParser extends SQLSelectParser {
         }
 
         if (lexer.token() == (Token.SELECT)) {
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         OracleSelectTableReference tableReference = new OracleSelectTableReference();
@@ -705,7 +705,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) exprParser.expr();
             if (binaryExpr.getOperator() != SQLBinaryOperator.BooleanAnd) {
-                throw new ParserException("syntax error : " + binaryExpr.getOperator());
+                throw new ParserException("syntax error : " + binaryExpr.getOperator() + ", " + lexer.info());
             }
 
             start.setExpr(binaryExpr.getLeft());
@@ -891,11 +891,11 @@ public class OracleSelectParser extends SQLSelectParser {
             accept(Token.IN);
             accept(Token.LPAREN);
             if (lexer.token() == (Token.LPAREN)) {
-                throw new ParserException("TODO");
+                throw new ParserException("TODO. " + lexer.info());
             }
 
             if (lexer.token() == (Token.SELECT)) {
-                throw new ParserException("TODO");
+                throw new ParserException("TODO. " + lexer.info());
             }
 
             for (;;) {
@@ -963,11 +963,11 @@ public class OracleSelectParser extends SQLSelectParser {
             accept(Token.IN);
             accept(Token.LPAREN);
             if (lexer.token() == (Token.LPAREN)) {
-                throw new ParserException("TODO");
+                throw new ParserException("TODO. " + lexer.info());
             }
 
             if (lexer.token() == (Token.SELECT)) {
-                throw new ParserException("TODO");
+                throw new ParserException("TODO. " + lexer.info());
             }
 
             for (;;) {

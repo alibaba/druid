@@ -306,7 +306,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             } else if (lexer.token() == Token.VALUES) {
                 query = this.parseSelect();
             } else {
-                throw new ParserException("syntax error, support token '" + lexer.token() + "'");
+                throw new ParserException("syntax error, support token '" + lexer.token() + "', " + lexer.info());
             }
             withQuery.setQuery(query);
 
@@ -347,7 +347,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             stmt.setWith(with);
             return stmt;
         }
-        throw new ParserException("TODO");
+        throw new ParserException("TODO. " + lexer.info());
     }
 
     protected SQLAlterTableAlterColumn parseAlterColumn() {
