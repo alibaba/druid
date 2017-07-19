@@ -18,6 +18,9 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadata;
+import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvider;
+import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvidersConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,5 +61,22 @@ public class DruidDataSourceAutoConfigure {
                 .build(properties);
 
         return dataSource;
+    }
+
+    /**
+     * Register the {@link DataSourcePoolMetadataProvider} instances to support DataSource metrics.
+     * @see DataSourcePoolMetadataProvidersConfiguration
+     */
+    @Bean
+    public DataSourcePoolMetadataProvider druidDataSourcePoolMetadataProvider() {
+        return new DataSourcePoolMetadataProvider() {
+            @Override
+            public DataSourcePoolMetadata getDataSourcePoolMetadata(DataSource dataSource) {
+                if (dataSource instanceof DruidDataSource) {
+                    return new DruidDataSourcePoolMetadata((DruidDataSource)dataSource);
+                }
+                return null;
+            }
+        };
     }
 }
