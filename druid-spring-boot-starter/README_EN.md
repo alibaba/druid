@@ -20,10 +20,10 @@ Gradle
 compile 'com.alibaba:druid-spring-boot-starter:VERSION_CODE'
 
 ```
-Note: Please select a release version name in [Here][1], or check the latest release version name in [Here][2], **replace ```VERSION_CODE```**,  such as ```1.1.1``` .
+Note: Please check the latest release version name in [Here][1] , or select a release version name in [Here][2] , **replace ```VERSION_CODE```**,  such as ```1.1.1``` .
 
-[1]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.alibaba%22%20AND%20a%3A%22druid-spring-boot-starter%22
-[2]: https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/
+[1]: https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/
+[2]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.alibaba%22%20AND%20a%3A%22druid-spring-boot-starter%22
 ## Configuration Properties
 Druid Spring Boot Starter properties name in full compliance with Druid configuration, you can configure the Druid database connection pool and monitor the configuration properties through the following configuration properties, using default values if not configured.
 ```xml
@@ -53,20 +53,20 @@ spring.datasource.druid.filters= #Druid filters, default value stat, multiple se
 
 # WebStatFilter properties, detail see Druid Wiki
 spring.datasource.druid.web-stat-filter.enabled= #Enable StatFilter, default value true.
-spring.datasource.druid.web-stat-filter.urlPattern=
+spring.datasource.druid.web-stat-filter.url-pattern=
 spring.datasource.druid.web-stat-filter.exclusions=
-spring.datasource.druid.web-stat-filter.sessionStatMaxCount=
-spring.datasource.druid.web-stat-filter.sessionStatEnable=
-spring.datasource.druid.web-stat-filter.principalSessionName=
-spring.datasource.druid.web-stat-filter.principalCookieName=
-spring.datasource.druid.web-stat-filter.profileEnable=
+spring.datasource.druid.web-stat-filter.session-stat-enable=
+spring.datasource.druid.web-stat-filter.session-stat-max-count=
+spring.datasource.druid.web-stat-filter.principal-session-name=
+spring.datasource.druid.web-stat-filter.principal-cookie-name=
+spring.datasource.druid.web-stat-filter.profile-enable=
 
 # StatViewServlet properties, detail see Druid Wiki
 spring.datasource.druid.stat-view-servlet.enabled= #Enable StatViewServlet, default value true.
-spring.datasource.druid.stat-view-servlet.urlPattern=
-spring.datasource.druid.stat-view-servlet.resetEnable=
-spring.datasource.druid.stat-view-servlet.loginUsername=
-spring.datasource.druid.stat-view-servlet.loginPassword=
+spring.datasource.druid.stat-view-servlet.url-pattern=
+spring.datasource.druid.stat-view-servlet.reset-enable=
+spring.datasource.druid.stat-view-servlet.login-username=
+spring.datasource.druid.stat-view-servlet.login-password=
 spring.datasource.druid.stat-view-servlet.allow=
 spring.datasource.druid.stat-view-servlet.deny=
 
@@ -74,7 +74,7 @@ spring.datasource.druid.stat-view-servlet.deny=
 spring.datasource.druid.aop-patterns= # Spring monitoring AOP point, such as x.y.z.service.*, multiple separated by comma.
 # If 'spring.datasource.druid.aop-patterns' to be the agent class does not define interface need set 'spring.aop.proxy-target-class = true' .
 ```
-Note: The format of the configuration file you can choose ```.properties``` or``` .yml```, the effect is the same.
+Note: The IDE prompts the above configuration properties, the format of the configuration file you can choose ```.properties``` or``` .yml```, the effect is the same.
 ## How to Extended Configuration
 If the configuration properties provided by the auto-configuration do not meet your needs, you can use ```DruidDataSourceBuilder``` to create ``` DruidDataSource```, and then do some custom configuration, as follows.
 
@@ -90,7 +90,7 @@ public DataSource dataSource(Environment env){
     return dataSource;
 }
 ```
-Note: [Issue # 1800](https://github.com/alibaba/druid/issues/1800) has a custom ```WallConfig, Filter``` example for reference.
+Note: [FAQ #25](https://github.com/alibaba/druid/wiki/FAQ#25-how-to-add-custom-wallconfig-filter-in-the-spring-boot-) has a custom ```WallConfig, Filter``` example for reference.
 
 ## How to Configuration Multiple DataSource
 1. Add DataSource properties
