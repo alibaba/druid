@@ -20,10 +20,10 @@ Gradle
 compile 'com.alibaba:druid-spring-boot-starter:VERSION_CODE'
 
 ```
-注：请在 [这里][1] 选择一个发行版本号，或者在 [这里][2] 查看最新发行版本号，**替换 `VERSION_CODE`** ，例如 `1.1.1`。
+注：请在 [这里][1] 查看最新发行版本号，或者在[这里][2] 选择一个发行版本号，**替换 `VERSION_CODE`** ，例如 `1.1.1`。
 
-[1]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.alibaba%22%20AND%20a%3A%22druid-spring-boot-starter%22
-[2]: https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/
+[1]: https://maven-badges.herokuapp.com/maven-central/com.alibaba/druid-spring-boot-starter/
+[2]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.alibaba%22%20AND%20a%3A%22druid-spring-boot-starter%22
 
 ## 配置属性
 Druid Spring Boot Starter 配置属性的名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid数据库连接池和监控，如果没有配置则使用默认值。
@@ -54,20 +54,20 @@ spring.datasource.druid.filters= #默认值stat，配置多个英文逗号分隔
 
 # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
 spring.datasource.druid.web-stat-filter.enabled= #是否启用StatFilter默认值true
-spring.datasource.druid.web-stat-filter.urlPattern=
+spring.datasource.druid.web-stat-filter.url-pattern=
 spring.datasource.druid.web-stat-filter.exclusions=
-spring.datasource.druid.web-stat-filter.sessionStatMaxCount=
-spring.datasource.druid.web-stat-filter.sessionStatEnable=
-spring.datasource.druid.web-stat-filter.principalSessionName=
-spring.datasource.druid.web-stat-filter.principalCookieName=
-spring.datasource.druid.web-stat-filter.profileEnable=
+spring.datasource.druid.web-stat-filter.session-stat-enable=
+spring.datasource.druid.web-stat-filter.session-stat-max-count=
+spring.datasource.druid.web-stat-filter.principal-session-name=
+spring.datasource.druid.web-stat-filter.principal-cookie-name=
+spring.datasource.druid.web-stat-filter.profile-enable=
 
 # StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
 spring.datasource.druid.stat-view-servlet.enabled= #是否启用StatViewServlet默认值true
-spring.datasource.druid.stat-view-servlet.urlPattern=
-spring.datasource.druid.stat-view-servlet.resetEnable=
-spring.datasource.druid.stat-view-servlet.loginUsername=
-spring.datasource.druid.stat-view-servlet.loginPassword=
+spring.datasource.druid.stat-view-servlet.url-pattern=
+spring.datasource.druid.stat-view-servlet.reset-enable=
+spring.datasource.druid.stat-view-servlet.login-username=
+spring.datasource.druid.stat-view-servlet.login-password=
 spring.datasource.druid.stat-view-servlet.allow=
 spring.datasource.druid.stat-view-servlet.deny=
 
@@ -75,7 +75,7 @@ spring.datasource.druid.stat-view-servlet.deny=
 spring.datasource.druid.aop-patterns= # Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔
 # 如果spring.datasource.druid.aop-patterns要代理的类没有定义interface请设置spring.aop.proxy-target-class=true
 ```
-注：配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的。
+注：IDE会对上述配置进行输入提示，配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的。
 
 ## 如何扩展配置
 如果自动配置提供的配置属性不能满足你的需要，你可以使用```DruidDataSourceBuilder```来创建```DruidDataSource```，然后进行一些自定义配置，像下面这样。
@@ -91,7 +91,7 @@ public DataSource dataSource(Environment env){
     return dataSource;
 }
 ```
-注：[Issue #1800](https://github.com/alibaba/druid/issues/1800) 有一个自定义```WallConfig、Filter```的例子，可供参考。
+注：[常见问题#31](https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98#31-%E5%A6%82%E4%BD%95%E5%9C%A8spring-boot%E4%B8%AD%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89wallconfigfilter-) 有一个自定义```WallConfig、Filter```的例子，可供参考。
 
 ## 如何配置多数据源
 1. 添加数据源相关配置
