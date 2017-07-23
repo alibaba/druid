@@ -33,8 +33,8 @@ public class DruidFilterConfiguration {
 
     @Bean
     @ConfigurationProperties(FILTER_STAT_PREFIX)
+    @ConditionalOnProperty(prefix = FILTER_STAT_PREFIX, name = "enabled", matchIfMissing = true)
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = FILTER_CONFIG_PREFIX, name = "enabled", matchIfMissing = true)
     public StatFilter statFilter() {
         return new StatFilter();
     }
@@ -82,6 +82,7 @@ public class DruidFilterConfiguration {
     @Bean
     @ConfigurationProperties(FILTER_COMMONS_LOG_PREFIX)
     @ConditionalOnProperty(prefix = FILTER_COMMONS_LOG_PREFIX, name = "enabled")
+    @ConditionalOnMissingBean
     public CommonsLogFilter commonsLogFilter() {
         return new CommonsLogFilter();
     }
