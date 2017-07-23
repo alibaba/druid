@@ -7,26 +7,25 @@ Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
 ## Usage
 1. Add the ```druid-spring-boot-starter``` dependency in Spring Boot project.
 
-```Maven```
-```xml
-<dependency>
-   <groupId>com.alibaba</groupId>
-   <artifactId>druid-spring-boot-starter</artifactId>
-   <version>1.1.2</version>
-</dependency>
-```
-```Gradle```
-```xml
-compile 'com.alibaba:druid-spring-boot-starter:1.1.2'
-
-```
+    ```Maven```
+    ```xml
+    <dependency>
+       <groupId>com.alibaba</groupId>
+       <artifactId>druid-spring-boot-starter</artifactId>
+       <version>1.1.2</version>
+    </dependency>
+    ```
+    ```Gradle```
+    ```xml
+    compile 'com.alibaba:druid-spring-boot-starter:1.1.2'
+    ```
 2. Add configuration properties.
-```xml
-spring.datasource.url= 
-spring.datasource.username=
-spring.datasource.password=
-# ...other config (optional)
-```
+    ```xml
+    spring.datasource.url= 
+    spring.datasource.username=
+    spring.datasource.password=
+    # ...other config (optional)
+    ```
 ## Configuration Properties
 Druid Spring Boot Starter properties name in full compliance with Druid configuration, you can configure the Druid database connection pool and monitor the configuration properties through the following configuration properties, using default values if not configured.
 - JDBC
