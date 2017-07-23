@@ -690,6 +690,10 @@ public class Lexer {
                 } else if (ch == '@') {
                     scanChar();
                     token = Token.LT_MONKEYS_AT;
+                } else if (ch == '-' && charAt(pos + 1) == '>') {
+                    scanChar();
+                    scanChar();
+                    token = Token.LT_SUB_GT;
                 } else {
                     token = Token.LT;
                 }

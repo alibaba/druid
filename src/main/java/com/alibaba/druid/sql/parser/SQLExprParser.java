@@ -115,47 +115,75 @@ public class SQLExprParser extends SQLParser {
 
     public SQLExpr bitXorRest(SQLExpr expr) {
         Token token = lexer.token;
-        if (token == Token.CARET) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseXor, rightExp, dbType);
-            expr = bitXorRest(expr);
-        } else if (token == Token.SUBGT) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGt, rightExp, dbType);
-            expr = bitXorRest(expr);
-        } else if (token == Token.SUBGTGT) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGtGt, rightExp, dbType);
-            expr = bitXorRest(expr);
-        } else if (token == Token.POUNDGT) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGt, rightExp, dbType);
-            expr = bitXorRest(expr);
-        } else if (token == Token.POUNDGTGT) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGtGt, rightExp, dbType);
-            expr = bitXorRest(expr);
-        } else if (token == Token.QUESQUES) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesQues, rightExp, dbType);
-            expr = bitXorRest(expr);
-        } else if (token == Token.QUESBAR) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesBar, rightExp, dbType);
-            expr = bitXorRest(expr);
-        } else if (token == Token.QUESAMP) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesAmp, rightExp, dbType);
-            expr = bitXorRest(expr);
+        switch (token) {
+            case CARET: {
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseXor, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+            case SUBGT:{
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGt, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+            case LT_SUB_GT: {
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PG_ST_DISTANCE, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+            case SUBGTGT:{
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGtGt, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+            case POUNDGT: {
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGt, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+            case POUNDGTGT: {
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGtGt, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+            case QUESQUES: {
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesQues, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+            case QUESBAR: {
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesBar, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+            case QUESAMP: {
+                lexer.nextToken();
+                SQLExpr rightExp = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesAmp, rightExp, dbType);
+                expr = bitXorRest(expr);
+                break;
+            }
+
+            default:
+                break;
         }
+
 
         return expr;
     }

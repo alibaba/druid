@@ -92,6 +92,7 @@ public enum SQLBinaryOperator {
     Assignment(":=", 169),
 
     PG_And("&&", 140),
+    PG_ST_DISTANCE("<->", 20),
     ;
 
     public static int getPriority(SQLBinaryOperator operator) {
