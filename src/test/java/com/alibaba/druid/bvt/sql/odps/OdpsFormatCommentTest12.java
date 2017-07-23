@@ -10,7 +10,7 @@ public class OdpsFormatCommentTest12 extends TestCase {
     public void test_column_comment() throws Exception {
         String sql = "select * from t --abc";
         Assert.assertEquals("SELECT *" //
-                + "\nFROM t --abc", SQLUtils.formatOdps(sql));
+                + "\nFROM t -- abc", SQLUtils.formatOdps(sql));
     }
 
    

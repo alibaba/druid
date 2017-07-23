@@ -12,9 +12,9 @@ public class OdpsFormatCommentTest29 extends TestCase {
                 + "\ncol string,  --测试2"
                 + "\ncol2 string  --测试3"
                 + "\n)";
-        Assert.assertEquals("CREATE TABLE xxxx001 ( --测试"
-                + "\n\tcol STRING, --测试2"
-                + "\n\tcol2 STRING --测试3"
+        Assert.assertEquals("CREATE TABLE xxxx001 ( -- 测试"
+                + "\n\tcol STRING, -- 测试2"
+                + "\n\tcol2 STRING -- 测试3"
                 + "\n)", SQLUtils.formatOdps(sql));
     }   
 }

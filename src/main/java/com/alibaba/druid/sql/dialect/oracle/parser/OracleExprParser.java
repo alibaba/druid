@@ -241,6 +241,8 @@ public class OracleExprParser extends SQLExprParser {
                 }
 
                 accept(Token.RPAREN);
+//            } else if (lexer.token() == Token.RPAREN) {
+//                return charType;
             } else if (restrict) {
                 accept(Token.LPAREN);
             }
@@ -1215,6 +1217,12 @@ public class OracleExprParser extends SQLExprParser {
                         lexer.nextToken();
                         clause.setLogging(true);
                     }
+                    continue;
+                }
+
+                if (lexer.token() == Token.CACHE) {
+                    lexer.nextToken();
+                    clause.setCache(true);
                     continue;
                 }
 

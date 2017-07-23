@@ -456,22 +456,23 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         printSelectList(x.getSelectList());
 
-        if (x.getFrom() != null) {
+        SQLTableSource from = x.getFrom();
+        if (from != null) {
             println();
             print0(ucase ? "FROM " : "from ");
-            x.getFrom().accept(this);
+            from.accept(this);
         }
 
-        if (x.getWhere() != null) {
+        SQLExpr where = x.getWhere();
+        if (where != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            if (x.getWhere().hasBeforeComment() && isPrettyFormat()) {
+            if (where.hasBeforeComment() && isPrettyFormat()) {
                 printlnComments(x.getWhere().getBeforeCommentsDirect());
             }
 
-            x.getWhere().setParent(x);
-            x.getWhere().accept(this);
-            if (x.getWhere().hasAfterComment() && isPrettyFormat()) {
+            where.accept(this);
+            if (where.hasAfterComment() && isPrettyFormat()) {
                 print(' ');
                 printlnComment(x.getWhere().getAfterCommentsDirect());
             }

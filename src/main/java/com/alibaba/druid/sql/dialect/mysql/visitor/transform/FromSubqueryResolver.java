@@ -16,17 +16,21 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor.transform;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import oracle.sql.SQLName;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wenshao[szujobs@hotmail.com]
@@ -34,6 +38,9 @@ import java.util.List;
 public class FromSubqueryResolver extends OracleASTVisitorAdapter {
     private final List<SQLStatement> targetList;
     private final String viewName;
+    private final Map<String, String> mappings = new LinkedHashMap<String, String>();
+
+    private int viewNameSeed = 1;
 
     public FromSubqueryResolver(List<SQLStatement> targetList, String viewName) {
         this.targetList = targetList;
@@ -50,20 +57,19 @@ public class FromSubqueryResolver extends OracleASTVisitorAdapter {
         SQLObject parent = x.getParent();
         if(parent instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent;
-            queryBlock.setFrom(subViewName);
+            queryBlock.setFrom(subViewName, x.getAlias());
         } else if(parent instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) parent;
             if (join.getLeft() == x) {
-                join.setLeft(subViewName);
+                join.setLeft(subViewName, x.getAlias());
             } else if (join.getRight() == x) {
-                join.setRight(subViewName);
+                join.setRight(subViewName, x.getAlias());
             }
         }
 
         SQLCreateViewStatement stmt = new SQLCreateViewStatement();
 
         stmt.setName(generateSubViewName());
-
 
         SQLSelect select = x.getSelect();
         stmt.setSubQuery(select);
@@ -73,6 +79,23 @@ public class FromSubqueryResolver extends OracleASTVisitorAdapter {
         stmt.accept(new FromSubqueryResolver(targetList, viewName));
 
         return false;
+    }
+
+    public boolean visit(SQLExprTableSource x) {
+        SQLExpr expr = x.getExpr();
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+            String ident = identifierExpr.getName();
+            String mappingIdent = mappings.get(ident);
+            if (mappingIdent != null) {
+                identifierExpr.setName(mappingIdent);
+            }
+        }
+        return false;
+    }
+
+    public boolean visit(OracleSelectTableReference x) {
+        return visit((SQLExprTableSource) x);
     }
 
     private String generateSubViewName() {
@@ -86,6 +109,28 @@ public class FromSubqueryResolver extends OracleASTVisitorAdapter {
         String viewName = SQLUtils.normalize(stmt.getName().getSimpleName());
 
         FromSubqueryResolver visitor = new FromSubqueryResolver(targetList, viewName);
+
+        SQLWithSubqueryClause withSubqueryClause = stmt.getSubQuery().getWithSubQuery();
+        if (withSubqueryClause != null) {
+            stmt.getSubQuery().setWithSubQuery(null);
+
+            for (SQLWithSubqueryClause.Entry entry : withSubqueryClause.getEntries()) {
+                String entryName = entry.getName().getName();
+
+                SQLCreateViewStatement entryStmt = new SQLCreateViewStatement();
+                entryStmt.setDbType(stmt.getDbType());
+
+                String entryViewName = visitor.generateSubViewName();
+                entryStmt.setName(entryViewName);
+                entryStmt.setSubQuery(entry.getSubQuery());
+
+                visitor.targetList.add(0, entryStmt);
+                visitor.mappings.put(entryName, entryViewName);
+
+                entryStmt.accept(visitor);
+            }
+        }
+
         stmt.accept(visitor);
 
         String dbType = stmt.getDbType();
@@ -94,7 +139,6 @@ public class FromSubqueryResolver extends OracleASTVisitorAdapter {
             targetStmt.setDbType(dbType);
             targetStmt.setAfterSemi(true);
         }
-
 
         return targetList;
     }

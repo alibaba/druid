@@ -79,22 +79,22 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         this.left = left;
     }
 
-    public void setLeft(String tableName) {
+    public void setLeft(String tableName, String alias) {
         SQLExprTableSource tableSource;
         if (tableName == null || tableName.length() == 0) {
             tableSource = null;
         } else {
-            tableSource = new SQLExprTableSource(new SQLIdentifierExpr(tableName));
+            tableSource = new SQLExprTableSource(new SQLIdentifierExpr(tableName), alias);
         }
         this.setLeft(tableSource);
     }
 
-    public void setRight(String tableName) {
+    public void setRight(String tableName, String alias) {
         SQLExprTableSource tableSource;
         if (tableName == null || tableName.length() == 0) {
             tableSource = null;
         } else {
-            tableSource = new SQLExprTableSource(new SQLIdentifierExpr(tableName));
+            tableSource = new SQLExprTableSource(new SQLIdentifierExpr(tableName), alias);
         }
         this.setRight(tableSource);
     }
@@ -227,5 +227,42 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         SQLJoinTableSource x = new SQLJoinTableSource();
         cloneTo(x);
         return x;
+    }
+
+    public void reverse() {
+        SQLTableSource temp = left;
+        left = right;
+        right = temp;
+
+        if (left instanceof SQLJoinTableSource) {
+            ((SQLJoinTableSource) left).reverse();
+        }
+
+        if (right instanceof SQLJoinTableSource) {
+            ((SQLJoinTableSource) right).reverse();
+        }
+    }
+
+    /**
+     * a inner_join (b inner_join c) -> a inner_join b innre_join c
+     */
+    public void rearrangement() {
+        if (right instanceof SQLJoinTableSource) {
+            SQLJoinTableSource rightJoin = (SQLJoinTableSource) right;
+
+            SQLTableSource a = left;
+            SQLTableSource b = rightJoin.getLeft();
+            SQLTableSource c = rightJoin.getRight();
+            SQLExpr on_ab = condition;
+            SQLExpr on_bc = rightJoin.condition;
+
+            setLeft(rightJoin);
+            rightJoin.setLeft(a);
+            rightJoin.setRight(b);
+            rightJoin.setCondition(on_ab);
+
+            setRight(c);
+            setCondition(on_bc);
+        }
     }
 }

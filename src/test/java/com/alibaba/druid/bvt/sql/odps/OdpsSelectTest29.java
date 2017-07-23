@@ -32,13 +32,13 @@ public class OdpsSelectTest29 extends TestCase {
                 "--hhhhh\n" +
                 "FROM emp e\n" +
                 "LEFT OUTER JOIN emp_datahub";//
-        assertEquals("--aaaaa\n" +
-                "SELECT * --hhhhh\n" +
+        assertEquals("-- aaaaa\n" +
+                "SELECT * -- hhhhh\n" +
                 "FROM emp e\n" +
                 "LEFT OUTER JOIN emp_datahub", SQLUtils.formatOdps(sql));
 
-        assertEquals("--aaaaa\n" +
-                "select * --hhhhh\n" +
+        assertEquals("-- aaaaa\n" +
+                "select * -- hhhhh\n" +
                 "from emp e\n" +
                 "left outer join emp_datahub", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
         

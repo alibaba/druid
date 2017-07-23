@@ -34,14 +34,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @author wenshao [szujobs@hotmail.com]
@@ -627,6 +620,10 @@ public final class JdbcUtils implements JdbcConstants {
         } finally {
             close(conn);
         }
+    }
+
+    public static void execute(Connection conn, String sql) throws SQLException {
+        execute(conn, sql, Collections.emptyList());
     }
 
     public static void execute(Connection conn, String sql, List<Object> parameters) throws SQLException {

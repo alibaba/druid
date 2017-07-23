@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
@@ -183,6 +184,30 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
                 return true;
             }
         }
+        return false;
+    }
+
+    public boolean match(String owner, String function) {
+        if (function == null) {
+            return false;
+        }
+
+        if (!SQLUtils.nameEquals(function, methodName)) {
+            return false;
+        }
+
+        if (owner == null && this.owner == null) {
+            return true;
+        }
+
+        if (owner == null || this.owner == null) {
+            return false;
+        }
+
+        if (this.owner instanceof SQLIdentifierExpr) {
+            return SQLUtils.nameEquals(((SQLIdentifierExpr) this.owner).name, owner);
+        }
+
         return false;
     }
 }

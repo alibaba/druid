@@ -53,6 +53,19 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         setLeft(left);
         setRight(right);
         this.operator = operator;
+
+        if (dbType == null) {
+            if (left instanceof SQLBinaryOpExpr) {
+                dbType = ((SQLBinaryOpExpr) left).dbType;
+            }
+        }
+
+        if (dbType == null) {
+            if (right instanceof SQLBinaryOpExpr) {
+                dbType = ((SQLBinaryOpExpr) right).dbType;
+            }
+        }
+
         this.dbType = dbType;
     }
 
@@ -391,5 +404,17 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
 
         return false;
+    }
+
+    public SQLExpr other(SQLExpr x) {
+        if (x == left) {
+            return right;
+        }
+
+        if (x == right) {
+            return left;
+        }
+
+        return null;
     }
 }

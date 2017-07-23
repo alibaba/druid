@@ -134,7 +134,9 @@ public final class ExportParameterVisitorUtils {
     }
 
     public static void exportParameter(final List<Object> parameters, SQLBinaryOpExpr x) {
-        if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr && x.getOperator().isRelational()) {
+        if (x.getLeft() instanceof SQLLiteralExpr
+                && x.getRight() instanceof SQLLiteralExpr
+                && x.getOperator().isRelational()) {
             return;
         }
 

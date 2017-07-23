@@ -118,42 +118,42 @@ public class SQLExprParser extends SQLParser {
         if (token == Token.CARET) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseXor, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseXor, rightExp, dbType);
             expr = bitXorRest(expr);
         } else if (token == Token.SUBGT) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGt, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGt, rightExp, dbType);
             expr = bitXorRest(expr);
         } else if (token == Token.SUBGTGT) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGtGt, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.SubGtGt, rightExp, dbType);
             expr = bitXorRest(expr);
         } else if (token == Token.POUNDGT) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGt, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGt, rightExp, dbType);
             expr = bitXorRest(expr);
         } else if (token == Token.POUNDGTGT) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGtGt, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PoundGtGt, rightExp, dbType);
             expr = bitXorRest(expr);
         } else if (token == Token.QUESQUES) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesQues, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesQues, rightExp, dbType);
             expr = bitXorRest(expr);
         } else if (token == Token.QUESBAR) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesBar, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesBar, rightExp, dbType);
             expr = bitXorRest(expr);
         } else if (token == Token.QUESAMP) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesAmp, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.QuesAmp, rightExp, dbType);
             expr = bitXorRest(expr);
         }
 
@@ -462,7 +462,7 @@ public class SQLExprParser extends SQLParser {
                 SQLCastExpr cast = new SQLCastExpr();
                 cast.setExpr(expr());
                 accept(Token.AS);
-                cast.setDataType(parseDataType());
+                cast.setDataType(parseDataType(false));
                 accept(Token.RPAREN);
 
                 sqlExpr = cast;
@@ -1798,8 +1798,8 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLDataType parseDataType(boolean restrict) {
-
-        if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
+        Token token = lexer.token();
+        if (token == Token.DEFAULT || token == Token.NOT || token == Token.NULL) {
             return null;
         }
 

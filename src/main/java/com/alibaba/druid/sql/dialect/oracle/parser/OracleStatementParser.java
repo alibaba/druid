@@ -142,7 +142,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.WITH) {
-                SQLSelectStatement stmt = new SQLSelectStatement(this.createSQLSelectParser().select());
+                SQLSelectStatement stmt = new SQLSelectStatement(this.createSQLSelectParser().select(), dbType);
                 stmt.setParent(parent);
                 statementList.add(stmt);
                 continue;

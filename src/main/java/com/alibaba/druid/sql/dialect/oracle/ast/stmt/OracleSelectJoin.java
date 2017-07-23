@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -35,6 +36,9 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     }
 
+    public OracleSelectJoin(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition){
+        super (left, joinType, right, condition);
+    }
 
     public OracleSelectPivotBase getPivot() {
         return pivot;

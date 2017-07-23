@@ -301,7 +301,7 @@ public class SQLUtils {
                         if (j != 0) {
                             visitor.println();
                         }
-                        visitor.print(comment);
+                        visitor.printComment(comment);
                     }
                 }
 
@@ -317,7 +317,8 @@ public class SQLUtils {
                 List<String> comments = stmt.getBeforeCommentsDirect();
                 if (comments != null){
                     for(String comment : comments) {
-                        visitor.println(comment);
+                        visitor.printComment(comment);
+                        visitor.println();
                     }
                 }
             }
@@ -331,7 +332,7 @@ public class SQLUtils {
                         if (j != 0) {
                             visitor.println();
                         }
-                        visitor.print(comment);
+                        visitor.printComment(comment);
                     }
                 }
             }

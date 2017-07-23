@@ -250,45 +250,51 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         printSelectList(x.getSelectList());
 
-        if (x.getInto() != null) {
+        SQLExprTableSource into = x.getInto();
+        if (into != null) {
             println();
             print0(ucase ? "INTO " : "into ");
-            x.getInto().accept(this);
+            into.accept(this);
         }
 
-        if (x.getFrom() != null) {
+        SQLTableSource form = x.getFrom();
+        if (form != null) {
             println();
             print0(ucase ? "FROM " : "from ");
-            x.getFrom().accept(this);
+            form.accept(this);
         }
 
-        if (x.getWhere() != null) {
+        SQLExpr where = x.getWhere();
+        if (where != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
-            x.getWhere().accept(this);
+            where.accept(this);
         }
 
         printHierarchical(x);
 
-        if (x.getGroupBy() != null) {
+        SQLSelectGroupByClause groupBy = x.getGroupBy();
+        if (groupBy != null) {
             println();
-            x.getGroupBy().accept(this);
+            groupBy.accept(this);
         }
 
-        if (x.getOrderBy() != null) {
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
             println();
-            x.getOrderBy().accept(this);
+            orderBy.accept(this);
         }
 
-        if (x.getLimit() != null) {
+        SQLLimit limit = x.getLimit();
+        if (limit != null) {
             println();
-            x.getLimit().accept(this);
+            limit.accept(this);
         }
 
-        if (x.getProcedureName() != null) {
+        SQLName procedureName = x.getProcedureName();
+        if (procedureName != null) {
             print0(ucase ? " PROCEDURE " : " procedure ");
-            x.getProcedureName().accept(this);
+            procedureName.accept(this);
             if (!x.getProcedureArgumentList().isEmpty()) {
                 print('(');
                 printAndAccept(x.getProcedureArgumentList(), ", ");

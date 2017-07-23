@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,300 +37,150 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * Created by wenshao on 03/06/2017.
  */
 public class SchemaRepository {
-    private String name;
+    private Schema defaultSchema;
 
-    private final Map<String, SchemaObject> objects = new ConcurrentSkipListMap<String, SchemaObject>();
+    private Map<String, Schema> schemas = new LinkedHashMap<String, Schema>();
 
-    private final Map<String, SchemaObject> functions  = new ConcurrentSkipListMap<String, SchemaObject>();
-
-    private final SchemaVisitor visitor = new SchemaVisitor();
-
-    public String getName() {
-        return name;
+    public String getDefaultSchemaName() {
+        return getDefaultSchema().getName();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDefaultSchema(String name) {
+        if (name == null) {
+            defaultSchema = null;
+            return;
+        }
+
+        String normalizedName = SQLUtils.normalize(name)
+                .toLowerCase();
+
+        Schema defaultSchema = schemas.get(normalizedName);
+        if (defaultSchema != null) {
+            this.defaultSchema = defaultSchema;
+            return;
+        }
+
+        if (defaultSchema == null) {
+            if (this.defaultSchema != null
+                    && this.defaultSchema.getName() == null) {
+                this.defaultSchema.setName(name);
+
+                schemas.put(normalizedName, this.defaultSchema);
+                return;
+            }
+
+            defaultSchema = new Schema(this);
+            defaultSchema.setName(name);
+            schemas.put(normalizedName, defaultSchema);
+            this.defaultSchema = defaultSchema;
+        }
+    }
+
+    public Schema findSchema(String schema) {
+        if (schema == null) {
+            return null;
+        }
+
+        return schemas.get(
+                SQLUtils.normalize(schema)
+                .toLowerCase());
+    }
+
+    public Schema getDefaultSchema() {
+        if (defaultSchema == null) {
+            defaultSchema = new Schema(this);
+        }
+
+        return defaultSchema;
+    }
+
+    public void setDefaultSchema(Schema schema) {
+        this.defaultSchema = schema;
     }
 
     public SchemaObject findTable(String tableName) {
-        String lowerName = tableName.toLowerCase();
-        SchemaObject object = objects.get(lowerName);
+        return getDefaultSchema().findTable(tableName);
+    }
 
-        if (object != null && object.getType() == SchemaObjectType.Table) {
+    public SchemaObject findTableOrView(String tableName) {
+        return findTableOrView(tableName, true);
+    }
+
+    public SchemaObject findTableOrView(String tableName, boolean onlyCurrent) {
+        Schema schema = getDefaultSchema();
+
+        SchemaObject object = schema.findTableOrView(tableName);
+        if (object != null) {
             return object;
         }
 
+        for (Schema s : this.schemas.values()) {
+            if (s == schema) {
+                continue;
+            }
+
+            object = schema.findTableOrView(tableName);
+            if (object != null) {
+                return object;
+            }
+        }
+
         return null;
+    }
+
+    public Collection<Schema> getSchemas() {
+        return schemas.values();
     }
 
     public SchemaObject findFunction(String functionName) {
-        String lowerName = functionName.toLowerCase();
-        return functions.get(lowerName);
+        return getDefaultSchema().findFunction(functionName);
     }
 
     public void acceptDDL(String ddl, String dbType) {
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(ddl, dbType);
-        for (SQLStatement stmt : stmtList) {
-            accept(stmt);
-        }
+        getDefaultSchema().acceptDDL(ddl, dbType);
     }
 
     public void accept(SQLStatement stmt) {
-        stmt.accept(visitor);
+        getDefaultSchema().accept(stmt);
     }
 
     public boolean isSequence(String name) {
-        SchemaObject object = objects.get(name);
-        return object != null
-                && object.getType() == SchemaObjectType.Sequence;
-    }
-
-    public class SchemaVisitor extends OracleASTVisitorAdapter {
-
-        public boolean visit(SQLDropSequenceStatement x) {
-            String name = x.getName().getSimpleName();
-            objects.remove(name);
-            return false;
-        }
-
-        public boolean visit(SQLCreateSequenceStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Sequence);
-
-            objects.put(name.toLowerCase(), object);
-            return false;
-        }
-
-        public boolean visit(OracleCreateTableStatement x) {
-            visit((SQLCreateTableStatement) x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            String name = x.computeName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
-
-            String name_lower = name.toLowerCase();
-            if (objects.containsKey(name_lower)) {
-                return false;
-            }
-            objects.put(name_lower, object);
-
-            return false;
-        }
-
-        public boolean visit(SQLCreateIndexStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Index);
-
-            objects.put(name.toLowerCase(), object);
-
-            return false;
-        }
-
-        public boolean visit(SQLCreateFunctionStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function, x);
-
-            functions.put(name.toLowerCase(), object);
-
-            return false;
-        }
+        return getDefaultSchema().isSequence(name);
     }
 
     public SchemaObject findTable(SQLTableSource tableSource, String alias) {
-        if (tableSource instanceof SQLExprTableSource) {
-            if (alias.equalsIgnoreCase(tableSource.computeAlias())) {
-                SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
-
-                SchemaObject tableObject = exprTableSource.getSchemaObject();
-                if (tableObject !=  null) {
-                    return tableObject;
-                }
-
-                SQLExpr expr = exprTableSource.getExpr();
-                if (expr instanceof SQLIdentifierExpr) {
-                    String tableName = ((SQLIdentifierExpr) expr).getName();
-
-                    tableObject = findTable(tableName);
-                    if (tableObject != null) {
-                        exprTableSource.setSchemaObject(tableObject);
-                    }
-                    return tableObject;
-                }
-
-                if (expr instanceof SQLPropertyExpr) {
-                    String tableName = ((SQLPropertyExpr) expr).getName();
-
-                    tableObject = findTable(tableName);
-                    if (tableObject != null) {
-                        exprTableSource.setSchemaObject(tableObject);
-                    }
-                    return tableObject;
-                }
-            }
-            return null;
-        }
-
-        if (tableSource instanceof SQLJoinTableSource) {
-            SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
-            SQLTableSource left = join.getLeft();
-
-            SchemaObject tableObject = findTable(left, alias);
-            if (tableObject != null) {
-                return tableObject;
-            }
-
-            SQLTableSource right = join.getRight();
-            tableObject = findTable(right, alias);
-            return tableObject;
-        }
-
-        return null;
+        return getDefaultSchema().findTable(tableSource, alias);
     }
 
     public SQLColumnDefinition findColumn(SQLTableSource tableSource, SQLSelectItem selectItem) {
-        if (selectItem == null) {
-            return null;
-        }
-
-        return findColumn(tableSource, selectItem.getExpr());
+        return getDefaultSchema().findColumn(tableSource, selectItem);
     }
 
     public SQLColumnDefinition findColumn(SQLTableSource tableSource, SQLExpr expr) {
-        SchemaObject object = findTable(tableSource, expr);
-        if (object != null) {
-            if (expr instanceof SQLAggregateExpr) {
-                SQLAggregateExpr aggregateExpr = (SQLAggregateExpr) expr;
-                String function = aggregateExpr.getMethodName();
-                if ("min".equalsIgnoreCase(function)
-                        || "max".equalsIgnoreCase(function)) {
-                    SQLExpr arg = aggregateExpr.getArguments().get(0);
-                    expr = arg;
-                }
-            }
-
-            if (expr instanceof SQLName) {
-                return object.findColumn(((SQLName) expr).getSimpleName());
-            }
-        }
-
-        return null;
+        return getDefaultSchema().findColumn(tableSource, expr);
     }
 
     public SchemaObject findTable(SQLTableSource tableSource, SQLSelectItem selectItem) {
-        if (selectItem == null) {
-            return null;
-        }
-
-        return findTable(tableSource, selectItem.getExpr());
+        return getDefaultSchema().findTable(tableSource, selectItem);
     }
 
     public SchemaObject findTable(SQLTableSource tableSource, SQLExpr expr) {
-        if (expr instanceof SQLAggregateExpr) {
-            SQLAggregateExpr aggregateExpr = (SQLAggregateExpr) expr;
-            String function = aggregateExpr.getMethodName();
-            if ("min".equalsIgnoreCase(function)
-                    || "max".equalsIgnoreCase(function)) {
-                SQLExpr arg = aggregateExpr.getArguments().get(0);
-                return findTable(tableSource, arg);
-            }
-        }
-
-        if (expr instanceof SQLPropertyExpr) {
-            String ownerName = ((SQLPropertyExpr) expr).getOwnernName();
-            return findTable(tableSource, ownerName);
-        }
-
-        if (expr instanceof SQLAllColumnExpr || expr instanceof SQLIdentifierExpr) {
-            if (tableSource instanceof SQLExprTableSource) {
-                return findTable(tableSource, tableSource.computeAlias());
-            }
-
-            if (tableSource instanceof SQLJoinTableSource) {
-                SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
-
-                SchemaObject table = findTable(join.getLeft(), expr);
-                if (table == null) {
-                    table = findTable(join.getRight(), expr);
-                }
-                return table;
-            }
-            return null;
-        }
-
-        return null;
+        return getDefaultSchema().findTable(tableSource, expr);
     }
 
     public Map<String, SchemaObject> getTables(SQLTableSource x) {
-        Map<String, SchemaObject> tables = new LinkedHashMap<String, SchemaObject>();
-        computeTables(x, tables);
-        return tables;
-    }
-
-    private void computeTables(SQLTableSource x, Map<String, SchemaObject> tables) {
-        if (x == null) {
-            return;
-        }
-
-        if (x instanceof SQLExprTableSource) {
-            SQLExprTableSource exprTableSource = (SQLExprTableSource) x;
-
-            SQLExpr expr = exprTableSource.getExpr();
-            if (expr instanceof SQLIdentifierExpr) {
-                String tableName = ((SQLIdentifierExpr) expr).getName();
-
-                SchemaObject table = exprTableSource.getSchemaObject();
-                if (table == null) {
-                    table = findTable(tableName);
-
-                    if (table != null) {
-                        exprTableSource.setSchemaObject(table);
-                    }
-                }
-
-                if (table != null) {
-                    tables.put(tableName, table);
-
-                    String alias = x.getAlias();
-                    if (alias != null && !alias.equalsIgnoreCase(tableName)) {
-                        tables.put(alias, table);
-                    }
-                }
-            }
-
-            return;
-        }
-
-        if (x instanceof SQLJoinTableSource) {
-            SQLJoinTableSource join = (SQLJoinTableSource) x;
-            computeTables(join.getLeft(), tables);
-            computeTables(join.getRight(), tables);
-        }
+        return getDefaultSchema().getTables(x);
     }
 
     public int getTableCount() {
-        int count = 0;
-        for (SchemaObject object : this.objects.values()) {
-            if (object.getType() == SchemaObjectType.Table) {
-                count++;
-            }
-        }
-        return count;
+        return getDefaultSchema().getTableCount();
     }
 
     public Map<String, SchemaObject> getObjects() {
-        return this.objects;
+        return getDefaultSchema().getObjects();
     }
 
     public int getViewCount() {
-        int count = 0;
-        for (SchemaObject object : this.objects.values()) {
-            if (object.getType() == SchemaObjectType.View) {
-                count++;
-            }
-        }
-        return count;
+        return getDefaultSchema().getViewCount();
     }
 }

@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.oracle.alter;
-
-import java.util.List;
-
-import org.junit.Assert;
+package com.alibaba.druid.bvt.sql.oracle.select;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class OracleAlterTableTest22 extends OracleTest {
+import java.util.List;
+
+public class OracleSelectTest70 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE employees ADD CONSTRAINT check_comp " //
-                + "   CHECK (salary + (commission_pct*salary) <= 5000)" //
-                + "   DISABLE;";
+                "SELECT CAST(a.nsrdzdah AS char)\n" +
+                        "FROM DJ_NSRXX_DZB a\n" +
+                        "\tINNER JOIN DJ_NSRXX b ON a.nsrdzdah = b.nsrdzdah\n" +
+                        "\tINNER JOIN DM_SWJG c ON b.nsr_swjg_dm = c.swjg_dm\n" +
+                        "WHERE (a.nsrsbh_old = ?\n" +
+                        "\t\tOR a.nsrsbh_new = ?)\n" +
+                        "\tAND b.nsrzt_dm <= ?\n" +
+                        "\tAND c.JBDM LIKE ?\n" +
+                        "\tAND rownum = 1"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -51,17 +54,25 @@ public class OracleAlterTableTest22 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals("ALTER TABLE employees" //
-                            + "\n\tADD CONSTRAINT check_comp CHECK (salary + commission_pct * salary <= 5000) DISABLE;", //
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals(3, visitor.getTables().size());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(8, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        {
+            String text = SQLUtils.toOracleString(stmt);
 
-        Assert.assertEquals(2, visitor.getColumns().size());
+            assertEquals("SELECT CAST(a.nsrdzdah AS char)\n" +
+                    "FROM DJ_NSRXX_DZB a\n" +
+                    "INNER JOIN DJ_NSRXX b ON a.nsrdzdah = b.nsrdzdah \n" +
+                    "\tINNER JOIN DM_SWJG c ON b.nsr_swjg_dm = c.swjg_dm \n" +
+                    "WHERE (a.nsrsbh_old = ?\n" +
+                    "\t\tOR a.nsrsbh_new = ?)\n" +
+                    "\tAND b.nsrzt_dm <= ?\n" +
+                    "\tAND c.JBDM LIKE ?\n" +
+                    "\tAND rownum = 1", text);
+        }
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "commission_pct")));
+        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

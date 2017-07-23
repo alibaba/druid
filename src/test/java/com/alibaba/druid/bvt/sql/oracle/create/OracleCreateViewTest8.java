@@ -46,7 +46,7 @@ public class OracleCreateViewTest8 extends OracleTest {
                         "\temp_id, \n" +
                         "\tlast_name, \n" +
                         "\temail UNIQUE, \n" +
-                        "\tCONSTRAINT id_pk PRIMARY KEY (emp_id) RELY DIABLE NOVALIDATE\n" +
+                        "\tCONSTRAINT id_pk PRIMARY KEY (emp_id) RELY DISABLE NOVALIDATE\n" +
                         ")\n" +
                         "AS\n" +
                         "SELECT employee_id, last_name, email\n" +

@@ -443,7 +443,7 @@ public class PagerUtils {
         countSelectQuery.setFrom(fromSubquery);
 
         SQLSelect countSelect = new SQLSelect(countSelectQuery);
-        SQLSelectStatement countStmt = new SQLSelectStatement(countSelect);
+        SQLSelectStatement countStmt = new SQLSelectStatement(countSelect, dbType);
 
         return SQLUtils.toSQLString(countStmt, dbType);
     }

@@ -96,7 +96,7 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
         Throwable cause = e.getCause();
         for (int i = 0; i < 5 && cause != null; ++i) {
-            if (cause instanceof SocketTimeoutException || cause instanceof IOException) {
+            if (cause instanceof SocketTimeoutException) {
                 return true;
             }
 
