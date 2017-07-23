@@ -766,4 +766,20 @@ public final class JdbcUtils implements JdbcConstants {
             close(conn);
         }
     }
+
+    public static String getCreateTableScript(String dbType, Connection conn) throws SQLException {
+        return getCreateTableScript(dbType, conn, true, true);
+    }
+
+    public static String getCreateTableScript(String dbType, Connection conn, boolean sorted, boolean simplify) throws SQLException {
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            return MySqlUtils.getCreateTableScript(conn, sorted, simplify);
+        }
+
+        if (JdbcConstants.ORACLE.equals(dbType)) {
+            return OracleUtils.getCreateTableScript(conn, sorted, simplify);
+        }
+
+        throw new SQLException("getCreateTableScript dbType not support for " + dbType);
+    }
 }

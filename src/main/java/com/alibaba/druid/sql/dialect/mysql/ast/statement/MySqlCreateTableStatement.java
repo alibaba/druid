@@ -165,8 +165,13 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         return tableGroup;
     }
 
-    
     public void setTableGroup(SQLName tableGroup) {
         this.tableGroup = tableGroup;
+    }
+
+    @Override
+    public void simplify() {
+        tableOptions.clear();
+        super.simplify();
     }
 }

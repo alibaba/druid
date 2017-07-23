@@ -1311,8 +1311,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
             if (aliasMap != null) {
                 String alias = x.getAlias();
-                if (alias != null && !aliasMap.containsKey(alias)) {
-                    putAliasMap(aliasMap, alias, ident);
+                if (alias != null) {
+                    String table = aliasMap.get(alias);
+                    if (!(ident.equals(table) || alias.equals(table))) {
+                        putAliasMap(aliasMap, alias, ident);
+                    }
                 }
                 if (!aliasMap.containsKey(ident)) {
                     putAliasMap(aliasMap, ident, ident);

@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 /**
  * @author kiki
@@ -33,6 +34,10 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
 
     protected Option onUpdate;
     protected Option onDelete;
+
+    public MysqlForeignKey() {
+        dbType = JdbcConstants.MYSQL;
+    }
 
     public SQLName getIndexName() {
         return indexName;

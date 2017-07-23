@@ -192,6 +192,7 @@ public class SQLServerExprParser extends SQLExprParser {
 
     public SQLColumnDefinition createColumnDefinition() {
         SQLColumnDefinition column = new SQLColumnDefinition();
+        column.setDbType(dbType);
         return column;
     }
 

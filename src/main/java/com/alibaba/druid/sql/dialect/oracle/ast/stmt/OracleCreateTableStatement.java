@@ -78,6 +78,29 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private SQLName                 of;
     private OIDIndex                oidIndex;
     private boolean                 monitoring;
+
+
+    public void simplify() {
+        tablespace = null;
+        storage = null;
+        lobStorage = null;
+
+        pctfree = null;
+        pctused = null;
+        initrans = null;
+        maxtrans = null;
+        pctincrease = null;
+
+        logging = null;
+        compress = null;
+        compressLevel = null;
+        compressForOltp = false;
+
+        onCommitPreserveRows = false;
+        onCommitDeleteRows = false;
+
+        super.simplify();
+    }
     
     public OracleCreateTableStatement() {
         super (JdbcConstants.ORACLE);
@@ -466,4 +489,5 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.name = name;
         }
     }
+
 }

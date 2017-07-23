@@ -23,4 +23,6 @@ public interface SQLConstraint extends SQLObject {
     SQLName getName();
 
     void setName(SQLName value);
+
+    void simplify();
 }

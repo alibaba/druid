@@ -15,7 +15,9 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.mysql.jdbc.ConnectionImpl;
 import com.mysql.jdbc.MySQLConnection;
 import com.mysql.jdbc.MysqlIO;
@@ -25,11 +27,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MySqlUtils {
@@ -125,5 +126,92 @@ public class MySqlUtils {
         }
 
         return words.contains(name_lower);
+    }
+
+    public static List<String> showTables(Connection conn) throws SQLException {
+        List<String> tables = new ArrayList<String>();
+
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("show tables");
+            while (rs.next()) {
+                String tableName = rs.getString(1);
+                tables.add(tableName);
+            }
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+        }
+
+        return tables;
+    }
+
+    public static List<String> getTableDDL(Connection conn, List<String> tables) throws SQLException {
+        List<String> ddlList = new ArrayList<String>();
+
+        Statement stmt = null;
+        try {
+            for (String table : tables) {
+                if (stmt == null) {
+                    stmt = conn.createStatement();
+                }
+
+                if (isKeyword(table)) {
+                    table = "`" + table + "`";
+                }
+
+                ResultSet rs = null;
+                try {
+                    rs = stmt.executeQuery("show create table " + table);
+                    if (rs.next()) {
+                        String ddl = rs.getString(2);
+                        ddlList.add(ddl);
+                    }
+                } finally {
+                    JdbcUtils.close(rs);
+                }
+            }
+        } finally {
+            JdbcUtils.close(stmt);
+        }
+
+
+        return ddlList;
+    }
+
+    public static String getCreateTableScript(Connection conn) throws SQLException {
+        return getCreateTableScript(conn, true, true);
+    }
+
+    public static String getCreateTableScript(Connection conn, boolean sorted, boolean simplify) throws SQLException {
+        List<String> tables = showTables(conn);
+        List<String> ddlList = getTableDDL(conn, tables);
+        StringBuilder buf = new StringBuilder();
+        for (String ddl : ddlList) {
+            buf.append(ddl);
+            buf.append(';');
+        }
+        String ddlScript = buf.toString();
+
+        if (! (sorted || simplify)) {
+            return ddlScript;
+        }
+
+        List stmtList = SQLUtils.parseStatements(ddlScript, JdbcConstants.MYSQL);
+        if (simplify) {
+            for (Object o : stmtList) {
+                if (o instanceof SQLCreateTableStatement) {
+                    SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) o;
+                    createTableStmt.simplify();
+                }
+            }
+        }
+
+        if (sorted) {
+            SQLCreateTableStatement.sort(stmtList);
+        }
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

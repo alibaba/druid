@@ -585,9 +585,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print0(ucase ? "KEY" : "key");
 
-        if (x.getIndexName() != null) {
+        SQLName name = x.getName();
+        if (name != null) {
             print(' ');
-            x.getIndexName().accept(this);
+            name.accept(this);
         }
 
         if (x.getIndexType() != null) {
@@ -2844,9 +2845,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print0(ucase ? "UNIQUE" : "unique");
 
-        if (x.getIndexName() != null) {
+        SQLName name = x.getName();
+        if (name != null) {
             print(' ');
-            x.getIndexName().accept(this);
+            name.accept(this);
         }
 
         if (x.getIndexType() != null) {

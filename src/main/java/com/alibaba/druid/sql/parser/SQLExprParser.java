@@ -1980,6 +1980,7 @@ public class SQLExprParser extends SQLParser {
 
     public SQLColumnDefinition createColumnDefinition() {
         SQLColumnDefinition column = new SQLColumnDefinition();
+        column.setDbType(dbType);
         return column;
     }
 

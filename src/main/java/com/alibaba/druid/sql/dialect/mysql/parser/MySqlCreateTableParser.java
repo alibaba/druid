@@ -774,7 +774,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_ALIAS) {
                 SQLName indexName = this.exprParser.name();
                 if (indexName != null) {
-                    key.setIndexName(indexName);
+                    key.setName(indexName);
                 }
             }
 

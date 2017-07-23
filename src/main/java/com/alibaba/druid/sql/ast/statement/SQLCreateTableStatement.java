@@ -20,11 +20,13 @@ import java.util.*;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
+import org.apache.ibatis.jdbc.SQL;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
@@ -57,6 +59,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
+    }
+
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
     }
 
     public SQLExprTableSource getTableSource() {
@@ -413,5 +419,38 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             }
         }
 
+    }
+
+    public void simplify() {
+        SQLName name = getName();
+        if (name instanceof SQLPropertyExpr) {
+            String tableName = ((SQLPropertyExpr) name).getName();
+            tableName = SQLUtils.normalize(tableName);
+            setName(tableName);
+            name = getName();
+        }
+
+        if (name instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) name;
+            String tableName = identExpr.getName();
+            tableName = SQLUtils.normalize(tableName, dbType);
+            identExpr.setName(tableName);
+        }
+
+        if (name instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) name;
+            String tableName = identExpr.getName();
+            tableName = SQLUtils.normalize(tableName);
+            identExpr.setName(tableName);
+        }
+
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof SQLColumnDefinition) {
+                SQLColumnDefinition column = (SQLColumnDefinition) element;
+                column.simplify();
+            } else if (element instanceof SQLConstraint) {
+                ((SQLConstraint) element).simplify();
+            }
+        }
     }
 }

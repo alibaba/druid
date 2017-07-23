@@ -16,17 +16,17 @@
 package com.alibaba.druid.util;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
-import oracle.jdbc.driver.DatabaseError;
 import oracle.jdbc.internal.OraclePreparedStatement;
 import oracle.jdbc.xa.client.OracleXAConnection;
 import oracle.sql.ROWID;
@@ -221,5 +221,100 @@ public class OracleUtils {
         }
 
         return words.contains(name_lower);
+    }
+
+    public static List<String> showTables(Connection conn) throws SQLException {
+        List<String> tables = new ArrayList<String>();
+
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select table_name from user_tables");
+            while (rs.next()) {
+                String tableName = rs.getString(1);
+                tables.add(tableName);
+            }
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+        }
+
+        return tables;
+    }
+
+    public static List<String> getTableDDL(Connection conn, String... tables) throws SQLException {
+        return getTableDDL(conn, Arrays.asList(tables));
+    }
+
+    public static List<String> getTableDDL(Connection conn, List<String> tables) throws SQLException {
+        List<String> ddlList = new ArrayList<String>();
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            String sql = "select DBMS_METADATA.GET_DDL('TABLE', TABLE_NAME) FROM user_tables";
+
+            if (tables.size() > 0) {
+                sql += "IN (";
+                for (int i = 0; i < tables.size(); ++i) {
+                    if (i != 0) {
+                        sql += ", ?";
+                    } else {
+                        sql += "?";
+                    }
+                }
+                sql += ")";
+            }
+            pstmt = conn.prepareStatement(sql);
+            for (int i = 0; i < tables.size(); ++i) {
+                pstmt.setString(i + 1, tables.get(i));
+            }
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String ddl = rs.getString(1);
+                ddlList.add(ddl);
+            }
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(pstmt);
+        }
+
+        return ddlList;
+    }
+
+    public static String getCreateTableScript(Connection conn) throws SQLException {
+        return getCreateTableScript(conn, true, true);
+    }
+
+    public static String getCreateTableScript(Connection conn, boolean sorted, boolean simplify) throws SQLException {
+        List<String> ddlList = OracleUtils.getTableDDL(conn);
+
+        StringBuilder buf = new StringBuilder();
+        for (String ddl : ddlList) {
+            buf.append(ddl);
+            buf.append(';');
+        }
+
+        String ddlScript = buf.toString();
+
+        if (! (sorted || simplify)) {
+            return ddlScript;
+        }
+
+        List stmtList = SQLUtils.parseStatements(ddlScript, JdbcConstants.ORACLE);
+        if (simplify) {
+            for (Object o : stmtList) {
+                if (o instanceof SQLCreateTableStatement) {
+                    SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) o;
+                    createTableStmt.simplify();
+                }
+            }
+        }
+
+        if (sorted) {
+            SQLCreateTableStatement.sort(stmtList);
+        }
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
     }
 }

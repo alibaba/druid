@@ -1012,13 +1012,14 @@ public class SQLStatementParser extends SQLParser {
                         lexer.nextToken();
                         SQLExpr comment = this.exprParser.primary();
 
-                        SQLColumnDefinition columnDefinition = new SQLColumnDefinition();
-                        columnDefinition.setName(columnName);
-                        columnDefinition.setComment(comment);
+                        SQLColumnDefinition column = new SQLColumnDefinition();
+                        column.setDbType(dbType);
+                        column.setName(columnName);
+                        column.setComment(comment);
 
                         SQLAlterTableAlterColumn changeColumn = new SQLAlterTableAlterColumn();
 
-                        changeColumn.setColumn(columnDefinition);
+                        changeColumn.setColumn(column);
 
                         stmt.addItem(changeColumn);
                     } else {
@@ -2232,6 +2233,7 @@ public class SQLStatementParser extends SQLParser {
                     createView.addColumn(constraint);
                 } else {
                     SQLColumnDefinition column = new SQLColumnDefinition();
+                    column.setDbType(dbType);
                     SQLName expr = this.exprParser.name();
                     column.setName(expr);
 

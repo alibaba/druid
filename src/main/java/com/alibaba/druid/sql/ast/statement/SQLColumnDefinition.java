@@ -26,8 +26,10 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement {
+    protected String                          dbType;
 
     protected SQLName                         name;
     protected SQLDataType                     dataType;
@@ -287,6 +289,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
     public SQLColumnDefinition clone() {
         SQLColumnDefinition x = new SQLColumnDefinition();
+        x.setDbType(dbType);
 
         if(name != null) {
             x.setName(name.clone());
@@ -340,5 +343,27 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         }
 
         return x;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public void simplify() {
+        enable = null;
+        validate = null;
+        rely = null;
+
+
+        if (this.name instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
+            String columnName = identExpr.getName();
+            columnName = SQLUtils.normalize(columnName, dbType);
+            identExpr.setName(columnName);
+        }
     }
 }

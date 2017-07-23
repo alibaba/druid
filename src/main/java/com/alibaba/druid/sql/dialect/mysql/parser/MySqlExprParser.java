@@ -542,6 +542,7 @@ public class MySqlExprParser extends SQLExprParser {
 
     public SQLColumnDefinition parseColumn() {
         SQLColumnDefinition column = new SQLColumnDefinition();
+        column.setDbType(dbType);
         column.setName(name());
         column.setDataType(parseDataType());
 
@@ -813,7 +814,7 @@ public class MySqlExprParser extends SQLExprParser {
 
         if (lexer.token() != Token.LPAREN) {
             SQLName indexName = name();
-            unique.setIndexName(indexName);
+            unique.setName(indexName);
         }
         
         //5.5语法 USING BTREE 放在index 名字后

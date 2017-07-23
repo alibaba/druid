@@ -42,9 +42,7 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.util.*;
 
 public class SQLUtils {
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption(true, true);
@@ -774,6 +772,10 @@ public class SQLUtils {
     }
 
     public static String normalize(String name) {
+        return normalize(name, null);
+    }
+
+    public static String normalize(String name, String dbType) {
         if (name == null) {
             return null;
         }
@@ -782,7 +784,19 @@ public class SQLUtils {
             char c0 = name.charAt(0);
             char x0 = name.charAt(name.length() - 1);
             if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
-                name = name.substring(1, name.length() - 1);
+                String normalizeName = name.substring(1, name.length() - 1);
+
+                if (JdbcConstants.ORACLE.equals(dbType)) {
+                    if (OracleUtils.isKeyword(normalizeName)) {
+                        return name;
+                    }
+                } else if (JdbcConstants.MYSQL.equals(dbType)) {
+                    if (MySqlUtils.isKeyword(normalizeName)) {
+                        return name;
+                    }
+                }
+
+                return normalizeName;
             }
         }
 
