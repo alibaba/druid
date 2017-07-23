@@ -21,7 +21,8 @@ public class Oracle_getCreateTableScriptTest extends DbTestCase {
         Connection conn = getConnection();
 
         // 从Oracle通过DBMS_METADATA.GET_DDL获取CreateTable语句列表
-        String createTableScript = JdbcUtils.getCreateTableScript(JdbcConstants.ORACLE, conn);
+        String createTableScript = JdbcUtils.getCreateTableScript(conn, JdbcConstants.ORACLE);
+        System.out.println(createTableScript);
 
         conn.close();
     }

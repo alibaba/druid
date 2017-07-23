@@ -20,7 +20,7 @@ public class MySql_getCreateTableScriptTest extends DbTestCase {
     public void test_oracle() throws Exception {
         Connection conn = getConnection();
 
-        String createTableScript = JdbcUtils.getCreateTableScript(JdbcConstants.MYSQL, conn);
+        String createTableScript = JdbcUtils.getCreateTableScript(conn, JdbcConstants.MYSQL);
         System.out.println(createTableScript);
 
 

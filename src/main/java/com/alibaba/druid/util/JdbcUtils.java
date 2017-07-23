@@ -767,11 +767,11 @@ public final class JdbcUtils implements JdbcConstants {
         }
     }
 
-    public static String getCreateTableScript(String dbType, Connection conn) throws SQLException {
-        return getCreateTableScript(dbType, conn, true, true);
+    public static String getCreateTableScript(Connection conn, String dbType) throws SQLException {
+        return getCreateTableScript(conn, dbType, true, true);
     }
 
-    public static String getCreateTableScript(String dbType, Connection conn, boolean sorted, boolean simplify) throws SQLException {
+    public static String getCreateTableScript(Connection conn, String dbType, boolean sorted, boolean simplify) throws SQLException {
         if (JdbcConstants.MYSQL.equals(dbType)) {
             return MySqlUtils.getCreateTableScript(conn, sorted, simplify);
         }
