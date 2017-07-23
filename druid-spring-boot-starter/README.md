@@ -5,9 +5,9 @@
 Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控。
 
 ## 如何使用
-1.在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖。
+1. 在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖
 
-Maven
+```Maven```
 ```xml
 <dependency>
    <groupId>com.alibaba</groupId>
@@ -15,30 +15,31 @@ Maven
    <version>1.1.2</version>
 </dependency>
 ```
-Gradle
+```Gradle```
 ```xml
 compile 'com.alibaba:druid-spring-boot-starter:1.1.2'
 
 ```
-2.添加配置
+2. 添加配置
 ```xml
 spring.datasource.url= 
 spring.datasource.username=
 spring.datasource.password=
+# ...其他配置（非必填项 ）
 ```
 
 ## 配置属性
-Druid Spring Boot Starter 配置属性的名称完全遵照Druid，你可以通过下面这些配置属性来配置Druid数据库连接池和监控，如果没有配置则使用默认值。
+Druid Spring Boot Starter 配置属性的名称完全遵照 Druid，你可以通过 Spring Boot 配置文件来配置Druid数据库连接池和监控，如果没有配置则使用默认值。
 
-- 数据源配置
+- JDBC 配置
 ```xml
-# JDBC配置
 spring.datasource.druid.url= # 或spring.datasource.url= 
 spring.datasource.druid.username= # 或spring.datasource.username=
 spring.datasource.druid.password= # 或spring.datasource.password=
 spring.datasource.druid.driver-class-name= #或 spring.datasource.driver-class-name=
-
-# 连接池配置
+```
+- 连接池配置
+```
 spring.datasource.druid.initial-size=
 spring.datasource.druid.max-active=
 spring.datasource.druid.min-idle=
@@ -57,8 +58,6 @@ spring.datasource.druid.max-evictable-idle-time-millis=
 spring.datasource.druid.filters= #配置多个英文逗号分隔
 ....//more
 ```
-更多配置请参考WIKI文档，或查看 ```DruidDataSource``` 内的成员变量（提供set方法即可配置），或根据IDE提示来进行配置。
-
 - 监控配置
 ```
 # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
@@ -84,7 +83,8 @@ spring.datasource.druid.stat-view-servlet.deny=
 spring.datasource.druid.aop-patterns= # Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔
 # 如果spring.datasource.druid.aop-patterns要代理的类没有定义interface请设置spring.aop.proxy-target-class=true
 ```
-IDE会对 Druid 所有的配置属性进行输入提示，配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的。
+Druid Spring Boot Starter 不仅限于对以上配置属性提供支持，```DruidDataSource``` 内提供```setter```方法的可配置属性都将被支持。你可以参考WIKI文档或通过IDE输入提示来进行配置。配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的，在配置较多的情况下推荐使用```.yml```。
+
 
 
 ## 如何配置多数据源
@@ -127,31 +127,36 @@ public DataSource dataSourceTwo(){
 }
 ```
 
-## 如何配置Filter
-如果通过```spring.datasource.druid.filters=stat,wall,log4j...```来启用默认的Filter配置不能满足你的需要，你可以通过配置文件来配置Filter，下面是例子。
+## 如何配置 Filter
+你可以通过 ```spring.datasource.druid.filters=stat,wall,log4j ...``` 的方式来启用相应的内置Filter，不过这些Filter都是默认配置。如果默认配置不能满足你的需求，你可以放弃这种方式，通过配置文件来配置Filter，下面是例子。
 ```xml
-# 自定义StatFilter 配置
+# 配置StatFilter 
 spring.datasource.druid.filter.stat.db-type=h2
 spring.datasource.druid.filter.stat.log-slow-sql=true
 spring.datasource.druid.filter.stat.slow-sql-millis=2000
 
-# 自定义WallFilter 配置,其他 Filter 不再演示
+# 配置WallFilter 
 spring.datasource.druid.filter.wall.enabled=true
 spring.datasource.druid.filter.wall.db-type=h2
 spring.datasource.druid.filter.wall.config.delete-allow=false
 spring.datasource.druid.filter.wall.config.drop-table-allow=false
+
+# 其他 Filter 配置不再演示
 ```
-目前为以下Filter 提供配置支持，请参考文档或者IDE提示进行配置
+目前为以下 Filter 提供了配置支持，请参考文档或者根据IDE提示（```spring.datasource.druid.filter.*```）进行配置。
 - StatFilter
+- WallFilter
 - ConfigFilter
 - EncodingConvertFilter
 - Slf4jLogFilter
 - Log4jFilter
 - Log4j2Filter
 - CommonsLogFilter
-- WallFilter
 
-默认会启用 StatFilter，你也可以将其```enabled```设置为```false```关闭，其他Filter配置生效需将对应的```enabled```设置为```true```。
+要想使自定义 Filter 配置生效需要将对应 Filter 的 ```enabled``` 设置为 ```true``` ，Druid Spring Boot Starter 默认会启用 StatFilter，你也可以将其 ```enabled``` 设置为 ```false``` 来禁用它
+
+## IDE 提示支持
+![](https://raw.githubusercontent.com/lihengming/java-codes/master/shared-resources/github-images/druid-spring-boot-starter-ide-hint.jpg)
 
 ## 演示
 克隆项目，运行```test```包内的```DemoApplication```。
