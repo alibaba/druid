@@ -82,6 +82,7 @@ public class DruidFilterConfiguration {
     @Bean
     @ConfigurationProperties(FILTER_COMMONS_LOG_PREFIX)
     @ConditionalOnProperty(prefix = FILTER_COMMONS_LOG_PREFIX, name = "enabled")
+    @ConditionalOnMissingBean
     public CommonsLogFilter commonsLogFilter() {
         return new CommonsLogFilter();
     }
