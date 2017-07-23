@@ -244,7 +244,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     /**
-     * a inner_join (b inner_join c) -> a inner_join b innre_join c
+     * a inner_join (b inner_join c) -&lt; a inner_join b innre_join c
      */
     public void rearrangement() {
         if (right instanceof SQLJoinTableSource) {
