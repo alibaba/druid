@@ -5,7 +5,7 @@
 Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Druid数据库连接池和监控。
 
 ## 如何使用
-1. 在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖。
+1.在 Spring Boot 项目中加入```druid-spring-boot-starter```依赖。
 
 Maven
 ```xml
@@ -20,7 +20,7 @@ Gradle
 compile 'com.alibaba:druid-spring-boot-starter:1.1.2'
 
 ```
-2. 添加配置
+2.添加配置
 ```xml
 spring.datasource.url= 
 spring.datasource.username=
@@ -84,11 +84,11 @@ spring.datasource.druid.stat-view-servlet.deny=
 spring.datasource.druid.aop-patterns= # Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔
 # 如果spring.datasource.druid.aop-patterns要代理的类没有定义interface请设置spring.aop.proxy-target-class=true
 ```
-注：IDE会对所有的配置属性进行输入提示，配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的。
+IDE会对 Druid 所有的配置属性进行输入提示，配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的。
 
 
 ## 如何配置多数据源
-1. 添加数据源相关配置
+1. 添加配置
 ```xml
 spring.datasource.url=
 spring.datasource.username=
@@ -112,7 +112,7 @@ spring.datasource.druid.two.max-active=20
 spring.datasource.druid.two.max-wait=20000
 ...
 ```
-2. 使用```DruidDataSourceBuilder```创建数据源
+2. 创建数据源
 ```java
 @Primary
 @Bean
