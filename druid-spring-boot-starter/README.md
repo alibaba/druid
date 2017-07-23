@@ -25,7 +25,7 @@ compile 'com.alibaba:druid-spring-boot-starter:1.1.2'
 spring.datasource.url= 
 spring.datasource.username=
 spring.datasource.password=
-# ...其他配置（非必填项 ）
+# ...其他配置（可选，不是必须的）
 ```
 
 ## 配置属性
@@ -46,7 +46,7 @@ spring.datasource.druid.min-idle=
 spring.datasource.druid.max-wait=
 spring.datasource.druid.pool-prepared-statements=
 spring.datasource.druid.max-pool-prepared-statement-per-connection-size= 
-spring.datasource.druid.max-open-prepared-statements= #等价于上面的max-pool-prepared-statement-per-connection-size
+spring.datasource.druid.max-open-prepared-statements= #和上面的等价
 spring.datasource.druid.validation-query=
 spring.datasource.druid.validation-query-timeout=
 spring.datasource.druid.test-on-borrow=
@@ -83,7 +83,7 @@ spring.datasource.druid.stat-view-servlet.deny=
 spring.datasource.druid.aop-patterns= # Spring监控AOP切入点，如x.y.z.service.*,配置多个英文逗号分隔
 # 如果spring.datasource.druid.aop-patterns要代理的类没有定义interface请设置spring.aop.proxy-target-class=true
 ```
-Druid Spring Boot Starter 不仅限于对以上配置属性提供支持，```DruidDataSource``` 内提供```setter```方法的可配置属性都将被支持。你可以参考WIKI文档或通过IDE输入提示来进行配置。配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的，在配置较多的情况下推荐使用```.yml```。
+Druid Spring Boot Starter 不仅限于对以上配置属性提供支持，[```DruidDataSource```](https://github.com/alibaba/druid/blob/master/src/main/java/com/alibaba/druid/pool/DruidDataSource.java) 内提供```setter```方法的可配置属性都将被支持。你可以参考WIKI文档或通过IDE输入提示来进行配置。配置文件的格式你可以选择```.properties```或```.yml```，效果是一样的，在配置较多的情况下推荐使用```.yml```。
 
 
 
