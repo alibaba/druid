@@ -820,14 +820,18 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.token() == Token.PRIMARY) {
             MySqlPrimaryKey pk = this.getExprParser().parsePrimaryKey();
-            pk.setName(name);
+            if (name != null) {
+                pk.setName(name);
+            }
             pk.setHasConstaint(hasConstaint);
             return (SQLTableConstraint) pk;
         }
 
         if (lexer.token() == Token.UNIQUE) {
             MySqlUnique uk = this.getExprParser().parseUnique();
-            uk.setName(name);
+            if (name != null) {
+                uk.setName(name);
+            }
             uk.setHasConstaint(hasConstaint);
             return (SQLTableConstraint) uk;
         }

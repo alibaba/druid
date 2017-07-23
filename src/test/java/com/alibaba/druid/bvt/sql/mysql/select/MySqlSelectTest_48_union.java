@@ -154,9 +154,45 @@ public class MySqlSelectTest_48_union extends MysqlTest {
 
         {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
-            assertEquals("SELECT student_name, GROUP_CONCAT(DISTINCT test_score ORDER BY test_score DESC SEPARATOR ' ')\n" +
-                            "FROM student\n" +
-                            "GROUP BY student_name;", //
+            assertEquals("SELECT SUM(hd.paid_amount)\n" +
+                            "FROM (\n" +
+                            "\t(SELECT ?, CAST(a.hosted_ymd AS date) AS hosted_ymd, a.user_id, ?, a.paid_amount\n" +
+                            "\t\t, m.user_id, m.create_date, m.pmcode, n.type_name, n.product_name\n" +
+                            "\t\t, n.acctype_id, n.acctype_name, n.account_name, n.plan\n" +
+                            "\tFROM hive.bdc_dwd.dw_mk_copyright_order a\n" +
+                            "\t\tLEFT JOIN hive.bdc_dwd.dw_mk_chance b\n" +
+                            "\t\tON a.chance_id = b.chance_id\n" +
+                            "\t\t\tAND b.acct_day = ?\n" +
+                            "\t\tLEFT JOIN hive.bdc_dwd.dw_lg_stat_user m\n" +
+                            "\t\tON a.user_id = m.user_id\n" +
+                            "\t\t\tAND m.acct_day = ?\n" +
+                            "\t\tLEFT JOIN hive.bdc_dwd.dw_lg_pmcode n\n" +
+                            "\t\tON m.pmcode = n.id\n" +
+                            "\t\t\tAND n.acct_day = ?\n" +
+                            "\tWHERE a.hosted_ymd BETWEEN ? AND ?\n" +
+                            "\t\tAND b.chance_type_group = ?\n" +
+                            "\t\tAND a.acct_day = ?\n" +
+                            "\tUNION\n" +
+                            "\tSELECT ?, b.paid_date AS hosted_ymd, b.user_id, ?, b.paid_amount\n" +
+                            "\t\t, m.user_id, m.create_date, m.pmcode, n.type_name, n.product_name\n" +
+                            "\t\t, n.acctype_id, n.acctype_name, n.account_name, n.plan\n" +
+                            "\tFROM hive.bdc_dwd.dw_fx_chance a\n" +
+                            "\t\tLEFT JOIN hive.bdc_dwd.dw_fx_chance_order b\n" +
+                            "\t\tON a.chance_id = b.chance_id\n" +
+                            "\t\t\tAND b.acct_day = ?\n" +
+                            "\t\tLEFT JOIN hive.bdc_dwd.dw_lg_stat_user m\n" +
+                            "\t\tON a.user_id = m.user_id\n" +
+                            "\t\t\tAND m.acct_day = ?\n" +
+                            "\t\tLEFT JOIN hive.bdc_dwd.dw_lg_pmcode n\n" +
+                            "\t\tON m.pmcode = n.id\n" +
+                            "\t\t\tAND n.acct_day = ?\n" +
+                            "\tWHERE a.project_id = ?\n" +
+                            "\t\tAND b.paid_amount > ?\n" +
+                            "\t\tAND CAST(b.paid_date AS varchar(10)) >= ?\n" +
+                            "\t\tAND CAST(b.paid_date AS varchar(10)) <= ?\n" +
+                            "\t\tAND b.state = ?\n" +
+                            "\t\tAND a.acct_day = ?)\n" +
+                            ") hd", //
                     output);
         }
     }
