@@ -1,4 +1,4 @@
-package com.alibaba.druid.spring.boot.autoconfigure;
+package com.alibaba.druid.spring.boot.autoconfigure.metadata;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.boot.autoconfigure.jdbc.metadata.AbstractDataSourcePoolMetadata;

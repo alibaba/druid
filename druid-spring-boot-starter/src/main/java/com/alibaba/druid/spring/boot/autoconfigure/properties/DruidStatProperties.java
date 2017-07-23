@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.spring.boot.autoconfigure;
+package com.alibaba.druid.spring.boot.autoconfigure.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

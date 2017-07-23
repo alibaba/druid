@@ -16,8 +16,17 @@
 package com.alibaba.druid.spring.boot.autoconfigure;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.metadata.DruidDataSourcePoolMetadata;
+import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
+import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration;
+import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidSpringAopConfiguration;
+import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidStatViewServletConfiguration;
+import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidWebStatFilterConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadata;
 import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvider;
 import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvidersConfiguration;
@@ -25,7 +34,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 
@@ -34,37 +42,23 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ConditionalOnClass(com.alibaba.druid.pool.DruidDataSource.class)
-@EnableConfigurationProperties({DruidStatProperties.class, DruidDataSourceProperties.class})
-@Import({DruidSpringAopConfiguration.class, DruidStatViewServletConfiguration.class, DruidWebStatFilterConfiguration.class})
+@AutoConfigureBefore(DataSourceAutoConfiguration.class)
+@EnableConfigurationProperties({DruidStatProperties.class, DataSourceProperties.class})
+@Import({DruidSpringAopConfiguration.class,
+        DruidStatViewServletConfiguration.class,
+        DruidWebStatFilterConfiguration.class,
+        DruidFilterConfiguration.class})
 public class DruidDataSourceAutoConfigure {
 
     @Bean
     @ConditionalOnMissingBean
-    public DataSource dataSource(DruidDataSourceProperties properties, Environment env) {
-
-        //if not found prefix 'spring.datasource.druid' jdbc properties ,'spring.datasource' prefix jdbc properties will be used.
-        if (properties.getUsername() == null) {
-            properties.setUsername(env.getProperty("spring.datasource.username"));
-        }
-        if (properties.getPassword() == null) {
-            properties.setPassword(env.getProperty("spring.datasource.password"));
-        }
-        if (properties.getUrl() == null) {
-            properties.setUrl(env.getProperty("spring.datasource.url"));
-        }
-        if (properties.getDriverClassName() == null) {
-            properties.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        }
-
-        DruidDataSource dataSource = DruidDataSourceBuilder
-                .create()
-                .build(properties);
-
-        return dataSource;
+    public DataSource dataSource() {
+        return new DruidDataSourceWrapper();
     }
 
     /**
      * Register the {@link DataSourcePoolMetadataProvider} instances to support DataSource metrics.
+     *
      * @see DataSourcePoolMetadataProvidersConfiguration
      */
     @Bean
@@ -73,7 +67,7 @@ public class DruidDataSourceAutoConfigure {
             @Override
             public DataSourcePoolMetadata getDataSourcePoolMetadata(DataSource dataSource) {
                 if (dataSource instanceof DruidDataSource) {
-                    return new DruidDataSourcePoolMetadata((DruidDataSource)dataSource);
+                    return new DruidDataSourcePoolMetadata((DruidDataSource) dataSource);
                 }
                 return null;
             }

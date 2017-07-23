@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.spring.boot;
+package com.alibaba.druid.spring.boot.testcase;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import org.junit.Test;
@@ -62,8 +63,8 @@ public class DruidDataSourceTestCase {
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-on-return=true");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "time-between-eviction-runs-millis=10000");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "min-evictable-idle-time-millis=12345");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-evictable-idle-time-millis=123456");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "filters=stat,log4j");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "connection-properties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "async-close-connection-enable=true");
 
         this.context.refresh();
         DruidDataSource ds = this.context.getBean(DruidDataSource.class);
@@ -83,8 +84,8 @@ public class DruidDataSourceTestCase {
         assertThat(ds.isTestOnReturn()).isTrue();
         assertThat(ds.getTimeBetweenEvictionRunsMillis()).isEqualTo(10000);
         assertThat(ds.getMinEvictableIdleTimeMillis()).isEqualTo(12345);
-        assertThat(ds.getMaxEvictableIdleTimeMillis()).isEqualTo(123456);
-        assertThat(ds.getProxyFilters().size()).isEqualTo(2);
+        assertThat(ds.getConnectProperties().size()).isEqualTo(2);
+        assertThat(ds.isAsyncCloseConnectionEnable()).isEqualTo(true);
     }
 
 

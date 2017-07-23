@@ -19,8 +19,6 @@ package com.alibaba.druid.spring.boot.autoconfigure;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.core.env.Environment;
 
-import java.sql.SQLException;
-
 /**
  * @author lihengming [89921218@qq.com]
  */
@@ -30,116 +28,29 @@ public class DruidDataSourceBuilder {
         return new DruidDataSourceBuilder();
     }
 
-    @Deprecated
+    /**
+     * For build multiple DruidDataSource, detail see document.
+     */
     public DruidDataSource build() {
-        return new DruidDataSource();
+        return new DruidDataSourceWrapper();
     }
 
     /**
-     * Use Spring Environment by specify configuration properties prefix to build DruidDataSource.
+     * For issue #1796, use Spring Environment by specify configuration properties prefix to build DruidDataSource.
      * <p>
-     * Environment support .properties, .yml ,command etc.
-     * <p>
-     * Properties key style support max-active,MAX_ACTIVE,maxActive etc.
-     * <p>
-     * Please read the spring documents for details.
-     * @param env    Spring Environment
-     * @param prefix Spring Boot configuration properties prefix
-     * @return DruidDataSource
+     * 这是为了兼容 Spring Boot 1.X 中 .properties 内配置属性不能按照配置声明顺序进行绑定，进而导致配置出错（issue #1796 ）而提供的方法。
+     * 如果你不存在上述问题或者使用 .yml 进行配置则不必使用该方法，使用上面的{@link DruidDataSourceBuilder#build}即可，Spring Boot 2.0 修复了该问题，该方法届时也会停用。
      */
     public DruidDataSource build(Environment env, String prefix) {
-        DruidDataSourceProperties properties = new DruidDataSourceProperties();
-        properties.setUrl(env.getProperty(prefix + "url"));
-        properties.setUsername(env.getProperty(prefix + "username"));
-        properties.setPassword(env.getProperty(prefix + "password"));
-        properties.setDriverClassName(env.getProperty(prefix + "driver-class-name"));
-        properties.setInitialSize(env.getProperty(prefix + "initial-size", Integer.class));
-        properties.setMaxActive(env.getProperty(prefix + "max-active", Integer.class));
-        properties.setMinIdle(env.getProperty(prefix + "min-idle", Integer.class));
-        properties.setMaxWait(env.getProperty(prefix + "max-wait", Long.class));
-        properties.setPoolPreparedStatements(env.getProperty(prefix + "pool-prepared-statements", Boolean.class));
-        properties.setMaxOpenPreparedStatements(env.getProperty(prefix + "max-open-prepared-statements", Integer.class));
-        properties.setMaxPoolPreparedStatementPerConnectionSize(
-                env.getProperty(prefix + "max-pool-prepared-statement-per-connection-size", Integer.class));
-        properties.setValidationQuery(env.getProperty(prefix + "validation-query"));
-        properties.setValidationQueryTimeout(env.getProperty(prefix + "validation-query-timeout", Integer.class));
-        properties.setTestOnBorrow(env.getProperty(prefix + "test-on-borrow", Boolean.class));
-        properties.setTestOnReturn(env.getProperty(prefix + "test-on-return", Boolean.class));
-        properties.setTestWhileIdle(env.getProperty(prefix + "test-while-idle", Boolean.class));
-        properties.setTimeBetweenEvictionRunsMillis(env.getProperty(prefix + "time-between-eviction-runs-millis", Long.class));
-        properties.setMinEvictableIdleTimeMillis(env.getProperty(prefix + "min-evictable-idle-time-millis", Long.class));
-        properties.setMaxEvictableIdleTimeMillis(env.getProperty(prefix + "max-evictable-idle-time-millis", Long.class));
-        properties.setFilters(env.getProperty(prefix + "filters"));
-        return build(properties);
-    }
-
-
-    DruidDataSource build(DruidDataSourceProperties properties) {
-        DruidDataSource dataSource = new DruidDataSource();
-        if (properties.getUrl() != null) {
-            dataSource.setUrl(properties.getUrl());
-        }
-        if (properties.getUsername() != null) {
-            dataSource.setUsername(properties.getUsername());
-        }
-        if (properties.getPassword() != null) {
-            dataSource.setPassword(properties.getPassword());
-        }
-        if (properties.getDriverClassName() != null) {
-            dataSource.setDriverClassName(properties.getDriverClassName());
-        }
-        if (properties.getInitialSize() != null) {
-            dataSource.setInitialSize(properties.getInitialSize());
-        }
-        if (properties.getMaxActive() != null) {
-            dataSource.setMaxActive(properties.getMaxActive());
-        }
-        if (properties.getMinIdle() != null) {
-            dataSource.setMinIdle(properties.getMinIdle());
-        }
-        if (properties.getMaxWait() != null) {
-            dataSource.setMaxWait(properties.getMaxWait());
-        }
-        if (properties.getPoolPreparedStatements() != null) {
-            dataSource.setPoolPreparedStatements(properties.getPoolPreparedStatements());
-        }
-        if (properties.getMaxOpenPreparedStatements() != null) {
-            dataSource.setMaxOpenPreparedStatements(properties.getMaxOpenPreparedStatements());
-        }
-        if (properties.getMaxPoolPreparedStatementPerConnectionSize() != null) {
-            dataSource.setMaxPoolPreparedStatementPerConnectionSize(properties.getMaxPoolPreparedStatementPerConnectionSize());
-        }
-        if (properties.getValidationQuery() != null) {
-            dataSource.setValidationQuery(properties.getValidationQuery());
-        }
-        if (properties.getValidationQueryTimeout() != null) {
-            dataSource.setValidationQueryTimeout(properties.getValidationQueryTimeout());
-        }
-        if (properties.getTestWhileIdle() != null) {
-            dataSource.setTestWhileIdle(properties.getTestWhileIdle());
-        }
-        if (properties.getTestOnBorrow() != null) {
-            dataSource.setTestOnBorrow(properties.getTestOnBorrow());
-        }
-        if (properties.getTestOnReturn() != null) {
-            dataSource.setTestOnReturn(properties.getTestOnReturn());
-        }
-        if (properties.getTimeBetweenEvictionRunsMillis() != null) {
-            dataSource.setTimeBetweenEvictionRunsMillis(properties.getTimeBetweenEvictionRunsMillis());
-        }
-        if (properties.getMinEvictableIdleTimeMillis() != null) {
-            dataSource.setMinEvictableIdleTimeMillis(properties.getMinEvictableIdleTimeMillis());
-        }
-        if (properties.getMaxEvictableIdleTimeMillis() != null) {
-            dataSource.setMaxEvictableIdleTimeMillis(properties.getMaxEvictableIdleTimeMillis());
-        }
-        try {
-            if (properties.getFilters() != null) {
-                dataSource.setFilters(properties.getFilters());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return dataSource;
+        DruidDataSource druidDataSource = new DruidDataSourceWrapper();
+        druidDataSource.setMinEvictableIdleTimeMillis(
+                env.getProperty(prefix + "min-evictable-idle-time-millis",
+                        Long.class,
+                        DruidDataSource.DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS));
+        druidDataSource.setMaxEvictableIdleTimeMillis(
+                env.getProperty(prefix + "max-evictable-idle-time-millis",
+                        Long.class,
+                        DruidDataSource.DEFAULT_MAX_EVICTABLE_IDLE_TIME_MILLIS));
+        return druidDataSource;
     }
 }
