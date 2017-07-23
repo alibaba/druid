@@ -33,8 +33,8 @@ public class DruidFilterConfiguration {
 
     @Bean
     @ConfigurationProperties(FILTER_STAT_PREFIX)
-    @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = FILTER_STAT_PREFIX, name = "enabled", matchIfMissing = true)
+    @ConditionalOnMissingBean
     public StatFilter statFilter() {
         return new StatFilter();
     }
