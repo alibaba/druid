@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
@@ -26,6 +27,8 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
     private transient String  lowerName;
     private transient Boolean parameter;
+
+    private transient SQLColumnDefinition resolvedColumn;
 
     public SQLIdentifierExpr(){
 
@@ -135,5 +138,13 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
     public String normalizedName() {
         return SQLUtils.normalize(name);
+    }
+
+    public SQLColumnDefinition getResolvedColumn() {
+        return resolvedColumn;
+    }
+
+    public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {
+        this.resolvedColumn = resolvedColumn;
     }
 }

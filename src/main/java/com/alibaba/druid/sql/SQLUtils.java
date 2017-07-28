@@ -18,10 +18,7 @@ package com.alibaba.druid.sql;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
@@ -801,6 +798,10 @@ public class SQLUtils {
         }
 
         return name;
+    }
+
+    public static boolean nameEquals(SQLName a, SQLName b) {
+        return nameEquals(a.getSimpleName(), b.getSimpleName());
     }
 
     public static boolean nameEquals(String a, String b) {

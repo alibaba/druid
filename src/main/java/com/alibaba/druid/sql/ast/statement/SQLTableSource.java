@@ -32,6 +32,7 @@ public interface SQLTableSource extends SQLObject {
     SQLTableSource clone();
 
     String computeAlias();
+    boolean containsAlias(String alias);
 
     SQLExpr getFlashback();
     void setFlashback(SQLExpr flashback);

@@ -162,6 +162,26 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         this.from = from;
     }
 
+    public void setFrom(SQLSelectQueryBlock queryBlock, String alias) {
+        if (queryBlock == null) {
+            this.from = null;
+            return;
+        }
+
+        this.setFrom(new SQLSelect(queryBlock), alias);
+    }
+
+    public void setFrom(SQLSelect select, String alias) {
+        if (select == null) {
+            this.from = null;
+            return;
+        }
+
+        SQLSubqueryTableSource from = new SQLSubqueryTableSource(select);
+        from.setAlias(alias);
+        this.setFrom(from);
+    }
+
     public void setFrom(String tableName, String alias) {
         SQLExprTableSource from;
         if (tableName == null || tableName.length() == 0) {
@@ -436,6 +456,10 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             return findTableSource(join.getRight(), alias);
         }
 
+        if (from instanceof SQLExprTableSource && from.containsAlias(alias)) {
+            return from;
+        }
+
         return null;
     }
 
@@ -480,5 +504,33 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         setLimit(limit);
+    }
+
+    public int selectIndexOf(SQLExpr expr) {
+        String ident = null;
+        if (expr instanceof SQLIdentifierExpr) {
+            ident = ((SQLIdentifierExpr) expr).getName();
+        }
+
+        for (int i = 0; i < selectList.size(); i++) {
+            SQLSelectItem selectItem = selectList.get(i);
+            if (ident != null && SQLUtils.nameEquals(ident, selectItem.alias)) {
+                return i;
+            }
+
+            SQLExpr selectItemExpr = selectItem.getExpr();
+            if (selectItemExpr instanceof SQLName) {
+                String name = ((SQLName) selectItemExpr).getSimpleName();
+                if (SQLUtils.nameEquals(ident, name)) {
+                    return i;
+                }
+            }
+
+            if (expr.equals(selectItemExpr)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

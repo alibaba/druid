@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -30,6 +32,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlShowColumnOutpuVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -173,5 +176,27 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     public void simplify() {
         tableOptions.clear();
         super.simplify();
+    }
+
+    public void showCoumns(Appendable out) throws IOException {
+        this.accept(new MySqlShowColumnOutpuVisitor(out));
+    }
+
+    public boolean apply(MySqlRenameTableStatement x) {
+        for (MySqlRenameTableStatement.Item item : x.getItems()) {
+            if (apply(item)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean apply(MySqlRenameTableStatement.Item item) {
+        if (!SQLUtils.nameEquals((SQLName) item.getName(), this.getName())) {
+            return false;
+        }
+        this.setName((SQLName) item.getTo().clone());
+        return true;
     }
 }

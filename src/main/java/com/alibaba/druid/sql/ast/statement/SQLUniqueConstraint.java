@@ -23,4 +23,5 @@ public interface SQLUniqueConstraint extends SQLConstraint {
 
     List<SQLExpr> getColumns();
 
+    boolean containsColumn(String column);
 }

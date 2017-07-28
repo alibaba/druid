@@ -366,4 +366,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             identExpr.setName(columnName);
         }
     }
+
+    public boolean containsNotNullConstaint() {
+        for (SQLColumnConstraint constraint : this.constraints) {
+            if (constraint instanceof SQLNotNullConstraint) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

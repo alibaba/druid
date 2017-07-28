@@ -21,6 +21,8 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -149,5 +151,24 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
 
     public void setSchemaObject(SchemaObject schemaObject) {
         this.schemaObject = schemaObject;
+    }
+
+    public boolean containsAlias(String alias) {
+        if (SQLUtils.nameEquals(this.alias, alias)) {
+            return true;
+        }
+
+        String name = null;
+        if (expr instanceof SQLIdentifierExpr) {
+            name = ((SQLIdentifierExpr) expr).getName();
+        } else if (expr instanceof SQLPropertyExpr) {
+            name = ((SQLPropertyExpr) expr).getName();
+        }
+
+        if (name != null && SQLUtils.nameEquals(name, alias)) {
+            return true;
+        }
+
+        return false;
     }
 }

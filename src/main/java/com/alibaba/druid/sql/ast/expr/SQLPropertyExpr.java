@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -26,6 +27,8 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     private SQLExpr owner;
     private String  name;
+
+    private transient SQLColumnDefinition resolvedColumn;
 
     public SQLPropertyExpr(String owner, String name){
         this(new SQLIdentifierExpr(owner), name);
@@ -152,5 +155,13 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         }
 
         return ownerName + '.' + SQLUtils.normalize(name);
+    }
+
+    public SQLColumnDefinition getResolvedColumn() {
+        return resolvedColumn;
+    }
+
+    public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {
+        this.resolvedColumn = resolvedColumn;
     }
 }

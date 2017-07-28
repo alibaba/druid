@@ -306,7 +306,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             println();
             print0(ucase ? "FOR UPDATE" : "for update");
             if (x.isNoWait()) {
-                print0(ucase ? " NO_WAIT" : " no_wait");
+                print0(ucase ? " NOWAIT" : " nowait");
             } else if (x.getWaitTime() != null) {
                 print0(ucase ? " WAIT " : " wait ");
                 x.getWaitTime().accept(this);

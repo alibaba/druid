@@ -52,6 +52,17 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
         visitor.endVisit(this);
     }
 
+    public boolean containsColumn(String column) {
+        for (SQLExpr expr : columns) {
+            if (expr instanceof SQLIdentifierExpr) {
+                if (SQLUtils.nameEquals(((SQLIdentifierExpr) expr).getName(), column)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void cloneTo(SQLUnique x) {
         super.cloneTo(x);
 

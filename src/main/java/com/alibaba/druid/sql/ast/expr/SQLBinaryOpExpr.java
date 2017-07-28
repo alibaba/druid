@@ -417,4 +417,16 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
 
         return null;
     }
+
+    public boolean contains(SQLExpr item) {
+        if (item instanceof SQLBinaryOpExpr) {
+            if (this.equalsIgoreOrder((SQLBinaryOpExpr) item)) {
+                return true;
+            }
+
+            return left.equals(item) || right.equals(item);
+        }
+
+        return false;
+    }
 }

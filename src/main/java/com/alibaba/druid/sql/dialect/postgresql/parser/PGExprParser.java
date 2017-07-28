@@ -134,6 +134,10 @@ public class PGExprParser extends SQLExprParser {
         
         if (expr.getClass() == SQLIdentifierExpr.class) {
             String ident = ((SQLIdentifierExpr)expr).getName();
+
+            if (lexer.token() == Token.COMMA) {
+                return super.primaryRest(expr);
+            }
             
             if ("TIMESTAMP".equalsIgnoreCase(ident)) {
                 if (lexer.token() != Token.LITERAL_ALIAS //
