@@ -703,7 +703,7 @@ public class SQLUtils {
             }
 
             if (token == Token.ERROR) {
-                return Utils.murmurhash2_64(sql);
+                return Utils.fnv_64(sql);
             }
 
             if (buf.length() != 0) {

@@ -413,32 +413,33 @@ public class Utils {
             return 0;
         }
 
-        long hash = 0x811c9dc5;
+        long hash = 0xcbf29ce484222325L;
         for (int i = 0; i < input.length(); ++i) {
             char c = input.charAt(i);
             hash ^= c;
-            hash *= 0x1000193;
+            hash *= 0x100000001b3L;
         }
 
         return hash;
     }
 
-    public static long fnv_64_lower(String input) {
-        if (input == null) {
-            return 0;
-        }
-
-        long hash = 0x811c9dc5;
-        for (int i = 0; i < input.length(); ++i) {
-            char c = input.charAt(i);
-            if (c >= 'A' && c <= 'Z') {
-                c += 32;
+    public static long fnv_64_lower(String key) {
+        long hashCode = 0xcbf29ce484222325L;
+        for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+            if (ch == '_' || ch == '-') {
+                continue;
             }
-            hash ^= c;
-            hash *= 0x1000193;
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= 0x100000001b3L;
         }
 
-        return hash;
+        return hashCode;
     }
 
     public static void loadFromFile(String path, Set<String> set) {

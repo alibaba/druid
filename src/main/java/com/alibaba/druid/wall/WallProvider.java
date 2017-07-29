@@ -926,7 +926,7 @@ public abstract class WallProvider {
 
                     long sqlHash = sqlStat.getSqlHash();
                     if (sqlHash == 0) {
-                        sqlHash = Utils.murmurhash2_64(sql);
+                        sqlHash = Utils.fnv_64(sql);
                         sqlStat.setSqlHash(sqlHash);
                     }
                     sqlStatValue.setSqlHash(sqlHash);
