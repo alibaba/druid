@@ -29,6 +29,8 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlShowColumnOutpuVisitor;
@@ -211,16 +213,26 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         return super.alterApply(item);
     }
 
-    public boolean apply(SQLAlterTableAddIndex x) {
-        MySqlTableIndex index = new MySqlTableIndex();
-
-        index.setName(x.getName());
-        for (SQLSelectOrderByItem orderByItem : x.getItems()) {
-            index.addColumn(orderByItem.clone());
+    public boolean apply(SQLAlterTableAddIndex item) {
+        if (item.isKey()) {
+            MySqlPrimaryKey x = new MySqlPrimaryKey();
+            item.cloneTo(x);
+            x.setParent(this);
+            this.tableElementList.add(x);
+            return true;
         }
-        index.setParent(this);
-        this.tableElementList.add(index);
+        if (item.isUnique()) {
+            MySqlUnique x = new MySqlUnique();
+            item.cloneTo(x);
+            x.setParent(this);
+            this.tableElementList.add(x);
+            return true;
+        }
 
+        MySqlTableIndex x = new MySqlTableIndex();
+        item.cloneTo(x);
+        x.setParent(this);
+        this.tableElementList.add(x);
         return true;
     }
 

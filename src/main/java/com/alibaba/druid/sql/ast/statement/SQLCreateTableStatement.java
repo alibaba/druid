@@ -700,27 +700,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return true;
     }
 
-    private boolean apply(SQLAlterTableAddIndex item) {
-        if (item.isKey()) {
-            MySqlPrimaryKey x = new MySqlPrimaryKey();
-            item.cloneTo(x);
-            x.setParent(this);
-            this.tableElementList.add(x);
-            return true;
-        }
-        if (item.isUnique()) {
-            MySqlUnique x = new MySqlUnique();
-            item.cloneTo(x);
-            x.setParent(this);
-            this.tableElementList.add(x);
-            return true;
-        }
-
-        MySqlTableIndex x = new MySqlTableIndex();
-        item.cloneTo(x);
-        x.setParent(this);
-        this.tableElementList.add(x);
-        return true;
+    protected boolean apply(SQLAlterTableAddIndex item) {
+        return false;
     }
 
     private boolean apply(SQLAlterTableAddColumn item) {
