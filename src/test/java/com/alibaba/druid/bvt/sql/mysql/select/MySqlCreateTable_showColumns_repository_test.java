@@ -322,5 +322,96 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                 "\tKEY `k_c` (`c_tinyint`, `c_int`)\n" +
                 ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'", repository.console("show create table test2"));
+
+        repository.console("CREATE TABLE test3 as select * from test2");
+        assertEquals("CREATE TABLE test3 (\n" +
+                "\tc_decimal_1 INT(11),\n" +
+                "\tid bigint(20),\n" +
+                "\tc_tinyint tinyint(4),\n" +
+                "\tc_smallint smallint(6),\n" +
+                "\tc_mediumint mediumint(9),\n" +
+                "\tc_int int(11),\n" +
+                "\tc_bigint bigint(20),\n" +
+                "\tc_date date,\n" +
+                "\tc_datetime datetime,\n" +
+                "\tc_timestamp timestamp,\n" +
+                "\tc_time time,\n" +
+                "\tc_char char(10),\n" +
+                "\tc_varchar varchar(10),\n" +
+                "\tc_blob blob,\n" +
+                "\tc_text text,\n" +
+                "\tc_mediumtext mediumtext,\n" +
+                "\tc_longblob longblob\n" +
+                ")", repository.console("show create table test3"));
+
+        assertEquals("+--------------+--------------+------+-----+---------+-------+\n" +
+                "| Field        | Type         | Null | Key | Default | Extra |\n" +
+                "+--------------+--------------+------+-----+---------+-------+\n" +
+                "| c_decimal_1  | INT(11)      | NO   |     | NULL    |       |\n" +
+                "| id           | bigint(20)   | NO   |     | NULL    |       |\n" +
+                "| c_tinyint    | tinyint(4)   | NO   |     | NULL    |       |\n" +
+                "| c_smallint   | smallint(6)  | NO   |     | NULL    |       |\n" +
+                "| c_mediumint  | mediumint(9) | NO   |     | NULL    |       |\n" +
+                "| c_int        | int(11)      | NO   |     | NULL    |       |\n" +
+                "| c_bigint     | bigint(20)   | NO   |     | NULL    |       |\n" +
+                "| c_date       | date         | NO   |     | NULL    |       |\n" +
+                "| c_datetime   | datetime     | NO   |     | NULL    |       |\n" +
+                "| c_timestamp  | timestamp    | NO   |     | NULL    |       |\n" +
+                "| c_time       | time         | NO   |     | NULL    |       |\n" +
+                "| c_char       | char(10)     | NO   |     | NULL    |       |\n" +
+                "| c_varchar    | varchar(10)  | NO   |     | NULL    |       |\n" +
+                "| c_blob       | blob         | NO   |     | NULL    |       |\n" +
+                "| c_text       | text         | NO   |     | NULL    |       |\n" +
+                "| c_mediumtext | mediumtext   | NO   |     | NULL    |       |\n" +
+                "| c_longblob   | longblob     | NO   |     | NULL    |       |\n" +
+                "+--------------+--------------+------+-----+---------+-------+\n", repository.console("show columns from test3"));
+
+        repository.console("alter TABLE test3 add UNIQUE(c_tinyint)");
+
+        assertEquals("+--------------+--------------+------+-----+---------+-------+\n" +
+                "| Field        | Type         | Null | Key | Default | Extra |\n" +
+                "+--------------+--------------+------+-----+---------+-------+\n" +
+                "| c_decimal_1  | INT(11)      | NO   |     | NULL    |       |\n" +
+                "| id           | bigint(20)   | NO   |     | NULL    |       |\n" +
+                "| c_tinyint    | tinyint(4)   | NO   | UNI | NULL    |       |\n" +
+                "| c_smallint   | smallint(6)  | NO   |     | NULL    |       |\n" +
+                "| c_mediumint  | mediumint(9) | NO   |     | NULL    |       |\n" +
+                "| c_int        | int(11)      | NO   |     | NULL    |       |\n" +
+                "| c_bigint     | bigint(20)   | NO   |     | NULL    |       |\n" +
+                "| c_date       | date         | NO   |     | NULL    |       |\n" +
+                "| c_datetime   | datetime     | NO   |     | NULL    |       |\n" +
+                "| c_timestamp  | timestamp    | NO   |     | NULL    |       |\n" +
+                "| c_time       | time         | NO   |     | NULL    |       |\n" +
+                "| c_char       | char(10)     | NO   |     | NULL    |       |\n" +
+                "| c_varchar    | varchar(10)  | NO   |     | NULL    |       |\n" +
+                "| c_blob       | blob         | NO   |     | NULL    |       |\n" +
+                "| c_text       | text         | NO   |     | NULL    |       |\n" +
+                "| c_mediumtext | mediumtext   | NO   |     | NULL    |       |\n" +
+                "| c_longblob   | longblob     | NO   |     | NULL    |       |\n" +
+                "+--------------+--------------+------+-----+---------+-------+\n", repository.console("show columns from test3"));
+
+        repository.console("alter TABLE test3 add PRIMARY KEY(id)");
+
+        assertEquals("+--------------+--------------+------+-----+---------+-------+\n" +
+                "| Field        | Type         | Null | Key | Default | Extra |\n" +
+                "+--------------+--------------+------+-----+---------+-------+\n" +
+                "| c_decimal_1  | INT(11)      | NO   |     | NULL    |       |\n" +
+                "| id           | bigint(20)   | NO   | PRI | NULL    |       |\n" +
+                "| c_tinyint    | tinyint(4)   | NO   | UNI | NULL    |       |\n" +
+                "| c_smallint   | smallint(6)  | NO   |     | NULL    |       |\n" +
+                "| c_mediumint  | mediumint(9) | NO   |     | NULL    |       |\n" +
+                "| c_int        | int(11)      | NO   |     | NULL    |       |\n" +
+                "| c_bigint     | bigint(20)   | NO   |     | NULL    |       |\n" +
+                "| c_date       | date         | NO   |     | NULL    |       |\n" +
+                "| c_datetime   | datetime     | NO   |     | NULL    |       |\n" +
+                "| c_timestamp  | timestamp    | NO   |     | NULL    |       |\n" +
+                "| c_time       | time         | NO   |     | NULL    |       |\n" +
+                "| c_char       | char(10)     | NO   |     | NULL    |       |\n" +
+                "| c_varchar    | varchar(10)  | NO   |     | NULL    |       |\n" +
+                "| c_blob       | blob         | NO   |     | NULL    |       |\n" +
+                "| c_text       | text         | NO   |     | NULL    |       |\n" +
+                "| c_mediumtext | mediumtext   | NO   |     | NULL    |       |\n" +
+                "| c_longblob   | longblob     | NO   |     | NULL    |       |\n" +
+                "+--------------+--------------+------+-----+---------+-------+\n", repository.console("show columns from test3"));
     }
 }

@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.repository;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -140,15 +141,7 @@ public class Schema {
         }
 
         public boolean visit(SQLCreateTableStatement x) {
-            String name = x.computeName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
-
-            String name_lower = name.toLowerCase();
-            if (objects.containsKey(name_lower)) {
-                return false;
-            }
-            objects.put(name_lower, object);
-
+            acceptCreateTable(x);
             return false;
         }
 
@@ -197,6 +190,39 @@ public class Schema {
         }
     }
 
+    boolean acceptCreateTable(SQLCreateTableStatement x) {
+        SQLSelect select = x.getSelect();
+        if (select != null) {
+            select.accept(
+                    repository.createResolveVisitor());
+
+            SQLSelectQueryBlock queryBlock = select.getQueryBlock();
+            if (queryBlock != null) {
+                List<SQLSelectItem> selectList = queryBlock.getSelectList();
+                for (SQLSelectItem selectItem : selectList) {
+                    String name = selectItem.computeAlias();
+                    SQLDataType dataType = selectItem.computeDataType();
+                    SQLColumnDefinition column = new SQLColumnDefinition();
+                    column.setName(name);
+                    column.setDataType(dataType);
+                    column.setDbType(repository.dbType);
+                    x.getTableElementList().add(column);
+                }
+                x.setSelect(null);
+            }
+        }
+
+        String name = x.computeName();
+        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
+
+        String name_lower = name.toLowerCase();
+        if (objects.containsKey(name_lower)) {
+            return false;
+        }
+        objects.put(name_lower, object);
+        return true;
+    }
+
     private class MySqlSchemaVisitor extends MySqlASTVisitorAdapter {
 
         public boolean visit(SQLDropSequenceStatement x) {
@@ -221,23 +247,16 @@ public class Schema {
                     MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) table.getStatement();
                     MySqlCreateTableStatement stmtCloned = stmt.clone();
                     stmtCloned.setName(x.getName().clone());
-                    return visit((SQLCreateTableStatement) stmtCloned);
+                    acceptCreateTable(stmtCloned);
+                    return false;
                 }
             }
-            visit((SQLCreateTableStatement) x);
+            acceptCreateTable(x);
             return false;
         }
 
         public boolean visit(SQLCreateTableStatement x) {
-            String name = x.computeName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
-
-            String name_lower = name.toLowerCase();
-            if (objects.containsKey(name_lower)) {
-                return false;
-            }
-            objects.put(name_lower, object);
-
+            acceptCreateTable(x);
             return false;
         }
 

@@ -60,10 +60,6 @@ public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstra
         this.deferrable = deferrable;
     }
 
-    public List<SQLExpr> getColumns() {
-        return columns;
-    }
-
     public OracleUsingIndexClause getUsing() {
         return using;
     }

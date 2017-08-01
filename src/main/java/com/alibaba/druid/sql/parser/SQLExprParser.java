@@ -1273,17 +1273,24 @@ public class SQLExprParser extends SQLParser {
 
             accept(Token.BY);
 
-            orderBy.addItem(parseSelectOrderByItem());
-
-            while (lexer.token() == Token.COMMA) {
-                lexer.nextToken();
-                orderBy.addItem(parseSelectOrderByItem());
-            }
+            orderBy(orderBy.getItems(), orderBy);
 
             return orderBy;
         }
 
         return null;
+    }
+
+    public void orderBy(List<SQLSelectOrderByItem> items, SQLObject parent) {
+        SQLSelectOrderByItem item = parseSelectOrderByItem();
+        item.setParent(parent);
+        items.add(item);
+        while (lexer.token() == Token.COMMA) {
+            lexer.nextToken();
+            item = parseSelectOrderByItem();
+            item.setParent(parent);
+            items.add(item);
+        }
     }
 
     public SQLSelectOrderByItem parseSelectOrderByItem() {
@@ -2135,7 +2142,7 @@ public class SQLExprParser extends SQLParser {
 
         SQLPrimaryKeyImpl pk = new SQLPrimaryKeyImpl();
         accept(Token.LPAREN);
-        exprList(pk.getColumns(), pk);
+        orderBy(pk.getColumns(), pk);
         accept(Token.RPAREN);
 
         return pk;
@@ -2146,7 +2153,7 @@ public class SQLExprParser extends SQLParser {
 
         SQLUnique unique = new SQLUnique();
         accept(Token.LPAREN);
-        exprList(unique.getColumns(), unique);
+        orderBy(unique.getColumns(), unique);
         accept(Token.RPAREN);
 
         if (lexer.token() == Token.DISABLE) {

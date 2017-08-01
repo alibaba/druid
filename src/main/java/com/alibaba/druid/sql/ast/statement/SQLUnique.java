@@ -26,13 +26,13 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint, SQLTableElement {
 
-    protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
+    protected final List<SQLSelectOrderByItem> columns = new ArrayList<SQLSelectOrderByItem>();
 
     public SQLUnique(){
 
     }
 
-    public List<SQLExpr> getColumns() {
+    public List<SQLSelectOrderByItem> getColumns() {
         return columns;
     }
     
@@ -40,7 +40,7 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
         if (column != null) {
             column.setParent(this);
         }
-        this.columns.add(column);
+        this.columns.add(new SQLSelectOrderByItem(column));
     }
 
     @Override
@@ -53,7 +53,8 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     }
 
     public boolean containsColumn(String column) {
-        for (SQLExpr expr : columns) {
+        for (SQLSelectOrderByItem item : columns) {
+            SQLExpr expr = item.getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 if (SQLUtils.nameEquals(((SQLIdentifierExpr) expr).getName(), column)) {
                     return true;
@@ -66,9 +67,10 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     public void cloneTo(SQLUnique x) {
         super.cloneTo(x);
 
-        for (SQLExpr column : columns) {
-            SQLExpr columnClone = column.clone();
-            x.addColumn(columnClone);
+        for (SQLSelectOrderByItem column : columns) {
+            SQLSelectOrderByItem column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
         }
     }
 
@@ -81,7 +83,8 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     public void simplify() {
         super.simplify();
 
-        for (SQLExpr column : columns) {
+        for (SQLSelectOrderByItem item : columns) {
+            SQLExpr column = item.getExpr();
             if (column instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) column;
                 String columnName = identExpr.getName();

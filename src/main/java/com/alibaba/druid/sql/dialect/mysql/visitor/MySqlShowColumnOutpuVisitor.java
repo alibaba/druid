@@ -40,7 +40,7 @@ public class MySqlShowColumnOutpuVisitor extends MySqlOutputVisitor {
         List<String> dataTypes = new ArrayList<String>();
         List<String> defaultValues = new ArrayList<String>();
 
-        int name_len = -1, dataType_len = -1, defaultVal_len = -1, extra_len = 5;
+        int name_len = -1, dataType_len = -1, defaultVal_len = 7, extra_len = 5;
         for (SQLTableElement element : x.getTableElementList()) {
             if (element instanceof SQLColumnDefinition) {
                 SQLColumnDefinition column = (SQLColumnDefinition) element;

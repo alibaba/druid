@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
@@ -78,6 +79,26 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
 
         return SQLUtils.normalize(alias);
+    }
+
+    public SQLDataType computeDataType() {
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+            if (identExpr.getResolvedColumn() != null) {
+                return identExpr.getResolvedColumn().getDataType();
+            }
+            return null;
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+            if (propertyExpr.getResolvedColumn() != null) {
+                return propertyExpr.getResolvedColumn().getDataType();
+            }
+            return null;
+        }
+
+        return null;
     }
 
     public String getAlias() {

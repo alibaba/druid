@@ -26,17 +26,19 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -252,5 +254,67 @@ public class SchemaRepository {
         }
 
         return null;
+    }
+
+    public SQLASTVisitor createResolveVisitor() {
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            return new MySqlResolveVisitor();
+        }
+
+        throw new DruidRuntimeException("dbType not support : " + dbType);
+    }
+
+    public class MySqlResolveVisitor extends MySqlASTVisitorAdapter {
+
+        public boolean visit(MySqlSelectQueryBlock x) {
+            List<SQLSelectItem> selectList = x.getSelectList();
+            for (int i = selectList.size() - 1; i >= 0; i--) {
+                SQLSelectItem selectItem = selectList.get(i);
+                SQLExpr expr = selectItem.getExpr();
+                if (expr instanceof SQLAllColumnExpr) {
+                    SQLTableSource from = x.getFrom();
+                    List<SQLSelectItem> columns = new ArrayList<SQLSelectItem>();
+                    if (from instanceof SQLExprTableSource) {
+                        SchemaObject table = findTable((SQLExprTableSource) from);
+                        if (table != null) {
+                            SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) table.getStatement();
+                            for (SQLTableElement e : createTableStmt.getTableElementList()) {
+                                if (e instanceof SQLColumnDefinition) {
+                                    SQLColumnDefinition column = (SQLColumnDefinition) e;
+                                    SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
+                                    name.setResolvedColumn(column);
+                                    columns.add(new SQLSelectItem(name));
+                                }
+                            }
+                        }
+                    }
+
+                    for (SQLSelectItem column : columns) {
+                        column.setParent(x);
+                    }
+                    selectList.remove(i);
+                    selectList.addAll(i, columns);
+                }
+            }
+            
+            return super.visit(x);
+        }
+    }
+
+    public SchemaObject findTable(SQLExprTableSource x) {
+        if (x == null) {
+            return null;
+        }
+
+        SQLExpr expr = x.getExpr();
+        if (expr instanceof SQLName) {
+            return findTable((SQLName) expr);
+        }
+
+        return null;
+    }
+
+    public class OracleResolveVisitor extends OracleASTVisitorAdapter {
+
     }
 }

@@ -804,7 +804,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLUnique x) {
-        for (SQLExpr column : x.getColumns()) {
+        for (SQLSelectOrderByItem column : x.getColumns()) {
             column.accept(this);
         }
         return false;

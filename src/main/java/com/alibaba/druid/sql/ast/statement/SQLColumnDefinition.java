@@ -108,6 +108,10 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         this.name = name;
     }
 
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
+    }
+
     public SQLDataType getDataType() {
         return dataType;
     }

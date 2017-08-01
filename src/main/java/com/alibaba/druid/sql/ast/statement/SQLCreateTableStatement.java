@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -210,7 +211,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             if (element instanceof MySqlUnique) {
                 MySqlUnique unique = (MySqlUnique) element;
 
-                SQLExpr column = unique.getColumns().get(0);
+                SQLExpr column = unique.getColumns().get(0).getExpr();
                 if (column instanceof SQLIdentifierExpr
                         && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
                     return unique.columns.size() > 1;
@@ -218,7 +219,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             } else if (element instanceof MySqlKey) {
                 MySqlKey unique = (MySqlKey) element;
 
-                SQLExpr column = unique.getColumns().get(0);
+                SQLExpr column = unique.getColumns().get(0).getExpr();
                 if (column instanceof SQLIdentifierExpr
                         && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
                     return true;
@@ -236,7 +237,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             if (element instanceof MySqlUnique) {
                 MySqlUnique unique = (MySqlUnique) element;
 
-                SQLExpr column = unique.getColumns().get(0);
+                SQLExpr column = unique.getColumns().get(0).getExpr();
                 if (column instanceof SQLIdentifierExpr
                         && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
                     return unique.columns.size() == 1;
@@ -264,7 +265,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         for (SQLTableElement element : tableElementList) {
             if (element instanceof SQLUniqueConstraint) {
                 SQLUniqueConstraint unique = (SQLUniqueConstraint) element;
-                for (SQLExpr columnExpr : unique.getColumns()) {
+                for (SQLSelectOrderByItem item : unique.getColumns()) {
+                    SQLExpr columnExpr = item.getExpr();
                     if (columnExpr instanceof SQLIdentifierExpr) {
                         String keyColumName = ((SQLIdentifierExpr) columnExpr).getName();
                         keyColumName = SQLUtils.normalize(keyColumName);
@@ -571,6 +573,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         } else if (item instanceof SQLAlterTableRenameColumn) {
             return apply((SQLAlterTableRenameColumn) item);
+
+        } else if (item instanceof SQLAlterTableAddIndex) {
+            return apply((SQLAlterTableAddIndex) item);
         }
 
         return false;
@@ -692,6 +697,29 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 }
             }
         }
+        return true;
+    }
+
+    private boolean apply(SQLAlterTableAddIndex item) {
+        if (item.isKey()) {
+            MySqlPrimaryKey x = new MySqlPrimaryKey();
+            item.cloneTo(x);
+            x.setParent(this);
+            this.tableElementList.add(x);
+            return true;
+        }
+        if (item.isUnique()) {
+            MySqlUnique x = new MySqlUnique();
+            item.cloneTo(x);
+            x.setParent(this);
+            this.tableElementList.add(x);
+            return true;
+        }
+
+        MySqlTableIndex x = new MySqlTableIndex();
+        item.cloneTo(x);
+        x.setParent(this);
+        this.tableElementList.add(x);
         return true;
     }
 

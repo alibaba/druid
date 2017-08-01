@@ -1019,7 +1019,7 @@ public class OracleExprParser extends SQLExprParser {
 
         OraclePrimaryKey primaryKey = new OraclePrimaryKey();
         accept(Token.LPAREN);
-        exprList(primaryKey.getColumns(), primaryKey);
+        orderBy(primaryKey.getColumns(), primaryKey);
         accept(Token.RPAREN);
 
         
@@ -1349,7 +1349,7 @@ public class OracleExprParser extends SQLExprParser {
 
         OracleUnique unique = new OracleUnique();
         accept(Token.LPAREN);
-        exprList(unique.getColumns(), unique);
+        orderBy(unique.getColumns(), unique);
         accept(Token.RPAREN);
         
         if (lexer.token() == Token.USING) {
