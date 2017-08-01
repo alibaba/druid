@@ -19,11 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -396,8 +392,18 @@ public class SQLStatementParser extends SQLParser {
         lexer.nextToken();
 
         final SQLStatement stmt;
+
+        List<SQLCommentHint> hints = null;
+        if (lexer.token() == Token.HINT) {
+            hints = this.exprParser.parseHints();
+        }
+
         if (lexer.token() == Token.TABLE || identifierEquals("TEMPORARY")) {
-            stmt = parseDropTable(false);
+            SQLDropTableStatement dropTable = parseDropTable(false);
+            if (hints != null) {
+                dropTable.setHints(hints);
+            }
+            stmt = dropTable;
         } else if (lexer.token() == Token.USER) {
             stmt = parseDropUser();
         } else if (lexer.token() == Token.INDEX) {

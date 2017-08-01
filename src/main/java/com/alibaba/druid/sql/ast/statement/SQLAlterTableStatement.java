@@ -162,4 +162,17 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
 
         return null;
     }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
 }

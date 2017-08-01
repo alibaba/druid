@@ -59,6 +59,26 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return (SQLName) tableSource.getExpr();
     }
 
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
+
+    public void setSchema(String name) {
+        if (this.tableSource == null) {
+            return;
+        }
+        tableSource.setSchema(name);
+    }
+
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
     }

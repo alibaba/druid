@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -55,6 +56,43 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
             expr.setParent(this);
         }
         this.expr = expr;
+    }
+
+    public SQLName getName() {
+        if (expr instanceof SQLName) {
+            return (SQLName) expr;
+        }
+        return null;
+    }
+
+    public String getSchema() {
+        if (expr == null) {
+            return null;
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) expr).getOwnernName();
+        }
+
+        return null;
+    }
+
+    public void setSchema(String schema) {
+        if (expr instanceof SQLIdentifierExpr) {
+            if (schema == null) {
+                return;
+            }
+
+            String ident = ((SQLIdentifierExpr) expr).getName();
+            this.setExpr(new SQLPropertyExpr(schema, ident));
+        } else if (expr instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+            if (schema == null) {
+                setExpr(new SQLIdentifierExpr(propertyExpr.getName()));
+            } else {
+                propertyExpr.setOwner(schema);
+            }
+        }
     }
 
     public List<SQLName> getPartitions() {

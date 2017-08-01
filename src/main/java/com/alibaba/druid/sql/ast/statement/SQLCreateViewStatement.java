@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
@@ -68,6 +69,19 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         if (expr instanceof SQLName) {
             String name = ((SQLName) expr).getSimpleName();
             return SQLUtils.normalize(name);
+        }
+
+        return null;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
         }
 
         return null;

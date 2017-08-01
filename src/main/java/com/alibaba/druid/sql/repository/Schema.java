@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,20 +46,17 @@ public class Schema {
 
     protected final Map<String, SchemaObject> objects = new ConcurrentSkipListMap<String, SchemaObject>();
 
-    private final Map<String, SchemaObject> functions  = new ConcurrentSkipListMap<String, SchemaObject>();
-
-    private final SQLASTVisitor visitor;
+    protected final Map<String, SchemaObject> functions  = new ConcurrentSkipListMap<String, SchemaObject>();
 
     private SchemaRepository repository;
 
     public Schema(SchemaRepository repository) {
-        this.repository = repository;
+        this(repository, null);
+    }
 
-        if (JdbcConstants.MYSQL.equals(repository.dbType)) {
-            visitor = new MySqlSchemaVisitor();
-        } else {
-            visitor = new OracleSchemaVisitor();
-        }
+    public Schema(SchemaRepository repository, String name) {
+        this.repository = repository;
+        this.name = name;
     }
 
     public String getName() {
@@ -102,208 +100,12 @@ public class Schema {
         return functions.get(lowerName);
     }
 
-    public void acceptDDL(String ddl, String dbType) {
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(ddl, dbType);
-        for (SQLStatement stmt : stmtList) {
-            accept(stmt);
-        }
-    }
-
-    public void accept(SQLStatement stmt) {
-        stmt.accept(visitor);
-    }
-
     public boolean isSequence(String name) {
         SchemaObject object = objects.get(name);
         return object != null
                 && object.getType() == SchemaObjectType.Sequence;
     }
 
-    public class OracleSchemaVisitor extends OracleASTVisitorAdapter {
-
-        public boolean visit(SQLDropSequenceStatement x) {
-            String name = x.getName().getSimpleName();
-            objects.remove(name);
-            return false;
-        }
-
-        public boolean visit(SQLCreateSequenceStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Sequence);
-
-            objects.put(name.toLowerCase(), object);
-            return false;
-        }
-
-        public boolean visit(OracleCreateTableStatement x) {
-            visit((SQLCreateTableStatement) x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            acceptCreateTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateViewStatement x) {
-            String name = x.computeName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.View, x);
-
-            String name_lower = name.toLowerCase();
-            if (objects.containsKey(name_lower)) {
-                return false;
-            }
-            objects.put(name_lower, object);
-
-            return false;
-        }
-
-        public boolean visit(SQLCreateIndexStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Index);
-
-            objects.put(name.toLowerCase(), object);
-
-            return false;
-        }
-
-        public boolean visit(SQLCreateFunctionStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function, x);
-
-            functions.put(name.toLowerCase(), object);
-
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            SQLName table = x.getName();
-            SchemaObject object = repository.findTable(table);
-            if (object != null) {
-                SQLCreateTableStatement stmt = (SQLCreateTableStatement) object.getStatement();
-                if (stmt != null) {
-                    stmt.apply(x);
-                }
-            }
-
-            return false;
-        }
-    }
-
-    boolean acceptCreateTable(SQLCreateTableStatement x) {
-        SQLSelect select = x.getSelect();
-        if (select != null) {
-            select.accept(
-                    repository.createResolveVisitor());
-
-            SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
-            if (queryBlock != null) {
-                List<SQLSelectItem> selectList = queryBlock.getSelectList();
-                for (SQLSelectItem selectItem : selectList) {
-                    String name = selectItem.computeAlias();
-                    SQLDataType dataType = selectItem.computeDataType();
-                    SQLColumnDefinition column = new SQLColumnDefinition();
-                    column.setName(name);
-                    column.setDataType(dataType);
-                    column.setDbType(repository.dbType);
-                    x.getTableElementList().add(column);
-                }
-                x.setSelect(null);
-            }
-        }
-
-        String name = x.computeName();
-        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
-
-        String name_lower = name.toLowerCase();
-        if (objects.containsKey(name_lower)) {
-            return false;
-        }
-        objects.put(name_lower, object);
-        return true;
-    }
-
-    private class MySqlSchemaVisitor extends MySqlASTVisitorAdapter {
-
-        public boolean visit(SQLDropSequenceStatement x) {
-            String name = x.getName().getSimpleName();
-            objects.remove(name);
-            return false;
-        }
-
-        public boolean visit(SQLCreateSequenceStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Sequence);
-
-            objects.put(name.toLowerCase(), object);
-            return false;
-        }
-
-        public boolean visit(MySqlCreateTableStatement x) {
-            SQLExprTableSource like = x.getLike();
-            if (like != null) {
-                SchemaObject table = repository.findTable((SQLName) like.getExpr());
-                if (table != null) {
-                    MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) table.getStatement();
-                    MySqlCreateTableStatement stmtCloned = stmt.clone();
-                    stmtCloned.setName(x.getName().clone());
-                    acceptCreateTable(stmtCloned);
-                    return false;
-                }
-            }
-            acceptCreateTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateTableStatement x) {
-            acceptCreateTable(x);
-            return false;
-        }
-
-        public boolean visit(SQLCreateViewStatement x) {
-            String name = x.computeName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.View, x);
-
-            String name_lower = name.toLowerCase();
-            if (objects.containsKey(name_lower)) {
-                return false;
-            }
-            objects.put(name_lower, object);
-
-            return false;
-        }
-
-        public boolean visit(SQLCreateIndexStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Index);
-
-            objects.put(name.toLowerCase(), object);
-
-            return false;
-        }
-
-        public boolean visit(SQLCreateFunctionStatement x) {
-            String name = x.getName().getSimpleName();
-            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function, x);
-
-            functions.put(name.toLowerCase(), object);
-
-            return false;
-        }
-
-        public boolean visit(SQLAlterTableStatement x) {
-            SQLName table = x.getName();
-            SchemaObject object = repository.findTable(table);
-            if (object != null) {
-                SQLCreateTableStatement stmt = (SQLCreateTableStatement) object.getStatement();
-                if (stmt != null) {
-                    stmt.apply(x);
-                }
-            }
-
-            return false;
-        }
-    }
 
     public SchemaObject findTable(SQLTableSource tableSource, String alias) {
         if (tableSource instanceof SQLExprTableSource) {
@@ -498,5 +300,15 @@ public class Schema {
             }
         }
         return count;
+    }
+
+    public List<String> showTables() {
+        List<String> tables = new ArrayList<String>(objects.size());
+        for (SchemaObject object : objects.values()) {
+            if (object.getType() == SchemaObjectType.Table) {
+                tables.add(object.getName());
+            }
+        }
+        return tables;
     }
 }

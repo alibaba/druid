@@ -115,4 +115,24 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
         }
         visitor.endVisit(this);
     }
+
+    public String getSchema() {
+        SQLName name = null;
+        if (table instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) table).getExpr();
+            if (expr instanceof SQLName) {
+                name = (SQLName) expr;
+            }
+        }
+
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
 }

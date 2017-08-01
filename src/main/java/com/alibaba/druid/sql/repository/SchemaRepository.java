@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.repository;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -34,6 +35,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -47,6 +49,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class SchemaRepository {
     private Schema defaultSchema;
     protected String dbType;
+    protected SQLASTVisitor consoleVisitor;
 
     public SchemaRepository() {
 
@@ -54,6 +57,14 @@ public class SchemaRepository {
 
     public SchemaRepository(String dbType) {
         this.dbType = dbType;
+
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            consoleVisitor = new MySqlConsoleSchemaVisitor();
+        } else if (JdbcConstants.ORACLE.equals(dbType)) {
+            consoleVisitor = new OracleConsoleSchemaVisitor();
+        } else {
+            consoleVisitor = new DefaultConsoleSchemaVisitor();
+        }
     }
 
     private Map<String, Schema> schemas = new LinkedHashMap<String, Schema>();
@@ -94,13 +105,22 @@ public class SchemaRepository {
     }
 
     public Schema findSchema(String schema) {
-        if (schema == null) {
-            return null;
+        return findSchema(schema, false);
+    }
+
+    protected Schema findSchema(String name, boolean create) {
+        if (name == null || name.length() == 0) {
+            return getDefaultSchema();
         }
 
-        return schemas.get(
-                SQLUtils.normalize(schema)
-                .toLowerCase());
+        String normalizedName = SQLUtils.normalize(name)
+                .toLowerCase();
+        Schema schema = schemas.get(normalizedName);
+        if (schema == null) {
+            schema = new Schema(this, name);
+            schemas.put(normalizedName, schema);
+        }
+        return schema;
     }
 
     public Schema getDefaultSchema() {
@@ -158,11 +178,14 @@ public class SchemaRepository {
     }
 
     public void acceptDDL(String ddl, String dbType) {
-        getDefaultSchema().acceptDDL(ddl, dbType);
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(ddl, dbType);
+        for (SQLStatement stmt : stmtList) {
+            accept(stmt);
+        }
     }
 
     public void accept(SQLStatement stmt) {
-        getDefaultSchema().accept(stmt);
+        stmt.accept(consoleVisitor);
     }
 
     public boolean isSequence(String name) {
@@ -224,9 +247,30 @@ public class SchemaRepository {
                     SchemaObject schemaObject = findTable(table);
                     MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
                     createTableStmt.output(buf);
+                } else if (stmt instanceof SQLShowTablesStatement) {
+                    SQLShowTablesStatement showTables = (SQLShowTablesStatement) stmt;
+                    SQLName database = showTables.getDatabase();
+
+                    Schema schema;
+                    if (database == null) {
+                        schema = getDefaultSchema();
+                    } else {
+                        schema = findSchema(database.getSimpleName());
+                    }
+                    if (schema != null) {
+                        for (String table : schema.showTables()) {
+                            buf.append(table);
+                            buf.append('\n');
+                        }
+                    }
+
                 } else {
-                    this.getDefaultSchema().accept(stmt);
+                    stmt.accept(consoleVisitor);
                 }
+            }
+
+            if (buf.length() == 0) {
+                return "\n";
             }
 
             return buf.toString();
@@ -370,5 +414,289 @@ public class SchemaRepository {
 
     public class OracleResolveVisitor extends OracleASTVisitorAdapter {
 
+    }
+
+    public class MySqlConsoleSchemaVisitor extends MySqlASTVisitorAdapter {
+        public boolean visit(SQLDropSequenceStatement x) {
+            acceptDropSequence(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateSequenceStatement x) {
+            acceptCreateSequence(x);
+            return false;
+        }
+
+        public boolean visit(MySqlCreateTableStatement x) {
+            acceptCreateTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateTableStatement x) {
+            acceptCreateTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLDropTableStatement x) {
+            acceptDropTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateViewStatement x) {
+            acceptView(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateIndexStatement x) {
+            acceptCreateIndex(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateFunctionStatement x) {
+            acceptCreateFunction(x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            acceptAlterTable(x);
+            return false;
+        }
+    }
+
+    public class OracleConsoleSchemaVisitor extends OracleASTVisitorAdapter {
+        public boolean visit(SQLDropSequenceStatement x) {
+            acceptDropSequence(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateSequenceStatement x) {
+            acceptCreateSequence(x);
+            return false;
+        }
+
+        public boolean visit(OracleCreateTableStatement x) {
+            visit((SQLCreateTableStatement) x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateTableStatement x) {
+            acceptCreateTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLDropTableStatement x) {
+            acceptDropTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateViewStatement x) {
+            acceptView(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateIndexStatement x) {
+            acceptCreateIndex(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateFunctionStatement x) {
+            acceptCreateFunction(x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            acceptAlterTable(x);
+            return false;
+        }
+    }
+
+    public class DefaultConsoleSchemaVisitor extends SQLASTVisitorAdapter {
+        public boolean visit(SQLDropSequenceStatement x) {
+            acceptDropSequence(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateSequenceStatement x) {
+            acceptCreateSequence(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateTableStatement x) {
+            acceptCreateTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLDropTableStatement x) {
+            acceptDropTable(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateViewStatement x) {
+            acceptView(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateIndexStatement x) {
+            acceptCreateIndex(x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateFunctionStatement x) {
+            acceptCreateFunction(x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            acceptAlterTable(x);
+            return false;
+        }
+    }
+
+    boolean acceptCreateTable(MySqlCreateTableStatement x) {
+        SQLExprTableSource like = x.getLike();
+        if (like != null) {
+            SchemaObject table = findTable((SQLName) like.getExpr());
+            if (table != null) {
+                MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) table.getStatement();
+                MySqlCreateTableStatement stmtCloned = stmt.clone();
+                stmtCloned.setName(x.getName().clone());
+                acceptCreateTable((SQLCreateTableStatement) stmtCloned);
+                return false;
+            }
+        }
+
+        return acceptCreateTable((SQLCreateTableStatement) x);
+    }
+
+    boolean acceptCreateTable(SQLCreateTableStatement x) {
+        String schemaName = x.getSchema();
+
+        Schema schema = findSchema(schemaName, true);
+
+        SQLSelect select = x.getSelect();
+        if (select != null) {
+            select.accept(createResolveVisitor());
+
+            SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+            if (queryBlock != null) {
+                List<SQLSelectItem> selectList = queryBlock.getSelectList();
+                for (SQLSelectItem selectItem : selectList) {
+                    String name = selectItem.computeAlias();
+                    SQLDataType dataType = selectItem.computeDataType();
+                    SQLColumnDefinition column = new SQLColumnDefinition();
+                    column.setName(name);
+                    column.setDataType(dataType);
+                    column.setDbType(dbType);
+                    x.getTableElementList().add(column);
+                }
+                x.setSelect(null);
+            }
+        }
+
+        x.setSchema(null);
+
+        String name = x.computeName();
+        SchemaObject table = schema.findTableOrView(name);
+        if (table != null) {
+            return false;
+        }
+
+        table = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
+        String name_lower = SQLUtils.normalize(name).toLowerCase();
+        schema.objects.put(name_lower, table);
+        return true;
+    }
+
+    boolean acceptDropTable(SQLDropTableStatement x) {
+        for (SQLExprTableSource table : x.getTableSources()) {
+            String schemaName = table.getSchema();
+            Schema schema = findSchema(schemaName, false);
+            if (schema == null) {
+                continue;
+            }
+            String name = table.getName().getSimpleName();
+            String name_lower = SQLUtils.normalize(name).toLowerCase();
+            schema.objects.remove(name_lower);
+        }
+        return true;
+    }
+
+    public boolean acceptView(SQLCreateViewStatement x) {
+        String schemaName = x.getSchema();
+
+        Schema schema = findSchema(schemaName, true);
+
+        String name = x.computeName();
+        SchemaObject view = schema.findTableOrView(name);
+        if (view != null) {
+            return false;
+        }
+
+        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.View, x);
+        String name_lower = SQLUtils.normalize(name).toLowerCase();
+        schema.objects.put(name_lower, object);
+        return true;
+    }
+
+    public boolean acceptCreateIndex(SQLCreateIndexStatement x) {
+        String schemaName = x.getSchema();
+
+        Schema schema = findSchema(schemaName, true);
+
+        String name = x.getName().getSimpleName();
+        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Index);
+        String name_lower = SQLUtils.normalize(name).toLowerCase();
+        schema.objects.put(name_lower, object);
+
+        return true;
+    }
+
+    public boolean acceptCreateFunction(SQLCreateFunctionStatement x) {
+        String schemaName = x.getSchema();
+        Schema schema = findSchema(schemaName, true);
+
+        String name = x.getName().getSimpleName();
+        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function);
+        String name_lower = SQLUtils.normalize(name).toLowerCase();
+        schema.functions.put(name_lower, object);
+
+        return true;
+    }
+
+    public boolean acceptAlterTable(SQLAlterTableStatement x) {
+        String schemaName = x.getSchema();
+        Schema schema = findSchema(schemaName, true);
+
+        SchemaObject object = schema.findTable(x.getTableName());
+        if (object != null) {
+            SQLCreateTableStatement stmt = (SQLCreateTableStatement) object.getStatement();
+            if (stmt != null) {
+                stmt.apply(x);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean acceptCreateSequence(SQLCreateSequenceStatement x) {
+        String schemaName = x.getSchema();
+        Schema schema = findSchema(schemaName, true);
+
+        String name = x.getName().getSimpleName();
+        SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Sequence);
+        String name_lower = SQLUtils.normalize(name).toLowerCase();
+        schema.objects.put(name_lower, object);
+        return false;
+    }
+
+    public boolean acceptDropSequence(SQLDropSequenceStatement x) {
+        String schemaName = x.getSchema();
+        Schema schema = findSchema(schemaName, true);
+
+        String name = x.getName().getSimpleName();
+        String name_lower = SQLUtils.normalize(name).toLowerCase();
+        schema.objects.remove(name_lower);
+        return false;
     }
 }

@@ -456,12 +456,30 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "\tc_longblob longblob\n" +
                 ")", repository.console("show create table test5"));
 
-        repository.console("CREATE TABLE test6 as select a.id, c_tinyint, 'a' f3, 3 f4 from test2 a");
+        repository.console("CREATE TABLE sc01.test6 as select a.id, c_tinyint, 'a' f3, 3 f4 from test2 a");
         assertEquals("CREATE TABLE test6 (\n" +
                 "\tid bigint(20),\n" +
                 "\tc_tinyint tinyint(4),\n" +
                 "\tf3 varchar,\n" +
                 "\tf4 bigint\n" +
-                ")", repository.console("show create table test6"));
+                ")", repository.console("show create table sc01.test6"));
+
+        assertEquals("test1\n" +
+                "test2\n" +
+                "test3\n" +
+                "test4\n" +
+                "test5\n", repository.console("show tables"));
+
+        assertEquals("test1\n" +
+                "test2\n" +
+                "test3\n" +
+                "test4\n" +
+                "test5\n", repository.console("show tables"));
+
+        assertEquals("test6\n", repository.console("show tables from sc01"));
+
+        repository.console("DROP /*!40005 TEMPORARY */ TABLE IF EXISTS `sc01`.`test6`;");
+
+        assertEquals("\n", repository.console("show tables from sc01"));
     }
 }

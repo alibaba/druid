@@ -67,6 +67,10 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         this.owner = owner;
     }
 
+    public void setOwner(String owner) {
+        this.setOwner(new SQLIdentifierExpr(owner));
+    }
+
     public String getName() {
         return this.name;
     }
