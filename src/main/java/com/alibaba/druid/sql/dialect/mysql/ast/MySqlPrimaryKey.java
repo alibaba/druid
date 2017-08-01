@@ -32,4 +32,10 @@ public class MySqlPrimaryKey extends MySqlKey implements SQLPrimaryKey {
         }
         visitor.endVisit(this);
     }
+
+    public MySqlPrimaryKey clone() {
+        MySqlPrimaryKey x = new MySqlPrimaryKey();
+        cloneTo(x);
+        return x;
+    }
 }

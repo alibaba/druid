@@ -31,4 +31,10 @@ public class MySqlUnique extends MySqlKey {
         }
         visitor.endVisit(this);
     }
+
+    public MySqlUnique clone() {
+        MySqlUnique x = new MySqlUnique();
+        cloneTo(x);
+        return x;
+    }
 }

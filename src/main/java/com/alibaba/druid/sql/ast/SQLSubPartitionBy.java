@@ -57,4 +57,23 @@ public abstract class SQLSubPartitionBy extends SQLObjectImpl {
         return subPartitionTemplate;
     }
 
+    public void cloneTo(SQLSubPartitionBy x) {
+        if (subPartitionsCount != null) {
+            x.setSubPartitionsCount(subPartitionsCount.clone());
+        }
+        x.linear = linear;
+        for (SQLAssignItem option : options) {
+            SQLAssignItem option2 = option.clone();
+            option2.setParent(x);
+            x.options.add(option2);
+        }
+
+        for (SQLSubPartition p : subPartitionTemplate) {
+            SQLSubPartition p2 = p.clone();
+            p2.setParent(x);
+            x.subPartitionTemplate.add(p2);
+        }
+    }
+
+    public abstract SQLSubPartitionBy clone();
 }

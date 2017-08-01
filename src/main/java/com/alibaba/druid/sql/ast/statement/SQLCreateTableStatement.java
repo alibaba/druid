@@ -737,4 +737,29 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
         return -1;
     }
+
+    public void cloneTo(SQLCreateTableStatement x) {
+        x.ifNotExiists = ifNotExiists;
+        x.type = type;
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLTableElement e : tableElementList) {
+            SQLTableElement e2 = e.clone();
+            e2.setParent(x);
+            x.tableElementList.add(e2);
+        }
+        if (inherits != null) {
+            x.setInherits(inherits.clone());
+        }
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+    }
+
+    public SQLCreateTableStatement clone() {
+        SQLCreateTableStatement x = new SQLCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
@@ -68,5 +69,19 @@ public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement 
             acceptChild(visitor, columns);
         }
         visitor.endVisit(this);
+    }
+
+    public MySqlTableIndex clone() {
+        MySqlTableIndex x = new MySqlTableIndex();
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        x.indexType = indexType;
+        for (SQLSelectOrderByItem column : columns) {
+            SQLSelectOrderByItem c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+        return x;
     }
 }

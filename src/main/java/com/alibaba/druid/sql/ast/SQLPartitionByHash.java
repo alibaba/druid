@@ -54,4 +54,15 @@ public class SQLPartitionByHash extends SQLPartitionBy {
         visitor.endVisit(this);
     }
 
+    public SQLPartitionByHash clone() {
+        SQLPartitionByHash x = new SQLPartitionByHash();
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        x.key = key;
+
+        return x;
+    }
 }

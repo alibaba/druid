@@ -25,7 +25,6 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTableConstraint {
 
-
     private String  indexType;
 
     private boolean hasConstaint;
@@ -66,4 +65,15 @@ public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTable
         this.hasConstaint = hasConstaint;
     }
 
+    public void cloneTo(MySqlKey x) {
+        super.cloneTo(x);
+        x.indexType = indexType;
+        x.hasConstaint = hasConstaint;
+    }
+
+    public MySqlKey clone() {
+        MySqlKey x = new MySqlKey();
+        cloneTo(x);
+        return x;
+    }
 }

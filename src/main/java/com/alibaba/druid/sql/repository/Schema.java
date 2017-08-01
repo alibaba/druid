@@ -214,6 +214,16 @@ public class Schema {
         }
 
         public boolean visit(MySqlCreateTableStatement x) {
+            SQLExprTableSource like = x.getLike();
+            if (like != null) {
+                SchemaObject table = repository.findTable((SQLName) like.getExpr());
+                if (table != null) {
+                    MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) table.getStatement();
+                    MySqlCreateTableStatement stmtCloned = stmt.clone();
+                    stmtCloned.setName(x.getName().clone());
+                    return visit((SQLCreateTableStatement) stmtCloned);
+                }
+            }
             visit((SQLCreateTableStatement) x);
             return false;
         }

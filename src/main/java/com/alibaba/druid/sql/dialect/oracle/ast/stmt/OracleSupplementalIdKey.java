@@ -75,4 +75,14 @@ public class OracleSupplementalIdKey extends OracleSQLObjectImpl implements SQLT
     public void setUniqueIndex(boolean uniqueIndex) {
         this.uniqueIndex = uniqueIndex;
     }
+
+    public OracleSupplementalIdKey clone() {
+        OracleSupplementalIdKey x = new OracleSupplementalIdKey();
+        x.all = all;
+        x.primaryKey = primaryKey;
+        x.unique = unique;
+        x.uniqueIndex = uniqueIndex;
+        x.foreignKey = foreignKey;
+        return x;
+    }
 }

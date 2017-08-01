@@ -79,4 +79,23 @@ public class SQLPartitionByRange extends SQLPartitionBy {
         visitor.endVisit(this);
     }
 
+    public SQLPartitionByRange clone() {
+        SQLPartitionByRange x = new SQLPartitionByRange();
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        if (interval != null) {
+            x.setInterval(interval.clone());
+        }
+
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+
+        return x;
+    }
 }

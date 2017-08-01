@@ -96,4 +96,22 @@ public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstra
         this.initially = initially;
     }
 
+    public void cloneTo(OraclePrimaryKey x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.enable = enable;
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OraclePrimaryKey clone() {
+        OraclePrimaryKey x = new OraclePrimaryKey();
+        cloneTo(x);
+        return x;
+    }
 }

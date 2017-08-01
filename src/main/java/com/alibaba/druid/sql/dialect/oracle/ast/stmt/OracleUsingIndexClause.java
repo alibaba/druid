@@ -92,4 +92,26 @@ public class OracleUsingIndexClause extends OracleSegmentAttributesImpl implemen
     public List<SQLPartition> getLocalPartitionIndex() {
         return localPartitionIndex;
     }
+
+    public void cloneTo(OracleUsingIndexClause x) {
+        super.cloneTo(x);
+        if (index != null) {
+            x.setIndex(index.clone());
+        }
+        x.enable = enable;
+        x.computeStatistics = computeStatistics;
+        x.reverse = reverse;
+
+        for (SQLPartition p : localPartitionIndex) {
+            SQLPartition p2 = p.clone();
+            p2.setParent(x);
+            x.localPartitionIndex.add(p2);
+        }
+    }
+
+    public OracleUsingIndexClause clone() {
+        OracleUsingIndexClause x = new OracleUsingIndexClause();
+        cloneTo(x);
+        return x;
+    }
 }

@@ -72,6 +72,12 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
         }
     }
 
+    public SQLUnique clone() {
+        SQLUnique x = new SQLUnique();
+        cloneTo(x);
+        return x;
+    }
+
     public void simplify() {
         super.simplify();
 

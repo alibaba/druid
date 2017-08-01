@@ -68,4 +68,21 @@ public class SQLSubPartition extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public SQLSubPartition clone() {
+        SQLSubPartition x = new SQLSubPartition();
+
+        if (name != null) {
+            x.setName(name.clone());
+        }
+
+        if (values != null) {
+            x.setValues(values.clone());
+        }
+
+        if (tableSpace != null) {
+            x.setTableSpace(tableSpace.clone());
+        }
+
+        return x;
+    }
 }

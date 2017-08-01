@@ -342,4 +342,38 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     public void output(StringBuffer buf) {
         this.accept(new MySqlOutputVisitor(buf));
     }
+
+    public void cloneTo(MySqlCreateTableStatement x) {
+        super.cloneTo(x);
+        for (Map.Entry<String, SQLObject> entry : tableOptions.entrySet()) {
+            SQLObject obj = entry.getValue().clone();
+            obj.setParent(x);
+            x.tableOptions.put(entry.getKey(), obj);
+        }
+        if (partitioning != null) {
+            x.setPartitioning(partitioning.clone());
+        }
+        for (SQLCommentHint hint : hints) {
+            SQLCommentHint h2 = hint.clone();
+            h2.setParent(x);
+            x.hints.add(h2);
+        }
+        for (SQLCommentHint hint : optionHints) {
+            SQLCommentHint h2 = hint.clone();
+            h2.setParent(x);
+            x.optionHints.add(h2);
+        }
+        if (like != null) {
+            x.setLike(like.clone());
+        }
+        if (tableGroup != null) {
+            x.setTableGroup(tableGroup.clone());
+        }
+    }
+
+    public MySqlCreateTableStatement clone() {
+        MySqlCreateTableStatement x = new MySqlCreateTableStatement();
+        cloneTo(x);
+        return x;
+    }
 }
