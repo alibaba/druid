@@ -182,6 +182,19 @@ public class Schema {
 
             return false;
         }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            SQLName table = x.getName();
+            SchemaObject object = repository.findTable(table);
+            if (object != null) {
+                SQLCreateTableStatement stmt = (SQLCreateTableStatement) object.getStatement();
+                if (stmt != null) {
+                    stmt.apply(x);
+                }
+            }
+
+            return false;
+        }
     }
 
     private class MySqlSchemaVisitor extends MySqlASTVisitorAdapter {
@@ -245,6 +258,19 @@ public class Schema {
             SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function, x);
 
             functions.put(name.toLowerCase(), object);
+
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            SQLName table = x.getName();
+            SchemaObject object = repository.findTable(table);
+            if (object != null) {
+                SQLCreateTableStatement stmt = (SQLCreateTableStatement) object.getStatement();
+                if (stmt != null) {
+                    stmt.apply(x);
+                }
+            }
 
             return false;
         }

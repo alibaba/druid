@@ -16,9 +16,6 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.util.JdbcConstants;
@@ -55,7 +52,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 ") ENGINE=InnoDB AUTO_INCREMENT=1769503 DEFAULT CHARSET=utf8mb4 COMMENT='10000000'";
 
 
-        repository.acceptDDL(sql);
+        repository.console(sql);
 
         MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) repository.findTable("test1").getStatement();
         assertEquals(21, createTableStmt.getTableElementList().size());
@@ -85,13 +82,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "| c_longblob   | longblob      | NO   |     | NULL                |                             |\n" +
                 "+--------------+---------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
-        SQLAlterTableStatement stmtDropColumn;
-        {
-            List<SQLStatement> statementList = SQLUtils.parseStatements("alter table test1 drop column c_decimal;", JdbcConstants.MYSQL, true);
-            assertEquals(1, statementList.size());
-            stmtDropColumn = (SQLAlterTableStatement) statementList.get(0);
-        }
-        createTableStmt.apply(stmtDropColumn);
+        repository.console("alter table test1 drop column c_decimal;");
         assertEquals(20, createTableStmt.getTableElementList().size());
 
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
@@ -115,13 +106,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
-        SQLAlterTableStatement stmtAddColumn;
-        {
-            List<SQLStatement> statementList = SQLUtils.parseStatements("alter table test1 add column c_decimal decimal(10,3) DEFAULT NULL COMMENT 'decimal';", JdbcConstants.MYSQL, true);
-            assertEquals(1, statementList.size());
-            stmtAddColumn = (SQLAlterTableStatement) statementList.get(0);
-        }
-        createTableStmt.apply(stmtAddColumn);
+        repository.console("alter table test1 add column c_decimal decimal(10,3) DEFAULT NULL COMMENT 'decimal';");
         assertEquals(21, createTableStmt.getTableElementList().size());
 
         assertEquals("+--------------+---------------+------+-----+---------------------+-----------------------------+\n" +
@@ -146,13 +131,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "| c_decimal    | decimal(10,3) | NO   |     | NULL                |                             |\n" +
                 "+--------------+---------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
-        SQLAlterTableStatement stmtChangeColumn;
-        {
-            List<SQLStatement> statementList = SQLUtils.parseStatements("ALTER TABLE test1 CHANGE COLUMN c_decimal c_decimal_1 INT(11) NOT NULL DEFAULT NULL FIRST id;", JdbcConstants.MYSQL, true);
-            assertEquals(1, statementList.size());
-            stmtChangeColumn = (SQLAlterTableStatement) statementList.get(0);
-        }
-        createTableStmt.apply(stmtChangeColumn);
+        repository.console("ALTER TABLE test1 CHANGE COLUMN c_decimal c_decimal_1 INT(11) NOT NULL DEFAULT NULL FIRST id;");
         assertEquals(21, createTableStmt.getTableElementList().size());
         //String sql = "ALTER TABLE `test`.`tb1` CHANGE COLUMN `fid` `fid` INT(11) NOT NULL DEFAULT NULL, ADD PRIMARY KEY (`fid`) ;";
 
@@ -178,14 +157,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
-
-        SQLAlterTableStatement stmtDropPk;
-        {
-            List<SQLStatement> statementList = SQLUtils.parseStatements("ALTER TABLE test1 DROP PRIMARY KEY;", JdbcConstants.MYSQL, true);
-            assertEquals(1, statementList.size());
-            stmtDropPk = (SQLAlterTableStatement) statementList.get(0);
-        }
-        createTableStmt.apply(stmtDropPk);
+        repository.console("ALTER TABLE test1 DROP PRIMARY KEY;");
         assertEquals(20, createTableStmt.getTableElementList().size());
 
         assertEquals("CREATE TABLE `test1` (\n" +
@@ -234,13 +206,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
-        SQLAlterTableStatement stmtDropIdx;
-        {
-            List<SQLStatement> statementList = SQLUtils.parseStatements("ALTER TABLE test1 DROP INDEX k_d;", JdbcConstants.MYSQL, true);
-            assertEquals(1, statementList.size());
-            stmtDropIdx = (SQLAlterTableStatement) statementList.get(0);
-        }
-        createTableStmt.apply(stmtDropIdx);
+        repository.console("ALTER TABLE test1 DROP INDEX k_d;");
         assertEquals(19, createTableStmt.getTableElementList().size());
 
         assertEquals("CREATE TABLE `test1` (\n" +
@@ -288,13 +254,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
 
-        SQLAlterTableStatement stmtDropUk;
-        {
-            List<SQLStatement> statementList = SQLUtils.parseStatements("ALTER TABLE test1 DROP INDEX uk_a;", JdbcConstants.MYSQL, true);
-            assertEquals(1, statementList.size());
-            stmtDropUk = (SQLAlterTableStatement) statementList.get(0);
-        }
-        createTableStmt.apply(stmtDropUk);
+        repository.console("ALTER TABLE test1 DROP INDEX uk_a;");
         assertEquals(18, createTableStmt.getTableElementList().size());
 
         assertEquals("CREATE TABLE `test1` (\n" +

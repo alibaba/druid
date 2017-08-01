@@ -213,15 +213,17 @@ public class SchemaRepository {
                 if (stmt instanceof MySqlShowColumnsStatement) {
                     MySqlShowColumnsStatement showColumns = ((MySqlShowColumnsStatement) stmt);
                     SQLName table = showColumns.getTable();
-                    SchemaObject schemaObject = findSchemaObject(table);
+                    SchemaObject schemaObject = findTable(table);
                     MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
                     createTableStmt.showCoumns(buf);
                 } else if (stmt instanceof MySqlShowCreateTableStatement) {
                     MySqlShowCreateTableStatement showCreateTableStmt = (MySqlShowCreateTableStatement) stmt;
                     SQLName table = showCreateTableStmt.getName();
-                    SchemaObject schemaObject = findSchemaObject(table);
+                    SchemaObject schemaObject = findTable(table);
                     MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
                     createTableStmt.output(buf);
+                } else {
+                    this.getDefaultSchema().accept(stmt);
                 }
             }
 
@@ -231,7 +233,7 @@ public class SchemaRepository {
         }
     }
 
-    private SchemaObject findSchemaObject(SQLName name) {
+    public SchemaObject findTable(SQLName name) {
         if (name instanceof SQLIdentifierExpr) {
             return findTable(((SQLIdentifierExpr) name).getName());
         }
