@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
@@ -30,13 +31,11 @@ public class SQLCharExpr extends SQLTextLiteralExpr implements SQLValuableExpr{
 
     @Override
     public void output(StringBuffer buf) {
-        if ((this.text == null) || (this.text.length() == 0)) {
-            buf.append("NULL");
-        } else {
-            buf.append("'");
-            buf.append(this.text.replaceAll("'", "''"));
-            buf.append("'");
-        }
+        output((Appendable) buf);
+    }
+
+    public void output(Appendable buf) {
+        this.accept(new SQLASTOutputVisitor(buf));
     }
 
     protected void accept0(SQLASTVisitor visitor) {

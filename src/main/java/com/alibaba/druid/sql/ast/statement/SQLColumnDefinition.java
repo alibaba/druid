@@ -96,6 +96,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return name;
     }
 
+    public String getNameAsString() {
+        if (name == null) {
+            return null;
+        }
+
+        return name.toString();
+    }
+
     public void setName(SQLName name) {
         this.name = name;
     }

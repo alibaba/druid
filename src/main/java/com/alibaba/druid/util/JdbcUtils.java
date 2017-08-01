@@ -767,6 +767,18 @@ public final class JdbcUtils implements JdbcConstants {
         }
     }
 
+    public static List<String> showTables(Connection conn, String dbType) throws SQLException {
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            return MySqlUtils.showTables(conn);
+        }
+
+        if (JdbcConstants.ORACLE.equals(dbType)) {
+            return OracleUtils.showTables(conn);
+        }
+
+        throw new SQLException("show tables dbType not support for " + dbType);
+    }
+
     public static String getCreateTableScript(Connection conn, String dbType) throws SQLException {
         return getCreateTableScript(conn, dbType, true, true);
     }

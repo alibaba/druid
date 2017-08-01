@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -28,7 +29,7 @@ public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement 
 
     private SQLName       name;
     private String        indexType;
-    private List<SQLExpr> columns = new ArrayList<SQLExpr>();
+    private List<SQLSelectOrderByItem> columns = new ArrayList<SQLSelectOrderByItem>();
 
     public MySqlTableIndex(){
 
@@ -50,11 +51,11 @@ public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement 
         this.name = name;
     }
 
-    public List<SQLExpr> getColumns() {
+    public List<SQLSelectOrderByItem> getColumns() {
         return columns;
     }
     
-    public void addColumn(SQLExpr column) {
+    public void addColumn(SQLSelectOrderByItem column) {
         if (column != null) {
             column.setParent(this);
         }

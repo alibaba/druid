@@ -140,7 +140,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                         accept(Token.LPAREN);
                         for (;;) {
-                            idx.addColumn(this.exprParser.expr());
+                            idx.addColumn(this.exprParser.parseSelectOrderByItem());
                             if (!(lexer.token() == (Token.COMMA))) {
                                 break;
                             } else {

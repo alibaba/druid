@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.repository;
 
+import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -24,9 +25,14 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.util.JdbcUtils;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,6 +44,15 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class SchemaRepository {
     private Schema defaultSchema;
+    protected String dbType;
+
+    public SchemaRepository() {
+
+    }
+
+    public SchemaRepository(String dbType) {
+        this.dbType = dbType;
+    }
 
     private Map<String, Schema> schemas = new LinkedHashMap<String, Schema>();
 
@@ -136,6 +151,10 @@ public class SchemaRepository {
         return getDefaultSchema().findFunction(functionName);
     }
 
+    public void acceptDDL(String ddl) {
+        acceptDDL(ddl, dbType);
+    }
+
     public void acceptDDL(String ddl, String dbType) {
         getDefaultSchema().acceptDDL(ddl, dbType);
     }
@@ -182,5 +201,54 @@ public class SchemaRepository {
 
     public int getViewCount() {
         return getDefaultSchema().getViewCount();
+    }
+
+    public String console(String input) {
+        try {
+            StringBuffer buf = new StringBuffer();
+
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType);
+
+            for (SQLStatement stmt : stmtList) {
+                if (stmt instanceof MySqlShowColumnsStatement) {
+                    MySqlShowColumnsStatement showColumns = ((MySqlShowColumnsStatement) stmt);
+                    SQLName table = showColumns.getTable();
+                    SchemaObject schemaObject = findSchemaObject(table);
+                    MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
+                    createTableStmt.showCoumns(buf);
+                } else if (stmt instanceof MySqlShowCreateTableStatement) {
+                    MySqlShowCreateTableStatement showCreateTableStmt = (MySqlShowCreateTableStatement) stmt;
+                    SQLName table = showCreateTableStmt.getName();
+                    SchemaObject schemaObject = findSchemaObject(table);
+                    MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
+                    createTableStmt.output(buf);
+                }
+            }
+
+            return buf.toString();
+        } catch (IOException ex) {
+            throw new DruidRuntimeException("exeucte command error.", ex);
+        }
+    }
+
+    private SchemaObject findSchemaObject(SQLName name) {
+        if (name instanceof SQLIdentifierExpr) {
+            return findTable(((SQLIdentifierExpr) name).getName());
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) name;
+            String schema = propertyExpr.getOwnernName();
+            String table = propertyExpr.getName();
+
+            Schema schemaObj = findSchema(schema);
+            if (schemaObj == null) {
+                return null;
+            }
+
+            return schemaObj.findTable(table);
+        }
+
+        return null;
     }
 }

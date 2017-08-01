@@ -2843,7 +2843,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             } else if (identifierEquals(AUTO_INCREMENT)) {
                 lexer.nextToken();
                 accept(Token.EQ);
-                stmt.addItem(new MySqlAlterTableOption(AUTO_INCREMENT, lexer.integerValue()));
+                stmt.addItem(new MySqlAlterTableOption(AUTO_INCREMENT, new SQLIntegerExpr(lexer.integerValue())));
                 lexer.nextToken();
             } else if (identifierEquals(COLLATE2)) {
                 lexer.nextToken();

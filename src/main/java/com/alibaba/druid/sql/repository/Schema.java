@@ -24,8 +24,12 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,12 +46,18 @@ public class Schema {
 
     private final Map<String, SchemaObject> functions  = new ConcurrentSkipListMap<String, SchemaObject>();
 
-    private final Schema.SchemaVisitor visitor = new Schema.SchemaVisitor();
+    private final SQLASTVisitor visitor;
 
     private SchemaRepository repository;
 
     public Schema(SchemaRepository repository) {
         this.repository = repository;
+
+        if (JdbcConstants.MYSQL.equals(repository.dbType)) {
+            visitor = new MySqlSchemaVisitor();
+        } else {
+            visitor = new OracleSchemaVisitor();
+        }
     }
 
     public String getName() {
@@ -57,7 +67,6 @@ public class Schema {
     public void setName(String name) {
         this.name = name;
     }
-
 
 
     public SchemaObject findTable(String tableName) {
@@ -109,7 +118,7 @@ public class Schema {
                 && object.getType() == SchemaObjectType.Sequence;
     }
 
-    public class SchemaVisitor extends OracleASTVisitorAdapter {
+    public class OracleSchemaVisitor extends OracleASTVisitorAdapter {
 
         public boolean visit(SQLDropSequenceStatement x) {
             String name = x.getName().getSimpleName();
@@ -126,6 +135,72 @@ public class Schema {
         }
 
         public boolean visit(OracleCreateTableStatement x) {
+            visit((SQLCreateTableStatement) x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateTableStatement x) {
+            String name = x.computeName();
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Table, x);
+
+            String name_lower = name.toLowerCase();
+            if (objects.containsKey(name_lower)) {
+                return false;
+            }
+            objects.put(name_lower, object);
+
+            return false;
+        }
+
+        public boolean visit(SQLCreateViewStatement x) {
+            String name = x.computeName();
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.View, x);
+
+            String name_lower = name.toLowerCase();
+            if (objects.containsKey(name_lower)) {
+                return false;
+            }
+            objects.put(name_lower, object);
+
+            return false;
+        }
+
+        public boolean visit(SQLCreateIndexStatement x) {
+            String name = x.getName().getSimpleName();
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Index);
+
+            objects.put(name.toLowerCase(), object);
+
+            return false;
+        }
+
+        public boolean visit(SQLCreateFunctionStatement x) {
+            String name = x.getName().getSimpleName();
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function, x);
+
+            functions.put(name.toLowerCase(), object);
+
+            return false;
+        }
+    }
+
+    private class MySqlSchemaVisitor extends MySqlASTVisitorAdapter {
+
+        public boolean visit(SQLDropSequenceStatement x) {
+            String name = x.getName().getSimpleName();
+            objects.remove(name);
+            return false;
+        }
+
+        public boolean visit(SQLCreateSequenceStatement x) {
+            String name = x.getName().getSimpleName();
+            SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Sequence);
+
+            objects.put(name.toLowerCase(), object);
+            return false;
+        }
+
+        public boolean visit(MySqlCreateTableStatement x) {
             visit((SQLCreateTableStatement) x);
             return false;
         }
