@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -125,4 +126,7 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+    public SQLDataType computeDataType() {
+        return SQLBooleanExpr.DEFAULT_DATA_TYPE;
+    }
 }

@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -142,5 +143,9 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public SQLDataType computeDataType() {
+        return SQLBooleanExpr.DEFAULT_DATA_TYPE;
     }
 }

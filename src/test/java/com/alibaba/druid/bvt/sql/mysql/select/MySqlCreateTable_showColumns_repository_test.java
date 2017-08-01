@@ -413,5 +413,55 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "| c_mediumtext | mediumtext   | NO   |     | NULL    |       |\n" +
                 "| c_longblob   | longblob     | NO   |     | NULL    |       |\n" +
                 "+--------------+--------------+------+-----+---------+-------+\n", repository.console("show columns from test3"));
+
+        repository.console("CREATE TABLE test4 as select a.* from test2 a");
+        assertEquals("CREATE TABLE test4 (\n" +
+                "\tc_decimal_1 INT(11),\n" +
+                "\tid bigint(20),\n" +
+                "\tc_tinyint tinyint(4),\n" +
+                "\tc_smallint smallint(6),\n" +
+                "\tc_mediumint mediumint(9),\n" +
+                "\tc_int int(11),\n" +
+                "\tc_bigint bigint(20),\n" +
+                "\tc_date date,\n" +
+                "\tc_datetime datetime,\n" +
+                "\tc_timestamp timestamp,\n" +
+                "\tc_time time,\n" +
+                "\tc_char char(10),\n" +
+                "\tc_varchar varchar(10),\n" +
+                "\tc_blob blob,\n" +
+                "\tc_text text,\n" +
+                "\tc_mediumtext mediumtext,\n" +
+                "\tc_longblob longblob\n" +
+                ")", repository.console("show create table test4"));
+
+        repository.console("CREATE TABLE test5 as select a.* from test2 a union all select * from test3");
+        assertEquals("CREATE TABLE test5 (\n" +
+                "\tc_decimal_1 INT(11),\n" +
+                "\tid bigint(20),\n" +
+                "\tc_tinyint tinyint(4),\n" +
+                "\tc_smallint smallint(6),\n" +
+                "\tc_mediumint mediumint(9),\n" +
+                "\tc_int int(11),\n" +
+                "\tc_bigint bigint(20),\n" +
+                "\tc_date date,\n" +
+                "\tc_datetime datetime,\n" +
+                "\tc_timestamp timestamp,\n" +
+                "\tc_time time,\n" +
+                "\tc_char char(10),\n" +
+                "\tc_varchar varchar(10),\n" +
+                "\tc_blob blob,\n" +
+                "\tc_text text,\n" +
+                "\tc_mediumtext mediumtext,\n" +
+                "\tc_longblob longblob\n" +
+                ")", repository.console("show create table test5"));
+
+        repository.console("CREATE TABLE test6 as select a.id, c_tinyint, 'a' f3, 3 f4 from test2 a");
+        assertEquals("CREATE TABLE test6 (\n" +
+                "\tid bigint(20),\n" +
+                "\tc_tinyint tinyint(4),\n" +
+                "\tf3 varchar,\n" +
+                "\tf4 bigint\n" +
+                ")", repository.console("show create table test6"));
     }
 }

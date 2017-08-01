@@ -196,14 +196,7 @@ public class Schema {
             select.accept(
                     repository.createResolveVisitor());
 
-            SQLSelectQuery query = select.getQuery();
-            SQLSelectQueryBlock queryBlock = null;
-            if (query instanceof SQLSelectQueryBlock) {
-                queryBlock = (SQLSelectQueryBlock) query;
-            } else if (query instanceof SQLUnionQuery) {
-                queryBlock = ((SQLUnionQuery) query).getFirstQueryBlock();
-            }
-            
+            SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
             if (queryBlock != null) {
                 List<SQLSelectItem> selectList = queryBlock.getSelectList();
                 for (SQLSelectItem selectItem : selectList) {

@@ -20,10 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.Utils;
 
@@ -428,5 +425,31 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
 
         return false;
+    }
+
+    public SQLDataType computeDataType() {
+        if (operator != null && operator.isRelational()) {
+            return SQLBooleanExpr.DEFAULT_DATA_TYPE;
+        }
+
+        SQLDataType leftDataType = null, rightDataType = null;
+        if (left != null) {
+            leftDataType = left.computeDataType();
+        }
+        if (right != null) {
+            rightDataType = right.computeDataType();
+        }
+
+        if (operator == SQLBinaryOperator.Concat) {
+            if (leftDataType != null) {
+                return leftDataType;
+            }
+            if (rightDataType != null) {
+                return rightDataType;
+            }
+            return SQLCharExpr.DEFAULT_DATA_TYPE;
+        }
+
+        return null;
     }
 }

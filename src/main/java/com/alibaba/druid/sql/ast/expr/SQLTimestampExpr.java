@@ -1,7 +1,9 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /*
@@ -20,6 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * limitations under the License.
  */
 public class SQLTimestampExpr extends SQLExprImpl {
+    public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("datetime");
 
     protected String  literal;
     protected String  timeZone;
@@ -104,5 +107,9 @@ public class SQLTimestampExpr extends SQLExprImpl {
 
     public String toString() {
         return SQLUtils.toSQLString(this, null);
+    }
+
+    public SQLDataType computeDataType() {
+        return DEFAULT_DATA_TYPE;
     }
 }

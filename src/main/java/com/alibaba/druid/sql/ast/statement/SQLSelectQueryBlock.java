@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery, SQLReplaceable {
@@ -532,5 +533,19 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         return -1;
+    }
+
+    public SQLColumnDefinition computeColumn(SQLIdentifierExpr identExpr) {
+        SQLColumnDefinition column = identExpr.getResolvedColumn();
+        if (column != null) {
+            return column;
+        }
+
+        column = from.findColumn(identExpr.getName());
+        if (column != null) {
+            identExpr.setResolvedColumn(column);
+        }
+
+        return column;
     }
 }

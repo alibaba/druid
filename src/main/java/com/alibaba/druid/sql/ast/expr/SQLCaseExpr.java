@@ -19,10 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
@@ -254,5 +251,23 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
         }
 
         return x;
+    }
+
+    public SQLDataType computeDataType() {
+        for (Item item : items) {
+            SQLExpr expr = item.getValueExpr();
+            if (expr != null) {
+                SQLDataType dataType = expr.computeDataType();
+                if (dataType != null) {
+                    return dataType;
+                }
+            }
+        }
+
+        if(elseExpr != null) {
+            return elseExpr.computeDataType();
+        }
+
+        return null;
     }
 }

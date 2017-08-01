@@ -82,23 +82,11 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
     }
 
     public SQLDataType computeDataType() {
-        if (expr instanceof SQLIdentifierExpr) {
-            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-            if (identExpr.getResolvedColumn() != null) {
-                return identExpr.getResolvedColumn().getDataType();
-            }
+        if (expr == null) {
             return null;
         }
 
-        if (expr instanceof SQLPropertyExpr) {
-            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
-            if (propertyExpr.getResolvedColumn() != null) {
-                return propertyExpr.getResolvedColumn().getDataType();
-            }
-            return null;
-        }
-
-        return null;
+        return expr.computeDataType();
     }
 
     public String getAlias() {

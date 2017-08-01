@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -366,6 +367,21 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         }
 
         return false;
+    }
+
+    public SQLColumnDefinition findColumn(String columnName) {
+        if (left != null) {
+            SQLColumnDefinition column = left.findColumn(columnName);
+            if (column != null) {
+                return column;
+            }
+        }
+
+        if (right != null) {
+            return right.findColumn(columnName);
+        }
+
+        return null;
     }
 
 }

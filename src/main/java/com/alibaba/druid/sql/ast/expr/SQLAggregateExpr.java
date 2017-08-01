@@ -20,11 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLKeep;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
@@ -205,5 +201,26 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         x.ignoreNulls = ignoreNulls;
 
         return x;
+    }
+
+    public SQLDataType computeDataType() {
+        if ("count".equals(methodName)
+                || "row_number".equals(methodName)) {
+            return SQLIntegerExpr.DEFAULT_DATA_TYPE;
+        }
+
+        if (arguments.size() > 0) {
+            SQLDataType dataType = arguments.get(0).computeDataType();
+            if (dataType != null) {
+                return dataType;
+            }
+        }
+
+        if ("wm_conat".equals(methodName)
+                || "group_concat".equals(methodName)) {
+            return SQLCharExpr.DEFAULT_DATA_TYPE;
+        }
+
+        return null;
     }
 }

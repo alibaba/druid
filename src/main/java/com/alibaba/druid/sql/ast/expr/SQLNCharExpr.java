@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLNCharExpr extends SQLTextLiteralExpr {
+    private static SQLDataType defaultDataType = new SQLCharacterDataType("nvarchar");
 
     public SQLNCharExpr(){
 
@@ -45,5 +48,9 @@ public class SQLNCharExpr extends SQLTextLiteralExpr {
 
     public SQLNCharExpr clone() {
         return new SQLNCharExpr(text);
+    }
+
+    public SQLDataType computeDataType() {
+        return defaultDataType;
     }
 }

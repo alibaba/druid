@@ -94,4 +94,8 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
 
         return false;
     }
+
+    public SQLColumnDefinition findColumn(String columnName) {
+        return null;
+    }
 }

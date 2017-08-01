@@ -15,9 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.List;
 
 public class SQLAnyExpr extends SQLExprImpl {
 
@@ -81,5 +86,23 @@ public class SQLAnyExpr extends SQLExprImpl {
             return false;
         }
         return true;
+    }
+
+    public SQLDataType computeDataType() {
+        if (subQuery == null) {
+            return null;
+        }
+
+        SQLSelectQueryBlock queryBlock = subQuery.getFirstQueryBlock();
+        if (queryBlock == null) {
+            return null;
+        }
+
+        List<SQLSelectItem> selectList = queryBlock.getSelectList();
+        if (selectList.size() == 1) {
+            return selectList.get(0).computeDataType();
+        }
+
+        return null;
     }
 }

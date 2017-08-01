@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.repository.SchemaObject;
@@ -170,5 +171,18 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
         }
 
         return false;
+    }
+
+    public SQLColumnDefinition findColumn(String columnName) {
+        if (schemaObject == null) {
+            return null;
+        }
+
+        SQLStatement stmt = schemaObject.getStatement();
+        if (stmt instanceof SQLCreateTableStatement) {
+            SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
+            return createTableStmt.findColumn(columnName);
+        }
+        return null;
     }
 }

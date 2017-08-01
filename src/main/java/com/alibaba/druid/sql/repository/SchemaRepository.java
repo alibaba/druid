@@ -266,38 +266,92 @@ public class SchemaRepository {
 
     public class MySqlResolveVisitor extends MySqlASTVisitorAdapter {
 
+        public boolean visit(SQLExprTableSource x) {
+            if (x.getSchemaObject() != null) {
+                return false;
+            }
+
+            SQLExpr expr = x.getExpr();
+            if (expr instanceof SQLName) {
+                SchemaObject table = findTable((SQLName) expr);
+                if (table != null) {
+                    x.setSchemaObject(table);
+                }
+            }
+            return false;
+        }
+
         public boolean visit(MySqlSelectQueryBlock x) {
+            SQLTableSource from = x.getFrom();
+            from.accept(this);
+
             List<SQLSelectItem> selectList = x.getSelectList();
+
+            List<SQLSelectItem> columns = new ArrayList<SQLSelectItem>();
             for (int i = selectList.size() - 1; i >= 0; i--) {
                 SQLSelectItem selectItem = selectList.get(i);
                 SQLExpr expr = selectItem.getExpr();
                 if (expr instanceof SQLAllColumnExpr) {
-                    SQLTableSource from = x.getFrom();
-                    List<SQLSelectItem> columns = new ArrayList<SQLSelectItem>();
-                    if (from instanceof SQLExprTableSource) {
-                        SchemaObject table = findTable((SQLExprTableSource) from);
-                        if (table != null) {
-                            SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) table.getStatement();
-                            for (SQLTableElement e : createTableStmt.getTableElementList()) {
-                                if (e instanceof SQLColumnDefinition) {
-                                    SQLColumnDefinition column = (SQLColumnDefinition) e;
-                                    SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
-                                    name.setResolvedColumn(column);
-                                    columns.add(new SQLSelectItem(name));
-                                }
-                            }
-                        }
+                    extractColumns(from, columns);
+                } else if (expr instanceof SQLPropertyExpr) {
+                    SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+                    String ownerName = propertyExpr.getOwnernName();
+                    if (propertyExpr.getName().equals("*")) {
+                        SQLTableSource tableSource = x.findTableSource(ownerName);
+                        extractColumns(tableSource, columns);
                     }
 
+                    SQLColumnDefinition column = propertyExpr.getResolvedColumn();
+                    if (column != null) {
+                        continue;
+                    }
+                    SQLTableSource tableSource = x.findTableSource(propertyExpr.getOwnernName());
+                    if (tableSource != null) {
+                        column = tableSource.findColumn(propertyExpr.getName());
+                        if (column != null) {
+                            propertyExpr.setResolvedColumn(column);
+                        }
+                    }
+                } else if (expr instanceof SQLIdentifierExpr) {
+                    SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+                    SQLColumnDefinition column = identExpr.getResolvedColumn();
+                    if (column != null) {
+                        continue;
+                    }
+                    column = from.findColumn(identExpr.getName());
+                    if (column != null) {
+                        identExpr.setResolvedColumn(column);
+                    }
+                }
+
+                if (columns.size() > 0) {
                     for (SQLSelectItem column : columns) {
                         column.setParent(x);
                     }
+
                     selectList.remove(i);
                     selectList.addAll(i, columns);
                 }
             }
             
             return super.visit(x);
+        }
+    }
+
+    private void extractColumns(SQLTableSource from, List<SQLSelectItem> columns) {
+        if (from instanceof SQLExprTableSource) {
+            SchemaObject table = findTable((SQLExprTableSource) from);
+            if (table != null) {
+                SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) table.getStatement();
+                for (SQLTableElement e : createTableStmt.getTableElementList()) {
+                    if (e instanceof SQLColumnDefinition) {
+                        SQLColumnDefinition column = (SQLColumnDefinition) e;
+                        SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
+                        name.setResolvedColumn(column);
+                        columns.add(new SQLSelectItem(name));
+                    }
+                }
+            }
         }
     }
 

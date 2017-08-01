@@ -94,4 +94,7 @@ public class SQLCastExpr extends SQLExprImpl {
         return true;
     }
 
+    public SQLDataType computeDataType() {
+        return dataType;
+    }
 }

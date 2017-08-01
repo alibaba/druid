@@ -28,4 +28,8 @@ public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
     public SQLExpr clone() {
         throw new UnsupportedOperationException(this.getClass().getName());
     }
+
+    public SQLDataType computeDataType() {
+        return null;
+    }
 }

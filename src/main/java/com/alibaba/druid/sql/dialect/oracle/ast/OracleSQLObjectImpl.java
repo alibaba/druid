@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -35,5 +36,9 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
 
     public OracleSQLObject clone() {
         throw new UnsupportedOperationException();
+    }
+
+    public SQLDataType computeDataType() {
+        return null;
     }
 }

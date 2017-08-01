@@ -15,12 +15,15 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr {
+    public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("date");
 
     private String literal;
 

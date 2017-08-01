@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -163,5 +164,13 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {
         this.resolvedColumn = resolvedColumn;
+    }
+
+    public SQLDataType computeDataType() {
+        if (resolvedColumn != null) {
+            return resolvedColumn.getDataType();
+        }
+
+        return null;
     }
 }
