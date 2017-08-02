@@ -37,10 +37,18 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
     }
     
     public void addColumn(SQLExpr column) {
+        if (column == null) {
+            return;
+        }
+
+        addColumn(new SQLSelectOrderByItem(column));
+    }
+
+    public void addColumn(SQLSelectOrderByItem column) {
         if (column != null) {
             column.setParent(this);
         }
-        this.columns.add(new SQLSelectOrderByItem(column));
+        this.columns.add(column);
     }
 
     @Override

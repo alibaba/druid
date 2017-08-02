@@ -1056,6 +1056,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
         if (column != null) {
             SQLObject parent = x.getParent();
+            if (parent instanceof SQLSelectOrderByItem) {
+                parent = parent.getParent();
+            }
             if (parent instanceof SQLPrimaryKey) {
                 column.setPrimaryKey(true);
             } else if (parent instanceof SQLUnique) {

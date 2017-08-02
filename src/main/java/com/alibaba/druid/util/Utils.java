@@ -442,6 +442,25 @@ public class Utils {
         return hashCode;
     }
 
+    public static long fnv_32_lower(String key) {
+        long hashCode = 0x811c9dc5;
+        for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+            if (ch == '_' || ch == '-') {
+                continue;
+            }
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= 0x01000193;
+        }
+
+        return hashCode;
+    }
+
     public static void loadFromFile(String path, Set<String> set) {
         InputStream is = null;
         BufferedReader reader = null;

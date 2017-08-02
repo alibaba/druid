@@ -1764,10 +1764,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLDropTableStatement x) {
+        print0(ucase ? "DROP " : "drop ");
+        List<SQLCommentHint> hints = x.getHints();
+        if (hints != null) {
+            printAndAccept(hints, " ");
+            print(' ');
+        };
+
         if (x.isTemporary()) {
-            print0(ucase ? "DROP TEMPORARY TABLE " : "drop temporary table ");
+            print0(ucase ? "TEMPORARY TABLE " : "temporary table ");
         } else {
-            print0(ucase ? "DROP TABLE " : "drop table ");
+            print0(ucase ? "TABLE " : "table ");
         }
 
         if (x.isIfExists()) {

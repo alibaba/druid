@@ -13,60 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.mysql.select;
-
-import java.util.List;
-
-import org.junit.Assert;
+package com.alibaba.druid.bvt.sql.mysql.drop;
 
 import com.alibaba.druid.sql.MysqlTest;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
+import org.junit.Assert;
 
-public class MySqlSelectTest_30 extends MysqlTest {
+import java.util.List;
+
+public class MySqlDropTableTest_1_hints extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "SELECT name from tab1 for update no_wait";
+        String sql = "DROP /*!40005 TEMPORARY */ TABLE IF EXISTS `temp_bond_keys`.`temp_bond_key_id`;";
 
-        
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
-        
-        {
-            String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT name"
-                    + "\nFROM tab1"
-                    + "\nFOR UPDATE NOWAIT", //
-                                output);
-        }
-        {
-            String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select name"
-                    + "\nfrom tab1"
-                    + "\nfor update nowait", //
-                                output);
-        }
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(0, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("temp_bond_keys.temp_bond_key_id")));
+
+        assertEquals("DROP /*!40005 TEMPORARY */ TABLE IF EXISTS `temp_bond_keys`.`temp_bond_key_id`;", stmt.toString());
+//        assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
     }
-    
-    
-    
 }

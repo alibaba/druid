@@ -915,7 +915,7 @@ public class SQLUtils {
         }
 
         tableName = normalize(tableName);
-        long hash = Utils.fnv_64_lower(tableName);
+        long hash = Utils.fnv_32_lower(tableName);
         return Utils.hex_t(hash);
     }
 

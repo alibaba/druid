@@ -28,7 +28,7 @@ public class DesensitizationTest_createView extends TestCase {
         System.out.println("-------------------");
         System.out.println(desens_Sql);
 
-        assertEquals("CREATE VIEW T_14856F0E5B66E911\n" +
+        assertEquals("CREATE VIEW T_0E06E66B87C28B46\n" +
                 "AS\n" +
                 "SELECT suppliers.supplier_id, orders.quantity, orders.price\n" +
                 "FROM T_126BF2439561E30E\n" +
