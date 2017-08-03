@@ -44,6 +44,20 @@ public class SQLInListExpr extends SQLExprImpl implements Serializable {
         this.not = not;
     }
 
+    public SQLInListExpr clone() {
+        SQLInListExpr x = new SQLInListExpr();
+        x.not = not;
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        for (SQLExpr e : targetList) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.targetList.add(e2);
+        }
+        return x;
+    }
+
     public boolean isNot() {
         return this.not;
     }

@@ -32,6 +32,8 @@ public class SQLBlockStatement extends SQLStatementImpl {
 
     private List<SQLStatement> statementList = new ArrayList<SQLStatement>();
 
+    public SQLStatement exception;
+
     public List<SQLStatement> getStatementList() {
         return statementList;
     }
@@ -47,8 +49,6 @@ public class SQLBlockStatement extends SQLStatementImpl {
     public void setLabelName(String labelName) {
         this.labelName = labelName;
     }
-
-    public SQLStatement exception;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -85,5 +85,29 @@ public class SQLBlockStatement extends SQLStatementImpl {
 
     public void setEndLabel(String endLabel) {
         this.endLabel = endLabel;
+    }
+
+    public SQLBlockStatement clone() {
+        SQLBlockStatement x = new SQLBlockStatement();
+        x.labelName = labelName;
+        x.endLabel = endLabel;
+
+        for (SQLParameter p : parameters) {
+            SQLParameter p2 = p.clone();
+            p2.setParent(x);
+            x.parameters.add(p2);
+        }
+
+        for (SQLStatement stmt : statementList) {
+            SQLStatement stmt2 = stmt.clone();
+            stmt2.setParent(x);
+            x.statementList.add(stmt2);
+        }
+
+        if (exception != null) {
+            x.setException(exception.clone());
+        }
+
+        return x;
     }
 }

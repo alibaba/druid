@@ -35,6 +35,18 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
 
     }
 
+    public SQLInSubQueryExpr clone() {
+        SQLInSubQueryExpr x = new SQLInSubQueryExpr();
+        x.not = not;
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        return x;
+    }
+
     public boolean isNot() {
         return not;
     }

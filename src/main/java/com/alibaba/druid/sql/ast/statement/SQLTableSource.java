@@ -38,4 +38,5 @@ public interface SQLTableSource extends SQLObject {
     void setFlashback(SQLExpr flashback);
 
     SQLColumnDefinition findColumn(String columnName);
+    SQLTableSource findTableSourceWithColumn(String columnName);
 }

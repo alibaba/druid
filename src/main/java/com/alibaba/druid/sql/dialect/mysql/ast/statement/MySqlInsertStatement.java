@@ -34,6 +34,21 @@ public class MySqlInsertStatement extends SQLInsertStatement {
 
     private final List<SQLExpr> duplicateKeyUpdate = new ArrayList<SQLExpr>();
 
+    public void cloneTo(MySqlInsertStatement x) {
+        super.cloneTo(x);
+        x.lowPriority = lowPriority;
+        x.delayed = delayed;
+        x.highPriority = highPriority;
+        x.ignore = ignore;
+        x.rollbackOnFail = rollbackOnFail;
+
+        for (SQLExpr e : duplicateKeyUpdate) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.duplicateKeyUpdate.add(e2);
+        }
+    }
+
     public List<SQLExpr> getDuplicateKeyUpdate() {
         return duplicateKeyUpdate;
     }
@@ -101,5 +116,11 @@ public class MySqlInsertStatement extends SQLInsertStatement {
         }
 
         visitor.endVisit(this);
+    }
+
+    public SQLInsertStatement clone() {
+        MySqlInsertStatement x = new MySqlInsertStatement();
+        cloneTo(x);
+        return x;
     }
 }

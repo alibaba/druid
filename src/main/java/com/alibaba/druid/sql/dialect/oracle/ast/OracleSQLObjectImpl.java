@@ -35,7 +35,7 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
     public abstract void accept0(OracleASTVisitor visitor);
 
     public OracleSQLObject clone() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(this.getClass().getName());
     }
 
     public SQLDataType computeDataType() {

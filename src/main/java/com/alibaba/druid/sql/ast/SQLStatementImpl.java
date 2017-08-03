@@ -56,4 +56,8 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
     public void setAfterSemi(boolean afterSemi) {
         this.afterSemi = afterSemi;
     }
+
+    public SQLStatement clone() {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
 }

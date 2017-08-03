@@ -31,6 +31,26 @@ public class SQLIfStatement extends SQLStatementImpl {
     private List<ElseIf>       elseIfList = new ArrayList<ElseIf>();
     private Else               elseItem;
 
+    public SQLIfStatement clone() {
+        SQLIfStatement x = new SQLIfStatement();
+
+        for (SQLStatement stmt : statements) {
+            SQLStatement stmt2 = stmt.clone();
+            stmt2.setParent(x);
+            x.statements.add(stmt2);
+        }
+        for (ElseIf o : elseIfList) {
+            ElseIf o2 = o.clone();
+            o2.setParent(x);
+            x.elseIfList.add(o2);
+        }
+        if (elseItem != null) {
+            x.setElseItem(elseItem.clone());
+        }
+
+        return x;
+    }
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -111,6 +131,21 @@ public class SQLIfStatement extends SQLStatementImpl {
             }
             this.condition = condition;
         }
+
+        public ElseIf clone() {
+            ElseIf x = new ElseIf();
+
+            if (condition != null) {
+                x.setCondition(condition.clone());
+            }
+            for (SQLStatement stmt : statements) {
+                SQLStatement stmt2 = stmt.clone();
+                stmt2.setParent(x);
+                x.statements.add(stmt2);
+            }
+
+            return x;
+        }
     }
 
     public static class Else extends SQLObjectImpl {
@@ -133,5 +168,14 @@ public class SQLIfStatement extends SQLStatementImpl {
             this.statements = statements;
         }
 
+        public Else clone() {
+            Else x = new Else();
+            for (SQLStatement stmt : statements) {
+                SQLStatement stmt2 = stmt.clone();
+                stmt2.setParent(x);
+                x.statements.add(stmt2);
+            }
+            return x;
+        }
     }
 }

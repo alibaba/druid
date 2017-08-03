@@ -59,6 +59,10 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr {
         return result;
     }
 
+    public SQLBinaryExpr clone() {
+        return new SQLBinaryExpr(value);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

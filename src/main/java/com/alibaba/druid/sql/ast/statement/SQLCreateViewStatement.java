@@ -280,4 +280,40 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
             }
         }
     }
+
+
+    public SQLCreateViewStatement clone() {
+        SQLCreateViewStatement x = new SQLCreateViewStatement();
+
+        x.orReplace = orReplace;
+        x.force = force;
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        x.ifNotExists = ifNotExists;
+
+        x.algorithm = algorithm;
+        if (definer != null) {
+            x.setDefiner(definer.clone());
+        }
+        x.sqlSecurity = sqlSecurity;
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLTableElement column : columns) {
+            SQLTableElement column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        x.withCheckOption = withCheckOption;
+        x.withCascaded = withCascaded;
+        x.withLocal = withLocal;
+        x.withReadOnly = withReadOnly;
+
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
+
+        return x;
+    }
 }

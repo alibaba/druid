@@ -31,6 +31,22 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
     private SQLExpr            returning;
     private boolean			   defaultValues = false;
 
+    public void cloneTo(PGInsertStatement x) {
+        super.cloneTo(x);
+        if (with != null) {
+            x.setWith(with.clone());
+        }
+        for (ValuesClause v : valuesList) {
+            ValuesClause v2 = v.clone();
+            v2.setParent(x);
+            x.valuesList.add(v2);
+        }
+        if (returning != null) {
+            x.setReturning(returning.clone());
+        }
+        x.defaultValues = defaultValues;
+    }
+
     public SQLExpr getReturning() {
         return returning;
     }
@@ -95,5 +111,11 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         }
 
         visitor.endVisit(this);
+    }
+
+    public PGInsertStatement clone() {
+        PGInsertStatement x = new PGInsertStatement();
+        cloneTo(x);
+        return x;
     }
 }

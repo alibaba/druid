@@ -67,4 +67,6 @@ public abstract class SQLTextLiteralExpr extends SQLExprImpl implements SQLLiter
         }
         return true;
     }
+
+    public abstract SQLTextLiteralExpr clone();
 }

@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by wenshao on 23/05/2017.
  */
-public class SQLCreateFunctionStatement extends SQLStatementImpl {
+public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLDDLStatement {
     private SQLName definer;
 
     private boolean            create     = true;
@@ -46,6 +46,38 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl {
     private String             comment;
 
     private boolean            deterministic  = false;
+
+    public SQLCreateFunctionStatement clone() {
+        SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
+
+        if (definer != null) {
+            x.setDefiner(definer.clone());
+        }
+        x.create = create;
+        x.orReplace = orReplace;
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        if (block != null) {
+            x.setBlock(block.clone());
+        }
+        for (SQLParameter p : parameters) {
+            SQLParameter p2 = p.clone();
+            p2.setParent(x);
+            x.parameters.add(p2);
+        }
+        x.javaCallSpec = javaCallSpec;
+        if (authid != null) {
+            x.setAuthid(authid.clone());
+        }
+        if (returnDataType != null) {
+            x.setReturnDataType(returnDataType.clone());
+        }
+        x.comment = comment;
+        x.deterministic = deterministic;
+
+        return x;
+    }
 
     @Override
     public void accept0(SQLASTVisitor visitor) {

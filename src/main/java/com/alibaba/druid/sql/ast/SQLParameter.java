@@ -117,4 +117,29 @@ public class SQLParameter extends SQLObjectImpl {
         }
         this.cursorName = cursorName;
     }
+
+    public SQLParameter clone() {
+        SQLParameter x = new SQLParameter();
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        if (dataType != null) {
+            x.setDataType(dataType.clone());
+        }
+        if (defaultValue != null) {
+            x.setDefaultValue(defaultValue.clone());
+        }
+        x.paramType = paramType;
+        x.noCopy = noCopy;
+        x.constant = constant;
+        if (cursorName != null) {
+            x.setCursorName(cursorName.clone());
+        }
+        for (SQLParameter p : cursorParameters) {
+            SQLParameter p2 = p.clone();
+            p2.setParent(x);
+            x.cursorParameters.add(p2);
+        }
+        return x;
+    }
 }

@@ -285,6 +285,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         if (right instanceof SQLJoinTableSource) {
             SQLJoinTableSource rightJoin = (SQLJoinTableSource) right;
 
+            if (rightJoin.joinType != JoinType.COMMA && rightJoin.joinType != JoinType.INNER_JOIN) {
+                return;
+            }
+
             SQLTableSource a = left;
             SQLTableSource b = rightJoin.getLeft();
             SQLTableSource c = rightJoin.getRight();
@@ -379,6 +383,22 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
         if (right != null) {
             return right.findColumn(columnName);
+        }
+
+        return null;
+    }
+
+    @Override
+    public SQLTableSource findTableSourceWithColumn(String columnName) {
+        if (left != null) {
+            SQLTableSource tableSource = left.findTableSourceWithColumn(columnName);
+            if (tableSource != null) {
+                return tableSource;
+            }
+        }
+
+        if (right != null) {
+            return right.findTableSourceWithColumn(columnName);
         }
 
         return null;

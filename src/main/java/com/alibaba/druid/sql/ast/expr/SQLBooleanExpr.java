@@ -83,4 +83,8 @@ public class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralEx
     public SQLDataType computeDataType() {
         return DEFAULT_DATA_TYPE;
     }
+
+    public SQLBooleanExpr clone() {
+        return new SQLBooleanExpr(value);
+    }
 }

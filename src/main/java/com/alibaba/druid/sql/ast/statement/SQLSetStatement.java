@@ -91,4 +91,21 @@ public class SQLSetStatement extends SQLStatementImpl {
             item.output(buf);
         }
     }
+
+    public SQLSetStatement clone() {
+        SQLSetStatement x = new SQLSetStatement();
+        for (SQLAssignItem item : items) {
+            SQLAssignItem item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        if (hints != null) {
+            for (SQLCommentHint hint : hints) {
+                SQLCommentHint h2 = hint.clone();
+                h2.setParent(x);
+                x.hints.add(h2);
+            }
+        }
+        return x;
+    }
 }

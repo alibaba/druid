@@ -48,4 +48,15 @@ public class PGWithClause extends PGSQLObjectImpl {
         }
         visitor.endVisit(this);
     }
+
+    public PGWithClause clone() {
+        PGWithClause x = new PGWithClause();
+        x.recursive = recursive;
+        for (PGWithQuery w : withQuery) {
+            PGWithQuery w2 = w.clone();
+            w2.setParent(x);
+            x.withQuery.add(w2);
+        }
+        return x;
+    }
 }

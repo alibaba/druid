@@ -80,4 +80,8 @@ public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr {
     public byte[] toBytes() {
         return HexBin.decode(this.hex);
     }
+
+    public SQLHexExpr clone () {
+        return new SQLHexExpr(hex);
+    }
 }

@@ -69,4 +69,32 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
         }
         return true;
     }
+
+    public boolean visit(SQLPropertyExpr x) {
+        String ownerName = x.getOwnernName();
+        if (ownerName == null) {
+            return super.visit(x);
+        }
+
+        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent;
+                SQLTableSource tableSource = queryBlock.findTableSource(ownerName);
+                if (tableSource == null) {
+                    continue;
+                }
+
+                String alias = tableSource.getAlias();
+                if (tableSource != null
+                        && ownerName.equalsIgnoreCase(alias)
+                        && !ownerName.equals(alias)) {
+                    x.setOwner(alias);
+                }
+
+                break;
+            }
+        }
+
+        return super.visit(x);
+    }
 }

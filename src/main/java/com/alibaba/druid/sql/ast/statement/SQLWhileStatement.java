@@ -68,4 +68,19 @@ public class SQLWhileStatement extends SQLStatementImpl {
 	public void setCondition(SQLExpr condition) {
 		this.condition = condition;
 	}
+
+	public SQLWhileStatement clone() {
+		SQLWhileStatement x = new SQLWhileStatement();
+
+		if (condition != null) {
+			x.setCondition(condition.clone());
+		}
+		for (SQLStatement stmt : statements) {
+			SQLStatement stmt2 = stmt.clone();
+			stmt2.setParent(x);
+			x.statements.add(stmt2);
+		}
+		x.labelName = labelName;
+		return x;
+	}
 }

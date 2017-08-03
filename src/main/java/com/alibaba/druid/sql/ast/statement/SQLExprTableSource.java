@@ -223,4 +223,20 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
         }
         return null;
     }
+
+    public SQLTableSource findTableSourceWithColumn(String columnName) {
+        if (schemaObject == null) {
+            return null;
+        }
+
+        SQLStatement stmt = schemaObject.getStatement();
+        if (stmt instanceof SQLCreateTableStatement) {
+            SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
+            if (createTableStmt.findColumn(columnName) != null) {
+                return this;
+            }
+        }
+
+        return null;
+    }
 }

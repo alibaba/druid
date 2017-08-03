@@ -135,4 +135,23 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
 
         return null;
     }
+
+
+    public SQLCreateIndexStatement clone() {
+        SQLCreateIndexStatement x = new SQLCreateIndexStatement();
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        if (table != null) {
+            x.setTable(table.clone());
+        }
+        for (SQLSelectOrderByItem item : items) {
+            SQLSelectOrderByItem item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        x.type = type;
+        x.using = using;
+        return x;
+    }
 }

@@ -73,4 +73,19 @@ public class SQLSelectStatement extends SQLStatementImpl {
     public void setHeadHints(List<SQLCommentHint> headHints) {
         this.headHints = headHints;
     }
+
+    public SQLSelectStatement clone() {
+        SQLSelectStatement x = new SQLSelectStatement();
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint h2 = h.clone();
+                h2.setParent(x);
+                x.headHints.add(h2);
+            }
+        }
+        return x;
+    }
 }

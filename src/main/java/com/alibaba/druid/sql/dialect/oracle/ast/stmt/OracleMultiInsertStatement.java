@@ -198,5 +198,21 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
 
             visitor.endVisit(this);
         }
+
+        public void cloneTo(InsertIntoClause x) {
+            super.cloneTo(x);
+            if (returning != null) {
+                x.setReturning(returning.clone());
+            }
+            if (errorLogging != null) {
+                x.setErrorLogging(errorLogging.clone());
+            }
+        }
+
+        public InsertIntoClause clone() {
+            InsertIntoClause x = new InsertIntoClause();
+            cloneTo(x);
+            return x;
+        }
     }
 }

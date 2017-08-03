@@ -25,15 +25,8 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.Date;
-import java.sql.Driver;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.util.*;
 
 /**
@@ -112,6 +105,30 @@ public final class JdbcUtils implements JdbcConstants {
 
         try {
             x.close();
+        } catch (Exception e) {
+            LOG.debug("close error", e);
+        }
+    }
+
+    public static void close(Blob x) {
+        if (x == null) {
+            return;
+        }
+
+        try {
+            x.free();
+        } catch (Exception e) {
+            LOG.debug("close error", e);
+        }
+    }
+
+    public static void close(Clob x) {
+        if (x == null) {
+            return;
+        }
+
+        try {
+            x.free();
         } catch (Exception e) {
             LOG.debug("close error", e);
         }

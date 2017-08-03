@@ -21,4 +21,6 @@ public interface SQLStatement extends SQLObject {
     boolean isAfterSemi();
 
     void setAfterSemi(boolean afterSemi);
+
+    SQLStatement clone();
 }

@@ -34,6 +34,19 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     }
 
+    public void cloneTo(SQLInsertStatement x) {
+        super.cloneTo(x);
+        x.dbType = dbType;
+        x.upsert = upsert;
+        x.afterSemi = afterSemi;
+    }
+
+    public SQLInsertStatement clone() {
+        SQLInsertStatement x = new SQLInsertStatement();
+        cloneTo(x);
+        return x;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -60,6 +73,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
         public ValuesClause(){
             this(new ArrayList<SQLExpr>());
+        }
+
+        public ValuesClause clone() {
+            ValuesClause x = new ValuesClause(new ArrayList<SQLExpr>(this.values.size()));
+            for (SQLExpr v : values) {
+                x.addValue(v);
+            }
+            return x;
         }
 
         public ValuesClause(List<SQLExpr> values){

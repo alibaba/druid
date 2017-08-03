@@ -62,10 +62,10 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
     }
 
     public void setExpr(SQLExpr expr) {
-        this.expr = expr;
         if (expr != null) {
             expr.setParent(this);
         }
+        this.expr = expr;
     }
 
     public String computeAlias() {
@@ -151,7 +151,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         SQLSelectItem x = new SQLSelectItem();
         x.alias = alias;
         if (expr != null) {
-            x.expr = expr.clone();
+            x.setExpr(expr.clone());
         }
         x.connectByRoot = connectByRoot;
         return x;

@@ -31,6 +31,10 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     }
 
+    public SQLDateExpr(String literal) {
+        this.literal = literal;
+    }
+
     public String getLiteral() {
         return literal;
     }
@@ -75,4 +79,7 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr {
         return true;
     }
 
+    public SQLDateExpr clone() {
+        return new SQLDateExpr(literal);
+    }
 }

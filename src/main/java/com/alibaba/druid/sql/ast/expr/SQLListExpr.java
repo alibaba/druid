@@ -75,4 +75,14 @@ public class SQLListExpr extends SQLExprImpl {
         return true;
     }
 
+    public SQLListExpr clone() {
+        SQLListExpr x = new SQLListExpr();
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        return x;
+    }
+
 }

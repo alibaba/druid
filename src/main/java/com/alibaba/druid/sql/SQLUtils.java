@@ -857,7 +857,7 @@ public class SQLUtils {
 
         List<SQLExpr> parameters = x.getParameters();
         SQLCaseExpr caseExpr = new SQLCaseExpr();
-
+        caseExpr.setParent(x.getParent());
         caseExpr.setValueExpr(parameters.get(0));
 
         for (int i = 1; i + 1 < parameters.size(); i += 2) {

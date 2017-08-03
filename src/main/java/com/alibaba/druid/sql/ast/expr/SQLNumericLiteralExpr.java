@@ -26,4 +26,6 @@ public abstract class SQLNumericLiteralExpr extends SQLExprImpl implements SQLLi
     public abstract Number getNumber();
 
     public abstract void setNumber(Number number);
+
+    public abstract SQLNumericLiteralExpr clone();
 }

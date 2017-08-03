@@ -64,4 +64,22 @@ public class PGWithQuery extends PGSQLObjectImpl {
         }
         visitor.endVisit(this);
     }
+
+    public PGWithQuery clone() {
+        PGWithQuery x = new PGWithQuery();
+
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        for (SQLExpr c : columns) {
+            SQLExpr c2 = c.clone();
+            c2.setParent(x);
+            x.columns.add(c);
+        }
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+
+        return x;
+    }
 }

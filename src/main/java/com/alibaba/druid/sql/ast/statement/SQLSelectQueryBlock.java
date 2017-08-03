@@ -438,6 +438,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return findTableSource(from, alias);
     }
 
+    public SQLTableSource findTableSourceWithColumn(String column) {
+        if (from == null) {
+            return null;
+        }
+        return from.findTableSourceWithColumn(column);
+    }
+
     private static SQLTableSource findTableSource(SQLTableSource from, String alias) {
         if (from == null || alias == null) {
             return null;
@@ -487,6 +494,14 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         return null;
+    }
+
+    public SQLColumnDefinition findColumn(String columnName) {
+        if (from == null) {
+            return null;
+        }
+
+        return from.findColumn(columnName);
     }
 
     public void addCondition(SQLExpr expr) {

@@ -33,6 +33,17 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
 
     private SQLServerOutput    output;
 
+    public void cloneTo(SQLServerInsertStatement x) {
+        super.cloneTo(x);
+        x.defaultValues = defaultValues;
+        if (top != null) {
+            x.setTop(top.clone());
+        }
+        if (output != null) {
+            x.setOutput(output.clone());
+        }
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         this.accept0((SQLServerASTVisitor) visitor);
@@ -76,4 +87,9 @@ public class SQLServerInsertStatement extends SQLInsertStatement implements SQLS
         this.top = top;
     }
 
+    public SQLServerInsertStatement clone() {
+        SQLServerInsertStatement x = new SQLServerInsertStatement();
+        cloneTo(x);
+        return x;
+    }
 }
