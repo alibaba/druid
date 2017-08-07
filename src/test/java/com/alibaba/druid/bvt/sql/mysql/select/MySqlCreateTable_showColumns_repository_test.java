@@ -654,5 +654,28 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
 
                 , repository.console("show create table test1"));
+
+        assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
+                        "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
+                        "| c_decimal_1  | INT(11)      | YES  |     | NULL                |                             |\n" +
+                        "| id           | bigint(20)   | YES  |     | NULL                | auto_increment              |\n" +
+                        "| c_char       | char(32)     | NO   |     | NULL                |                             |\n" +
+                        "| c_smallint   | smallint(6)  | NO   |     | 0                   |                             |\n" +
+                        "| c_mediumint  | mediumint(9) | NO   |     | NULL                |                             |\n" +
+                        "| c_int        | int(11)      | NO   | MUL | NULL                |                             |\n" +
+                        "| c_bigint     | bigint(20)   | NO   |     | NULL                |                             |\n" +
+                        "| c_date       | date         | NO   |     | 0000-00-00          |                             |\n" +
+                        "| c_datetime   | datetime     | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
+                        "| c_timestamp  | timestamp    | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                        "| c_time       | time         | NO   |     | NULL                |                             |\n" +
+                        "| c_varchar    | varchar(10)  | NO   |     | hello               |                             |\n" +
+                        "| c_blob       | blob         | NO   |     | NULL                |                             |\n" +
+                        "| c_text       | text         | NO   |     | NULL                |                             |\n" +
+                        "| c_mediumtext | mediumtext   | NO   |     | NULL                |                             |\n" +
+                        "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
+
+                , repository.console("show columns from test1"));
     }
 }

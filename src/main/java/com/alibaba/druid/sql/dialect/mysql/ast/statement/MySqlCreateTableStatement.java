@@ -314,11 +314,13 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             }
         }
 
-        for (SQLTableElement e : tableElementList) {
+        for (int i = 0; i < tableElementList.size(); i++) {
+            SQLTableElement e = tableElementList.get(i);
             if(e instanceof MySqlTableIndex) {
-                ((MySqlTableIndex) e).apply(item);
-            } else if (e instanceof MySqlKey) {
-                ((MySqlKey) e).applyColumnRename(columnName, column.getName());
+                ((MySqlTableIndex) e).applyColumnRename(columnName, column.getName());
+            } else if (e instanceof SQLUnique) {
+                SQLUnique unique = (SQLUnique) e;
+                unique.applyColumnRename(columnName, column.getName());
             }
         }
 

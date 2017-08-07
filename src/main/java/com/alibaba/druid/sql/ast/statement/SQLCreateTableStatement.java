@@ -257,6 +257,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             if (element instanceof MySqlUnique) {
                 MySqlUnique unique = (MySqlUnique) element;
 
+                if (unique.getColumns().size() == 0) {
+                    continue;
+                }
+
                 SQLExpr column = unique.getColumns().get(0).getExpr();
                 if (column instanceof SQLIdentifierExpr
                         && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
@@ -738,9 +742,20 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 }
             }
 
-            for (SQLTableElement e : tableElementList) {
+            for (int i = tableElementList.size() - 1; i >= 0; --i) {
+                SQLTableElement e = tableElementList.get(i);
                 if (e instanceof SQLUnique) {
-                    ((SQLUnique) e).applyDropColumn(column);
+                    SQLUnique unique = (SQLUnique) e;
+                    unique.applyDropColumn(column);
+                    if (unique.getColumns().size() == 0) {
+                        tableElementList.remove(i);
+                    }
+                } else if (e instanceof MySqlTableIndex) {
+                    MySqlTableIndex index = (MySqlTableIndex) e;
+                    index.applyDropColumn(column);
+                    if (index.getColumns().size() == 0) {
+                        tableElementList.remove(i);
+                    }
                 }
             }
         }
