@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.visitor.transform;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
@@ -28,6 +29,16 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 public class NameResolveVisitor extends OracleASTVisitorAdapter {
     public boolean visit(SQLIdentifierExpr x) {
         SQLObject parent = x.getParent();
+
+        if (parent instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) parent;
+            boolean isJoinCondition = binaryOpExpr.getLeft() instanceof SQLName
+                    && binaryOpExpr.getRight() instanceof SQLName;
+            if (isJoinCondition) {
+                return false;
+            }
+        }
+
         String name = x.getName();
 
         if ("ROWNUM".equalsIgnoreCase(name)) {

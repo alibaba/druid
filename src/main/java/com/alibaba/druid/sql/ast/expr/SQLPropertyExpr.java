@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -30,6 +30,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     private String  name;
 
     private transient SQLColumnDefinition resolvedColumn;
+    private transient SQLTableSource resolvedTableSource;
 
     public SQLPropertyExpr(String owner, String name){
         this(new SQLIdentifierExpr(owner), name);
@@ -170,9 +171,30 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         this.resolvedColumn = resolvedColumn;
     }
 
+    public SQLTableSource getResolvedTableSource() {
+        return resolvedTableSource;
+    }
+
+    public void setResolvedTableSource(SQLTableSource resolvedTableSource) {
+        this.resolvedTableSource = resolvedTableSource;
+    }
+
     public SQLDataType computeDataType() {
         if (resolvedColumn != null) {
             return resolvedColumn.getDataType();
+        }
+
+        if (resolvedTableSource != null
+                && resolvedTableSource instanceof SQLSubqueryTableSource) {
+            SQLSelect select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+            SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+            if (queryBlock == null) {
+                return null;
+            }
+            SQLSelectItem selectItem = queryBlock.findSelectItem(name);
+            if (selectItem != null) {
+                return selectItem.computeDataType();
+            }
         }
 
         return null;

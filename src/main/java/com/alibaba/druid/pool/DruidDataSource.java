@@ -400,6 +400,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 setKillWhenSocketReadTimeout(value);
             }
         }
+        {
+            String property = properties.getProperty("druid.connectProperties");
+            if (property != null) {
+                this.setConnectionProperties(property);
+            }
+        }
     }
 
     public boolean isKillWhenSocketReadTimeout() {

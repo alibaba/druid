@@ -549,18 +549,4 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
 
         return -1;
     }
-
-    public SQLColumnDefinition computeColumn(SQLIdentifierExpr identExpr) {
-        SQLColumnDefinition column = identExpr.getResolvedColumn();
-        if (column != null) {
-            return column;
-        }
-
-        column = from.findColumn(identExpr.getName());
-        if (column != null) {
-            identExpr.setResolvedColumn(column);
-        }
-
-        return column;
-    }
 }

@@ -2505,6 +2505,10 @@ public class WallVisitorUtils {
             allow = config.isBlockAllow();
             denyMessage = "block statement not allow";
             errorCode = ErrorCode.BLOCK_NOT_ALLOW;
+        } else if (x instanceof SQLExplainStatement) {
+            allow = true;
+            errorCode = 0;
+            denyMessage = null;
         } else {
             allow = config.isNoneBaseStatementAllow();
             errorCode = ErrorCode.NONE_BASE_STATEMENT_NOT_ALLOW;

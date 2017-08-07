@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
@@ -295,13 +296,14 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             insertIndex = beforeIndex;
         } else if (afterIndex != -1) {
             insertIndex = afterIndex + 1;
+        } else if (item.isFirst()) {
+            insertIndex = 0;
         }
 
         SQLColumnDefinition column = item.getNewColumnDefinition().clone();
         column.setParent(this);
         if (insertIndex == -1 || insertIndex == columnIndex) {
             tableElementList.set(columnIndex, column);
-            return true;
         } else {
             if (insertIndex > columnIndex) {
                 tableElementList.add(insertIndex, column);
@@ -309,6 +311,14 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
             } else {
                 tableElementList.remove(columnIndex);
                 tableElementList.add(insertIndex, column);
+            }
+        }
+
+        for (SQLTableElement e : tableElementList) {
+            if(e instanceof MySqlTableIndex) {
+                ((MySqlTableIndex) e).apply(item);
+            } else if (e instanceof MySqlKey) {
+                ((MySqlKey) e).applyColumnRename(columnName, column.getName());
             }
         }
 

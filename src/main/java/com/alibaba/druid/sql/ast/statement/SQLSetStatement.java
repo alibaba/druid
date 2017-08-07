@@ -46,7 +46,9 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     public SQLSetStatement(SQLExpr target, SQLExpr value, String dbType){
         super (dbType);
-        this.items.add(new SQLAssignItem(target, value));
+        SQLAssignItem item = new SQLAssignItem(target, value);
+        item.setParent(this);
+        this.items.add(item);
     }
 
     public static SQLSetStatement plus(SQLName target) {

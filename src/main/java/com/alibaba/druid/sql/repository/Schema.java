@@ -69,6 +69,7 @@ public class Schema {
 
 
     public SchemaObject findTable(String tableName) {
+        tableName = SQLUtils.normalize(tableName);
         String lowerName = tableName.toLowerCase();
         SchemaObject object = objects.get(lowerName);
 
@@ -80,6 +81,7 @@ public class Schema {
     }
 
     public SchemaObject findTableOrView(String tableName) {
+        tableName = SQLUtils.normalize(tableName);
         String lowerName = tableName.toLowerCase();
         SchemaObject object = objects.get(lowerName);
 
@@ -96,12 +98,16 @@ public class Schema {
     }
 
     public SchemaObject findFunction(String functionName) {
+        functionName = SQLUtils.normalize(functionName);
         String lowerName = functionName.toLowerCase();
         return functions.get(lowerName);
     }
 
     public boolean isSequence(String name) {
-        SchemaObject object = objects.get(name);
+        name = SQLUtils.normalize(name);
+        String lowerName = name.toLowerCase();
+
+        SchemaObject object = objects.get(lowerName);
         return object != null
                 && object.getType() == SchemaObjectType.Sequence;
     }

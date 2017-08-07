@@ -84,4 +84,8 @@ public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement 
         }
         return x;
     }
+
+    public boolean apply(MySqlAlterTableChangeColumn x) {
+        return false;
+    }
 }

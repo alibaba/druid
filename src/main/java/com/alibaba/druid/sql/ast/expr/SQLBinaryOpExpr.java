@@ -190,7 +190,19 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
     }
 
     public SQLBinaryOpExpr clone() {
-        return new SQLBinaryOpExpr(left, operator, right, dbType);
+        SQLBinaryOpExpr x = new SQLBinaryOpExpr();
+
+        if (left != null) {
+            x.setLeft(left.clone());
+        }
+        if (right != null) {
+            x.setRight(right.clone());
+        }
+        x.operator = operator;
+        x.dbType = dbType;
+        x.bracket = bracket;
+
+        return x;
     }
 
     public String toString() {
@@ -451,5 +463,31 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
         }
 
         return null;
+    }
+
+    public boolean conditionContainsTable(String alias) {
+        if (left == null || right == null) {
+            return false;
+        }
+
+        if (left instanceof SQLPropertyExpr) {
+            if (((SQLPropertyExpr) left).matchOwner(alias)) {
+                return true;
+            }
+        } else if (left instanceof SQLBinaryOpExpr) {
+            if (((SQLBinaryOpExpr) left).conditionContainsTable(alias)) {
+                return true;
+            }
+        }
+
+        if (right instanceof SQLPropertyExpr) {
+            if (((SQLPropertyExpr) right).matchOwner(alias)) {
+                return true;
+            }
+        } else if (right instanceof SQLBinaryOpExpr) {
+            return ((SQLBinaryOpExpr) right).conditionContainsTable(alias);
+        }
+
+        return false;
     }
 }

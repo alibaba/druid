@@ -101,4 +101,28 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
             }
         }
     }
+
+    public boolean applyColumnRename(SQLName columnName, SQLName to) {
+        for (SQLSelectOrderByItem orderByItem : columns) {
+            SQLExpr expr = orderByItem.getExpr();
+            if (expr instanceof SQLName
+                    && SQLUtils.nameEquals((SQLName) expr, columnName)) {
+                orderByItem.setExpr(to.clone());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean applyDropColumn(SQLName columnName) {
+        for (int i = columns.size() - 1; i >= 0; i--) {
+            SQLExpr expr = columns.get(i).getExpr();
+            if (expr instanceof SQLName
+                    && SQLUtils.nameEquals((SQLName) expr, columnName)) {
+                columns.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -16,12 +16,13 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    private SQLExpr            indexName;
+    private SQLName            indexName;
     private SQLExprTableSource tableName;
     
     public SQLDropIndexStatement() {
@@ -32,11 +33,11 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLSta
         super (dbType);
     }
 
-    public SQLExpr getIndexName() {
+    public SQLName getIndexName() {
         return indexName;
     }
 
-    public void setIndexName(SQLExpr indexName) {
+    public void setIndexName(SQLName indexName) {
         this.indexName = indexName;
     }
 
@@ -44,7 +45,7 @@ public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLSta
         return tableName;
     }
 
-    public void setTableName(SQLExpr tableName) {
+    public void setTableName(SQLName tableName) {
         this.setTableName(new SQLExprTableSource(tableName));
     }
 

@@ -548,6 +548,27 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
     }
 
+    public boolean apply(SQLDropIndexStatement x) {
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLUniqueConstraint) {
+                SQLUniqueConstraint unique = (SQLUniqueConstraint) e;
+                if (SQLUtils.nameEquals(unique.getName(), x.getIndexName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+
+            } else if (e instanceof MySqlTableIndex) {
+                MySqlTableIndex tableIndex = (MySqlTableIndex) e;
+                if (SQLUtils.nameEquals(tableIndex.getName(), x.getIndexName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean apply(SQLAlterTableStatement alter) {
         if (!SQLUtils.nameEquals(alter.getName(), this.getName())) {
             return false;
@@ -716,7 +737,16 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                     }
                 }
             }
+
+            for (SQLTableElement e : tableElementList) {
+                if (e instanceof SQLUnique) {
+                    ((SQLUnique) e).applyDropColumn(column);
+                }
+            }
         }
+
+
+
         return true;
     }
 
