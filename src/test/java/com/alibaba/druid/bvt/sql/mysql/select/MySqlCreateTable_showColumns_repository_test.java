@@ -459,7 +459,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 ")", repository.console("show create table test5"));
 
         repository.console("CREATE TABLE sc01.test6 as select a.id, c_tinyint, 'a' f3, 3 f4 from test2 a");
-        assertEquals("CREATE TABLE test6 (\n" +
+        assertEquals("CREATE TABLE sc01.test6 (\n" +
                 "\tid bigint(20),\n" +
                 "\tc_tinyint tinyint(4),\n" +
                 "\tf3 varchar,\n" +
@@ -939,5 +939,34 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
 
                 , repository.console("show create table test1_xx"));
 
+
+        assertEquals("CREATE TABLE test5 (\n" +
+                        "\tc_decimal_1 INT(11),\n" +
+                        "\tid bigint(20),\n" +
+                        "\tc_tinyint tinyint(4),\n" +
+                        "\tc_smallint smallint(6),\n" +
+                        "\tc_mediumint mediumint(9),\n" +
+                        "\tc_int int(11),\n" +
+                        "\tc_bigint bigint(20),\n" +
+                        "\tc_date date,\n" +
+                        "\tc_datetime datetime,\n" +
+                        "\tc_timestamp timestamp,\n" +
+                        "\tc_time time,\n" +
+                        "\tc_char char(10),\n" +
+                        "\tc_varchar varchar(10),\n" +
+                        "\tc_blob blob,\n" +
+                        "\tc_text text,\n" +
+                        "\tc_mediumtext mediumtext,\n" +
+                        "\tc_longblob longblob\n" +
+                        ")"
+
+                , repository.console("show create table test5"));
+
+        repository.console("create table test5(fid bigint)");
+        assertEquals("CREATE TABLE test5 (\n" +
+                        "\tfid bigint\n" +
+                        ")"
+
+                , repository.console("show create table test5"));
     }
 }

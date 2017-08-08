@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
@@ -44,6 +45,34 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
     public MySqlSelectQueryBlock(){
 
+    }
+
+    public MySqlSelectQueryBlock clone() {
+        MySqlSelectQueryBlock x = new MySqlSelectQueryBlock();
+        cloneTo(x);
+
+        x.hignPriority = hignPriority;
+        x.straightJoin = straightJoin;
+
+        x.smallResult = smallResult;
+        x.bigResult = bigResult;
+        x.bufferResult = bufferResult;
+        x.cache = cache;
+        x.calcFoundRows = calcFoundRows;
+
+        if (procedureName != null) {
+            x.setProcedureName(procedureName.clone());
+        }
+        if (procedureArgumentList != null) {
+            for (SQLExpr arg : procedureArgumentList) {
+                SQLExpr arg_cloned = arg.clone();
+                arg_cloned.setParent(this);
+                x.procedureArgumentList.add(arg_cloned);
+            }
+        }
+        x.lockInShareMode = lockInShareMode;
+
+        return x;
     }
 
     public int getHintsSize() {

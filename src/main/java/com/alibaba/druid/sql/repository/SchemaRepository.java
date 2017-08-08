@@ -30,6 +30,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.io.IOException;
@@ -39,6 +41,7 @@ import java.util.*;
  * Created by wenshao on 03/06/2017.
  */
 public class SchemaRepository {
+    private static Log LOG = LogFactory.getLog(SchemaRepository.class);
     private Schema defaultSchema;
     protected String dbType;
     protected SQLASTVisitor consoleVisitor;
@@ -804,11 +807,12 @@ public class SchemaRepository {
     }
 
     boolean acceptCreateTable(SQLCreateTableStatement x) {
-        String schemaName = x.getSchema();
+        SQLCreateTableStatement x1 = x.clone();
+        String schemaName = x1.getSchema();
 
         Schema schema = findSchema(schemaName, true);
 
-        SQLSelect select = x.getSelect();
+        SQLSelect select = x1.getSelect();
         if (select != null) {
             select.accept(createResolveVisitor(SchemaResolveVisitor.Option.ResolveAllColumn));
 
@@ -822,21 +826,21 @@ public class SchemaRepository {
                     column.setName(name);
                     column.setDataType(dataType);
                     column.setDbType(dbType);
-                    x.getTableElementList().add(column);
+                    x1.getTableElementList().add(column);
                 }
-                x.setSelect(null);
+                x1.setSelect(null);
             }
         }
 
         x.setSchema(null);
 
-        String name = x.computeName();
+        String name = x1.computeName();
         SchemaObject table = schema.findTableOrView(name);
         if (table != null) {
-            return false;
+            LOG.info("replaced table '" + name + "'");
         }
 
-        table = new SchemaObjectImpl(name, SchemaObjectType.Table, x.clone());
+        table = new SchemaObjectImpl(name, SchemaObjectType.Table, x1);
         String name_lower = SQLUtils.normalize(name).toLowerCase();
         schema.objects.put(name_lower, table);
         return true;

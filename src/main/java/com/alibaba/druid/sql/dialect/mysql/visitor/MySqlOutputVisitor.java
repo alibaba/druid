@@ -16,10 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
@@ -3675,6 +3672,33 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         println();
 
         block.accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCommentStatement x) {
+        SQLCommentStatement.Type type = x.getType();
+
+        SQLExpr on = x.getOn();
+        if (type == SQLCommentStatement.Type.TABLE) {
+            print0(ucase ? "ALTER TABLE " : "alter table ");
+            on.accept(this);
+            print0(ucase ? " COMMENT = " : " comment = ");
+            x.getComment().accept(this);
+        } else {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) on;
+
+            SQLExpr table = propertyExpr.getOwner();
+            String column = propertyExpr.getName();
+
+            print0(ucase ? "ALTER TABLE " : "alter table ");
+            table.accept(this);
+            print0(ucase ? " MODIFY COLUMN " : " modify column ");
+            print(column);
+            print0(ucase ? " COMMENT " : " comment ");
+            x.getComment().accept(this);
+        }
+
         return false;
     }
 } //

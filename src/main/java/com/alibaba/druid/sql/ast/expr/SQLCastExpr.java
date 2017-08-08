@@ -97,4 +97,15 @@ public class SQLCastExpr extends SQLExprImpl {
     public SQLDataType computeDataType() {
         return dataType;
     }
+
+    public SQLCastExpr clone() {
+        SQLCastExpr x = new SQLCastExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        if (dataType != null) {
+            x.setDataType(dataType.clone());
+        }
+        return x;
+    }
 }

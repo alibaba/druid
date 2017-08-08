@@ -31,11 +31,22 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl {
         this.cursorName = cursorName;
     }
 
+    public SQLCurrentOfCursorExpr clone() {
+        SQLCurrentOfCursorExpr x = new SQLCurrentOfCursorExpr();
+        if (cursorName != null) {
+            x.setCursorName(cursorName.clone());
+        }
+        return x;
+    }
+
     public SQLName getCursorName() {
         return cursorName;
     }
 
     public void setCursorName(SQLName cursorName) {
+        if (cursorName != null) {
+            cursorName.setParent(this);
+        }
         this.cursorName = cursorName;
     }
 

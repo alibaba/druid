@@ -22,6 +22,14 @@ public class PGInetExpr extends PGExprImpl {
 
     private SQLExpr value;
 
+    public PGInetExpr clone() {
+        PGInetExpr x = new PGInetExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }

@@ -23,6 +23,14 @@ public class PGMacAddrExpr extends PGExprImpl {
 
     private SQLExpr value;
 
+    public PGMacAddrExpr clone() {
+        PGMacAddrExpr x = new PGMacAddrExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }

@@ -34,6 +34,21 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
 
     }
 
+    public SQLBetweenExpr clone() {
+        SQLBetweenExpr x = new SQLBetweenExpr();
+        if (testExpr != null) {
+            x.setTestExpr(testExpr.clone());
+        }
+        x.not = not;
+        if (beginExpr != null) {
+            x.setBeginExpr(beginExpr.clone());
+        }
+        if (endExpr != null) {
+            x.setEndExpr(endExpr.clone());
+        }
+        return x;
+    }
+
     public SQLBetweenExpr(SQLExpr testExpr, SQLExpr beginExpr, SQLExpr endExpr){
         setTestExpr(testExpr);
         setBeginExpr(beginExpr);

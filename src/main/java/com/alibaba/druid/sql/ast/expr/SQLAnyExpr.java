@@ -33,8 +33,15 @@ public class SQLAnyExpr extends SQLExprImpl {
     }
 
     public SQLAnyExpr(SQLSelect select){
+        setSubQuery(select);
+    }
 
-        this.subQuery = select;
+    public SQLAnyExpr clone() {
+        SQLAnyExpr x = new SQLAnyExpr();
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        return x;
     }
 
     public SQLSelect getSubQuery() {
@@ -42,6 +49,9 @@ public class SQLAnyExpr extends SQLExprImpl {
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 

@@ -32,6 +32,14 @@ public class SQLTimestampExpr extends SQLExprImpl {
         
     }
 
+    public SQLTimestampExpr clone() {
+        SQLTimestampExpr x = new SQLTimestampExpr();
+        x.literal = literal;
+        x.timeZone = timeZone;
+        x.withTimeZone = withTimeZone;
+        return x;
+    }
+
     public String getLiteral() {
         return literal;
     }

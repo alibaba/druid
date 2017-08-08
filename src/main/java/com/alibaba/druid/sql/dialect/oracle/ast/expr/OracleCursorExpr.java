@@ -28,9 +28,16 @@ public class OracleCursorExpr extends SQLExprImpl implements OracleExpr {
 
     }
 
+    public OracleCursorExpr clone() {
+        OracleCursorExpr x = new OracleCursorExpr();
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+        return x;
+    }
+
     public OracleCursorExpr(SQLSelect query){
-        super();
-        this.query = query;
+        setQuery(query);
     }
 
     public SQLSelect getQuery() {

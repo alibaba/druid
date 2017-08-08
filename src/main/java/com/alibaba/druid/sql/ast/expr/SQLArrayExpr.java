@@ -28,6 +28,19 @@ public class SQLArrayExpr extends SQLExprImpl {
 
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
 
+    public SQLArrayExpr clone() {
+        SQLArrayExpr x = new SQLArrayExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        for (SQLExpr value : values) {
+            SQLExpr value2 = value.clone();
+            value2.setParent(x);
+            x.values.add(value2);
+        }
+        return x;
+    }
+
     public SQLExpr getExpr() {
         return expr;
     }

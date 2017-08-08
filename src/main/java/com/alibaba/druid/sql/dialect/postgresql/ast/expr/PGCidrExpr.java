@@ -22,6 +22,14 @@ public class PGCidrExpr extends PGExprImpl {
 
     private SQLExpr value;
 
+    public PGCidrExpr clone() {
+        PGCidrExpr x = new PGCidrExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }
