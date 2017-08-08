@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint, SQLTableElement {
@@ -119,6 +120,12 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
             SQLExpr expr = columns.get(i).getExpr();
             if (expr instanceof SQLName
                     && SQLUtils.nameEquals((SQLName) expr, columnName)) {
+                columns.remove(i);
+                return true;
+            }
+
+            if (expr instanceof SQLMethodInvokeExpr
+                    && SQLUtils.nameEquals(((SQLMethodInvokeExpr) expr).getMethodName(), columnName.getSimpleName())) {
                 columns.remove(i);
                 return true;
             }

@@ -65,23 +65,23 @@ public class MySqlCreateTable_showColumns_test extends MysqlTest {
         assertEquals("+--------------+---------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type          | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+---------------+------+-----+---------------------+-----------------------------+\n" +
-                "| id           | bigint(20)    | YES  | PRI | NULL                | auto_increment              |\n" +
-                "| c_tinyint    | tinyint(4)    | NO   | PRI | 1                   |                             |\n" +
-                "| c_smallint   | smallint(6)   | NO   |     | 0                   |                             |\n" +
-                "| c_mediumint  | mediumint(9)  | NO   |     | NULL                |                             |\n" +
-                "| c_int        | int(11)       | NO   |     | NULL                |                             |\n" +
-                "| c_bigint     | bigint(20)    | NO   |     | NULL                |                             |\n" +
-                "| c_decimal    | decimal(10,3) | NO   |     | NULL                |                             |\n" +
-                "| c_date       | date          | NO   |     | 0000-00-00          |                             |\n" +
-                "| c_datetime   | datetime      | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                "| c_timestamp  | timestamp     | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                "| c_time       | time          | NO   |     | NULL                |                             |\n" +
-                "| c_char       | char(10)      | NO   | MUL | NULL                |                             |\n" +
-                "| c_varchar    | varchar(10)   | NO   | MUL | hello               |                             |\n" +
-                "| c_blob       | blob          | NO   |     | NULL                |                             |\n" +
-                "| c_text       | text          | NO   |     | NULL                |                             |\n" +
-                "| c_mediumtext | mediumtext    | NO   |     | NULL                |                             |\n" +
-                "| c_longblob   | longblob      | NO   |     | NULL                |                             |\n" +
+                "| id           | bigint(20)    | NO   | PRI | NULL                | auto_increment              |\n" +
+                "| c_tinyint    | tinyint(4)    | YES  | PRI | 1                   |                             |\n" +
+                "| c_smallint   | smallint(6)   | YES  |     | 0                   |                             |\n" +
+                "| c_mediumint  | mediumint(9)  | YES  |     | NULL                |                             |\n" +
+                "| c_int        | int(11)       | YES  |     | NULL                |                             |\n" +
+                "| c_bigint     | bigint(20)    | YES  |     | NULL                |                             |\n" +
+                "| c_decimal    | decimal(10,3) | YES  |     | NULL                |                             |\n" +
+                "| c_date       | date          | YES  |     | 0000-00-00          |                             |\n" +
+                "| c_datetime   | datetime      | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                "| c_timestamp  | timestamp     | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                "| c_time       | time          | YES  |     | NULL                |                             |\n" +
+                "| c_char       | char(10)      | YES  | MUL | NULL                |                             |\n" +
+                "| c_varchar    | varchar(10)   | YES  | MUL | hello               |                             |\n" +
+                "| c_blob       | blob          | YES  |     | NULL                |                             |\n" +
+                "| c_text       | text          | YES  |     | NULL                |                             |\n" +
+                "| c_mediumtext | mediumtext    | YES  |     | NULL                |                             |\n" +
+                "| c_longblob   | longblob      | YES  |     | NULL                |                             |\n" +
                 "+--------------+---------------+------+-----+---------------------+-----------------------------+\n", buf.toString());
     }
 }

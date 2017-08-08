@@ -22,10 +22,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -283,8 +280,17 @@ public class SchemaRepository {
                     MySqlShowCreateTableStatement showCreateTableStmt = (MySqlShowCreateTableStatement) stmt;
                     SQLName table = showCreateTableStmt.getName();
                     SchemaObject schemaObject = findTable(table);
-                    MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
-                    createTableStmt.output(buf);
+                    if (schemaObject == null) {
+                        buf.append("ERROR 1146 (42S02): Table '" + table + "' doesn't exist\n");
+                    } else {
+                        MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
+                        createTableStmt.output(buf);
+                    }
+                } else if (stmt instanceof MySqlRenameTableStatement) {
+                    MySqlRenameTableStatement renameStmt = (MySqlRenameTableStatement) stmt;
+                    for (MySqlRenameTableStatement.Item item : renameStmt.getItems()) {
+                        renameTable(item.getName(), item.getTo());
+                    }
                 } else if (stmt instanceof SQLShowTablesStatement) {
                     SQLShowTablesStatement showTables = (SQLShowTablesStatement) stmt;
                     SQLName database = showTables.getDatabase();
@@ -335,6 +341,36 @@ public class SchemaRepository {
         }
 
         return null;
+    }
+
+    private boolean renameTable(SQLName name, SQLName to) {
+        Schema schema;
+        if (name instanceof SQLPropertyExpr) {
+            String schemaName = ((SQLPropertyExpr) name).getOwnernName();
+            schema = findSchema(schemaName);
+        } else {
+            schema = getDefaultSchema();
+        }
+
+        if (schema == null) {
+            return false;
+        }
+
+        String tableName = name.getSimpleName();
+        SchemaObject schemaObject = schema.findTable(tableName);
+        if (schemaObject != null) {
+            MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
+            if (createTableStmt != null) {
+                createTableStmt.setName(to.clone());
+            }
+
+            String toName = SQLUtils.normalize(to.getSimpleName()).toLowerCase();
+            schema.objects.put(toName, schemaObject);
+
+            String name_lower = SQLUtils.normalize(tableName).toLowerCase();
+            schema.objects.remove(name_lower);
+        }
+        return true;
     }
 
     private class MySqlResolveVisitor extends MySqlASTVisitorAdapter implements SchemaResolveVisitor {

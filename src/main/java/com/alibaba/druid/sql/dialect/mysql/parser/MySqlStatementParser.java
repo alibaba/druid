@@ -2464,7 +2464,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.COLUMN) {
                     lexer.nextToken();
                     parseAlterTableAddColumn(stmt);
-                } else if (lexer.token() == Token.INDEX) {
+                } else if (lexer.token() == Token.INDEX || identifierEquals("FULLTEXT")) {
                     SQLAlterTableAddIndex item = parseAlterTableAddIndex();
                     item.setParent(stmt);
                     stmt.addItem(item);
@@ -2484,31 +2484,52 @@ public class MySqlStatementParser extends SQLStatementParser {
                     stmt.addItem(item);
                 } else if (lexer.token() == Token.CONSTRAINT) {
                     lexer.nextToken();
-                    SQLName constraintName = this.exprParser.name();
 
                     if (lexer.token() == Token.PRIMARY) {
                         SQLPrimaryKey primaryKey = ((MySqlExprParser) this.exprParser).parsePrimaryKey();
-
-                        primaryKey.setName(constraintName);
-
                         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(primaryKey);
                         item.setParent(stmt);
 
                         stmt.addItem(item);
                     } else if (lexer.token() == Token.FOREIGN) {
                         MysqlForeignKey fk = this.getExprParser().parseForeignKey();
-                        fk.setName(constraintName);
                         fk.setHasConstraint(true);
 
                         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
 
                         stmt.addItem(item);
                     } else if (lexer.token() == Token.UNIQUE) {
+
                         SQLUnique unique = this.exprParser.parseUnique();
                         SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(unique);
                         stmt.addItem(item);
                     } else {
-                        throw new ParserException("TODO " + lexer.info());
+                        SQLName constraintName = this.exprParser.name();
+
+                        if (lexer.token() == Token.PRIMARY) {
+                            SQLPrimaryKey primaryKey = ((MySqlExprParser) this.exprParser).parsePrimaryKey();
+
+                            primaryKey.setName(constraintName);
+
+                            SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(primaryKey);
+                            item.setParent(stmt);
+
+                            stmt.addItem(item);
+                        } else if (lexer.token() == Token.FOREIGN) {
+                            MysqlForeignKey fk = this.getExprParser().parseForeignKey();
+                            fk.setName(constraintName);
+                            fk.setHasConstraint(true);
+
+                            SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(fk);
+
+                            stmt.addItem(item);
+                        } else if (lexer.token() == Token.UNIQUE) {
+                            SQLUnique unique = this.exprParser.parseUnique();
+                            SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(unique);
+                            stmt.addItem(item);
+                        } else {
+                            throw new ParserException("TODO " + lexer.info());
+                        }
                     }
                 } else if (lexer.token() == Token.PARTITION) {
                     lexer.nextToken();
@@ -2647,7 +2668,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
                 MySqlRenameTableStatement renameStmt = new MySqlRenameTableStatement();
                 MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
-                item.setName(stmt.getTableSource().getExpr());
+                item.setName((SQLName) stmt.getTableSource().getExpr());
                 item.setTo(this.exprParser.name());
                 renameStmt.addItem(item);
 

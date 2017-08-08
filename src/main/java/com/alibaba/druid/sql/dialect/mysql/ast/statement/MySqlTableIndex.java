@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
@@ -29,8 +30,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement {
 
-    private SQLName       name;
-    private String        indexType;
+    private SQLName                    name;
+    private String                     indexType;
     private List<SQLSelectOrderByItem> columns = new ArrayList<SQLSelectOrderByItem>();
 
     public MySqlTableIndex(){
@@ -103,6 +104,11 @@ public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement 
             SQLExpr expr = columns.get(i).getExpr();
             if (expr instanceof SQLName
                     && SQLUtils.nameEquals((SQLName) expr, columnName)) {
+                columns.remove(i);
+                return true;
+            }
+            if (expr instanceof SQLMethodInvokeExpr
+                    && SQLUtils.nameEquals(((SQLMethodInvokeExpr) expr).getMethodName(), columnName.getSimpleName())) {
                 columns.remove(i);
                 return true;
             }

@@ -65,23 +65,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+---------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type          | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+---------------+------+-----+---------------------+-----------------------------+\n" +
-                "| id           | bigint(20)    | YES  | PRI | NULL                | auto_increment              |\n" +
-                "| c_tinyint    | tinyint(4)    | NO   | PRI | 1                   |                             |\n" +
-                "| c_smallint   | smallint(6)   | NO   |     | 0                   |                             |\n" +
-                "| c_mediumint  | mediumint(9)  | NO   |     | NULL                |                             |\n" +
-                "| c_int        | int(11)       | NO   |     | NULL                |                             |\n" +
-                "| c_bigint     | bigint(20)    | NO   |     | NULL                |                             |\n" +
-                "| c_decimal    | decimal(10,3) | NO   |     | NULL                |                             |\n" +
-                "| c_date       | date          | NO   |     | 0000-00-00          |                             |\n" +
-                "| c_datetime   | datetime      | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                "| c_timestamp  | timestamp     | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                "| c_time       | time          | NO   |     | NULL                |                             |\n" +
-                "| c_char       | char(10)      | NO   | MUL | NULL                |                             |\n" +
-                "| c_varchar    | varchar(10)   | NO   | MUL | hello               |                             |\n" +
-                "| c_blob       | blob          | NO   |     | NULL                |                             |\n" +
-                "| c_text       | text          | NO   |     | NULL                |                             |\n" +
-                "| c_mediumtext | mediumtext    | NO   |     | NULL                |                             |\n" +
-                "| c_longblob   | longblob      | NO   |     | NULL                |                             |\n" +
+                "| id           | bigint(20)    | NO   | PRI | NULL                | auto_increment              |\n" +
+                "| c_tinyint    | tinyint(4)    | YES  | PRI | 1                   |                             |\n" +
+                "| c_smallint   | smallint(6)   | YES  |     | 0                   |                             |\n" +
+                "| c_mediumint  | mediumint(9)  | YES  |     | NULL                |                             |\n" +
+                "| c_int        | int(11)       | YES  |     | NULL                |                             |\n" +
+                "| c_bigint     | bigint(20)    | YES  |     | NULL                |                             |\n" +
+                "| c_decimal    | decimal(10,3) | YES  |     | NULL                |                             |\n" +
+                "| c_date       | date          | YES  |     | 0000-00-00          |                             |\n" +
+                "| c_datetime   | datetime      | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                "| c_timestamp  | timestamp     | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                "| c_time       | time          | YES  |     | NULL                |                             |\n" +
+                "| c_char       | char(10)      | YES  | MUL | NULL                |                             |\n" +
+                "| c_varchar    | varchar(10)   | YES  | MUL | hello               |                             |\n" +
+                "| c_blob       | blob          | YES  |     | NULL                |                             |\n" +
+                "| c_text       | text          | YES  |     | NULL                |                             |\n" +
+                "| c_mediumtext | mediumtext    | YES  |     | NULL                |                             |\n" +
+                "| c_longblob   | longblob      | YES  |     | NULL                |                             |\n" +
                 "+--------------+---------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
         repository.console("alter table test1 drop column c_decimal;");
@@ -90,22 +90,22 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
-                "| id           | bigint(20)   | YES  | PRI | NULL                | auto_increment              |\n" +
-                "| c_tinyint    | tinyint(4)   | NO   | PRI | 1                   |                             |\n" +
-                "| c_smallint   | smallint(6)  | NO   |     | 0                   |                             |\n" +
-                "| c_mediumint  | mediumint(9) | NO   |     | NULL                |                             |\n" +
-                "| c_int        | int(11)      | NO   |     | NULL                |                             |\n" +
-                "| c_bigint     | bigint(20)   | NO   |     | NULL                |                             |\n" +
-                "| c_date       | date         | NO   |     | 0000-00-00          |                             |\n" +
-                "| c_datetime   | datetime     | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                "| c_timestamp  | timestamp    | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                "| c_time       | time         | NO   |     | NULL                |                             |\n" +
-                "| c_char       | char(10)     | NO   | MUL | NULL                |                             |\n" +
-                "| c_varchar    | varchar(10)  | NO   | MUL | hello               |                             |\n" +
-                "| c_blob       | blob         | NO   |     | NULL                |                             |\n" +
-                "| c_text       | text         | NO   |     | NULL                |                             |\n" +
-                "| c_mediumtext | mediumtext   | NO   |     | NULL                |                             |\n" +
-                "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
+                "| id           | bigint(20)   | NO   | PRI | NULL                | auto_increment              |\n" +
+                "| c_tinyint    | tinyint(4)   | YES  | PRI | 1                   |                             |\n" +
+                "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                "| c_int        | int(11)      | YES  |     | NULL                |                             |\n" +
+                "| c_bigint     | bigint(20)   | YES  |     | NULL                |                             |\n" +
+                "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                "| c_char       | char(10)     | YES  | MUL | NULL                |                             |\n" +
+                "| c_varchar    | varchar(10)  | YES  | MUL | hello               |                             |\n" +
+                "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
         repository.console("alter table test1 add column c_decimal decimal(10,3) DEFAULT NULL COMMENT 'decimal';");
@@ -114,23 +114,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+---------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type          | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+---------------+------+-----+---------------------+-----------------------------+\n" +
-                "| id           | bigint(20)    | YES  | PRI | NULL                | auto_increment              |\n" +
-                "| c_tinyint    | tinyint(4)    | NO   | PRI | 1                   |                             |\n" +
-                "| c_smallint   | smallint(6)   | NO   |     | 0                   |                             |\n" +
-                "| c_mediumint  | mediumint(9)  | NO   |     | NULL                |                             |\n" +
-                "| c_int        | int(11)       | NO   |     | NULL                |                             |\n" +
-                "| c_bigint     | bigint(20)    | NO   |     | NULL                |                             |\n" +
-                "| c_date       | date          | NO   |     | 0000-00-00          |                             |\n" +
-                "| c_datetime   | datetime      | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                "| c_timestamp  | timestamp     | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                "| c_time       | time          | NO   |     | NULL                |                             |\n" +
-                "| c_char       | char(10)      | NO   | MUL | NULL                |                             |\n" +
-                "| c_varchar    | varchar(10)   | NO   | MUL | hello               |                             |\n" +
-                "| c_blob       | blob          | NO   |     | NULL                |                             |\n" +
-                "| c_text       | text          | NO   |     | NULL                |                             |\n" +
-                "| c_mediumtext | mediumtext    | NO   |     | NULL                |                             |\n" +
-                "| c_longblob   | longblob      | NO   |     | NULL                |                             |\n" +
-                "| c_decimal    | decimal(10,3) | NO   |     | NULL                |                             |\n" +
+                "| id           | bigint(20)    | NO   | PRI | NULL                | auto_increment              |\n" +
+                "| c_tinyint    | tinyint(4)    | YES  | PRI | 1                   |                             |\n" +
+                "| c_smallint   | smallint(6)   | YES  |     | 0                   |                             |\n" +
+                "| c_mediumint  | mediumint(9)  | YES  |     | NULL                |                             |\n" +
+                "| c_int        | int(11)       | YES  |     | NULL                |                             |\n" +
+                "| c_bigint     | bigint(20)    | YES  |     | NULL                |                             |\n" +
+                "| c_date       | date          | YES  |     | 0000-00-00          |                             |\n" +
+                "| c_datetime   | datetime      | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                "| c_timestamp  | timestamp     | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                "| c_time       | time          | YES  |     | NULL                |                             |\n" +
+                "| c_char       | char(10)      | YES  | MUL | NULL                |                             |\n" +
+                "| c_varchar    | varchar(10)   | YES  | MUL | hello               |                             |\n" +
+                "| c_blob       | blob          | YES  |     | NULL                |                             |\n" +
+                "| c_text       | text          | YES  |     | NULL                |                             |\n" +
+                "| c_mediumtext | mediumtext    | YES  |     | NULL                |                             |\n" +
+                "| c_longblob   | longblob      | YES  |     | NULL                |                             |\n" +
+                "| c_decimal    | decimal(10,3) | YES  |     | NULL                |                             |\n" +
                 "+--------------+---------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
         repository.console("ALTER TABLE test1 CHANGE COLUMN c_decimal c_decimal_1 INT(11) NOT NULL DEFAULT NULL FIRST id;");
@@ -140,23 +140,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
-                "| c_decimal_1  | INT(11)      | YES  |     | NULL                |                             |\n" +
-                "| id           | bigint(20)   | YES  | PRI | NULL                | auto_increment              |\n" +
-                "| c_tinyint    | tinyint(4)   | NO   | PRI | 1                   |                             |\n" +
-                "| c_smallint   | smallint(6)  | NO   |     | 0                   |                             |\n" +
-                "| c_mediumint  | mediumint(9) | NO   |     | NULL                |                             |\n" +
-                "| c_int        | int(11)      | NO   |     | NULL                |                             |\n" +
-                "| c_bigint     | bigint(20)   | NO   |     | NULL                |                             |\n" +
-                "| c_date       | date         | NO   |     | 0000-00-00          |                             |\n" +
-                "| c_datetime   | datetime     | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                "| c_timestamp  | timestamp    | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                "| c_time       | time         | NO   |     | NULL                |                             |\n" +
-                "| c_char       | char(10)     | NO   | MUL | NULL                |                             |\n" +
-                "| c_varchar    | varchar(10)  | NO   | MUL | hello               |                             |\n" +
-                "| c_blob       | blob         | NO   |     | NULL                |                             |\n" +
-                "| c_text       | text         | NO   |     | NULL                |                             |\n" +
-                "| c_mediumtext | mediumtext   | NO   |     | NULL                |                             |\n" +
-                "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
+                "| c_decimal_1  | INT(11)      | NO   |     | NULL                |                             |\n" +
+                "| id           | bigint(20)   | NO   | PRI | NULL                | auto_increment              |\n" +
+                "| c_tinyint    | tinyint(4)   | YES  | PRI | 1                   |                             |\n" +
+                "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                "| c_int        | int(11)      | YES  |     | NULL                |                             |\n" +
+                "| c_bigint     | bigint(20)   | YES  |     | NULL                |                             |\n" +
+                "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                "| c_char       | char(10)     | YES  | MUL | NULL                |                             |\n" +
+                "| c_varchar    | varchar(10)  | YES  | MUL | hello               |                             |\n" +
+                "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
         repository.console("ALTER TABLE test1 DROP PRIMARY KEY;");
@@ -189,23 +189,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
-                "| c_decimal_1  | INT(11)      | YES  |     | NULL                |                             |\n" +
-                "| id           | bigint(20)   | YES  |     | NULL                | auto_increment              |\n" +
-                "| c_tinyint    | tinyint(4)   | NO   | MUL | 1                   |                             |\n" +
-                "| c_smallint   | smallint(6)  | NO   |     | 0                   |                             |\n" +
-                "| c_mediumint  | mediumint(9) | NO   |     | NULL                |                             |\n" +
-                "| c_int        | int(11)      | NO   |     | NULL                |                             |\n" +
-                "| c_bigint     | bigint(20)   | NO   |     | NULL                |                             |\n" +
-                "| c_date       | date         | NO   |     | 0000-00-00          |                             |\n" +
-                "| c_datetime   | datetime     | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                "| c_timestamp  | timestamp    | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                "| c_time       | time         | NO   |     | NULL                |                             |\n" +
-                "| c_char       | char(10)     | NO   | MUL | NULL                |                             |\n" +
-                "| c_varchar    | varchar(10)  | NO   | MUL | hello               |                             |\n" +
-                "| c_blob       | blob         | NO   |     | NULL                |                             |\n" +
-                "| c_text       | text         | NO   |     | NULL                |                             |\n" +
-                "| c_mediumtext | mediumtext   | NO   |     | NULL                |                             |\n" +
-                "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
+                "| c_decimal_1  | INT(11)      | NO   |     | NULL                |                             |\n" +
+                "| id           | bigint(20)   | NO   |     | NULL                | auto_increment              |\n" +
+                "| c_tinyint    | tinyint(4)   | YES  | MUL | 1                   |                             |\n" +
+                "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                "| c_int        | int(11)      | YES  |     | NULL                |                             |\n" +
+                "| c_bigint     | bigint(20)   | YES  |     | NULL                |                             |\n" +
+                "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                "| c_char       | char(10)     | YES  | MUL | NULL                |                             |\n" +
+                "| c_varchar    | varchar(10)  | YES  | MUL | hello               |                             |\n" +
+                "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
         repository.console("ALTER TABLE test1 DROP INDEX k_d;");
@@ -236,23 +236,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
-                "| c_decimal_1  | INT(11)      | YES  |     | NULL                |                             |\n" +
-                "| id           | bigint(20)   | YES  |     | NULL                | auto_increment              |\n" +
-                "| c_tinyint    | tinyint(4)   | NO   | MUL | 1                   |                             |\n" +
-                "| c_smallint   | smallint(6)  | NO   |     | 0                   |                             |\n" +
-                "| c_mediumint  | mediumint(9) | NO   |     | NULL                |                             |\n" +
-                "| c_int        | int(11)      | NO   |     | NULL                |                             |\n" +
-                "| c_bigint     | bigint(20)   | NO   |     | NULL                |                             |\n" +
-                "| c_date       | date         | NO   |     | 0000-00-00          |                             |\n" +
-                "| c_datetime   | datetime     | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                "| c_timestamp  | timestamp    | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                "| c_time       | time         | NO   |     | NULL                |                             |\n" +
-                "| c_char       | char(10)     | NO   |     | NULL                |                             |\n" +
-                "| c_varchar    | varchar(10)  | NO   | MUL | hello               |                             |\n" +
-                "| c_blob       | blob         | NO   |     | NULL                |                             |\n" +
-                "| c_text       | text         | NO   |     | NULL                |                             |\n" +
-                "| c_mediumtext | mediumtext   | NO   |     | NULL                |                             |\n" +
-                "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
+                "| c_decimal_1  | INT(11)      | NO   |     | NULL                |                             |\n" +
+                "| id           | bigint(20)   | NO   |     | NULL                | auto_increment              |\n" +
+                "| c_tinyint    | tinyint(4)   | YES  | MUL | 1                   |                             |\n" +
+                "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                "| c_int        | int(11)      | YES  |     | NULL                |                             |\n" +
+                "| c_bigint     | bigint(20)   | YES  |     | NULL                |                             |\n" +
+                "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                "| c_char       | char(10)     | YES  |     | NULL                |                             |\n" +
+                "| c_varchar    | varchar(10)  | YES  | MUL | hello               |                             |\n" +
+                "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
 
@@ -283,23 +283,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
-                "| c_decimal_1  | INT(11)      | YES  |     | NULL                |                             |\n" +
-                "| id           | bigint(20)   | YES  |     | NULL                | auto_increment              |\n" +
-                "| c_tinyint    | tinyint(4)   | NO   | MUL | 1                   |                             |\n" +
-                "| c_smallint   | smallint(6)  | NO   |     | 0                   |                             |\n" +
-                "| c_mediumint  | mediumint(9) | NO   |     | NULL                |                             |\n" +
-                "| c_int        | int(11)      | NO   |     | NULL                |                             |\n" +
-                "| c_bigint     | bigint(20)   | NO   |     | NULL                |                             |\n" +
-                "| c_date       | date         | NO   |     | 0000-00-00          |                             |\n" +
-                "| c_datetime   | datetime     | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                "| c_timestamp  | timestamp    | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                "| c_time       | time         | NO   |     | NULL                |                             |\n" +
-                "| c_char       | char(10)     | NO   |     | NULL                |                             |\n" +
-                "| c_varchar    | varchar(10)  | NO   |     | hello               |                             |\n" +
-                "| c_blob       | blob         | NO   |     | NULL                |                             |\n" +
-                "| c_text       | text         | NO   |     | NULL                |                             |\n" +
-                "| c_mediumtext | mediumtext   | NO   |     | NULL                |                             |\n" +
-                "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
+                "| c_decimal_1  | INT(11)      | NO   |     | NULL                |                             |\n" +
+                "| id           | bigint(20)   | NO   |     | NULL                | auto_increment              |\n" +
+                "| c_tinyint    | tinyint(4)   | YES  | MUL | 1                   |                             |\n" +
+                "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                "| c_int        | int(11)      | YES  |     | NULL                |                             |\n" +
+                "| c_bigint     | bigint(20)   | YES  |     | NULL                |                             |\n" +
+                "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                "| c_char       | char(10)     | YES  |     | NULL                |                             |\n" +
+                "| c_varchar    | varchar(10)  | YES  |     | hello               |                             |\n" +
+                "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
                 "+--------------+--------------+------+-----+---------------------+-----------------------------+\n", repository.console("show columns from test1"));
 
         repository.console("CREATE TABLE test2 like test1");
@@ -349,23 +349,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------+-------+\n" +
                 "| Field        | Type         | Null | Key | Default | Extra |\n" +
                 "+--------------+--------------+------+-----+---------+-------+\n" +
-                "| c_decimal_1  | INT(11)      | NO   |     | NULL    |       |\n" +
-                "| id           | bigint(20)   | NO   |     | NULL    |       |\n" +
-                "| c_tinyint    | tinyint(4)   | NO   |     | NULL    |       |\n" +
-                "| c_smallint   | smallint(6)  | NO   |     | NULL    |       |\n" +
-                "| c_mediumint  | mediumint(9) | NO   |     | NULL    |       |\n" +
-                "| c_int        | int(11)      | NO   |     | NULL    |       |\n" +
-                "| c_bigint     | bigint(20)   | NO   |     | NULL    |       |\n" +
-                "| c_date       | date         | NO   |     | NULL    |       |\n" +
-                "| c_datetime   | datetime     | NO   |     | NULL    |       |\n" +
-                "| c_timestamp  | timestamp    | NO   |     | NULL    |       |\n" +
-                "| c_time       | time         | NO   |     | NULL    |       |\n" +
-                "| c_char       | char(10)     | NO   |     | NULL    |       |\n" +
-                "| c_varchar    | varchar(10)  | NO   |     | NULL    |       |\n" +
-                "| c_blob       | blob         | NO   |     | NULL    |       |\n" +
-                "| c_text       | text         | NO   |     | NULL    |       |\n" +
-                "| c_mediumtext | mediumtext   | NO   |     | NULL    |       |\n" +
-                "| c_longblob   | longblob     | NO   |     | NULL    |       |\n" +
+                "| c_decimal_1  | INT(11)      | YES  |     | NULL    |       |\n" +
+                "| id           | bigint(20)   | YES  |     | NULL    |       |\n" +
+                "| c_tinyint    | tinyint(4)   | YES  |     | NULL    |       |\n" +
+                "| c_smallint   | smallint(6)  | YES  |     | NULL    |       |\n" +
+                "| c_mediumint  | mediumint(9) | YES  |     | NULL    |       |\n" +
+                "| c_int        | int(11)      | YES  |     | NULL    |       |\n" +
+                "| c_bigint     | bigint(20)   | YES  |     | NULL    |       |\n" +
+                "| c_date       | date         | YES  |     | NULL    |       |\n" +
+                "| c_datetime   | datetime     | YES  |     | NULL    |       |\n" +
+                "| c_timestamp  | timestamp    | YES  |     | NULL    |       |\n" +
+                "| c_time       | time         | YES  |     | NULL    |       |\n" +
+                "| c_char       | char(10)     | YES  |     | NULL    |       |\n" +
+                "| c_varchar    | varchar(10)  | YES  |     | NULL    |       |\n" +
+                "| c_blob       | blob         | YES  |     | NULL    |       |\n" +
+                "| c_text       | text         | YES  |     | NULL    |       |\n" +
+                "| c_mediumtext | mediumtext   | YES  |     | NULL    |       |\n" +
+                "| c_longblob   | longblob     | YES  |     | NULL    |       |\n" +
                 "+--------------+--------------+------+-----+---------+-------+\n", repository.console("show columns from test3"));
 
         repository.console("alter TABLE test3 add UNIQUE(c_tinyint)");
@@ -373,23 +373,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------+-------+\n" +
                 "| Field        | Type         | Null | Key | Default | Extra |\n" +
                 "+--------------+--------------+------+-----+---------+-------+\n" +
-                "| c_decimal_1  | INT(11)      | NO   |     | NULL    |       |\n" +
-                "| id           | bigint(20)   | NO   |     | NULL    |       |\n" +
-                "| c_tinyint    | tinyint(4)   | NO   | UNI | NULL    |       |\n" +
-                "| c_smallint   | smallint(6)  | NO   |     | NULL    |       |\n" +
-                "| c_mediumint  | mediumint(9) | NO   |     | NULL    |       |\n" +
-                "| c_int        | int(11)      | NO   |     | NULL    |       |\n" +
-                "| c_bigint     | bigint(20)   | NO   |     | NULL    |       |\n" +
-                "| c_date       | date         | NO   |     | NULL    |       |\n" +
-                "| c_datetime   | datetime     | NO   |     | NULL    |       |\n" +
-                "| c_timestamp  | timestamp    | NO   |     | NULL    |       |\n" +
-                "| c_time       | time         | NO   |     | NULL    |       |\n" +
-                "| c_char       | char(10)     | NO   |     | NULL    |       |\n" +
-                "| c_varchar    | varchar(10)  | NO   |     | NULL    |       |\n" +
-                "| c_blob       | blob         | NO   |     | NULL    |       |\n" +
-                "| c_text       | text         | NO   |     | NULL    |       |\n" +
-                "| c_mediumtext | mediumtext   | NO   |     | NULL    |       |\n" +
-                "| c_longblob   | longblob     | NO   |     | NULL    |       |\n" +
+                "| c_decimal_1  | INT(11)      | YES  |     | NULL    |       |\n" +
+                "| id           | bigint(20)   | YES  |     | NULL    |       |\n" +
+                "| c_tinyint    | tinyint(4)   | YES  | UNI | NULL    |       |\n" +
+                "| c_smallint   | smallint(6)  | YES  |     | NULL    |       |\n" +
+                "| c_mediumint  | mediumint(9) | YES  |     | NULL    |       |\n" +
+                "| c_int        | int(11)      | YES  |     | NULL    |       |\n" +
+                "| c_bigint     | bigint(20)   | YES  |     | NULL    |       |\n" +
+                "| c_date       | date         | YES  |     | NULL    |       |\n" +
+                "| c_datetime   | datetime     | YES  |     | NULL    |       |\n" +
+                "| c_timestamp  | timestamp    | YES  |     | NULL    |       |\n" +
+                "| c_time       | time         | YES  |     | NULL    |       |\n" +
+                "| c_char       | char(10)     | YES  |     | NULL    |       |\n" +
+                "| c_varchar    | varchar(10)  | YES  |     | NULL    |       |\n" +
+                "| c_blob       | blob         | YES  |     | NULL    |       |\n" +
+                "| c_text       | text         | YES  |     | NULL    |       |\n" +
+                "| c_mediumtext | mediumtext   | YES  |     | NULL    |       |\n" +
+                "| c_longblob   | longblob     | YES  |     | NULL    |       |\n" +
                 "+--------------+--------------+------+-----+---------+-------+\n", repository.console("show columns from test3"));
 
         repository.console("alter TABLE test3 add PRIMARY KEY(id)");
@@ -397,23 +397,23 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------+-------+\n" +
                 "| Field        | Type         | Null | Key | Default | Extra |\n" +
                 "+--------------+--------------+------+-----+---------+-------+\n" +
-                "| c_decimal_1  | INT(11)      | NO   |     | NULL    |       |\n" +
-                "| id           | bigint(20)   | NO   | PRI | NULL    |       |\n" +
-                "| c_tinyint    | tinyint(4)   | NO   | UNI | NULL    |       |\n" +
-                "| c_smallint   | smallint(6)  | NO   |     | NULL    |       |\n" +
-                "| c_mediumint  | mediumint(9) | NO   |     | NULL    |       |\n" +
-                "| c_int        | int(11)      | NO   |     | NULL    |       |\n" +
-                "| c_bigint     | bigint(20)   | NO   |     | NULL    |       |\n" +
-                "| c_date       | date         | NO   |     | NULL    |       |\n" +
-                "| c_datetime   | datetime     | NO   |     | NULL    |       |\n" +
-                "| c_timestamp  | timestamp    | NO   |     | NULL    |       |\n" +
-                "| c_time       | time         | NO   |     | NULL    |       |\n" +
-                "| c_char       | char(10)     | NO   |     | NULL    |       |\n" +
-                "| c_varchar    | varchar(10)  | NO   |     | NULL    |       |\n" +
-                "| c_blob       | blob         | NO   |     | NULL    |       |\n" +
-                "| c_text       | text         | NO   |     | NULL    |       |\n" +
-                "| c_mediumtext | mediumtext   | NO   |     | NULL    |       |\n" +
-                "| c_longblob   | longblob     | NO   |     | NULL    |       |\n" +
+                "| c_decimal_1  | INT(11)      | YES  |     | NULL    |       |\n" +
+                "| id           | bigint(20)   | YES  | PRI | NULL    |       |\n" +
+                "| c_tinyint    | tinyint(4)   | YES  | UNI | NULL    |       |\n" +
+                "| c_smallint   | smallint(6)  | YES  |     | NULL    |       |\n" +
+                "| c_mediumint  | mediumint(9) | YES  |     | NULL    |       |\n" +
+                "| c_int        | int(11)      | YES  |     | NULL    |       |\n" +
+                "| c_bigint     | bigint(20)   | YES  |     | NULL    |       |\n" +
+                "| c_date       | date         | YES  |     | NULL    |       |\n" +
+                "| c_datetime   | datetime     | YES  |     | NULL    |       |\n" +
+                "| c_timestamp  | timestamp    | YES  |     | NULL    |       |\n" +
+                "| c_time       | time         | YES  |     | NULL    |       |\n" +
+                "| c_char       | char(10)     | YES  |     | NULL    |       |\n" +
+                "| c_varchar    | varchar(10)  | YES  |     | NULL    |       |\n" +
+                "| c_blob       | blob         | YES  |     | NULL    |       |\n" +
+                "| c_text       | text         | YES  |     | NULL    |       |\n" +
+                "| c_mediumtext | mediumtext   | YES  |     | NULL    |       |\n" +
+                "| c_longblob   | longblob     | YES  |     | NULL    |       |\n" +
                 "+--------------+--------------+------+-----+---------+-------+\n", repository.console("show columns from test3"));
 
         repository.console("CREATE TABLE test4 as select a.* from test2 a");
@@ -586,22 +586,22 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                         "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
                         "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
-                        "| c_decimal_1  | INT(11)      | YES  |     | NULL                |                             |\n" +
-                        "| id           | bigint(20)   | YES  |     | NULL                | auto_increment              |\n" +
-                        "| c_smallint   | smallint(6)  | NO   |     | 0                   |                             |\n" +
-                        "| c_mediumint  | mediumint(9) | NO   |     | NULL                |                             |\n" +
-                        "| c_int        | int(11)      | NO   | MUL | NULL                |                             |\n" +
-                        "| c_bigint     | bigint(20)   | NO   |     | NULL                |                             |\n" +
-                        "| c_date       | date         | NO   |     | 0000-00-00          |                             |\n" +
-                        "| c_datetime   | datetime     | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                        "| c_timestamp  | timestamp    | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                        "| c_time       | time         | NO   |     | NULL                |                             |\n" +
-                        "| c_char       | char(10)     | NO   |     | NULL                |                             |\n" +
-                        "| c_varchar    | varchar(10)  | NO   |     | hello               |                             |\n" +
-                        "| c_blob       | blob         | NO   |     | NULL                |                             |\n" +
-                        "| c_text       | text         | NO   |     | NULL                |                             |\n" +
-                        "| c_mediumtext | mediumtext   | NO   |     | NULL                |                             |\n" +
-                        "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
+                        "| c_decimal_1  | INT(11)      | NO   |     | NULL                |                             |\n" +
+                        "| id           | bigint(20)   | NO   |     | NULL                | auto_increment              |\n" +
+                        "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                        "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                        "| c_int        | int(11)      | YES  | MUL | NULL                |                             |\n" +
+                        "| c_bigint     | bigint(20)   | YES  |     | NULL                |                             |\n" +
+                        "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                        "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                        "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                        "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                        "| c_char       | char(10)     | YES  |     | NULL                |                             |\n" +
+                        "| c_varchar    | varchar(10)  | YES  |     | hello               |                             |\n" +
+                        "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                        "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                        "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                        "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
                         "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
 
                 , repository.console("show columns from test1"));
@@ -658,24 +658,286 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                         "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
                         "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
-                        "| c_decimal_1  | INT(11)      | YES  |     | NULL                |                             |\n" +
-                        "| id           | bigint(20)   | YES  |     | NULL                | auto_increment              |\n" +
-                        "| c_char       | char(32)     | NO   |     | NULL                |                             |\n" +
-                        "| c_smallint   | smallint(6)  | NO   |     | 0                   |                             |\n" +
-                        "| c_mediumint  | mediumint(9) | NO   |     | NULL                |                             |\n" +
-                        "| c_int        | int(11)      | NO   | MUL | NULL                |                             |\n" +
-                        "| c_bigint     | bigint(20)   | NO   |     | NULL                |                             |\n" +
-                        "| c_date       | date         | NO   |     | 0000-00-00          |                             |\n" +
-                        "| c_datetime   | datetime     | NO   |     | 0000-00-00 00:00:00 |                             |\n" +
-                        "| c_timestamp  | timestamp    | NO   |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
-                        "| c_time       | time         | NO   |     | NULL                |                             |\n" +
-                        "| c_varchar    | varchar(10)  | NO   |     | hello               |                             |\n" +
-                        "| c_blob       | blob         | NO   |     | NULL                |                             |\n" +
-                        "| c_text       | text         | NO   |     | NULL                |                             |\n" +
-                        "| c_mediumtext | mediumtext   | NO   |     | NULL                |                             |\n" +
-                        "| c_longblob   | longblob     | NO   |     | NULL                |                             |\n" +
+                        "| c_decimal_1  | INT(11)      | NO   |     | NULL                |                             |\n" +
+                        "| id           | bigint(20)   | NO   |     | NULL                | auto_increment              |\n" +
+                        "| c_char       | char(32)     | YES  |     | NULL                |                             |\n" +
+                        "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                        "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                        "| c_int        | int(11)      | YES  | MUL | NULL                |                             |\n" +
+                        "| c_bigint     | bigint(20)   | YES  |     | NULL                |                             |\n" +
+                        "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                        "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                        "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                        "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                        "| c_varchar    | varchar(10)  | YES  |     | hello               |                             |\n" +
+                        "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                        "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                        "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                        "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
                         "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
 
                 , repository.console("show columns from test1"));
+
+
+        repository.console("alter table test1 add CONSTRAINT unique name4_idx(id); ");
+
+        assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
+                        "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
+                        "| c_decimal_1  | INT(11)      | NO   |     | NULL                |                             |\n" +
+                        "| id           | bigint(20)   | NO   | UNI | NULL                | auto_increment              |\n" +
+                        "| c_char       | char(32)     | YES  |     | NULL                |                             |\n" +
+                        "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                        "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                        "| c_int        | int(11)      | YES  | MUL | NULL                |                             |\n" +
+                        "| c_bigint     | bigint(20)   | YES  |     | NULL                |                             |\n" +
+                        "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                        "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                        "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                        "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                        "| c_varchar    | varchar(10)  | YES  |     | hello               |                             |\n" +
+                        "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                        "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                        "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                        "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
+
+                , repository.console("show columns from test1"));
+
+        repository.console("alter table test1 add FULLTEXT name4_idx_c_longblob(c_longblob); ");
+
+        assertEquals("CREATE TABLE `test1` (\n" +
+                        "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
+                        "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\tc_char char(32),\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tKEY `k_c` (`c_int`),\n" +
+                        "\tUNIQUE name4_idx (id),\n" +
+                        "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob)\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+
+                , repository.console("show create table test1"));
+
+
+        repository.console("alter table test1 add key name5_idx(c_bigint); ");
+
+        assertEquals("CREATE TABLE `test1` (\n" +
+                        "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
+                        "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\tc_char char(32),\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tKEY `k_c` (`c_int`),\n" +
+                        "\tUNIQUE name4_idx (id),\n" +
+                        "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
+                        "\tKEY name5_idx (c_bigint)\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+
+                , repository.console("show create table test1"));
+
+        repository.console("alter table test1 drop index name4_idx");
+        assertEquals("CREATE TABLE `test1` (\n" +
+                        "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
+                        "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\tc_char char(32),\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tKEY `k_c` (`c_int`),\n" +
+                        "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
+                        "\tKEY name5_idx (c_bigint)\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+
+                , repository.console("show create table test1"));
+
+        repository.console("alter table test1 add primary key name5_pk(c_bigint); ");
+        assertEquals("CREATE TABLE `test1` (\n" +
+                        "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
+                        "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\tc_char char(32),\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tKEY `k_c` (`c_int`),\n" +
+                        "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
+                        "\tKEY name5_idx (c_bigint),\n" +
+                        "\tCONSTRAINT name5_pk PRIMARY KEY (c_bigint)\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+
+                , repository.console("show create table test1"));
+
+        repository.console("alter table test1 drop primary key;");
+        assertEquals("CREATE TABLE `test1` (\n" +
+                        "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
+                        "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\tc_char char(32),\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tKEY `k_c` (`c_int`),\n" +
+                        "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
+                        "\tKEY name5_idx (c_bigint)\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+
+                , repository.console("show create table test1"));
+
+        repository.console("GRANT ALL PRIVILEGES ON *.* TO 'idbtmp_1208408_9'@'%' IDENTIFIED BY PASSWORD '*5E8A11FF574FCBC6440EB285D490AEE96B16E250' WITH GRANT OPTION");
+
+        repository.console("alter table test1 add unique key name_idx_23 (c_char(10))");
+        assertEquals("CREATE TABLE `test1` (\n" +
+                        "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
+                        "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\tc_char char(32),\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tKEY `k_c` (`c_int`),\n" +
+                        "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
+                        "\tKEY name5_idx (c_bigint),\n" +
+                        "\tUNIQUE name_idx_23 (c_char(10))\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+
+                , repository.console("show create table test1"));
+
+
+        assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
+                        "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
+                        "| c_decimal_1  | INT(11)      | NO   |     | NULL                |                             |\n" +
+                        "| id           | bigint(20)   | NO   |     | NULL                | auto_increment              |\n" +
+                        "| c_char       | char(32)     | YES  | UNI | NULL                |                             |\n" +
+                        "| c_smallint   | smallint(6)  | YES  |     | 0                   |                             |\n" +
+                        "| c_mediumint  | mediumint(9) | YES  |     | NULL                |                             |\n" +
+                        "| c_int        | int(11)      | YES  | MUL | NULL                |                             |\n" +
+                        "| c_bigint     | bigint(20)   | YES  | MUL | NULL                |                             |\n" +
+                        "| c_date       | date         | YES  |     | 0000-00-00          |                             |\n" +
+                        "| c_datetime   | datetime     | YES  |     | 0000-00-00 00:00:00 |                             |\n" +
+                        "| c_timestamp  | timestamp    | YES  |     | NULL                | on update CURRENT_TIMESTAMP |\n" +
+                        "| c_time       | time         | YES  |     | NULL                |                             |\n" +
+                        "| c_varchar    | varchar(10)  | YES  |     | hello               |                             |\n" +
+                        "| c_blob       | blob         | YES  |     | NULL                |                             |\n" +
+                        "| c_text       | text         | YES  |     | NULL                |                             |\n" +
+                        "| c_mediumtext | mediumtext   | YES  |     | NULL                |                             |\n" +
+                        "| c_longblob   | longblob     | YES  |     | NULL                |                             |\n" +
+                        "+--------------+--------------+------+-----+---------------------+-----------------------------+\n"
+
+                , repository.console("show columns from test1"));
+
+        repository.console("alter table test1 drop c_char;");
+        assertEquals("CREATE TABLE `test1` (\n" +
+                        "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
+                        "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tKEY `k_c` (`c_int`),\n" +
+                        "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
+                        "\tKEY name5_idx (c_bigint)\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+
+                , repository.console("show create table test1"));
+
+        repository.console("rename table test1 to test1_xx");
+
+        assertEquals("ERROR 1146 (42S02): Table 'test1' doesn't exist\n"
+
+                , repository.console("show create table test1"));
+
+        assertEquals("CREATE TABLE test1_xx (\n" +
+                        "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
+                        "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+                        "\t`c_smallint` smallint(6) DEFAULT 0 COMMENT 'smallint',\n" +
+                        "\t`c_mediumint` mediumint(9) DEFAULT NULL COMMENT 'mediumint',\n" +
+                        "\t`c_int` int(11) DEFAULT NULL COMMENT 'int',\n" +
+                        "\t`c_bigint` bigint(20) DEFAULT NULL COMMENT 'bigint',\n" +
+                        "\t`c_date` date DEFAULT '0000-00-00' COMMENT 'date',\n" +
+                        "\t`c_datetime` datetime DEFAULT '0000-00-00 00:00:00' COMMENT 'datetime',\n" +
+                        "\t`c_timestamp` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'timestamp',\n" +
+                        "\t`c_time` time DEFAULT NULL COMMENT 'time',\n" +
+                        "\t`c_varchar` varchar(10) DEFAULT 'hello' COMMENT 'varchar',\n" +
+                        "\t`c_blob` blob COMMENT 'blob',\n" +
+                        "\t`c_text` text COMMENT 'text',\n" +
+                        "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
+                        "\t`c_longblob` longblob COMMENT 'longblob',\n" +
+                        "\tKEY `k_c` (`c_int`),\n" +
+                        "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
+                        "\tKEY name5_idx (c_bigint)\n" +
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+
+                , repository.console("show create table test1_xx"));
+
     }
 }

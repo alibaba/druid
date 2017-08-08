@@ -613,7 +613,24 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token() == Token.IDENTIFIED) {
             lexer.nextToken();
             accept(Token.BY);
-            stmt.setIdentifiedBy(this.exprParser.expr());
+
+            if (identifierEquals("PASSWORD")) {
+                lexer.nextToken();
+                String password = lexer.stringVal();
+                accept(Token.LITERAL_CHARS);
+                stmt.setIdentifiedByPassword(password);
+            } else {
+                stmt.setIdentifiedBy(this.exprParser.expr());
+            }
+        }
+
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            if (lexer.token() == Token.GRANT) {
+                lexer.nextToken();
+                acceptIdentifier("OPTION");
+                stmt.setWithGrantOption(true);
+            }
         }
 
         return stmt;
@@ -626,6 +643,7 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken();
                 if (identifierEquals("PRIVILEGES")) {
                     privilege = "ALL PRIVILEGES";
+                    lexer.nextToken();
                 } else {
                     privilege = "ALL";
                 }
@@ -2402,6 +2420,11 @@ public class SQLStatementParser extends SQLParser {
 
     protected SQLAlterTableAddIndex parseAlterTableAddIndex() {
         SQLAlterTableAddIndex item = new SQLAlterTableAddIndex();
+
+        if (identifierEquals("FULLTEXT")) {
+            lexer.nextToken();
+            item.setType("FULLTEXT");
+        }
 
         if (lexer.token() == Token.UNIQUE) {
             item.setUnique(true);

@@ -21,6 +21,7 @@ import java.util.*;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -235,6 +236,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 if (column instanceof SQLIdentifierExpr
                         && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
                     return unique.columns.size() > 1;
+                } else if (column instanceof SQLMethodInvokeExpr
+                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
+                    return true;
                 }
             } else if (element instanceof MySqlKey) {
                 MySqlKey unique = (MySqlKey) element;
@@ -242,6 +246,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 SQLExpr column = unique.getColumns().get(0).getExpr();
                 if (column instanceof SQLIdentifierExpr
                         && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
+                    return true;
+                } else if (column instanceof SQLMethodInvokeExpr
+                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
                     return true;
                 }
             }
@@ -265,6 +272,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 if (column instanceof SQLIdentifierExpr
                         && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
                     return unique.columns.size() == 1;
+                } else if (column instanceof SQLMethodInvokeExpr
+                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
+                    return true;
                 }
             }
         }

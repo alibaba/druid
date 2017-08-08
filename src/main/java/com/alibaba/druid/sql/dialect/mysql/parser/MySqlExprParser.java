@@ -785,6 +785,11 @@ public class MySqlExprParser extends SQLExprParser {
             lexer.nextToken();
         }
 
+        if (lexer.token() != Token.LPAREN) {
+            SQLName name = this.name();
+            primaryKey.setName(name);
+        }
+
         accept(Token.LPAREN);
         for (;;) {
             primaryKey.addColumn(this.expr());

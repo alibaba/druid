@@ -133,9 +133,9 @@ public class MySqlShowColumnOutpuVisitor extends MySqlOutputVisitor {
             print(" | ");
 
             if (column.containsNotNullConstaint()) {
-                print("YES");
-            } else {
                 print("NO ");
+            } else {
+                print("YES");
             }
             print("  | ");
 

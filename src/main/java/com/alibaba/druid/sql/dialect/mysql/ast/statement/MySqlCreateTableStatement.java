@@ -215,15 +215,16 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     }
 
     public boolean apply(SQLAlterTableAddIndex item) {
-        if (item.isKey()) {
-            MySqlPrimaryKey x = new MySqlPrimaryKey();
+        if (item.isUnique()) {
+            MySqlUnique x = new MySqlUnique();
             item.cloneTo(x);
             x.setParent(this);
             this.tableElementList.add(x);
             return true;
         }
-        if (item.isUnique()) {
-            MySqlUnique x = new MySqlUnique();
+
+        if (item.isKey()) {
+            MySqlKey x = new MySqlKey();
             item.cloneTo(x);
             x.setParent(this);
             this.tableElementList.add(x);

@@ -458,15 +458,21 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlTableIndex x) {
+        String indexType = x.getIndexType();
+
+        if ("FULLTEXT".equalsIgnoreCase(indexType)) {
+            print0(ucase ? "FULLTEXT " : "fulltext ");
+        }
+
         print0(ucase ? "INDEX" : "index");
         if (x.getName() != null) {
             print(' ');
             x.getName().accept(this);
         }
 
-        if (x.getIndexType() != null) {
+        if (indexType != null && !"FULLTEXT".equalsIgnoreCase(indexType)) {
             print0(ucase ? " USING " : " using ");
-            print0(x.getIndexType());
+            print0(indexType);
         }
 
         print('(');
