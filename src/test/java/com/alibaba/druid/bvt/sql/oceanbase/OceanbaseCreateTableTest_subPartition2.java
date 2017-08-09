@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,56 +44,48 @@ public class OceanbaseCreateTableTest_subPartition2 extends MysqlTest {
         SQLStatement stmt = stmtList.get(0);
         {
             String result = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("CREATE TABLE ts (" + //
-                                "\n\tid INT, " + //
-                                "\n\tpurchased DATE" + //
-                                "\n)" + //
-                                "\nPARTITION BY RANGE (YEAR(purchased))" + //
-                                "\nSUBPARTITION BY HASH (TO_DAYS(purchased))" + //
-                                "\n(" + //
-                                "\n\tPARTITION p0 VALUES LESS THAN (1990)" + //
-                                "\n\t(" + //
-                                "\n\t\tSUBPARTITION s0," + //
-                                "\n\t\tSUBPARTITION s1" + //
-                                "\n\t)," + //
-                                "\n\tPARTITION p1 VALUES LESS THAN (2000)" + //
-                                "\n\t(" + //
-                                "\n\t\tSUBPARTITION s2," + //
-                                "\n\t\tSUBPARTITION s3" + //
-                                "\n\t)," + //
-                                "\n\tPARTITION p2 VALUES LESS THAN MAXVALUE" + //
-                                "\n\t(" + //
-                                "\n\t\tSUBPARTITION s4," + //
-                                "\n\t\tSUBPARTITION s5" + //
-                                "\n\t)" + //
-                                "\n)",
+            Assert.assertEquals("CREATE TABLE ts (\n" +
+                            "\tid INT,\n" +
+                            "\tpurchased DATE\n" +
+                            ")\n" +
+                            "PARTITION BY RANGE (YEAR(purchased))\n" +
+                            "SUBPARTITION BY HASH (TO_DAYS(purchased)) (\n" +
+                            "\tPARTITION p0 VALUES LESS THAN (1990) (\n" +
+                            "\t\tSUBPARTITION s0,\n" +
+                            "\t\tSUBPARTITION s1\n" +
+                            "\t),\n" +
+                            "\tPARTITION p1 VALUES LESS THAN (2000) (\n" +
+                            "\t\tSUBPARTITION s2,\n" +
+                            "\t\tSUBPARTITION s3\n" +
+                            "\t),\n" +
+                            "\tPARTITION p2 VALUES LESS THAN MAXVALUE (\n" +
+                            "\t\tSUBPARTITION s4,\n" +
+                            "\t\tSUBPARTITION s5\n" +
+                            "\t)\n" +
+                            ")",
                                 result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("create table ts (" + //
-                                "\n\tid INT, " + //
-                                "\n\tpurchased DATE" + //
-                                "\n)" + //
-                                "\npartition by range (YEAR(purchased))" + //
-                                "\nsubpartition by hash (TO_DAYS(purchased))" + //
-                                "\n(" + //
-                                "\n\tpartition p0 values less than (1990)" + //
-                                "\n\t(" + //
-                                "\n\t\tsubpartition s0," + //
-                                "\n\t\tsubpartition s1" + //
-                                "\n\t)," + //
-                                "\n\tpartition p1 values less than (2000)" + //
-                                "\n\t(" + //
-                                "\n\t\tsubpartition s2," + //
-                                "\n\t\tsubpartition s3" + //
-                                "\n\t)," + //
-                                "\n\tpartition p2 values less than maxvalue" + //
-                                "\n\t(" + //
-                                "\n\t\tsubpartition s4," + //
-                                "\n\t\tsubpartition s5" + //
-                                "\n\t)" + //
-                                "\n)",
+            Assert.assertEquals("create table ts (\n" +
+                            "\tid INT,\n" +
+                            "\tpurchased DATE\n" +
+                            ")\n" +
+                            "partition by range (YEAR(purchased))\n" +
+                            "subpartition by hash (TO_DAYS(purchased)) (\n" +
+                            "\tpartition p0 values less than (1990) (\n" +
+                            "\t\tsubpartition s0,\n" +
+                            "\t\tsubpartition s1\n" +
+                            "\t),\n" +
+                            "\tpartition p1 values less than (2000) (\n" +
+                            "\t\tsubpartition s2,\n" +
+                            "\t\tsubpartition s3\n" +
+                            "\t),\n" +
+                            "\tpartition p2 values less than maxvalue (\n" +
+                            "\t\tsubpartition s4,\n" +
+                            "\t\tsubpartition s5\n" +
+                            "\t)\n" +
+                            ")",
                                 result);
             System.out.println(result);
         }

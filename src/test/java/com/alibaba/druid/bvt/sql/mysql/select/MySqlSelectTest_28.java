@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 package com.alibaba.druid.bvt.sql.mysql.select;
 
 import java.util.List;
-
-import org.junit.Assert;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -40,7 +38,7 @@ public class MySqlSelectTest_28 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
@@ -50,25 +48,27 @@ public class MySqlSelectTest_28 extends MysqlTest {
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getConditions().size());
-        Assert.assertEquals(0, visitor.getOrderByColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
+        assertEquals(1, visitor.getConditions().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT id, name"
-                    + "\nFROM `t_0248` `i_trash`"
-                    + "\nWHERE `gmt_create` < DATE_ADD(NOW(), INTERVAL -7 DAY)"
-                    + "\nLIMIT 0, 1000", //
+            assertEquals("/* 0a7d0d8614637128401131809d4d9d/9// */\n" +
+                            "SELECT id, name\n" +
+                            "FROM `t_0248` `i_trash`\n" +
+                            "WHERE `gmt_create` < DATE_ADD(NOW(), INTERVAL -7 DAY)\n" +
+                            "LIMIT 0, 1000", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select id, name"
-                    + "\nfrom `t_0248` `i_trash`"
-                    + "\nwhere `gmt_create` < DATE_ADD(NOW(), interval -7 day)"
-                    + "\nlimit 0, 1000", //
+            assertEquals("/* 0a7d0d8614637128401131809d4d9d/9// */\n" +
+                            "select id, name\n" +
+                            "from `t_0248` `i_trash`\n" +
+                            "where `gmt_create` < DATE_ADD(NOW(), interval -7 day)\n" +
+                            "limit 0, 1000", //
                                 output);
         }
     }

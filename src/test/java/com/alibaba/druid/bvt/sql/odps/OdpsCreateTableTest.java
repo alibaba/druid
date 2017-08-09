@@ -35,6 +35,6 @@ public class OdpsCreateTableTest extends TestCase {
                 + "\n\tsale_date STRING,"
                 + "\n\tregion STRING"
                 + "\n)"//
-                + "\nLIFECYCLE 5", output);
+                + "\nLIFECYCLE 5;", output);
     }
 }

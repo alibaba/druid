@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,5 +95,19 @@ public class SQLOrderBy extends SQLObjectImpl {
 
     protected SQLSelectOrderByItem createItem() {
         return new SQLSelectOrderByItem();
+    }
+
+    public SQLOrderBy clone() {
+        SQLOrderBy x = new SQLOrderBy();
+
+        for (SQLSelectOrderByItem item : items) {
+            SQLSelectOrderByItem item1 = item.clone();
+            item1.setParent(x);
+            x.items.add(item1);
+        }
+
+        x.sibings = sibings;
+
+        return x;
     }
 }

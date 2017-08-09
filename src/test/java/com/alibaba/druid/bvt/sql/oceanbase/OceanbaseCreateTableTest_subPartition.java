@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,12 +43,11 @@ public class OceanbaseCreateTableTest_subPartition extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE ts ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tpurchased DATE"
                     + "\n)"
                     + "\nPARTITION BY RANGE (YEAR(purchased))"
-                    + "\nSUBPARTITION BY HASH (TO_DAYS(purchased)) SUBPARTITIONS 2"
-                    + "\n("
+                    + "\nSUBPARTITION BY HASH (TO_DAYS(purchased)) SUBPARTITIONS 2 ("
                     + "\n\tPARTITION p0 VALUES LESS THAN (1990),"
                     + "\n\tPARTITION p1 VALUES LESS THAN (2000),"
                     + "\n\tPARTITION p2 VALUES LESS THAN MAXVALUE"
@@ -58,12 +57,11 @@ public class OceanbaseCreateTableTest_subPartition extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table ts ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tpurchased DATE"
                     + "\n)"
                     + "\npartition by range (YEAR(purchased))"
-                    + "\nsubpartition by hash (TO_DAYS(purchased)) subpartitions 2"
-                    + "\n("
+                    + "\nsubpartition by hash (TO_DAYS(purchased)) subpartitions 2 ("
                     + "\n\tpartition p0 values less than (1990),"
                     + "\n\tpartition p1 values less than (2000),"
                     + "\n\tpartition p2 values less than maxvalue"

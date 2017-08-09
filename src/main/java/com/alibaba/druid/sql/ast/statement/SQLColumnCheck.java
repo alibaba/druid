@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,18 @@ public class SQLColumnCheck extends SQLConstraintImpl implements SQLColumnConstr
             acceptChild(visitor, this.getExpr());
         }
         visitor.endVisit(this);
+    }
+
+    public SQLColumnCheck clone() {
+        SQLColumnCheck x = new SQLColumnCheck();
+
+        super.cloneTo(x);
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        return x;
     }
 
 }

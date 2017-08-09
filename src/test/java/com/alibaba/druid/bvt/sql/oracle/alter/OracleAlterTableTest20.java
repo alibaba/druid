@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class OracleAlterTableTest20 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE sales" //
-                            + "\n\tADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DIABLE", //
+                            + "\n\tADD CONSTRAINT sales_pk PRIMARY KEY (prod_id, cust_id) DISABLE;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());

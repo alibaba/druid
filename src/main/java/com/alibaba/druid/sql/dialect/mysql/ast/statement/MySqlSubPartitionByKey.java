@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,4 +57,18 @@ public class MySqlSubPartitionByKey extends SQLSubPartitionBy implements MySqlOb
         this.columns.add(column);
     }
 
+    public void cloneTo(MySqlSubPartitionByKey x) {
+        super.cloneTo(x);
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+    }
+
+    public MySqlSubPartitionByKey clone() {
+        MySqlSubPartitionByKey x = new MySqlSubPartitionByKey();
+        cloneTo(x);
+        return x;
+    }
 }

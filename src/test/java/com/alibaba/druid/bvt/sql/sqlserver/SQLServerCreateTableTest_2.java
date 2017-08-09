@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class SQLServerCreateTableTest_2 extends TestCase {
                             + "\n\tC1 nvarchar(10),"//
                             + "\n\tC2 nvarchar(50),"//
                             + "\n\tC3 datetime"//
-                            + "\n)", output);
+                            + "\n);", output);
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

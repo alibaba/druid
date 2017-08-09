@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class PGSelectQueryBlock extends SQLSelectQueryBlock {
+public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObject{
 
     private PGWithClause  with;
     private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
@@ -56,7 +56,8 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
         accept0((PGASTVisitor) visitor);
     }
 
-    protected void accept0(PGASTVisitor visitor) {
+    @Override
+    public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.with);
             acceptChild(visitor, this.distinctOn);

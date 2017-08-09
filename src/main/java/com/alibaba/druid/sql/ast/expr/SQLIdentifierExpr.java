@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,22 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
-    private String           name;
+    protected String          name;
 
-    private transient String lowerName;
+    private transient String  lowerName;
+    private transient Boolean parameter;
+
+    private transient SQLColumnDefinition resolvedColumn;
+    private transient SQLTableSource resolvedTableSource;
 
     public SQLIdentifierExpr(){
 
@@ -53,8 +60,12 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return lowerName;
     }
 
-    public void setLowerName(String lowerName) {
-        this.lowerName = lowerName;
+    public Boolean isParameter() {
+        return parameter;
+    }
+
+    public void setParameter(Boolean parameter) {
+        this.parameter = parameter;
     }
 
     public void output(StringBuffer buf) {
@@ -97,7 +108,74 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return true;
     }
 
+    public boolean equalsIgnoreCase(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SQLIdentifierExpr)) {
+            return false;
+        }
+        SQLIdentifierExpr other = (SQLIdentifierExpr) obj;
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+
+        } else if (!SQLUtils.normalize(name).equalsIgnoreCase(SQLUtils.normalize(other.name))) {
+            return false;
+        }
+        return true;
+    }
+
     public String toString() {
         return this.name;
+    }
+
+    public SQLIdentifierExpr clone() {
+        return new SQLIdentifierExpr(this.name);
+    }
+
+    public String normalizedName() {
+        return SQLUtils.normalize(name);
+    }
+
+    public SQLColumnDefinition getResolvedColumn() {
+        return resolvedColumn;
+    }
+
+    public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {
+        this.resolvedColumn = resolvedColumn;
+    }
+
+    public SQLTableSource getResolvedTableSource() {
+        return resolvedTableSource;
+    }
+
+    public void setResolvedTableSource(SQLTableSource resolvedTableSource) {
+        this.resolvedTableSource = resolvedTableSource;
+    }
+
+    public SQLDataType computeDataType() {
+        if (resolvedColumn != null) {
+            return resolvedColumn.getDataType();
+        }
+
+        if (resolvedTableSource != null
+                && resolvedTableSource instanceof SQLSubqueryTableSource) {
+            SQLSelect select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+            SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+            if (queryBlock == null) {
+                return null;
+            }
+            SQLSelectItem selectItem = queryBlock.findSelectItem(name);
+            if (selectItem != null) {
+                return selectItem.computeDataType();
+            }
+        }
+
+        return null;
     }
 }

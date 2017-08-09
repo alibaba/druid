@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
@@ -58,4 +59,17 @@ public class OracleDatetimeExpr extends OracleSQLObjectImpl implements SQLExpr {
         this.timeZone = timeZone;
     }
 
+    public OracleDatetimeExpr clone() {
+        OracleDatetimeExpr x = new OracleDatetimeExpr();
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        if (timeZone != null) {
+            x.setTimeZone(timeZone.clone());
+        }
+
+        return x;
+    }
 }

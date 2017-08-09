@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,22 +42,23 @@ public class OracleMergeTest8 extends OracleTest {
         List<SQLStatement> stmtList = parser.parseStatementList();
         SQLMergeStatement mergeStatement = (SQLMergeStatement) stmtList.get(0);
         String result = SQLUtils.toOracleString(mergeStatement);
-        Assert.assertEquals("MERGE INTO (SELECT *"
-                + "\n\tFROM T09_RULE_CAL_COUNT"
-                + "\n\tWHERE data_dt = '20160328'"
-                + "\n\t\tAND rule_type = '2'"
-                + "\n\t) t"
-                + "\nUSING ("
-                + "\n\tSELECT cust_no, organ_key"
-                + "\n\tFROM ("
-                + "\n\t\tSELECT t1.cust_no, t1.organ_key"
-                + "\n\t\tFROM t08_cust_result_c_mid t1"
-                + "\n\t\tUNION"
-                + "\n\t\tSELECT t2.cust_no, t2.organ_key"
-                + "\n\t\tFROM t08_cust_result_i_mid t2"
-                + "\n\t)"
-                + "\n) t3 ON (t3.cust_no = t.cust_no) "
-                + "\nWHEN MATCHED THEN UPDATE SET t.organ_key = t3.organ_key",
+        Assert.assertEquals("MERGE INTO (\n" +
+                        "\tSELECT *\n" +
+                        "\tFROM T09_RULE_CAL_COUNT\n" +
+                        "\tWHERE data_dt = '20160328'\n" +
+                        "\t\tAND rule_type = '2'\n" +
+                        ") t\n" +
+                        "USING (\n" +
+                        "\tSELECT cust_no, organ_key\n" +
+                        "\tFROM (\n" +
+                        "\t\tSELECT t1.cust_no, t1.organ_key\n" +
+                        "\t\tFROM t08_cust_result_c_mid t1\n" +
+                        "\t\tUNION\n" +
+                        "\t\tSELECT t2.cust_no, t2.organ_key\n" +
+                        "\t\tFROM t08_cust_result_i_mid t2\n" +
+                        "\t)\n" +
+                        ") t3 ON (t3.cust_no = t.cust_no) \n" +
+                        "WHEN MATCHED THEN UPDATE SET t.organ_key = t3.organ_key",
                             result);
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));

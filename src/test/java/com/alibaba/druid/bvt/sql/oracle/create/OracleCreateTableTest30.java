@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class OracleCreateTableTest30 extends OracleTest {
                             + "\n\t\tCONSTRAINT check_qty CHECK (quantity > 0)," //
                             + "\n\tcost NUMBER" //
                             + "\n\t\tCONSTRAINT check_cost CHECK (cost > 0)" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

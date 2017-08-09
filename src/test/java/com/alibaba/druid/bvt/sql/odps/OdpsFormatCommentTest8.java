@@ -16,22 +16,22 @@ public class OdpsFormatCommentTest8 extends TestCase {
         Assert.assertEquals("SELECT *"
                 + "\nFROM table1;"
                 + "\n"
-                + "\n--comment1 goes here"
+                + "\n-- comment1 goes here"
                 + "\nSELECT *"
                 + "\nFROM table2;"
                 + "\n"
                 + "\nSELECT *"
-                + "\nFROM table3;--comment2 goes here", SQLUtils.formatOdps(sql));
+                + "\nFROM table3;-- comment2 goes here", SQLUtils.formatOdps(sql));
         
         Assert.assertEquals("select *"
                 + "\nfrom table1;"
                 + "\n"
-                + "\n--comment1 goes here"
+                + "\n-- comment1 goes here"
                 + "\nselect *"
                 + "\nfrom table2;"
                 + "\n"
                 + "\nselect *"
-                + "\nfrom table3;--comment2 goes here", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                + "\nfrom table3;-- comment2 goes here", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
    

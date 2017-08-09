@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,21 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
+    private boolean          bracket  = false;
+
     private SQLSelectQuery   left;
     private SQLSelectQuery   right;
     private SQLUnionOperator operator = SQLUnionOperator.UNION;
     private SQLOrderBy       orderBy;
+
+    private SQLLimit limit;
 
     public SQLUnionOperator getOperator() {
         return operator;
@@ -36,6 +41,12 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
     public SQLUnionQuery(){
 
+    }
+
+    public SQLUnionQuery(SQLSelectQuery left, SQLUnionOperator operator, SQLSelectQuery right){
+        this.setLeft(left);
+        this.operator = operator;
+        this.setRight(right);
     }
 
     public SQLSelectQuery getLeft() {
@@ -77,8 +88,63 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
             acceptChild(visitor, left);
             acceptChild(visitor, right);
             acceptChild(visitor, orderBy);
+            acceptChild(visitor, limit);
         }
         visitor.endVisit(this);
     }
 
+
+    public SQLLimit getLimit() {
+        return limit;
+    }
+
+    public void setLimit(SQLLimit limit) {
+        if (limit != null) {
+            limit.setParent(this);
+        }
+        this.limit = limit;
+    }
+
+    public boolean isBracket() {
+        return bracket;
+    }
+
+    public void setBracket(boolean bracket) {
+        this.bracket = bracket;
+    }
+
+    public SQLUnionQuery clone() {
+        SQLUnionQuery x = new SQLUnionQuery();
+
+        x.bracket = bracket;
+        if (left != null) {
+            x.setLeft(left.clone());
+        }
+        if (right != null) {
+            x.setRight(right.clone());
+        }
+        x.operator = operator;
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+
+        return x;
+    }
+
+    public SQLSelectQueryBlock getFirstQueryBlock() {
+        if (left instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) left;
+        }
+
+        if (left instanceof SQLUnionQuery) {
+            return ((SQLUnionQuery) left).getFirstQueryBlock();
+        }
+
+        return null;
+    }
 }

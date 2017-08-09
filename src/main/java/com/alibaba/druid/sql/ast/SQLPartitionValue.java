@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,5 +57,17 @@ public class SQLPartitionValue extends SQLObjectImpl {
             acceptChild(visitor, getItems());
         }
         visitor.endVisit(this);
+    }
+
+    public SQLPartitionValue clone() {
+        SQLPartitionValue x = new SQLPartitionValue(operator);
+
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+
+        return x;
     }
 }

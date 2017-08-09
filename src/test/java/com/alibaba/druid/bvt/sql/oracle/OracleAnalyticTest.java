@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class OracleAnalyticTest extends TestCase {
                      + "FROM employees " + "WHERE department_id = 30;";
 
         String expect = "SELECT last_name, salary, STDDEV(salary) OVER (ORDER BY hire_date) AS \"StdDev\"\n"
-                        + "FROM employees\n" + "WHERE department_id = 30;\n";
+                        + "FROM employees\n" + "WHERE department_id = 30;";
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
@@ -42,10 +42,10 @@ public class OracleAnalyticTest extends TestCase {
 
     public void test_1() throws Exception {
         String sql = "SELECT submit_date, num_votes, TRUNC(AVG(num_votes) OVER(PARTITION BY submit_date ORDER BY submit_date ROWS UNBOUNDED PRECEDING)) AVG_VOTE_PER_DAY\n"
-                     + "FROM vote_count\n" + "ORDER BY submit_date;\n";
+                     + "FROM vote_count\n" + "ORDER BY submit_date;";
 
         String expect = "SELECT submit_date, num_votes, TRUNC(AVG(num_votes) OVER (PARTITION BY submit_date ORDER BY submit_date ROWS UNBOUNDED PRECEDING)) AS AVG_VOTE_PER_DAY\n"
-                        + "FROM vote_count\n" + "ORDER BY submit_date;\n";
+                        + "FROM vote_count\n" + "ORDER BY submit_date;";
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 
@@ -26,6 +28,8 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     protected String        alias;
 
     protected List<SQLHint> hints;
+
+    protected SQLExpr       flashback;
 
     public SQLTableSourceImpl(){
 
@@ -61,5 +65,41 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
 
     public void setHints(List<SQLHint> hints) {
         this.hints = hints;
+    }
+
+    public SQLTableSource clone() {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public String computeAlias() {
+        return alias;
+    }
+
+    public SQLExpr getFlashback() {
+        return flashback;
+    }
+
+    public void setFlashback(SQLExpr flashback) {
+        if (flashback != null) {
+            flashback.setParent(this);
+        }
+        this.flashback = flashback;
+    }
+
+
+    public boolean containsAlias(String alias) {
+        if (SQLUtils.nameEquals(this.alias, alias)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public SQLColumnDefinition findColumn(String columnName) {
+        return null;
+    }
+
+    public SQLTableSource findTableSourceWithColumn(String columnName) {
+        return null;
     }
 }

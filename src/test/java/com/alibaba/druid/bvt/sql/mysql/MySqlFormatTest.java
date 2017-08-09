@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ public class MySqlFormatTest extends TestCase {
     public void test_0() throws Exception {
         String text = "CREATE TABLE customer (a INT, b CHAR (20), INDEX (a));";
         Assert.assertEquals("CREATE TABLE customer (\n" + //
-                            "\ta INT, \n" + //
-                            "\tb CHAR(20), \n" + //
+                            "\ta INT,\n" + //
+                            "\tb CHAR(20),\n" + //
                             "\tINDEX(a)\n" + //
                             ");", SQLUtils.format(text, JdbcUtils.MYSQL));
     }

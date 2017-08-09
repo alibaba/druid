@@ -1,5 +1,5 @@
 /*
-// * Copyright 1999-2101 Alibaba Group Holding Ltd.
+// * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,22 +66,23 @@ public class SQLServerSelectTest13 extends TestCase {
                 "    a. ROW NOT BETWEEN (?+ 1) " + //
                 "AND (?+?)"; //
 
-        String expect = "SELECT a.*" +
-        		"\nFROM (SELECT ROW_NUMBER() OVER (ORDER BY a.time_add DESC) AS ROW, a.detail_no AS detailNo, a.ba_id AS baId, a.ba_name AS baName, a.tran_no AS tranNo" +
-        		"\n\t\t, a.tran_name AS tranName, a.tran_type AS tranType, a.balance_type AS balanceType, a.detail_income AS detailIncome, a.detail_payout AS detailPayout" +
-        		"\n\t\t, a.before_balance AS beforeBalance, a.after_balance AS afterBalance, a.time_add AS timeAdd, a.user_add AS userAdd, a.remark AS remark" +
-        		"\n\t\t, (" +
-        		"\n\t\t\tSELECT TOP 1 t.param_name" +
-        		"\n\t\t\tFROM config.sys_params t" +
-        		"\n\t\t\tWHERE t.param_type = ?" +
-        		"\n\t\t\t\tAND t.param_value = a.tran_type" +
-        		"\n\t\t\t) AS tranTypeName" +
-        		"\n\tFROM bussiness.account_detail a" +
-        		"\n\tWHERE 1 = 1" +
-        		"\n\t\tAND a.time_add >= ?" +
-        		"\n\t\tAND a.time_add <= ?" +
-        		"\n\t) a" +
-        		"\nWHERE a.ROW NOT BETWEEN ? + 1 AND ? + ?";
+        String expect = "SELECT a.*\n" +
+				"FROM (\n" +
+				"\tSELECT ROW_NUMBER() OVER (ORDER BY a.time_add DESC) AS ROW, a.detail_no AS detailNo, a.ba_id AS baId, a.ba_name AS baName, a.tran_no AS tranNo\n" +
+				"\t\t, a.tran_name AS tranName, a.tran_type AS tranType, a.balance_type AS balanceType, a.detail_income AS detailIncome, a.detail_payout AS detailPayout\n" +
+				"\t\t, a.before_balance AS beforeBalance, a.after_balance AS afterBalance, a.time_add AS timeAdd, a.user_add AS userAdd, a.remark AS remark\n" +
+				"\t\t, (\n" +
+				"\t\t\tSELECT TOP 1 t.param_name\n" +
+				"\t\t\tFROM config.sys_params t\n" +
+				"\t\t\tWHERE t.param_type = ?\n" +
+				"\t\t\t\tAND t.param_value = a.tran_type\n" +
+				"\t\t) AS tranTypeName\n" +
+				"\tFROM bussiness.account_detail a\n" +
+				"\tWHERE 1 = 1\n" +
+				"\t\tAND a.time_add >= ?\n" +
+				"\t\tAND a.time_add <= ?\n" +
+				") a\n" +
+				"WHERE a.ROW NOT BETWEEN ? + 1 AND ? + ?";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

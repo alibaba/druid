@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,5 +63,23 @@ public class PGWithQuery extends PGSQLObjectImpl {
             acceptChild(visitor, query);
         }
         visitor.endVisit(this);
+    }
+
+    public PGWithQuery clone() {
+        PGWithQuery x = new PGWithQuery();
+
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        for (SQLExpr c : columns) {
+            SQLExpr c2 = c.clone();
+            c2.setParent(x);
+            x.columns.add(c);
+        }
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+
+        return x;
     }
 }

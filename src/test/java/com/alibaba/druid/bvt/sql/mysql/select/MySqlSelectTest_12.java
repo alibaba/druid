@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,16 +55,17 @@ public class MySqlSelectTest_12 extends MysqlTest {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(5, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
-        Assert.assertEquals(1, visitor.getOrderByColumns().size());
+        assertEquals(1, visitor.getOrderByColumns().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ub_userdiscuss")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT COUNT(*) AS a" + //
-                            "\nFROM (SELECT nickname, mobile, comment, createdate" + //
-                            "\n\tFROM ub_userdiscuss" + //
-                            "\n\tORDER BY discuss_id DESC" + //
-                            "\n\t) b", //
+        assertEquals("SELECT COUNT(*) AS a\n" +
+                        "FROM (\n" +
+                        "\tSELECT nickname, mobile, comment, createdate\n" +
+                        "\tFROM ub_userdiscuss\n" +
+                        "\tORDER BY discuss_id DESC\n" +
+                        ") b", //
                             output);
     }
 }

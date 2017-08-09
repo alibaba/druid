@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,6 @@ public class MySqlAlterTableTest24 extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE xxxxx"
         		+ "\n\tMODIFY COLUMN f0 DEFAULT '0',"
-        		+ "\n\tMODIFY COLUMN f1 DEFAULT '0'", output);
+        		+ "\n\tMODIFY COLUMN f1 DEFAULT '0';", output);
     }
 }

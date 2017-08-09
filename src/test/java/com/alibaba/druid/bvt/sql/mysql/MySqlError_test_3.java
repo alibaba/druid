@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,6 @@ public class MySqlError_test_3 extends MysqlTest {
 
         Assert.assertNotNull(error);
 //        error.printStackTrace();
-        Assert.assertEquals("syntax error, error in :'us = LIMIT ?, ?',expect QUES, actual QUES LIMIT", error.getMessage());
+        Assert.assertEquals("syntax error, error in :'us = LIMIT ?, ?',expect QUES, actual QUES pos 248, line 1, column 247, token QUES", error.getMessage());
     }
 }

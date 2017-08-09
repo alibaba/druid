@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class MySqlWallTest87 extends TestCase {
         Assert.assertTrue(provider.checkValid(//
         "CREATE VIEW test.v AS SELECT * FROM t;"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        Assert.assertEquals(2, provider.getTableStats().size());
         Assert.assertTrue(provider.getTableStats().containsKey("t"));
     }
 

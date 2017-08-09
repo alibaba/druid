@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,10 @@ public class SQLPartitionByRange extends SQLPartitionBy {
 
     // mysql
     protected SQLExpr       expr;
+
+    public SQLPartitionByRange() {
+
+    }
 
     public List<SQLName> getColumns() {
         return columns;
@@ -75,4 +79,23 @@ public class SQLPartitionByRange extends SQLPartitionBy {
         visitor.endVisit(this);
     }
 
+    public SQLPartitionByRange clone() {
+        SQLPartitionByRange x = new SQLPartitionByRange();
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        if (interval != null) {
+            x.setInterval(interval.clone());
+        }
+
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+
+        return x;
+    }
 }

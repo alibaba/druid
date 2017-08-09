@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatementImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
-public class SQLServerSetStatement extends SQLServerObjectImpl implements SQLServerStatement {
+public class SQLServerSetStatement extends SQLServerStatementImpl implements SQLServerStatement {
 
     private SQLAssignItem item = new SQLAssignItem();
-    private String dbType;
 
     public SQLServerSetStatement(){
     }
@@ -52,13 +52,5 @@ public class SQLServerSetStatement extends SQLServerObjectImpl implements SQLSer
             acceptChild(visitor, this.item);
         }
         visitor.endVisit(this);
-    }
-    
-    public String getDbType() {
-        return dbType;
-    }
-    
-    public void setDbType(String dbType) {
-        this.dbType = dbType;
     }
 }

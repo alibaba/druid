@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,11 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
     protected SQLExpr comment;
 
     protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
+
+    protected final List<SQLName> clusteredBy = new ArrayList<SQLName>();
+    protected final List<SQLName> sortedBy = new ArrayList<SQLName>();
+
+    protected int buckets;
 
     protected SQLExpr lifecycle;
 
@@ -90,10 +95,27 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, partitionColumns);
+            this.acceptChild(visitor, clusteredBy);
+            this.acceptChild(visitor, sortedBy);
             this.acceptChild(visitor, lifecycle);
             this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
     }
 
+    public List<SQLName> getClusteredBy() {
+        return clusteredBy;
+    }
+
+    public List<SQLName> getSortedBy() {
+        return sortedBy;
+    }
+
+    public int getBuckets() {
+        return buckets;
+    }
+
+    public void setBuckets(int buckets) {
+        this.buckets = buckets;
+    }
 }

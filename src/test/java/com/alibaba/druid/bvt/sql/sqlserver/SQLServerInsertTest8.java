@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class SQLServerInsertTest8 extends TestCase {
         String formatSql = "INSERT INTO Production.ScrapReason"//
                            + "\nOUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate"//
                            + "\n\tINTO @MyTableVar"//
-                           + "\nVALUES (N'Operator error', GETDATE())";
+                           + "\nVALUES (N'Operator error', GETDATE());";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 
@@ -79,7 +79,7 @@ public class SQLServerInsertTest8 extends TestCase {
                            + "\nFROM Sales.SalesPerson sp"//
                            + "\nINNER JOIN Person.Person c ON sp.BusinessEntityID = c.BusinessEntityID"//
                            + "\nWHERE sp.SalesYTD > 250000.00"//
-                           + "\nORDER BY sp.SalesYTD DESC";
+                           + "\nORDER BY sp.SalesYTD DESC;";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 

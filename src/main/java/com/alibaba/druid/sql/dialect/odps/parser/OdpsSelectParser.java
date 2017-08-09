@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,7 +148,7 @@ public class OdpsSelectParser extends SQLSelectParser {
                 break;
             }
 
-            String alias = this.as();
+            String alias = this.tableAlias();
             tableSource.setAlias(alias);
 
             accept(Token.LPAREN);
@@ -178,7 +178,9 @@ public class OdpsSelectParser extends SQLSelectParser {
 
     protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
         accept(Token.VIEW);
-        tableSource.setAlias(null);
+        if ("LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
+            tableSource.setAlias(null);
+        }
         OdpsLateralViewTableSource lateralViewTabSrc = new OdpsLateralViewTableSource();
         lateralViewTabSrc.setTableSource(tableSource);
         

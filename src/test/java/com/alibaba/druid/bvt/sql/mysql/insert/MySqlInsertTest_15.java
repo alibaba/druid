@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class MySqlInsertTest_15 extends MysqlTest {
         assertTrue(visitor.containsTable("t.t1"));
 
         String formatSql = "INSERT INTO t.t1 (id, id2)\n" +
-                "VALUES (1, 2)";
+                "VALUES (1, 2);";
         Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 

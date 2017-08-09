@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,6 +93,15 @@ public interface JdbcConstants {
     public static final String ENTERPRISEDB        = "edb";
     public static final String ENTERPRISEDB_DRIVER = "com.edb.Driver";
 
+    public static final String KYLIN               = "kylin";
+    public static final String KYLIN_DRIVER        = "org.apache.kylin.jdbc.Driver";
+
+
     public static final String SQLITE              = "sqlite";
     public static final String SQLITE_DRIVER       = "org.sqlite.JDBC";
+
+    public static final String ALIYUN_ADS          = "aliyun_ads";
+    public static final String ALIYUN_DRDS         = "aliyun_drds";
+
+    public static final String PRESTO              = "presto";
 }

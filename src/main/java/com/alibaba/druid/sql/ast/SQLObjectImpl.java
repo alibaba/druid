@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLObjectImpl implements SQLObject {
@@ -205,5 +206,13 @@ public abstract class SQLObjectImpl implements SQLObject {
         }
         
         return !comments.isEmpty();
+    }
+
+    public SQLObject clone() {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public SQLDataType computeDataType() {
+        return null;
     }
 }

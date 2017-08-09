@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLNCharExpr extends SQLTextLiteralExpr {
+    private static SQLDataType defaultDataType = new SQLCharacterDataType("nvarchar");
 
     public SQLNCharExpr(){
 
@@ -41,5 +44,13 @@ public class SQLNCharExpr extends SQLTextLiteralExpr {
     protected void accept0(SQLASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
+    }
+
+    public SQLNCharExpr clone() {
+        return new SQLNCharExpr(text);
+    }
+
+    public SQLDataType computeDataType() {
+        return defaultDataType;
     }
 }

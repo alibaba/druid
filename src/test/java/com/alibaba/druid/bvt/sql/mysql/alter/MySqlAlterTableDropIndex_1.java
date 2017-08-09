@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,11 @@ public class MySqlAlterTableDropIndex_1 extends TestCase {
         
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
                             "\n\tDROP INDEX `ix`," + //
-                            "\n\tDROP INDEX `ix2`", SQLUtils.toMySqlString(stmt));
+                            "\n\tDROP INDEX `ix2`;", SQLUtils.toMySqlString(stmt));
         
         Assert.assertEquals("alter table `test`.`tb1`" + //
                 "\n\tdrop index `ix`," + //
-                "\n\tdrop index `ix2`", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\n\tdrop index `ix2`;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

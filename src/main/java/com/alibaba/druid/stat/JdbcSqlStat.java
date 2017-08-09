@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import com.alibaba.druid.proxy.jdbc.StatementExecuteType;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.Utils;
 
-public final class JdbcSqlStat implements JdbcSqlStatMBean {
+public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlStat> {
 
     private final String                                sql;
     private long                                        sqlHash;
@@ -592,7 +592,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     
     public long getSqlHash() {
         if (sqlHash == 0) {
-            sqlHash = Utils.murmurhash2_64(sql);
+            sqlHash = Utils.fnv_64(sql);
         }
         return sqlHash;
     }
@@ -1074,4 +1074,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         this.removed = removed;
     }
 
+    @Override
+    public int compareTo(JdbcSqlStat o) {
+        if (o.sqlHash == this.sqlHash) {
+            return 0;
+        }
+        
+        return this.id < o.id ? -1 : 1;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,10 +45,10 @@ public class SQLServerUpdateTest3 extends TestCase {
         		"\n\t\t\tSELECT MAX(OrderDate)" +
         		"\n\t\t\tFROM Sales.SalesOrderHeader so2" +
         		"\n\t\t\tWHERE so2.SalesPersonID = so.SalesPersonID" +
-        		"\n\t\t\t)" +
+        		"\n\t\t)" +
         		"\n\t\tAND Sales.SalesPerson.SalesPersonID = so.SalesPersonID" +
         		"\n\tGROUP BY so.SalesPersonID" +
-        		"\n\t)";
+        		"\n);";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,16 +47,15 @@ public class OracleCreateTableTest39 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE customers_demo ("
-                + "\n\tcustomer_id number(6),"
-                + "\n\tcust_first_name varchar2(20),"
-                + "\n\tcust_last_name varchar2(20),"
-                + "\n\tcredit_limit number(9, 2)"
-                + "\n)"
-                + "\nPARTITION BY RANGE (credit_limit) INTERVAL 1000"
-                + "\n("
-                + "\n\tPARTITION p1 VALUES LESS THAN (5001)"
-                + "\n)",//
+        Assert.assertEquals("CREATE TABLE customers_demo (\n" +
+                        "\tcustomer_id number(6),\n" +
+                        "\tcust_first_name varchar2(20),\n" +
+                        "\tcust_last_name varchar2(20),\n" +
+                        "\tcredit_limit number(9, 2)\n" +
+                        ")\n" +
+                        "PARTITION BY RANGE (credit_limit) INTERVAL (1000) (\n" +
+                        "\tPARTITION p1 VALUES LESS THAN (5001)\n" +
+                        ");",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class OraclePriorTest extends TestCase {
         String sql = "SELECT employee_id, last_name, manager_id FROM employees CONNECT BY PRIOR employee_id = manager_id;";
 
         String expect = "SELECT employee_id, last_name, manager_id\n" + "FROM employees\n"
-                        + "CONNECT BY PRIOR employee_id = manager_id;\n";
+                        + "CONNECT BY PRIOR employee_id = manager_id;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
@@ -47,7 +47,7 @@ public class OraclePriorTest extends TestCase {
 
         String expect = "SELECT last_name, employee_id, manager_id, LEVEL\n" + "FROM employees\n"
                         + "START WITH employee_id = 100\n" + "CONNECT BY PRIOR employee_id = manager_id\n"
-                        + "ORDER SIBLINGS BY last_name;\n";
+                        + "ORDER SIBLINGS BY last_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

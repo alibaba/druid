@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,23 @@ public class MySqlExtractExpr extends SQLExprImpl implements MySqlExpr {
     public MySqlExtractExpr(){
     }
 
+    public MySqlExtractExpr clone() {
+        MySqlExtractExpr x = new MySqlExtractExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        x.unit = unit;
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 

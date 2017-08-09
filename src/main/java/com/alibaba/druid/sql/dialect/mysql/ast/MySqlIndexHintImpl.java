@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,4 +46,14 @@ public abstract class MySqlIndexHintImpl extends MySqlObjectImpl implements MySq
         this.indexList = indexList;
     }
 
+    public abstract MySqlIndexHintImpl clone();
+
+    public void cloneTo(MySqlIndexHintImpl x) {
+        x.option = option;
+        for (SQLName name : indexList) {
+            SQLName name2 = name.clone();
+            name2.setParent(x);
+            x.indexList.add(name2);
+        }
+    }
 }

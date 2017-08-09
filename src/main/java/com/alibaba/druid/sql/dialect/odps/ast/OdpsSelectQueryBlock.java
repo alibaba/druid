@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
@@ -121,5 +123,13 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     public String toString() {
         return SQLUtils.toOdpsString(this);
+    }
+
+    public void limit(int rowCount, int offset) {
+        if (offset > 0) {
+            throw new UnsupportedOperationException("not support offset");
+        }
+
+        setLimit(new SQLLimit(new SQLIntegerExpr(rowCount)));
     }
 }

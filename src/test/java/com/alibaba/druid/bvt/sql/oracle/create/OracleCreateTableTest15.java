@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,9 +45,9 @@ public class OracleCreateTableTest15 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE T (" + //
+        assertEquals("CREATE TABLE T (" + //
                             "\n\tF1 TIMESTAMP," + //
                             "\n\tF2 TIMESTAMP(9)," + //
                             "\n\tF3 TIMESTAMP WITH TIME ZONE," + //
@@ -65,15 +65,15 @@ public class OracleCreateTableTest15 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        assertEquals(6, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F1")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F2")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F3")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F4")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F5")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F6")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F1")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F2")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F3")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F4")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F5")));
+        assertTrue(visitor.getColumns().contains(new TableStat.Column("T", "F6")));
     }
 }

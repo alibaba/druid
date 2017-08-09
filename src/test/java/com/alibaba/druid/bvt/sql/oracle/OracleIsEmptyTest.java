@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,15 +29,13 @@ public class OracleIsEmptyTest extends TestCase {
         String sql = "SELECT product_id, TO_CHAR(ad_finaltext) FROM print_media WHERE ad_textdocs_ntab IS NOT EMPTY;";
 
         String expect = "SELECT product_id, TO_CHAR(ad_finaltext)\n" + "FROM print_media\n"
-                        + "WHERE ad_textdocs_ntab IS NOT EMPTY;\n";
+                        + "WHERE ad_textdocs_ntab IS NOT EMPTY;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expect, text);
-
-        System.out.println(text);
+        assertEquals(expect, text);
     }
 }

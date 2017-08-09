@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,19 @@ public class SQLKeep extends SQLObjectImpl {
             orderBy.setParent(this);
         }
         this.orderBy = orderBy;
+    }
+
+
+    public SQLKeep clone() {
+        SQLKeep x = new SQLKeep();
+
+        x.denseRank = denseRank;
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        return x;
     }
 
     public static enum DenseRank {

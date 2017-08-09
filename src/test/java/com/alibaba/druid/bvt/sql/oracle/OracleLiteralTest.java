@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class OracleLiteralTest extends TestCase {
     public void test_oracle() throws Exception {
         String sql = "SELECT FROM_TZ(TIMESTAMP '2007-11-20 08:00:00', '3:00') FROM DUAL;";
 
-        String expect = "SELECT FROM_TZ(TIMESTAMP '2007-11-20 08:00:00', '3:00')\n" + "FROM DUAL;\n";
+        String expect = "SELECT FROM_TZ(TIMESTAMP '2007-11-20 08:00:00', '3:00')\n" + "FROM DUAL;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
@@ -43,7 +43,7 @@ public class OracleLiteralTest extends TestCase {
     public void test_date() throws Exception {
         String sql = "SELECT DATE '1998-12-25' FROM DUAL;";
 
-        String expect = "SELECT DATE '1998-12-25'\n" + "FROM DUAL;\n";
+        String expect = "SELECT DATE '1998-12-25'\n" + "FROM DUAL;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

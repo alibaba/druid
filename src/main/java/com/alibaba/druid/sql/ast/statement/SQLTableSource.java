@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.statement;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObject;
 
@@ -27,4 +28,15 @@ public interface SQLTableSource extends SQLObject {
     void setAlias(String alias);
     
     List<SQLHint> getHints();
+
+    SQLTableSource clone();
+
+    String computeAlias();
+    boolean containsAlias(String alias);
+
+    SQLExpr getFlashback();
+    void setFlashback(SQLExpr flashback);
+
+    SQLColumnDefinition findColumn(String columnName);
+    SQLTableSource findTableSourceWithColumn(String columnName);
 }

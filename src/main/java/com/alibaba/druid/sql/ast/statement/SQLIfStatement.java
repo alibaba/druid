@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,26 @@ public class SQLIfStatement extends SQLStatementImpl {
     private List<ElseIf>       elseIfList = new ArrayList<ElseIf>();
     private Else               elseItem;
 
+    public SQLIfStatement clone() {
+        SQLIfStatement x = new SQLIfStatement();
+
+        for (SQLStatement stmt : statements) {
+            SQLStatement stmt2 = stmt.clone();
+            stmt2.setParent(x);
+            x.statements.add(stmt2);
+        }
+        for (ElseIf o : elseIfList) {
+            ElseIf o2 = o.clone();
+            o2.setParent(x);
+            x.elseIfList.add(o2);
+        }
+        if (elseItem != null) {
+            x.setElseItem(elseItem.clone());
+        }
+
+        return x;
+    }
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -47,6 +67,9 @@ public class SQLIfStatement extends SQLStatementImpl {
     }
 
     public void setCondition(SQLExpr condition) {
+        if (condition != null) {
+            condition.setParent(this);
+        }
         this.condition = condition;
     }
 
@@ -54,17 +77,15 @@ public class SQLIfStatement extends SQLStatementImpl {
         return statements;
     }
 
-    public void setStatements(List<SQLStatement> statements) {
-        this.statements = statements;
-    }
-    
-    public List<ElseIf> getElseIfList() {
-        return elseIfList;
+    public void addStatement(SQLStatement statement) {
+        if (statement != null) {
+            statement.setParent(this);
+        }
+        this.statements.add(statement);
     }
 
-    
-    public void setElseIfList(List<ElseIf> elseIfList) {
-        this.elseIfList = elseIfList;
+    public List<ElseIf> getElseIfList() {
+        return elseIfList;
     }
 
     public Else getElseItem() {
@@ -72,6 +93,9 @@ public class SQLIfStatement extends SQLStatementImpl {
     }
 
     public void setElseItem(Else elseItem) {
+        if (elseItem != null) {
+            elseItem.setParent(this);
+        }
         this.elseItem = elseItem;
     }
 
@@ -107,6 +131,21 @@ public class SQLIfStatement extends SQLStatementImpl {
             }
             this.condition = condition;
         }
+
+        public ElseIf clone() {
+            ElseIf x = new ElseIf();
+
+            if (condition != null) {
+                x.setCondition(condition.clone());
+            }
+            for (SQLStatement stmt : statements) {
+                SQLStatement stmt2 = stmt.clone();
+                stmt2.setParent(x);
+                x.statements.add(stmt2);
+            }
+
+            return x;
+        }
     }
 
     public static class Else extends SQLObjectImpl {
@@ -129,5 +168,14 @@ public class SQLIfStatement extends SQLStatementImpl {
             this.statements = statements;
         }
 
+        public Else clone() {
+            Else x = new Else();
+            for (SQLStatement stmt : statements) {
+                SQLStatement stmt2 = stmt.clone();
+                stmt2.setParent(x);
+                x.statements.add(stmt2);
+            }
+            return x;
+        }
     }
 }

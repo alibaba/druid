@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,24 +55,53 @@ public class OracleCreateTableTest19 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" (" //
-                                    + "\n\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE," //
-                                    + "\n\t\"DASHBOARD_ID\" NUMBER(38, 0) NOT NULL ENABLE," //
-                                    + "\n\t\"USER_ID\" NUMBER(38, 0)," //
-                                    + "\n\t\"ORDER_INDEX\" NUMBER(38, 0)," //
-                                    + "\n\tPRIMARY KEY (\"ID\")" //
-                                    + "\n\tUSING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS TABLESPACE \"USERS\" ENABLE"
-                                    + "\n\tSTORAGE (INITIAL 65536 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)" //
-                                    + "\n)" //
-                                    + "\nPCTFREE 10" //
-                                    + "\nINITRANS 1" //
-                                    + "\nMAXTRANS 255" //
-                                    + "\nNOCOMPRESS" //
-                                    + "\nLOGGING" //
-                                    + "\nTABLESPACE \"USERS\"" //
-                                    + "\nSTORAGE (INITIAL 65536 FREELISTS 1 FREELIST GROUPS 1 BUFFER_POOL DEFAULT)", //
+        assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" (\n" +
+                        "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"DASHBOARD_ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
+                        "\t\"USER_ID\" NUMBER(38, 0),\n" +
+                        "\t\"ORDER_INDEX\" NUMBER(38, 0),\n" +
+                        "\tPRIMARY KEY (\"ID\")\n" +
+                        "\t\tUSING INDEX\n" +
+                        "\t\tPCTFREE 10\n" +
+                        "\t\tINITRANS 2\n" +
+                        "\t\tMAXTRANS 255\n" +
+                        "\t\tTABLESPACE \"USERS\"\n" +
+                        "\t\tSTORAGE (\n" +
+                        "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
+                        "\t\t\tFREELISTS 1\n" +
+                        "\t\t\tFREELIST GROUPS 1\n" +
+                        "\t\t\tBUFFER_POOL DEFAULT\n" +
+                        "\t\t\tFLASH_CACHE DEFAULT\n" +
+                        "\t\t\tCELL_FLASH_CACHE DEFAULT\n" +
+                        "\t\t)\n" +
+                        "\t\tCOMPUTE STATISTICS\n" +
+                        "\t\tENABLE\n" +
+                        ")\n" +
+                        "PCTFREE 10\n" +
+                        "PCTUSED 40\n" +
+                        "INITRANS 1\n" +
+                        "MAXTRANS 255\n" +
+                        "NOCOMPRESS\n" +
+                        "LOGGING\n" +
+                        "TABLESPACE \"USERS\"\n" +
+                        "STORAGE (\n" +
+                        "\tINITIAL 65536\n" +
+                        "\tNEXT 1048576\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
+                        "\tFREELISTS 1\n" +
+                        "\tFREELIST GROUPS 1\n" +
+                        "\tBUFFER_POOL DEFAULT\n" +
+                        "\tFLASH_CACHE DEFAULT\n" +
+                        "\tCELL_FLASH_CACHE DEFAULT\n" +
+                        ");", //
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

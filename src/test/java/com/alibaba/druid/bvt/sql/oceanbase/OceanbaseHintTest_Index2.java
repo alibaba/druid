@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class OceanbaseHintTest_Index2 extends MysqlTest {
         
         String result = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DELETE /*+ INDEX(t1 i1) */ FROM t1"
-                + "\nWHERE t1.c1 = 1", result);
+                + "\nWHERE t1.c1 = 1;", result);
         print(stmtList);
 
         Assert.assertEquals(1, stmtList.size());

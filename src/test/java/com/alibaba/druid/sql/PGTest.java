@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@ package com.alibaba.druid.sql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
+import org.junit.Assert;
 
 public class PGTest extends TestCase {
 	protected String output(List<SQLStatement> stmtList) {
@@ -42,4 +44,18 @@ public class PGTest extends TestCase {
 	        }
 	        System.out.println(text);
 	    }
+
+    protected void testParseSql(String sql, String expectedSql, String expectedPattern, Class<?> type) {
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statement = statementList.get(0);
+
+        Assert.assertEquals(1, statementList.size());
+        Assert.assertTrue(type.isAssignableFrom(statement.getClass()));
+
+        StringBuilder sb = new StringBuilder();
+        PGOutputVisitor visitor = new PGOutputVisitor(sb);
+        statement.accept(visitor);
+        Assert.assertEquals(expectedSql, sb.toString());
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,27 +49,31 @@ public class SQLServerInsertTest7 extends TestCase {
 
         SQLServerInsertStatement insertStmt = (SQLServerInsertStatement) stmt;
 
-        Assert.assertEquals(0, insertStmt.getValuesList().size());
-        Assert.assertEquals(10, insertStmt.getColumns().size());
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(0, insertStmt.getValuesList().size());
+        assertEquals(10, insertStmt.getColumns().size());
+        assertEquals(1, statementList.size());
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);
 
-        String formatSql = "INSERT INTO MMS_SETTLEMENT_COM"
-                + "\n\t(handler, handleTime, MID, MERCHANTNAME, TOTALAMT"
-                + "\n\t, ACTUALAMT, paymentMoney, STATUS, SERIAL_NUM, REMARKS)"
-                + "\nSELECT 'admin', getdate(), MID, MERCHANTNAME, SUM(CONVERT(DECIMAL(18, 2), isnull(TOTALAMT, 0))) AS TOTALAMT"
-                + "\n\t, SUM(CONVERT(DECIMAL(18, 2), isnull(ACTUALAMT, 0))) AS ACTUALAMT, SUM(CONVERT(DECIMAL(18, 2), isnull(paymentMoney, 0))) AS paymentMoney, 2, 126, ("
-                + "\n\t\tSELECT REMARKS + ''"
-                + "\n\t\tFROM MMS_SETTLEMENT_COM"
-                + "\n\t\tWHERE MID = A.MID"
-                + "\n\t\tFOR XML PATH('')"
-                + "\n\t\t) AS REMARKS"
-                + "\nFROM MMS_SETTLEMENT_COM A"
-                + "\nWHERE ID IN (304, 305, 306, 297, 108, 184)"
-                + "\nGROUP BY MID, MERCHANTNAME";
-        Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
+        String formatSql = "INSERT INTO MMS_SETTLEMENT_COM\n" +
+                "\t(handler, handleTime, MID, MERCHANTNAME, TOTALAMT\n" +
+                "\t, ACTUALAMT, paymentMoney, STATUS, SERIAL_NUM, REMARKS)\n" +
+                "SELECT 'admin', getdate(), MID, MERCHANTNAME\n" +
+                "\t, SUM(CONVERT(DECIMAL(18, 2), isnull(TOTALAMT, 0))) AS TOTALAMT\n" +
+                "\t, SUM(CONVERT(DECIMAL(18, 2), isnull(ACTUALAMT, 0))) AS ACTUALAMT\n" +
+                "\t, SUM(CONVERT(DECIMAL(18, 2), isnull(paymentMoney, 0))) AS paymentMoney\n" +
+                "\t, 2, 126\n" +
+                "\t, (\n" +
+                "\t\tSELECT REMARKS + ''\n" +
+                "\t\tFROM MMS_SETTLEMENT_COM\n" +
+                "\t\tWHERE MID = A.MID\n" +
+                "\t\tFOR XML PATH('')\n" +
+                "\t) AS REMARKS\n" +
+                "FROM MMS_SETTLEMENT_COM A\n" +
+                "WHERE ID IN (304, 305, 306, 297, 108, 184)\n" +
+                "GROUP BY MID, MERCHANTNAME";
+        assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 
 

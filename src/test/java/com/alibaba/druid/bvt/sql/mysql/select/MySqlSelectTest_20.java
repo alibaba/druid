@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,6 @@ public class MySqlSelectTest_20 extends MysqlTest {
         Assert.assertEquals("SELECT bsvariety, MAX(bsh) AS bsh, MIN(bsl) AS bsl"
                 + "\nFROM exchange_market_info"
                 + "\nWHERE bsdate > date_sub(now(), INTERVAL 1 DAY)"
-                + "\nGROUP BY bsvariety DESC", output);
+                + "\nGROUP BY bsvariety DESC;", output);
     }
 }

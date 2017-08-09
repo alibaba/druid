@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,13 @@ package com.alibaba.druid.sql.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributesImpl;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleLobStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLPartition extends SQLObjectImpl {
+public class SQLPartition extends OracleSegmentAttributesImpl implements OracleSegmentAttributes {
 
     protected SQLName               name;
 
@@ -33,12 +37,16 @@ public class SQLPartition extends SQLObjectImpl {
     // for mysql
     protected SQLExpr           dataDirectory;
     protected SQLExpr           indexDirectory;
-    protected SQLName           tableSpace;
     protected SQLExpr           maxRows;
     protected SQLExpr           minRows;
     protected SQLExpr           engine;
     protected SQLExpr           comment;
 
+    // for oracle
+    protected boolean segmentCreationImmediate;
+    protected boolean segmentCreationDeferred;
+
+    private SQLObject lobStorage;
 
     public SQLName getName() {
         return name;
@@ -106,19 +114,6 @@ public class SQLPartition extends SQLObjectImpl {
         this.dataDirectory = dataDirectory;
     }
 
- 
-
-    public SQLName getTableSpace() {
-        return tableSpace;
-    }
-
-    public void setTableSpace(SQLName tableSpace) {
-        if (tableSpace != null) {
-            tableSpace.setParent(this);
-        }
-        this.tableSpace = tableSpace;
-    }
-
     public SQLExpr getMaxRows() {
         return maxRows;
     }
@@ -169,12 +164,90 @@ public class SQLPartition extends SQLObjectImpl {
             acceptChild(visitor, values);
             acceptChild(visitor, dataDirectory);
             acceptChild(visitor, indexDirectory);
-            acceptChild(visitor, tableSpace);
+            acceptChild(visitor, tablespace);
             acceptChild(visitor, maxRows);
             acceptChild(visitor, minRows);
             acceptChild(visitor, engine);
             acceptChild(visitor, comment);
+
+            acceptChild(visitor, storage);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLObject getLobStorage() {
+        return lobStorage;
+    }
+
+    public void setLobStorage(SQLObject lobStorage) {
+        if (lobStorage != null) {
+            lobStorage.setParent(this);
+        }
+        this.lobStorage = lobStorage;
+    }
+
+    public boolean isSegmentCreationImmediate() {
+        return segmentCreationImmediate;
+    }
+
+    public void setSegmentCreationImmediate(boolean segmentCreationImmediate) {
+        this.segmentCreationImmediate = segmentCreationImmediate;
+    }
+
+    public boolean isSegmentCreationDeferred() {
+        return segmentCreationDeferred;
+    }
+
+    public void setSegmentCreationDeferred(boolean segmentCreationDeferred) {
+        this.segmentCreationDeferred = segmentCreationDeferred;
+    }
+
+    public SQLPartition clone() {
+        SQLPartition x = new SQLPartition();
+
+        if (name != null) {
+            x.setName(name.clone());
+        }
+
+        if (subPartitionsCount != null) {
+            x.setSubPartitionsCount(subPartitionsCount.clone());
+        }
+
+        for (SQLSubPartition p : subPartitions) {
+            SQLSubPartition p2 = p.clone();
+            p2.setParent(x);
+            x.subPartitions.add(p2);
+        }
+
+        if (values != null) {
+            x.setValues(values.clone());
+        }
+
+        if (dataDirectory != null) {
+            x.setDataDirectory(dataDirectory.clone());
+        }
+        if (indexDirectory != null) {
+            x.setDataDirectory(indexDirectory.clone());
+        }
+        if (maxRows != null) {
+            x.setDataDirectory(maxRows.clone());
+        }
+        if (minRows != null) {
+            x.setDataDirectory(minRows.clone());
+        }
+        if (engine != null) {
+            x.setDataDirectory(engine.clone());
+        }
+        if (comment != null) {
+            x.setDataDirectory(comment.clone());
+        }
+        x.segmentCreationImmediate = segmentCreationImmediate;
+        x.segmentCreationDeferred = segmentCreationDeferred;
+
+        if (lobStorage != null) {
+            x.setLobStorage(lobStorage.clone());
+        }
+
+        return x;
     }
 }

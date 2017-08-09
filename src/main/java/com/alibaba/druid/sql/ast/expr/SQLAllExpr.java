@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,15 @@ public class SQLAllExpr extends SQLExprImpl {
     }
 
     public SQLAllExpr(SQLSelect select){
+        setSubQuery(select);
+    }
 
-        this.subQuery = select;
+    public SQLAllExpr clone() {
+        SQLAllExpr x = new SQLAllExpr();
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        return x;
     }
 
     public SQLSelect getSubQuery() {
@@ -37,6 +44,9 @@ public class SQLAllExpr extends SQLExprImpl {
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 

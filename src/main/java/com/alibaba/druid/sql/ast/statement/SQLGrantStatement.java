@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,9 @@ public class SQLGrantStatement extends SQLStatementImpl {
     private boolean         adminOption;
 
     private SQLExpr         identifiedBy;
+    private String          identifiedByPassword;
+
+    private boolean         withGrantOption;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -134,5 +137,21 @@ public class SQLGrantStatement extends SQLStatementImpl {
 
     public void setIdentifiedBy(SQLExpr identifiedBy) {
         this.identifiedBy = identifiedBy;
+    }
+
+    public String getIdentifiedByPassword() {
+        return identifiedByPassword;
+    }
+
+    public void setIdentifiedByPassword(String identifiedByPassword) {
+        this.identifiedByPassword = identifiedByPassword;
+    }
+
+    public boolean getWithGrantOption() {
+        return withGrantOption;
+    }
+
+    public void setWithGrantOption(boolean withGrantOption) {
+        this.withGrantOption = withGrantOption;
     }
 }

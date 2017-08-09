@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@ public class OracleEXTRACTTest2 extends TestCase {
 
         String expect = "SELECT warehouse_name, EXTRACT(warehouse_spec, '/Warehouse/Docks') AS \"Number of Docks\"\n" +
                 "FROM warehouses\n" +
-                "WHERE warehouse_spec IS NOT NULL;\n" +
-                "";
+                "WHERE warehouse_spec IS NOT NULL;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

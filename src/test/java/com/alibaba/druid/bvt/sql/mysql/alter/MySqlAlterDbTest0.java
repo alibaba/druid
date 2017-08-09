@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,8 @@ public class MySqlAlterDbTest0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         
-        Assert.assertEquals("ALTER DATABASE `#mysql50#a-b-c` UPGRADE DATA DIRECTORY NAME", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("alter database `#mysql50#a-b-c` upgrade data directory name", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("ALTER DATABASE `#mysql50#a-b-c` UPGRADE DATA DIRECTORY NAME;", SQLUtils.toMySqlString(stmt));
+        assertEquals("alter database `#mysql50#a-b-c` upgrade data directory name;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

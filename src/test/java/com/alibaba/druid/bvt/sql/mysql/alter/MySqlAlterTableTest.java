@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class MySqlAlterTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHANGE COLUMN `fname` `fname1` VARCHAR(45) NULL DEFAULT NULL", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHANGE COLUMN `fname` `fname1` VARCHAR(45) NULL DEFAULT NULL;", output);
     }
     
     public void test_alter_1() throws Exception {
@@ -41,8 +41,8 @@ public class MySqlAlterTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHARACTER SET = utf8, COLLATE = utf8_general_ci", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("alter table `test`.`tb1`\n\tcharacter set = utf8, collate = utf8_general_ci", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCHARACTER SET = utf8, COLLATE = utf8_general_ci;", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("alter table `test`.`tb1`\n\tcharacter set = utf8, collate = utf8_general_ci;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_alter_2() throws Exception {
@@ -51,7 +51,7 @@ public class MySqlAlterTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD INDEX `f` (`fname` ASC)", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD INDEX `f` (`fname` ASC);", output);
     }
     
     public void test_alter_3() throws Exception {
@@ -60,7 +60,7 @@ public class MySqlAlterTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tENGINE = InnoDB", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tENGINE = InnoDB;", output);
     }
     
     public void test_alter_4() throws Exception {
@@ -69,7 +69,7 @@ public class MySqlAlterTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCOLLATE = utf8_general_ci,\n\tPACK_KEYS = PACK ALL,\n\tENGINE = InnoDB", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tCOLLATE = utf8_general_ci,\n\tPACK_KEYS = PACK ALL,\n\tENGINE = InnoDB;", output);
     }
     
     public void test_alter_5() throws Exception {
@@ -78,7 +78,7 @@ public class MySqlAlterTableTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE t1\n\tCOMMENT = '表的注释'", output);
+        Assert.assertEquals("ALTER TABLE t1\n\tCOMMENT = '表的注释';", output);
     }
 
 }

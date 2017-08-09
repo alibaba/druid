@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,20 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
 
     private SearchModifier searchModifier;
 
+    public MySqlMatchAgainstExpr clone() {
+        MySqlMatchAgainstExpr x = new MySqlMatchAgainstExpr();
+        for (SQLExpr column : columns) {
+            SQLExpr column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        if (against != null) {
+            x.setAgainst(against.clone());
+        }
+        x.searchModifier = searchModifier;
+        return x;
+    }
+
     public List<SQLExpr> getColumns() {
         return columns;
     }
@@ -44,6 +58,9 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
     }
 
     public void setAgainst(SQLExpr against) {
+        if (against != null) {
+            against.setParent(this);
+        }
         this.against = against;
     }
 

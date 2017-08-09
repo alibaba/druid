@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,25 +56,24 @@ public class OracleCreateTableTest40 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE customers_part ("
-                + "\n\tcustomer_id NUMBER(6),"
-                + "\n\tcust_first_name VARCHAR2(20),"
-                + "\n\tcust_last_name VARCHAR2(20),"
-                + "\n\tnls_territory VARCHAR2(30),"
-                + "\n\tcredit_limit NUMBER(9, 2)"
-                + "\n)"
-                + "\nPARTITION BY RANGE (credit_limit)"
-                + "\nSUBPARTITION BY HASH (nls_territory)"
-                + "\n\tSUBPARTITION TEMPLATE ("
-                + "\n\t\tSUBPARTITION east VALUES ('CHINA', 'JAPAN', 'INDIA', 'THAILAND'),"
-                + "\n\t\tSUBPARTITION west VALUES ('AMERICA', 'GERMANY', 'ITALY', 'SWITZERLAND'),"
-                + "\n\t\tSUBPARTITION other VALUES (DEFAULT)"
-                + "\n\t)"
-                + "\n("
-                + "\n\tPARTITION p1 VALUES LESS THAN (1000),"
-                + "\n\tPARTITION p2 VALUES LESS THAN (2500),"
-                + "\n\tPARTITION p3 VALUES LESS THAN (MAXVALUE)"
-                + "\n)",//
+        Assert.assertEquals("CREATE TABLE customers_part (\n" +
+                        "\tcustomer_id NUMBER(6),\n" +
+                        "\tcust_first_name VARCHAR2(20),\n" +
+                        "\tcust_last_name VARCHAR2(20),\n" +
+                        "\tnls_territory VARCHAR2(30),\n" +
+                        "\tcredit_limit NUMBER(9, 2)\n" +
+                        ")\n" +
+                        "PARTITION BY RANGE (credit_limit)\n" +
+                        "SUBPARTITION BY HASH (nls_territory)\n" +
+                        "\tSUBPARTITION TEMPLATE (\n" +
+                        "\t\tSUBPARTITION east VALUES ('CHINA', 'JAPAN', 'INDIA', 'THAILAND'),\n" +
+                        "\t\tSUBPARTITION west VALUES ('AMERICA', 'GERMANY', 'ITALY', 'SWITZERLAND'),\n" +
+                        "\t\tSUBPARTITION other VALUES (DEFAULT)\n" +
+                        "\t) (\n" +
+                        "\tPARTITION p1 VALUES LESS THAN (1000),\n" +
+                        "\tPARTITION p2 VALUES LESS THAN (2500),\n" +
+                        "\tPARTITION p3 VALUES LESS THAN (MAXVALUE)\n" +
+                        ");",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -57,7 +59,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 <=> 1, NULL <=> NULL, 1 <=> NULL;", text);
+        Assert.assertEquals("SELECT 1 <=> 1, NULL <=> NULL\n" +
+                "\t, 1 <=> NULL;", text);
     }
 
     public void test_3() throws Exception {
@@ -68,7 +71,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 = 1, NULL = NULL, 1 = NULL;", text);
+        Assert.assertEquals("SELECT 1 = 1, NULL = NULL\n" +
+                "\t, 1 = NULL;", text);
     }
 
     public void test_4() throws Exception {
@@ -90,7 +94,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 0.1 <= 2;", text);
+        Assert.assertEquals("SELECT 0.1 <= 2", text);
     }
 
     public void test_6() throws Exception {
@@ -101,7 +105,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 2 < 2;", text);
+        Assert.assertEquals("SELECT 2 < 2", text);
     }
 
     public void test_7() throws Exception {
@@ -112,7 +116,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 2 >= 2;", text);
+        Assert.assertEquals("SELECT 2 >= 2", text);
     }
 
     public void test_8() throws Exception {
@@ -123,7 +127,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 2 > 2;", text);
+        Assert.assertEquals("SELECT 2 > 2", text);
     }
 
     public void test_9() throws Exception {
@@ -134,7 +138,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 IS true, 0 IS false, NULL IS UNKNOWN;", text);
+        assertEquals("SELECT 1 IS true, 0 IS false\n" +
+                "\t, NULL IS UNKNOWN", text);
     }
 
     public void test_10() throws Exception {
@@ -145,7 +150,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 IS NOT UNKNOWN, 0 IS NOT UNKNOWN, NULL IS NOT UNKNOWN;", text);
+        Assert.assertEquals("SELECT 1 IS NOT UNKNOWN, 0 IS NOT UNKNOWN\n" +
+                "\t, NULL IS NOT UNKNOWN", text);
     }
 
     public void test_11() throws Exception {
@@ -156,7 +162,8 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 IS NULL, 0 IS NULL, NULL IS NULL;", text);
+        Assert.assertEquals("SELECT 1 IS NULL, 0 IS NULL\n" +
+                "\t, NULL IS NULL", text);
     }
 
     public void test_12() throws Exception {
@@ -167,7 +174,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM tbl_name\nWHERE auto_col IS NULL;", text);
+        Assert.assertEquals("SELECT *\nFROM tbl_name\nWHERE auto_col IS NULL", text);
     }
 
     public void test_13() throws Exception {
@@ -178,7 +185,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM tbl_name\nWHERE date_column IS NULL;", text);
+        Assert.assertEquals("SELECT *\nFROM tbl_name\nWHERE date_column IS NULL", text);
     }
 
     public void test_14() throws Exception {
@@ -189,7 +196,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 2 BETWEEN 1 AND 3, 2 BETWEEN 3 AND 1;", text);
+        Assert.assertEquals("SELECT 2 BETWEEN 1 AND 3, 2 BETWEEN 3 AND 1", text);
     }
 
     public void test_15() throws Exception {
@@ -200,7 +207,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 BETWEEN 2 AND 3;", text);
+        assertEquals("SELECT 1 BETWEEN 2 AND 3;", text);
     }
 
     public void test_16() throws Exception {
@@ -325,13 +332,6 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.ORACLE);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,13 +38,13 @@ public class OceanbaseHintTest_Index extends MysqlTest {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
                     + "\nFROM t1, t2"
-                    + "\nWHERE t1.c1 = t2.c1", result);
+                    + "\nWHERE t1.c1 = t2.c1;", result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select /*+ INDEX(t1 i1) , INDEX(t2 i2)*/ *"
                     + "\nfrom t1, t2"
-                    + "\nwhere t1.c1 = t2.c1", result);
+                    + "\nwhere t1.c1 = t2.c1;", result);
         }
 
         Assert.assertEquals(1, stmtList.size());

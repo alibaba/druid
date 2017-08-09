@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class MySqlBeginTest extends MysqlTest {
         
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL);
-            Assert.assertEquals("START TRANSACTION;"
+            assertEquals("START TRANSACTION;"
                     + "\n"
                     + "\nSELECT @A := SUM(salary)"
                     + "\nFROM table1"
@@ -69,12 +69,12 @@ public class MySqlBeginTest extends MysqlTest {
                     + "\nSET summary = @A"
                     + "\nWHERE type = 1;"
                     + "\n"
-                    + "\nCOMMIT", //
+                    + "\nCOMMIT;", //
                                 output);
         }
         {
             String output = SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("start transaction;"
+            assertEquals("start transaction;"
                     + "\n"
                     + "\nselect @A := sum(salary)"
                     + "\nfrom table1"
@@ -84,7 +84,7 @@ public class MySqlBeginTest extends MysqlTest {
                     + "\nset summary = @A"
                     + "\nwhere type = 1;"
                     + "\n"
-                    + "\ncommit", //
+                    + "\ncommit;", //
                                 output);
         }
     }

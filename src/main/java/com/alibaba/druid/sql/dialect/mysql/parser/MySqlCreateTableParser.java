@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
     }
 
     public MySqlCreateTableStatement parseCrateTable(boolean acceptCreate) {
+        MySqlCreateTableStatement stmt = new MySqlCreateTableStatement();
         if (acceptCreate) {
+            if (lexer.hasComment() && lexer.isKeepComments()) {
+                stmt.addBeforeComment(lexer.readAndResetComments());
+            }
             accept(Token.CREATE);
         }
-        MySqlCreateTableStatement stmt = new MySqlCreateTableStatement();
 
         if (identifierEquals("TEMPORARY")) {
             lexer.nextToken();
@@ -137,7 +140,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                         accept(Token.LPAREN);
                         for (;;) {
-                            idx.addColumn(this.exprParser.expr());
+                            idx.addColumn(this.exprParser.parseSelectOrderByItem());
                             if (!(lexer.token() == (Token.COMMA))) {
                                 break;
                             } else {
@@ -500,7 +503,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
                     partitionClauseRest(clause);
                 } else {
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    throw new ParserException("TODO. " + lexer.info());
                 }
 
                 if (lexer.token() == Token.LPAREN) {
@@ -529,7 +532,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.token() == (Token.ON)) {
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         if (lexer.token() == (Token.AS)) {
@@ -771,7 +774,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_ALIAS) {
                 SQLName indexName = this.exprParser.name();
                 if (indexName != null) {
-                    key.setIndexName(indexName);
+                    key.setName(indexName);
                 }
             }
 
@@ -817,14 +820,18 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
         if (lexer.token() == Token.PRIMARY) {
             MySqlPrimaryKey pk = this.getExprParser().parsePrimaryKey();
-            pk.setName(name);
+            if (name != null) {
+                pk.setName(name);
+            }
             pk.setHasConstaint(hasConstaint);
             return (SQLTableConstraint) pk;
         }
 
         if (lexer.token() == Token.UNIQUE) {
             MySqlUnique uk = this.getExprParser().parseUnique();
-            uk.setName(name);
+            if (name != null) {
+                uk.setName(name);
+            }
             uk.setHasConstaint(hasConstaint);
             return (SQLTableConstraint) uk;
         }
@@ -836,6 +843,6 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             return (SQLTableConstraint) fk;
         }
 
-        throw new ParserException("TODO :" + lexer.token());
+        throw new ParserException("TODO. " + lexer.info());
     }
 }

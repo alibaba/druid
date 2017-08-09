@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,81 +54,101 @@ public class OracleSelectTest38 extends OracleTest {
 
         {
             String result = SQLUtils.toOracleString(stmt);
-            Assert.assertEquals("SELECT *"
-                    + "\nFROM ("
-                    + "\n\tWITH"
-                    + "\n\t\tvw_kreis_statics_t"
-                    + "\n\t\tAS"
-                    + "\n\t\t("
-                    + "\n\t\t\tSELECT substr(xzqh, 1, 6) AS xzqh, swrslx, SUM(swrs_count) AS acd_totle"
-                    + "\n\t\t\tFROM ("
-                    + "\n\t\t\t\tSELECT xzqh, sglx, CASE WHEN swrs7 < 3 THEN '1' WHEN swrs7 < 5 THEN '2' WHEN swrs7 <= 9 THEN '3' ELSE '4' END AS swrslx, 1 AS swrs_count"
-                    + "\n\t\t\t\tFROM acduser.vw_acd_info"
-                    + "\n\t\t\t\tWHERE sglx = '1'"
-                    + "\n\t\t\t\t\tAND sgfssj >= ?"
-                    + "\n\t\t\t)"
-                    + "\n\t\t\tGROUP BY substr(xzqh, 1, 6), swrslx"
-                    + "\n\t\t)"
-                    + "\n\tSELECT e.\"XZQH\", e.\"LESS3\", e.\"F3TO5\", e.\"F5TO9\", e.\"MORE9\""
-                    + "\n\t\t, kreis_code, kreis_name, px1, py1, px2"
-                    + "\n\t\t, py2"
-                    + "\n\tFROM ("
-                    + "\n\t\tSELECT xzqh, nvl(MAX(decode(swrslx, '1', acd_totle)), 0) AS less3, nvl(MAX(decode(swrslx, '2', acd_totle)), 0) AS f3to5, nvl(MAX(decode(swrslx, '3', acd_totle)), 0) AS f5to9, nvl(MAX(decode(swrslx, '4', acd_totle)), 0) AS more9"
-                    + "\n\t\tFROM ("
-                    + "\n\t\t\tSELECT *"
-                    + "\n\t\t\tFROM acduser.vw_kreis_statics_t"
-                    + "\n\t\t)"
-                    + "\n\t\tGROUP BY xzqh"
-                    + "\n\t) e"
-                    + "\n\t\tLEFT JOIN acduser.vw_sc_kreis_code_lv2 f ON e.xzqh = f.short_kreis_code "
-                    + "\n)"
-                    + "\nWHERE kreis_code IN (SELECT *"
-                    + "\n\tFROM ("
-                    + "\n\t\tSELECT tbek_code"
-                    + "\n\t\tFROM acduser.vw_kreis_code"
-                    + "\n\t\tSTART WITH tbek_code = ?"
-                    + "\n\t\tCONNECT BY PRIOR tbek_pk = tbek_parent"
-                    + "\n\t)"
-                    + "\n\tWHERE tbek_code != ?)", result);
+            Assert.assertEquals("SELECT *\n" +
+                    "FROM (\n" +
+                    "\tWITH vw_kreis_statics_t AS (\n" +
+                    "\t\t\tSELECT substr(xzqh, 1, 6) AS xzqh, swrslx\n" +
+                    "\t\t\t\t, SUM(swrs_count) AS acd_totle\n" +
+                    "\t\t\tFROM (\n" +
+                    "\t\t\t\tSELECT xzqh, sglx\n" +
+                    "\t\t\t\t\t, CASE \n" +
+                    "\t\t\t\t\t\tWHEN swrs7 < 3 THEN '1'\n" +
+                    "\t\t\t\t\t\tWHEN swrs7 < 5 THEN '2'\n" +
+                    "\t\t\t\t\t\tWHEN swrs7 <= 9 THEN '3'\n" +
+                    "\t\t\t\t\t\tELSE '4'\n" +
+                    "\t\t\t\t\tEND AS swrslx, 1 AS swrs_count\n" +
+                    "\t\t\t\tFROM acduser.vw_acd_info\n" +
+                    "\t\t\t\tWHERE sglx = '1'\n" +
+                    "\t\t\t\t\tAND sgfssj >= ?\n" +
+                    "\t\t\t)\n" +
+                    "\t\t\tGROUP BY substr(xzqh, 1, 6), swrslx\n" +
+                    "\t\t)\n" +
+                    "\tSELECT e.\"XZQH\", e.\"LESS3\", e.\"F3TO5\", e.\"F5TO9\", e.\"MORE9\"\n" +
+                    "\t\t, kreis_code, kreis_name, px1, py1, px2\n" +
+                    "\t\t, py2\n" +
+                    "\tFROM (\n" +
+                    "\t\tSELECT xzqh\n" +
+                    "\t\t\t, nvl(MAX(decode(swrslx, '1', acd_totle)), 0) AS less3\n" +
+                    "\t\t\t, nvl(MAX(decode(swrslx, '2', acd_totle)), 0) AS f3to5\n" +
+                    "\t\t\t, nvl(MAX(decode(swrslx, '3', acd_totle)), 0) AS f5to9\n" +
+                    "\t\t\t, nvl(MAX(decode(swrslx, '4', acd_totle)), 0) AS more9\n" +
+                    "\t\tFROM (\n" +
+                    "\t\t\tSELECT *\n" +
+                    "\t\t\tFROM acduser.vw_kreis_statics_t\n" +
+                    "\t\t)\n" +
+                    "\t\tGROUP BY xzqh\n" +
+                    "\t) e\n" +
+                    "\t\tLEFT JOIN acduser.vw_sc_kreis_code_lv2 f ON e.xzqh = f.short_kreis_code \n" +
+                    ")\n" +
+                    "WHERE kreis_code IN (\n" +
+                    "\tSELECT *\n" +
+                    "\tFROM (\n" +
+                    "\t\tSELECT tbek_code\n" +
+                    "\t\tFROM acduser.vw_kreis_code\n" +
+                    "\t\tSTART WITH tbek_code = ?\n" +
+                    "\t\tCONNECT BY PRIOR tbek_pk = tbek_parent\n" +
+                    "\t)\n" +
+                    "\tWHERE tbek_code != ?\n" +
+                    ")", result);
         }
         {
             String result = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select *"
-                    + "\nfrom ("
-                    + "\n\twith"
-                    + "\n\t\tvw_kreis_statics_t"
-                    + "\n\t\tas"
-                    + "\n\t\t("
-                    + "\n\t\t\tselect substr(xzqh, 1, 6) as xzqh, swrslx, sum(swrs_count) as acd_totle"
-                    + "\n\t\t\tfrom ("
-                    + "\n\t\t\t\tselect xzqh, sglx, case when swrs7 < 3 then '1' when swrs7 < 5 then '2' when swrs7 <= 9 then '3' else '4' end as swrslx, 1 as swrs_count"
-                    + "\n\t\t\t\tfrom acduser.vw_acd_info"
-                    + "\n\t\t\t\twhere sglx = '1'"
-                    + "\n\t\t\t\t\tand sgfssj >= ?"
-                    + "\n\t\t\t)"
-                    + "\n\t\t\tgroup by substr(xzqh, 1, 6), swrslx"
-                    + "\n\t\t)"
-                    + "\n\tselect e.\"XZQH\", e.\"LESS3\", e.\"F3TO5\", e.\"F5TO9\", e.\"MORE9\""
-                    + "\n\t\t, kreis_code, kreis_name, px1, py1, px2"
-                    + "\n\t\t, py2"
-                    + "\n\tfrom ("
-                    + "\n\t\tselect xzqh, nvl(max(decode(swrslx, '1', acd_totle)), 0) as less3, nvl(max(decode(swrslx, '2', acd_totle)), 0) as f3to5, nvl(max(decode(swrslx, '3', acd_totle)), 0) as f5to9, nvl(max(decode(swrslx, '4', acd_totle)), 0) as more9"
-                    + "\n\t\tfrom ("
-                    + "\n\t\t\tselect *"
-                    + "\n\t\t\tfrom acduser.vw_kreis_statics_t"
-                    + "\n\t\t)"
-                    + "\n\t\tgroup by xzqh"
-                    + "\n\t) e"
-                    + "\n\t\tleft join acduser.vw_sc_kreis_code_lv2 f on e.xzqh = f.short_kreis_code "
-                    + "\n)"
-                    + "\nwhere kreis_code in (select *"
-                    + "\n\tfrom ("
-                    + "\n\t\tselect tbek_code"
-                    + "\n\t\tfrom acduser.vw_kreis_code"
-                    + "\n\t\tstart with tbek_code = ?"
-                    + "\n\t\tconnect by prior tbek_pk = tbek_parent"
-                    + "\n\t)"
-                    + "\n\twhere tbek_code != ?)", result);
+            assertEquals("select *\n" +
+                    "from (\n" +
+                    "\twith vw_kreis_statics_t as (\n" +
+                    "\t\t\tselect substr(xzqh, 1, 6) as xzqh, swrslx\n" +
+                    "\t\t\t\t, sum(swrs_count) as acd_totle\n" +
+                    "\t\t\tfrom (\n" +
+                    "\t\t\t\tselect xzqh, sglx\n" +
+                    "\t\t\t\t\t, case \n" +
+                    "\t\t\t\t\t\twhen swrs7 < 3 then '1'\n" +
+                    "\t\t\t\t\t\twhen swrs7 < 5 then '2'\n" +
+                    "\t\t\t\t\t\twhen swrs7 <= 9 then '3'\n" +
+                    "\t\t\t\t\t\telse '4'\n" +
+                    "\t\t\t\t\tend as swrslx, 1 as swrs_count\n" +
+                    "\t\t\t\tfrom acduser.vw_acd_info\n" +
+                    "\t\t\t\twhere sglx = '1'\n" +
+                    "\t\t\t\t\tand sgfssj >= ?\n" +
+                    "\t\t\t)\n" +
+                    "\t\t\tgroup by substr(xzqh, 1, 6), swrslx\n" +
+                    "\t\t)\n" +
+                    "\tselect e.\"XZQH\", e.\"LESS3\", e.\"F3TO5\", e.\"F5TO9\", e.\"MORE9\"\n" +
+                    "\t\t, kreis_code, kreis_name, px1, py1, px2\n" +
+                    "\t\t, py2\n" +
+                    "\tfrom (\n" +
+                    "\t\tselect xzqh\n" +
+                    "\t\t\t, nvl(max(decode(swrslx, '1', acd_totle)), 0) as less3\n" +
+                    "\t\t\t, nvl(max(decode(swrslx, '2', acd_totle)), 0) as f3to5\n" +
+                    "\t\t\t, nvl(max(decode(swrslx, '3', acd_totle)), 0) as f5to9\n" +
+                    "\t\t\t, nvl(max(decode(swrslx, '4', acd_totle)), 0) as more9\n" +
+                    "\t\tfrom (\n" +
+                    "\t\t\tselect *\n" +
+                    "\t\t\tfrom acduser.vw_kreis_statics_t\n" +
+                    "\t\t)\n" +
+                    "\t\tgroup by xzqh\n" +
+                    "\t) e\n" +
+                    "\t\tleft join acduser.vw_sc_kreis_code_lv2 f on e.xzqh = f.short_kreis_code \n" +
+                    ")\n" +
+                    "where kreis_code in (\n" +
+                    "\tselect *\n" +
+                    "\tfrom (\n" +
+                    "\t\tselect tbek_code\n" +
+                    "\t\tfrom acduser.vw_kreis_code\n" +
+                    "\t\tstart with tbek_code = ?\n" +
+                    "\t\tconnect by prior tbek_pk = tbek_parent\n" +
+                    "\t)\n" +
+                    "\twhere tbek_code != ?\n" +
+                    ")", result);
         }
 
         Assert.assertEquals(1, statementList.size());

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '123-2' YEAR(3) TO MONTH\nFROM DUAL;\n", text);
+        Assert.assertEquals("SELECT INTERVAL '123-2' YEAR(3) TO MONTH\nFROM DUAL", text);
 
         System.out.println(text);
     }
@@ -46,7 +46,7 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '123' YEAR(3)\nFROM DUAL;\n", text);
+        Assert.assertEquals("SELECT INTERVAL '123' YEAR(3)\nFROM DUAL", text);
 
         System.out.println(text);
     }
@@ -59,7 +59,7 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '5-3' YEAR TO MONTH + INTERVAL '20' MONTH\nFROM DUAL;\n", text);
+        Assert.assertEquals("SELECT INTERVAL '5-3' YEAR TO MONTH + INTERVAL '20' MONTH\nFROM DUAL", text);
 
         System.out.println(text);
     }
@@ -72,7 +72,7 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '6-11' YEAR TO MONTH\nFROM DUAL;\n", text);
+        Assert.assertEquals("SELECT INTERVAL '6-11' YEAR TO MONTH\nFROM DUAL", text);
 
         System.out.println(text);
     }
@@ -85,7 +85,7 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '4 5:12:10.222' DAY TO SECOND(3)\nFROM DUAL;\n", text);
+        Assert.assertEquals("SELECT INTERVAL '4 5:12:10.222' DAY TO SECOND(3)\nFROM DUAL", text);
 
         System.out.println(text);
     }
@@ -98,7 +98,7 @@ public class OracleIntervalTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT INTERVAL '30.12345' SECOND(2, 4)\nFROM DUAL;\n", text);
+        Assert.assertEquals("SELECT INTERVAL '30.12345' SECOND(2, 4)\nFROM DUAL", text);
 
         System.out.println(text);
     }
@@ -112,7 +112,7 @@ public class OracleIntervalTest extends TestCase {
         String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND\n" + "FROM orders\n"
-                            + "WHERE order_id = 2458;\n", text);
+                            + "WHERE order_id = 2458;", text);
 
         System.out.println(text);
     }

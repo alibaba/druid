@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -59,8 +60,8 @@ public class CALL_Test extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("EXECUTE s USING @version, @increment", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("execute s using @version, @increment", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("EXECUTE s USING @version, @increment;", SQLUtils.toMySqlString(stmt));
+        assertEquals("execute s using @version, @increment;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     public void test_3() throws Exception {
@@ -71,18 +72,11 @@ public class CALL_Test extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("EXECUTE s", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("execute s", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("EXECUTE s", SQLUtils.toMySqlString(stmt));
+        assertEquals("execute s", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

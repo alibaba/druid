@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,5 +35,11 @@ public class OracleSysdateExpr extends OracleSQLObjectImpl implements SQLExpr {
     public void accept0(OracleASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
+    }
+
+    public OracleSysdateExpr clone() {
+        OracleSysdateExpr x = new OracleSysdateExpr();
+        x.option = option;
+        return x;
     }
 }

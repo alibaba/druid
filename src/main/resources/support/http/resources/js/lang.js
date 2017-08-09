@@ -173,7 +173,7 @@ druid.lang = function() {
 		'ExecRsHisto':['ExecRsHisto','执行+RS时分布'],
 		'FetchRowHisto':['FetchRowHisto','读取行分布'],
 		'UpdateHisto':['UpdateHisto','更新行分布'],
-		'InTransactionCount' : ['Txn','事务中'],
+		'InTransactionCount' : ['Txn','事务执行'],
 		'MaxTimespanDesc' : ['Execute Time Millis Max','最慢的执行耗时'],
 		'InTransactionCountDesc' : ['Execute In Transaction Count','在事务中运行的次数'],
 		
@@ -247,7 +247,9 @@ druid.lang = function() {
 		/**weburi-detail*/
 		'RefreshPeriod':['Refresh Period', '刷新时间'],
 		'SuspendRefresh':['Suspend Refresh', '暂停刷新'],
-		'RequestTimeMillis':['RequestTimeMillis', '请求时间'],
+		'RequestTimeMillis':['RequestTimeMillisTotal', '请求时间（和）'],
+		'RequestTimeMillisMax':['RequestTimeMillisMax', '请求最慢（单次）'],
+		'RequestTimeMillisMaxOccurTime':['RequestTimeMillisMaxOccurTime', '请求最慢发生时间'],
 		'JdbcExecutePeak':['JdbcExecutePeak', 'jdbc执行峰值'],
 		'JdbcFetchRowPeak':['JdbcFetchRowPeak', 'jdbc查询取回行数峰值'],
 		'JdbcUpdatePeak':['JdbcUpdatePeak', 'jdbc更新峰值'],

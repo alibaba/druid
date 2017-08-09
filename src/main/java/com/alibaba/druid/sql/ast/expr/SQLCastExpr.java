@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,4 +94,18 @@ public class SQLCastExpr extends SQLExprImpl {
         return true;
     }
 
+    public SQLDataType computeDataType() {
+        return dataType;
+    }
+
+    public SQLCastExpr clone() {
+        SQLCastExpr x = new SQLCastExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        if (dataType != null) {
+            x.setDataType(dataType.clone());
+        }
+        return x;
+    }
 }

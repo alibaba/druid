@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class OracleOuterTest extends TestCase {
                      + "WHERE employees.manager_id(+) = employees.employee_id;";
 
         String expect = "SELECT employee_id, manager_id\n" + "FROM employees\n"
-                        + "WHERE employees.manager_id(+) = employees.employee_id;\n";
+                        + "WHERE employees.manager_id(+) = employees.employee_id;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

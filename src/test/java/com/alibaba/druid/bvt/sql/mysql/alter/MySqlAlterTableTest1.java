@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("RENAME TABLE t1 TO t2", output);
+        Assert.assertEquals("RENAME TABLE t1 TO t2;", output);
     }
     
     public void test_alter_1() throws Exception {
@@ -41,7 +41,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE t2\n\tADD COLUMN d TIMESTAMP", output);
+        Assert.assertEquals("ALTER TABLE t2\n\tADD COLUMN d TIMESTAMP;", output);
     }
     
     public void test_alter_2() throws Exception {
@@ -50,7 +50,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE t2\n\tADD INDEX (d),\n\tADD UNIQUE INDEX (a)", output);
+        Assert.assertEquals("ALTER TABLE t2\n\tADD INDEX (d),\n\tADD UNIQUE INDEX (a);", output);
     }
     
     public void test_alter_3() throws Exception {
@@ -59,7 +59,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("RENAME TABLE t1 TO t2", output);
+        Assert.assertEquals("RENAME TABLE t1 TO t2;", output);
     }
     
     public void test_alter_4() throws Exception {
@@ -68,7 +68,7 @@ public class MySqlAlterTableTest1 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("RENAME TABLE t1 TO t2", output);
+        Assert.assertEquals("RENAME TABLE t1 TO t2;", output);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,13 +37,13 @@ public class OceanbaseAlterTableAddPartitionTest extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE members"
-                    + "\n\tADD PARTITION (PARTITION p3 VALUES LESS THAN (2000))",
+                    + "\n\tADD PARTITION (PARTITION p3 VALUES LESS THAN (2000));",
                                 result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table members"
-                    + "\n\tadd partition (partition p3 values less than (2000))",
+                    + "\n\tadd partition (partition p3 values less than (2000));",
                                 result);
         }
         print(stmtList);

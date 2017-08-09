@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,21 @@ public class SQLDeclareItem extends SQLObjectImpl {
 
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
+    public SQLDeclareItem() {
+
+    }
+
+    public SQLDeclareItem(SQLExpr name, SQLDataType dataType) {
+        this.setName(name);
+        this.setDataType(dataType);
+    }
+
+    public SQLDeclareItem(SQLExpr name, SQLDataType dataType, SQLExpr value) {
+        this.setName(name);
+        this.setDataType(dataType);
+        this.setValue(value);
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -49,6 +64,9 @@ public class SQLDeclareItem extends SQLObjectImpl {
     }
 
     public void setName(SQLExpr name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
     }
 
@@ -57,6 +75,9 @@ public class SQLDeclareItem extends SQLObjectImpl {
     }
 
     public void setDataType(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
         this.dataType = dataType;
     }
 
@@ -65,6 +86,9 @@ public class SQLDeclareItem extends SQLObjectImpl {
     }
 
     public void setValue(SQLExpr value) {
+        if (value != null) {
+            value.setParent(this);
+        }
         this.value = value;
     }
 

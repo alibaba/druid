@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -41,6 +42,20 @@ public class SQLInListExpr extends SQLExprImpl implements Serializable {
     public SQLInListExpr(SQLExpr expr, boolean not){
         this.setExpr(expr);
         this.not = not;
+    }
+
+    public SQLInListExpr clone() {
+        SQLInListExpr x = new SQLInListExpr();
+        x.not = not;
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        for (SQLExpr e : targetList) {
+            SQLExpr e2 = e.clone();
+            e2.setParent(x);
+            x.targetList.add(e2);
+        }
+        return x;
     }
 
     public boolean isNot() {
@@ -120,5 +135,9 @@ public class SQLInListExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public SQLDataType computeDataType() {
+        return SQLBooleanExpr.DEFAULT_DATA_TYPE;
     }
 }

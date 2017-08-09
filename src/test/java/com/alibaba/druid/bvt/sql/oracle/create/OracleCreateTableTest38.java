@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,24 +50,23 @@ public class OracleCreateTableTest38 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE list_customers ("
-                + "\n\tcustomer_id NUMBER(6),"
-                + "\n\tcust_first_name VARCHAR2(20),"
-                + "\n\tcust_last_name VARCHAR2(20),"
-                + "\n\tcust_address CUST_ADDRESS_TYP,"
-                + "\n\tnls_territory VARCHAR2(30),"
-                + "\n\tcust_email VARCHAR2(40)"
-                + "\n)"
-                + "\nPARTITION BY LIST (nls_territory)"
-                + "\n("
-                + "\n\tPARTITION asia VALUES ('CHINA', 'THAILAND'), "
-                + "\n\tPARTITION europe VALUES ('GERMANY', 'ITALY', 'SWITZERLAND'), "
-                + "\n\tPARTITION west VALUES ('AMERICA'), "
-                + "\n\tPARTITION east VALUES ('INDIA'), "
-                + "\n\tPARTITION rest VALUES (DEFAULT)"
-                + "\n)",//
+        assertEquals("CREATE TABLE list_customers (\n" +
+                        "\tcustomer_id NUMBER(6),\n" +
+                        "\tcust_first_name VARCHAR2(20),\n" +
+                        "\tcust_last_name VARCHAR2(20),\n" +
+                        "\tcust_address CUST_ADDRESS_TYP,\n" +
+                        "\tnls_territory VARCHAR2(30),\n" +
+                        "\tcust_email VARCHAR2(40)\n" +
+                        ")\n" +
+                        "PARTITION BY LIST (nls_territory) (\n" +
+                        "\tPARTITION asia VALUES ('CHINA', 'THAILAND'), \n" +
+                        "\tPARTITION europe VALUES ('GERMANY', 'ITALY', 'SWITZERLAND'), \n" +
+                        "\tPARTITION west VALUES ('AMERICA'), \n" +
+                        "\tPARTITION east VALUES ('INDIA'), \n" +
+                        "\tPARTITION rest VALUES (DEFAULT)\n" +
+                        ");",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

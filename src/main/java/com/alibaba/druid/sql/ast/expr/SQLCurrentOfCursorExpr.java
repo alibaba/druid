@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,22 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl {
         this.cursorName = cursorName;
     }
 
+    public SQLCurrentOfCursorExpr clone() {
+        SQLCurrentOfCursorExpr x = new SQLCurrentOfCursorExpr();
+        if (cursorName != null) {
+            x.setCursorName(cursorName.clone());
+        }
+        return x;
+    }
+
     public SQLName getCursorName() {
         return cursorName;
     }
 
     public void setCursorName(SQLName cursorName) {
+        if (cursorName != null) {
+            cursorName.setParent(this);
+        }
         this.cursorName = cursorName;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,6 +154,19 @@ public class OdpsExprParser extends SQLExprParser {
         }
         
         return super.equalityRest(expr);
+    }
+
+    public SQLExpr relationalRest(SQLExpr expr) {
+        if (identifierEquals("REGEXP")) {
+            lexer.nextToken();
+            SQLExpr rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.RegExp, rightExp, JdbcConstants.MYSQL);
+        }
+
+        return super.relationalRest(expr);
     }
 
     @Override

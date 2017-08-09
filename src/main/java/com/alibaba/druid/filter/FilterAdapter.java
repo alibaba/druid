@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ import java.sql.Wrapper;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 /**
  * 提供JdbcFilter的基本实现，使得实现一个JdbcFilter更容易。
@@ -1035,6 +1036,27 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     public void connection_setTypeMap(FilterChain chain, ConnectionProxy connection, Map<String, Class<?>> map)
                                                                                                                throws SQLException {
         chain.connection_setTypeMap(connection, map);
+    }
+
+    @Override
+    public String connection_getSchema(FilterChain chain, ConnectionProxy connection) throws SQLException {
+        return chain.connection_getSchema(connection);
+    }
+
+    @Override
+    public void connection_setSchema(FilterChain chain, ConnectionProxy connection, String schema) throws SQLException {
+        chain.connection_setSchema(connection, schema);
+    }
+
+    public void connection_abort(FilterChain chain, ConnectionProxy connection, Executor executor) throws SQLException {
+        chain.connection_abort(connection, executor);
+    }
+
+    public void connection_setNetworkTimeout(FilterChain chain, ConnectionProxy connection, Executor executor, int milliseconds) throws SQLException {
+        chain.connection_setNetworkTimeout(connection, executor, milliseconds);
+    }
+    public int connection_getNetworkTimeout(FilterChain chain, ConnectionProxy connection) throws SQLException {
+        return chain.connection_getNetworkTimeout(connection);
     }
 
     @Override

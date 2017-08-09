@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ public class OracleFlashbackQueryTest2 extends TestCase {
 
         String expect = "SELECT salary\n"
                         + "FROM employees\n"
-                        + "VERSIONS BETWEEN TIMESTAMP SYSTIMESTAMP - INTERVAL '10' MINUTE AND SYSTIMESTAMP - INTERVAL '1' MINUTE\n"
-                        + "WHERE last_name = 'Chung';\n";
+                        + "VERSIONS BETWEEN TIMESTAMP (SYSTIMESTAMP - INTERVAL '10' MINUTE) AND SYSTIMESTAMP - INTERVAL '1' MINUTE\n"
+                        + "WHERE last_name = 'Chung';";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

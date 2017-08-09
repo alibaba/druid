@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,24 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleInsertStatement extends SQLInsertStatement implements OracleStatement {
 
-    private OracleReturningClause    returning;
+    private OracleReturningClause returning;
     private SQLErrorLoggingClause errorLogging;
-    private List<SQLHint>            hints = new ArrayList<SQLHint>();
+    private List<SQLHint>         hints = new ArrayList<SQLHint>();
+
+    public void cloneTo(OracleInsertStatement x) {
+        super.cloneTo(x);
+        if (returning != null) {
+            x.setReturning(returning.clone());
+        }
+        if (errorLogging != null) {
+            x.setErrorLogging(errorLogging.clone());
+        }
+        for (SQLHint hint : hints) {
+            SQLHint h2 = hint.clone();
+            h2.setParent(x);
+            x.hints.add(h2);
+        }
+    }
 
     public List<SQLHint> getHints() {
         return hints;
@@ -76,5 +91,11 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
     
     public void output(StringBuffer buf) {
     	new OracleOutputVisitor(buf).visit(this);
+    }
+
+    public OracleInsertStatement clone() {
+        OracleInsertStatement x = new OracleInsertStatement();
+        cloneTo(x);
+        return x;
     }
 }

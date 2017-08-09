@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,7 +197,7 @@ public class PGSelectParser extends SQLSelectParser {
             } else if (lexer.token() == Token.NEXT) {
                 fetch.setOption(PGSelectQueryBlock.FetchClause.Option.NEXT);
             } else {
-                throw new ParserException("expect 'FIRST' or 'NEXT'");
+                throw new ParserException("expect 'FIRST' or 'NEXT'. " + lexer.info());
             }
 
             SQLExpr count = expr();
@@ -206,13 +206,13 @@ public class PGSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
                 lexer.nextToken();
             } else {
-                throw new ParserException("expect 'ROW' or 'ROWS'");
+                throw new ParserException("expect 'ROW' or 'ROWS'. " + lexer.info());
             }
 
             if (lexer.token() == Token.ONLY) {
                 lexer.nextToken();
             } else {
-                throw new ParserException("expect 'ONLY'");
+                throw new ParserException("expect 'ONLY'. " + lexer.info());
             }
 
             queryBlock.setFetch(fetch);
@@ -230,7 +230,7 @@ public class PGSelectParser extends SQLSelectParser {
                 forClause.setOption(PGSelectQueryBlock.ForClause.Option.SHARE);
                 lexer.nextToken();
             } else {
-                throw new ParserException("expect 'FIRST' or 'NEXT'");
+                throw new ParserException("expect 'FIRST' or 'NEXT'. " + lexer.info());
             }
 
             if (lexer.token() == Token.OF) {
@@ -280,6 +280,10 @@ public class PGSelectParser extends SQLSelectParser {
                 accept(Token.RPAREN);
 
                 return super.parseTableSourceRest(functionTableSource);
+            }
+            if (alias != null) {
+                tableSource.setAlias(alias);
+                return super.parseTableSourceRest(tableSource);
             }
         }
 

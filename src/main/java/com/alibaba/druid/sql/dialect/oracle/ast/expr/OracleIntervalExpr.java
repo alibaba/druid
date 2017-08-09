@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,19 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
 
     public OracleIntervalExpr(){
 
+    }
+
+    public OracleIntervalExpr clone() {
+        OracleIntervalExpr x = new OracleIntervalExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        x.type = type;
+        x.precision = precision;
+        x.factionalSecondsPrecision = factionalSecondsPrecision;
+        x.toType = toType;
+        x.toFactionalSecondsPrecision = toFactionalSecondsPrecision;
+        return x;
     }
 
     public SQLExpr getValue() {

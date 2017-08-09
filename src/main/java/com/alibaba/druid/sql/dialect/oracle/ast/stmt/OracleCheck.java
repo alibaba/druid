@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,4 +84,21 @@ public class OracleCheck extends SQLCheck implements OracleConstraint, OracleSQL
         this.using = using;
     }
 
+    public void cloneTo(OracleCheck x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OracleCheck clone() {
+        OracleCheck x = new OracleCheck();
+        cloneTo(x);
+        return x;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,7 @@ public class OracleSelectTest48 extends OracleTest {
                             + "\nSELECT synonym_name" //
                             + "\nFROM all_synonyms us, all_sequences asq" //
                             + "\nWHERE asq.sequence_name = us.table_name" //
-                            + "\n\tAND asq.sequence_owner = us.table_owner;" //
-                            + "\n", text);
+                            + "\n\tAND asq.sequence_owner = us.table_owner", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLKeep;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
@@ -115,6 +112,10 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         this.ignoreNulls = ignoreNulls;
     }
 
+    public String toString() {
+        return SQLUtils.toSQLString(this);
+    }
+
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -176,4 +177,50 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+    public SQLAggregateExpr clone() {
+        SQLAggregateExpr x = new SQLAggregateExpr(methodName);
+
+        x.option = option;
+
+        for (SQLExpr arg : arguments) {
+            x.addArgument(arg.clone());
+        }
+
+        if (keep != null) {
+            x.setKeep(keep.clone());
+        }
+
+        if (over != null) {
+            x.setOver(over.clone());
+        }
+
+        if (withinGroup != null) {
+            x.setWithinGroup(withinGroup.clone());
+        }
+
+        x.ignoreNulls = ignoreNulls;
+
+        return x;
+    }
+
+    public SQLDataType computeDataType() {
+        if ("count".equals(methodName)
+                || "row_number".equals(methodName)) {
+            return SQLIntegerExpr.DEFAULT_DATA_TYPE;
+        }
+
+        if (arguments.size() > 0) {
+            SQLDataType dataType = arguments.get(0).computeDataType();
+            if (dataType != null) {
+                return dataType;
+            }
+        }
+
+        if ("wm_conat".equals(methodName)
+                || "group_concat".equals(methodName)) {
+            return SQLCharExpr.DEFAULT_DATA_TYPE;
+        }
+
+        return null;
+    }
 }

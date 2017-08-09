@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 public class StatementProxyImpl extends WrapperProxyImpl implements StatementProxy {
 
     private final ConnectionProxy  connection;
-    private final Statement        statement;
+    protected Statement        statement;
 
     protected String               lastExecuteSql;
     protected long                 lastExecuteStartNano;
@@ -94,6 +94,10 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
 
     @Override
     public void cancel() throws SQLException {
+        if (this.statement == null) {
+            return;
+        }
+
         FilterChainImpl chain = createChain();
         chain.statement_cancel(this);
         recycleFilterChain(chain);
@@ -101,6 +105,10 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
 
     @Override
     public void clearBatch() throws SQLException {
+        if (this.statement == null) {
+            return;
+        }
+
         if (batchSqlList == null) {
             batchSqlList = new ArrayList<String>();
         }
@@ -113,6 +121,10 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
 
     @Override
     public void clearWarnings() throws SQLException {
+        if (this.statement == null) {
+            return;
+        }
+
         FilterChainImpl chain = createChain();
         chain.statement_clearWarnings(this);
         recycleFilterChain(chain);
@@ -120,6 +132,10 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
 
     @Override
     public void close() throws SQLException {
+        if (this.statement == null) {
+            return;
+        }
+
         FilterChainImpl chain = createChain();
         chain.statement_close(this);
         recycleFilterChain(chain);

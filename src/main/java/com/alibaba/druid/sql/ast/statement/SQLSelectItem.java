@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,16 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSelectItem extends SQLObjectImpl {
+public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr expr;
     protected String  alias;
@@ -57,10 +62,31 @@ public class SQLSelectItem extends SQLObjectImpl {
     }
 
     public void setExpr(SQLExpr expr) {
-        this.expr = expr;
         if (expr != null) {
             expr.setParent(this);
         }
+        this.expr = expr;
+    }
+
+    public String computeAlias() {
+        String alias = this.getAlias();
+        if (alias == null) {
+            if (expr instanceof SQLIdentifierExpr) {
+                alias = ((SQLIdentifierExpr) expr).getName();
+            } else if (expr instanceof SQLPropertyExpr) {
+                alias = ((SQLPropertyExpr) expr).getName();
+            }
+        }
+
+        return SQLUtils.normalize(alias);
+    }
+
+    public SQLDataType computeDataType() {
+        if (expr == null) {
+            return null;
+        }
+
+        return expr.computeDataType();
     }
 
     public String getAlias() {
@@ -121,4 +147,47 @@ public class SQLSelectItem extends SQLObjectImpl {
         this.connectByRoot = connectByRoot;
     }
 
+    public SQLSelectItem clone() {
+        SQLSelectItem x = new SQLSelectItem();
+        x.alias = alias;
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        x.connectByRoot = connectByRoot;
+        return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == expr) {
+            setExpr(target);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean match(String alias) {
+        if (alias == null) {
+            return false;
+        }
+
+        String alias_normalized = SQLUtils.normalize(alias);
+
+        if (alias_normalized.equalsIgnoreCase(this.alias)) {
+            return true;
+        }
+
+        if (expr instanceof SQLIdentifierExpr) {
+            String ident = ((SQLIdentifierExpr) expr).getName();
+            return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            String ident = ((SQLPropertyExpr) expr).getName();
+            return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));
+        }
+
+        return false;
+    }
 }

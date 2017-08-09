@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
@@ -106,6 +100,11 @@ public final class ExportParameterVisitorUtils {
             replace = true;
         }
 
+        if (param instanceof SQLHexExpr) {
+            value = ((SQLHexExpr) param).toBytes();
+            replace = true;
+        }
+
         if (replace) {
             SQLObject parent = param.getParent();
             if (parent != null) {
@@ -135,7 +134,9 @@ public final class ExportParameterVisitorUtils {
     }
 
     public static void exportParameter(final List<Object> parameters, SQLBinaryOpExpr x) {
-        if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr && x.getOperator().isRelational()) {
+        if (x.getLeft() instanceof SQLLiteralExpr
+                && x.getRight() instanceof SQLLiteralExpr
+                && x.getOperator().isRelational()) {
             return;
         }
 

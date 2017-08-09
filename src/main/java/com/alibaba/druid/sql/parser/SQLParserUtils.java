@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,21 +36,32 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerExprParser;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerLexer;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLParserUtils {
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType) {
+        boolean keepComments;
+        if (JdbcConstants.ODPS.equals(dbType) || JdbcConstants.MYSQL.equals(dbType)) {
+            keepComments = true;
+        } else {
+            keepComments = false;
+        }
+        return createSQLStatementParser(sql, dbType, keepComments);
+    }
+
+    public static SQLStatementParser createSQLStatementParser(String sql, String dbType, boolean keepComments) {
         if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleStatementParser(sql);
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlStatementParser(sql);
+            return new MySqlStatementParser(sql, keepComments);
         }
 
         if (JdbcUtils.MARIADB.equals(dbType)) {
-            return new MySqlStatementParser(sql);
+            return new MySqlStatementParser(sql, keepComments);
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)

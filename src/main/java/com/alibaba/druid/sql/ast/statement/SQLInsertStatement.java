@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,23 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
     protected boolean upsert = false; // for phoenix
 
+    private boolean afterSemi;
+
     public SQLInsertStatement(){
 
+    }
+
+    public void cloneTo(SQLInsertStatement x) {
+        super.cloneTo(x);
+        x.dbType = dbType;
+        x.upsert = upsert;
+        x.afterSemi = afterSemi;
+    }
+
+    public SQLInsertStatement clone() {
+        SQLInsertStatement x = new SQLInsertStatement();
+        cloneTo(x);
+        return x;
     }
 
     @Override
@@ -58,6 +73,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
         public ValuesClause(){
             this(new ArrayList<SQLExpr>());
+        }
+
+        public ValuesClause clone() {
+            ValuesClause x = new ValuesClause(new ArrayList<SQLExpr>(this.values.size()));
+            for (SQLExpr v : values) {
+                x.addValue(v);
+            }
+            return x;
         }
 
         public ValuesClause(List<SQLExpr> values){
@@ -104,5 +127,15 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     
     public void setDbType(String dbType) {
         this.dbType = dbType;
+    }
+
+    @Override
+    public boolean isAfterSemi() {
+        return afterSemi;
+    }
+
+    @Override
+    public void setAfterSemi(boolean afterSemi) {
+        this.afterSemi = afterSemi;
     }
 }

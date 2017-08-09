@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement {
@@ -118,6 +121,10 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         this.tableSource = tableSource;
     }
 
+    public void setTableSource(SQLExpr table) {
+        this.setTableSource(new SQLExprTableSource(table));
+    }
+
     public SQLName getName() {
         if (getTableSource() == null) {
             return null;
@@ -140,5 +147,32 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
             acceptChild(visitor, getItems());
         }
         visitor.endVisit(this);
+    }
+
+    public String getTableName() {
+        if (tableSource == null) {
+            return null;
+        }
+        SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
+        if (expr instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) expr).getName();
+        } else if (expr instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) expr).getName();
+        }
+
+        return null;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
     }
 }

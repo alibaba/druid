@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
+public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, Serializable {
 
     private static final long   serialVersionUID = 1L;
     private String              methodName;
@@ -45,6 +48,14 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
 
         this.methodName = methodName;
         setOwner(owner);
+    }
+
+    public SQLMethodInvokeExpr(String methodName, SQLExpr owner, SQLExpr... params){
+        this.methodName = methodName;
+        setOwner(owner);
+        for (SQLExpr param : params) {
+            this.addParameter(param);
+        }
     }
 
     public String getMethodName() {
@@ -143,5 +154,84 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
         result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
         result = 31 * result + (from != null ? from.hashCode() : 0);
         return result;
+    }
+
+    public SQLMethodInvokeExpr clone() {
+        SQLMethodInvokeExpr x = new SQLMethodInvokeExpr();
+
+        x.methodName = methodName;
+
+        if (owner != null) {
+            x.setOwner(owner.clone());
+        }
+
+        for (SQLExpr param : parameters) {
+            x.addParameter(param.clone());
+        }
+
+        if (from != null) {
+            x.setFrom(from.clone());
+        }
+
+        return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (target == null) {
+            return false;
+        }
+        for (int i = 0; i < parameters.size(); ++i) {
+            if (parameters.get(i) == expr) {
+                parameters.set(i, target);
+                target.setParent(this);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean match(String owner, String function) {
+        if (function == null) {
+            return false;
+        }
+
+        if (!SQLUtils.nameEquals(function, methodName)) {
+            return false;
+        }
+
+        if (owner == null && this.owner == null) {
+            return true;
+        }
+
+        if (owner == null || this.owner == null) {
+            return false;
+        }
+
+        if (this.owner instanceof SQLIdentifierExpr) {
+            return SQLUtils.nameEquals(((SQLIdentifierExpr) this.owner).name, owner);
+        }
+
+        return false;
+    }
+
+    public SQLDataType computeDataType() {
+        if (parameters.size() == 1) {
+            if (SQLUtils.nameEquals("trunc", methodName)) {
+                return parameters.get(0).computeDataType();
+            }
+        } else if (parameters.size() == 2) {
+            SQLExpr param0 = parameters.get(0);
+            SQLExpr param1 = parameters.get(1);
+            if (SQLUtils.nameEquals("nvl", methodName) || SQLUtils.nameEquals("ifnull", methodName)) {
+                SQLDataType dataType = param0.computeDataType();
+                if (dataType != null) {
+                    return dataType;
+                }
+
+                return param1.computeDataType();
+            }
+        }
+        return null;
     }
 }

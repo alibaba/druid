@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,40 +42,38 @@ public class OdpsSelectTest17 extends TestCase {
                 ") top )\n" +
                 "ORDER BY cnt DESC\n" +
                 "LIMIT 800";//
-        Assert.assertEquals("SELECT prov\n" +
-                "\t, name\n" +
-                "\t, cnt\n" +
+        assertEquals("SELECT prov, name, cnt\n" +
                 "FROM mock_app.adl_mock_v_fct\n" +
                 "WHERE ds = 20160920\n" +
                 "\tAND name != 'none'\n" +
-                "\tAND prov IN (SELECT prov\n" +
+                "\tAND prov IN (\n" +
+                "\t\tSELECT prov\n" +
                 "\t\tFROM (\n" +
-                "\t\t\tSELECT prov\n" +
-                "\t\t\t\t, SUM(cnt) AS cnt\n" +
+                "\t\t\tSELECT prov, SUM(cnt) AS cnt\n" +
                 "\t\t\tFROM mock_app.adl_mock_v_fct\n" +
                 "\t\t\tWHERE ds = 20160920\n" +
                 "\t\t\tGROUP BY prov\n" +
                 "\t\t\tORDER BY cnt DESC\n" +
                 "\t\t\tLIMIT 5\n" +
-                "\t\t) top)\n" +
+                "\t\t) top\n" +
+                "\t)\n" +
                 "ORDER BY cnt DESC\n" +
                 "LIMIT 800", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select prov\n" +
-                "\t, name\n" +
-                "\t, cnt\n" +
+        assertEquals("select prov, name, cnt\n" +
                 "from mock_app.adl_mock_v_fct\n" +
                 "where ds = 20160920\n" +
                 "\tand name != 'none'\n" +
-                "\tand prov in (select prov\n" +
+                "\tand prov in (\n" +
+                "\t\tselect prov\n" +
                 "\t\tfrom (\n" +
-                "\t\t\tselect prov\n" +
-                "\t\t\t\t, sum(cnt) as cnt\n" +
+                "\t\t\tselect prov, sum(cnt) as cnt\n" +
                 "\t\t\tfrom mock_app.adl_mock_v_fct\n" +
                 "\t\t\twhere ds = 20160920\n" +
                 "\t\t\tgroup by prov\n" +
                 "\t\t\torder by cnt desc\n" +
                 "\t\t\tlimit 5\n" +
-                "\t\t) top)\n" +
+                "\t\t) top\n" +
+                "\t)\n" +
                 "order by cnt desc\n" +
                 "limit 800", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
         

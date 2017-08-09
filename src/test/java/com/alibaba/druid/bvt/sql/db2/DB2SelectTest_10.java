@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,30 +64,34 @@ public class DB2SelectTest_10 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT *"
-                + "\nFROM (SELECT inner2_.*, ROWNUMBER() OVER (ORDER BY order OF inner2_) AS rownumber_"
-                + "\n\tFROM (SELECT tsuserstb0_.USERID AS USERID1_1_, tsuserstb0_.CREASTAF AS CREASTAF2_1_, tsuserstb0_.CREATIME AS CREATIME3_1_, tsuserstb0_.LOCORGNO AS LOCORGNO4_1_, tsuserstb0_.PWDMODIFYTIME AS PWDMODIF5_1_"
-                + "\n\t\t\t, tsuserstb0_.REMARK01 AS REMARK6_1_, tsuserstb0_.REMARK02 AS REMARK7_1_, tsuserstb0_.STAORGNO AS STAORGNO8_1_, tsuserstb0_.UPDASTAF AS UPDASTAF9_1_, tsuserstb0_.UPDATIME AS UPDATIM10_1_"
-                + "\n\t\t\t, tsuserstb0_.USERNAME AS USERNAM11_1_, tsuserstb0_.USERPWD AS USERPWD12_1_, tsuserstb0_.USERSTATE AS USERSTA13_1_"
-                + "\n\t\tFROM TS_USERSTB tsuserstb0_"
-                + "\n\t\tFETCH FIRST 20 ROWS ONLY"
-                + "\n\t\t) inner2_"
-                + "\n\t) inner1_"
-                + "\nWHERE rownumber_ > 10"
-                + "\nORDER BY rownumber_", //
+        Assert.assertEquals("SELECT *\n" +
+                        "FROM (\n" +
+                        "\tSELECT inner2_.*, ROWNUMBER() OVER (ORDER BY order OF inner2_) AS rownumber_\n" +
+                        "\tFROM (\n" +
+                        "\t\tSELECT tsuserstb0_.USERID AS USERID1_1_, tsuserstb0_.CREASTAF AS CREASTAF2_1_, tsuserstb0_.CREATIME AS CREATIME3_1_, tsuserstb0_.LOCORGNO AS LOCORGNO4_1_, tsuserstb0_.PWDMODIFYTIME AS PWDMODIF5_1_\n" +
+                        "\t\t\t, tsuserstb0_.REMARK01 AS REMARK6_1_, tsuserstb0_.REMARK02 AS REMARK7_1_, tsuserstb0_.STAORGNO AS STAORGNO8_1_, tsuserstb0_.UPDASTAF AS UPDASTAF9_1_, tsuserstb0_.UPDATIME AS UPDATIM10_1_\n" +
+                        "\t\t\t, tsuserstb0_.USERNAME AS USERNAM11_1_, tsuserstb0_.USERPWD AS USERPWD12_1_, tsuserstb0_.USERSTATE AS USERSTA13_1_\n" +
+                        "\t\tFROM TS_USERSTB tsuserstb0_\n" +
+                        "\t\tFETCH FIRST 20 ROWS ONLY\n" +
+                        "\t) inner2_\n" +
+                        ") inner1_\n" +
+                        "WHERE rownumber_ > 10\n" +
+                        "ORDER BY rownumber_", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         
-        Assert.assertEquals("select *"
-                + "\nfrom (select inner2_.*, rownumber() over (order by order of inner2_) as rownumber_"
-                + "\n\tfrom (select tsuserstb0_.USERID as USERID1_1_, tsuserstb0_.CREASTAF as CREASTAF2_1_, tsuserstb0_.CREATIME as CREATIME3_1_, tsuserstb0_.LOCORGNO as LOCORGNO4_1_, tsuserstb0_.PWDMODIFYTIME as PWDMODIF5_1_"
-                + "\n\t\t\t, tsuserstb0_.REMARK01 as REMARK6_1_, tsuserstb0_.REMARK02 as REMARK7_1_, tsuserstb0_.STAORGNO as STAORGNO8_1_, tsuserstb0_.UPDASTAF as UPDASTAF9_1_, tsuserstb0_.UPDATIME as UPDATIM10_1_"
-                + "\n\t\t\t, tsuserstb0_.USERNAME as USERNAM11_1_, tsuserstb0_.USERPWD as USERPWD12_1_, tsuserstb0_.USERSTATE as USERSTA13_1_"
-                + "\n\t\tfrom TS_USERSTB tsuserstb0_"
-                + "\n\t\tfetch first 20 rows only"
-                + "\n\t\t) inner2_"
-                + "\n\t) inner1_"
-                + "\nwhere rownumber_ > 10"
-                + "\norder by rownumber_", //
+        Assert.assertEquals("select *\n" +
+                        "from (\n" +
+                        "\tselect inner2_.*, rownumber() over (order by order of inner2_) as rownumber_\n" +
+                        "\tfrom (\n" +
+                        "\t\tselect tsuserstb0_.USERID as USERID1_1_, tsuserstb0_.CREASTAF as CREASTAF2_1_, tsuserstb0_.CREATIME as CREATIME3_1_, tsuserstb0_.LOCORGNO as LOCORGNO4_1_, tsuserstb0_.PWDMODIFYTIME as PWDMODIF5_1_\n" +
+                        "\t\t\t, tsuserstb0_.REMARK01 as REMARK6_1_, tsuserstb0_.REMARK02 as REMARK7_1_, tsuserstb0_.STAORGNO as STAORGNO8_1_, tsuserstb0_.UPDASTAF as UPDASTAF9_1_, tsuserstb0_.UPDATIME as UPDATIM10_1_\n" +
+                        "\t\t\t, tsuserstb0_.USERNAME as USERNAM11_1_, tsuserstb0_.USERPWD as USERPWD12_1_, tsuserstb0_.USERSTATE as USERSTA13_1_\n" +
+                        "\t\tfrom TS_USERSTB tsuserstb0_\n" +
+                        "\t\tfetch first 20 rows only\n" +
+                        "\t) inner2_\n" +
+                        ") inner1_\n" +
+                        "where rownumber_ > 10\n" +
+                        "order by rownumber_", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

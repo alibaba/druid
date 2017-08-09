@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ import java.util.Calendar;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
@@ -623,6 +624,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     public ResultSetMetaData getMetaData() throws SQLException {
         checkOpen();
 
+        if (!conn.holder.isUnderlyingAutoCommit()) {
+            conn.createTransactionInfo();
+        }
+
         try {
             return stmt.getMetaData();
         } catch (Throwable t) {
@@ -688,6 +693,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     @Override
     public ParameterMetaData getParameterMetaData() throws SQLException {
         checkOpen();
+
+        if (!conn.holder.isUnderlyingAutoCommit()) {
+            conn.createTransactionInfo();
+        }
 
         try {
             return stmt.getParameterMetaData();

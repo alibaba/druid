@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlUserName extends MySqlExprImpl implements SQLName {
+public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
 
     private String userName;
     private String host;
@@ -51,5 +51,12 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName {
 
     public String toString() {
         return getSimpleName();
+    }
+
+    public MySqlUserName clone() {
+        MySqlUserName x = new MySqlUserName();
+        x.userName = userName;
+        x.host = host;
+        return x;
     }
 }

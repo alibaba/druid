@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,8 +56,11 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
             return statements;
         }
 
-        public void setStatements(List<SQLStatement> statements) {
-            this.statements = statements;
+        public void setStatement(SQLStatement statement) {
+            if (statement != null) {
+                statement.setParent(this);
+                this.statements.add(statement);
+            }
         }
 
         @Override
@@ -69,6 +72,18 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
             visitor.endVisit(this);
         }
 
+        public Item clone() {
+            Item x = new Item();
+            if (when != null) {
+                x.setWhen(when.clone());
+            }
+            for (SQLStatement stmt : statements) {
+                SQLStatement stmt2 = stmt.clone();
+                stmt2.setParent(x);
+                x.statements.add(stmt2);
+            }
+            return x;
+        }
     }
 
     @Override
@@ -77,5 +92,15 @@ public class OracleExceptionStatement extends OracleStatementImpl implements Ora
             acceptChild(visitor, items);
         }
         visitor.endVisit(this);
+    }
+
+    public OracleExceptionStatement clone() {
+        OracleExceptionStatement x = new OracleExceptionStatement();
+        for (Item item : items) {
+            Item item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        return x;
     }
 }

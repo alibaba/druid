@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,19 +38,21 @@ public class SQLServerRowNumberTest2 extends TestCase {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
-        Assert.assertEquals("SELECT *" +
-                "\nFROM (SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate DESC, FAlertLevel, FAlertType) AS RowNumber, *" +
-                "\n\tFROM monitor_business" +
-                "\n\tWHERE FRemoveAlert = ?" +
-                "\n\t) temp_table" +
-                "\nWHERE RowNumber BETWEEN ? AND ?", SQLUtils.toSQLServerString(stmt));
+        assertEquals("SELECT *\n" +
+                "FROM (\n" +
+                "\tSELECT ROW_NUMBER() OVER (ORDER BY FAlertDate DESC, FAlertLevel, FAlertType) AS RowNumber, *\n" +
+                "\tFROM monitor_business\n" +
+                "\tWHERE FRemoveAlert = ?\n" +
+                ") temp_table\n" +
+                "WHERE RowNumber BETWEEN ? AND ?", SQLUtils.toSQLServerString(stmt));
 
-        Assert.assertEquals("select *" +
-                "\nfrom (select row_number() over (order by FAlertDate desc, FAlertLevel, FAlertType) as RowNumber, *" +
-                "\n\tfrom monitor_business" +
-                "\n\twhere FRemoveAlert = ?" +
-                "\n\t) temp_table" +
-                "\nwhere RowNumber between ? and ?", SQLUtils.toSQLServerString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("select *\n" +
+                "from (\n" +
+                "\tselect row_number() over (order by FAlertDate desc, FAlertLevel, FAlertType) as RowNumber, *\n" +
+                "\tfrom monitor_business\n" +
+                "\twhere FRemoveAlert = ?\n" +
+                ") temp_table\n" +
+                "where RowNumber between ? and ?", SQLUtils.toSQLServerString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
     
     public void test_isEmpty_2() throws Exception {
@@ -66,18 +68,20 @@ public class SQLServerRowNumberTest2 extends TestCase {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
-        Assert.assertEquals("SELECT *" +
-                "\nFROM (SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate DESC, FAlertLevel, FAlertType) AS RowNumber, *" +
-                "\n\tFROM monitor_business" +
-                "\n\tWHERE FRemoveAlert = ?" +
-                "\n\t) temp_table" +
-                "\nWHERE RowNumber NOT BETWEEN ? AND ?", SQLUtils.toSQLServerString(stmt));
+        Assert.assertEquals("SELECT *\n" +
+                "FROM (\n" +
+                "\tSELECT ROW_NUMBER() OVER (ORDER BY FAlertDate DESC, FAlertLevel, FAlertType) AS RowNumber, *\n" +
+                "\tFROM monitor_business\n" +
+                "\tWHERE FRemoveAlert = ?\n" +
+                ") temp_table\n" +
+                "WHERE RowNumber NOT BETWEEN ? AND ?", SQLUtils.toSQLServerString(stmt));
 
-        Assert.assertEquals("select *" +
-                "\nfrom (select row_number() over (order by FAlertDate desc, FAlertLevel, FAlertType) as RowNumber, *" +
-                "\n\tfrom monitor_business" +
-                "\n\twhere FRemoveAlert = ?" +
-                "\n\t) temp_table" +
-                "\nwhere RowNumber not between ? and ?", SQLUtils.toSQLServerString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("select *\n" +
+                "from (\n" +
+                "\tselect row_number() over (order by FAlertDate desc, FAlertLevel, FAlertType) as RowNumber, *\n" +
+                "\tfrom monitor_business\n" +
+                "\twhere FRemoveAlert = ?\n" +
+                ") temp_table\n" +
+                "where RowNumber not between ? and ?", SQLUtils.toSQLServerString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

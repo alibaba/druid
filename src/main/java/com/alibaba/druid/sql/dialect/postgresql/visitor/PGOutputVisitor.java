@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,18 +33,14 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
+import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.StringUtils;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor {
 
@@ -637,7 +633,48 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? " OFFSET " : " offset ");
             x.getOffset().accept(this);
         }
+        return false;
+    }
 
+    @Override
+    public void endVisit(PGStartTransactionStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGStartTransactionStatement x) {
+        print0(ucase ? "START TRANSACTION" : "start transaction");
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGSetStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGSetStatement x) {
+        print0(ucase ? "SET " : "set ");
+        if (!StringUtils.isEmpty(x.range)) {
+            print0(x.range);
+            print0(" ");
+        }
+        if (PGSQLStatementParser.TIME_ZONE.equalsIgnoreCase(x.param)) {
+            print0(PGSQLStatementParser.TIME_ZONE);
+            print0(" ");
+            x.values.get(0).accept(this);
+            return false;
+        }
+        print0(x.param);
+        print0(" ");
+        print0(Token.TO.name());
+        print0(" ");
+        for (int i = 0; i < x.values.size(); i++) {
+            if (i != 0) {
+                print0(", ");
+            }
+            x.values.get(i).accept(this);
+        }
         return false;
     }
 }

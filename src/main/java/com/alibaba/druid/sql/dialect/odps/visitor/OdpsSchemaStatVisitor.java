@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,7 +126,7 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
 
     @Override
     public void endVisit(OdpsSelectQueryBlock x) {
-        
+        super.endVisit((SQLSelectQueryBlock) x);
     }
 
     @Override
@@ -264,16 +264,6 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
         return super.visit((SQLGrantStatement) x);
     }
 
-    @Override
-    public void endVisit(OdpsDescStmt x) {
-        
-    }
-
-    @Override
-    public boolean visit(OdpsDescStmt x) {
-        return true;
-    }
-    
     @Override
     public void endVisit(OdpsLateralViewTableSource x) {
         

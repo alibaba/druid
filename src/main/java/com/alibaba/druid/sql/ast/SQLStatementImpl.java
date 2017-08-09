@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
 
-    private String dbType;
+    protected String dbType;
+
+    private boolean afterSemi;
 
     public SQLStatementImpl(){
 
@@ -44,6 +46,18 @@ public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLState
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
+        throw new UnsupportedOperationException(this.getClass().getName());
+    }
+
+    public boolean isAfterSemi() {
+        return afterSemi;
+    }
+
+    public void setAfterSemi(boolean afterSemi) {
+        this.afterSemi = afterSemi;
+    }
+
+    public SQLStatement clone() {
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 }

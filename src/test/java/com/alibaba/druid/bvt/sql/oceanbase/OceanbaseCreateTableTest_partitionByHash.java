@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,19 +37,19 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("CREATE TABLE tnhash ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tname VARCHAR(5)"
                     + "\n)"
-                    + "\nPARTITION BY HASH (id) PARTITIONS 2",
+                    + "\nPARTITION BY HASH (id) PARTITIONS 2;",
                                 result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("create table tnhash ("
-                    + "\n\tid INT, "
+                    + "\n\tid INT,"
                     + "\n\tname VARCHAR(5)"
                     + "\n)"
-                    + "\npartition by hash (id) partitions 2",
+                    + "\npartition by hash (id) partitions 2;",
                                 result);
         }
         

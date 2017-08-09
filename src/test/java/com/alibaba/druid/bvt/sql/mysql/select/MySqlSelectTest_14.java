@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,12 +61,12 @@ public class MySqlSelectTest_14 extends MysqlTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT *" //
-                            + "\nFROM t1"//
-                            + "\nWHERE column1 = ("//
-                            + "\n\tSELECT column1"//
-                            + "\n\tFROM t2"//
-                            + "\n\t)", //
+        Assert.assertEquals("SELECT *\n" +
+                        "FROM t1\n" +
+                        "WHERE column1 = (\n" +
+                        "\tSELECT column1\n" +
+                        "\tFROM t2\n" +
+                        ");", //
                             output);
         
         String output_lcase = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -75,7 +75,7 @@ public class MySqlSelectTest_14 extends MysqlTest {
                             + "\nwhere column1 = ("//
                             + "\n\tselect column1"//
                             + "\n\tfrom t2"//
-                            + "\n\t)", //
+                            + "\n);", //
                             output_lcase);
     }
 }

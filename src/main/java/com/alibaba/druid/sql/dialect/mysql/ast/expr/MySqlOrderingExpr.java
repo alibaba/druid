@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,17 @@ public class MySqlOrderingExpr extends SQLExprImpl implements MySqlExpr {
     
     public MySqlOrderingExpr(SQLExpr expr, SQLOrderingSpecification type){
         super();
-        this.expr = expr;
+        setExpr(expr);
         this.type = type;
+    }
+
+    public MySqlOrderingExpr clone() {
+        MySqlOrderingExpr x = new MySqlOrderingExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        x.type = type;
+        return x;
     }
 
     @Override
@@ -51,7 +60,9 @@ public class MySqlOrderingExpr extends SQLExprImpl implements MySqlExpr {
     }
 
     public void setExpr(SQLExpr expr) {
-        expr.setParent(this);
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 

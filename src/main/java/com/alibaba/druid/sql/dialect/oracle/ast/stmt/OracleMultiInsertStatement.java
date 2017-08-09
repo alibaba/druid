@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,6 +197,22 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
             }
 
             visitor.endVisit(this);
+        }
+
+        public void cloneTo(InsertIntoClause x) {
+            super.cloneTo(x);
+            if (returning != null) {
+                x.setReturning(returning.clone());
+            }
+            if (errorLogging != null) {
+                x.setErrorLogging(errorLogging.clone());
+            }
+        }
+
+        public InsertIntoClause clone() {
+            InsertIntoClause x = new InsertIntoClause();
+            cloneTo(x);
+            return x;
         }
     }
 }

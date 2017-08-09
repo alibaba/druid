@@ -28,4 +28,22 @@ public class JdbcUtils_driver extends TestCase {
         
         Assert.assertEquals(JdbcConstants.ODPS, JdbcUtils.getDbType(url, className));
     }
+
+    public void test_log4jdbc_mysql() {
+        String jdbcUrl = "jdbc:log4jdbc:mysql://localhost:8066/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, null);
+        assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:mysql:...", JdbcConstants.MYSQL, dbType);
+    }
+
+    public void test_log4jdbc_mysql2() throws Exception {
+        String jdbcUrl = "jdbc:log4jdbc:mysql://localhost:8066/test";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, "net.sf.log4jdbc.DriverSpy");
+        assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:mysql:...", JdbcConstants.MYSQL, dbType);
+    }
+
+    public void test_log4jdbc_derby() throws Exception {
+        String jdbcUrl = "jdbc:log4jdbc:derby://localhost:1527//db-derby-10.2.2.0-bin/databases/MyDatabase";
+        String dbType = JdbcUtils.getDbType(jdbcUrl, "net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
+        assertEquals("not support log4jdbc mysql, url like jdbc:log4jdbc:derby:...", JdbcConstants.DERBY, dbType);
+    }
 }

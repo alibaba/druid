@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -35,7 +37,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'a' = 'A';", text);
+        Assert.assertEquals("SELECT 'a' = 'A'", text);
     }
 
     public void test_1() throws Exception {
@@ -46,7 +48,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT BINARY 'a' = 'A';", text);
+        Assert.assertEquals("SELECT BINARY 'a' = 'A'", text);
     }
 
     public void test_2() throws Exception {
@@ -57,7 +59,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT CONVERT('abc' USING utf8);", text);
+        assertEquals("SELECT CONVERT('abc' USING utf8)", text);
     }
 
     public void test_3() throws Exception {
@@ -68,7 +70,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'A' LIKE CONVERT(blob_col USING latin1)\nFROM tbl_name;", text);
+        assertEquals("SELECT 'A' LIKE CONVERT(blob_col USING latin1)\nFROM tbl_name;", text);
     }
 
     public void test_4() throws Exception {
@@ -79,7 +81,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'A' LIKE CONVERT(blob_col USING latin1) COLLATE latin1_german1_ci\nFROM tbl_name;",
+        assertEquals("SELECT 'A' LIKE CONVERT(blob_col USING latin1) COLLATE latin1_german1_ci\nFROM tbl_name;",
                             text);
     }
 
@@ -91,7 +93,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SET @str = BINARY 'New York';", text);
+        assertEquals("SET @str = BINARY 'New York';", text);
     }
 
     public void test_6() throws Exception {
@@ -102,7 +104,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT LOWER(@str), LOWER(CONVERT(@str USING latin1));", text);
+        assertEquals("SELECT LOWER(@str), LOWER(CONVERT(@str USING latin1))", text);
     }
 
     public void test_7() throws Exception {
@@ -161,13 +163,6 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

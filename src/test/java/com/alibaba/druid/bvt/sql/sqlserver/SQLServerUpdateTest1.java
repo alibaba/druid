@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class SQLServerUpdateTest1 extends TestCase {
         String expect = "UPDATE dbo.Table2" + //
                         "\nSET dbo.Table2.ColB = dbo.Table2.ColB + dbo.Table1.ColB" + //
                         "\nFROM dbo.Table2" + //
-                        "\n\tINNER JOIN dbo.Table1 ON dbo.Table2.ColA = dbo.Table1.ColA";
+                        "\n\tINNER JOIN dbo.Table1 ON dbo.Table2.ColA = dbo.Table1.ColA;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

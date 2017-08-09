@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -44,6 +46,8 @@ import com.alibaba.druid.util.JMXUtils;
 @SuppressWarnings("rawtypes")
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
 
+    private final static Lock                       staticLock                     = new ReentrantLock();
+
     public final static String                      SYS_PROP_INSTANCES             = "druid.dataSources";
     public final static String                      SYS_PROP_REGISTER_SYS_PROPERTY = "druid.registerToSysProperty";
 
@@ -62,23 +66,28 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         return instance;
     }
 
-    public synchronized static void clear() {
-        Map<Object, ObjectName> dataSources = getInstances();
+    public static void clear() {
+        staticLock.lock();
+        try {
+            Map<Object, ObjectName> dataSources = getInstances();
 
-        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-        for (Object item : dataSources.entrySet()) {
-            Map.Entry entry = (Map.Entry) item;
-            ObjectName objectName = (ObjectName) entry.getValue();
+            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+            for (Object item : dataSources.entrySet()) {
+                Map.Entry entry = (Map.Entry) item;
+                ObjectName objectName = (ObjectName) entry.getValue();
 
-            if (objectName == null) {
-                continue;
+                if (objectName == null) {
+                    continue;
+                }
+
+                try {
+                    mbeanServer.unregisterMBean(objectName);
+                } catch (JMException e) {
+                    LOG.error(e.getMessage(), e);
+                }
             }
-
-            try {
-                mbeanServer.unregisterMBean(objectName);
-            } catch (JMException e) {
-                LOG.error(e.getMessage(), e);
-            }
+        } finally {
+            staticLock.unlock();
         }
     }
 
@@ -86,7 +95,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     public static Map<Object, ObjectName> getInstances() {
         Map<Object, ObjectName> tmp = dataSources;
         if (tmp == null) {
-            synchronized (DruidDataSourceStatManager.class) {
+            staticLock.lock();
+            try {
                 if (isRegisterToSystemProperty()) {
                     dataSources = getInstances0();
                 } else {
@@ -95,6 +105,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                         dataSources = tmp = Collections.synchronizedMap(new IdentityHashMap<Object, ObjectName>());
                     }
                 }
+            } finally {
+                staticLock.unlock();
             }
         }
 

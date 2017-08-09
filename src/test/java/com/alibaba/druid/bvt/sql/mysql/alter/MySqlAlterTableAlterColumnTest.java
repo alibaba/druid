@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,11 @@ public class MySqlAlterTableAlterColumnTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         
-        Assert.assertEquals("ALTER TABLE `cube_template`\n" +
-                "\tADD COLUMN `stat_report_json` VARCHAR(256) CHARSET utf8  COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '模板的统计报表json数组'", SQLUtils.toMySqlString(stmt));
+        assertEquals("ALTER TABLE `cube_template`\n" +
+                "\tADD COLUMN `stat_report_json` VARCHAR(256) CHARSET utf8  COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '模板的统计报表json数组';", SQLUtils.toMySqlString(stmt));
         
-        Assert.assertEquals("alter table `cube_template`\n" +
-                "\tadd column `stat_report_json` VARCHAR(256) charset utf8  COLLATE utf8_general_ci not null default '' comment '模板的统计报表json数组'", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("alter table `cube_template`\n" +
+                "\tadd column `stat_report_json` VARCHAR(256) charset utf8  COLLATE utf8_general_ci not null default '' comment '模板的统计报表json数组';", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
 }

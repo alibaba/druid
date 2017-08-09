@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,32 +69,36 @@ public class DB2SelectTest_11 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100"
-                + "\nFROM A, B"
-                + "\nWHERE B.F_2211 = '5'"
-                + "\n\tAND A.F_0301 = B.F_0301"
-                + "\n\tAND (Substr(B.F_0815, 1, 4) CONCAT Substr(B.F_0815, 5, 2)) > A.F_0802"
-                + "\n\tAND A.F_2100 > 0"
-                + "\nUNION"
-                + "\nSELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100"
-                + "\nFROM A"
-                + "\nWHERE A.F_0301 NOT IN (SELECT F_0301"
-                + "\n\t\tFROM B)"
-                + "\n\tAND A.F_2100 > 0", //
+        Assert.assertEquals("SELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +
+                        "FROM A, B\n" +
+                        "WHERE B.F_2211 = '5'\n" +
+                        "\tAND A.F_0301 = B.F_0301\n" +
+                        "\tAND (Substr(B.F_0815, 1, 4) CONCAT Substr(B.F_0815, 5, 2)) > A.F_0802\n" +
+                        "\tAND A.F_2100 > 0\n" +
+                        "UNION\n" +
+                        "SELECT A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +
+                        "FROM A\n" +
+                        "WHERE A.F_0301 NOT IN (\n" +
+                        "\t\tSELECT F_0301\n" +
+                        "\t\tFROM B\n" +
+                        "\t)\n" +
+                        "\tAND A.F_2100 > 0", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         
-        Assert.assertEquals("select A.F_0201, A.F_0301, A.F_0802, A.F_2100"
-                + "\nfrom A, B"
-                + "\nwhere B.F_2211 = '5'"
-                + "\n\tand A.F_0301 = B.F_0301"
-                + "\n\tand (Substr(B.F_0815, 1, 4) concat Substr(B.F_0815, 5, 2)) > A.F_0802"
-                + "\n\tand A.F_2100 > 0"
-                + "\nunion"
-                + "\nselect A.F_0201, A.F_0301, A.F_0802, A.F_2100"
-                + "\nfrom A"
-                + "\nwhere A.F_0301 not in (select F_0301"
-                + "\n\t\tfrom B)"
-                + "\n\tand A.F_2100 > 0", //
+        assertEquals("select A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +
+                        "from A, B\n" +
+                        "where B.F_2211 = '5'\n" +
+                        "\tand A.F_0301 = B.F_0301\n" +
+                        "\tand (Substr(B.F_0815, 1, 4) concat Substr(B.F_0815, 5, 2)) > A.F_0802\n" +
+                        "\tand A.F_2100 > 0\n" +
+                        "union\n" +
+                        "select A.F_0201, A.F_0301, A.F_0802, A.F_2100\n" +
+                        "from A\n" +
+                        "where A.F_0301 not in (\n" +
+                        "\t\tselect F_0301\n" +
+                        "\t\tfrom B\n" +
+                        "\t)\n" +
+                        "\tand A.F_2100 > 0", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

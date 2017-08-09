@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,13 @@ public class SQLServerSelectTest12 extends TestCase {
                      ") AS ProductsWithRowNumbers " + //
                      "WHERE Row >= 6 AND Row <= 10";
 
-        String expect = "SELECT Row, Name" + //
-                        "\nFROM (SELECT ROW_NUMBER() OVER (ORDER BY ProductID) AS Row, Name" + //
-                        "\n\tFROM Product" + //
-                        "\n\t) ProductsWithRowNumbers" + //
-                        "\nWHERE Row >= 6" + //
-                        "\n\tAND Row <= 10";
+        String expect = "SELECT Row, Name\n" +
+                "FROM (\n" +
+                "\tSELECT ROW_NUMBER() OVER (ORDER BY ProductID) AS Row, Name\n" +
+                "\tFROM Product\n" +
+                ") ProductsWithRowNumbers\n" +
+                "WHERE Row >= 6\n" +
+                "\tAND Row <= 10";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,7 @@ public class OracleSelectTest50 extends OracleTest {
                             + "\n\tWHERE rownum <= 20"//
                             + "\n\tORDER BY REG_TIME DESC"//
                             + "\n)"//
-                            + "\nWHERE num > 0;"//
-                            + "\n", text);
+                            + "\nWHERE num > 0", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

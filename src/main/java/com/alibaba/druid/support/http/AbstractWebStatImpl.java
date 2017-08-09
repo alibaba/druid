@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,12 @@ import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
 import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebRequestStat;
 import com.alibaba.druid.support.http.stat.WebSessionStat;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidWebUtils;
 
 public class AbstractWebStatImpl {
+    private final static Log LOG                                          = LogFactory.getLog(AbstractWebStatImpl.class);
 
     public final static int                DEFAULT_MAX_STAT_SESSION_COUNT = 1000 * 1;
 
@@ -148,7 +151,15 @@ public class AbstractWebStatImpl {
                 return null;
             }
 
-            Object sessionValue = session.getAttribute(principalSessionName);
+            Object sessionValue = null;
+
+            try {
+                sessionValue = session.getAttribute(principalSessionName);
+            } catch (Exception ex) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error("session.getAttribute error", ex);
+                }
+            }
 
             if (sessionValue == null) {
                 return null;

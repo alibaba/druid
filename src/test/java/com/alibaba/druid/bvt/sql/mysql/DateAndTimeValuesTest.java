@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -46,7 +48,7 @@ public class DateAndTimeValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT '2008-02-31' + INTERVAL 0 DAY;", text);
+        Assert.assertEquals("SELECT '2008-02-31' + INTERVAL 0 DAY", text);
     }
 
     public void test_2() throws Exception {
@@ -57,17 +59,10 @@ public class DateAndTimeValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT '2008-02-31' + INTERVAL 0 MONTH;", text);
+        Assert.assertEquals("SELECT '2008-02-31' + INTERVAL 0 MONTH", text);
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

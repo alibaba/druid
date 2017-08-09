@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -28,6 +30,11 @@ public class SQLLimit extends SQLObjectImpl {
     }
 
     public SQLLimit(SQLExpr rowCount) {
+        this.setRowCount(rowCount);
+    }
+
+    public SQLLimit(SQLExpr offset, SQLExpr rowCount) {
+        this.setOffset(offset);
         this.setRowCount(rowCount);
     }
 
@@ -45,8 +52,16 @@ public class SQLLimit extends SQLObjectImpl {
         this.rowCount = rowCount;
     }
 
+    public void setRowCount(int rowCount) {
+        this.setRowCount(new SQLIntegerExpr(rowCount));
+    }
+
     public SQLExpr getOffset() {
         return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.setOffset(new SQLIntegerExpr(offset));
     }
 
     public void setOffset(SQLExpr offset) {
@@ -63,6 +78,20 @@ public class SQLLimit extends SQLObjectImpl {
             acceptChild(visitor, rowCount);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLLimit clone() {
+        SQLLimit x = new SQLLimit();
+
+        if (offset != null) {
+            x.setOffset(offset.clone());
+        }
+
+        if (rowCount != null) {
+            x.setRowCount(rowCount.clone());
+        }
+
+        return x;
     }
 
 }

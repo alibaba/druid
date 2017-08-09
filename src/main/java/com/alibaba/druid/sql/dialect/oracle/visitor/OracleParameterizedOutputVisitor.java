@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedVisitor;
 
@@ -39,6 +41,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
 
     public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi){
         super(appender, printPostSemi);
+        this.parameterized = true;
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
@@ -54,6 +57,10 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor implem
 
         print('?');
         incrementReplaceCunt();
+        
+        if(this instanceof ExportParameterVisitor || this.parameters != null){
+            ExportParameterVisitorUtils.exportParameter((this).getParameters(), x);
+        }
         return false;
     }
 

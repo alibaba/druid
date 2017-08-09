@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,8 +58,7 @@ public class OracleSelectTest44 extends OracleTest {
         Assert.assertEquals("SELECT UNIQUE *" + //
                             "\nFROM ONLY (t_department)" + //
                             "\nWHERE name IN ('0000', '4444')" + //
-                            "\nORDER BY name ASC;" + //
-                            "\n", text);
+                            "\nORDER BY name ASC", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

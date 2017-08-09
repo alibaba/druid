@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,19 @@ public class SQLArrayExpr extends SQLExprImpl {
     private SQLExpr       expr;
 
     private List<SQLExpr> values = new ArrayList<SQLExpr>();
+
+    public SQLArrayExpr clone() {
+        SQLArrayExpr x = new SQLArrayExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        for (SQLExpr value : values) {
+            SQLExpr value2 = value.clone();
+            value2.setParent(x);
+            x.values.add(value2);
+        }
+        return x;
+    }
 
     public SQLExpr getExpr() {
         return expr;

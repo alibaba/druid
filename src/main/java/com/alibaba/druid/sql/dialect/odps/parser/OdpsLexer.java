@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -197,7 +197,7 @@ public class OdpsLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier");
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
@@ -214,7 +214,7 @@ public class OdpsLexer extends Lexer {
 
         final boolean firstFlag = isFirstIdentifierChar(first);
         if (!firstFlag) {
-            throw new ParserException("illegal identifier");
+            throw new ParserException("illegal identifier. " + info());
         }
 
         mark = pos;
@@ -224,6 +224,14 @@ public class OdpsLexer extends Lexer {
             ch = charAt(++pos);
 
             if (!isIdentifierChar(ch)) {
+                if (ch == '{' && charAt(pos - 1) == '$') {
+                    int endIndex = this.text.indexOf('}', pos);
+                    if (endIndex != -1) {
+                        bufPos += (endIndex - pos + 1);
+                        pos = endIndex;
+                        continue;
+                    }
+                }
                 break;
             }
 
@@ -350,7 +358,7 @@ public class OdpsLexer extends Lexer {
         
         super.scanVariable();
     }
-    
+
     protected final void scanString() {
         scanString2();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,26 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLPartitionBy;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlShowColumnOutpuVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -165,8 +170,235 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         return tableGroup;
     }
 
-    
     public void setTableGroup(SQLName tableGroup) {
         this.tableGroup = tableGroup;
+    }
+
+    @Override
+    public void simplify() {
+        tableOptions.clear();
+        super.simplify();
+    }
+
+    public void showCoumns(Appendable out) throws IOException {
+        this.accept(new MySqlShowColumnOutpuVisitor(out));
+    }
+
+    public boolean apply(MySqlRenameTableStatement x) {
+        for (MySqlRenameTableStatement.Item item : x.getItems()) {
+            if (apply(item)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean alterApply(SQLAlterTableItem item) {
+        if (item instanceof MySqlAlterTableAlterColumn) {
+            return apply((MySqlAlterTableAlterColumn) item);
+
+        } else if (item instanceof MySqlAlterTableChangeColumn) {
+            return apply((MySqlAlterTableChangeColumn) item);
+
+        } else if (item instanceof MySqlAlterTableCharacter) {
+            return apply((MySqlAlterTableCharacter) item);
+
+        } else if (item instanceof MySqlAlterTableModifyColumn) {
+            return apply((MySqlAlterTableModifyColumn) item);
+
+        } else if (item instanceof MySqlAlterTableOption) {
+            return apply((MySqlAlterTableOption) item);
+        }
+
+        return super.alterApply(item);
+    }
+
+    public boolean apply(SQLAlterTableAddIndex item) {
+        if (item.isUnique()) {
+            MySqlUnique x = new MySqlUnique();
+            item.cloneTo(x);
+            x.setParent(this);
+            this.tableElementList.add(x);
+            return true;
+        }
+
+        if (item.isKey()) {
+            MySqlKey x = new MySqlKey();
+            item.cloneTo(x);
+            x.setParent(this);
+            this.tableElementList.add(x);
+            return true;
+        }
+
+        MySqlTableIndex x = new MySqlTableIndex();
+        item.cloneTo(x);
+        x.setParent(this);
+        this.tableElementList.add(x);
+        return true;
+    }
+
+    public boolean apply(MySqlAlterTableOption item) {
+        this.tableOptions.put(item.getName(), item.getValue());
+        return true;
+    }
+
+    public boolean apply(MySqlAlterTableCharacter item) {
+        SQLExpr charset = item.getCharacterSet();
+        if (charset != null) {
+            this.tableOptions.put("CHARACTER SET", charset);
+        }
+
+        SQLExpr collate = item.getCollate();
+        if (collate != null) {
+            this.tableOptions.put("COLLATE", collate);
+        }
+        return true;
+    }
+
+    public boolean apply(MySqlRenameTableStatement.Item item) {
+        if (!SQLUtils.nameEquals((SQLName) item.getName(), this.getName())) {
+            return false;
+        }
+        this.setName((SQLName) item.getTo().clone());
+        return true;
+    }
+
+    public boolean apply(MySqlAlterTableAlterColumn x) {
+        int columnIndex = columnIndexOf(x.getColumn());
+        if (columnIndex == -1) {
+            return false;
+        }
+
+        SQLExpr defaultExpr = x.getDefaultExpr();
+        SQLColumnDefinition column = (SQLColumnDefinition) tableElementList.get(columnIndex);
+
+        if (x.isDropDefault()) {
+            column.setDefaultExpr(null);
+        } else if (defaultExpr != null) {
+            column.setDefaultExpr(defaultExpr);
+        }
+
+        return true;
+    }
+
+    public boolean apply(MySqlAlterTableChangeColumn item) {
+        SQLName columnName = item.getColumnName();
+        int columnIndex = columnIndexOf(columnName);
+        if (columnIndex == -1) {
+            return false;
+        }
+
+        int afterIndex = columnIndexOf(item.getAfterColumn());
+        int beforeIndex = columnIndexOf(item.getFirstColumn());
+
+        int insertIndex = -1;
+        if (beforeIndex != -1) {
+            insertIndex = beforeIndex;
+        } else if (afterIndex != -1) {
+            insertIndex = afterIndex + 1;
+        } else if (item.isFirst()) {
+            insertIndex = 0;
+        }
+
+        SQLColumnDefinition column = item.getNewColumnDefinition().clone();
+        column.setParent(this);
+        if (insertIndex == -1 || insertIndex == columnIndex) {
+            tableElementList.set(columnIndex, column);
+        } else {
+            if (insertIndex > columnIndex) {
+                tableElementList.add(insertIndex, column);
+                tableElementList.remove(columnIndex);
+            } else {
+                tableElementList.remove(columnIndex);
+                tableElementList.add(insertIndex, column);
+            }
+        }
+
+        for (int i = 0; i < tableElementList.size(); i++) {
+            SQLTableElement e = tableElementList.get(i);
+            if(e instanceof MySqlTableIndex) {
+                ((MySqlTableIndex) e).applyColumnRename(columnName, column.getName());
+            } else if (e instanceof SQLUnique) {
+                SQLUnique unique = (SQLUnique) e;
+                unique.applyColumnRename(columnName, column.getName());
+            }
+        }
+
+        return true;
+    }
+
+    public boolean apply(MySqlAlterTableModifyColumn item) {
+        SQLColumnDefinition column = item.getNewColumnDefinition().clone();
+        SQLName columnName = column.getName();
+
+        int columnIndex = columnIndexOf(columnName);
+        if (columnIndex == -1) {
+            return false;
+        }
+
+        int afterIndex = columnIndexOf(item.getAfterColumn());
+        int beforeIndex = columnIndexOf(item.getFirstColumn());
+
+        int insertIndex = -1;
+        if (beforeIndex != -1) {
+            insertIndex = beforeIndex;
+        } else if (afterIndex != -1) {
+            insertIndex = afterIndex + 1;
+        }
+
+        column.setParent(this);
+        if (insertIndex == -1 || insertIndex == columnIndex) {
+            tableElementList.set(columnIndex, column);
+            return true;
+        } else {
+            if (insertIndex > columnIndex) {
+                tableElementList.add(insertIndex, column);
+                tableElementList.remove(columnIndex);
+            } else {
+                tableElementList.remove(columnIndex);
+                tableElementList.add(insertIndex, column);
+            }
+        }
+
+        return true;
+    }
+
+    public void output(StringBuffer buf) {
+        this.accept(new MySqlOutputVisitor(buf));
+    }
+
+    public void cloneTo(MySqlCreateTableStatement x) {
+        super.cloneTo(x);
+        for (Map.Entry<String, SQLObject> entry : tableOptions.entrySet()) {
+            SQLObject obj = entry.getValue().clone();
+            obj.setParent(x);
+            x.tableOptions.put(entry.getKey(), obj);
+        }
+        if (partitioning != null) {
+            x.setPartitioning(partitioning.clone());
+        }
+        for (SQLCommentHint hint : hints) {
+            SQLCommentHint h2 = hint.clone();
+            h2.setParent(x);
+            x.hints.add(h2);
+        }
+        for (SQLCommentHint hint : optionHints) {
+            SQLCommentHint h2 = hint.clone();
+            h2.setParent(x);
+            x.optionHints.add(h2);
+        }
+        if (like != null) {
+            x.setLike(like.clone());
+        }
+        if (tableGroup != null) {
+            x.setTableGroup(tableGroup.clone());
+        }
+    }
+
+    public MySqlCreateTableStatement clone() {
+        MySqlCreateTableStatement x = new MySqlCreateTableStatement();
+        cloneTo(x);
+        return x;
     }
 }

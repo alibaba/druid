@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class SQLServerSelectTest21 extends TestCase {
             Assert.assertEquals("SELECT First_Name + ' ' + Last AS Name" //
                                 + "\nFROM Employees" //
                                 + "\nORDER BY First_Name" //
-                                + "\nOFFSET 10 ROWS FETCH NEXT 5 ROWS ONLY", text);
+                                + "\nOFFSET 10 ROWS FETCH NEXT 5 ROWS ONLY;", text);
         }
         {
             String text = SQLUtils.toSQLServerString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -45,7 +45,7 @@ public class SQLServerSelectTest21 extends TestCase {
             Assert.assertEquals("select First_Name + ' ' + Last as Name" //
                                 + "\nfrom Employees" //
                                 + "\norder by First_Name" //
-                                + "\noffset 10 rows fetch next 5 rows only", text);
+                                + "\noffset 10 rows fetch next 5 rows only;", text);
         }
     }
 }

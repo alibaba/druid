@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,21 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement {
 
-    private SQLName       name;
-    private String        indexType;
-    private List<SQLExpr> columns = new ArrayList<SQLExpr>();
+    private SQLName                    name;
+    private String                     indexType;
+    private List<SQLSelectOrderByItem> columns = new ArrayList<SQLSelectOrderByItem>();
 
     public MySqlTableIndex(){
 
@@ -50,11 +54,11 @@ public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement 
         this.name = name;
     }
 
-    public List<SQLExpr> getColumns() {
+    public List<SQLSelectOrderByItem> getColumns() {
         return columns;
     }
     
-    public void addColumn(SQLExpr column) {
+    public void addColumn(SQLSelectOrderByItem column) {
         if (column != null) {
             column.setParent(this);
         }
@@ -67,5 +71,48 @@ public class MySqlTableIndex extends MySqlObjectImpl implements SQLTableElement 
             acceptChild(visitor, columns);
         }
         visitor.endVisit(this);
+    }
+
+    public MySqlTableIndex clone() {
+        MySqlTableIndex x = new MySqlTableIndex();
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        x.indexType = indexType;
+        for (SQLSelectOrderByItem column : columns) {
+            SQLSelectOrderByItem c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+        return x;
+    }
+
+    public boolean applyColumnRename(SQLName columnName, SQLName to) {
+        for (SQLSelectOrderByItem orderByItem : columns) {
+            SQLExpr expr = orderByItem.getExpr();
+            if (expr instanceof SQLName
+                    && SQLUtils.nameEquals((SQLName) expr, columnName)) {
+                orderByItem.setExpr(to.clone());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean applyDropColumn(SQLName columnName) {
+        for (int i = columns.size() - 1; i >= 0; i--) {
+            SQLExpr expr = columns.get(i).getExpr();
+            if (expr instanceof SQLName
+                    && SQLUtils.nameEquals((SQLName) expr, columnName)) {
+                columns.remove(i);
+                return true;
+            }
+            if (expr instanceof SQLMethodInvokeExpr
+                    && SQLUtils.nameEquals(((SQLMethodInvokeExpr) expr).getMethodName(), columnName.getSimpleName())) {
+                columns.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,49 +62,51 @@ public class SQLServerSelectTest7 extends TestCase {
         		"\n                )" +
         		"\n        order by t.sort_order";
 
-        String expect = "WITH" +
-        		"\n\tmenu_view" +
-        		"\n\tAS" +
-        		"\n\t(" +
-        		"\n\t\tSELECT t.*, 1 AS level" +
-        		"\n\t\tFROM sec_portal_menu t" +
-        		"\n\t\tWHERE t.parent_id = ?" +
-        		"\n\t\tUNION ALL" +
-        		"\n\t\tSELECT t.*, level + 1" +
-        		"\n\t\tFROM sec_portal_menu t, menu_view x" +
-        		"\n\t\tWHERE t.parent_id = x.menu_id" +
-        		"\n\t)" +
-        		"\nSELECT t.menu_id AS \"id\", t.menu_name AS \"name\", t.parent_id AS \"pId\", CASE t.level WHEN 1 THEN 'true' ELSE 'false' END AS \"open\", t.link_type AS \"linkType\"" +
-        		"\nFROM menu_view t" +
-				"\nWHERE 1 = 1" +
-				"\n\tAND t.deleted = 0" +
-				"\n\tAND t.link_type IN ('simple', 'link')" +
-				"\n\tAND (EXISTS (" + 
-				"\n\t\t\tSELECT p.entity_code" +
-				"\n\t\t\tFROM sec_role_auth p" +
-				"\n\t\t\tWHERE p.entity_code = t.menu_id" +
-				"\n\t\t\t\tAND p.entity_type = 'menu'" +
-				"\n\t\t\t\tAND p.role_id IN (SELECT r.role_code" +
-				"\n\t\t\t\t\tFROM sec_role_member rm, sec_role r" +
-				"\n\t\t\t\t\tWHERE rm.entity_type = 'user'" +
-				"\n\t\t\t\t\t\tAND entity_code = ?" +
-				"\n\t\t\t\t\t\tAND r.role_id = rm.role_id" +
-				"\n\t\t\t\t\t\tAND r.enabled = 1" +
-				"\n\t\t\t\t\t\tAND r.deleted = 0)"+ 
-				"\n\t\t\t)" +
-				"\n\t\tOR '1' = ?" +
-				"\n\t\tOR t.need_control = 0)" +
-				"\n\tAND (t.enabled = 1" +
-				"\n\t\tOR '1' = ?" +
-				"\n\t\tOR t.need_control = 0)" +
-				"\nORDER BY t.sort_order";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
         String text = TestUtils.outputSqlServer(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals("WITH menu_view AS (\n" +
+				"\t\tSELECT t.*, 1 AS level\n" +
+				"\t\tFROM sec_portal_menu t\n" +
+				"\t\tWHERE t.parent_id = ?\n" +
+				"\t\tUNION ALL\n" +
+				"\t\tSELECT t.*, level + 1\n" +
+				"\t\tFROM sec_portal_menu t, menu_view x\n" +
+				"\t\tWHERE t.parent_id = x.menu_id\n" +
+				"\t)\n" +
+				"SELECT t.menu_id AS \"id\", t.menu_name AS \"name\", t.parent_id AS \"pId\"\n" +
+				"\t, CASE t.level\n" +
+				"\t\tWHEN 1 THEN 'true'\n" +
+				"\t\tELSE 'false'\n" +
+				"\tEND AS \"open\", t.link_type AS \"linkType\"\n" +
+				"FROM menu_view t\n" +
+				"WHERE 1 = 1\n" +
+				"\tAND t.deleted = 0\n" +
+				"\tAND t.link_type IN ('simple', 'link')\n" +
+				"\tAND (EXISTS (\n" +
+				"\t\t\tSELECT p.entity_code\n" +
+				"\t\t\tFROM sec_role_auth p\n" +
+				"\t\t\tWHERE p.entity_code = t.menu_id\n" +
+				"\t\t\t\tAND p.entity_type = 'menu'\n" +
+				"\t\t\t\tAND p.role_id IN (\n" +
+				"\t\t\t\t\tSELECT r.role_code\n" +
+				"\t\t\t\t\tFROM sec_role_member rm, sec_role r\n" +
+				"\t\t\t\t\tWHERE rm.entity_type = 'user'\n" +
+				"\t\t\t\t\t\tAND entity_code = ?\n" +
+				"\t\t\t\t\t\tAND r.role_id = rm.role_id\n" +
+				"\t\t\t\t\t\tAND r.enabled = 1\n" +
+				"\t\t\t\t\t\tAND r.deleted = 0\n" +
+				"\t\t\t\t)\n" +
+				"\t\t)\n" +
+				"\t\tOR '1' = ?\n" +
+				"\t\tOR t.need_control = 0)\n" +
+				"\tAND (t.enabled = 1\n" +
+				"\t\tOR '1' = ?\n" +
+				"\t\tOR t.need_control = 0)\n" +
+				"ORDER BY t.sort_order", text);
 
 //        System.out.println(text);
     }

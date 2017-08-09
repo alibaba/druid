@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -35,7 +37,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT something\nFROM tbl_name\nWHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date_col;",
+        Assert.assertEquals("SELECT something\nFROM tbl_name\nWHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date_col",
                             text);
     }
 
@@ -47,7 +49,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DAYOFMONTH('2001-11-00'), MONTH('2005-00-00');", text);
+        Assert.assertEquals("SELECT DAYOFMONTH('2001-11-00'), MONTH('2005-00-00')", text);
     }
 
     public void test_2() throws Exception {
@@ -58,7 +60,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DAYNAME('2006-05-00');", text);
+        Assert.assertEquals("SELECT DAYNAME('2006-05-00')", text);
     }
 
     public void test_3() throws Exception {
@@ -69,7 +71,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DAYNAME('2006-05-00');", text);
+        Assert.assertEquals("SELECT DAYNAME('2006-05-00')", text);
     }
 
     public void test_4() throws Exception {
@@ -80,7 +82,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DATE_ADD('2008-01-02', INTERVAL 31 DAY);", text);
+        Assert.assertEquals("SELECT DATE_ADD('2008-01-02', INTERVAL 31 DAY)", text);
     }
 
     public void test_5() throws Exception {
@@ -91,7 +93,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ADDDATE('2008-01-02', INTERVAL 31 DAY);", text);
+        Assert.assertEquals("SELECT ADDDATE('2008-01-02', INTERVAL 31 DAY)", text);
     }
 
     public void test_6() throws Exception {
@@ -102,7 +104,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ADDDATE('2008-01-02', 31);", text);
+        Assert.assertEquals("SELECT ADDDATE('2008-01-02', 31)", text);
     }
 
     public void test_7() throws Exception {
@@ -113,7 +115,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ADDTIME('2007-12-31 23:59:59.999999', '1 1:1:1.000002');", text);
+        Assert.assertEquals("SELECT ADDTIME('2007-12-31 23:59:59.999999', '1 1:1:1.000002')", text);
     }
 
     public void test_8() throws Exception {
@@ -124,7 +126,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ADDTIME('01:00:00.999999', '02:00:00.999998');", text);
+        Assert.assertEquals("SELECT ADDTIME('01:00:00.999999', '02:00:00.999998')", text);
     }
 
     public void test_9() throws Exception {
@@ -631,7 +633,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL +t.c1 DAY)\nFROM t;", text);
+        Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL +t.c1 DAY)\nFROM t", text);
     }
     
     public void test_55() throws Exception {
@@ -642,17 +644,10 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL -t.c1 DAY)\nFROM t;", text);
+        Assert.assertEquals("SELECT t.c1, DATE_ADD('2008-01-02', INTERVAL -t.c1 DAY)\nFROM t", text);
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

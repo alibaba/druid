@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLForeignKeyImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 /**
  * @author kiki
@@ -33,6 +34,10 @@ public class MysqlForeignKey extends SQLForeignKeyImpl {
 
     protected Option onUpdate;
     protected Option onDelete;
+
+    public MysqlForeignKey() {
+        dbType = JdbcConstants.MYSQL;
+    }
 
     public SQLName getIndexName() {
         return indexName;

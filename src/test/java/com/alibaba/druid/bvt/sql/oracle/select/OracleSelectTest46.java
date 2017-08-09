@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,8 +63,7 @@ public class OracleSelectTest46 extends OracleTest {
                             + "\nWHERE T1.MT_ORDER_ID = T2.MT_ORDER_ID" //
                             + "\n\tAND SELLER_SSOID = 1" //
                             + "\n\tAND T1.MT_ORDER_ID = '1'" //
-                            + "\n\tAND T1.MT_BATCH_ORDER_ID IN ('1');"//
-                            + "\n", text);
+                            + "\n\tAND T1.MT_BATCH_ORDER_ID IN ('1')", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

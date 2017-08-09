@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.bug;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -32,17 +33,6 @@ public class Bug_for_weizhi extends TestCase {
 
         String expected = "INSERT INTO aaa\nVALUES (1, 2, '这是个反斜杠\\\\');";
 
-        StringBuilder out = new StringBuilder();
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        for (SQLStatement statement : statementList) {
-            statement.accept(visitor);
-            visitor.print(";");
-        }
-
-        System.out.println(out.toString());
-
-        Assert.assertEquals(expected, out.toString());
+        Assert.assertEquals(expected, SQLUtils.formatMySql(sql));
     }
 }

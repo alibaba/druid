@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class SQLServerSelectTest9 extends TestCase {
                      "FROM Sales.SalesOrderDetail;";
 
         String expect = "SELECT AVG(UnitPrice) AS 'Average Price'" + //
-                        "\nFROM Sales.SalesOrderDetail";
+                        "\nFROM Sales.SalesOrderDetail;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

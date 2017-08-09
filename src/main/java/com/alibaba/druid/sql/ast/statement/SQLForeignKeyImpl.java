@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
     private SQLName       referencedTableName;
     private List<SQLName> referencingColumns = new ArrayList<SQLName>();
     private List<SQLName> referencedColumns  = new ArrayList<SQLName>();
+    private boolean       onDeleteCascade    = false;
+    private boolean       onDeleteSetNull    = false;
 
     public SQLForeignKeyImpl(){
 
@@ -51,6 +53,22 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
         return referencedColumns;
     }
 
+    public boolean isOnDeleteCascade() {
+        return onDeleteCascade;
+    }
+
+    public void setOnDeleteCascade(boolean onDeleteCascade) {
+        this.onDeleteCascade = onDeleteCascade;
+    }
+
+    public boolean isOnDeleteSetNull() {
+        return onDeleteSetNull;
+    }
+
+    public void setOnDeleteSetNull(boolean onDeleteSetNull) {
+        this.onDeleteSetNull = onDeleteSetNull;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -62,4 +80,29 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
         visitor.endVisit(this);        
     }
 
+    public void cloneTo(SQLForeignKeyImpl x) {
+        super.cloneTo(x);
+
+        if (referencedTableName != null) {
+            x.setReferencedTableName(referencedTableName.clone());
+        }
+
+        for (SQLName column : referencingColumns) {
+            SQLName columnClone = column.clone();
+            columnClone.setParent(x);
+            x.getReferencingColumns().add(columnClone);
+        }
+
+        for (SQLName column : referencedColumns) {
+            SQLName columnClone = column.clone();
+            columnClone.setParent(x);
+            x.getReferencedColumns().add(columnClone);
+        }
+    }
+
+    public SQLForeignKeyImpl clone() {
+        SQLForeignKeyImpl x = new SQLForeignKeyImpl();
+        cloneTo(x);
+        return x;
+    }
 }

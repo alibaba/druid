@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,4 +27,11 @@ public class SQLColumnPrimaryKey extends SQLConstraintImpl implements SQLColumnC
         visitor.endVisit(this);
     }
 
+    public SQLColumnPrimaryKey clone() {
+        SQLColumnPrimaryKey x = new SQLColumnPrimaryKey();
+
+        super.cloneTo(x);
+
+        return x;
+    }
 }

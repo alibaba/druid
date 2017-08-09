@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class PGSelectTest18 extends PGTest {
                     + "\n\t)"
                     + "\nSELECT n"
                     + "\nFROM t"
-                    + "\nLIMIT 100", result);
+                    + "\nLIMIT 100;", result);
         }
         {
             String result = SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
@@ -66,7 +66,7 @@ public class PGSelectTest18 extends PGTest {
                     + "\n\t)"
                     + "\nselect n"
                     + "\nfrom t"
-                    + "\nlimit 100", result);
+                    + "\nlimit 100;", result);
         }
         
         Assert.assertEquals(1, statementList.size());

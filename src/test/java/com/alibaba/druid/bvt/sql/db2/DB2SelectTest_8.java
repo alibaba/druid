@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,11 +59,11 @@ public class DB2SelectTest_8 extends DB2Test {
 
         Assert.assertEquals("SELECT UNIQUE id" //
                             + "\nFROM DSN81010.EMP"
-                            + "\nWHERE id = 1", //
+                            + "\nWHERE id = 1;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         Assert.assertEquals("select unique id" //
                             + "\nfrom DSN81010.EMP"
-                            + "\nwhere id = 1", //
+                            + "\nwhere id = 1;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -206,6 +206,47 @@ public class SQLOver extends SQLObjectImpl {
         result = 31 * result + (windowingBetweenEndPreceding ? 1 : 0);
         result = 31 * result + (windowingBetweenEndFollowing ? 1 : 0);
         return result;
+    }
+
+    public void cloneTo(SQLOver x) {
+        for (SQLExpr item : partitionBy) {
+            SQLExpr item1 = item.clone();
+            item1.setParent(x);
+            x.partitionBy.add(item);
+        }
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        if (of != null) {
+            x.setOf(of.clone());
+        }
+
+        if (windowing != null) {
+            x.setWindowing(windowing.clone());
+        }
+        x.windowingType = windowingType;
+        x.windowingPreceding = windowingPreceding;
+        x.windowingFollowing = windowingFollowing;
+
+        if (windowingBetweenBegin != null) {
+            x.setWindowingBetweenBegin(windowingBetweenBegin.clone());
+        }
+        x.windowingBetweenBeginPreceding = windowingBetweenBeginPreceding;
+        x.windowingBetweenBeginFollowing = windowingBetweenBeginFollowing;
+
+        if (windowingBetweenEnd != null) {
+            x.setWindowingBetweenEnd(windowingBetweenEnd.clone());
+        }
+        x.windowingBetweenEndPreceding = windowingBetweenEndPreceding;
+        x.windowingBetweenEndFollowing = windowingBetweenEndFollowing;
+    }
+
+    public SQLOver clone() {
+        SQLOver x = new SQLOver();
+        cloneTo(x);
+        return x;
     }
 
     public static enum WindowingType {

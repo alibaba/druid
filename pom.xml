@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<!--
+<!--
         <parent>
-            <groupId>com.alibaba</groupId>
-            <artifactId>parent-pom</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+                <groupId>com.alibaba</groupId>
+                <artifactId>parent-pom</artifactId>
+                <version>1.0.0</version>
         </parent>
-    -->
+ -->
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>1.0.28</version>
+	<version>1.1.3-preview_14</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -467,7 +467,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.39</version>
+			<version>5.1.41</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -477,9 +477,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>postgresql</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.1-901-1.jdbc4</version>
+			<version>42.1.4</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -487,6 +487,13 @@
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
 			<version>11.2.0.3</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.kylin</groupId>
+			<artifactId>kylin-jdbc</artifactId>
+			<version>2.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -537,6 +544,18 @@
 					<artifactId>validation-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-core</artifactId>
+			<version>1.13.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>22.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!--
@@ -660,11 +679,27 @@
 			<version>4.1.1</version>
 			<scope>test</scope>
 		</dependency>
+
+
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>19.0</version>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-druid</artifactId>
+			<version>1.13.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.calcite</groupId>
+			<artifactId>calcite-example-csv</artifactId>
+			<version>1.13.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>1.6</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 </project>

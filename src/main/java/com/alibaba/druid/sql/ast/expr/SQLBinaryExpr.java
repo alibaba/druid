@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,10 @@ public class SQLBinaryExpr extends SQLExprImpl implements SQLLiteralExpr {
         int result = 1;
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
+    }
+
+    public SQLBinaryExpr clone() {
+        return new SQLBinaryExpr(value);
     }
 
     @Override

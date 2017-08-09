@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,43 @@ public class OracleStorageClause extends OracleSQLObjectImpl {
     private SQLExpr        objno;
     private FlashCacheType flashCache;
     private FlashCacheType cellFlashCache;
+
+    public OracleStorageClause clone() {
+        OracleStorageClause x = new OracleStorageClause();
+        if (initial != null) {
+            x.setInitial(initial.clone());
+        }
+        if (next != null) {
+            x.setNext(next.clone());
+        }
+        if (minExtents != null) {
+            x.setMinExtents(minExtents.clone());
+        }
+        if (maxExtents != null) {
+            x.setMinExtents(maxExtents.clone());
+        }
+        if (maxSize != null) {
+            x.setMaxSize(maxSize.clone());
+        }
+        if (pctIncrease != null) {
+            x.setPctIncrease(pctIncrease.clone());
+        }
+        if (freeLists != null) {
+            x.setFreeLists(freeLists.clone());
+        }
+        if (freeListGroups != null) {
+            x.setFreeListGroups(freeListGroups.clone());
+        }
+        if (bufferPool != null) {
+            x.setBufferPool(bufferPool.clone());
+        }
+        if (objno != null) {
+            x.setObjno(objno.clone());
+        }
+        x.flashCache = flashCache;
+        x.cellFlashCache = cellFlashCache;
+        return x;
+    }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -150,4 +187,6 @@ public class OracleStorageClause extends OracleSQLObjectImpl {
     public static enum FlashCacheType {
         KEEP, NONE, DEFAULT
     }
+
+
 }

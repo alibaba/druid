@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,5 +99,16 @@ public class SQLExistsExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public SQLExistsExpr clone () {
+        SQLExistsExpr x = new SQLExistsExpr();
+
+        x.not = not;
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+
+        return x;
     }
 }

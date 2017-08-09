@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 package com.alibaba.druid.bvt.sql.mysql.create;
 
 import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
 import java.util.List;
@@ -106,20 +108,20 @@ public class MySqlCreateProcedureTest9 extends MysqlTest {
     	MySqlStatementParser parser=new MySqlStatementParser(sql);
     	List<SQLStatement> statementList = parser.parseStatementList();
     	SQLStatement statemen = statementList.get(0);
-//    	print(statementList);
-        Assert.assertEquals(1, statementList.size());
+		System.out.println(SQLUtils.toSQLString(statementList, JdbcConstants.MYSQL));
+		Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        Assert.assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(5, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getConditions().size());
     }
     
 }

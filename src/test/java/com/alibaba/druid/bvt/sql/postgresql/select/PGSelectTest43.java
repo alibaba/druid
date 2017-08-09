@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,19 +33,23 @@ public class PGSelectTest43 extends PGTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
-        Assert.assertEquals("SELECT task_id\n" +
+        assertEquals("SELECT task_id\n" +
                 "FROM mod_period_time\n" +
-                "WHERE task_id IN (SELECT task_id AS b\n" +
+                "WHERE task_id IN (\n" +
+                "\tSELECT task_id AS b\n" +
                 "\tFROM mod_period_time\n" +
                 "\tORDER BY task_id DESC\n" +
-                "\tLIMIT 1)", SQLUtils.toPGString(stmt));
+                "\tLIMIT 1\n" +
+                ")", SQLUtils.toPGString(stmt));
         
-        Assert.assertEquals("select task_id\n" +
+        assertEquals("select task_id\n" +
                 "from mod_period_time\n" +
-                "where task_id in (select task_id as b\n" +
+                "where task_id in (\n" +
+                "\tselect task_id as b\n" +
                 "\tfrom mod_period_time\n" +
                 "\torder by task_id desc\n" +
-                "\tlimit 1)", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\tlimit 1\n" +
+                ")", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
 

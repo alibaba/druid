@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ public class PGLexer extends Lexer {
 
         map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
 
+        map.put("BEGIN", Token.BEGIN);
         map.put("CASCADE", Token.CASCADE);
         map.put("CONTINUE", Token.CONTINUE);
         map.put("CURRENT", Token.CURRENT);
@@ -57,7 +58,8 @@ public class PGLexer extends Lexer {
         map.put("ROWS", Token.ROWS);
         map.put("SHARE", Token.SHARE);
         map.put("SHOW", Token.SHOW);
-
+        map.put("START", Token.START);
+        
         map.put("USING", Token.USING);
         map.put("WINDOW", Token.WINDOW);
         

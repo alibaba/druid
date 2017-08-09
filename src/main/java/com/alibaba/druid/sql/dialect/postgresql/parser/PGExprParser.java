@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,6 +134,10 @@ public class PGExprParser extends SQLExprParser {
         
         if (expr.getClass() == SQLIdentifierExpr.class) {
             String ident = ((SQLIdentifierExpr)expr).getName();
+
+            if (lexer.token() == Token.COMMA) {
+                return super.primaryRest(expr);
+            }
             
             if ("TIMESTAMP".equalsIgnoreCase(ident)) {
                 if (lexer.token() != Token.LITERAL_ALIAS //
@@ -236,5 +240,25 @@ public class PGExprParser extends SQLExprParser {
         }
 
         return super.primaryRest(expr);
+    }
+
+    @Override
+    protected String alias() {
+        String alias = super.alias();
+        if (alias != null) {
+            return alias;
+        }
+        // 某些关键字在alias时,不作为关键字,仍然是作用为别名
+        switch (lexer.token()) {
+        case INTERSECT:
+            // 具体可以参考SQLParser::alias()的方法实现
+            alias = lexer.stringVal();
+            lexer.nextToken();
+            return alias;
+        // TODO other cases
+        default:
+            break;
+        }
+        return alias;
     }
 }

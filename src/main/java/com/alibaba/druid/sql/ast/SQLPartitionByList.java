@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,5 +58,21 @@ public class SQLPartitionByList extends SQLPartitionBy {
             column.setParent(this);
         }
         this.columns.add(column);
+    }
+
+    public SQLPartitionByList clone() {
+        SQLPartitionByList x = new SQLPartitionByList();
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+
+        return x;
     }
 }

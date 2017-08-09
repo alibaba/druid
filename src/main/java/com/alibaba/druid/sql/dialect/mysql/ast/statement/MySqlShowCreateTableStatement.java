@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlShowCreateTableStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
-    private SQLExpr name;
+    private SQLName name;
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -29,11 +30,11 @@ public class MySqlShowCreateTableStatement extends MySqlStatementImpl implements
         visitor.endVisit(this);
     }
 
-    public SQLExpr getName() {
+    public SQLName getName() {
         return name;
     }
 
-    public void setName(SQLExpr name) {
+    public void setName(SQLName name) {
         if (name != null) {
             name.setParent(this);
         }

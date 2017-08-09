@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,12 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleLockTableStatement extends OracleStatementImpl {
 
-    private SQLName  table;
+    private SQLExprTableSource table;
     private LockMode lockMode;
     private boolean  noWait = false;
     private SQLExpr  wait;
@@ -42,12 +43,20 @@ public class OracleLockTableStatement extends OracleStatementImpl {
         this.wait = wait;
     }
 
-    public SQLName getTable() {
+    public SQLExprTableSource getTable() {
         return table;
     }
 
-    public void setTable(SQLName table) {
+    public void setTable(SQLExprTableSource table) {
+        if (table != null) {
+            table.setParent(this);
+        }
         this.table = table;
+    }
+
+    public void setTable(SQLName table) {
+        this.setTable(new SQLExprTableSource(table));
+        this.table.setParent(this);
     }
 
     public LockMode getLockMode() {
@@ -68,6 +77,27 @@ public class OracleLockTableStatement extends OracleStatementImpl {
     }
 
     public static enum LockMode {
-        EXCLUSIVE, SHARE
+        ROW_SHARE,
+        ROW_EXCLUSIVE,
+        SHARE_UPDATE,
+        SHARE,
+        SHARE_ROW_EXCLUSIVE,
+        EXCLUSIVE,
+        ;
+
+        public String toString() {
+            switch (this) {
+                case ROW_SHARE:
+                    return "ROW SHARE";
+                case ROW_EXCLUSIVE:
+                    return "ROW EXCLUSIVE";
+                case SHARE_UPDATE:
+                    return "SHARE UPDATE";
+                case SHARE_ROW_EXCLUSIVE:
+                    return "SHARE ROW EXCLUSIVE";
+                default:
+                    return this.name();
+            }
+        }
     }
 }

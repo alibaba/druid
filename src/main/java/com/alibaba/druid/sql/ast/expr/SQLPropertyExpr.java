@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,26 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     private SQLExpr owner;
     private String  name;
+
+    private transient SQLColumnDefinition resolvedColumn;
+    private transient SQLTableSource resolvedTableSource;
+
+    public SQLPropertyExpr(String owner, String name){
+        this(new SQLIdentifierExpr(owner), name);
+    }
 
     public SQLPropertyExpr(SQLExpr owner, String name){
         setOwner(owner);
@@ -42,11 +53,23 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return this.owner;
     }
 
+    public String getOwnernName() {
+        if (owner instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) owner).getName();
+        }
+
+        return null;
+    }
+
     public void setOwner(SQLExpr owner) {
         if (owner != null) {
             owner.setParent(this);
         }
         this.owner = owner;
+    }
+
+    public void setOwner(String owner) {
+        this.setOwner(new SQLIdentifierExpr(owner));
     }
 
     public String getName() {
@@ -109,4 +132,71 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return true;
     }
 
+    public SQLPropertyExpr clone() {
+        SQLPropertyExpr propertyExpr = new SQLPropertyExpr();
+        propertyExpr.name = this.name;
+        if (owner != null) {
+            propertyExpr.setOwner(owner.clone());
+        }
+        return propertyExpr;
+    }
+
+    public boolean matchOwner(String alias) {
+        if (owner instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) owner).getName().equalsIgnoreCase(alias);
+        }
+
+        return false;
+    }
+
+    public String normalizedName() {
+
+        String ownerName;
+        if (owner instanceof SQLIdentifierExpr) {
+            ownerName = ((SQLIdentifierExpr) owner).normalizedName();
+        } else if (owner instanceof SQLPropertyExpr) {
+            ownerName = ((SQLPropertyExpr) owner).normalizedName();
+        } else {
+            ownerName = owner.toString();
+        }
+
+        return ownerName + '.' + SQLUtils.normalize(name);
+    }
+
+    public SQLColumnDefinition getResolvedColumn() {
+        return resolvedColumn;
+    }
+
+    public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {
+        this.resolvedColumn = resolvedColumn;
+    }
+
+    public SQLTableSource getResolvedTableSource() {
+        return resolvedTableSource;
+    }
+
+    public void setResolvedTableSource(SQLTableSource resolvedTableSource) {
+        this.resolvedTableSource = resolvedTableSource;
+    }
+
+    public SQLDataType computeDataType() {
+        if (resolvedColumn != null) {
+            return resolvedColumn.getDataType();
+        }
+
+        if (resolvedTableSource != null
+                && resolvedTableSource instanceof SQLSubqueryTableSource) {
+            SQLSelect select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+            SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+            if (queryBlock == null) {
+                return null;
+            }
+            SQLSelectItem selectItem = queryBlock.findSelectItem(name);
+            if (selectItem != null) {
+                return selectItem.computeDataType();
+            }
+        }
+
+        return null;
+    }
 }

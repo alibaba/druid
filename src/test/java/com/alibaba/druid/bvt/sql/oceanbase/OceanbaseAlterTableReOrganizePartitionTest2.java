@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,13 +41,13 @@ public class OceanbaseAlterTableReOrganizePartitionTest2 extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE members"
-                    + "\n\tREORGANIZE s0, s1, p1, p2, p3 INTO (PARTITION m0 VALUES LESS THAN (1980), PARTITION m1 VALUES LESS THAN (2000))",
+                    + "\n\tREORGANIZE s0, s1, p1, p2, p3 INTO (PARTITION m0 VALUES LESS THAN (1980), PARTITION m1 VALUES LESS THAN (2000));",
                                 result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table members"
-                    + "\n\treorganize s0, s1, p1, p2, p3 into (partition m0 values less than (1980), partition m1 values less than (2000))",
+                    + "\n\treorganize s0, s1, p1, p2, p3 into (partition m0 values less than (1980), partition m1 values less than (2000));",
                                 result);
         }
 

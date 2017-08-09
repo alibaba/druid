@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,8 +56,7 @@ public class OracleSelectTest49 extends OracleTest {
 
         Assert.assertEquals("SELECT *" //
                             + "\nFROM tab1 t" //
-                            + "\nORDER BY replace(to_char(t.SORTNUM), '0', '9');"
-                            + "\n", text);
+                            + "\nORDER BY replace(to_char(t.SORTNUM), '0', '9')", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

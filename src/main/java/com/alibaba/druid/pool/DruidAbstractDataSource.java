@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -222,6 +223,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile long                            lastErrorTimeMillis;
     protected volatile Throwable                       lastCreateError;
     protected volatile long                            lastCreateErrorTimeMillis;
+    protected volatile long                            lastCreateStartTimeMillis;
 
     protected boolean                                  isOracle                                  = false;
 
@@ -231,6 +233,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected Condition                                notEmpty;
     protected Condition                                empty;
 
+    protected ReentrantLock                            activeConnectionLock                      = new ReentrantLock();
+
+    protected AtomicInteger                            creatingCount                             = new AtomicInteger();
     protected AtomicLong                               createCount                               = new AtomicLong();
     protected AtomicLong                               destroyCount                              = new AtomicLong();
 
@@ -1372,8 +1377,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public Set<DruidPooledConnection> getActiveConnections() {
-        synchronized (activeConnections) {
+        activeConnectionLock.lock();
+        try {
             return new HashSet<DruidPooledConnection>(this.activeConnections.keySet());
+        } finally {
+            activeConnectionLock.unlock();
         }
     }
 
@@ -1516,6 +1524,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 ? new HashMap<String, Object>()
                 : null;
 
+        creatingCount.incrementAndGet();
         try {
             conn = createPhysicalConnection(url, physicalConnectProperties);
             connectedNanos = System.nanoTime();
@@ -1547,6 +1556,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         } finally {
             long nano = System.nanoTime() - connectStartNanos;
             createTimespan += nano;
+            creatingCount.decrementAndGet();
         }
 
         return new PhysicalConnectionInfo(conn, connectStartNanos, connectedNanos, initedNanos, validatedNanos, variables, globalVariables);
@@ -1625,7 +1635,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 stmt.execute(sql);
             }
 
-            if (JdbcConstants.MYSQL.equals(dbType)) {
+            if (JdbcConstants.MYSQL.equals(dbType)
+                ||JdbcConstants.ALIYUN_ADS.equals(dbType)) {
                 if (variables != null) {
                     ResultSet rs = null;
                     try {

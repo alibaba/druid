@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,30 +49,34 @@ public class MySqlSelectTest_29 extends MysqlTest {
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(4, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT *"
-                    + "\nFROM Function"
-                    + "\nWHERE Id IN (SELECT FunctionId"
-                    + "\n\t\tFROM RoleFunction"
-                    + "\n\t\tWHERE RoleId = '001'"
-                    + "\n\t\t\tAND LogicalDel = 0)"
-                    + "\n\tAND LogicalDel = 0", //
+            assertEquals("SELECT *\n" +
+                            "FROM Function\n" +
+                            "WHERE Id IN (\n" +
+                            "\t\tSELECT FunctionId\n" +
+                            "\t\tFROM RoleFunction\n" +
+                            "\t\tWHERE RoleId = '001'\n" +
+                            "\t\t\tAND LogicalDel = 0\n" +
+                            "\t)\n" +
+                            "\tAND LogicalDel = 0", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select *"
-                    + "\nfrom Function"
-                    + "\nwhere Id in (select FunctionId"
-                    + "\n\t\tfrom RoleFunction"
-                    + "\n\t\twhere RoleId = '001'"
-                    + "\n\t\t\tand LogicalDel = 0)"
-                    + "\n\tand LogicalDel = 0", //
+            assertEquals("select *\n" +
+                            "from Function\n" +
+                            "where Id in (\n" +
+                            "\t\tselect FunctionId\n" +
+                            "\t\tfrom RoleFunction\n" +
+                            "\t\twhere RoleId = '001'\n" +
+                            "\t\t\tand LogicalDel = 0\n" +
+                            "\t)\n" +
+                            "\tand LogicalDel = 0", //
                                 output);
         }
     }

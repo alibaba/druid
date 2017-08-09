@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,12 +44,15 @@ public class OracleCreateTableTest21 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE divisions ("//
-                            + "\n\tdiv_no NUMBER(2),"//
-                            + "\n\tdiv_name VARCHAR2(14),"//
-                            + "\n\tlocation VARCHAR2(13)"//
-                            + "\n)"//
-                            + "\nSTORAGE (INITIAL 8M MAXSIZE 1G)",//
+        Assert.assertEquals("CREATE TABLE divisions (\n" +
+                        "\tdiv_no NUMBER(2),\n" +
+                        "\tdiv_name VARCHAR2(14),\n" +
+                        "\tlocation VARCHAR2(13)\n" +
+                        ")\n" +
+                        "STORAGE (\n" +
+                        "\tINITIAL 8M\n" +
+                        "\tMAXSIZE 1G\n" +
+                        ");",//
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,21 +34,13 @@ public class OdpsSelectTest_over_rows_2 extends TestCase {
                 "  from employee\n" +
                 "  order by department_id, hire_date;\n" +
                 "";//
-        Assert.assertEquals("SELECT last_name\n" +
-                "\t, first_name\n" +
-                "\t, department_id\n" +
-                "\t, hire_date\n" +
-                "\t, salary\n" +
+        assertEquals("SELECT last_name, first_name, department_id, hire_date, salary\n" +
                 "\t, SUM(salary) OVER (PARTITION BY department_id ORDER BY last_name, \n" +
                 "\t\tfirst_name RANGE 90 PRECEDING) AS department_total\n" +
                 "FROM employee\n" +
                 "ORDER BY department_id, \n" +
                 "\thire_date;", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select last_name\n" +
-                "\t, first_name\n" +
-                "\t, department_id\n" +
-                "\t, hire_date\n" +
-                "\t, salary\n" +
+        Assert.assertEquals("select last_name, first_name, department_id, hire_date, salary\n" +
                 "\t, sum(salary) over (partition by department_id order by last_name, \n" +
                 "\t\tfirst_name range 90 preceding) as department_total\n" +
                 "from employee\n" +

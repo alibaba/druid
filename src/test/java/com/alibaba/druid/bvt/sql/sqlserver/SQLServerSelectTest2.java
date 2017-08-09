@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,13 @@ public class SQLServerSelectTest2 extends TestCase {
     public void test_isEmpty() throws Exception {
         String sql = "SELECT TOP 1 name FROM (SELECT TOP 9 name FROM master..syslogins ORDER BY name ASC) sq ORDER BY name DESC ";
 
-        String expect = "SELECT TOP 1 name\n" + //
-                        "FROM (SELECT TOP 9 name\n" + //
-                        "\tFROM master..syslogins\n" + //
-                        "\tORDER BY name ASC\n" + //
-                        "\t) sq\n" + //
-                        "ORDER BY name DESC";
+        String expect = "SELECT TOP 1 name\n" +
+                "FROM (\n" +
+                "\tSELECT TOP 9 name\n" +
+                "\tFROM master..syslogins\n" +
+                "\tORDER BY name ASC\n" +
+                ") sq\n" +
+                "ORDER BY name DESC";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

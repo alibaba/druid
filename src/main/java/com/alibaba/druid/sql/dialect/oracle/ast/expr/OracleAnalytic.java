@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -45,7 +46,23 @@ public class OracleAnalytic extends SQLOver implements OracleExpr {
         return this.windowing;
     }
 
+    public OracleAnalytic clone() {
+        OracleAnalytic x = new OracleAnalytic();
+
+        cloneTo(x);
+
+        if (windowing != null) {
+            x.setWindowing(windowing.clone());
+        }
+
+        return x;
+    }
+
     public void setWindowing(OracleAnalyticWindowing windowing) {
         this.windowing = windowing;
+    }
+
+    public SQLDataType computeDataType() {
+        return null;
     }
 }

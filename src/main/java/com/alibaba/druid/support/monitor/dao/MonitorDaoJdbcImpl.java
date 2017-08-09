@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -614,7 +614,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     protected long getSqlHash(String sql) {
-        return Utils.murmurhash2_64(sql);
+        return Utils.fnv_64(sql);
     }
 
     static void setParam(PreparedStatement stmt, int paramIndex, String value) throws SQLException {

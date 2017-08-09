@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ public class OracleOutputVisitorTest_selectJoin extends TestCase {
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT e.salary\nFROM employee e\n\tJOIN department d\nWHERE e.depId = d.id;\n",
+        Assert.assertEquals("SELECT e.salary\nFROM employee e\n\tJOIN department d\nWHERE e.depId = d.id",
                             buf.toString());
 
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class OracleCreateTableTest33 extends OracleTest {
         Assert.assertEquals("CREATE TABLE games (" //
                             + "\n\tscores NUMBER," //
                             + "\n\tCONSTRAINT unq_num UNIQUE (scores) INITIALLY DEFERRED DEFERRABLE" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.util.Calendar;
 public final class JdbcParameterString implements JdbcParameter {
 
     private final String value;
+
+    public final static JdbcParameterString empty = new JdbcParameterString("");
 
     public JdbcParameterString(String value){
         this.value = value;

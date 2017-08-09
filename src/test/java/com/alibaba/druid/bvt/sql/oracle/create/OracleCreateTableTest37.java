@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public class OracleCreateTableTest37 extends OracleTest {
                 + "\n\tCONSTRAINT product_status_lov_demo CHECK (product_status IN ('orderable', 'planned', 'under development', 'obsolete'))"
                 + "\n)"
                 + "\nPARTITION BY HASH (product_id) PARTITIONS 4"
-                + "\nSTORE IN (tbs_01, tbs_02, tbs_03, tbs_04)",//
+                + "\nSTORE IN (tbs_01, tbs_02, tbs_03, tbs_04);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

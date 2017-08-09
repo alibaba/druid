@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -926,7 +926,7 @@ public abstract class WallProvider {
 
                     long sqlHash = sqlStat.getSqlHash();
                     if (sqlHash == 0) {
-                        sqlHash = Utils.murmurhash2_64(sql);
+                        sqlHash = Utils.fnv_64(sql);
                         sqlStat.setSqlHash(sqlHash);
                     }
                     sqlStatValue.setSqlHash(sqlHash);

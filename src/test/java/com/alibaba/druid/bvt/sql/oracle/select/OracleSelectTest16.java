@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,25 @@ package com.alibaba.druid.bvt.sql.oracle.select;
 
 import java.util.List;
 
-import org.junit.Assert;
-
 import com.alibaba.druid.sql.OracleTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleSelectTest16 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = "select privilege#,level from sysauth$ connect by grantee#=prior privilege# and privilege#>0 start with grantee#=:1 and privilege#>0"; //
 
-        OracleStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
+        SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ORACLE);
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
@@ -46,11 +44,11 @@ public class OracleSelectTest16 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sysauth$")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("sysauth$")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        assertEquals(2, visitor.getColumns().size());
 
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,15 @@ public class OracleAnalyticWindowing extends SQLObjectImpl implements OracleExpr
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public OracleAnalyticWindowing clone() {
+        OracleAnalyticWindowing x = new OracleAnalyticWindowing();
+        x.type = type;
+        if (expr != null) {
+            this.setExpr(expr.clone());
+        }
+        return x;
     }
 
     public static enum Type {

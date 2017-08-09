@@ -12,7 +12,7 @@ public class OdpsFormatCommentTest7 extends TestCase {
                 + "\nselect * from table1;" //
                 + "\nselect * from table2;;"
                 ;//
-        Assert.assertEquals("--这里是注释"
+        Assert.assertEquals("-- 这里是注释"
                 + "\nSELECT *"
                 + "\nFROM table1;"
                 + "\n"

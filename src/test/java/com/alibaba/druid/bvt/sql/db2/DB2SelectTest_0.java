@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class DB2SelectTest_0 extends DB2Test {
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
         Assert.assertEquals("SELECT *" //
-                            + "\nFROM DSN81010.EMP", //
+                            + "\nFROM DSN81010.EMP;", //
                             output);
     }
 }

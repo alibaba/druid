@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class SQLServerRowNumberTest extends TestCase {
                         + "\n\tINNER JOIN Person.Contact c ON s.SalesPersonID = c.ContactID"
                         + "\n\tINNER JOIN Person.Address a ON a.AddressID = c.ContactID" //
                         + "\nWHERE TerritoryID IS NOT NULL" //
-                        + "\n\tAND SalesYTD <> 0";
+                        + "\n\tAND SalesYTD <> 0;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

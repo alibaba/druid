@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
@@ -33,7 +35,7 @@ public class StringTest extends TestCase {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
-        String text = output(stmtList);
+        String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
         Assert.assertEquals("SELECT _latin1 'string' COLLATE latin1_danish_ci;", text);
     }
@@ -44,19 +46,8 @@ public class StringTest extends TestCase {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
-        String text = output(stmtList);
+        String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
         Assert.assertEquals("SELECT _utf8 'some text';", text);
-    }
-
-    private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
     }
 }

@@ -37,25 +37,34 @@ public class PagerUtilsTest_Count_MySql_0 extends TestCase {
                             "FROM t", result);
     }
 
+    public void test_mysql_4() throws Exception {
+        String sql = "select distinct a.col1,a.col2 from test a";
+        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        assertEquals("SELECT COUNT(DISTINCT a.col1, a.col2)\n" +
+                "FROM test a", result);
+    }
+
     public void test_mysql_group_0() throws Exception {
         String sql = "select type, count(*) from t group by type";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
-        Assert.assertEquals("SELECT COUNT(*)" + //
-                            "\nFROM (SELECT type, COUNT(*)" + //
-                            "\n\tFROM t" + //
-                            "\n\tGROUP BY type" + //
-                            "\n\t) ALIAS_COUNT", result);
+        Assert.assertEquals("SELECT COUNT(*)\n" +
+                "FROM (\n" +
+                "\tSELECT type, COUNT(*)\n" +
+                "\tFROM t\n" +
+                "\tGROUP BY type\n" +
+                ") ALIAS_COUNT", result);
     }
 
     public void test_mysql_union_0() throws Exception {
         String sql = "select id, name from t1 union select id, name from t2 order by id";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
-        Assert.assertEquals("SELECT COUNT(*)\n" + //
-                            "FROM (SELECT id, name" + //
-                            "\n\tFROM t1" + //
-                            "\n\tUNION" + //
-                            "\n\tSELECT id, name" + //
-                            "\n\tFROM t2" + //
-                            "\n\t) ALIAS_COUNT", result);
+        Assert.assertEquals("SELECT COUNT(*)\n" +
+                "FROM (\n" +
+                "\tSELECT id, name\n" +
+                "\tFROM t1\n" +
+                "\tUNION\n" +
+                "\tSELECT id, name\n" +
+                "\tFROM t2\n" +
+                ") ALIAS_COUNT", result);
     }
 }

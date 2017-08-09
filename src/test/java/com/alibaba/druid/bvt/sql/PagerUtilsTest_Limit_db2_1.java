@@ -12,16 +12,18 @@ public class PagerUtilsTest_Limit_db2_1 extends TestCase {
     public void test_db2_union() throws Exception {
         String sql = "select * from t1 union select * from t2";
         String result = PagerUtils.limit(sql, JdbcConstants.DB2, 20, 10);
-        Assert.assertEquals("SELECT *" //
-                            + "\nFROM (SELECT XX.*, ROW_NUMBER() OVER () AS ROWNUM" //
-                            + "\n\tFROM (SELECT *" //
-                            + "\n\t\tFROM t1" //
-                            + "\n\t\tUNION" //
-                            + "\n\t\tSELECT *" //
-                            + "\n\t\tFROM t2" //
-                            + "\n\t\t) XX" //
-                            + "\n\t) XXX" //
-                            + "\nWHERE ROWNUM > 20" //
-                            + "\n\tAND ROWNUM <= 30", result);
+        Assert.assertEquals("SELECT *\n" +
+                "FROM (\n" +
+                "\tSELECT XX.*, ROW_NUMBER() OVER () AS ROWNUM\n" +
+                "\tFROM (\n" +
+                "\t\tSELECT *\n" +
+                "\t\tFROM t1\n" +
+                "\t\tUNION\n" +
+                "\t\tSELECT *\n" +
+                "\t\tFROM t2\n" +
+                "\t) XX\n" +
+                ") XXX\n" +
+                "WHERE ROWNUM > 20\n" +
+                "\tAND ROWNUM <= 30", result);
     }
 }

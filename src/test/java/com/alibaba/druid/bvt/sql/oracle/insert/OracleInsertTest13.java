@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class OracleInsertTest13 extends OracleTest {
         Assert.assertEquals("INSERT INTO bonuses" //
                             + "\nSELECT employee_id, salary * 1.1"//
                             + "\nFROM employees"//
-                            + "\nWHERE commission_pct > 0.25",//
+                            + "\nWHERE commission_pct > 0.25;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

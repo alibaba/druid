@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,8 +80,7 @@ public class OracleCreateTableTest36 extends OracleTest {
                 + "\n\tamount_sold NUMBER(10, 2)"
                 + "\n)"
                 + "\nPARTITION BY RANGE (time_id)"
-                + "\nSUBPARTITION BY HASH (channel_id)"
-                + "\n("
+                + "\nSUBPARTITION BY HASH (channel_id) ("
                 + "\n\tPARTITION SALES_Q1_1998 VALUES LESS THAN (TO_DATE('01-APR-1998', 'DD-MON-YYYY')),"
                 + "\n\tPARTITION SALES_Q2_1998 VALUES LESS THAN (TO_DATE('01-JUL-1998', 'DD-MON-YYYY')),"
                 + "\n\tPARTITION SALES_Q3_1998 VALUES LESS THAN (TO_DATE('01-OCT-1998', 'DD-MON-YYYY')),"
@@ -93,8 +92,7 @@ public class OracleCreateTableTest36 extends OracleTest {
                 + "\n\tPARTITION SALES_Q1_2000 VALUES LESS THAN (TO_DATE('01-APR-2000', 'DD-MON-YYYY')),"
                 + "\n\tPARTITION SALES_Q2_2000 VALUES LESS THAN (TO_DATE('01-JUL-2000', 'DD-MON-YYYY'))"
                 + "\n\t\tSUBPARTITIONS 8,"
-                + "\n\tPARTITION SALES_Q3_2000 VALUES LESS THAN (TO_DATE('01-OCT-2000', 'DD-MON-YYYY'))"
-                + "\n\t("
+                + "\n\tPARTITION SALES_Q3_2000 VALUES LESS THAN (TO_DATE('01-OCT-2000', 'DD-MON-YYYY')) ("
                 + "\n\t\tSUBPARTITION ch_c,"
                 + "\n\t\tSUBPARTITION ch_i,"
                 + "\n\t\tSUBPARTITION ch_p,"
@@ -103,7 +101,7 @@ public class OracleCreateTableTest36 extends OracleTest {
                 + "\n\t),"
                 + "\n\tPARTITION SALES_Q4_2000 VALUES LESS THAN (MAXVALUE)"
                 + "\n\t\tSUBPARTITIONS 4"
-                + "\n)",//
+                + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

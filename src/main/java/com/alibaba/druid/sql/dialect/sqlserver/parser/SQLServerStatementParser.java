@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
@@ -155,7 +154,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
     public SQLStatement parseDeclare() {
         this.accept(Token.DECLARE);
 
-        SQLServerDeclareStatement declareStatement = new SQLServerDeclareStatement();
+        SQLDeclareStatement declareStatement = new SQLDeclareStatement();
         
         for (;;) {
             SQLDeclareItem item = new  SQLDeclareItem();
@@ -187,7 +186,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                             constraint.setParent(item);
                             item.getTableElementList().add((SQLTableElement) constraint);
                         } else if (lexer.token() == Token.TABLESPACE) {
-                            throw new ParserException("TODO " + lexer.token());
+                            throw new ParserException("TODO " + lexer.info());
                         } else {
                             SQLColumnDefinition column = this.exprParser.parseColumn();
                             item.getTableElementList().add(column);
@@ -256,7 +255,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
         insertStatement.setTableName(tableName);
 
         if (lexer.token() == Token.LITERAL_ALIAS) {
-            insertStatement.setAlias(as());
+            insertStatement.setAlias(tableAlias());
         }
 
         parseInsert0_hinits(insertStatement);
@@ -284,7 +283,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 accept(Token.LPAREN);
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
                 this.exprParser.exprList(values.getValues(), values);
-                insertStatement.getValuesList().add(values);
+                insertStatement.addValueCause(values);
                 accept(Token.RPAREN);
 
                 if (!parseCompleteValues && insertStatement.getValuesList().size() >= parseValuesSize) {
@@ -371,7 +370,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
                     stmt.setLevel("READ COMMITTED");
                     lexer.nextToken();
                 } else {
-                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal() + ", " + lexer.info());
                 }
             } else if (identifierEquals("SERIALIZABLE")) {
                 stmt.setLevel("SERIALIZABLE");
@@ -385,10 +384,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
                     stmt.setLevel("REPEATABLE READ");
                     lexer.nextToken();
                 } else {
-                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal() + ", " + lexer.info());
                 }
             } else {
-                throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal() + ", " + lexer.info());
             }
 
             return stmt;
@@ -483,10 +482,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
         return block;
     }
     
-    public SQLServerCommitStatement parseCommit() {
+    public SQLStatement parseCommit() {
         acceptIdentifier("COMMIT");
 
-        SQLServerCommitStatement stmt = new SQLServerCommitStatement();
+        SQLCommitStatement stmt = new SQLCommitStatement();
 
         if (identifierEquals("WORK")) {
             lexer.nextToken();

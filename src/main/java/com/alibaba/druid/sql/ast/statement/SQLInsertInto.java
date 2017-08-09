@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,32 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     protected final List<SQLExpr> columns = new ArrayList<SQLExpr>();
     protected SQLSelect           query;
     
-    protected List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
+    protected final List<ValuesClause>  valuesList = new ArrayList<ValuesClause>();
 
     public SQLInsertInto(){
 
     }
+
+    public void cloneTo(SQLInsertInto x) {
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLExpr column : columns) {
+            SQLExpr column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+        for (ValuesClause v : valuesList) {
+            ValuesClause v2 = v.clone();
+            v2.setParent(x);
+            x.valuesList.add(v2);
+        }
+    }
+
+    public abstract SQLInsertInto clone();
 
     public String getAlias() {
         return tableSource.getAlias();
@@ -71,7 +92,14 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         return query;
     }
 
+    public void setQuery(SQLSelectQuery query) {
+        this.setQuery(new SQLSelect(query));
+    }
+
     public void setQuery(SQLSelect query) {
+        if (query != null) {
+            query.setParent(this);
+        }
         this.query = query;
     }
 
@@ -105,7 +133,10 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         return valuesList;
     }
 
-    public void setValuesList(List<ValuesClause> valuesList) {
-        this.valuesList = valuesList;
+    public void addValueCause(ValuesClause valueClause) {
+        if (valueClause != null) {
+            valueClause.setParent(this);
+        }
+        valuesList.add(valueClause);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,11 @@ public class MySqlAlterTableAddIndex_0 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD INDEX `ix` (`f2` ASC)", SQLUtils.toMySqlString(stmt));
+        assertEquals("ALTER TABLE `test`.`tb1`" + //
+                            "\n\tADD INDEX `ix` (`f2` ASC);", SQLUtils.toMySqlString(stmt));
         
-        Assert.assertEquals("alter table `test`.`tb1`" + //
-                "\n\tadd index `ix` (`f2` asc)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("alter table `test`.`tb1`" + //
+                "\n\tadd index `ix` (`f2` asc);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.MYSQL);
         stmt.accept(visitor);

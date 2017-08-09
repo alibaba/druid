@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class SQLServerWaitForTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcUtils.SQL_SERVER);
 
-        Assert.assertEquals("WAITFOR TIME '22:20'", text);
+        Assert.assertEquals("WAITFOR TIME '22:20';", text);
     }
 
     public void test_1() {
@@ -51,7 +51,7 @@ public class SQLServerWaitForTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcUtils.SQL_SERVER);
 
-        Assert.assertEquals("WAITFOR DELAY '02:00'", text);
+        Assert.assertEquals("WAITFOR DELAY '02:00';", text);
     }
 
 }

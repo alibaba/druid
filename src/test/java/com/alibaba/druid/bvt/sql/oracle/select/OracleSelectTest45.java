@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public class OracleSelectTest45 extends OracleTest {
                 + "\n\tAND REFUND_STATE = '0'"
                 + "\n\tAND PRODUCT_ORDER_STATE >= 300"
                 + "\n\tAND BC_ID IN (?)"
-                + "\nGROUP BY BC_ID;\n", text);
+                + "\nGROUP BY BC_ID", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

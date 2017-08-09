@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,10 @@ public class OdpsSelectTest12 extends TestCase {
 
     public void test_select() throws Exception {
         String sql = "select name, sp from abc lateral view explode(split(concat(',','1','2','3'),',')) t as sp;";//
-        Assert.assertEquals("SELECT name"
-                + "\n\t, sp"
-                + "\nFROM abc"
-                + "\n\tLATERAL VIEW EXPLODE(SPLIT(concat(',', '1', '2', '3'), ',')) t AS sp;", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select name"
-                + "\n\t, sp"
+        Assert.assertEquals("SELECT name, sp\n" +
+                "FROM abc\n" +
+                "\tLATERAL VIEW EXPLODE(SPLIT(concat(',', '1', '2', '3'), ',')) t AS sp;", SQLUtils.formatOdps(sql));
+        Assert.assertEquals("select name, sp"
                 + "\nfrom abc"
                 + "\n\tlateral view explode(split(concat(',', '1', '2', '3'), ',')) t as sp;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
         

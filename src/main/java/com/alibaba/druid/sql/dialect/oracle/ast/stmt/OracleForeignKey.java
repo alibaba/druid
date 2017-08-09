@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,4 +86,21 @@ public class OracleForeignKey extends SQLForeignKeyImpl implements OracleConstra
         this.using = using;
     }
 
+    public void cloneTo(OracleForeignKey x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OracleForeignKey clone() {
+        OracleForeignKey x = new OracleForeignKey();
+        cloneTo(x);
+        return x;
+    }
 }

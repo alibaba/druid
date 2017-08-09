@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,14 @@
  */
 package com.alibaba.druid.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.GenericServlet;
 
@@ -173,16 +166,6 @@ public class Utils {
         return null;
     }
 
-    public static Boolean getBoolean(GenericServlet servlet, String key) {
-        String property = servlet.getInitParameter(key);
-        if ("true".equals(property)) {
-            return Boolean.TRUE;
-        } else if ("false".equals(property)) {
-            return Boolean.FALSE;
-        }
-        return null;
-    }
-
     public static Integer getInteger(Properties properties, String key) {
         String property = properties.getProperty(key);
 
@@ -217,7 +200,7 @@ public class Utils {
         if (className == null) {
             return null;
         }
-        
+
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
@@ -253,7 +236,7 @@ public class Utils {
     /**
      * murmur hash 2.0, The murmur hash is a relatively fast hash function from http://murmurhash.googlepages.com/ for
      * platforms with efficient multiplication.
-     * 
+     *
      * @author Viliam Holub
      */
     public static long murmurhash2_64(final byte[] data, int length, int seed) {
@@ -267,13 +250,13 @@ public class Utils {
         for (int i = 0; i < length8; i++) {
             final int i8 = i * 8;
             long k = ((long) data[i8 + 0] & 0xff) //
-                     + (((long) data[i8 + 1] & 0xff) << 8) //
-                     + (((long) data[i8 + 2] & 0xff) << 16)//
-                     + (((long) data[i8 + 3] & 0xff) << 24) //
-                     + (((long) data[i8 + 4] & 0xff) << 32)//
-                     + (((long) data[i8 + 5] & 0xff) << 40)//
-                     + (((long) data[i8 + 6] & 0xff) << 48) //
-                     + (((long) data[i8 + 7] & 0xff) << 56);
+                    + (((long) data[i8 + 1] & 0xff) << 8) //
+                    + (((long) data[i8 + 2] & 0xff) << 16)//
+                    + (((long) data[i8 + 3] & 0xff) << 24) //
+                    + (((long) data[i8 + 4] & 0xff) << 32)//
+                    + (((long) data[i8 + 5] & 0xff) << 40)//
+                    + (((long) data[i8 + 6] & 0xff) << 48) //
+                    + (((long) data[i8 + 7] & 0xff) << 56);
 
             k *= m;
             k ^= k >>> r;
@@ -340,5 +323,168 @@ public class Utils {
         b[off + 1] = (byte) (val >>> 48);
         b[off + 0] = (byte) (val >>> 56);
     }
-   
+
+    public static boolean equals(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
+    }
+
+    public static String hex(int hash) {
+        byte[] bytes = new byte[4];
+
+        bytes[3] = (byte) (hash       );
+        bytes[2] = (byte) (hash >>>  8);
+        bytes[1] = (byte) (hash >>> 16);
+        bytes[0] = (byte) (hash >>> 24);
+
+
+        char[] chars = new char[8];
+        for (int i = 0; i < 4; ++i) {
+            byte b = bytes[i];
+
+            int a = b & 0xFF;
+            int b0 = a >> 4;
+            int b1 = a & 0xf;
+
+            chars[i * 2] = (char) (b0 + (b0 < 10 ? 48 : 55));
+            chars[i * 2 + 1] = (char) (b1 + (b1 < 10 ? 48 : 55));
+        }
+
+        return new String(chars);
+    }
+
+    public static String hex(long hash) {
+        byte[] bytes = new byte[8];
+
+        bytes[7] = (byte) (hash       );
+        bytes[6] = (byte) (hash >>>  8);
+        bytes[5] = (byte) (hash >>> 16);
+        bytes[4] = (byte) (hash >>> 24);
+        bytes[3] = (byte) (hash >>> 32);
+        bytes[2] = (byte) (hash >>> 40);
+        bytes[1] = (byte) (hash >>> 48);
+        bytes[0] = (byte) (hash >>> 56);
+
+        char[] chars = new char[16];
+        for (int i = 0; i < 8; ++i) {
+            byte b = bytes[i];
+
+            int a = b & 0xFF;
+            int b0 = a >> 4;
+            int b1 = a & 0xf;
+
+            chars[i * 2] = (char) (b0 + (b0 < 10 ? 48 : 55));
+            chars[i * 2 + 1] = (char) (b1 + (b1 < 10 ? 48 : 55));
+        }
+
+        return new String(chars);
+    }
+
+    public static String hex_t(long hash) {
+        byte[] bytes = new byte[8];
+
+        bytes[7] = (byte) (hash       );
+        bytes[6] = (byte) (hash >>>  8);
+        bytes[5] = (byte) (hash >>> 16);
+        bytes[4] = (byte) (hash >>> 24);
+        bytes[3] = (byte) (hash >>> 32);
+        bytes[2] = (byte) (hash >>> 40);
+        bytes[1] = (byte) (hash >>> 48);
+        bytes[0] = (byte) (hash >>> 56);
+
+        char[] chars = new char[18];
+        chars[0] = 'T';
+        chars[1] = '_';
+        for (int i = 0; i < 8; ++i) {
+            byte b = bytes[i];
+
+            int a = b & 0xFF;
+            int b0 = a >> 4;
+            int b1 = a & 0xf;
+
+            chars[i * 2 + 2] = (char) (b0 + (b0 < 10 ? 48 : 55));
+            chars[i * 2 + 3] = (char) (b1 + (b1 < 10 ? 48 : 55));
+        }
+
+        return new String(chars);
+    }
+
+    public static long fnv_64(String input) {
+        if (input == null) {
+            return 0;
+        }
+
+        long hash = 0xcbf29ce484222325L;
+        for (int i = 0; i < input.length(); ++i) {
+            char c = input.charAt(i);
+            hash ^= c;
+            hash *= 0x100000001b3L;
+        }
+
+        return hash;
+    }
+
+    public static long fnv_64_lower(String key) {
+        long hashCode = 0xcbf29ce484222325L;
+        for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+            if (ch == '_' || ch == '-') {
+                continue;
+            }
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= 0x100000001b3L;
+        }
+
+        return hashCode;
+    }
+
+    public static long fnv_32_lower(String key) {
+        long hashCode = 0x811c9dc5;
+        for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+            if (ch == '_' || ch == '-') {
+                continue;
+            }
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= 0x01000193;
+        }
+
+        return hashCode;
+    }
+
+    public static void loadFromFile(String path, Set<String> set) {
+        InputStream is = null;
+        BufferedReader reader = null;
+        try {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+            reader = new BufferedReader(new InputStreamReader(is));
+            for (; ; ) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+
+                line = line.trim().toLowerCase();
+
+                if (line.length() == 0) {
+                    continue;
+                }
+                set.add(line);
+            }
+        } catch (Exception ex) {
+            // skip
+        } finally {
+            JdbcUtils.close(is);
+            JdbcUtils.close(reader);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
     protected String              name;
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
+    private Boolean withTimeZone;
+
+    private boolean withLocalTimeZone = false;
 
     public SQLDataTypeImpl(){
 
@@ -63,25 +66,58 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLDataTypeImpl dataType = (SQLDataTypeImpl) o;
+
+        if (name != null ? !name.equals(dataType.name) : dataType.name != null) return false;
+        if (arguments != null ? !arguments.equals(dataType.arguments) : dataType.arguments != null) return false;
+        return withTimeZone != null ? withTimeZone.equals(dataType.withTimeZone) : dataType.withTimeZone == null;
+    }
+
+    @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + arguments.hashCode();
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (arguments != null ? arguments.hashCode() : 0);
+        result = 31 * result + (withTimeZone != null ? withTimeZone.hashCode() : 0);
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        SQLDataTypeImpl other = (SQLDataTypeImpl) obj;
-        if (!arguments.equals(other.arguments)) return false;
-        if (name == null) {
-            if (other.name != null) return false;
-        } else if (!name.equals(other.name)) return false;
-        return true;
+    public Boolean getWithTimeZone() {
+        return withTimeZone;
     }
 
+    public void setWithTimeZone(Boolean withTimeZone) {
+        this.withTimeZone = withTimeZone;
+    }
+
+    public boolean isWithLocalTimeZone() {
+        return withLocalTimeZone;
+    }
+
+    public void setWithLocalTimeZone(boolean withLocalTimeZone) {
+        this.withLocalTimeZone = withLocalTimeZone;
+    }
+
+    public SQLDataTypeImpl clone() {
+        SQLDataTypeImpl x = new SQLDataTypeImpl();
+
+        cloneTo(x);
+
+        return x;
+    }
+
+    public void cloneTo(SQLDataTypeImpl x) {
+        x.name = name;
+
+        for (SQLExpr arg : arguments) {
+            x.addArgument(arg.clone());
+        }
+
+        x.withTimeZone = withTimeZone;
+        x.withLocalTimeZone = withLocalTimeZone;
+    }
 }

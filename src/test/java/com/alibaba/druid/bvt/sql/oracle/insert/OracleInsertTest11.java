@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class OracleInsertTest11 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
         
         Assert.assertEquals("INSERT INTO departments"//
-                            + "\nVALUES (280, 'Recreation', DEFAULT, 1700)",//
+                            + "\nVALUES (280, 'Recreation', DEFAULT, 1700);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

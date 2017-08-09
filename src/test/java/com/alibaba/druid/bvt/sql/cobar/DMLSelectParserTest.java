@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,16 +31,15 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT id\n" + //
-                            "FROM t1\n" + //
-                            "UNION ALL\n" + //
-                            "SELECT id\n" + //
-                            "FROM t2\n" + //
-                            "UNION ALL\n" + //
-                            "(SELECT id\n" + //
-                            "FROM t3)\n" + //
-                            "ORDER BY d DESC\n" + //
-                            "LIMIT ?, 1", output);
+        Assert.assertEquals("(SELECT id\n" +
+                "FROM t1)\n" +
+                "UNION ALL\n" +
+                "(SELECT id\n" +
+                "FROM t2)\n" +
+                "UNION ALL\n" +
+                "(SELECT id\n" +
+                "FROM t3)\n" +
+                "ORDER BY d DESC", output);
     }
 
     public void test_union_1() throws Exception {
@@ -49,16 +48,16 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT id\n" + //
-                            "FROM t1\n" + //
-                            "UNION\n" + //
-                            "(SELECT id\n" + //
-                            "FROM t2\n" + //
-                            "ORDER BY id)\n" + //
-                            "UNION ALL\n" + //
-                            "(SELECT id\n" + //
-                            "FROM t3)\n" + //
-                            "ORDER BY d ASC", output);
+        assertEquals("(SELECT id\n" +
+                "FROM t1)\n" +
+                "UNION\n" +
+                "SELECT id\n" +
+                "FROM t2\n" +
+                "ORDER BY id\n" +
+                "UNION ALL\n" +
+                "(SELECT id\n" +
+                "FROM t3)\n" +
+                "ORDER BY d ASC", output);
     }
 
     public void test_union_2() throws Exception {
@@ -67,7 +66,14 @@ public class DMLSelectParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT id\nFROM t1\nUNION DISTINCT\nSELECT id\nFROM t2\nUNION\nSELECT id\nFROM t3", output);
+        Assert.assertEquals("(SELECT id\n" +
+                "FROM t1)\n" +
+                "UNION DISTINCT\n" +
+                "(SELECT id\n" +
+                "FROM t2)\n" +
+                "UNION\n" +
+                "SELECT id\n" +
+                "FROM t3", output);
     }
 
     public void test_select_0() throws Exception {

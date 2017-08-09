@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,8 @@ public class DB2SelectParser extends SQLSelectParser {
 
         parseWhere(queryBlock);
 
+        parseHierachical(queryBlock);
+
         parseGroupBy(queryBlock);
         
         if (lexer.token() == Token.ORDER) {
@@ -108,7 +110,7 @@ public class DB2SelectParser extends SQLSelectParser {
                 } else if (identifierEquals("UR")) {
                     queryBlock.setIsolation(Isolation.UR);
                 } else {
-                    throw new ParserException("TODO");
+                    throw new ParserException("TODO. " + lexer.info());
                 }
                 lexer.nextToken();
                 continue;

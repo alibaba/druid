@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,14 +38,14 @@ public class PGSelectTest25 extends PGTest {
                 + "\n\t\tSELECT project_deduct_mandays"
                 + "\n\t\tFROM mytable_01"
                 + "\n\t\tLIMIT 1"
-                + "\n\t\t))"
+                + "\n\t))"
                 + "\nFROM t", SQLUtils.toPGString(stmt));
         
         Assert.assertEquals("select COALESCE(("
                 + "\n\t\tselect project_deduct_mandays"
                 + "\n\t\tfrom mytable_01"
                 + "\n\t\tlimit 1"
-                + "\n\t\t))"
+                + "\n\t))"
                 + "\nfrom t", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());

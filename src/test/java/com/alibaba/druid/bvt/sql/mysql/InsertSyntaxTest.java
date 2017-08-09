@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -96,10 +97,10 @@ public class InsertSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("INSERT LOW_PRIORITY DELAYED HIGH_PRIORITY IGNORE INTO tbl_name (a, b, c)\nVALUES (1, 2, 3)",
+        Assert.assertEquals("INSERT LOW_PRIORITY DELAYED HIGH_PRIORITY IGNORE INTO tbl_name (a, b, c)\nVALUES (1, 2, 3);",
                             SQLUtils.toMySqlString(stmt));
         
-        Assert.assertEquals("insert low_priority delayed high_priority ignore into tbl_name (a, b, c)\nvalues (1, 2, 3)",
+        Assert.assertEquals("insert low_priority delayed high_priority ignore into tbl_name (a, b, c)\nvalues (1, 2, 3);",
                             SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
@@ -113,20 +114,13 @@ public class InsertSyntaxTest extends TestCase {
 
         Assert.assertEquals("INSERT INTO tbl_name (a, b, c)" + //
                             "\nVALUES (1, 2, 3)" + //
-                            "\nON DUPLICATE KEY UPDATE c = c + 1", SQLUtils.toMySqlString(stmt));
+                            "\nON DUPLICATE KEY UPDATE c = c + 1;", SQLUtils.toMySqlString(stmt));
         Assert.assertEquals("insert into tbl_name (a, b, c)" + //
                 "\nvalues (1, 2, 3)" + //
-                "\non duplicate key update c = c + 1", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "\non duplicate key update c = c + 1;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 
     private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
-            out.append(";");
-        }
-
-        return out.toString();
+        return SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,8 +55,7 @@ public class OracleSelectTest47 extends OracleTest {
 
         Assert.assertEquals("SELECT *" //
                             + "\nFROM abc" //
-                            + "\nWHERE model = ?;" //
-                            + "\n", text);
+                            + "\nWHERE model = ?", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

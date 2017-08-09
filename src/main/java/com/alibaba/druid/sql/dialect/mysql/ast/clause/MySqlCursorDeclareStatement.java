@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,12 +42,14 @@ public class MySqlCursorDeclareStatement extends MySqlStatementImpl{
 	}
 
 	public void setSelect(SQLSelectStatement select) {
+		if (select != null) {
+			select.setParent(this);
+		}
 		this.select = select;
 	}
 
 	@Override
 	public void accept0(MySqlASTVisitor visitor) {
-		// TODO Auto-generated method stub
 		 if (visitor.visit(this)) {
 	         acceptChild(visitor, select);
 	        }

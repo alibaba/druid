@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,13 +71,19 @@ public class MySqlLexer extends Lexer {
     }
 
     public MySqlLexer(String input){
-        super(input);
+        this(input, true, true);
+    }
+
+    public MySqlLexer(String input, boolean skipComment, boolean keepComments){
+        super(input, skipComment);
+        this.skipComment = skipComment;
+        this.keepComments = keepComments;
         super.keywods = DEFAULT_MYSQL_KEYWORDS;
     }
 
     public void scanSharp() {
         if (ch != '#') {
-            throw new ParserException("illegal stat");
+            throw new ParserException("illegal stat. " + info());
         }
 
         if (charAt(pos + 1) == '{') {
@@ -133,7 +139,7 @@ public class MySqlLexer extends Lexer {
 
     public void scanVariable() {
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
-            throw new ParserException("illegal variable");
+            throw new ParserException("illegal variable. " + info());
         }
 
         mark = pos;
@@ -156,7 +162,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier");
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
@@ -179,7 +185,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier");
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
@@ -225,7 +231,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier");
+                    throw new ParserException("illegal identifier. " + info());
                 }
 
                 bufPos++;
@@ -245,7 +251,7 @@ public class MySqlLexer extends Lexer {
 
             final boolean firstFlag = isFirstIdentifierChar(first);
             if (!firstFlag) {
-                throw new ParserException("illegal identifier");
+                throw new ParserException("illegal identifier. " + info());
             }
 
             mark = pos;
@@ -256,22 +262,22 @@ public class MySqlLexer extends Lexer {
                 ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
-                    if (ch == '-' && pos < text.length() - 1) {
-                        if (mark > 0 && text.charAt(mark - 1) == '.') {
-                            break;
-                        }
-
-                        char next_char = text.charAt(pos + 1);
-                        if (isIdentifierChar(next_char)) {
-                            bufPos++;
-                            continue;
-                        }
-                    }
-                    if (last_ch == '-' && charAt(pos-2) != '-') {
-                        ch = last_ch;
-                        bufPos--;
-                        pos--;
-                    }
+//                    if (ch == '-' && pos < text.length() - 1) {
+//                        if (mark > 0 && text.charAt(mark - 1) == '.') {
+//                            break;
+//                        }
+//
+//                        char next_char = text.charAt(pos + 1);
+//                        if (isIdentifierChar(next_char)) {
+//                            bufPos++;
+//                            continue;
+//                        }
+//                    }
+//                    if (last_ch == '-' && charAt(pos-2) != '-') {
+//                        ch = last_ch;
+//                        bufPos--;
+//                        pos--;
+//                    }
                     break;
                 }
 
@@ -400,7 +406,7 @@ public class MySqlLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark, bufPos + 1);
+            stringVal = subString(mark, bufPos);
             token = Token.LINE_COMMENT;
             commentCount++;
             if (keepComments) {

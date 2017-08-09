@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,6 @@ public class MySqlAlterTableTest22 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE pj_usr_auth" //
-                + "\n\tADD CONSTRAINT FK_Reference_8 FOREIGN KEY (usr) REFERENCES usr (usr) ON DELETE RESTRICT ON UPDATE RESTRICT", output);
+                + "\n\tADD CONSTRAINT FK_Reference_8 FOREIGN KEY (usr) REFERENCES usr (usr) ON DELETE RESTRICT ON UPDATE RESTRICT;", output);
     }
 }

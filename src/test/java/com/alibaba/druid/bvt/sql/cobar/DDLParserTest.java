@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public class DDLParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                            "\n\tADD COLUMN `name` VARCHAR(45) NULL AFTER `fid`", output);
+                            "\n\tADD COLUMN `name` VARCHAR(45) NULL AFTER `fid`;", output);
     }
     
     public void testAlterTable_3() throws Exception {
@@ -85,7 +85,7 @@ public class DDLParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
-                "\n\tDROP COLUMN `name`", output);
+                "\n\tDROP COLUMN `name`;", output);
     }
     
     public void test_createTable_0() throws Exception {
@@ -114,7 +114,7 @@ public class DDLParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE INDEX `idx1` ON tb1 (`fname` ASC)", output);
+        Assert.assertEquals("CREATE INDEX `idx1` ON tb1 (`fname` ASC);", output);
     }
     
     public void test_createIndex_1() throws Exception {
@@ -123,7 +123,7 @@ public class DDLParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE UNIQUE INDEX `idx1` ON tb1 (`fname` DESC)", output);
+        Assert.assertEquals("CREATE UNIQUE INDEX `idx1` ON tb1 (`fname` DESC);", output);
     }
     
     public void test_createIndex_2() throws Exception {
@@ -132,7 +132,7 @@ public class DDLParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE INDEX id_index ON lookup (id) USING BTREE", output);
+        Assert.assertEquals("CREATE INDEX id_index ON lookup (id) USING BTREE;", output);
     }
     
     public void test_createIndex_3() throws Exception {
@@ -168,7 +168,7 @@ public class DDLParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DROP INDEX `PRIMARY` ON t", output);
+        Assert.assertEquals("DROP INDEX `PRIMARY` ON t;", output);
     }
     
     public void test_drop_table_0() throws Exception {

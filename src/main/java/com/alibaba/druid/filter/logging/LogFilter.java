@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -750,8 +750,28 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     @Override
     protected void statement_executeErrorAfter(StatementProxy statement, String sql, Throwable error) {
         if (this.isStatementLogErrorEnabled()) {
-            statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
+	    if (!isStatementExecutableSqlLogEnable()) {
+        		statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
                               + "} execute error. " + sql, error);
+            }else{
+            	int parametersSize = statement.getParametersSize();
+            	if (parametersSize > 0) {
+            		List<Object> parameters = new ArrayList<Object>(parametersSize);
+            		for (int i = 0; i < parametersSize; ++i) {
+            			JdbcParameter jdbcParam = statement.getParameter(i);
+            			parameters.add(jdbcParam != null
+            					? jdbcParam.getValue()
+            							: null);
+            		}
+            		String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
+            		String formattedSql = SQLUtils.format(sql, dbType, parameters, this.statementSqlFormatOption);
+			statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
+                              + "} execute error. " + formattedSql, error);
+            	}else{
+            		statementLogError("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
+                              + "} execute error. " + sql, error);
+            	}
+            }
         }
     }
 

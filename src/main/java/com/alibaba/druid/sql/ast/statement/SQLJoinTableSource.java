@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,18 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLJoinTableSource extends SQLTableSourceImpl {
+public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
     protected SQLTableSource      left;
     protected JoinType            joinType;
@@ -29,12 +37,22 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     protected SQLExpr             condition;
     protected final List<SQLExpr> using = new ArrayList<SQLExpr>();
 
+
+    protected boolean             natural = false;
+
     public SQLJoinTableSource(String alias){
         super(alias);
     }
 
     public SQLJoinTableSource(){
 
+    }
+
+    public SQLJoinTableSource(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition){
+        this.setLeft(left);
+        this.setJoinType(joinType);
+        this.setRight(right);
+        this.setCondition(condition);
     }
 
     protected void accept0(SQLASTVisitor visitor) {
@@ -67,6 +85,26 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         this.left = left;
     }
 
+    public void setLeft(String tableName, String alias) {
+        SQLExprTableSource tableSource;
+        if (tableName == null || tableName.length() == 0) {
+            tableSource = null;
+        } else {
+            tableSource = new SQLExprTableSource(new SQLIdentifierExpr(tableName), alias);
+        }
+        this.setLeft(tableSource);
+    }
+
+    public void setRight(String tableName, String alias) {
+        SQLExprTableSource tableSource;
+        if (tableName == null || tableName.length() == 0) {
+            tableSource = null;
+        } else {
+            tableSource = new SQLExprTableSource(new SQLIdentifierExpr(tableName), alias);
+        }
+        this.setRight(tableSource);
+    }
+
     public SQLTableSource getRight() {
         return this.right;
     }
@@ -89,8 +127,43 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         this.condition = condition;
     }
 
+    public void addConditionn(SQLExpr condition) {
+        this.condition = SQLBinaryOpExpr.and(this.condition, condition);
+    }
+
+    public void addConditionnIfAbsent(SQLExpr condition) {
+        if (this.containsCondition(condition)) {
+            return;
+        }
+        this.condition = SQLBinaryOpExpr.and(this.condition, condition);
+    }
+
+    public boolean containsCondition(SQLExpr condition) {
+        if (this.condition == null) {
+            return false;
+        }
+
+        if (this.condition.equals(condition)) {
+            return false;
+        }
+
+        if (this.condition instanceof SQLBinaryOpExpr) {
+            return ((SQLBinaryOpExpr) this.condition).contains(condition);
+        }
+
+        return false;
+    }
+
     public List<SQLExpr> getUsing() {
         return this.using;
+    }
+
+    public boolean isNatural() {
+        return natural;
+    }
+
+    public void setNatural(boolean natural) {
+        this.natural = natural;
     }
 
     public void output(StringBuffer buf) {
@@ -106,6 +179,31 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SQLJoinTableSource that = (SQLJoinTableSource) o;
+
+        if (natural != that.natural) return false;
+        if (left != null ? !left.equals(that.left) : that.left != null) return false;
+        if (joinType != that.joinType) return false;
+        if (right != null ? !right.equals(that.right) : that.right != null) return false;
+        if (condition != null ? !condition.equals(that.condition) : that.condition != null) return false;
+        return using != null ? using.equals(that.using) : that.using == null;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (condition == expr) {
+            setCondition(target);
+            return true;
+        }
+
+        return false;
+    }
+
     public static enum JoinType {
         COMMA(","), //
         JOIN("JOIN"), //
@@ -114,6 +212,8 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         NATURAL_JOIN("NATURAL JOIN"), //
         NATURAL_INNER_JOIN("NATURAL INNER JOIN"), //
         LEFT_OUTER_JOIN("LEFT JOIN"), //
+        LEFT_SEMI_JOIN("LEFT SEMI JOIN"), //
+        LEFT_ANTI_JOIN("LEFT ANTI JOIN"), //
         RIGHT_OUTER_JOIN("RIGHT JOIN"), //
         FULL_OUTER_JOIN("FULL JOIN"),//
         STRAIGHT_JOIN("STRAIGHT_JOIN"), //
@@ -132,4 +232,248 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
             return joinType.name;
         }
     }
+
+
+    public void cloneTo(SQLJoinTableSource x) {
+        x.alias = alias;
+
+        if (left != null) {
+            x.setLeft(left.clone());
+        }
+
+        x.joinType = joinType;
+
+        if (right != null) {
+            x.setRight(right.clone());
+        }
+
+        for (SQLExpr item : using) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.using.add(item2);
+        }
+
+        x.natural = natural;
+    }
+
+    public SQLJoinTableSource clone() {
+        SQLJoinTableSource x = new SQLJoinTableSource();
+        cloneTo(x);
+        return x;
+    }
+
+    public void reverse() {
+        SQLTableSource temp = left;
+        left = right;
+        right = temp;
+
+        if (left instanceof SQLJoinTableSource) {
+            ((SQLJoinTableSource) left).reverse();
+        }
+
+        if (right instanceof SQLJoinTableSource) {
+            ((SQLJoinTableSource) right).reverse();
+        }
+    }
+
+    /**
+     * a inner_join (b inner_join c) -&lt; a inner_join b innre_join c
+     */
+    public void rearrangement() {
+        if (joinType != JoinType.COMMA && joinType != JoinType.INNER_JOIN) {
+            return;
+        }
+        if (right instanceof SQLJoinTableSource) {
+            SQLJoinTableSource rightJoin = (SQLJoinTableSource) right;
+
+            if (rightJoin.joinType != JoinType.COMMA && rightJoin.joinType != JoinType.INNER_JOIN) {
+                return;
+            }
+
+            SQLTableSource a = left;
+            SQLTableSource b = rightJoin.getLeft();
+            SQLTableSource c = rightJoin.getRight();
+            SQLExpr on_ab = condition;
+            SQLExpr on_bc = rightJoin.condition;
+
+            setLeft(rightJoin);
+            rightJoin.setLeft(a);
+            rightJoin.setRight(b);
+
+
+            boolean on_ab_match = false;
+            if (on_ab instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr on_ab_binaryOpExpr = (SQLBinaryOpExpr) on_ab;
+                if (on_ab_binaryOpExpr.getLeft() instanceof SQLPropertyExpr
+                        && on_ab_binaryOpExpr.getRight() instanceof SQLPropertyExpr) {
+                    String leftOwnerName = ((SQLPropertyExpr) on_ab_binaryOpExpr.getLeft()).getOwnernName();
+                    String rightOwnerName = ((SQLPropertyExpr) on_ab_binaryOpExpr.getRight()).getOwnernName();
+
+                    if (rightJoin.containsAlias(leftOwnerName) && rightJoin.containsAlias(rightOwnerName)) {
+                        on_ab_match = true;
+                    }
+                }
+            }
+
+            if (on_ab_match) {
+                rightJoin.setCondition(on_ab);
+            } else {
+                rightJoin.setCondition(null);
+                on_bc = SQLBinaryOpExpr.and(on_bc, on_ab);
+            }
+
+            setRight(c);
+            setCondition(on_bc);
+        }
+    }
+
+    public boolean contains(SQLTableSource tableSource, SQLExpr conditionn) {
+        if (right.equals(tableSource)) {
+            if (this.condition == conditionn) {
+                return true;
+            }
+
+            return this.condition != null && this.condition.equals(conditionn);
+        }
+
+        if (left instanceof SQLJoinTableSource) {
+            return ((SQLJoinTableSource) left).contains(tableSource, conditionn);
+        }
+
+        return false;
+    }
+
+    public SQLJoinTableSource findJoin(SQLTableSource tableSource, JoinType joinType) {
+        if (right.equals(tableSource)) {
+            if (this.joinType == joinType) {
+                return this;
+            }
+            return null;
+        }
+
+        if (left instanceof SQLJoinTableSource) {
+            return ((SQLJoinTableSource) left).findJoin(tableSource, joinType);
+        }
+
+        return null;
+    }
+
+    public boolean containsAlias(String alias) {
+        if (SQLUtils.nameEquals(this.alias, alias)) {
+            return true;
+        }
+
+        if (left != null && left.containsAlias(alias)) {
+            return true;
+        }
+
+        if (right != null && right.containsAlias(alias)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public SQLColumnDefinition findColumn(String columnName) {
+        if (left != null) {
+            SQLColumnDefinition column = left.findColumn(columnName);
+            if (column != null) {
+                return column;
+            }
+        }
+
+        if (right != null) {
+            return right.findColumn(columnName);
+        }
+
+        return null;
+    }
+
+    @Override
+    public SQLTableSource findTableSourceWithColumn(String columnName) {
+        if (left != null) {
+            SQLTableSource tableSource = left.findTableSourceWithColumn(columnName);
+            if (tableSource != null) {
+                return tableSource;
+            }
+        }
+
+        if (right != null) {
+            return right.findTableSourceWithColumn(columnName);
+        }
+
+        return null;
+    }
+
+    public boolean match(String alias_a, String alias_b) {
+        if (left == null || right == null) {
+            return false;
+        }
+
+        if (left.containsAlias(alias_a) && right.containsAlias(alias_b)) {
+            return true;
+        }
+
+        return right.containsAlias(alias_a) && left.containsAlias(alias_b);
+    }
+
+    /**
+     * a, b left join c ->
+     */
+//    public boolean addCondition(SQLBinaryOpExpr condition, JoinType joinType) {
+//        if (this.left == null || this.right == null) {
+//            return false;
+//        }
+//
+//        if (!(condition.getLeft() instanceof SQLPropertyExpr
+//                && condition.getRight() instanceof SQLPropertyExpr)) {
+//            return false;
+//        }
+//
+//        SQLPropertyExpr left = (SQLPropertyExpr) condition.getLeft();
+//        SQLPropertyExpr right = (SQLPropertyExpr) condition.getRight();
+//
+//        String leftOwner = left.getOwnernName();
+//        String rightOwner = right.getOwnernName();
+//
+//        if (this.left.containsAlias(leftOwner) && this.right.containsAlias(rightOwner)) {
+//            if (this.joinType == joinType) {
+//                this.addConditionnIfAbsent(condition);
+//                return true;
+//            }
+//
+//            if (this.joinType == null || this.joinType == JoinType.COMMA) {
+//                this.joinType = joinType;
+//                this.addConditionnIfAbsent(condition);
+//                return true;
+//            }
+//
+//            if (this.joinType == JoinType.LEFT_OUTER_JOIN && joinType == JoinType.RIGHT_OUTER_JOIN) {
+//                if (this.left instanceof SQLJoinTableSource && ((SQLJoinTableSource) this.left).joinType == JoinType.COMMA) {
+//                    SQLJoinTableSource leftJoin = (SQLJoinTableSource) this.left;
+//
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
+//
+    public boolean conditionContainsTable(String alias) {
+        if (condition == null) {
+            return false;
+        }
+
+        if (condition instanceof SQLBinaryOpExpr) {
+            return ((SQLBinaryOpExpr) condition).conditionContainsTable(alias);
+        }
+
+        return false;
+    }
+
+    public SQLJoinTableSource join(SQLTableSource right, JoinType joinType, SQLExpr condition) {
+        SQLJoinTableSource joined = new SQLJoinTableSource(this, joinType, right, condition);
+        return joined;
+    }
+
 }

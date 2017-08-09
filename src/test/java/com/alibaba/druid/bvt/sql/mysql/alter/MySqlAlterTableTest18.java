@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class MySqlAlterTableTest18 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET gbk NULL FIRST", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET gbk NULL FIRST;", output);
     }
 
     public void test_alter_collate() throws Exception {
@@ -41,7 +41,7 @@ public class MySqlAlterTableTest18 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) COLLATE utf8_bin NULL FIRST", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) COLLATE utf8_bin NULL FIRST;", output);
     }
     
     public void test_alter_charset_collate() throws Exception {
@@ -50,6 +50,6 @@ public class MySqlAlterTableTest18 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_bin NULL FIRST", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) CHARACTER SET utf8 COLLATE utf8_bin NULL FIRST;", output);
     }
 }

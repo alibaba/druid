@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
@@ -27,8 +28,8 @@ public class MySqlAlterTableModifyColumn extends MySqlObjectImpl implements SQLA
 
     private boolean             first;
 
-    private SQLExpr             firstColumn;
-    private SQLExpr             afterColumn;
+    private SQLName             firstColumn;
+    private SQLName             afterColumn;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
@@ -40,19 +41,19 @@ public class MySqlAlterTableModifyColumn extends MySqlObjectImpl implements SQLA
         }
     }
 
-    public SQLExpr getFirstColumn() {
+    public SQLName getFirstColumn() {
         return firstColumn;
     }
 
-    public void setFirstColumn(SQLExpr firstColumn) {
+    public void setFirstColumn(SQLName firstColumn) {
         this.firstColumn = firstColumn;
     }
 
-    public SQLExpr getAfterColumn() {
+    public SQLName getAfterColumn() {
         return afterColumn;
     }
 
-    public void setAfterColumn(SQLExpr afterColumn) {
+    public void setAfterColumn(SQLName afterColumn) {
         this.afterColumn = afterColumn;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,5 +60,16 @@ public class OracleSizeExpr extends OracleSQLObjectImpl implements OracleExpr {
 
     public static enum Unit {
         K, M, G, T, P, E
+    }
+
+    public OracleSizeExpr clone() {
+        OracleSizeExpr x = new OracleSizeExpr();
+
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        x.unit = unit;
+
+        return x;
     }
 }

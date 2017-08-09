@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,16 +61,16 @@ public class DB2SelectTest_13 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
-        Assert.assertEquals("SELECT WORKDEPT, EMPNO, SALARY, BONUS, COMM"
+        assertEquals("SELECT WORKDEPT, EMPNO, SALARY, BONUS, COMM"
                 + "\nFROM DSN8B10.EMP"
                 + "\nWHERE WORKDEPT IN ('D11', 'D21')"
-                + "\nFOR UPDATE", //
+                + "\nFOR UPDATE;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         
-        Assert.assertEquals("select WORKDEPT, EMPNO, SALARY, BONUS, COMM"
+        assertEquals("select WORKDEPT, EMPNO, SALARY, BONUS, COMM"
                 + "\nfrom DSN8B10.EMP"
                 + "\nwhere WORKDEPT in ('D11', 'D21')"
-                + "\nfor update", //
+                + "\nfor update;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

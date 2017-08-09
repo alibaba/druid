@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,5 +64,13 @@ public class PGIntervalExpr extends SQLExprImpl implements SQLLiteralExpr,PGExpr
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         this.accept0((PGASTVisitor) visitor);
+    }
+
+    public PGIntervalExpr clone() {
+        PGIntervalExpr x = new PGIntervalExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
     }
 }

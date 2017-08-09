@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
@@ -27,8 +29,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHintImpl;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -80,12 +80,17 @@ public class MySqlSelectParser extends SQLSelectParser {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
+            select.setBracket(true);
             accept(Token.RPAREN);
 
             return queryRest(select);
         }
 
         MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
+
+        if (lexer.hasComment() && lexer.isKeepComments()) {
+            queryBlock.addBeforeComment(lexer.readAndResetComments());
+        }
 
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
@@ -158,6 +163,8 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         parseWhere(queryBlock);
 
+        parseHierachical(queryBlock);
+
         parseGroupBy(queryBlock);
 
         queryBlock.setOrderBy(this.exprParser.parseOrderBy());
@@ -168,7 +175,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.PROCEDURE) {
             lexer.nextToken();
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         parseInto(queryBlock);
@@ -179,7 +186,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
             queryBlock.setForUpdate(true);
             
-            if (identifierEquals("NO_WAIT")) {
+            if (identifierEquals("NO_WAIT") || identifierEquals("NOWAIT")) {
                 lexer.nextToken();
                 queryBlock.setNoWait(true);
             } else if (identifierEquals("WAIT")) {
@@ -206,9 +213,12 @@ public class MySqlSelectParser extends SQLSelectParser {
             SQLTableSource tableSource;
             if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
                 SQLSelect select = select();
+
                 accept(Token.RPAREN);
+
                 SQLSelectQuery query = queryRest(select.getQuery());
                 if (query instanceof SQLUnionQuery) {
+                    select.getQuery().setBracket(true);
                     tableSource = new SQLUnionQueryTableSource((SQLUnionQuery) query);
                 } else {
                     tableSource = new SQLSubqueryTableSource(select);
@@ -230,7 +240,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
 
         if (lexer.token() == Token.SELECT) {
-            throw new ParserException("TODO");
+            throw new ParserException("TODO. " + lexer.info());
         }
 
         SQLExprTableSource tableReference = new SQLExprTableSource();
@@ -328,7 +338,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                         lexer.nextToken();
                         accept(Token.BY);
                     }
-                    outFile.setColumnsTerminatedBy((SQLLiteralExpr) expr());
+                    outFile.setColumnsTerminatedBy(expr());
 
                     if (identifierEquals("OPTIONALLY")) {
                         lexer.nextToken();
@@ -363,9 +373,54 @@ public class MySqlSelectParser extends SQLSelectParser {
                     }
                 }
             } else {
-                queryBlock.setInto(this.exprParser.name());
+                SQLExpr intoExpr = this.exprParser.name();
+                if (lexer.token() == Token.COMMA) {
+                    SQLListExpr list = new SQLListExpr();
+                    list.addItem(intoExpr);
+
+                    while (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        SQLName name = this.exprParser.name();
+                        list.addItem(name);
+                    }
+
+                    intoExpr = list;
+                }
+                queryBlock.setInto(intoExpr);
             }
         }
+    }
+
+    protected SQLTableSource primaryTableSourceRest(SQLTableSource tableSource) {
+        if (lexer.token() == Token.USE) {
+            lexer.nextToken();
+            MySqlUseIndexHint hint = new MySqlUseIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+        }
+
+        if (identifierEquals("IGNORE")) {
+            lexer.nextToken();
+            MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+        }
+
+        if (identifierEquals("FORCE")) {
+            lexer.nextToken();
+            MySqlForceIndexHint hint = new MySqlForceIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+        }
+
+        if (lexer.token() == Token.PARTITION) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            this.exprParser.names(((SQLExprTableSource) tableSource).getPartitions(), tableSource);
+            accept(Token.RPAREN);
+        }
+
+        return tableSource;
     }
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
@@ -438,14 +493,9 @@ public class MySqlSelectParser extends SQLSelectParser {
         accept(Token.RPAREN);
     }
 
-    protected MySqlUnionQuery createSQLUnionQuery() {
-        return new MySqlUnionQuery();
-    }
-
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
         if (lexer.token() == Token.LIMIT) {
-            MySqlUnionQuery mysqlUnionQuery = (MySqlUnionQuery) union;
-            mysqlUnionQuery.setLimit(this.exprParser.parseLimit());
+            union.setLimit(this.exprParser.parseLimit());
         }
         return super.unionRest(union);
     }

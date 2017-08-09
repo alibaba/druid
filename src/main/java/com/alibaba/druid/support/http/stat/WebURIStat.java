@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ public class WebURIStat {
     private volatile int                               concurrentMax;
     private volatile long                              requestCount;
     private volatile long                              requestTimeNano;
+    private volatile long                              requestTimeNanoMax;
+    private volatile long                              requestTimeNanoMaxOccurTime;
+
     final static AtomicIntegerFieldUpdater<WebURIStat> runningCountUpdater                 = AtomicIntegerFieldUpdater.newUpdater(WebURIStat.class,
                                                                                                                                   "runningCount");
     final static AtomicIntegerFieldUpdater<WebURIStat> concurrentMaxUpdater                = AtomicIntegerFieldUpdater.newUpdater(WebURIStat.class,
@@ -40,6 +43,11 @@ public class WebURIStat {
                                                                                                                                "requestCount");
     final static AtomicLongFieldUpdater<WebURIStat>    requestTimeNanoUpdater              = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
                                                                                                                                "requestTimeNano");
+    final static AtomicLongFieldUpdater<WebURIStat>    requestTimeNanoMaxUpdater           = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+            "requestTimeNanoMax");
+
+    final static AtomicLongFieldUpdater<WebURIStat>    requestTimeNanoMaxOccurTimeUpdater  = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+            "requestTimeNanoMaxOccurTime");
 
     private volatile long                              jdbcFetchRowCount;
     private volatile long                              jdbcFetchRowPeak;                                                                                       // 单次请求读取行数的峰值
@@ -168,6 +176,22 @@ public class WebURIStat {
     public void afterInvoke(Throwable error, long nanos) {
         runningCountUpdater.decrementAndGet(this);
         requestTimeNanoUpdater.addAndGet(this, nanos);
+
+        for (;;) {
+            long current = requestTimeNanoMaxUpdater.get(this);
+            if (current < nanos) {
+                if (requestTimeNanoMaxUpdater.compareAndSet(this, current, nanos)) {
+                    // 可能不准确，但是绝大多数情况下都会正确，性能换取一致性
+                    requestTimeNanoMaxOccurTime = System.currentTimeMillis();
+
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                break;
+            }
+        }
 
         histogramRecord(nanos);
 
@@ -435,6 +459,8 @@ public class WebURIStat {
         val.setConcurrentMax(get(this, concurrentMaxUpdater, reset));
         val.setRequestCount(get(this, requestCountUpdater, reset));
         val.setRequestTimeNano(get(this, requestTimeNanoUpdater, reset));
+        val.setRequestTimeNanoMax(get(this, requestTimeNanoMaxUpdater, reset));
+        val.setRequestTimeNanoMaxOccurTime(get(this, requestTimeNanoMaxOccurTimeUpdater, reset));
 
         val.setJdbcFetchRowCount(get(this, jdbcFetchRowCountUpdater, reset));
         val.setJdbcFetchRowPeak(get(this, jdbcFetchRowPeakUpdater, reset));

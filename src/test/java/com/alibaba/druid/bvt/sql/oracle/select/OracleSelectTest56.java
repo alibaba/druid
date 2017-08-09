@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,17 +77,19 @@ public class OracleSelectTest56 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            Assert.assertEquals("SELECT AA.ID, AA.CODE, AA.TYPE, AA.STATUS, AA.EMPLOYEENAME\n" +
+            assertEquals("SELECT AA.ID, AA.CODE, AA.TYPE, AA.STATUS, AA.EMPLOYEENAME\n" +
                     "\t, AA.CREATORNAME, AA.OPERATIONTYPE, AA.CREATEDATE, AA.REMARK, W.NAME\n" +
                     "\t, DD.DESC\n" +
                     "FROM a AA, w W, d DD\n" +
-                    "WHERE AA.employeeNo IN (SELECT employeeno\n" +
+                    "WHERE AA.employeeNo IN (\n" +
+                    "\t\tSELECT employeeno\n" +
                     "\t\tFROM employeeauditor ea\n" +
                     "\t\tWHERE auditorno = 1\n" +
                     "\t\tGROUP BY employeeno\n" +
                     "\t\tUNION ALL\n" +
                     "\t\tSELECT 1\n" +
-                    "\t\tFROM dual)\n" +
+                    "\t\tFROM dual\n" +
+                    "\t)\n" +
                     "\tAND AA.WNO = W.WNO(+)\n" +
                     "\tAND AA.DEPTNO = DD.DEPTNO(+)", text);
         }
@@ -95,17 +97,19 @@ public class OracleSelectTest56 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
 
-            Assert.assertEquals("select AA.ID, AA.CODE, AA.TYPE, AA.STATUS, AA.EMPLOYEENAME\n" +
+            assertEquals("select AA.ID, AA.CODE, AA.TYPE, AA.STATUS, AA.EMPLOYEENAME\n" +
                     "\t, AA.CREATORNAME, AA.OPERATIONTYPE, AA.CREATEDATE, AA.REMARK, W.NAME\n" +
                     "\t, DD.DESC\n" +
                     "from a AA, w W, d DD\n" +
-                    "where AA.employeeNo in (select employeeno\n" +
+                    "where AA.employeeNo in (\n" +
+                    "\t\tselect employeeno\n" +
                     "\t\tfrom employeeauditor ea\n" +
                     "\t\twhere auditorno = 1\n" +
                     "\t\tgroup by employeeno\n" +
                     "\t\tunion all\n" +
                     "\t\tselect 1\n" +
-                    "\t\tfrom dual)\n" +
+                    "\t\tfrom dual\n" +
+                    "\t)\n" +
                     "\tand AA.WNO = W.WNO(+)\n" +
                     "\tand AA.DEPTNO = DD.DEPTNO(+)", text);
         }

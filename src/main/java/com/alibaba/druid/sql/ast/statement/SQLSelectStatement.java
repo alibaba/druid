@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,17 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.List;
 
 public class SQLSelectStatement extends SQLStatementImpl {
 
     protected SQLSelect select;
+
+    private List<SQLCommentHint> headHints;
 
     public SQLSelectStatement(){
 
@@ -59,5 +64,28 @@ public class SQLSelectStatement extends SQLStatementImpl {
             acceptChild(visitor, this.select);
         }
         visitor.endVisit(this);
+    }
+
+    public List<SQLCommentHint> getHeadHintsDirect() {
+        return headHints;
+    }
+
+    public void setHeadHints(List<SQLCommentHint> headHints) {
+        this.headHints = headHints;
+    }
+
+    public SQLSelectStatement clone() {
+        SQLSelectStatement x = new SQLSelectStatement();
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint h2 = h.clone();
+                h2.setParent(x);
+                x.headHints.add(h2);
+            }
+        }
+        return x;
     }
 }

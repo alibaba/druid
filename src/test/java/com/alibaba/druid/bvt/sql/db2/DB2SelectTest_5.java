@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,18 +73,20 @@ public class DB2SelectTest_5 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
-        Assert.assertEquals("SELECT *"//
-                + "\nFROM (SELECT TEMP_TAB.*, ROWNUMBER() OVER () AS IDX"//
-                + "\n\tFROM (SELECT DISTINCT OH.ORDER_ID"//
-                + "\n\t\tFROM ORDER_HEADER OH, ORDER_ITEM OI, ORDER_PAYMENT_PERFERENCE OPP, ORDER_SHIPMENT_PERFERENCE OSP"//
-                + "\n\t\tWHERE OH.ORDER_ID = OI.ORDER_ID"//
-                + "\n\t\t\tAND OH.ORDER_ID = OPP.ORDER_ID"//
-                + "\n\t\t\tAND OH.ORDER_ID = OSP.ORDER_ID"//
-                + "\n\t\t\tAND OH.ORDER_ID = ?"//
-                + "\n\t\t) TEMP_TAB"//
-                + "\n\t) TEMP_TAB_WITH_IDX"//
-                + "\nWHERE TEMP_TAB_WITH_IDX.IDX > 0"//
-                + "\n\tAND TEMP_TAB_WITH_IDX.IDX <= 20", //
+        Assert.assertEquals("SELECT *\n" +
+                        "FROM (\n" +
+                        "\tSELECT TEMP_TAB.*, ROWNUMBER() OVER () AS IDX\n" +
+                        "\tFROM (\n" +
+                        "\t\tSELECT DISTINCT OH.ORDER_ID\n" +
+                        "\t\tFROM ORDER_HEADER OH, ORDER_ITEM OI, ORDER_PAYMENT_PERFERENCE OPP, ORDER_SHIPMENT_PERFERENCE OSP\n" +
+                        "\t\tWHERE OH.ORDER_ID = OI.ORDER_ID\n" +
+                        "\t\t\tAND OH.ORDER_ID = OPP.ORDER_ID\n" +
+                        "\t\t\tAND OH.ORDER_ID = OSP.ORDER_ID\n" +
+                        "\t\t\tAND OH.ORDER_ID = ?\n" +
+                        "\t) TEMP_TAB\n" +
+                        ") TEMP_TAB_WITH_IDX\n" +
+                        "WHERE TEMP_TAB_WITH_IDX.IDX > 0\n" +
+                        "\tAND TEMP_TAB_WITH_IDX.IDX <= 20", //
                             output);
     }
 }

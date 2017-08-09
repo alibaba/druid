@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,6 @@ public class MySqlInsertTest_9 extends MysqlTest {
         stmt.accept(visitor);
 
         Assert.assertEquals("INSERT INTO sequence"
-                + "\nVALUES ('seq_wlb_order_log', 268234128 + 10000000, now())", SQLUtils.toMySqlString(insertStmt));
+                + "\nVALUES ('seq_wlb_order_log', 268234128 + 10000000, now());", SQLUtils.toMySqlString(insertStmt));
     }
 }

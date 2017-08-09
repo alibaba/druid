@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,37 +33,31 @@ public class OracleSubqueryFactoringTest extends TestCase {
                      + "avg_cost AS (SELECT SUM(dept_total)/COUNT(*) avg FROM dept_costs)\n"
                      + "SELECT * FROM dept_costs WHERE dept_total > (SELECT avg FROM avg_cost) ORDER BY department_name;";
 
-        String expected = "WITH\n" //
-                          + "\tdept_costs\n" //
-                          + "\tAS\n" //
-                          + "\t(\n"//
-                          + "\t\tSELECT department_name, SUM(salary) AS dept_total\n" //
-                          + "\t\tFROM employees e, departments d\n"//
-                          + "\t\tWHERE e.department_id = d.department_id\n" //
-                          + "\t\tGROUP BY department_name\n" //
-                          + "\t), \n" //
-                          + "\tavg_cost\n" //
-                          + "\tAS\n"//
-                          + "\t(\n" //
-                          + "\t\tSELECT SUM(dept_total) / COUNT(*) AS avg\n" //
-                          + "\t\tFROM dept_costs\n" //
-                          + "\t)\n" //
-                          + "SELECT *\n" //
-                          + "FROM dept_costs\n" //
-                          + "WHERE dept_total > (\n" //
-                          + "\tSELECT avg\n" //
-                          + "\tFROM avg_cost\n" //
-                          + "\t)\n" //
-                          + "ORDER BY department_name;\n";
+        String expected = "WITH dept_costs AS (\n" +
+                "\t\tSELECT department_name, SUM(salary) AS dept_total\n" +
+                "\t\tFROM employees e, departments d\n" +
+                "\t\tWHERE e.department_id = d.department_id\n" +
+                "\t\tGROUP BY department_name\n" +
+                "\t), \n" +
+                "\tavg_cost AS (\n" +
+                "\t\tSELECT SUM(dept_total) / COUNT(*) AS avg\n" +
+                "\t\tFROM dept_costs\n" +
+                "\t)\n" +
+                "SELECT *\n" +
+                "FROM dept_costs\n" +
+                "WHERE dept_total > (\n" +
+                "\tSELECT avg\n" +
+                "\tFROM avg_cost\n" +
+                ")\n" +
+                "ORDER BY department_name;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals(expected, text);
+        assertEquals(expected, text);
 
-        System.out.println(text);
     }
 
 }

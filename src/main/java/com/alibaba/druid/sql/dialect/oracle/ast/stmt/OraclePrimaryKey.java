@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,20 +21,25 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement {
-
-    private SQLName                name;
-    private List<SQLExpr>          columns = new ArrayList<SQLExpr>();
+public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement, SQLTableConstraint {
 
     private OracleUsingIndexClause using;
     private SQLName                exceptionsInto;
     private Boolean                enable;
     private Initially              initially;
     private Boolean                deferrable;
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        this.accept0((OracleASTVisitor) visitor);
+    }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -53,22 +58,6 @@ public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConst
 
     public void setDeferrable(Boolean deferrable) {
         this.deferrable = deferrable;
-    }
-
-    public SQLName getName() {
-        return name;
-    }
-
-    public void setName(SQLName name) {
-        this.name = name;
-    }
-
-    public List<SQLExpr> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<SQLExpr> columns) {
-        this.columns = columns;
     }
 
     public OracleUsingIndexClause getUsing() {
@@ -103,4 +92,22 @@ public class OraclePrimaryKey extends OracleSQLObjectImpl implements OracleConst
         this.initially = initially;
     }
 
+    public void cloneTo(OraclePrimaryKey x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.enable = enable;
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OraclePrimaryKey clone() {
+        OraclePrimaryKey x = new OraclePrimaryKey();
+        cloneTo(x);
+        return x;
+    }
 }

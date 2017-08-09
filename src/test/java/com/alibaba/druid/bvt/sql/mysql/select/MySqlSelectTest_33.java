@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,8 @@ public class MySqlSelectTest_33 extends MysqlTest {
         
         {
             String output = SQLUtils.toMySqlString(stmt);
-            Assert.assertEquals("SELECT COUNT() AS count, DATE_FORMAT(DATE(reg_time), '%Y-%m-%d') AS date, HOUR(reg_time) DIV 2 AS intervalTime\n" +
+            Assert.assertEquals("SELECT COUNT() AS count, DATE_FORMAT(DATE(reg_time), '%Y-%m-%d') AS date\n" +
+                            "\t, HOUR(reg_time) DIV 2 AS intervalTime\n" +
                             "FROM USER_RECOMMEND_INFO\n" +
                             "WHERE 1 = 1\n" +
                             "\tAND reg_time >= '2016-12-01 00:00:00'\n" +
@@ -68,7 +69,8 @@ public class MySqlSelectTest_33 extends MysqlTest {
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("select count() as count, DATE_FORMAT(DATE(reg_time), '%Y-%m-%d') as date, HOUR(reg_time) div 2 as intervalTime\n" +
+            Assert.assertEquals("select count() as count, DATE_FORMAT(DATE(reg_time), '%Y-%m-%d') as date\n" +
+                            "\t, HOUR(reg_time) div 2 as intervalTime\n" +
                             "from USER_RECOMMEND_INFO\n" +
                             "where 1 = 1\n" +
                             "\tand reg_time >= '2016-12-01 00:00:00'\n" +

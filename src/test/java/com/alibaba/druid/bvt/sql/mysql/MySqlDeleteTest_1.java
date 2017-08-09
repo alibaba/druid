@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,10 @@ public class MySqlDeleteTest_1 extends MysqlTest {
         
         Assert.assertEquals("DELETE FROM a1, a2 USING (t1) AS a1"
                 + "\n\tINNER JOIN t2 a2"
-                + "\nWHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
+                + "\nWHERE a1.id = a2.id;", SQLUtils.toMySqlString(stmt));
         Assert.assertEquals("delete from a1, a2 using (t1) as a1"
                 + "\n\tinner join t2 a2"
-                + "\nwhere a1.id = a2.id", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                + "\nwhere a1.id = a2.id;", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
 
@@ -49,7 +49,7 @@ public class MySqlDeleteTest_1 extends MysqlTest {
         stmt.accept(visitor);
 
 //        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         

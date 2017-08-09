@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,87 +35,87 @@ public class TestDataSourceBasic2 extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
 
         dataSource.setBreakAfterAcquireFailure(true);
-        Assert.assertEquals(true, dataSource.isBreakAfterAcquireFailure());
+        assertEquals(true, dataSource.isBreakAfterAcquireFailure());
 
         dataSource.setConnectionErrorRetryAttempts(234);
-        Assert.assertEquals(234, dataSource.getConnectionErrorRetryAttempts());
+        assertEquals(234, dataSource.getConnectionErrorRetryAttempts());
 
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(234);
-        Assert.assertEquals(234, dataSource.getMaxPoolPreparedStatementPerConnectionSize());
+        assertEquals(234, dataSource.getMaxPoolPreparedStatementPerConnectionSize());
 
         dataSource.incrementDupCloseCount();
-        Assert.assertEquals(1, dataSource.getDupCloseCount());
+        assertEquals(1, dataSource.getDupCloseCount());
 
         dataSource.setValidConnectionChecker(null);
         dataSource.setValidConnectionCheckerClassName(null);
-        Assert.assertEquals(null, dataSource.getValidConnectionChecker());
+        assertEquals(null, dataSource.getValidConnectionChecker());
 
         dataSource.addConnectionProperty("user", "ljw");
-        Assert.assertEquals(1, dataSource.getConnectProperties().size());
+        assertEquals(1, dataSource.getConnectProperties().size());
 
-        Assert.assertEquals(0, dataSource.getConnectionInitSqls().size());
+        assertEquals(0, dataSource.getConnectionInitSqls().size());
         dataSource.setConnectionInitSqls(Arrays.<Object> asList("SELECT 1", null, ""));
-        Assert.assertEquals(1, dataSource.getConnectionInitSqls().size());
+        assertEquals(1, dataSource.getConnectionInitSqls().size());
 
-        Assert.assertEquals(30 * 1000, dataSource.getTimeBetweenConnectErrorMillis());
-        Assert.assertEquals(234, dataSource.getMaxOpenPreparedStatements());
-        Assert.assertEquals(300, dataSource.getRemoveAbandonedTimeout());
+        assertEquals(30 * 1000, dataSource.getTimeBetweenConnectErrorMillis());
+        assertEquals(234, dataSource.getMaxOpenPreparedStatements());
+        assertEquals(300, dataSource.getRemoveAbandonedTimeout());
         dataSource.setRemoveAbandonedTimeout(400);
-        Assert.assertEquals(400, dataSource.getRemoveAbandonedTimeout());
-        Assert.assertEquals(400 * 1000, dataSource.getRemoveAbandonedTimeoutMillis());
-        Assert.assertEquals(3, dataSource.getNumTestsPerEvictionRun());
+        assertEquals(400, dataSource.getRemoveAbandonedTimeout());
+        assertEquals(400 * 1000, dataSource.getRemoveAbandonedTimeoutMillis());
+        assertEquals(3, dataSource.getNumTestsPerEvictionRun());
         dataSource.setNumTestsPerEvictionRun(4);
-        Assert.assertEquals(4, dataSource.getNumTestsPerEvictionRun());
+        assertEquals(4, dataSource.getNumTestsPerEvictionRun());
 
         dataSource.setMaxWaitThreadCount(4);
-        Assert.assertEquals(4, dataSource.getMaxWaitThreadCount());
+        assertEquals(4, dataSource.getMaxWaitThreadCount());
 
         dataSource.setValidationQueryTimeout(4);
-        Assert.assertEquals(4, dataSource.getValidationQueryTimeout());
+        assertEquals(4, dataSource.getValidationQueryTimeout());
 
         dataSource.setAccessToUnderlyingConnectionAllowed(true);
-        Assert.assertEquals(true, dataSource.isAccessToUnderlyingConnectionAllowed());
+        assertEquals(true, dataSource.isAccessToUnderlyingConnectionAllowed());
 
         dataSource.setDefaultReadOnly(true);
-        Assert.assertEquals(Boolean.TRUE, dataSource.getDefaultReadOnly());
+        assertEquals(Boolean.TRUE, dataSource.getDefaultReadOnly());
 
         dataSource.setDefaultTransactionIsolation(10);
-        Assert.assertEquals(Integer.valueOf(10), dataSource.getDefaultTransactionIsolation());
+        assertEquals(Integer.valueOf(10), dataSource.getDefaultTransactionIsolation());
 
         dataSource.setDefaultCatalog("xxx");
-        Assert.assertEquals("xxx", dataSource.getDefaultCatalog());
+        assertEquals("xxx", dataSource.getDefaultCatalog());
 
         dataSource.setPasswordCallbackClassName(null);
         dataSource.setUserCallback(null);
 
-        Assert.assertEquals(0, dataSource.getQueryTimeout());
+        assertEquals(0, dataSource.getQueryTimeout());
         dataSource.setQueryTimeout(10001);
-        Assert.assertEquals(10001, dataSource.getQueryTimeout());
+        assertEquals(10001, dataSource.getQueryTimeout());
 
-        Assert.assertEquals(-1, dataSource.getMaxWait());
+        assertEquals(-1, dataSource.getMaxWait());
         dataSource.setMaxWait(10001);
-        Assert.assertEquals(10001, dataSource.getMaxWait());
+        assertEquals(10001, dataSource.getMaxWait());
 
-        Assert.assertEquals(8, dataSource.getMaxIdle());
+        assertEquals(8, dataSource.getMaxIdle());
         dataSource.setMaxIdle(3);
-        Assert.assertEquals(3, dataSource.getMaxIdle());
+        assertEquals(3, dataSource.getMaxIdle());
 
-        Assert.assertEquals(0, dataSource.getLoginTimeout());
+        assertEquals(0, dataSource.getLoginTimeout());
         dataSource.setLoginTimeout(30);
-        Assert.assertEquals(30, dataSource.getLoginTimeout());
+        assertEquals(30, dataSource.getLoginTimeout());
 
-        Assert.assertEquals(null, dataSource.getUsername());
+        assertEquals(null, dataSource.getUsername());
         dataSource.setUsername("ljw");
-        Assert.assertEquals("ljw", dataSource.getUsername());
+        assertEquals("ljw", dataSource.getUsername());
 
-        Assert.assertEquals(null, dataSource.getPassword());
+        assertEquals(null, dataSource.getPassword());
         dataSource.setPassword("xxx");
-        Assert.assertEquals("xxx", dataSource.getPassword());
+        assertEquals("xxx", dataSource.getPassword());
 
         dataSource.setConnectProperties(new Properties());
-        Assert.assertEquals(0, dataSource.getConnectProperties().size());
+        assertEquals(0, dataSource.getConnectProperties().size());
         dataSource.setConnectionProperties("a=1;b=2;c");
-        Assert.assertEquals(3, dataSource.getConnectProperties().size());
+        assertEquals(3, dataSource.getConnectProperties().size());
 
         dataSource.setExceptionSorter((ExceptionSorter) null);
 

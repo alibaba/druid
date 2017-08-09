@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.filter.wall.mysql;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -31,7 +33,7 @@ import com.alibaba.druid.wall.WallUtils;
 public class MySqlWallTest20 extends TestCase {
 
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
+        assertTrue(WallUtils.isValidateMySql(//
         "SET sql_mode=?,NAMES ?,CHARACTER SET utf8,CHARACTER_SET_RESULTS=utf8,COLLATION_CONNECTION=?")); //
     }
 }

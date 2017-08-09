@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2101 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,25 +37,20 @@ public class SQLServerSelectTest6 extends TestCase {
                      "FROM DirReps " + //
                      "ORDER BY ManagerID;";
 
-        String expect = "WITH" +
-        		"\n\tDirReps (ManagerID, DirectReports)" +
-        		"\n\tAS" +
-        		"\n\t(" +
-        		"\n\t\tSELECT ManagerID, COUNT(*)" +
-        		"\n\t\tFROM HumanResources.Employee e" +
-        		"\n\t\tWHERE ManagerID IS NOT NULL" +
-        		"\n\t\tGROUP BY ManagerID" +
-        		"\n\t)" +
-        		"\nSELECT ManagerID, DirectReports" +
-        		"\nFROM DirReps" +
-        		"\nORDER BY ManagerID";
-
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
         String text = TestUtils.outputSqlServer(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals("WITH DirReps (ManagerID, DirectReports) AS (\n" +
+				"\t\tSELECT ManagerID, COUNT(*)\n" +
+				"\t\tFROM HumanResources.Employee e\n" +
+				"\t\tWHERE ManagerID IS NOT NULL\n" +
+				"\t\tGROUP BY ManagerID\n" +
+				"\t)\n" +
+				"SELECT ManagerID, DirectReports\n" +
+				"FROM DirReps\n" +
+				"ORDER BY ManagerID;", text);
 
 //        System.out.println(text);
     }
