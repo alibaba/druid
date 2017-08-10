@@ -284,6 +284,11 @@ public class SQLSelectParser extends SQLParser {
                 accept(Token.LPAREN);
                 groupBy.setWithRollUp(true);
             }
+            if (identifierEquals("CUBE")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                groupBy.setWithCube(true);
+            }
 
             for (;;) {
                 SQLExpr item = parseGroupByItem();
@@ -297,7 +302,7 @@ public class SQLSelectParser extends SQLParser {
 
                 lexer.nextToken();
             }
-            if (groupBy.isWithRollUp()) {
+            if (groupBy.isWithRollUp() || groupBy.isWithCube()) {
                 accept(Token.RPAREN);
             }
 

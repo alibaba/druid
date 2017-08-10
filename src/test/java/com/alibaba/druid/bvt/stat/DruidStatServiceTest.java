@@ -168,16 +168,16 @@ public class DruidStatServiceTest extends TestCase {
         stmt.close();
         conn.close();
 
-        String result = DruidStatService.getInstance().service("/datasource.json");
-        Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
-        List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) resultMap.get("Content");
-        Map<String, Object> dataSourceStat = dataSourceList.get(0);
-//        assertThat(dataSourceStat, is(not(nullValue())));
-        int id = (Integer) dataSourceStat.get("Identity");
-
-        String resultId = DruidStatService.getInstance().service("/datasource-" + id + ".json");
-        Map<String, Object> resultIdMap = (Map<String, Object>) JSONUtils.parse(resultId);
-        Map<String, Object> dataSourceIdStat = (Map<String, Object>) resultIdMap.get("Content");
+//        String result = DruidStatService.getInstance().service("/datasource.json");
+//        Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
+//        List<Map<String, Object>> dataSourceList = (List<Map<String, Object>>) resultMap.get("Content");
+//        Map<String, Object> dataSourceStat = dataSourceList.get(0);
+////        assertThat(dataSourceStat, is(not(nullValue())));
+//        int id = (Integer) dataSourceStat.get("Identity");
+//
+//        String resultId = DruidStatService.getInstance().service("/datasource-" + id + ".json");
+//        Map<String, Object> resultIdMap = (Map<String, Object>) JSONUtils.parse(resultId);
+//        Map<String, Object> dataSourceIdStat = (Map<String, Object>) resultIdMap.get("Content");
 //        assertThat((Integer) dataSourceIdStat.get("PoolingCount"), equalTo(1));
     }
 

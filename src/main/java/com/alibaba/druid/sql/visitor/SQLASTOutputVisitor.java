@@ -1310,12 +1310,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         boolean oracle = JdbcConstants.ORACLE.equals(dbType);
         boolean rollup = x.isWithRollUp();
+        boolean cube = x.isWithCube();
 
         int itemSize = x.getItems().size();
         if (itemSize > 0) {
             print0(ucase ? "GROUP BY " : "group by ");
             if (oracle && rollup) {
                 print0(ucase ? "ROLLUP (" : "rollup (");
+            } else if (oracle && cube) {
+                print0(ucase ? "CUBE (" : "cube (");
             }
             incrementIndent();
             for (int i = 0; i < itemSize; ++i) {
@@ -1344,7 +1347,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? " WITH ROLLUP" : " with rollup");
         }
 
-        if (x.isWithCube()) {
+        if (x.isWithCube() && !oracle) {
             print0(ucase ? " WITH CUBE" : " with cube");
         }
 
