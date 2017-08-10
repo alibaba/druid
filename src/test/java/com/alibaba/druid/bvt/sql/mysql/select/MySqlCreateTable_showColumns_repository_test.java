@@ -916,6 +916,10 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
 
                 , repository.console("show create table test1"));
 
+        assertEquals("ERROR 1146 (42S02): Table 'test1' doesn't exist\n"
+
+                , repository.console("show columns from test1"));
+
         assertEquals("CREATE TABLE test1_xx (\n" +
                         "\tc_decimal_1 INT(11) NOT NULL DEFAULT NULL,\n" +
                         "\t`id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
@@ -968,5 +972,15 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         ")"
 
                 , repository.console("show create table test5"));
+
+
+        repository.console("CREATE TABLE tddl5_00.ljh_test1(be_id VARCHAR(20) NOT NULL DEFAULT ''  COMMENT '企业标识')ENGINE = InnoDB, CHARACTER SET = utf8, COMMENT = '应用层-汇总销售及销售毛利表'");
+
+        assertEquals("+-------+-------------+------+-----+---------+-------+\n" +
+                        "| Field | Type        | Null | Key | Default | Extra |\n" +
+                        "+-------+-------------+------+-----+---------+-------+\n" +
+                        "| be_id | VARCHAR(20) | NO   |     | ''      |       |\n" +
+                        "+-------+-------------+------+-----+---------+-------+\n"
+                , repository.console("show columns from tddl5_00.ljh_test1"));
     }
 }

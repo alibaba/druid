@@ -1307,9 +1307,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLSelectGroupByClause x) {
+
+        boolean oracle = JdbcConstants.ORACLE.equals(dbType);
+        boolean rollup = x.isWithRollUp();
+
         int itemSize = x.getItems().size();
         if (itemSize > 0) {
             print0(ucase ? "GROUP BY " : "group by ");
+            if (oracle && rollup) {
+                print0(ucase ? "ROLLUP (" : "rollup (");
+            }
             incrementIndent();
             for (int i = 0; i < itemSize; ++i) {
                 if (i != 0) {
@@ -1321,6 +1328,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 }
                 x.getItems().get(i).accept(this);
             }
+            if (oracle && rollup) {
+                print(')');
+            }
             decrementIndent();
         }
 
@@ -1330,7 +1340,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getHaving().accept(this);
         }
 
-        if (x.isWithRollUp()) {
+        if (x.isWithRollUp() && !oracle) {
             print0(ucase ? " WITH ROLLUP" : " with rollup");
         }
 

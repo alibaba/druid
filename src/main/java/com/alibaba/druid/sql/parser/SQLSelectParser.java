@@ -279,6 +279,12 @@ public class SQLSelectParser extends SQLParser {
             accept(Token.BY);
 
             SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
+            if (identifierEquals("ROLLUP")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                groupBy.setWithRollUp(true);
+            }
+
             for (;;) {
                 SQLExpr item = parseGroupByItem();
                 
@@ -290,6 +296,9 @@ public class SQLSelectParser extends SQLParser {
                 }
 
                 lexer.nextToken();
+            }
+            if (groupBy.isWithRollUp()) {
+                accept(Token.RPAREN);
             }
 
             if (lexer.token() == (Token.HAVING)) {

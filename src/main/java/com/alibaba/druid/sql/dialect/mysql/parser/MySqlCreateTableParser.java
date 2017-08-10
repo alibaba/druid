@@ -186,6 +186,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         }
 
         for (;;) {
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+            }
+
             if (identifierEquals("ENGINE")) {
                 lexer.nextToken();
                 if (lexer.token() == Token.EQ) {

@@ -275,10 +275,27 @@ public class SchemaRepository {
             for (SQLStatement stmt : stmtList) {
                 if (stmt instanceof MySqlShowColumnsStatement) {
                     MySqlShowColumnsStatement showColumns = ((MySqlShowColumnsStatement) stmt);
-                    SQLName table = showColumns.getTable();
-                    SchemaObject schemaObject = findTable(table);
-                    MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
-                    createTableStmt.showCoumns(buf);
+                    SQLName db = showColumns.getDatabase();
+                    Schema schema;
+                    if (db == null) {
+                        schema = getDefaultSchema();
+                    } else {
+                        schema = findSchema(db.getSimpleName());
+                    }
+
+                    SQLName table = null;
+                    SchemaObject schemaObject = null;
+                    if (schema != null) {
+                        table = showColumns.getTable();
+                        schemaObject = schema.findTable(table.getSimpleName());
+                    }
+
+                    if (schemaObject == null) {
+                        buf.append("ERROR 1146 (42S02): Table '" + table + "' doesn't exist\n");
+                    } else {
+                        MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
+                        createTableStmt.showCoumns(buf);
+                    }
                 } else if (stmt instanceof MySqlShowCreateTableStatement) {
                     MySqlShowCreateTableStatement showCreateTableStmt = (MySqlShowCreateTableStatement) stmt;
                     SQLName table = showCreateTableStmt.getName();
