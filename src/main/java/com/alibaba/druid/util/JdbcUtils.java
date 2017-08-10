@@ -793,6 +793,9 @@ public final class JdbcUtils implements JdbcConstants {
             return OracleUtils.showTables(conn);
         }
 
+        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+            return PGUtils.showTables(conn);
+        }
         throw new SQLException("show tables dbType not support for " + dbType);
     }
 
