@@ -373,6 +373,8 @@ public class PagerUtils {
                 int rowCount = ((SQLNumericLiteralExpr) limit.getRowCount()).getNumber().intValue();
                 if (rowCount <= count && offset <= 0) {
                     return false;
+                }  else if (check && limit.getRowCount() instanceof SQLVariantRefExpr){
+                    return false;
                 }
             }
 
