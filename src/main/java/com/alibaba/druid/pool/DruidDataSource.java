@@ -2072,6 +2072,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     setFailContinuous(false);
                 } catch (SQLException e) {
                     LOG.error("create connection error, url: " + jdbcUrl, e);
+                    System.out.println();
 
                     errorCount++;
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {

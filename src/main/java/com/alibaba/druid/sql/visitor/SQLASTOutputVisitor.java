@@ -784,6 +784,40 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return printName(x, name, shardingSupport);
     }
 
+    public String unwrapShardingTable(String name) {
+        char c0 = name.charAt(0);
+        char c_last = name.charAt(name.length() - 1);
+        final boolean quote = (c0 == '`' && c_last == '`') || (c0 == '"' && c_last == '"');
+
+        int end = name.length();
+        if (quote) {
+            end--;
+        }
+
+        int num_cnt = 0, postfixed_cnt = 0;
+        for (int i = end - 1; i > 0; --i, postfixed_cnt++) {
+            char ch = name.charAt(i);
+            if (ch >= '0' && ch <= '9') {
+                num_cnt++;
+            }
+
+            if (ch != '_' && (ch < '0' || ch > '9')) {
+                break;
+            }
+        }
+        if (num_cnt < 1 || postfixed_cnt < 2) {
+            return name;
+        }
+
+        int start = end - postfixed_cnt;
+        if (start < 1) {
+            return name;
+        }
+
+        String realName = name.substring(quote ? 1 : 0, start);
+        return realName;
+    }
+
     private boolean printName(SQLName x, String name, boolean shardingSupport) {
 
         if (shardingSupport) {
@@ -796,88 +830,36 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (shardingSupport) {
-            int pos = name.lastIndexOf('_');
-            if (pos != -1 && pos != name.length() - 1) {
-                boolean quote = name.charAt(0) == '`' && name.charAt(name.length() - 1) == '`';
-                boolean isNumber = true;
+            final boolean quote = name.charAt(0) == '`' && name.charAt(name.length() - 1) == '`';
 
-                int end = name.length();
-                if (quote) {
-                    end--;
-                }
-                for (int i = pos + 1; i < end; ++i) {
-                    char ch = name.charAt(i);
-                    if (ch < '0' || ch > '9') {
-                        isNumber = false;
+            String unwrappedName = unwrapShardingTable(name);
+            if (unwrappedName != name) {
+                boolean isAlias = false;
+                for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
+                    if (parent instanceof SQLSelectQueryBlock) {
+                        SQLTableSource from = ((SQLSelectQueryBlock) parent).getFrom();
+                        if (quote) {
+                            String name2 = name.substring(1, name.length() - 1);
+                            if (isTableSourceAlias(from, name, name2)) {
+                                isAlias = true;
+                            }
+                        } else {
+                            if (isTableSourceAlias(from, name)) {
+                                isAlias = true;
+                            }
+                        }
                         break;
                     }
                 }
 
-                if (isNumber) {
-                    int pos2 = name.lastIndexOf('_', pos - 1);
-                    if (pos2 != -1) {
-                        boolean isNumber2 = true;
-                        for (int i = pos2 + 1; i < pos; ++i) {
-                            char ch = name.charAt(i);
-                            if (ch < '0' || ch > '9') {
-                                isNumber2 = false;
-                                break;
-                            }
-                        }
-                        if (isNumber2) {
-                            pos = pos2;
-                        }
-                    }
-                }
-
-                if (isNumber) {
-                    boolean isAlias = false;
-                    for (SQLObject parent = x.getParent();parent != null; parent = parent.getParent()) {
-                        if (parent instanceof SQLSelectQueryBlock) {
-                            SQLTableSource from = ((SQLSelectQueryBlock) parent).getFrom();
-                            if (quote) {
-                                String name2 = name.substring(1, name.length() - 1);
-                                if (isTableSourceAlias(from, name, name2)) {
-                                    isAlias = true;
-                                }
-                            } else {
-                                if (isTableSourceAlias(from, name)) {
-                                    isAlias = true;
-                                }
-                            }
-                            break;
-                        }
-                    }
-
-                    if (!isAlias) {
-                        int start = quote ? 1 : 0;
-                        String realName = name.substring(start, pos);
-                        print0(realName);
-                        incrementReplaceCunt();
-                        return false;
-                    } else {
-                        print0(name);
-                        return false;
-                    }
-                }
-            }
-
-            int numberCount = 0;
-            for (int i = name.length() - 1; i >= 0; --i) {
-                char ch = name.charAt(i);
-                if (ch < '0' || ch > '9') {
-                    break;
+                if (!isAlias) {
+                    print0(unwrappedName);
+                    incrementReplaceCunt();
+                    return false;
                 } else {
-                    numberCount++;
+                    print0(name);
+                    return false;
                 }
-            }
-
-            if (numberCount > 1) {
-                int numPos = name.length() - numberCount;
-                String realName = name.substring(0, numPos);
-                print0(realName);
-                incrementReplaceCunt();
-                return false;
             }
         }
         print0(name);
@@ -2125,7 +2107,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLUnionQuery x) {
         SQLUnionOperator operator = x.getOperator();
 
-        boolean bracket = x.isBracket();
+        boolean bracket = x.isBracket() && !(x.getParent() instanceof SQLUnionQueryTableSource);
 
         if (bracket) {
             print('(');

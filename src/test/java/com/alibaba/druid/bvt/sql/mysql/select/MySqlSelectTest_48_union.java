@@ -69,7 +69,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt);
             assertEquals("SELECT SUM(hd.paid_amount)\n" +
                             "FROM (\n" +
-                            "\t(SELECT 'fl', CAST(a.hosted_ymd AS date) AS hosted_ymd, a.user_id, 'boss1', a.paid_amount\n" +
+                            "\tSELECT 'fl', CAST(a.hosted_ymd AS date) AS hosted_ymd, a.user_id, 'boss1', a.paid_amount\n" +
                             "\t\t, m.user_id, m.create_date, m.pmcode, n.type_name, n.product_name\n" +
                             "\t\t, n.acctype_id, n.acctype_name, n.account_name, n.plan\n" +
                             "\tFROM hive.bdc_dwd.dw_mk_copyright_order a\n" +
@@ -104,7 +104,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
                             "\t\tAND CAST(b.paid_date AS varchar(10)) >= '2016-01-01'\n" +
                             "\t\tAND CAST(b.paid_date AS varchar(10)) <= '2017-06-30'\n" +
                             "\t\tAND b.state = 1\n" +
-                            "\t\tAND a.acct_day = '03')\n" +
+                            "\t\tAND a.acct_day = '03'\n" +
                             ") hd", //
                                 output);
         }
@@ -112,7 +112,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             assertEquals("select sum(hd.paid_amount)\n" +
                             "from (\n" +
-                            "\t(select 'fl', cast(a.hosted_ymd as date) as hosted_ymd, a.user_id, 'boss1', a.paid_amount\n" +
+                            "\tselect 'fl', cast(a.hosted_ymd as date) as hosted_ymd, a.user_id, 'boss1', a.paid_amount\n" +
                             "\t\t, m.user_id, m.create_date, m.pmcode, n.type_name, n.product_name\n" +
                             "\t\t, n.acctype_id, n.acctype_name, n.account_name, n.plan\n" +
                             "\tfrom hive.bdc_dwd.dw_mk_copyright_order a\n" +
@@ -147,7 +147,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
                             "\t\tand cast(b.paid_date as varchar(10)) >= '2016-01-01'\n" +
                             "\t\tand cast(b.paid_date as varchar(10)) <= '2017-06-30'\n" +
                             "\t\tand b.state = 1\n" +
-                            "\t\tand a.acct_day = '03')\n" +
+                            "\t\tand a.acct_day = '03'\n" +
                             ") hd", //
                                 output);
         }
@@ -156,7 +156,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt, new SQLUtils.FormatOption(true, true, true));
             assertEquals("SELECT SUM(hd.paid_amount)\n" +
                             "FROM (\n" +
-                            "\t(SELECT ?, CAST(a.hosted_ymd AS date) AS hosted_ymd, a.user_id, ?, a.paid_amount\n" +
+                            "\tSELECT ?, CAST(a.hosted_ymd AS date) AS hosted_ymd, a.user_id, ?, a.paid_amount\n" +
                             "\t\t, m.user_id, m.create_date, m.pmcode, n.type_name, n.product_name\n" +
                             "\t\t, n.acctype_id, n.acctype_name, n.account_name, n.plan\n" +
                             "\tFROM hive.bdc_dwd.dw_mk_copyright_order a\n" +
@@ -191,7 +191,7 @@ public class MySqlSelectTest_48_union extends MysqlTest {
                             "\t\tAND CAST(b.paid_date AS varchar(10)) >= ?\n" +
                             "\t\tAND CAST(b.paid_date AS varchar(10)) <= ?\n" +
                             "\t\tAND b.state = ?\n" +
-                            "\t\tAND a.acct_day = ?)\n" +
+                            "\t\tAND a.acct_day = ?\n" +
                             ") hd", //
                     output);
         }

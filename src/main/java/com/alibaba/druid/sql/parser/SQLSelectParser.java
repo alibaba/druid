@@ -19,19 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -577,6 +565,26 @@ public class SQLSelectParser extends SQLParser {
                 rightTableSource.setAlias(this.tableAlias());
 
                 primaryTableSourceRest(rightTableSource);
+            }
+
+            if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+
+                for (;;) {
+                    SQLExpr hintExpr = this.expr();
+                    SQLExprHint hint = new SQLExprHint(hintExpr);
+                    hint.setParent(tableSource);
+                    rightTableSource.getHints().add(hint);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+
+                accept(Token.RPAREN);
             }
 
             join.setRight(rightTableSource);
