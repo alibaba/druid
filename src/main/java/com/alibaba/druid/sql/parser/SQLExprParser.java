@@ -652,6 +652,12 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 sqlExpr = new SQLBooleanExpr(false);
                 break;
+            case BITS: {
+                String strVal = lexer.stringVal();
+                lexer.nextToken();
+                sqlExpr = new SQLBinaryExpr(strVal);
+                break;
+            }
             default:
                 throw new ParserException("ERROR" + lexer.info());
         }

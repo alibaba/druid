@@ -195,12 +195,12 @@ public class MySqlExprParser extends SQLExprParser {
                     expr = new SQLHexExpr(charValue);
 
                     return primaryRest(expr);
-                } else if (ident.equalsIgnoreCase("b")) {
-                    String charValue = lexer.stringVal();
-                    lexer.nextToken();
-                    expr = new SQLBinaryExpr(charValue);
-
-                    return primaryRest(expr);
+//                } else if (ident.equalsIgnoreCase("b")) {
+//                    String charValue = lexer.stringVal();
+//                    lexer.nextToken();
+//                    expr = new SQLBinaryExpr(charValue);
+//
+//                    return primaryRest(expr);
                 } else if (ident.startsWith("_")) {
                     String charValue = lexer.stringVal();
                     lexer.nextToken();
@@ -277,15 +277,15 @@ public class MySqlExprParser extends SQLExprParser {
 
                     return primaryRest(expr);
                 }
-            } else if (expr instanceof SQLIntegerExpr) {
-                SQLIntegerExpr intExpr = (SQLIntegerExpr) expr;
-                String binaryString = lexer.stringVal();
-                if (intExpr.getNumber().intValue() == 0 && binaryString.startsWith("b")) {
-                    lexer.nextToken();
-                    expr = new SQLBinaryExpr(binaryString.substring(1));
-
-                    return primaryRest(expr);
-                }
+//            } else if (expr instanceof SQLIntegerExpr) {
+//                SQLIntegerExpr intExpr = (SQLIntegerExpr) expr;
+//                String binaryString = lexer.stringVal();
+//                if (intExpr.getNumber().intValue() == 0 && binaryString.startsWith("b")) {
+//                    lexer.nextToken();
+//                    expr = new SQLBinaryExpr(binaryString.substring(1));
+//
+//                    return primaryRest(expr);
+//                }
             }
         }
 

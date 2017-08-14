@@ -218,8 +218,29 @@ public class MySqlLexer extends Lexer {
     public void scanIdentifier() {
         final char first = ch;
 
-        if (ch == '`') {
+        if (ch == 'b' && charAt(pos + 1) == '\'') {
+            int i = 2;
+            int mark = pos + 2;
+            for (;;++i) {
+                char ch = charAt(pos + i);
+                if (ch == '0' || ch == '1') {
+                    continue;
+                } else if (ch == '\'') {
+                    bufPos += i;
+                    pos += (i + 1);
+                    stringVal = subString(mark, i - 2);
+                    this.ch = charAt(pos);
+                    token = Token.BITS;
+                    return;
+                } else if (ch == EOI) {
+                    throw new ParserException("illegal identifier. " + info());
+                } else {
+                    break;
+                }
+            }
+        }
 
+        if (ch == '`') {
             mark = pos;
             bufPos = 1;
             char ch;
@@ -452,6 +473,26 @@ public class MySqlLexer extends Lexer {
 
     public void scanNumber() {
         mark = pos;
+
+        if (ch == '0' && charAt(pos + 1) == 'b') {
+            int i = 2;
+            int mark = pos + 2;
+            for (;;++i) {
+                char ch = charAt(pos + i);
+                if (ch == '0' || ch == '1') {
+                    continue;
+                } else if (ch >= '2' && ch <= '9') {
+                    break;
+                } else {
+                    bufPos += i;
+                    pos += i;
+                    stringVal = subString(mark, i - 2);
+                    this.ch = charAt(pos);
+                    token = Token.BITS;
+                    return;
+                }
+            }
+        }
 
         if (ch == '-') {
             bufPos++;
