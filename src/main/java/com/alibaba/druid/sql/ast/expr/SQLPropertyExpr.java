@@ -199,4 +199,8 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
         return null;
     }
+
+    public boolean nameEquals(String name) {
+        return SQLUtils.nameEquals(this.name, name);
+    }
 }

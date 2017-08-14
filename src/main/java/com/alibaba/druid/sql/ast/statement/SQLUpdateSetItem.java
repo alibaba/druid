@@ -17,6 +17,8 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUpdateSetItem extends SQLObjectImpl {
@@ -60,4 +62,12 @@ public class SQLUpdateSetItem extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public boolean columnMatch(String column) {
+        if (this.column instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) this.column).nameEquals(column);
+        } else if (this.column instanceof SQLPropertyExpr) {
+            ((SQLPropertyExpr) this.column).nameEquals(column);
+        }
+        return false;
+    }
 }

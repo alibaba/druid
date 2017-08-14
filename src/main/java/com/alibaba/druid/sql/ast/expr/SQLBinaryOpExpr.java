@@ -490,4 +490,22 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements SQLReplaceable, Seri
 
         return false;
     }
+
+    public boolean conditionContainsColumn(String column) {
+        if (left == null || right == null) {
+            return false;
+        }
+
+        if (left instanceof SQLIdentifierExpr) {
+            if (((SQLIdentifierExpr) left).nameEquals(column)) {
+                return true;
+            }
+        } else if (right instanceof SQLIdentifierExpr) {
+            if (((SQLIdentifierExpr) right).nameEquals(column)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

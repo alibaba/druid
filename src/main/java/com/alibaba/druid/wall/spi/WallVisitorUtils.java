@@ -78,13 +78,9 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.ServletPathMatcher;
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack;
 import com.alibaba.druid.wall.WallConfig.TenantCallBack.StatementType;
-import com.alibaba.druid.wall.WallContext;
-import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.WallSqlTableStat;
-import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
@@ -885,6 +881,10 @@ public class WallVisitorUtils {
             return;
         }
 
+        String tableName = x.getTableName().getSimpleName();
+        Set<String> updateCheckColumns = config.getUpdateCheckTable(tableName);
+        boolean isUpdateCheckTable = updateCheckColumns != null && !updateCheckColumns.isEmpty();
+
         SQLExpr where = x.getWhere();
         if (where == null) {
             WallContext context = WallContext.current();
@@ -905,12 +905,75 @@ public class WallVisitorUtils {
                 }
             }
         } else {
-            where.setParent(x);
             checkCondition(visitor, where);
 
             if (Boolean.TRUE == getConditionValue(visitor, where, config.isUpdateWhereAlayTrueCheck())) {
                 if (config.isUpdateWhereAlayTrueCheck() && visitor.isSqlEndOfComment()&& !isSimpleConstExpr(where)) {
                     addViolation(visitor, ErrorCode.ALWAYS_TRUE, "update alway true condition not allow", x);
+                }
+            }
+
+            WallUpdateCheckHandler updateCheckHandler = config.getUpdateCheckHandler();
+            if (isUpdateCheckTable && updateCheckHandler != null) {
+                String checkColumn = updateCheckColumns.iterator().next();
+
+                SQLExpr valueExpr = null;
+                for (SQLUpdateSetItem item : x.getItems()) {
+                    if (item.columnMatch(checkColumn)) {
+                        valueExpr = item.getValue();
+                        break;
+                    }
+                }
+
+                if (valueExpr != null) {
+                    List<SQLExpr> conditions;
+                    if (where instanceof SQLBinaryOpExpr) {
+                        conditions = SQLBinaryOpExpr.split((SQLBinaryOpExpr) where, SQLBinaryOperator.BooleanAnd);
+                    } else {
+                        conditions = new ArrayList<SQLExpr>();
+                        conditions.add(where);
+                    }
+
+                    List<SQLExpr> filterValueExprList = new ArrayList<SQLExpr>();
+                    for (SQLExpr condition : conditions) {
+                        if (condition instanceof SQLBinaryOpExpr) {
+                            SQLBinaryOpExpr binaryCondition = (SQLBinaryOpExpr) condition;
+                            if (binaryCondition.getOperator() == SQLBinaryOperator.Equality
+                                    && binaryCondition.conditionContainsColumn(checkColumn)) {
+                                SQLExpr left = binaryCondition.getLeft();
+                                SQLExpr right = binaryCondition.getRight();
+
+                                if (left instanceof SQLValuableExpr || left instanceof SQLVariantRefExpr) {
+                                    filterValueExprList.add(left);
+                                } else if (right instanceof SQLValuableExpr || right instanceof SQLVariantRefExpr) {
+                                    filterValueExprList.add(right);
+                                }
+                            }
+                        }
+                    }
+
+                    boolean allValue = valueExpr instanceof SQLValuableExpr;
+                    if (allValue) {
+                        for (SQLExpr filterValue : filterValueExprList) {
+                            if (!(filterValue instanceof SQLValuableExpr)) {
+                                allValue = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (allValue) {
+                        Object setValue = ((SQLValuableExpr) valueExpr).getValue();
+                        List<Object> filterValues = new ArrayList<Object>(filterValueExprList.size());
+                        for (SQLExpr expr : filterValueExprList) {
+                            filterValues.add(((SQLValuableExpr) expr).getValue());
+                        }
+                        boolean validate = updateCheckHandler.check(tableName, checkColumn, setValue, filterValues);
+                        visitor.addViolation(new IllegalSQLObjectViolation(ErrorCode.UPDATE_CHECK_FAIL, "update check failed.", visitor.toSQL(x)));
+                    } else {
+                        visitor.addWallUpdateCheckItem(new WallUpdateCheckItem(tableName, checkColumn, valueExpr, filterValueExprList));
+                    }
+                    //updateCheckHandler.check(tableName, checkColumn)
                 }
             }
         }

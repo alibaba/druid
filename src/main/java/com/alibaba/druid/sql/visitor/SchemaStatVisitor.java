@@ -1395,8 +1395,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setMode(x, Mode.Update);
 
-        SQLName identName = x.getTableName();
-        if (identName != null) {
+        SQLTableSource tableSource = x.getTableSource();
+        if (tableSource instanceof SQLExprTableSource) {
+            SQLName identName = ((SQLExprTableSource) tableSource).getName();
             String ident = identName.toString();
             setCurrentTable(ident);
 
@@ -1406,7 +1407,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             Map<String, String> aliasMap = getAliasMap();
             putAliasMap(aliasMap, ident, ident);
         } else {
-            x.getTableSource().accept(this);
+            tableSource.accept(this);
         }
 
         accept(x.getFrom());

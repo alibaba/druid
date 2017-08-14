@@ -58,8 +58,14 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     public SQLName getTableName() {
         if (tableSource instanceof SQLExprTableSource) {
-            SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
-            return (SQLName) exprTableSource.getExpr();
+            return ((SQLExprTableSource) tableSource).getName();
+        }
+
+        if (tableSource instanceof SQLJoinTableSource) {
+            SQLTableSource left = ((SQLJoinTableSource) tableSource).getLeft();
+            if (left instanceof SQLExprTableSource) {
+                return ((SQLExprTableSource) left).getName();
+            }
         }
         return null;
     }

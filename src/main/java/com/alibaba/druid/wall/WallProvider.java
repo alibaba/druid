@@ -704,6 +704,8 @@ public abstract class WallProvider {
         }
         result.setSql(resultSql);
 
+        result.setUpdateCheckItems(visitor.getUpdateCheckItems());
+
         return result;
     }
 
