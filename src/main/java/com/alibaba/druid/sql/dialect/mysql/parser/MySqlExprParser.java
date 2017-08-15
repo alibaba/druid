@@ -249,7 +249,8 @@ public class MySqlExprParser extends SQLExprParser {
                     lexer.nextToken();
                 }
 
-                if (lexer.token() != Token.IDENTIFIER) {
+                if (lexer.token() != Token.IDENTIFIER
+                        && lexer.token() != Token.LITERAL_CHARS) {
                     throw new ParserException("syntax error. " + lexer.info());
                 }
 
@@ -266,7 +267,8 @@ public class MySqlExprParser extends SQLExprParser {
                 if ("COLLATE".equalsIgnoreCase(lexer.stringVal())) {
                     lexer.nextToken();
 
-                    if (lexer.token() != Token.IDENTIFIER) {
+                    if (lexer.token() != Token.IDENTIFIER
+                            && lexer.token() != Token.LITERAL_CHARS) {
                         throw new ParserException("syntax error. " + lexer.info());
                     }
 
@@ -277,15 +279,6 @@ public class MySqlExprParser extends SQLExprParser {
 
                     return primaryRest(expr);
                 }
-//            } else if (expr instanceof SQLIntegerExpr) {
-//                SQLIntegerExpr intExpr = (SQLIntegerExpr) expr;
-//                String binaryString = lexer.stringVal();
-//                if (intExpr.getNumber().intValue() == 0 && binaryString.startsWith("b")) {
-//                    lexer.nextToken();
-//                    expr = new SQLBinaryExpr(binaryString.substring(1));
-//
-//                    return primaryRest(expr);
-//                }
             }
         }
 
