@@ -53,7 +53,7 @@ public class MySqlCreateTableTest50 extends MysqlTest {
         Assert.assertEquals("CREATE TABLE `test`.`a` (" //
                             + "\n\t`ida` INT NOT NULL COMMENT 'aaa',"//
                             + "\n\tPRIMARY KEY (`ida`)"//
-                            + "\n) COMMENT = 'bb'",//
+                            + "\n) COMMENT 'bb'",//
                             output);
 
     }

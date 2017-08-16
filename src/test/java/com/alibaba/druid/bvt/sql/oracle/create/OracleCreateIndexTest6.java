@@ -51,8 +51,8 @@ public class OracleCreateIndexTest6 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        assertEquals("CREATE INDEX ord_customer_ix_demo ON orders(order_mode) NOSORT\n" +
-                "NOLOGGING;", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+        assertEquals("CREATE INDEX ord_customer_ix_demo ON orders(order_mode)\n" +
+                "NOLOGGING NOSORT;", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         assertEquals(1, visitor.getTables().size());
 

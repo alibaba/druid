@@ -791,6 +791,10 @@ public class SQLUtils {
                     if (MySqlUtils.isKeyword(normalizeName)) {
                         return name;
                     }
+                } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                    if (PGUtils.isKeyword(normalizeName)) {
+                        return name;
+                    }
                 }
 
                 return normalizeName;

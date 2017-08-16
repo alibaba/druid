@@ -20,7 +20,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.XAConnection;
 
@@ -51,5 +53,24 @@ public class PGUtils {
         }
 
         return tables;
+    }
+
+    private static Set<String> keywords;
+    public static boolean isKeyword(String name) {
+        if (name == null) {
+            return false;
+        }
+
+        String name_lower = name.toLowerCase();
+
+        Set<String> words = keywords;
+
+        if (words == null) {
+            words = new HashSet<String>();
+            Utils.loadFromFile("META-INF/druid/parser/postgresql/keywords", words);
+            keywords = words;
+        }
+
+        return words.contains(name_lower);
     }
 }

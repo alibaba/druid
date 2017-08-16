@@ -1764,11 +1764,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? "COMPUTE STATISTICS" : "compute statistics");
         }
 
-        if (x.getTablespace() != null) {
-            println();
-            print0(ucase ? "TABLESPACE " : "tablespace ");
-            x.getTablespace().accept(this);
-        }
+        this.printOracleSegmentAttributes(x);
 
         if (x.isOnline()) {
             print0(ucase ? " ONLINE" : " online");
@@ -1789,8 +1785,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print0(ucase ? " NOSORT" : " nosort");
             }
         }
-
-        this.printOracleSegmentAttributes(x);
 
         if (x.getLocalPartitions().size() > 0) {
             println();

@@ -31,8 +31,6 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     private SQLExprTableSource like;
 
-    protected SQLExpr comment;
-
     protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
 
     protected final List<SQLName> clusteredBy = new ArrayList<SQLName>();
@@ -56,14 +54,6 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
     public void setLike(SQLExprTableSource like) {
         this.like = like;
-    }
-
-    public SQLExpr getComment() {
-        return comment;
-    }
-
-    public void setComment(SQLExpr comment) {
-        this.comment = comment;
     }
 
     public List<SQLColumnDefinition> getPartitionColumns() {

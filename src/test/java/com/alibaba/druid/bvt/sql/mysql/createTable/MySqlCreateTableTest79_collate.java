@@ -43,7 +43,7 @@ public class MySqlCreateTableTest79_collate extends MysqlTest {
                     "\tcustom_vip_show_message_seq INT(11) NOT NULL AUTO_INCREMENT,\n" +
                     "\tshow_channel_type TINYINT(4) NOT NULL COMMENT '通道类型',\n" +
                     "\tPRIMARY KEY (custom_vip_show_message_seq)\n" +
-                    ") COMMENT = '自定VIP显示表' COLLATE utf8_general_ci ENGINE = InnoDB", output);
+                    ") ENGINE = InnoDB COMMENT '自定VIP显示表' COLLATE utf8_general_ci", output);
         }
         
         {
@@ -52,7 +52,7 @@ public class MySqlCreateTableTest79_collate extends MysqlTest {
                     "\tcustom_vip_show_message_seq INT(11) not null auto_increment,\n" +
                     "\tshow_channel_type TINYINT(4) not null comment '通道类型',\n" +
                     "\tprimary key (custom_vip_show_message_seq)\n" +
-                    ") comment = '自定VIP显示表' collate utf8_general_ci engine = InnoDB", output);
+                    ") engine = InnoDB comment '自定VIP显示表' collate utf8_general_ci", output);
         }
     }
 }

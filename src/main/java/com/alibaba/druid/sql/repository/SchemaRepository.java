@@ -849,7 +849,7 @@ public class SchemaRepository {
             }
         }
 
-        x.setSchema(null);
+        x1.setSchema(null);
 
         String name = x1.computeName();
         SchemaObject table = schema.findTableOrView(name);

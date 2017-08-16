@@ -33,16 +33,18 @@ import com.alibaba.druid.util.lang.Consumer;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
-    protected boolean            ifNotExiists = false;
-    protected Type               type;
-    protected SQLExprTableSource tableSource;
+    protected boolean               ifNotExiists = false;
+    protected Type                  type;
+    protected SQLExprTableSource    tableSource;
 
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
     // for postgresql
-    private SQLExprTableSource inherits;
+    private SQLExprTableSource      inherits;
 
-    protected SQLSelect select;
+    protected SQLSelect             select;
+
+    protected SQLExpr               comment;
 
     public SQLCreateTableStatement(){
 
@@ -50,6 +52,17 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public SQLCreateTableStatement(String dbType){
         super(dbType);
+    }
+
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
+        this.comment = comment;
     }
 
     public SQLName getName() {
@@ -586,6 +599,38 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         return false;
     }
 
+    public boolean apply(SQLCommentStatement x) {
+        SQLName on = x.getOn();
+        SQLExpr comment = x.getComment();
+        if (comment == null) {
+            return false;
+        }
+
+        SQLCommentStatement.Type type = x.getType();
+        if (type == SQLCommentStatement.Type.TABLE) {
+            if (!SQLUtils.nameEquals(getName(), on)) {
+                return false;
+            }
+
+            setComment(comment.clone());
+
+            return true;
+        } else if (type == SQLCommentStatement.Type.COLUMN) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) on;
+            if (!SQLUtils.nameEquals(getName(), (SQLName) propertyExpr.getOwner())) {
+                return false;
+            }
+
+            SQLColumnDefinition column = this.findColumn(propertyExpr.getName());
+            if (column != null) {
+                column.setComment(comment.clone());
+            }
+            return true;
+        }
+
+        return false;
+    }
+
     public boolean apply(SQLAlterTableStatement alter) {
         if (!SQLUtils.nameEquals(alter.getName(), this.getName())) {
             return false;
@@ -841,6 +886,9 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         }
         if (select != null) {
             x.setSelect(select.clone());
+        }
+        if (comment != null) {
+            x.setComment(comment.clone());
         }
     }
 

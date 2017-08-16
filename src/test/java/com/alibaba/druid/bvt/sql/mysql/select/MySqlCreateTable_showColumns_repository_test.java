@@ -183,7 +183,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "\tUNIQUE `uk_a` (`c_varchar`, `c_mediumint`),\n" +
                 "\tKEY `k_c` (`c_tinyint`, `c_int`),\n" +
                 "\tKEY `k_d` (`c_char`, `c_bigint`)\n" +
-                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'", repository.console("show create table test1"));
+                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'", repository.console("show create table test1"));
 
 
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
@@ -231,7 +231,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                 "\tUNIQUE `uk_a` (`c_varchar`, `c_mediumint`),\n" +
                 "\tKEY `k_c` (`c_tinyint`, `c_int`)\n" +
-                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'", repository.console("show create table test1"));
+                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'", repository.console("show create table test1"));
 
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
@@ -278,7 +278,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                 "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                 "\tKEY `k_c` (`c_tinyint`, `c_int`)\n" +
-                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'", repository.console("show create table test1"));
+                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'", repository.console("show create table test1"));
 
         assertEquals("+--------------+--------------+------+-----+---------------------+-----------------------------+\n" +
                 "| Field        | Type         | Null | Key | Default             | Extra                       |\n" +
@@ -323,7 +323,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                 "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                 "\tKEY `k_c` (`c_tinyint`, `c_int`)\n" +
-                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'", repository.console("show create table test2"));
+                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'", repository.console("show create table test2"));
 
         repository.console("CREATE TABLE test3 as select * from test2");
         assertEquals("CREATE TABLE test3 (\n" +
@@ -459,7 +459,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 ")", repository.console("show create table test5"));
 
         repository.console("CREATE TABLE sc01.test6 as select a.id, c_tinyint, 'a' f3, 3 f4 from test2 a");
-        assertEquals("CREATE TABLE sc01.test6 (\n" +
+        assertEquals("CREATE TABLE test6 (\n" +
                 "\tid bigint(20),\n" +
                 "\tc_tinyint tinyint(4),\n" +
                 "\tf3 varchar,\n" +
@@ -503,7 +503,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                 "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                 "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                 "\tKEY `k_c` (`c_tinyint`, `c_int`)\n" +
-                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -529,7 +529,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                         "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                         "\tKEY `k_c` (c_tinyint_x, `c_int`)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -553,7 +553,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                         "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                         "\tKEY `k_c` (`c_int`)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -578,7 +578,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                         "\tKEY `k_c` (`c_int`),\n" +
                         "\tINDEX name_idx(c_char, c_date)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -627,7 +627,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                         "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                         "\tKEY `k_c` (`c_int`)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -651,7 +651,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\t`c_mediumtext` mediumtext COMMENT 'mediumtext',\n" +
                         "\t`c_longblob` longblob COMMENT 'longblob',\n" +
                         "\tKEY `k_c` (`c_int`)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -726,7 +726,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY `k_c` (`c_int`),\n" +
                         "\tUNIQUE name4_idx (id),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -754,7 +754,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tUNIQUE name4_idx (id),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -779,7 +779,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY `k_c` (`c_int`),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -805,7 +805,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint),\n" +
                         "\tCONSTRAINT name5_pk PRIMARY KEY (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -830,7 +830,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY `k_c` (`c_int`),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -858,7 +858,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint),\n" +
                         "\tUNIQUE name_idx_23 (c_char(10))\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -906,7 +906,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY `k_c` (`c_int`),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1"));
 
@@ -939,7 +939,7 @@ public class MySqlCreateTable_showColumns_repository_test extends MysqlTest {
                         "\tKEY `k_c` (`c_int`),\n" +
                         "\tFULLTEXT INDEX name4_idx_c_longblob(c_longblob),\n" +
                         "\tKEY name5_idx (c_bigint)\n" +
-                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT = '10000000'"
+                        ") ENGINE = InnoDB AUTO_INCREMENT = 1769503 CHARSET = utf8mb4 COMMENT '10000000'"
 
                 , repository.console("show create table test1_xx"));
 
