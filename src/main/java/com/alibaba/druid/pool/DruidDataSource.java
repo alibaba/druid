@@ -1079,16 +1079,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private void initValidConnectionChecker() {
         String realDriverClassName = driver.getClass().getName();
-        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
-            || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
+        if (JdbcUtils.isMySqlDriver(realDriverClassName)) {
             this.validConnectionChecker = new MySqlValidConnectionChecker();
+
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
             this.validConnectionChecker = new OracleValidConnectionChecker();
+
         } else if (realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER)
                    || realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER_SQLJDBC4)
                    || realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER_JTDS)) {
             this.validConnectionChecker = new MSSQLValidConnectionChecker();
+
         } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
         }

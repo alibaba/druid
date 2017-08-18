@@ -814,4 +814,10 @@ public final class JdbcUtils implements JdbcConstants {
 
         throw new SQLException("getCreateTableScript dbType not support for " + dbType);
     }
+
+    public static boolean isMySqlDriver(String driverClassName) {
+        return driverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
+                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
+                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_REPLICATE);
+    }
 }
