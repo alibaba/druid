@@ -42,82 +42,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlIterateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlLeaveStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAlterColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterUserStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAnalyzeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExplainStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHintStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement.LockType;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlOptimizeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetPasswordStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedureStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowRelayLogEventsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MysqlDeallocatePrepareStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -642,6 +568,12 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
+        if (identifierEquals("FLUSH")) {
+            SQLStatement stmt = parseFlush();
+            statementList.add(stmt);
+            return true;
+        }
+
         if (lexer.token() == Token.DESC || identifierEquals(DESCRIBE)) {
             SQLStatement stmt = parseDescribe();
             statementList.add(stmt);
@@ -706,18 +638,26 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.HINT) {
             List<SQLCommentHint> hints = this.exprParser.parseHints();
 
-            boolean tddlSelectHints = false;
+            boolean tddlHints = false;
 
-            if (hints.size() == 1 && statementList.size() == 0 && lexer.token() == Token.SELECT) {
+            final Token token = lexer.token();
+            if (hints.size() == 1
+                    && statementList.size() == 0
+                    && (token == Token.SELECT || token == Token.DELETE)) {
                 SQLCommentHint hint = hints.get(0);
                 String hintText = hint.getText();
                 if (hintText.startsWith("+TDDL")) {
-                    tddlSelectHints = true;
+                    tddlHints = true;
                 }
             }
 
-            if (tddlSelectHints) {
-                SQLSelectStatement stmt = (SQLSelectStatement) this.parseStatement();
+            if (tddlHints) {
+                SQLStatementImpl stmt;
+                if (token == Token.SELECT) {
+                    stmt = (SQLSelectStatement) this.parseStatement();
+                } else {
+                    stmt = (SQLDeleteStatement) this.parseStatement();
+                }
                 stmt.setHeadHints(hints);
                 statementList.add(stmt);
                 return true;
@@ -763,6 +703,105 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return false;
+    }
+
+    public SQLStatement parseFlush() {
+        acceptIdentifier("FLUSH");
+        MySqlFlushStatement stmt = new MySqlFlushStatement();
+
+        if (identifierEquals("NO_WRITE_TO_BINLOG")) {
+            lexer.nextToken();
+            stmt.setNoWriteToBinlog(true);
+        }
+
+        if (identifierEquals("LOCAL")) {
+            lexer.nextToken();
+            stmt.setLocal(true);
+        }
+
+        acceptIdentifier("TABLES");
+
+        for (;;) {
+            if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                acceptIdentifier("READ");
+                accept(Token.LOCK);
+                stmt.setWithReadLock(true);
+            } else if (lexer.token() == Token.FOR) {
+                lexer.nextToken();
+                acceptIdentifier("EXPORT");
+                stmt.setForExport(true);
+            } else if (identifierEquals("BINARY")) {
+                lexer.nextToken();
+                acceptIdentifier("LOGS");
+                stmt.setBinaryLogs(true);
+            } else if (identifierEquals("DES_KEY_FILE")) {
+                lexer.nextToken();
+                stmt.setDesKeyFile(true);
+            } else if (identifierEquals("ENGINE")) {
+                lexer.nextToken();
+                acceptIdentifier("LOGS");
+                stmt.setEngineLogs(true);
+            } else if (identifierEquals("ERROR")) {
+                lexer.nextToken();
+                acceptIdentifier("LOGS");
+                stmt.setErrorLogs(true);
+            } else if (identifierEquals("GENERAL")) {
+                lexer.nextToken();
+                acceptIdentifier("LOGS");
+                stmt.setGeneralLogs(true);
+            } else if (identifierEquals("HOSTS")) {
+                lexer.nextToken();
+                stmt.setHots(true);
+            } else if (identifierEquals("LOGS")) {
+                lexer.nextToken();
+                stmt.setLogs(true);
+            } else if (identifierEquals("PRIVILEGES")) {
+                lexer.nextToken();
+                stmt.setPrivileges(true);
+            } else if (identifierEquals("OPTIMIZER_COSTS")) {
+                lexer.nextToken();
+                stmt.setOptimizerCosts(true);
+            } else if (identifierEquals("QUERY")) {
+                lexer.nextToken();
+                acceptIdentifier("CACHE");
+                stmt.setQueryCache(true);
+            }  else if (identifierEquals("RELAY")) {
+                lexer.nextToken();
+                acceptIdentifier("LOGS");
+                if (lexer.token() == Token.FOR) {
+                    lexer.nextToken();
+                    acceptIdentifier("CHANNEL");
+                    stmt.setRelayLogsForChannel(this.exprParser.primary());
+                }
+            } else if (identifierEquals("SLOW")) {
+                lexer.nextToken();
+                acceptIdentifier("LOGS");
+                stmt.setSlowLogs(true);
+            } else if (identifierEquals("STATUS")) {
+                lexer.nextToken();
+                stmt.setStatus(true);
+            } else  if (identifierEquals("USER_RESOURCES")) {
+                lexer.nextToken();
+                stmt.setUserResources(true);
+            } else if (lexer.token() == Token.IDENTIFIER){
+                for (;;) {
+                    SQLName name = this.exprParser.name();
+                    stmt.addTable(name);
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+                break;
+            } else {
+                break;
+            }
+        }
+
+        return stmt;
     }
 
     public SQLBlockStatement parseBlock() {

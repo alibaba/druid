@@ -44,6 +44,27 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         super(JdbcConstants.MYSQL);
     }
 
+    public MySqlDeleteStatement clone() {
+        MySqlDeleteStatement x = new MySqlDeleteStatement();
+        cloneTo(x);
+
+        x.lowPriority = lowPriority;
+        x.quick = quick;
+        x.ignore = ignore;
+
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+
+        return x;
+    }
+
     public List<SQLCommentHint> getHints() {
         if (hints == null) {
             hints = new ArrayList<SQLCommentHint>();

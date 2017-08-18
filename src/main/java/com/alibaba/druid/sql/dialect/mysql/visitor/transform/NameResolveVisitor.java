@@ -95,7 +95,7 @@ public class NameResolveVisitor extends OracleASTVisitorAdapter {
                     continue;
                 }
 
-                String alias = tableSource.getAlias();
+                String alias = tableSource.computeAlias();
                 if (tableSource != null
                         && ownerName.equalsIgnoreCase(alias)
                         && !ownerName.equals(alias)) {

@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -178,6 +179,10 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             return true;
         }
 
+        if (expr instanceof SQLAllColumnExpr) {
+            return true;
+        }
+
         if (expr instanceof SQLIdentifierExpr) {
             String ident = ((SQLIdentifierExpr) expr).getName();
             return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));
@@ -185,6 +190,10 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
         if (expr instanceof SQLPropertyExpr) {
             String ident = ((SQLPropertyExpr) expr).getName();
+            if ("*".equals(ident)) {
+                return true;
+            }
+
             return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));
         }
 

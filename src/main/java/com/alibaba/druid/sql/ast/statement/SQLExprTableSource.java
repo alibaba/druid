@@ -239,4 +239,20 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
 
         return null;
     }
+
+    public SQLTableSource findTableSource(String alias) {
+        if (alias == null) {
+            return null;
+        }
+
+        if (SQLUtils.nameEquals(alias, computeAlias())) {
+            return this;
+        }
+
+        if (containsAlias(alias)) {
+            return this;
+        }
+
+        return null;
+    }
 }

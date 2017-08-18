@@ -327,17 +327,58 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         }
     }
 
-    public boolean contains(SQLTableSource tableSource, SQLExpr conditionn) {
+    public boolean contains(SQLTableSource tableSource, SQLExpr condition) {
         if (right.equals(tableSource)) {
-            if (this.condition == conditionn) {
+            if (this.condition == condition) {
                 return true;
             }
 
-            return this.condition != null && this.condition.equals(conditionn);
+            return this.condition != null && this.condition.equals(condition);
         }
 
         if (left instanceof SQLJoinTableSource) {
-            return ((SQLJoinTableSource) left).contains(tableSource, conditionn);
+            SQLJoinTableSource joinLeft = (SQLJoinTableSource) left;
+
+            if (tableSource instanceof SQLJoinTableSource) {
+                SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
+
+                if (join.right.equals(right) && this.condition.equals(condition) && joinLeft.right.equals(join.left)) {
+                    return true;
+                }
+            }
+
+            return joinLeft.contains(tableSource, condition);
+        }
+
+        return false;
+    }
+
+    public boolean contains(SQLTableSource tableSource, SQLExpr condition, JoinType joinType) {
+        if (right.equals(tableSource)) {
+            if (this.condition == condition) {
+                return true;
+            }
+
+            return this.condition != null && this.condition.equals(condition) && this.joinType == joinType;
+        }
+
+        if (left instanceof SQLJoinTableSource) {
+            SQLJoinTableSource joinLeft = (SQLJoinTableSource) left;
+
+            if (tableSource instanceof SQLJoinTableSource) {
+                SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
+
+                if (join.right.equals(right)
+                        && this.condition != null && this.condition.equals(join.condition)
+                        && joinLeft.right.equals(join.left)
+                        && this.joinType == join.joinType
+                        && joinLeft.condition != null && joinLeft.condition.equals(condition)
+                        && joinLeft.joinType == joinType) {
+                    return true;
+                }
+            }
+
+            return joinLeft.contains(tableSource, condition, joinType);
         }
 
         return false;
@@ -476,4 +517,20 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         return joined;
     }
 
+    public SQLTableSource findTableSource(String alias) {
+        if (alias == null) {
+            return null;
+        }
+
+        if (SQLUtils.nameEquals(alias, computeAlias())) {
+            return this;
+        }
+
+        SQLTableSource result = left.findTableSource(alias);
+        if (result != null) {
+            return result;
+        }
+
+        return right.findTableSource(alias);
+    }
 }

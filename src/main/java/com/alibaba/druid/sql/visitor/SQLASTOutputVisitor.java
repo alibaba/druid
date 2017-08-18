@@ -2261,7 +2261,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print(' ');
 
         SQLTableSource right = x.getRight();
-        right.accept(this);
+        if (right instanceof SQLJoinTableSource) {
+            print('(');
+            right.accept(this);
+            print(')');
+        } else {
+            right.accept(this);
+        }
 
         SQLExpr condition = x.getCondition();
         if (condition != null) {

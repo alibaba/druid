@@ -39,4 +39,6 @@ public interface SQLTableSource extends SQLObject {
 
     SQLColumnDefinition findColumn(String columnName);
     SQLTableSource findTableSourceWithColumn(String columnName);
+
+    SQLTableSource findTableSource(String alias);
 }

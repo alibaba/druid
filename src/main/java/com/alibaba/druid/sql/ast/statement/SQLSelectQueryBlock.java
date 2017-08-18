@@ -435,7 +435,10 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     }
 
     public SQLTableSource findTableSource(String alias) {
-        return findTableSource(from, alias);
+        if (from == null) {
+            return null;
+        }
+        return from.findTableSource(alias);
     }
 
     public SQLTableSource findTableSourceWithColumn(String column) {
@@ -443,32 +446,6 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             return null;
         }
         return from.findTableSourceWithColumn(column);
-    }
-
-    private static SQLTableSource findTableSource(SQLTableSource from, String alias) {
-        if (from == null || alias == null) {
-            return null;
-        }
-
-        if (alias.equalsIgnoreCase(from.computeAlias())) {
-            return from;
-        }
-
-        if (from instanceof SQLJoinTableSource) {
-            SQLJoinTableSource join = (SQLJoinTableSource) from;
-            SQLTableSource result = findTableSource(join.getLeft(), alias);
-            if (result != null) {
-                return result;
-            }
-
-            return findTableSource(join.getRight(), alias);
-        }
-
-        if (from instanceof SQLExprTableSource && from.containsAlias(alias)) {
-            return from;
-        }
-
-        return null;
     }
 
     @Override

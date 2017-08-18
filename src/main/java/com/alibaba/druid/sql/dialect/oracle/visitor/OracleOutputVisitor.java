@@ -259,6 +259,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleSelectJoin x) {
         x.getLeft().accept(this);
+        SQLTableSource right = x.getRight();
 
         if (x.getJoinType() == JoinType.COMMA) {
             print0(", ");
@@ -273,7 +274,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print0(ucase ? x.getJoinType().name : x.getJoinType().name_lcase);
             print(' ');
 
-            x.getRight().accept(this);
+            if (right instanceof SQLJoinTableSource) {
+                print('(');
+                right.accept(this);
+                print(')');
+            } else {
+                right.accept(this);
+            }
 
             if (isRoot) {
                 decrementIndent();

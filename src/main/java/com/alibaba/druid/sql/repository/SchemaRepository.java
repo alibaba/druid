@@ -519,10 +519,19 @@ public class SchemaRepository {
 
         String ident = x.getName();
         SQLTableSource tableSource = null;
-        if (queryBlock.getFrom() instanceof SQLJoinTableSource) {
+        if (queryBlock.getFrom() instanceof SQLJoinTableSource
+                || queryBlock.getFrom() instanceof SQLSubqueryTableSource) {
             tableSource = queryBlock.findTableSourceWithColumn(ident);
         } else {
             tableSource = queryBlock.getFrom();
+            if (tableSource instanceof SQLExprTableSource) {
+                SchemaObject table = ((SQLExprTableSource) tableSource).getSchemaObject();
+                if (table != null) {
+                    if (table.findColumn(ident) == null) {
+                        tableSource = null; // maybe parent
+                    }
+                }
+            }
         }
 
         if (tableSource != null) {

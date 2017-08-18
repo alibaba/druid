@@ -77,4 +77,21 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         }
         return x;
     }
+
+    public SQLTableSource findTableSourceWithColumn(String columnName) {
+        if (select == null) {
+            return null;
+        }
+
+        SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+        if (queryBlock == null) {
+            return null;
+        }
+
+        if (queryBlock.findSelectItem(columnName) != null) {
+            return this;
+        }
+
+        return null;
+    }
 }
