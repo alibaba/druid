@@ -63,6 +63,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
@@ -2502,7 +2503,7 @@ public class WallVisitorUtils {
             allow = config.isCreateTableAllow();
             denyMessage = "create table not allow";
             errorCode = ErrorCode.CREATE_TABLE_NOT_ALLOW;
-        } else if (x instanceof SQLAlterTableStatement) {
+        } else if (x instanceof SQLAlterTableStatement || x instanceof OracleAlterIndexStatement) {
             allow = config.isAlterTableAllow();
             denyMessage = "alter table not allow";
             errorCode = ErrorCode.ALTER_TABLE_NOT_ALLOW;
