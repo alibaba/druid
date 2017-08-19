@@ -843,7 +843,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw e;
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
-        } finally {
+        } catch (Throwable e){
+            LOG.error("{dataSource-" + this.getID() + "} init error", e);
+            throw e;
+        }
+        finally {
             inited = true;
             lock.unlock();
 
