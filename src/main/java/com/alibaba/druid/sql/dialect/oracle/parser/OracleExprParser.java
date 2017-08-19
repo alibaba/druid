@@ -1599,4 +1599,156 @@ public class OracleExprParser extends SQLExprParser {
             }
         }
     }
+
+    protected SQLPartitionByRange partitionByRange() {
+        acceptIdentifier("RANGE");
+        accept(Token.LPAREN);
+        SQLPartitionByRange clause = new SQLPartitionByRange();
+        for (;;) {
+            SQLName column = this.name();
+            clause.addColumn(column);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+        accept(Token.RPAREN);
+
+        if (lexer.token() == Token.INTERVAL) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            clause.setInterval(this.expr());
+            accept(Token.RPAREN);
+        }
+
+        parsePartitionByRest(clause);
+
+        return clause;
+    }
+
+    protected void parsePartitionByRest(SQLPartitionBy clause) {
+        if (lexer.token() == Token.STORE) {
+            lexer.nextToken();
+            accept(Token.IN);
+            accept(Token.LPAREN);
+            for (;;) {
+                SQLName tablespace = this.name();
+                clause.getStoreIn().add(tablespace);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+
+                break;
+            }
+            accept(Token.RPAREN);
+        }
+
+        if (identifierEquals("SUBPARTITION")) {
+            SQLSubPartitionBy subPartitionBy = subPartitionBy();
+            clause.setSubPartitionBy(subPartitionBy);
+        }
+
+
+        accept(Token.LPAREN);
+
+        for (;;) {
+            SQLPartition partition = this.parsePartition();
+
+            clause.addPartition(partition);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+
+        accept(Token.RPAREN);
+    }
+
+    protected SQLSubPartitionBy subPartitionBy() {
+        lexer.nextToken();
+        accept(Token.BY);
+
+        if (identifierEquals("HASH")) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            SQLSubPartitionByHash byHash = new SQLSubPartitionByHash();
+            SQLExpr expr = this.expr();
+            byHash.setExpr(expr);
+            accept(Token.RPAREN);
+
+            return byHash;
+        } else if (identifierEquals("LIST")) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+
+            SQLSubPartitionByList byList = new SQLSubPartitionByList();
+            SQLName column = this.name();
+            byList.setColumn(column);
+            accept(Token.RPAREN);
+
+            if (identifierEquals("SUBPARTITION")) {
+                lexer.nextToken();
+                acceptIdentifier("TEMPLATE");
+                accept(Token.LPAREN);
+
+                for (;;) {
+                    SQLSubPartition subPartition = this.parseSubPartition();
+                    subPartition.setParent(byList);
+                    byList.getSubPartitionTemplate().add(subPartition);
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    break;
+                }
+                accept(Token.RPAREN);
+            }
+
+            return byList;
+        }
+
+        throw new ParserException("TODO : " + lexer.info());
+    }
+
+    protected void partitionClauseRest(SQLPartitionBy clause) {
+        if (identifierEquals("PARTITIONS")) {
+            lexer.nextToken();
+
+            SQLIntegerExpr countExpr = this.integerExpr();
+            clause.setPartitionsCount(countExpr);
+        }
+
+        if (lexer.token() == Token.STORE) {
+            lexer.nextToken();
+            accept(Token.IN);
+            accept(Token.LPAREN);
+            this.names(clause.getStoreIn(), clause);
+            accept(Token.RPAREN);
+        }
+    }
+
+    protected SQLPartitionByHash partitionByHash() {
+        acceptIdentifier("HASH");
+        SQLPartitionByHash partitionByHash = new SQLPartitionByHash();
+
+        if (lexer.token() == Token.KEY) {
+            lexer.nextToken();
+            partitionByHash.setKey(true);
+        }
+
+        accept(Token.LPAREN);
+        partitionByHash.setExpr(this.expr());
+        accept(Token.RPAREN);
+        return partitionByHash;
+    }
 }

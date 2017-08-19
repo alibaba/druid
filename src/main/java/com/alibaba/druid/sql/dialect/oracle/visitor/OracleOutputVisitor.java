@@ -1802,6 +1802,29 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             decrementIndent();
             println();
             print(')');
+        } else if (x.isLocal()) {
+            print0(ucase ? " LOCAL" : " local");
+        }
+
+        List<SQLName> localStoreIn = x.getLocalStoreIn();
+        if (localStoreIn.size() > 0) {
+            print0(ucase ? " STORE IN (" : " store in (");
+            printAndAccept(localStoreIn, ", ");
+            print(')');
+        }
+
+        List<SQLPartitionBy> globalPartitions = x.getGlobalPartitions();
+        if (globalPartitions.size() > 0) {
+            for (SQLPartitionBy globalPartition : globalPartitions) {
+                println();
+                print0(ucase ? "GLOBAL " : "global ");
+                globalPartition.accept(this);
+            }
+
+        } else {
+            if (x.isGlobal()) {
+                print0(ucase ? " GLOBAL" : " global");
+            }
         }
 
         return false;

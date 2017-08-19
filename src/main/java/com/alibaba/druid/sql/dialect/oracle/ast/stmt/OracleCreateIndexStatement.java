@@ -15,10 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLPartition;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -97,8 +94,12 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         this.sort = sort;
     }
 
+    private boolean local;
+    private List<SQLName> localStoreIn = new ArrayList<SQLName>();
     private List<SQLPartition> localPartitions = new ArrayList<SQLPartition>();
-    private List<SQLPartition> globalPartitions = new ArrayList<SQLPartition>();
+
+    private boolean global;
+    private List<SQLPartitionBy> globalPartitions = new ArrayList<SQLPartitionBy>();
 
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
@@ -262,7 +263,27 @@ public class OracleCreateIndexStatement extends SQLCreateIndexStatement implemen
         return localPartitions;
     }
 
-    public List<SQLPartition> getGlobalPartitions() {
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
+
+    public List<SQLName> getLocalStoreIn() {
+        return localStoreIn;
+    }
+
+    public List<SQLPartitionBy> getGlobalPartitions() {
         return globalPartitions;
+    }
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
     }
 }

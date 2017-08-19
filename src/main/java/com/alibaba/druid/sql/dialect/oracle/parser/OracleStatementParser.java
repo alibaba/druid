@@ -2056,19 +2056,74 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             } else if (identifierEquals("LOCAL")) {
                 lexer.nextToken();
-                accept(Token.LPAREN);
+                stmt.setLocal(true);
+
                 for (;;) {
-                    SQLPartition partition = this.getExprParser().parsePartition();
-                    partition.setParent(stmt);
-                    stmt.getLocalPartitions().add(partition);
-                    if (lexer.token() == Token.COMMA) {
+                    if (lexer.token() == Token.STORE) {
                         lexer.nextToken();
-                        continue;
-                    } else if (lexer.token() == Token.RPAREN) {
+                        accept(Token.IN);
+                        accept(Token.LPAREN);
+                        this.exprParser.names(stmt.getLocalStoreIn(), stmt);
+                        accept(Token.RPAREN);
+                    } else if (lexer.token() == Token.LPAREN) {
                         lexer.nextToken();
+                        for (; ; ) {
+                            SQLPartition partition = this.getExprParser().parsePartition();
+                            partition.setParent(stmt);
+                            stmt.getLocalPartitions().add(partition);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            } else if (lexer.token() == Token.RPAREN) {
+                                lexer.nextToken();
+                                break;
+                            }
+                            throw new ParserException("TODO : " + lexer.info());
+                        }
+                    } else {
                         break;
                     }
-                    throw new ParserException("TODO : " + lexer.info());
+                }
+
+                break;
+            } else if (identifierEquals("GLOBAL")) {
+                lexer.nextToken();
+                stmt.setGlobal(true);
+
+                if (lexer.token() == Token.PARTITION) {
+                    lexer.nextToken();
+
+                    accept(Token.BY);
+
+                    if (identifierEquals("RANGE")) {
+                        SQLPartitionByRange partitionByRange = this.getExprParser().partitionByRange();
+                        this.getExprParser().partitionClauseRest(partitionByRange);
+                        partitionByRange.setParent(stmt);
+                        stmt.getGlobalPartitions().add(partitionByRange);
+                        continue;
+                    } else if (identifierEquals("HASH")) {
+                        SQLPartitionByHash partitionByHash = this.getExprParser().partitionByHash();
+                        this.getExprParser().partitionClauseRest(partitionByHash);
+
+                        if (lexer.token() == Token.LPAREN) {
+                            lexer.nextToken();
+                            for (; ; ) {
+                                SQLPartition partition = this.getExprParser().parsePartition();
+                                partitionByHash.addPartition(partition);
+                                if (lexer.token() == Token.COMMA) {
+                                    lexer.nextToken();
+                                    continue;
+                                } else if (lexer.token() == Token.RPAREN) {
+                                    lexer.nextToken();
+                                    break;
+                                }
+                                throw new ParserException("TODO : " + lexer.info());
+                            }
+                        }
+                        partitionByHash.setParent(stmt);
+                        stmt.getGlobalPartitions().add(partitionByHash);
+                        continue;
+                    }
                 }
 
                 break;
