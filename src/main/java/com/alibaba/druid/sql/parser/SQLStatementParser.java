@@ -1853,9 +1853,21 @@ public class SQLStatementParser extends SQLParser {
 
             lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateDatabase();
-        } else if (identifierEquals("PUBLIC") || identifierEquals("SHARE")) {
+        } else if (identifierEquals("PUBLIC")) {
+            lexer.nextToken();
+            if (identifierEquals("SYNONYM")) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateSynonym();
+            } else {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateDbLink();
+            }
+        } else if (identifierEquals("SHARE")) {
             lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateDbLink();
+        } else if (identifierEquals("SYNONYM")) {
+            lexer.reset(markBp, markChar, Token.CREATE);
+            return parseCreateSynonym();
         } else if (token == Token.VIEW) {
             return parseCreateView();
         } else if (token == Token.TRIGGER) {
@@ -1960,6 +1972,10 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreateDbLink() {
+        throw new ParserException("TODO " + lexer.token());
+    }
+
+    public SQLStatement parseCreateSynonym() {
         throw new ParserException("TODO " + lexer.token());
     }
 

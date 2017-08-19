@@ -1052,4 +1052,14 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     public void endVisit(OracleTreatExpr x) {
 
     }
+
+    @Override
+    public boolean visit(OracleCreateSynonymStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleCreateSynonymStatement x) {
+
+    }
 }

@@ -2293,4 +2293,29 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.SEMI);
         return stmt;
     }
+
+    public SQLStatement parseCreateSynonym() {
+        OracleCreateSynonymStatement stmt = new OracleCreateSynonymStatement();
+        accept(Token.CREATE);
+
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            accept(Token.REPLACE);
+            stmt.setOrReplace(true);
+        }
+
+        if (identifierEquals("PUBLIC")) {
+            lexer.nextToken();
+            stmt.setPublic(true);
+        }
+
+        acceptIdentifier("SYNONYM");
+
+        stmt.setName(this.exprParser.name());
+
+        accept(Token.FOR);
+
+        stmt.setObject(this.exprParser.name());
+        return stmt;
+    }
 }

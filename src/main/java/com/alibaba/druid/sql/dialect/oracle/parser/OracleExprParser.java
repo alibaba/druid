@@ -968,8 +968,19 @@ public class OracleExprParser extends SQLExprParser {
             }
             OracleDbLinkExpr dbLink = new OracleDbLinkExpr();
             dbLink.setExpr(name);
-            dbLink.setDbLink(lexer.stringVal());
+
+
+            String link = lexer.stringVal();
             lexer.nextToken();
+            while (lexer.token() == Token.DOT) {
+                lexer.nextToken();
+
+                String stringVal = lexer.stringVal();
+                accept(Token.IDENTIFIER);
+                link += "." + stringVal;
+            }
+
+            dbLink.setDbLink(link);
             return dbLink;
         }
         

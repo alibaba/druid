@@ -1003,4 +1003,14 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     public void endVisit(OracleTreatExpr x) {
 
     }
+
+    @Override
+    public boolean visit(OracleCreateSynonymStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateSynonymStatement x) {
+
+    }
 }

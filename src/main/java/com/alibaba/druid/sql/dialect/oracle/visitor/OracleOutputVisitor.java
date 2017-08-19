@@ -3268,4 +3268,32 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void endVisit(OracleTreatExpr x) {
 
     }
+
+    @Override
+    public boolean visit(OracleCreateSynonymStatement x) {
+
+        if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE " : "create or replace ");
+        } else {
+            print0(ucase ? "CREATE " : "create ");
+        }
+
+        if (x.isPublic()) {
+            print0(ucase ? "PUBLIC " : "public ");
+        }
+
+        print0(ucase ? "SYNONYM " : "synonym ");
+
+        x.getName().accept(this);
+
+        print0(ucase ? " FOR " : " for ");
+        x.getObject().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateSynonymStatement x) {
+
+    }
 }

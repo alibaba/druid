@@ -98,6 +98,10 @@ public class MySqlStatementParser extends SQLStatementParser {
         super(new MySqlExprParser(sql, keepComments));
     }
 
+    public MySqlStatementParser(String sql, boolean skipComment, boolean keepComments) {
+        super(new MySqlExprParser(sql, skipComment, keepComments));
+    }
+
     public MySqlStatementParser(Lexer lexer) {
         super(new MySqlExprParser(lexer));
     }
