@@ -4444,11 +4444,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
-        if (x.getCache() != null) {
-            if (x.getCache().booleanValue()) {
+        Boolean cache = x.getCache();
+        if (cache != null) {
+            if (cache.booleanValue()) {
                 print0(ucase ? " CACHE" : " cache");
+
+                SQLExpr cacheValue = x.getCacheValue();
+                if (cacheValue != null) {
+                    print(' ');
+                    cacheValue.accept(this);
+                }
             } else {
                 print0(ucase ? " NOCACHE" : " nocache");
+            }
+        }
+
+        Boolean order = x.getOrder();
+        if (order != null) {
+            if (order.booleanValue()) {
+                print0(ucase ? " ORDER" : " order");
+            } else {
+                print0(ucase ? " NOORDER" : " noorder");
             }
         }
 

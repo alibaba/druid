@@ -38,6 +38,8 @@ public class SQLCreateSequenceStatement extends SQLStatementImpl implements SQLD
 
     private Boolean cycle;
     private Boolean cache;
+    private SQLExpr cacheValue;
+
     private Boolean order;
 
     @Override
@@ -143,5 +145,16 @@ public class SQLCreateSequenceStatement extends SQLStatementImpl implements SQLD
         }
 
         return null;
+    }
+
+    public SQLExpr getCacheValue() {
+        return cacheValue;
+    }
+
+    public void setCacheValue(SQLExpr cacheValue) {
+        if (cacheValue != null) {
+            cacheValue.setParent(this);
+        }
+        this.cacheValue = cacheValue;
     }
 }

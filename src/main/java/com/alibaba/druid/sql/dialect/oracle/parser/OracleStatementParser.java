@@ -2159,10 +2159,22 @@ public class OracleStatementParser extends SQLStatementParser {
             } else if (lexer.token() == Token.CACHE) {
                 lexer.nextToken();
                 stmt.setCache(Boolean.TRUE);
+
+                if (lexer.token() == Token.LITERAL_INT) {
+                    stmt.setCacheValue(this.exprParser.primary());
+                }
                 continue;
             } else if (lexer.token() == Token.NOCACHE) {
                 lexer.nextToken();
                 stmt.setCache(Boolean.FALSE);
+                continue;
+            } else if (lexer.token() == Token.ORDER) {
+                lexer.nextToken();
+                stmt.setOrder(Boolean.TRUE);
+                continue;
+            } else if (identifierEquals("NOORDER")) {
+                lexer.nextToken();
+                stmt.setOrder(Boolean.FALSE);
                 continue;
             } else if (identifierEquals("CYCLE")) {
                 lexer.nextToken();
