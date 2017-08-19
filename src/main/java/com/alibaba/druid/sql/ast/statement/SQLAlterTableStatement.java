@@ -28,7 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLAlterStatement {
 
     private SQLExprTableSource      tableSource;
     private List<SQLAlterTableItem> items                   = new ArrayList<SQLAlterTableItem>();

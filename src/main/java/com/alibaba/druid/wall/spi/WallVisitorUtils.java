@@ -64,6 +64,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExecuteImmediateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
@@ -2486,7 +2487,9 @@ public class WallVisitorUtils {
             allow = config.isMergeAllow();
             denyMessage = "merge not allow";
             errorCode = ErrorCode.MERGE_NOT_ALLOW;
-        } else if (x instanceof SQLCallStatement || x instanceof SQLServerExecStatement) {
+        } else if (x instanceof SQLCallStatement
+                || x instanceof SQLServerExecStatement
+                || x instanceof OracleExecuteImmediateStatement) {
             allow = config.isCallAllow();
             denyMessage = "call not allow";
             errorCode = ErrorCode.CALL_NOT_ALLOW;
@@ -2494,26 +2497,15 @@ public class WallVisitorUtils {
             allow = config.isTruncateAllow();
             denyMessage = "truncate not allow";
             errorCode = ErrorCode.TRUNCATE_NOT_ALLOW;
-        } else if (x instanceof SQLCreateTableStatement //
-                   || x instanceof SQLCreateIndexStatement //
-                   || x instanceof SQLCreateViewStatement //
-                   || x instanceof SQLCreateTriggerStatement //
-                   || x instanceof SQLCreateSequenceStatement //
-        ) {
+        } else if (x instanceof SQLCreateStatement) {
             allow = config.isCreateTableAllow();
             denyMessage = "create table not allow";
             errorCode = ErrorCode.CREATE_TABLE_NOT_ALLOW;
-        } else if (x instanceof SQLAlterTableStatement || x instanceof OracleAlterIndexStatement) {
+        } else if (x instanceof SQLAlterStatement) {
             allow = config.isAlterTableAllow();
             denyMessage = "alter table not allow";
             errorCode = ErrorCode.ALTER_TABLE_NOT_ALLOW;
-        } else if (x instanceof SQLDropTableStatement //
-                   || x instanceof SQLDropIndexStatement //
-                   || x instanceof SQLDropViewStatement //
-                   || x instanceof SQLDropTriggerStatement //
-                   || x instanceof SQLDropSequenceStatement //
-                   || x instanceof SQLDropProcedureStatement //
-        ) {
+        } else if (x instanceof SQLDropStatement) {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
             errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;

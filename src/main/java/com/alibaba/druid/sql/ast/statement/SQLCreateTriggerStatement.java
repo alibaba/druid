@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateTriggerStatement extends SQLStatementImpl {
+public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private SQLName                  name;
 

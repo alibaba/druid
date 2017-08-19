@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleAlterSynonymStatement extends OracleStatementImpl {
+public class OracleAlterSynonymStatement extends OracleStatementImpl implements OracleAlterStatement {
 
     private SQLName name;
 

@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by wenshao on 23/05/2017.
  */
-public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLCreateStatement {
     private SQLName definer;
 
     private boolean            create     = true;

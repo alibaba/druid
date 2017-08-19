@@ -29,7 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private boolean     orReplace   = false;
     private boolean     force       = false;

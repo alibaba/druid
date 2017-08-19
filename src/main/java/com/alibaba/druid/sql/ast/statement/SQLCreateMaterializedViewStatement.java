@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Created by wenshao on 30/06/2017.
  */
-public class SQLCreateMaterializedViewStatement extends SQLStatementImpl implements OracleSegmentAttributes {
+public class SQLCreateMaterializedViewStatement extends SQLStatementImpl implements OracleSegmentAttributes, SQLCreateStatement {
     private SQLName name;
     private List<SQLName> columns = new ArrayList<SQLName>();
 

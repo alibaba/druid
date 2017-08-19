@@ -1,9 +1,10 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleCreateSynonymStatement extends OracleStatementImpl {
+public class OracleCreateSynonymStatement extends OracleStatementImpl implements SQLCreateStatement {
     private boolean orReplace;
     private SQLName name;
     private boolean isPublic;

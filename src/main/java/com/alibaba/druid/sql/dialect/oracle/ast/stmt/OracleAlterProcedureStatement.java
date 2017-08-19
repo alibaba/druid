@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleAlterProcedureStatement extends OracleStatementImpl {
+public class OracleAlterProcedureStatement extends OracleStatementImpl implements OracleAlterStatement {
 
     private SQLExpr name;
 

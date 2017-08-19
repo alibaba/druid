@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLDropIndexStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private SQLName            indexName;
     private SQLExprTableSource tableName;

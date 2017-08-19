@@ -26,7 +26,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 /**
  * Created by wenshao on 16/9/14.
  */
-public class SQLCreateSequenceStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateSequenceStatement extends SQLStatementImpl implements SQLCreateStatement {
     private SQLName name;
 
     private SQLExpr startWith;

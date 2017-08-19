@@ -31,7 +31,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
 
-public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
 
     protected boolean               ifNotExiists = false;
     protected Type                  type;
