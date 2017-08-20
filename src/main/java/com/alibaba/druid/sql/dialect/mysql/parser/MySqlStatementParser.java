@@ -1850,10 +1850,9 @@ public class MySqlStatementParser extends SQLStatementParser {
                 break;
             }
         } else if (lexer.token() == Token.LPAREN) {
-            lexer.nextToken();
-            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
+            SQLSelect select = this.createSQLSelectParser().select();
+            SQLQueryExpr queryExpr = new SQLQueryExpr(select);
             stmt.setQuery(queryExpr);
-            accept(Token.RPAREN);
         }
 
         return stmt;
