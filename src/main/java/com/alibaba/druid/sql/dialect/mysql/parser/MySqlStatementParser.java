@@ -44,11 +44,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement.LockType;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.ArrayList;
@@ -2229,6 +2225,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     private void parseValueClause(List<ValuesClause> valueClauseList, int columnSize) {
         for (int i = 0; ; ++i) {
+            int startPos = lexer.pos() - 1;
+
             if (lexer.token() != Token.LPAREN) {
                 throw new ParserException("syntax error, expect ')', " + lexer.info());
             }
@@ -2281,6 +2279,13 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
 
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
+
+                if (lexer.isEnabled(SQLParserFeature.KeepInsertValueClauseOriginalString)) {
+                    int endPos = lexer.pos();
+                    String orginalString = lexer.subString(startPos, endPos - startPos);
+                    values.setOriginalString(orginalString);
+                }
+
                 valueClauseList.add(values);
             } else {
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));

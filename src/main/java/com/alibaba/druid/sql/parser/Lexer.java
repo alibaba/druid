@@ -47,7 +47,7 @@ import com.alibaba.druid.util.StringUtils;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class Lexer {
-
+    protected int          features;
     protected final String text;
     protected int          pos;
     protected int          mark;
@@ -1643,5 +1643,13 @@ public class Lexer {
 
     public int getPosColumn() {
         return posColumn;
+    }
+
+    public void config(SQLParserFeature feature, boolean state) {
+        features = SQLParserFeature.config(features, feature, state);
+    }
+
+    public final boolean isEnabled(SQLParserFeature feature) {
+        return SQLParserFeature.isEnabled(this.features, feature);
     }
 }

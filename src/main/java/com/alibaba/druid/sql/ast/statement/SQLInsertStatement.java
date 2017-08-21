@@ -71,6 +71,8 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
 
         private final List<SQLExpr> values;
 
+        private transient String originalString;
+
         public ValuesClause(){
             this(new ArrayList<SQLExpr>());
         }
@@ -117,6 +119,14 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
             }
 
             visitor.endVisit(this);
+        }
+
+        public String getOriginalString() {
+            return originalString;
+        }
+
+        public void setOriginalString(String originalString) {
+            this.originalString = originalString;
         }
     }
 

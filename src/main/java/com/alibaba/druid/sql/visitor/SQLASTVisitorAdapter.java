@@ -24,8 +24,10 @@ import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
+    protected int features;
 
     public void endVisit(SQLAllColumnExpr x) {
     }
@@ -1671,5 +1673,21 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     @Override
     public void endVisit(SQLCreateMaterializedViewStatement x) {
 
+    }
+
+    public void config(VisitorFeature feature, boolean state) {
+        features = VisitorFeature.config(features, feature, state);
+    }
+
+    public final boolean isEnabled(VisitorFeature feature) {
+        return VisitorFeature.isEnabled(this.features, feature);
+    }
+
+    public int getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(int features) {
+        this.features = features;
     }
 }

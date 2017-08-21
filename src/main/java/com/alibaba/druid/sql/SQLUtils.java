@@ -37,13 +37,15 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisito
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.*;
 
 public class SQLUtils {
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption(true, true);
-    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION = new FormatOption(false, true);
+    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION
+            = new FormatOption(false, true);
 
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
@@ -61,6 +63,7 @@ public class SQLUtils {
         visitor.setUppCase(option.isUppCase());
         visitor.setPrettyFormat(option.isPrettyFormat());
         visitor.setParameterized(option.isParameterized());
+        visitor.setFeatures(option.features);
 
         sqlObject.accept(visitor);
 
@@ -85,7 +88,11 @@ public class SQLUtils {
     }
 
     public static String toMySqlString(SQLObject sqlObject) {
-        return toMySqlString(sqlObject, null);
+        return toMySqlString(sqlObject, (FormatOption) null);
+    }
+
+    public static String toMySqlString(SQLObject sqlObject, VisitorFeature... features) {
+        return toMySqlString(sqlObject, new FormatOption(features));
     }
 
     public static String toMySqlString(SQLObject sqlObject, FormatOption option) {
@@ -269,10 +276,7 @@ public class SQLUtils {
         if (option == null) {
             option = DEFAULT_FORMAT_OPTION;
         }
-        visitor.setUppCase(option.isUppCase());
-        visitor.setPrettyFormat(option.prettyFormat);
-        visitor.setParameterized(option.parameterized);
-        visitor.setDesensitize(option.desensitize);
+        visitor.setFeatures(option.features);
 
         if (tableMapping != null) {
             visitor.setTableMapping(tableMapping);
@@ -621,14 +625,15 @@ public class SQLUtils {
     }
 
     public static class FormatOption {
-
-        private boolean ucase = true;
-        private boolean prettyFormat = true;
-        private boolean parameterized = false;
-        private boolean desensitize = false;
+        private int features = VisitorFeature.of(VisitorFeature.OutputUCase
+                , VisitorFeature.OutputPrettyFormat);
 
         public FormatOption() {
 
+        }
+
+        public FormatOption(VisitorFeature... features) {
+            this.features = VisitorFeature.of(features);
         }
 
         public FormatOption(boolean ucase) {
@@ -640,41 +645,49 @@ public class SQLUtils {
         }
 
         public FormatOption(boolean ucase, boolean prettyFormat, boolean parameterized) {
-            this.ucase = ucase;
-            this.prettyFormat = prettyFormat;
-            this.parameterized = parameterized;
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputUCase, ucase);
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputPrettyFormat, prettyFormat);
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputParameterized, parameterized);
         }
 
         public boolean isDesensitize() {
-            return desensitize;
+            return isEnabled(VisitorFeature.OutputDesensitize);
         }
 
-        public void setDesensitize(boolean desensitize) {
-            this.desensitize = desensitize;
+        public void setDesensitize(boolean val) {
+            config(VisitorFeature.OutputDesensitize, val);
         }
 
         public boolean isUppCase() {
-            return ucase;
+            return isEnabled(VisitorFeature.OutputUCase);
         }
 
         public void setUppCase(boolean val) {
-            this.ucase = val;
+            config(VisitorFeature.OutputUCase, val);
         }
 
         public boolean isPrettyFormat() {
-            return prettyFormat;
+            return isEnabled(VisitorFeature.OutputPrettyFormat);
         }
 
         public void setPrettyFormat(boolean prettyFormat) {
-            this.prettyFormat = prettyFormat;
+            config(VisitorFeature.OutputPrettyFormat, prettyFormat);
         }
 
         public boolean isParameterized() {
-            return parameterized;
+            return isEnabled(VisitorFeature.OutputParameterized);
         }
 
         public void setParameterized(boolean parameterized) {
-            this.parameterized = parameterized;
+            config(VisitorFeature.OutputParameterized, parameterized);
+        }
+
+        public void config(VisitorFeature feature, boolean state) {
+            features = VisitorFeature.config(features, feature, state);
+        }
+
+        public final boolean isEnabled(VisitorFeature feature) {
+            return VisitorFeature.isEnabled(this.features, feature);
         }
     }
 

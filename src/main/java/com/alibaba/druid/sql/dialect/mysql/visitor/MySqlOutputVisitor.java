@@ -47,10 +47,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
-import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
-import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
-import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
-import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.sql.visitor.*;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.io.IOException;
@@ -81,7 +78,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public void configFromProperty(Properties properties) {
-        if (parameterized) {
+        if (isEnabled(VisitorFeature.OutputParameterized)) {
             String property = properties.getProperty("druid.parameterized.shardingSupport");
             if ("true".equals(property)) {
                 this.setShardingSupport(true);
@@ -92,7 +89,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean isShardingSupport() {
-        return parameterized && shardingSupport;
+        return isEnabled(VisitorFeature.OutputParameterized)
+                && shardingSupport;
     }
 
     public void setShardingSupport(boolean shardingSupport) {
@@ -573,7 +571,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         try {
-            if (this.parameterized
+            if (this.isEnabled(VisitorFeature.OutputParameterized)
                     && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
                 this.appender.append('?');
                 incrementReplaceCunt();
@@ -1001,7 +999,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     protected void printValuesList(List<SQLInsertStatement.ValuesClause> valuesList) {
 
-        if (parameterized) {
+        if (isEnabled(VisitorFeature.OutputParameterized)) {
             print0(ucase ? "VALUES " : "values ");
             incrementIndent();
             valuesList.get(0).accept(this);
@@ -2774,7 +2772,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlCharExpr x) {
-        if (parameterized && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+        if (isEnabled(VisitorFeature.OutputParameterized)
+                && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             print('?');
             incrementReplaceCunt();
             if (this instanceof ExportParameterVisitor || this.parameters != null) {

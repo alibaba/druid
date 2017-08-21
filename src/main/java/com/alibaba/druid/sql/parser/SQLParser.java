@@ -21,6 +21,8 @@ public class SQLParser {
 
     protected String      dbType;
 
+
+
     public SQLParser(String sql, String dbType){
         this(new Lexer(sql, null, dbType), dbType);
         this.lexer.nextToken();
@@ -316,4 +318,11 @@ public class SQLParser {
         }
     }
 
+    public void config(SQLParserFeature feature, boolean state) {
+        this.lexer.config(feature, state);
+    }
+
+    public final boolean isEnabled(SQLParserFeature feature) {
+        return lexer.isEnabled(feature);
+    }
 }
