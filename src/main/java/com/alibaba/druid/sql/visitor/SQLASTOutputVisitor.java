@@ -53,7 +53,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected final Appendable appender;
     private String indent = "\t";
-    private int indentCount = 0;
+    protected int indentCount = 0;
     private boolean prettyFormat = true;
     protected boolean ucase = true;
     protected int selectListNumberOfLine = 5;
@@ -166,11 +166,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public void decrementIndent() {
-        this.indentCount -= 1;
+        this.indentCount--;
     }
 
     public void incrementIndent() {
-        this.indentCount += 1;
+        this.indentCount++;
     }
 
     public boolean isParameterized() {
@@ -214,8 +214,29 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return;
         }
 
-        print0(Integer.toString(value));
+        if (appender instanceof StringBuffer) {
+            ((StringBuffer) appender).append(value);
+        } else if (appender instanceof StringBuilder) {
+            ((StringBuilder) appender).append(value);
+        } else {
+            print0(Integer.toString(value));
+        }
     }
+
+    public void print(long value) {
+        if (this.appender == null) {
+            return;
+        }
+
+        if (appender instanceof StringBuilder) {
+            ((StringBuilder) appender).append(value);
+        } else if (appender instanceof StringBuffer) {
+            ((StringBuffer) appender).append(value);
+        } else {
+            print0(Long.toString(value));
+        }
+    }
+
 
     public void print(Date date) {
         if (this.appender == null) {
@@ -229,13 +250,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         }
         print0("'" + dateFormat.format(date) + "'");
-    }
-
-    public void print(long value) {
-        if (this.appender == null) {
-            return;
-        }
-        print0(Long.toString(value));
     }
 
     public void print(String text) {
@@ -707,7 +721,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? "NULL" : "null");
         } else {
             print('\'');
-            print0(text.replaceAll("'", "''"));
+            int index = text.indexOf('\'');
+            if (index >= 0) {
+                text = text.replaceAll("'", "''");
+            }
+            print0(text);
             print('\'');
         }
     }
@@ -957,7 +975,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLIntegerExpr x) {
-        int val = x.getNumber().intValue();
+        long val = x.getNumber().longValue();
         SQLObject parent = x.getParent();
 
         if (val == 1) {
@@ -980,7 +998,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (this.parameterized
             && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
             if (!ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-                return SQLASTOutputVisitorUtils.visit(this, x);
+                print(val);
+                return false;
             }
 
             print('?');
@@ -992,7 +1011,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return false;
         }
 
-        return SQLASTOutputVisitorUtils.visit(this, x);
+        print(val);
+        return false;
     }
 
     public boolean visit(SQLMethodInvokeExpr x) {
@@ -1180,7 +1200,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             return false;
         }
 
-        return SQLASTOutputVisitorUtils.visit(this, x);
+        if (appender instanceof StringBuilder) {
+            x.output((StringBuilder) appender);
+        } else if (appender instanceof StringBuilder) {
+            x.output((StringBuilder) appender);
+        } else {
+            print0(x.getNumber().toString());
+        }
+        return false;
     }
 
     public boolean visit(SQLPropertyExpr x) {
@@ -1612,7 +1639,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
 
-        expr.accept(this);
+        if (expr instanceof SQLIdentifierExpr) {
+            visit((SQLIdentifierExpr) expr);
+        } else if (expr instanceof SQLPropertyExpr) {
+            visit((SQLPropertyExpr) expr);
+        } else {
+            expr.accept(this);
+        }
+
     }
 
     public boolean visit(SQLExprTableSource x) {
@@ -2315,8 +2349,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     @Override
     public boolean visit(ValuesClause x) {
         print('(');
-        incrementIndent();
-        for (int i = 0, size = x.getValues().size(); i < size; ++i) {
+        this.indentCount++;
+
+        final List<SQLExpr> values = x.getValues();
+        for (int i = 0, size = values.size(); i < size; ++i) {
             if (i != 0) {
                 if (i % 5 == 0) {
                     println();
@@ -2324,11 +2360,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 print0(", ");
             }
 
-            SQLExpr expr = x.getValues().get(i);
-            expr.setParent(x);
-            expr.accept(this);
+            SQLExpr expr = values.get(i);
+            if (expr instanceof SQLIntegerExpr) {
+                visit((SQLIntegerExpr) expr);
+            } else if (expr instanceof SQLCharExpr) {
+                visit((SQLCharExpr) expr);
+            } else if (expr instanceof SQLBooleanExpr) {
+                visit((SQLBooleanExpr) expr);
+            } else if (expr instanceof SQLNumberExpr) {
+                visit((SQLNumberExpr) expr);
+            } else if (expr instanceof SQLNullExpr) {
+                visit((SQLNullExpr) expr);
+            } else if (expr instanceof SQLVariantRefExpr) {
+                visit((SQLVariantRefExpr) expr);
+            } else if (expr instanceof SQLNCharExpr) {
+                visit((SQLNCharExpr) expr);
+            } else {
+                expr.accept(this);
+            }
         }
-        decrementIndent();
+
+        this.indentCount--;
         print(')');
         return false;
     }
@@ -3374,7 +3426,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLBooleanExpr x) {
         print0(x.getValue() ? "true" : "false");
-
         return false;
     }
 

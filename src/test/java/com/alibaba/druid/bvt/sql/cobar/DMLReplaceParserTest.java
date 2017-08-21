@@ -59,7 +59,7 @@ public class DMLReplaceParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("REPLACE LOW_PRIORITY INTO t1\nVALUES (0.12), (?)", output);
+        Assert.assertEquals("REPLACE LOW_PRIORITY INTO t1\nVALUES (12e-2), (?)", output);
     }
     
     public void testReplace_4() throws Exception {

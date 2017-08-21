@@ -330,7 +330,7 @@ public class OracleExprParser extends SQLExprParser {
                         lexer.nextToken();
                         break;
                     case LITERAL_FLOAT:
-                        sqlExpr = new SQLNumberExpr(lexer.decimalValue());
+                        sqlExpr = lexer.numberExpr();
                         lexer.nextToken();
                         break;
                     case BINARY_FLOAT:
@@ -382,7 +382,7 @@ public class OracleExprParser extends SQLExprParser {
                         lexer.nextToken();
                         break;
                     case LITERAL_FLOAT:
-                        sqlExpr = new SQLNumberExpr(lexer.decimalValue().negate());
+                        sqlExpr = lexer.numberExpr();
                         lexer.nextToken();
                         break;
                     case BINARY_FLOAT:

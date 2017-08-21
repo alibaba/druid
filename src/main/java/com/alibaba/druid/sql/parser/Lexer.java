@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
@@ -88,6 +89,8 @@ public class Lexer {
     protected int            lines        = 0;
 
     protected String         dbType;
+
+    protected boolean        hasSpecial = false;
 
     private int startPos;
     private int posLine;
@@ -142,6 +145,12 @@ public class Lexer {
 
     public final String subString(int offset, int count) {
         return text.substring(offset, offset + count);
+    }
+
+    public final char[] sub_chars(int offset, int count) {
+        char[] chars = new char[count];
+        text.getChars(offset, offset + count, chars, 0);
+        return chars;
     }
 
     protected void initBuff(int size) {
@@ -1522,11 +1531,36 @@ public class Lexer {
     }
 
     public BigDecimal decimalValue() {
-        String value = subString(mark, bufPos);
+        char[] value = sub_chars(mark, bufPos);
         if (!StringUtils.isNumber(value)){
             throw new ParserException(value+" is not a number! " + info());
         }
-        return new BigDecimal(value.toCharArray());
+        return new BigDecimal(value);
+    }
+
+    public SQLNumberExpr numberExpr() {
+        char[] value = sub_chars(mark, bufPos);
+        if (!StringUtils.isNumber(value)){
+            throw new ParserException(value+" is not a number! " + info());
+        }
+
+        return new SQLNumberExpr(value);
+    }
+
+    public SQLNumberExpr numberExpr(boolean negate) {
+        char[] value = sub_chars(mark, bufPos);
+        if (!StringUtils.isNumber(value)){
+            throw new ParserException(value+" is not a number! " + info());
+        }
+
+        if (negate) {
+            char[] chars = new char[value.length + 1];
+            chars[0] = '-';
+            System.arraycopy(value, 0, chars, 1, value.length);
+            return new SQLNumberExpr(chars);
+        } else {
+            return new SQLNumberExpr(value);
+        }
     }
 
     public static interface CommentHandler {

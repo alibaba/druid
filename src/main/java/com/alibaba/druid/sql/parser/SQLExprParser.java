@@ -297,7 +297,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 break;
             case LITERAL_FLOAT:
-                sqlExpr = new SQLNumberExpr(lexer.decimalValue());
+                sqlExpr = lexer.numberExpr();
                 lexer.nextToken();
                 break;
             case LITERAL_CHARS:
@@ -521,7 +521,7 @@ public class SQLExprParser extends SQLParser {
                         lexer.nextToken();
                         break;
                     case LITERAL_FLOAT:
-                        sqlExpr = new SQLNumberExpr(lexer.decimalValue().negate());
+                        sqlExpr = lexer.numberExpr(true);
                         lexer.nextToken();
                         break;
                     case IDENTIFIER: // 当负号后面为字段的情况
@@ -559,7 +559,7 @@ public class SQLExprParser extends SQLParser {
                         lexer.nextToken();
                         break;
                     case LITERAL_FLOAT:
-                        sqlExpr = new SQLNumberExpr(lexer.decimalValue());
+                        sqlExpr = lexer.numberExpr();
                         lexer.nextToken();
                         break;
                     case IDENTIFIER: // 当+号后面为字段的情况

@@ -53,6 +53,7 @@ import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
+import java.io.IOException;
 import java.security.AccessControlException;
 import java.util.List;
 import java.util.Map;
@@ -567,44 +568,59 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLCharExpr x) {
-        if (this.parameterized
-                && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
-            print('?');
-            incrementReplaceCunt();
-            if (this instanceof ExportParameterVisitor || this.parameters != null) {
-                ExportParameterVisitorUtils.exportParameter(this.parameters, x);
-            }
+        if (this.appender == null) {
             return false;
         }
 
-        print('\'');
-
-        String text = x.getText();
-
-        StringBuilder buf = new StringBuilder(text.length());
-        for (int i = 0; i < text.length(); ++i) {
-            char ch = text.charAt(i);
-            if (ch == '\'') {
-                buf.append('\'');
-                buf.append('\'');
-            } else if (ch == '\\') {
-                buf.append('\\');
-                buf.append('\\');
-            } else if (ch == '\0') {
-                buf.append('\\');
-                buf.append('0');
-            } else {
-                buf.append(ch);
+        try {
+            if (this.parameterized
+                    && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+                this.appender.append('?');
+                incrementReplaceCunt();
+                if (this instanceof ExportParameterVisitor || this.parameters != null) {
+                    ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+                }
+                return false;
             }
-        }
-        if (buf.length() != text.length()) {
-            text = buf.toString();
-        }
 
-        print0(text);
+            this.appender.append('\'');
 
-        print('\'');
+            String text = x.getText();
+
+            boolean hasSpecial = false;
+            for (int i = 0; i < text.length(); ++i) {
+                char ch = text.charAt(i);
+                if (ch == '\'' || ch == '\\' || ch == '\0') {
+                    hasSpecial = true;
+                    break;
+                }
+            }
+
+            if (hasSpecial) {
+                for (int i = 0; i < text.length(); ++i) {
+                    char ch = text.charAt(i);
+                    if (ch == '\'') {
+                        appender.append('\'');
+                        appender.append('\'');
+                    } else if (ch == '\\') {
+                        appender.append('\\');
+                        appender.append('\\');
+                    } else if (ch == '\0') {
+                        appender.append('\\');
+                        appender.append('0');
+                    } else {
+                        appender.append(ch);
+                    }
+                }
+            } else {
+                appender.append(text);
+            }
+
+            appender.append('\'');
         return false;
+        } catch (IOException e) {
+            throw new RuntimeException("println error", e);
+        }
     }
 
     public boolean visit(SQLVariantRefExpr x) {
@@ -924,12 +940,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print0(ucase ? "INTO " : "into ");
 
-        x.getTableSource().accept(this);
+        SQLExprTableSource tableSource = x.getTableSource();
+        if (tableSource.getClass() == SQLExprTableSource.class) {
+            visit(tableSource);
+        } else {
+            tableSource.accept(this);
+        }
 
-        if (x.getColumns().size() > 0) {
+        List<SQLExpr> columns = x.getColumns();
+        if (columns.size() > 0) {
             incrementIndent();
             print0(" (");
-            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+            for (int i = 0, size = columns.size(); i < size; ++i) {
                 if (i != 0) {
                     if (i % 5 == 0) {
                         println();
@@ -937,15 +959,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                     print0(", ");
                 }
 
-                x.getColumns().get(i).accept(this);
+                SQLExpr columnn = columns.get(i);
+                if (columnn instanceof SQLIdentifierExpr) {
+                    visit((SQLIdentifierExpr) columnn);
+                }
+                else {
+                    columnn.accept(this);
+                }
             }
             print(')');
             decrementIndent();
         }
 
-        if (!x.getValuesList().isEmpty()) {
+        List<SQLInsertStatement.ValuesClause>  valuesList = x.getValuesList();
+        if (!valuesList.isEmpty()) {
             println();
-            printValuesList(x);
+            printValuesList(valuesList);
         }
 
         if (x.getQuery() != null) {
@@ -970,8 +999,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    protected void printValuesList(MySqlInsertStatement x) {
-        List<SQLInsertStatement.ValuesClause> valuesList = x.getValuesList();
+    protected void printValuesList(List<SQLInsertStatement.ValuesClause> valuesList) {
 
         if (parameterized) {
             print0(ucase ? "VALUES " : "values ");
@@ -985,18 +1013,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         print0(ucase ? "VALUES " : "values ");
-        if (x.getValuesList().size() > 1) {
-            incrementIndent();
+        if (valuesList.size() > 1) {
+            this.indentCount++;
         }
         for (int i = 0, size = valuesList.size(); i < size; ++i) {
             if (i != 0) {
                 print(',');
                 println();
             }
-            valuesList.get(i).accept(this);
+
+            SQLInsertStatement.ValuesClause item = valuesList.get(i);
+            visit(item);
         }
         if (valuesList.size() > 1) {
-            decrementIndent();
+            this.indentCount--;
         }
     }
 

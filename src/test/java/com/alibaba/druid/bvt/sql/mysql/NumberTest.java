@@ -38,7 +38,7 @@ public class NumberTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcConstants.MYSQL);
 
-        Assert.assertEquals("SELECT -3.20326809E+14;", text);
+        Assert.assertEquals("SELECT -32032.6809e+10;", text);
     }
 
     public void test_1() throws Exception {
