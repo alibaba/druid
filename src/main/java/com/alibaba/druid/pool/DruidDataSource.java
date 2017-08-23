@@ -388,9 +388,31 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (property != null && property.length() > 0) {
                 try {
                     int value = Integer.parseInt(property);
-                    super.setInitialSize(value);
+                    this.setInitialSize(value);
                 } catch (NumberFormatException e) {
                     LOG.error("illegal property 'druid.initialSize'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty("druid.minIdle");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setMinIdle(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.minIdle'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty("druid.maxActive");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setMaxActive(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.maxActive'", e);
                 }
             }
         }
