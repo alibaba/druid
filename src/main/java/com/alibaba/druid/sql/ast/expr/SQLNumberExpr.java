@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-public class SQLNumberExpr extends SQLNumericLiteralExpr {
+public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
     private static SQLDataType defaultDataType = new SQLDataTypeImpl("number");
 
     private Number number;
@@ -46,6 +46,10 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr {
             this.number = new BigDecimal(chars);
         }
         return this.number;
+    }
+
+    public Number getValue() {
+        return getNumber();
     }
 
     public void setNumber(Number number) {

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SQLTimestampExpr extends SQLExprImpl {
+public class SQLTimestampExpr extends SQLExprImpl implements SQLValuableExpr {
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("datetime");
 
     protected String  literal;
@@ -38,6 +38,10 @@ public class SQLTimestampExpr extends SQLExprImpl {
         x.timeZone = timeZone;
         x.withTimeZone = withTimeZone;
         return x;
+    }
+
+    public String getValue() {
+        return literal;
     }
 
     public String getLiteral() {

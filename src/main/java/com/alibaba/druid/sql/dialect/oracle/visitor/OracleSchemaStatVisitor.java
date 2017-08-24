@@ -213,10 +213,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public boolean visit(OracleSelectQueryBlock x) {
-        if (x.getWhere() != null) {
-            x.getWhere().setParent(x);
-        }
-
         if (x.getInto() instanceof SQLName) {
             String tableName = x.getInto().toString();
             TableStat stat = getTableStat(tableName);
@@ -742,11 +738,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         setAliasMap();
 
         accept(x.getSubQuery());
-
-        for (OracleMultiInsertStatement.Entry entry : x.getEntries()) {
-            entry.setParent(x);
-        }
-
         accept(x.getEntries());
 
         return false;
@@ -759,12 +750,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(ConditionalInsertClause x) {
-        for (ConditionalInsertClauseItem item : x.getItems()) {
-            item.setParent(x);
-        }
-        if (x.getElseItem() != null) {
-            x.getElseItem().setParent(x);
-        }
         return true;
     }
 
@@ -1031,8 +1016,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleForStatement x) {
-        x.getRange().setParent(x);
-
         SQLName index = x.getIndex();
         this.getVariants().put(index.toString(), x);
 

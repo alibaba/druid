@@ -39,7 +39,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
-import com.alibaba.druid.sql.visitor.functions.Ucase;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -605,8 +604,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     public boolean visit(SQLCaseExpr x) {
         incrementIndent();
         print0(ucase ? "CASE " : "case ");
-        if (x.getValueExpr() != null) {
-            x.getValueExpr().accept(this);
+
+        SQLExpr valueExpr = x.getValueExpr();
+        if (valueExpr != null) {
+            valueExpr.accept(this);
         }
 
         for (int i = 0, size = x.getItems().size(); i < size; ++i) {
@@ -1073,6 +1074,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             from.accept(this);
         }
 
+        SQLExpr using = x.getUsing();
+        if (using != null) {
+            print0(ucase ? " USING " : " using ");
+            using.accept(this);
+        }
+
         print(')');
         return false;
     }
@@ -1367,8 +1374,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLSelect x) {
-        x.getQuery().setParent(x);
-
         if (x.getWithSubQuery() != null) {
             x.getWithSubQuery().accept(this);
             println();
@@ -1425,7 +1430,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (where != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            where.setParent(x);
             where.accept(this);
         }
 
@@ -1938,7 +1942,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             print0(ucase ? "WHERE " : "where ");
             incrementIndent();
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -1970,7 +1973,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             if (x.getQuery() != null) {
                 println();
-                x.getQuery().setParent(x);
                 x.getQuery().accept(this);
             }
         }
@@ -2037,7 +2039,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             println();
             incrementIndent();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -2282,7 +2283,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLJoinTableSource x) {
-        x.getLeft().accept(this);
+        SQLTableSource left = x.getLeft();
+
+        if (left instanceof SQLJoinTableSource
+                && ((SQLJoinTableSource) left).getJoinType() == JoinType.COMMA
+                && x.getJoinType() != JoinType.COMMA) {
+            print('(');
+            left.accept(this);
+            print(')');
+        } else {
+            left.accept(this);
+        }
         incrementIndent();
 
         if (x.getJoinType() == JoinType.COMMA) {
@@ -3436,7 +3447,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLBooleanExpr x) {
-        print0(x.getValue() ? "true" : "false");
+        print0(x.getBooleanValue() ? "true" : "false");
         return false;
     }
 
@@ -3727,7 +3738,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
             if (i != size - 1) {
                 println();
@@ -3758,7 +3768,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 println();
             }
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
         }
 
@@ -3779,7 +3788,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 println();
             }
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
         }
 
@@ -3796,7 +3804,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
 
             if (i != size - 1) {
@@ -4403,7 +4410,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             incrementIndent();
             println();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -4412,7 +4418,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             incrementIndent();
             println();
             print0(ucase ? "DELETE WHERE " : "delete where ");
-            x.getDeleteWhere().setParent(x);
             x.getDeleteWhere().accept(this);
             decrementIndent();
         }
@@ -4434,7 +4439,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             incrementIndent();
             println();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -4665,7 +4669,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
             if (i != size - 1) {
                 println();

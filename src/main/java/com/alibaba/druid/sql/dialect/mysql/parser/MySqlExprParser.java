@@ -177,8 +177,9 @@ public class MySqlExprParser extends SQLExprParser {
                 }
             case CACHE:
             case GROUP:
+                String strVal = lexer.stringVal();
                 lexer.nextToken();
-                return primaryRest(new SQLIdentifierExpr(lexer.stringVal()));
+                return primaryRest(new SQLIdentifierExpr(strVal));
             default:
                 return super.primary();
         }

@@ -1179,8 +1179,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public boolean visit(MySqlDeclareStatement x) {
         for (SQLDeclareItem item : x.getVarList()) {
-            item.setParent(x);
-
             SQLName var = (SQLName) item.getName();
             this.variants.put(var.toString(), var);
         }

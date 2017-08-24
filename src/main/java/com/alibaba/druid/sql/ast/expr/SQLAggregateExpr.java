@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
+public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
     private static final long     serialVersionUID = 1L;
     protected String              methodName;
@@ -222,5 +222,19 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         }
 
         return null;
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (target == null) {
+            return false;
+        }
+        for (int i = 0; i < arguments.size(); ++i) {
+            if (arguments.get(i) == expr) {
+                arguments.set(i, target);
+                target.setParent(this);
+                return true;
+            }
+        }
+        return false;
     }
 }

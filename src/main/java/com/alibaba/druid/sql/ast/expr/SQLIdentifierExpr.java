@@ -135,7 +135,10 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLIdentifierExpr clone() {
-        return new SQLIdentifierExpr(this.name);
+        SQLIdentifierExpr x = new SQLIdentifierExpr(this.name);
+        x.resolvedColumn = resolvedColumn;
+        x.resolvedTableSource = resolvedTableSource;
+        return x;
     }
 
     public String normalizedName() {

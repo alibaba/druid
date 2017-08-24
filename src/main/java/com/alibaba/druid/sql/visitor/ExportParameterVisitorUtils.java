@@ -91,7 +91,7 @@ public final class ExportParameterVisitorUtils {
         }
 
         if (param instanceof SQLBooleanExpr) {
-            value = ((SQLBooleanExpr) param).getValue();
+            value = ((SQLBooleanExpr) param).getBooleanValue();
             replace = true;
         }
 

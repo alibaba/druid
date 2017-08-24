@@ -889,7 +889,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             println();
             incrementIndent();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -1252,7 +1251,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print0(ucase ? " WHERE " : " where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1279,7 +1277,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print0(ucase ? " WHERE " : " where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1302,7 +1299,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print0(ucase ? " WHERE " : " where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1355,7 +1351,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print0(ucase ? " WHERE " : " where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1688,7 +1683,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             println();
             incrementIndent();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -2377,7 +2371,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print0(ucase ? " WHERE " : " where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -2410,7 +2403,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print0(ucase ? " WHERE " : " where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -3124,7 +3116,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
             if (i != size - 1) {
                 println();
@@ -3151,7 +3142,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
             if (i != size - 1) {
                 println();
@@ -3169,7 +3159,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
             if (i != size - 1) {
                 println();
@@ -3259,7 +3248,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
             if (i != size - 1) {
                 println();
@@ -3583,7 +3571,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         println();
-        x.getBlock().setParent(x);
         x.getBlock().accept(this);
         return false;
     }

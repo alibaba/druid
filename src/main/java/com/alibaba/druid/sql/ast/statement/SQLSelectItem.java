@@ -16,10 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -180,7 +177,12 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
 
         if (expr instanceof SQLAllColumnExpr) {
-            return true;
+            SQLTableSource resolvedTableSource = ((SQLAllColumnExpr) expr).getResolvedTableSource();
+            if (resolvedTableSource != null
+                    && resolvedTableSource.findColumn(alias) != null) {
+                return true;
+            }
+            return false;
         }
 
         if (expr instanceof SQLIdentifierExpr) {
@@ -191,7 +193,12 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         if (expr instanceof SQLPropertyExpr) {
             String ident = ((SQLPropertyExpr) expr).getName();
             if ("*".equals(ident)) {
-                return true;
+                SQLTableSource resolvedTableSource = ((SQLPropertyExpr) expr).getResolvedTableSource();
+                if (resolvedTableSource != null
+                        && resolvedTableSource.findColumn(alias) != null) {
+                    return true;
+                }
+                return false;
             }
 
             return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));

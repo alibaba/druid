@@ -208,7 +208,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getWhere() != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -307,7 +306,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             println();
             print0(ucase ? "WHERE " : "where ");
             incrementIndent();
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -412,7 +410,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             println();
             print0(ucase ? "WHERE " : "where ");
             incrementIndent();
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }

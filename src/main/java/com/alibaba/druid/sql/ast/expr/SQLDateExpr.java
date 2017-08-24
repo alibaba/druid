@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr {
+public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
     public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("date");
 
     private String literal;
@@ -41,6 +41,10 @@ public class SQLDateExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     public void setLiteral(String literal) {
         this.literal = literal;
+    }
+
+    public String getValue() {
+        return literal;
     }
 
     @Override

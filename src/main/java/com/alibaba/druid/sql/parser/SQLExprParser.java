@@ -659,7 +659,7 @@ public class SQLExprParser extends SQLParser {
                 break;
             }
             default:
-                throw new ParserException("ERROR" + lexer.info());
+                throw new ParserException("ERROR. " + lexer.info());
         }
 
         SQLExpr expr = primaryRest(sqlExpr);
@@ -880,6 +880,12 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 SQLExpr from = this.expr();
                 methodInvokeExpr.setFrom(from);
+            }
+
+            if (lexer.token == Token.USING) {
+                lexer.nextToken();
+                SQLExpr using = this.primary();
+                methodInvokeExpr.setUsing(using);
             }
 
             accept(Token.RPAREN);

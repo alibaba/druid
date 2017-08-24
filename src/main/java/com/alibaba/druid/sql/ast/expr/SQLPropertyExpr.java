@@ -133,12 +133,16 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLPropertyExpr clone() {
-        SQLPropertyExpr propertyExpr = new SQLPropertyExpr();
-        propertyExpr.name = this.name;
+        SQLPropertyExpr x = new SQLPropertyExpr();
+        x.name = this.name;
         if (owner != null) {
-            propertyExpr.setOwner(owner.clone());
+            x.setOwner(owner.clone());
         }
-        return propertyExpr;
+
+        x.resolvedColumn = resolvedColumn;
+        x.resolvedTableSource = resolvedTableSource;
+
+        return x;
     }
 
     public boolean matchOwner(String alias) {

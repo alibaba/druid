@@ -269,51 +269,46 @@ public class MySqlLexer extends Lexer {
                 token = Token.IDENTIFIER;
             }
         } else {
-
             final boolean firstFlag = isFirstIdentifierChar(first);
             if (!firstFlag) {
                 throw new ParserException("illegal identifier. " + info());
             }
 
+            long hashCode = 0xcbf29ce484222325L;
+            hashCode ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
+            hashCode *= 0x100000001b3L;
+
             mark = pos;
             bufPos = 1;
-            char ch = '\0', last_ch;
+            char ch = '\0';
             for (;;) {
-                last_ch = ch;
                 ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
-//                    if (ch == '-' && pos < text.length() - 1) {
-//                        if (mark > 0 && text.charAt(mark - 1) == '.') {
-//                            break;
-//                        }
-//
-//                        char next_char = text.charAt(pos + 1);
-//                        if (isIdentifierChar(next_char)) {
-//                            bufPos++;
-//                            continue;
-//                        }
-//                    }
-//                    if (last_ch == '-' && charAt(pos-2) != '-') {
-//                        ch = last_ch;
-//                        bufPos--;
-//                        pos--;
-//                    }
                     break;
                 }
 
                 bufPos++;
+
+                hashCode ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
+                hashCode *= 0x100000001b3L;
+
                 continue;
             }
 
             this.ch = charAt(pos);
 
-            stringVal = addSymbol();
-            Token tok = keywods.getKeyword(stringVal);
+            Token tok = keywods.getKeyword(hashCode);
             if (tok != null) {
                 token = tok;
             } else {
                 token = Token.IDENTIFIER;
+            }
+
+            if (token == Token.IDENTIFIER) {
+                stringVal = addSymbol();
+            } else {
+                stringVal = null;
             }
         }
     }

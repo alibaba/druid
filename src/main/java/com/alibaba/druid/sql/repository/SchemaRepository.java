@@ -422,6 +422,11 @@ public class SchemaRepository {
             return true;
         }
 
+        public boolean visit(SQLAllColumnExpr x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -464,10 +469,39 @@ public class SchemaRepository {
             return true;
         }
 
+        public boolean visit(SQLAllColumnExpr x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
         }
+    }
+
+    private void resolve(SchemaResolveVisitor visitor, SQLAllColumnExpr x) {
+        SQLSelectQueryBlock queryBlock = null;
+        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent instanceof SQLTableSource) {
+                return;
+            }
+            if (parent instanceof SQLSelectQueryBlock) {
+                queryBlock = (SQLSelectQueryBlock) parent;
+                break;
+            }
+        }
+
+        if (queryBlock == null) {
+            return;
+        }
+
+        SQLTableSource from = queryBlock.getFrom();
+        if (from == null || from instanceof SQLJoinTableSource) {
+            return;
+        }
+
+        x.setResolvedTableSource(from);
     }
 
     private void resolve(SchemaResolveVisitor visitor, SQLPropertyExpr x) {

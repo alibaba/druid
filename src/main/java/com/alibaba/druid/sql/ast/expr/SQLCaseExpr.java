@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -269,5 +270,9 @@ public class SQLCaseExpr extends SQLExprImpl implements SQLReplaceable, Serializ
         }
 
         return null;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, null);
     }
 }

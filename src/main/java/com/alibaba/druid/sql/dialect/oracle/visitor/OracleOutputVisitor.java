@@ -163,7 +163,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             incrementIndent();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -401,14 +400,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getFrom() == null) {
             print0(ucase ? "DUAL" : "dual");
         } else {
-            x.getFrom().setParent(x);
             x.getFrom().accept(this);
         }
 
         if (x.getWhere() != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -611,7 +608,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             print0(ucase ? "WHERE " : "where ");
             incrementIndent();
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -1155,7 +1151,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         } else {
             if (x.getQuery() != null) {
                 println();
-                x.getQuery().setParent(x);
                 x.getQuery().accept(this);
             }
         }
@@ -1208,7 +1203,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         } else {
             if (x.getQuery() != null) {
                 println();
-                x.getQuery().setParent(x);
                 x.getQuery().accept(this);
             }
         }
@@ -1943,7 +1937,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 println();
             }
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
         }
 
@@ -3214,7 +3207,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             println();
             SQLStatement item = x.getStatements().get(i);
-            item.setParent(x);
             item.accept(this);
         }
 

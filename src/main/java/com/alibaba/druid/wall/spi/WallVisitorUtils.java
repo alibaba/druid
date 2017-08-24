@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.wall.spi;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
@@ -63,7 +62,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExecuteImmediateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
@@ -232,11 +230,6 @@ public class WallVisitorUtils {
     }
 
     public static void checkSelelct(WallVisitor visitor, SQLSelectQueryBlock x) {
-
-        for (SQLSelectItem item : x.getSelectList()) {
-            item.setParent(x);
-        }
-
         if (x.getInto() != null) {
             checkReadOnly(visitor, x.getInto());
         }
@@ -246,13 +239,8 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (x.getFrom() != null) {
-            x.getFrom().setParent(x);
-        }
-
         SQLExpr where = x.getWhere();
         if (where != null) {
-            where.setParent(x);
             checkCondition(visitor, x.getWhere());
 
             Object whereValue = getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck());
@@ -334,7 +322,7 @@ public class WallVisitorUtils {
                 Object evalValue = part.getAttribute(EVAL_VALUE);
                 if (evalValue == null) {
                     if (part instanceof SQLBooleanExpr) {
-                        evalValue = ((SQLBooleanExpr) part).getValue();
+                        evalValue = ((SQLBooleanExpr) part).getBooleanValue();
                     } else if (part instanceof SQLNumericLiteralExpr) {
                         evalValue = ((SQLNumericLiteralExpr) part).getNumber();
                     } else if (part instanceof SQLCharExpr) {
@@ -1475,7 +1463,7 @@ public class WallVisitorUtils {
         }
 
         if (x instanceof SQLBooleanExpr) {
-            return ((SQLBooleanExpr) x).getValue();
+            return ((SQLBooleanExpr) x).getBooleanValue();
         }
 
         if (x instanceof SQLNumericLiteralExpr) {

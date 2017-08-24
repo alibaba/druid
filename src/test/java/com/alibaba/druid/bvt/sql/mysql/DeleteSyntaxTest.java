@@ -72,9 +72,10 @@ public class DeleteSyntaxTest extends TestCase {
 
         SQLStatement stmt = stmtList.get(0);
 
-        Assert.assertEquals("DELETE FROM a1, a2 USING (t1) AS a1" + //
-                            "\n\tINNER JOIN t2 a2\nWHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("delete from a1, a2 using (t1) as a1" + //
+        Assert.assertEquals("DELETE FROM (a1, a2 USING (t1) AS a1)\n" +
+                "\tINNER JOIN t2 a2\n" +
+                "WHERE a1.id = a2.id", SQLUtils.toMySqlString(stmt));
+        Assert.assertEquals("delete from (a1, a2 using (t1) as a1)" + //
                 "\n\tinner join t2 a2\nwhere a1.id = a2.id", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 

@@ -35,6 +35,7 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     private final List<SQLExpr> parameters       = new ArrayList<SQLExpr>();
 
     private SQLExpr             from;
+    private SQLExpr             using;
 
     public SQLMethodInvokeExpr(){
 
@@ -173,6 +174,10 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             x.setFrom(from.clone());
         }
 
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+
         return x;
     }
 
@@ -216,6 +221,11 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     }
 
     public SQLDataType computeDataType() {
+        if (SQLUtils.nameEquals("to_date", methodName)
+                || SQLUtils.nameEquals("add_months", methodName)) {
+            return SQLDateExpr.DEFAULT_DATA_TYPE;
+        }
+
         if (parameters.size() == 1) {
             if (SQLUtils.nameEquals("trunc", methodName)) {
                 return parameters.get(0).computeDataType();
@@ -233,5 +243,16 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             }
         }
         return null;
+    }
+
+    public SQLExpr getUsing() {
+        return using;
+    }
+
+    public void setUsing(SQLExpr using) {
+        if (using != null) {
+            using.setParent(this);
+        }
+        this.using = using;
     }
 }
