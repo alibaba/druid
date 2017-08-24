@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
+import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLExprParser extends SQLParser {
@@ -791,7 +792,7 @@ public class SQLExprParser extends SQLParser {
 
             expr = dotRest(expr);
             return primaryRest(expr);
-        } else if (identifierEquals("SETS") //
+        } else if (lexer.identifierEquals("SETS") //
                 && expr.getClass() == SQLIdentifierExpr.class // 
                 && "GROUPING".equalsIgnoreCase(((SQLIdentifierExpr) expr).getName())) {
             SQLGroupingSetExpr groupingSets = new SQLGroupingSetExpr();
@@ -1661,7 +1662,7 @@ public class SQLExprParser extends SQLParser {
                 rightExp = primary();
                 expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Escape, rightExp, getDbType());
             }
-        } else if (identifierEquals("RLIKE")) {
+        } else if (lexer.identifierEquals(FNVUtils.RLIKE)) {
             lexer.nextToken();
             rightExp = equality();
 

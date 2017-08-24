@@ -21,11 +21,7 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.Keywords;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.NotAllowCommentException;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class MySqlLexer extends Lexer {
 
@@ -216,6 +212,9 @@ public class MySqlLexer extends Lexer {
     }
 
     public void scanIdentifier() {
+        hash_lower = 0;
+        hash = 0;
+
         final char first = ch;
 
         if (ch == 'b' && charAt(pos + 1) == '\'') {
@@ -274,9 +273,14 @@ public class MySqlLexer extends Lexer {
                 throw new ParserException("illegal identifier. " + info());
             }
 
-            long hashCode = 0xcbf29ce484222325L;
-            hashCode ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
-            hashCode *= 0x100000001b3L;
+            hash_lower = 0xcbf29ce484222325L;
+            hash = 0xcbf29ce484222325L;
+
+            hash_lower ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
+            hash_lower *= 0x100000001b3L;
+
+            hash ^= ch;
+            hash *= 0x100000001b3L;
 
             mark = pos;
             bufPos = 1;
@@ -290,25 +294,28 @@ public class MySqlLexer extends Lexer {
 
                 bufPos++;
 
-                hashCode ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
-                hashCode *= 0x100000001b3L;
+                hash_lower ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
+                hash_lower *= 0x100000001b3L;
+
+                hash ^= ch;
+                hash *= 0x100000001b3L;
 
                 continue;
             }
 
             this.ch = charAt(pos);
 
-            Token tok = keywods.getKeyword(hashCode);
+            Token tok = keywods.getKeyword(hash_lower);
             if (tok != null) {
                 token = tok;
+                if (token == Token.IDENTIFIER) {
+                    stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
+                } else {
+                    stringVal = null;
+                }
             } else {
                 token = Token.IDENTIFIER;
-            }
-
-            if (token == Token.IDENTIFIER) {
-                stringVal = addSymbol();
-            } else {
-                stringVal = null;
+                stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
             }
         }
     }

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -35,6 +36,17 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     public SQLDataTypeImpl(String name){
 
         this.name = name;
+    }
+
+    public SQLDataTypeImpl(String name, int precision) {
+        this(name);
+        addArgument(new SQLIntegerExpr(precision));
+    }
+
+    public SQLDataTypeImpl(String name, int precision, int scale) {
+        this(name);
+        addArgument(new SQLIntegerExpr(precision));
+        addArgument(new SQLIntegerExpr(scale));
     }
 
     @Override

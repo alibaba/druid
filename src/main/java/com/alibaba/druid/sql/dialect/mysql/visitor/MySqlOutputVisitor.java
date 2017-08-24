@@ -124,11 +124,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
         }
 
-        if (SQLSetQuantifier.ALL == x.getDistionOption()) {
+        final int distionOption = x.getDistionOption();
+        if (SQLSetQuantifier.ALL == distionOption) {
             print0(ucase ? "ALL " : "all ");
-        } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
+        } else if (SQLSetQuantifier.DISTINCT == distionOption) {
             print0(ucase ? "DISTINCT " : "distinct ");
-        } else if (SQLSetQuantifier.DISTINCTROW == x.getDistionOption()) {
+        } else if (SQLSetQuantifier.DISTINCTROW == distionOption) {
             print0(ucase ? "DISTINCTROW " : "distinctrow ");
         }
 

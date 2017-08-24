@@ -1523,7 +1523,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isConnectByRoot()) {
             print0(ucase ? "CONNECT_BY_ROOT " : "connect_by_root ");
         }
-        x.getExpr().accept(this);
+
+        SQLExpr expr = x.getExpr();
+
+        if (expr.getClass() == SQLIdentifierExpr.class) {
+            String ident = ((SQLIdentifierExpr) expr).getName();
+            print0(ident);
+        } else {
+            expr.accept(this);
+        }
 
         String alias = x.getAlias();
         if (alias != null && alias.length() > 0) {

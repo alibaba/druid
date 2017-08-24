@@ -18,9 +18,10 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLObjectWithDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCastExpr extends SQLExprImpl {
+public class SQLCastExpr extends SQLExprImpl implements SQLObjectWithDataType {
 
     protected SQLExpr     expr;
     protected SQLDataType dataType;
@@ -45,6 +46,9 @@ public class SQLCastExpr extends SQLExprImpl {
     }
 
     public void setDataType(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
         this.dataType = dataType;
     }
 

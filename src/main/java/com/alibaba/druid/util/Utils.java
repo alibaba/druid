@@ -409,53 +409,15 @@ public class Utils {
     }
 
     public static long fnv_64(String input) {
-        if (input == null) {
-            return 0;
-        }
-
-        long hash = 0xcbf29ce484222325L;
-        for (int i = 0; i < input.length(); ++i) {
-            char c = input.charAt(i);
-            hash ^= c;
-            hash *= 0x100000001b3L;
-        }
-
-        return hash;
+        return FNVUtils.fnv_64(input);
     }
 
     public static long fnv_64_lower(String key) {
-        long hashCode = 0xcbf29ce484222325L;
-        for (int i = 0; i < key.length(); ++i) {
-            char ch = key.charAt(i);
-
-            if (ch >= 'A' && ch <= 'Z') {
-                ch = (char) (ch + 32);
-            }
-
-            hashCode ^= ch;
-            hashCode *= 0x100000001b3L;
-        }
-
-        return hashCode;
+        return FNVUtils.fnv_64_lower(key);
     }
 
     public static long fnv_32_lower(String key) {
-        long hashCode = 0x811c9dc5;
-        for (int i = 0; i < key.length(); ++i) {
-            char ch = key.charAt(i);
-            if (ch == '_' || ch == '-') {
-                continue;
-            }
-
-            if (ch >= 'A' && ch <= 'Z') {
-                ch = (char) (ch + 32);
-            }
-
-            hashCode ^= ch;
-            hashCode *= 0x01000193;
-        }
-
-        return hashCode;
+        return FNVUtils.fnv_32_lower(key);
     }
 
     public static void loadFromFile(String path, Set<String> set) {

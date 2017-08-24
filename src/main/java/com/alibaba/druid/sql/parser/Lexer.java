@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
@@ -62,6 +63,8 @@ public class Lexer {
     protected Keywords     keywods      = Keywords.DEFAULT_KEYWORDS;
 
     protected String       stringVal;
+    protected long         hash_lower; // fnv1a_64
+    protected long hash;
 
     protected int          commentCount = 0;
 
@@ -1421,6 +1424,31 @@ public class Lexer {
             stringVal = subString(mark, bufPos);
         }
         return stringVal;
+    }
+
+    public final boolean identifierEquals(String text) {
+        if (token != Token.IDENTIFIER) {
+            return false;
+        }
+
+        if (stringVal == null) {
+            stringVal = subString(mark, bufPos);
+        }
+        return text.equalsIgnoreCase(stringVal);
+    }
+
+    public final boolean identifierEquals(long hash_lower) {
+        if (token != Token.IDENTIFIER) {
+            return false;
+        }
+
+        if (this.hash_lower == 0) {
+            if (stringVal == null) {
+                stringVal = subString(mark, bufPos);
+            }
+            this.hash_lower = FNVUtils.fnv_64_lower(stringVal);
+        }
+        return this.hash_lower == hash_lower;
     }
     
     public final List<String> readAndResetComments() {

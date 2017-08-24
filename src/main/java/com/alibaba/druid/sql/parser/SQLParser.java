@@ -50,11 +50,11 @@ public class SQLParser {
     }
 
     protected boolean identifierEquals(String text) {
-        return lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase(text);
+        return lexer.identifierEquals(text);
     }
 
     protected void acceptIdentifier(String text) {
-        if (identifierEquals(text)) {
+        if (lexer.identifierEquals(text)) {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());

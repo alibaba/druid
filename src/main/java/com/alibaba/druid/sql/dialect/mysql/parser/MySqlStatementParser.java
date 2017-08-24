@@ -149,12 +149,12 @@ public class MySqlStatementParser extends SQLStatementParser {
                 this.getExprParser().parseHints(deleteStatement.getHints());
             }
 
-            if (identifierEquals(LOW_PRIORITY)) {
+            if (lexer.identifierEquals(LOW_PRIORITY)) {
                 deleteStatement.setLowPriority(true);
                 lexer.nextToken();
             }
 
-            if (identifierEquals("QUICK")) {
+            if (lexer.identifierEquals("QUICK")) {
                 deleteStatement.setQuick(true);
                 lexer.nextToken();
             }

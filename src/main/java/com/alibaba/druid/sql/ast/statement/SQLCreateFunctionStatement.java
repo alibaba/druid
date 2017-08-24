@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by wenshao on 23/05/2017.
  */
-public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLCreateStatement {
+public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLCreateStatement, SQLObjectWithDataType {
     private SQLName definer;
 
     private boolean            create     = true;
@@ -85,6 +85,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
             acceptChild(visitor, definer);
             acceptChild(visitor, name);
             acceptChild(visitor, parameters);
+            acceptChild(visitor, returnDataType);
             acceptChild(visitor, block);
         }
         visitor.endVisit(this);
@@ -198,5 +199,15 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
         }
 
         return null;
+    }
+
+    @Override
+    public SQLDataType getDataType() {
+        return returnDataType;
+    }
+
+    @Override
+    public void setDataType(SQLDataType dataType) {
+        this.setReturnDataType(dataType);
     }
 }

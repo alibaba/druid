@@ -41,6 +41,10 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
         super(name);
     }
 
+    public SQLCharacterDataType(String name, int precision){
+        super(name, precision);
+    }
+
     public String getCharSetName() {
         return charSetName;
     }

@@ -60,10 +60,10 @@ public class SQLCreateTableParser extends SQLDDLParser {
             accept(Token.CREATE);
         }
 
-        if (identifierEquals("GLOBAL")) {
+        if (lexer.identifierEquals("GLOBAL")) {
             lexer.nextToken();
 
-            if (identifierEquals("TEMPORARY")) {
+            if (lexer.identifierEquals("TEMPORARY")) {
                 lexer.nextToken();
                 createTable.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
             } else {
@@ -134,7 +134,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             accept(Token.RPAREN);
 
-            if (identifierEquals("INHERITS")) {
+            if (lexer.identifierEquals("INHERITS")) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 SQLName inherits = this.exprParser.name();

@@ -128,6 +128,26 @@ public class MySqlUtils {
         return words.contains(name_lower);
     }
 
+    private static Set<String> builtinDataTypes;
+
+    public static boolean isBuiltinDataType(String dataType) {
+        if (dataType == null) {
+            return false;
+        }
+
+        String table_lower = dataType.toLowerCase();
+
+        Set<String> dataTypes = builtinDataTypes;
+
+        if (dataTypes == null) {
+            dataTypes = new HashSet<String>();
+            Utils.loadFromFile("META-INF/druid/parser/mysql/builtin_datatypes", dataTypes);
+            builtinDataTypes = dataTypes;
+        }
+
+        return dataTypes.contains(table_lower);
+    }
+
     public static List<String> showTables(Connection conn) throws SQLException {
         List<String> tables = new ArrayList<String>();
 
