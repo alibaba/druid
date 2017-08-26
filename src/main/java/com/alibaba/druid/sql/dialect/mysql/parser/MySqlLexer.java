@@ -70,6 +70,13 @@ public class MySqlLexer extends Lexer {
         this(input, true, true);
     }
 
+    public MySqlLexer(String input, SQLParserFeature... features){
+        this(input, true, true);
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
+    }
+
     public MySqlLexer(String input, boolean skipComment, boolean keepComments){
         super(input, skipComment);
         this.skipComment = skipComment;
@@ -243,24 +250,15 @@ public class MySqlLexer extends Lexer {
             mark = pos;
             bufPos = 1;
             char ch;
-            for (;;) {
-                ch = charAt(++pos);
 
-                if (ch == '`') {
-                    bufPos++;
-                    ch = charAt(++pos);
-                    break;
-                } else if (ch == EOI) {
-                    throw new ParserException("illegal identifier. " + info());
-                }
-
-                bufPos++;
-                continue;
+            int quoteIndex = text.indexOf('`', pos + 1);
+            if (quoteIndex == -1) {
+                throw new ParserException("illegal identifier. " + info());
             }
 
+            pos = quoteIndex + 1;
             this.ch = charAt(pos);
-
-            stringVal = subString(mark, bufPos);
+            stringVal = text.substring(mark, pos);
             Token tok = keywods.getKeyword(stringVal);
             if (tok != null) {
                 token = tok;
@@ -304,6 +302,15 @@ public class MySqlLexer extends Lexer {
             }
 
             this.ch = charAt(pos);
+
+            if (bufPos == 1) {
+                token = Token.IDENTIFIER;
+                stringVal = CharTypes.valueOf(first);
+                if (stringVal == null) {
+                    stringVal = Character.toString(first);
+                }
+                return;
+            }
 
             Token tok = keywods.getKeyword(hash_lower);
             if (tok != null) {
@@ -362,37 +369,38 @@ public class MySqlLexer extends Lexer {
                 bufPos++;
             }
 
+            int starIndex = pos;
+
             for (;;) {
-                if (ch == EOI) {
+                starIndex = text.indexOf('*', starIndex);
+                if (starIndex == -1 || starIndex == text.length() - 1) {
                     this.token = Token.ERROR;
                     return;
                 }
-                if (ch == '*' && charAt(pos + 1) == '/') {
-                    bufPos += 3;
-                    scanChar();
-                    scanChar();
+                if (charAt(starIndex + 1) == '/') {
+                    if (isHint) {
+                        //stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 2);
+                        stringVal = this.subString(mark + startHintSp, starIndex - startHintSp - mark);
+                        token = Token.HINT;
+                    } else {
+                        stringVal = this.subString(mark, starIndex + 2 - mark);
+                        token = Token.MULTI_LINE_COMMENT;
+                        commentCount++;
+                        if (keepComments) {
+                            addComment(stringVal);
+                        }
+                    }
+                    pos = starIndex + 2;
+                    ch = charAt(pos);
                     break;
                 }
-
-                scanChar();
-                bufPos++;
-            }
-
-            if (isHint) {
-                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 2);
-                token = Token.HINT;
-            } else {
-                stringVal = subString(mark, bufPos);
-                token = Token.MULTI_LINE_COMMENT;
-                commentCount++;
-                if (keepComments) {
-                    addComment(stringVal);
-                }
+                starIndex++;
             }
 
             endOfComment = isEOF();
             
-            if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+            if (commentHandler != null
+                    && commentHandler.handle(lastToken, stringVal)) {
                 return;
             }
 
@@ -402,6 +410,7 @@ public class MySqlLexer extends Lexer {
 
             return;
         }
+
         if (ch == '/' || ch == '-') {
             scanChar();
             bufPos++;

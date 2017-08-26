@@ -9,4 +9,4 @@ FROM server s
 	LEFT JOIN device_base d ON s.device_base_id = d.id
 	LEFT JOIN logic_site l ON l.id = d.logic_site_id
 WHERE s.gmt_modify > ?
-	AND l.site_name = '开发测试'
+	AND l.site_name = "开发测试"

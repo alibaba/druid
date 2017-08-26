@@ -107,6 +107,9 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLServerTop x) {
+        boolean parameterized = this.parameterized;
+        this.parameterized = false;
+
         print0(ucase ? "TOP " : "top ");
 
         boolean paren = false;
@@ -126,6 +129,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             print0(ucase ? " PERCENT" : " percent");
         }
 
+        this.parameterized = parameterized;
         return false;
     }
 
@@ -265,6 +269,9 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public boolean visit(SQLColumnDefinition x) {
+        boolean parameterized = this.parameterized;
+        this.parameterized = false;
+
         x.getName().accept(this);
 
         if (x.getDataType() != null) {
@@ -292,6 +299,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             }
         }
 
+        this.parameterized = parameterized;
         return false;
     }
 

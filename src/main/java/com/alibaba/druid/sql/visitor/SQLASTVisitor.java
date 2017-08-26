@@ -734,5 +734,9 @@ public interface SQLASTVisitor {
     boolean visit(SQLCreateMaterializedViewStatement x);
 
     void endVisit(SQLCreateMaterializedViewStatement x);
+
+    boolean visit(SQLBinaryOpExprGroup x);
+
+    void endVisit(SQLBinaryOpExprGroup x);
     //
 }

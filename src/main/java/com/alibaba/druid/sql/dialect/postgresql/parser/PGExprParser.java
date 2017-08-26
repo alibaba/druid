@@ -40,11 +40,27 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.Arrays;
 
 public class PGExprParser extends SQLExprParser {
 
-    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
+    public final static String[] AGGREGATE_FUNCTIONS;
+
+    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
+        AGGREGATE_FUNCTIONS_CODES = FNVUtils.fnv_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FNVUtils.fnv_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
 
     public PGExprParser(String sql){
         this(new PGLexer(sql));
@@ -55,6 +71,7 @@ public class PGExprParser extends SQLExprParser {
     public PGExprParser(Lexer lexer){
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
         this.dbType = JdbcConstants.POSTGRESQL;
     }
     
@@ -159,7 +176,7 @@ public class PGExprParser extends SQLExprParser {
                 timestamp.setLiteral(literal);
                 accept(Token.LITERAL_CHARS);
 
-                if (identifierEquals("AT")) {
+                if (lexer.identifierEquals("AT")) {
                     lexer.nextToken();
                     acceptIdentifier("TIME");
                     acceptIdentifier("ZONE");

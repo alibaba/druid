@@ -77,7 +77,7 @@ public class MySqlSelectParser extends SQLSelectParser {
   
     @Override
     public SQLSelectQuery query() {
-        if (lexer.token() == (Token.LPAREN)) {
+        if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
@@ -184,10 +184,10 @@ public class MySqlSelectParser extends SQLSelectParser {
 
             queryBlock.setForUpdate(true);
             
-            if (lexer.identifierEquals("NO_WAIT") || lexer.identifierEquals("NOWAIT")) {
+            if (lexer.identifierEquals(FNVUtils.NO_WAIT) || lexer.identifierEquals(FNVUtils.NOWAIT)) {
                 lexer.nextToken();
                 queryBlock.setNoWait(true);
-            } else if (lexer.identifierEquals("WAIT")) {
+            } else if (lexer.identifierEquals(FNVUtils.WAIT)) {
                 lexer.nextToken();
                 SQLExpr waitTime = this.exprParser.primary();
                 queryBlock.setWaitTime(waitTime);
@@ -259,32 +259,32 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         lexer.nextToken();
 
-        if (lexer.identifierEquals("LOW_PRIORITY")) {
+        if (lexer.identifierEquals(FNVUtils.LOW_PRIORITY)) {
             lexer.nextToken();
             update.setLowPriority(true);
         }
 
-        if (lexer.identifierEquals("IGNORE")) {
+        if (lexer.identifierEquals(FNVUtils.IGNORE)) {
             lexer.nextToken();
             update.setIgnore(true);
         }
         
-        if (lexer.identifierEquals("COMMIT_ON_SUCCESS")) {
+        if (lexer.identifierEquals(FNVUtils.COMMIT_ON_SUCCESS)) {
             lexer.nextToken();
             update.setCommitOnSuccess(true);
         }
         
-        if (lexer.identifierEquals("ROLLBACK_ON_FAIL")) {
+        if (lexer.identifierEquals(FNVUtils.ROLLBACK_ON_FAIL)) {
             lexer.nextToken();
             update.setRollBackOnFail(true);
         }
         
-        if (lexer.identifierEquals("QUEUE_ON_PK")) {
+        if (lexer.identifierEquals(FNVUtils.QUEUE_ON_PK)) {
             lexer.nextToken();
             update.setQueryOnPk(true);
         }
         
-        if (lexer.identifierEquals("TARGET_AFFECT_ROW")) {
+        if (lexer.identifierEquals(FNVUtils.TARGET_AFFECT_ROW)) {
             lexer.nextToken();
             SQLExpr targetAffectRow = this.exprParser.expr();
             update.setTargetAffectRow(targetAffectRow);

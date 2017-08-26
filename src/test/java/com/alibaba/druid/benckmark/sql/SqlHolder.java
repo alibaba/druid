@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson.JSONArray;
@@ -55,7 +56,7 @@ public class SqlHolder {
         }
         // ast = SQLUtils.parseStatements(text, dialect).get(0);
         try {
-            ast = new MySqlStatementParser(text).parseStatement();
+            ast = new MySqlStatementParser(text, SQLParserFeature.EnableSQLBinaryOpExprGroup).parseStatement();
         } catch (ParserException e) {
             throw new UnsupportedOperationException(e);
         }

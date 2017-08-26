@@ -25,8 +25,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLObjectImpl implements SQLObject {
 
-    private SQLObject             parent;
-
+    protected SQLObject           parent;
     protected Map<String, Object> attributes;
 
     public SQLObjectImpl(){

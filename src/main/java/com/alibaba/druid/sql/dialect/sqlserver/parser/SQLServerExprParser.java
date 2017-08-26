@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -32,16 +33,30 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReference
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerExprParser extends SQLExprParser {
+    public final static String[] AGGREGATE_FUNCTIONS;
 
-    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "ROW_NUMBER", "STDDEV", "SUM" };
+    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "ROW_NUMBER", "STDDEV", "SUM" };
+        AGGREGATE_FUNCTIONS_CODES = FNVUtils.fnv_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FNVUtils.fnv_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
 
     public SQLServerExprParser(Lexer lexer){
         super(lexer);
         this.dbType = JdbcConstants.SQL_SERVER;
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     public SQLServerExprParser(String sql){
@@ -143,7 +158,7 @@ public class SQLServerExprParser extends SQLExprParser {
     }
     
     protected SQLServerOutput parserOutput() {
-        if (identifierEquals("OUTPUT")) {
+        if (lexer.identifierEquals("OUTPUT")) {
             lexer.nextToken();
             SQLServerOutput output = new SQLServerOutput();
 
@@ -221,7 +236,7 @@ public class SQLServerExprParser extends SQLExprParser {
                     column.setDefaultExpr(new SQLNullExpr());
                 } else {
                     accept(Token.FOR);
-                    identifierEquals("REPLICATION ");
+                    acceptIdentifier("REPLICATION ");
                     identity.setNotForReplication(true);
                 }
             }

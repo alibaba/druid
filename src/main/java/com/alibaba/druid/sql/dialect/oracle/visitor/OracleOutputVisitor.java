@@ -2972,31 +2972,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print0(ucase ? " CASCADE CONSTRAINTS" : " cascade constraints");
     }
 
-    @Override
-    public boolean visit(SQLMethodInvokeExpr x) {
-        if ("trim".equalsIgnoreCase(x.getMethodName())) {
-            SQLExpr trim_character = (SQLExpr) x.getAttribute("trim_character");
-            if (trim_character != null) {
-                print0(x.getMethodName());
-                print('(');
-                String trim_option = (String) x.getAttribute("trim_option");
-                if (trim_option != null && trim_option.length() != 0) {
-                    print0(trim_option);
-                    print(' ');
-                }
-                trim_character.accept(this);
-                if (x.getParameters().size() > 0) {
-                    print0(ucase ? " FROM " : " from ");
-                    x.getParameters().get(0).accept(this);
-                }
-                print(')');
-                return false;
-            }
-        }
-
-        return super.visit(x);
-    }
-    
     public boolean visit(SQLCharExpr x) {
         if (x.getText() != null && x.getText().length() == 0) {
             print0(ucase ? "NULL" : "null");

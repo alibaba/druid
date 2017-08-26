@@ -24,26 +24,42 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OdpsExprParser extends SQLExprParser {
+import java.util.Arrays;
 
-    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", //
-            "COUNT", //
-            "LAG",
-            "LEAD",
-            "MAX", //
-            "MIN", //
-            "STDDEV", //
-            "SUM", //
-            "ROW_NUMBER",
-            "WM_CONCAT"//
-                                                     };
+public class OdpsExprParser extends SQLExprParser {
+    public final static String[] AGGREGATE_FUNCTIONS;
+
+    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = { "AVG", //
+                "COUNT", //
+                "LAG",
+                "LEAD",
+                "MAX", //
+                "MIN", //
+                "STDDEV", //
+                "SUM", //
+                "ROW_NUMBER",
+                "WM_CONCAT"//
+        };
+        AGGREGATE_FUNCTIONS_CODES = FNVUtils.fnv_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FNVUtils.fnv_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
 
     public OdpsExprParser(Lexer lexer){
         super(lexer, JdbcConstants.ODPS);
 
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     public OdpsExprParser(String sql){
@@ -157,7 +173,7 @@ public class OdpsExprParser extends SQLExprParser {
     }
 
     public SQLExpr relationalRest(SQLExpr expr) {
-        if (identifierEquals("REGEXP")) {
+        if (lexer.identifierEquals("REGEXP")) {
             lexer.nextToken();
             SQLExpr rightExp = equality();
 

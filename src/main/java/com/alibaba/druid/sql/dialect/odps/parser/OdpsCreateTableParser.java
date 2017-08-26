@@ -44,7 +44,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         
         accept(Token.TABLE);
 
-        if (lexer.token() == Token.IF || identifierEquals("IF")) {
+        if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
             lexer.nextToken();
             accept(Token.NOT);
             accept(Token.EXISTS);
@@ -54,7 +54,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
         stmt.setName(this.exprParser.name());
         
-        if (identifierEquals("LIFECYCLE")) {
+        if (lexer.identifierEquals("LIFECYCLE")) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
         }
@@ -137,7 +137,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (identifierEquals("CLUSTERED")) {
+        if (lexer.identifierEquals("CLUSTERED")) {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
@@ -145,7 +145,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             accept(Token.RPAREN);
         }
 
-        if (identifierEquals("SORTED")) {
+        if (lexer.identifierEquals("SORTED")) {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);
@@ -164,7 +164,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             acceptIdentifier("BUCKETS");
         }
         
-        if (identifierEquals("LIFECYCLE")) {
+        if (lexer.identifierEquals("LIFECYCLE")) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
         }

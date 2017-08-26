@@ -54,28 +54,28 @@ public class SQLServerSelectParser extends SQLSelectParser {
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
 
-            if (identifierEquals("BROWSE")) {
+            if (lexer.identifierEquals("BROWSE")) {
                 lexer.nextToken();
                 select.setForBrowse(true);
-            } else if (identifierEquals("XML")) {
+            } else if (lexer.identifierEquals("XML")) {
                 lexer.nextToken();
 
                 for (;;) {
-                    if (identifierEquals("AUTO") //
-                        || identifierEquals("TYPE") //
-                        || identifierEquals("XMLSCHEMA") //
+                    if (lexer.identifierEquals("AUTO") //
+                        || lexer.identifierEquals("TYPE") //
+                        || lexer.identifierEquals("XMLSCHEMA") //
                     ) {
                         select.getForXmlOptions().add(lexer.stringVal());
                         lexer.nextToken();
-                    } else if (identifierEquals("ELEMENTS")) {
+                    } else if (lexer.identifierEquals("ELEMENTS")) {
                         lexer.nextToken();
-                        if (identifierEquals("XSINIL")) {
+                        if (lexer.identifierEquals("XSINIL")) {
                             lexer.nextToken();
                             select.getForXmlOptions().add("ELEMENTS XSINIL");
                         } else {
                             select.getForXmlOptions().add("ELEMENTS");
                         }
-                    } else if (identifierEquals("PATH")) {
+                    } else if (lexer.identifierEquals("PATH")) {
                         SQLExpr xmlPath = this.exprParser.expr();
                         select.setXmlPath(xmlPath);
                     } else {
@@ -94,7 +94,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
             }
         }
         
-        if (identifierEquals("OFFSET")) {
+        if (lexer.identifierEquals("OFFSET")) {
             lexer.nextToken();
             SQLExpr offset = this.expr();
             

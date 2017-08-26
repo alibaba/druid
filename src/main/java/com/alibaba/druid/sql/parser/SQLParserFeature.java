@@ -16,7 +16,8 @@
 package com.alibaba.druid.sql.parser;
 
 public enum SQLParserFeature {
-    KeepInsertValueClauseOriginalString
+    KeepInsertValueClauseOriginalString,
+    EnableSQLBinaryOpExprGroup
     ;
 
     private SQLParserFeature(){
@@ -40,7 +41,7 @@ public enum SQLParserFeature {
         return features;
     }
 
-    public static int of(SQLParserFeature[] features) {
+    public static int of(SQLParserFeature... features) {
         if (features == null) {
             return 0;
         }

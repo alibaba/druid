@@ -117,10 +117,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
         return procedureArgumentList;
     }
 
-    public void setProcedureArgumentList(List<SQLExpr> procedureArgumentList) {
-        this.procedureArgumentList = procedureArgumentList;
-    }
-
     public boolean isHignPriority() {
         return hignPriority;
     }

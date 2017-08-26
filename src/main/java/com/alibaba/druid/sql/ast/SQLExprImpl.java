@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+
 public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
 
     public SQLExprImpl(){
@@ -30,4 +32,6 @@ public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
     public SQLDataType computeDataType() {
         return null;
     }
+
+
 }

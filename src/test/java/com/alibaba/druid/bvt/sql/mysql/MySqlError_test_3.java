@@ -39,6 +39,6 @@ public class MySqlError_test_3 extends MysqlTest {
 
         Assert.assertNotNull(error);
 //        error.printStackTrace();
-        Assert.assertEquals("syntax error, error in :'us = LIMIT ?, ?',expect QUES, actual QUES pos 248, line 1, column 247, token QUES", error.getMessage());
+        Assert.assertEquals("syntax error, error in :'us = LIMIT ?, ?', expect QUES, actual QUES pos 248, line 1, column 247, token QUES", error.getMessage());
     }
 }

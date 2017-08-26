@@ -69,9 +69,9 @@ public class SQLCreateTableParser extends SQLDDLParser {
             } else {
                 throw new ParserException("syntax error " + lexer.info());
             }
-        } else if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("LOCAL")) {
+        } else if (lexer.token == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("LOCAL")) {
             lexer.nextToken();
-            if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("TEMPORAY")) {
+            if (lexer.token == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("TEMPORAY")) {
                 lexer.nextToken();
                 createTable.setType(SQLCreateTableStatement.Type.LOCAL_TEMPORARY);
             } else {
@@ -83,11 +83,11 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
         createTable.setName(this.exprParser.name());
 
-        if (lexer.token() == Token.LPAREN) {
+        if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
 
             for (; ; ) {
-                Token token = lexer.token();
+                Token token = lexer.token;
                 if (token == Token.IDENTIFIER
                         && lexer.stringVal().equalsIgnoreCase("SUPPLEMENTAL")
                         && JdbcConstants.ORACLE.equals(dbType)) {
@@ -111,10 +111,10 @@ public class SQLCreateTableParser extends SQLDDLParser {
                     createTable.getTableElementList().add(column);
                 }
 
-                if (lexer.token() == Token.COMMA) {
+                if (lexer.token == Token.COMMA) {
                     lexer.nextToken();
 
-                    if (lexer.token() == Token.RPAREN) { // compatible for sql server
+                    if (lexer.token == Token.RPAREN) { // compatible for sql server
                         break;
                     }
                     continue;

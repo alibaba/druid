@@ -1675,6 +1675,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     }
 
+    @Override
+    public boolean visit(SQLBinaryOpExprGroup x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLBinaryOpExprGroup x) {
+
+    }
+
     public void config(VisitorFeature feature, boolean state) {
         features = VisitorFeature.config(features, feature, state);
     }

@@ -78,7 +78,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public void configFromProperty(Properties properties) {
-        if (isEnabled(VisitorFeature.OutputParameterized)) {
+        if (this.parameterized) {
             String property = properties.getProperty("druid.parameterized.shardingSupport");
             if ("true".equals(property)) {
                 this.setShardingSupport(true);
@@ -89,7 +89,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean isShardingSupport() {
-        return isEnabled(VisitorFeature.OutputParameterized)
+        return this.parameterized
                 && shardingSupport;
     }
 
@@ -174,18 +174,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             into.accept(this);
         }
 
-        SQLTableSource form = x.getFrom();
-        if (form != null) {
+        SQLTableSource from = x.getFrom();
+        if (from != null) {
             println();
             print0(ucase ? "FROM " : "from ");
-            form.accept(this);
+
+            printTableSource(from);
         }
 
         SQLExpr where = x.getWhere();
         if (where != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            where.accept(this);
+            printExpr(where);
         }
 
         printHierarchical(x);
@@ -193,7 +194,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLSelectGroupByClause groupBy = x.getGroupBy();
         if (groupBy != null) {
             println();
-            groupBy.accept(this);
+            visit(groupBy);
         }
 
         SQLOrderBy orderBy = x.getOrderBy();
@@ -243,6 +244,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLColumnDefinition x) {
+        boolean parameterized = this.parameterized;
+        this.parameterized = false;
+
         x.getName().accept(this);
 
         SQLDataType dataType = x.getDataType();
@@ -300,6 +304,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? " SORTED" : " sorted");
         }
 
+        this.parameterized = parameterized;
         return false;
     }
 
@@ -572,8 +577,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         try {
-            if (this.isEnabled(VisitorFeature.OutputParameterized)
-                    && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+            if (this.parameterized) {
                 this.appender.append('?');
                 incrementReplaceCunt();
                 if (this instanceof ExportParameterVisitor || this.parameters != null) {
@@ -677,77 +681,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         return false;
-    }
-
-    public boolean visit(SQLMethodInvokeExpr x) {
-        SQLExpr owner = x.getOwner();
-        if ("SUBSTRING".equalsIgnoreCase(x.getMethodName())) {
-            if (owner != null) {
-                printMethodOwner(owner);
-            }
-            print0(x.getMethodName());
-            print('(');
-            printAndAccept(x.getParameters(), ", ");
-            SQLExpr from = (SQLExpr) x.getAttribute("FROM");
-            if (from != null) {
-                print0(ucase ? " FROM " : " from ");
-                from.accept(this);
-            }
-
-            SQLExpr forExpr = (SQLExpr) x.getAttribute("FOR");
-            if (forExpr != null) {
-                print0(ucase ? " FOR " : " for ");
-                forExpr.accept(this);
-            }
-            print(')');
-
-            return false;
-        }
-
-        if ("TRIM".equalsIgnoreCase(x.getMethodName())) {
-            if (owner != null) {
-                printMethodOwner(owner);
-            }
-            print0(x.getMethodName());
-            print('(');
-
-            String trimType = (String) x.getAttribute("TRIM_TYPE");
-            if (trimType != null) {
-                print0(trimType);
-                print(' ');
-            }
-
-            printAndAccept(x.getParameters(), ", ");
-
-            SQLExpr from = (SQLExpr) x.getAttribute("FROM");
-            if (from != null) {
-                print0(ucase ? " FROM " : " from ");
-                from.accept(this);
-            }
-
-            print(')');
-
-            return false;
-        }
-
-        if (("CONVERT".equalsIgnoreCase(x.getMethodName())) || "CHAR".equalsIgnoreCase(x.getMethodName())) {
-            if (owner != null) {
-                printMethodOwner(owner);
-            }
-            print0(x.getMethodName());
-            print('(');
-            printAndAccept(x.getParameters(), ", ");
-
-            String charset = (String) x.getAttribute("USING");
-            if (charset != null) {
-                print0(ucase ? " USING " : " using ");
-                print0(charset);
-            }
-            print(')');
-            return false;
-        }
-
-        return super.visit(x);
     }
 
     @Override
@@ -999,7 +932,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     protected void printValuesList(List<SQLInsertStatement.ValuesClause> valuesList) {
 
-        if (isEnabled(VisitorFeature.OutputParameterized)) {
+        if (this.parameterized) {
             print0(ucase ? "VALUES " : "values ");
             incrementIndent();
             valuesList.get(0).accept(this);
@@ -2765,8 +2698,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlCharExpr x) {
-        if (isEnabled(VisitorFeature.OutputParameterized)
-                && ParameterizedOutputVisitorUtils.checkParameterize(x)) {
+        if (this.parameterized) {
             print('?');
             incrementReplaceCunt();
             if (this instanceof ExportParameterVisitor || this.parameters != null) {
@@ -3670,5 +3602,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlFlushStatement x) {
 
+    }
+
+    protected void printQuery(SQLSelectQuery x) {
+        Class<?> clazz = x.getClass();
+        if (clazz == MySqlSelectQueryBlock.class) {
+            visit((MySqlSelectQueryBlock) x);
+        } else if (clazz == SQLSelectQueryBlock.class) {
+            visit((SQLSelectQueryBlock) x);
+        } else if (clazz == SQLUnionQuery.class) {
+            visit((SQLUnionQuery) x);
+        } else {
+            x.accept(this);
+        }
     }
 } //

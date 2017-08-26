@@ -36,6 +36,9 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
 
     private SQLExpr             from;
     private SQLExpr             using;
+    private SQLExpr             _for;
+
+    private String              trimOption;
 
     public SQLMethodInvokeExpr(){
 
@@ -254,5 +257,24 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             using.setParent(this);
         }
         this.using = using;
+    }
+
+    public SQLExpr getFor() {
+        return _for;
+    }
+
+    public void setFor(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this._for = x;
+    }
+
+    public String getTrimOption() {
+        return trimOption;
+    }
+
+    public void setTrimOption(String trimOption) {
+        this.trimOption = trimOption;
     }
 }

@@ -21,12 +21,14 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FNVUtils;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
     protected String          name;
 
     private transient String  lowerName;
+    protected transient long  hash_lower;
     private transient Boolean parameter;
 
     private transient SQLColumnDefinition resolvedColumn;
@@ -40,6 +42,11 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         this.name = name;
     }
 
+    public SQLIdentifierExpr(String name, long hash_lower){
+        this.name = name;
+        this.hash_lower = hash_lower;
+    }
+
     public String getSimpleName() {
         return name;
     }
@@ -51,6 +58,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     public void setName(String name) {
         this.name = name;
         this.lowerName = null;
+        this.hash_lower = 0L;
     }
 
     public String getLowerName() {
@@ -58,6 +66,13 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
             lowerName = name.toLowerCase();
         }
         return lowerName;
+    }
+
+    public long hash_lower() {
+        if (hash_lower == 0) {
+            hash_lower = FNVUtils.fnv_64_lower(name);
+        }
+        return hash_lower;
     }
 
     public Boolean isParameter() {
@@ -106,6 +121,18 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
             return false;
         }
         return true;
+    }
+
+    public boolean equals(SQLIdentifierExpr other) {
+        if (name == other.name) {
+            return true;
+        }
+
+        if (name == null || other.name == null) {
+            return false;
+        }
+
+        return name.equals(other.name);
     }
 
     public boolean equalsIgnoreCase(Object obj) {

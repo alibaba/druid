@@ -58,7 +58,7 @@ public class SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new ParserException("syntax error, expect " + text + ", actual " + lexer.token() + ", " + lexer.info());
+            throw new ParserException("syntax error, expect " + text + ", actual " + lexer.token + ", " + lexer.info());
         }
     }
 
@@ -67,7 +67,7 @@ public class SQLParser {
     }
 
     protected String tableAlias(boolean must) {
-        final Token token = lexer.token();
+        final Token token = lexer.token;
         if (token == Token.CONNECT
                 || token == Token.START
                 || token == Token.SELECT
@@ -95,7 +95,7 @@ public class SQLParser {
     protected String as() {
         String alias = null;
 
-        final Token token = lexer.token();
+        final Token token = lexer.token;
 
         if (token == Token.COMMA) {
             return null;
@@ -107,33 +107,33 @@ public class SQLParser {
             alias = alias();
 
             if (alias != null) {
-                while (lexer.token() == Token.DOT) {
+                while (lexer.token == Token.DOT) {
                     lexer.nextToken();
-                    alias += ('.' + lexer.token().name());
+                    alias += ('.' + lexer.token.name());
                     lexer.nextToken();
                 }
 
                 return alias;
             }
 
-            if (lexer.token() == Token.LPAREN) {
+            if (lexer.token == Token.LPAREN) {
                 return null;
             }
 
             throw new ParserException("Error : " + lexer.info());
         }
 
-        if (lexer.token() == Token.LITERAL_ALIAS) {
-            alias = '"' + lexer.stringVal() + '"';
-            lexer.nextToken();
-        } else if (lexer.token() == Token.IDENTIFIER) {
+        if (lexer.token == Token.LITERAL_ALIAS) {
             alias = lexer.stringVal();
             lexer.nextToken();
-        } else if (lexer.token() == Token.LITERAL_CHARS) {
+        } else if (lexer.token == Token.IDENTIFIER) {
+            alias = lexer.stringVal();
+            lexer.nextToken();
+        } else if (lexer.token == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
         } else {
-            switch (lexer.token()) {
+            switch (lexer.token) {
                 case CASE:
                 case USER:
                 case LOB:
@@ -149,11 +149,11 @@ public class SQLParser {
             }
         }
 
-        switch (lexer.token()) {
+        switch (lexer.token) {
             case KEY:
             case INTERVAL:
             case CONSTRAINT:
-                alias = lexer.token().name();
+                alias = lexer.token.name();
                 lexer.nextToken();
                 return alias;
             default:
@@ -165,17 +165,17 @@ public class SQLParser {
 
     protected String alias() {
         String alias = null;
-        if (lexer.token() == Token.LITERAL_ALIAS) {
-            alias = '"' + lexer.stringVal() + '"';
-            lexer.nextToken();
-        } else if (lexer.token() == Token.IDENTIFIER) {
+        if (lexer.token == Token.LITERAL_ALIAS) {
             alias = lexer.stringVal();
             lexer.nextToken();
-        } else if (lexer.token() == Token.LITERAL_CHARS) {
+        } else if (lexer.token == Token.IDENTIFIER) {
+            alias = lexer.stringVal();
+            lexer.nextToken();
+        } else if (lexer.token == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
         } else {
-            switch (lexer.token()) {
+            switch (lexer.token) {
                 case KEY:
                 case INDEX:
                 case CASE:
@@ -277,14 +277,14 @@ public class SQLParser {
 
         // throw new
         // ParserException("syntax error, error arround:'"+arround+"',expect "
-        // + token + ", actual " + lexer.token() + " "
+        // + token + ", actual " + lexer.token + " "
         // + lexer.stringVal() + ", pos " + this.lexer.pos());
-        throw new ParserException("syntax error, error in :'" + arround + "',expect " + token + ", actual "
-                                  + lexer.token() + " " + lexer.info());
+        throw new ParserException("syntax error, error in :'" + arround + "', expect " + token + ", actual "
+                                  + lexer.token + " " + lexer.info());
     }
 
     public void accept(Token token) {
-        if (lexer.token() == token) {
+        if (lexer.token == token) {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
@@ -293,19 +293,19 @@ public class SQLParser {
     }
 
     public int acceptInteger() {
-        if (lexer.token() == Token.LITERAL_INT) {
+        if (lexer.token == Token.LITERAL_INT) {
             int intVal = ((Integer) lexer.integerValue()).intValue();
             lexer.nextToken();
             return intVal;
         } else {
-            throw new ParserException("syntax error, expect int, actual " + lexer.token() + " "
+            throw new ParserException("syntax error, expect int, actual " + lexer.token + " "
                     + lexer.info());
         }
     }
 
     public void match(Token token) {
-        if (lexer.token() != token) {
-            throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token() + " "
+        if (lexer.token != token) {
+            throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token + " "
                                       + lexer.info());
         }
     }
