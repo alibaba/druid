@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -27,6 +28,19 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
 
     private Boolean           recursive;
     private final List<Entry> entries = new ArrayList<Entry>();
+
+    public SQLWithSubqueryClause clone() {
+        SQLWithSubqueryClause x = new SQLWithSubqueryClause();
+        x.recursive = recursive;
+
+        for (Entry entry : entries) {
+            Entry entry2 = entry.clone();
+            entry2.setParent(x);
+            x.entries.add(entry2);
+        }
+
+        return x;
+    }
 
     public List<Entry> getEntries() {
         return entries;
@@ -55,28 +69,36 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
-    public static class Entry extends SQLObjectImpl {
+    public static class Entry extends SQLTableSourceImpl {
 
-        protected SQLIdentifierExpr   name;
         protected final List<SQLName> columns = new ArrayList<SQLName>();
         protected SQLSelect           subQuery;
+        protected SQLStatement        returningStatement;
+
+        public Entry clone() {
+            Entry x = new Entry();
+
+            for (SQLName column : columns) {
+                SQLName column2 = column.clone();
+                column2.setParent(x);
+                x.columns.add(column2);
+            }
+
+            if (subQuery != null) {
+                x.setSubQuery(subQuery.clone());
+            }
+
+            return x;
+        }
 
         @Override
         protected void accept0(SQLASTVisitor visitor) {
             if (visitor.visit(this)) {
-                acceptChild(visitor, name);
                 acceptChild(visitor, columns);
                 acceptChild(visitor, subQuery);
+                acceptChild(visitor, returningStatement);
             }
             visitor.endVisit(this);
-        }
-
-        public SQLIdentifierExpr getName() {
-            return name;
-        }
-
-        public void setName(SQLIdentifierExpr name) {
-            this.name = name;
         }
 
         public SQLSelect getSubQuery() {
@@ -84,12 +106,39 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         }
 
         public void setSubQuery(SQLSelect subQuery) {
+            if (subQuery != null) {
+                subQuery.setParent(this);
+            }
             this.subQuery = subQuery;
+        }
+
+        public SQLStatement getReturningStatement() {
+            return returningStatement;
+        }
+
+        public void setReturningStatement(SQLStatement returningStatement) {
+            if (returningStatement != null) {
+                returningStatement.setParent(this);
+            }
+            this.returningStatement = returningStatement;
         }
 
         public List<SQLName> getColumns() {
             return columns;
         }
+    }
 
+    public Entry findEntry(long alias_hash) {
+        if (alias_hash == 0) {
+            return null;
+        }
+
+        for (Entry entry : entries) {
+            if (entry.alias_hash() == alias_hash) {
+                return entry;
+            }
+        }
+
+        return null;
     }
 }

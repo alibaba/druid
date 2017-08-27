@@ -52,19 +52,19 @@ public class PGSelectTest16 extends PGTest {
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        assertEquals(9, visitor.getColumns().size());
-        assertEquals(2, visitor.getTables().size());
+        assertEquals(7, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
         
         assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "id")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "link")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "data")));
-        assertTrue(visitor.getColumns().contains(new TableStat.Column("search_graph", "depth")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("search_graph", "depth")));
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "path")));
-        assertTrue(visitor.getColumns().contains(new TableStat.Column("search_graph", "link")));
+//        assertTrue(visitor.getColumns().contains(new TableStat.Column("search_graph", "link")));
 //        assertTrue(visitor.getColumns().contains(new TableStat.Column("graph", "cycle")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("sg", "depth")));
         assertTrue(visitor.getColumns().contains(new TableStat.Column("sg", "link")));

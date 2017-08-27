@@ -19,18 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObject;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObjectImpl;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObject{
 
-    private PGWithClause  with;
     private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
     private WindowClause  window;
 
@@ -59,7 +56,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
     @Override
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.with);
             acceptChild(visitor, this.distinctOn);
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.into);
@@ -97,14 +93,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock implements PGSQLObje
 
     public void setWindow(WindowClause window) {
         this.window = window;
-    }
-
-    public PGWithClause getWith() {
-        return with;
-    }
-
-    public void setWith(PGWithClause with) {
-        this.with = with;
     }
 
     public SQLOrderBy getOrderBy() {

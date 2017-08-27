@@ -38,7 +38,11 @@ public interface SQLTableSource extends SQLObject {
     void setFlashback(SQLExpr flashback);
 
     SQLColumnDefinition findColumn(String columnName);
+    SQLColumnDefinition findColumn(long columnNameHash);
+
     SQLTableSource findTableSourceWithColumn(String columnName);
+    SQLTableSource findTableSourceWithColumn(long columnName_hash);
 
     SQLTableSource findTableSource(String alias);
+    SQLTableSource findTableSource(long alias_hash);
 }

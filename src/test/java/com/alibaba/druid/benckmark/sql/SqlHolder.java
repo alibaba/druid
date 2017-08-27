@@ -8,6 +8,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -23,7 +25,7 @@ public class SqlHolder {
     private String dialect;
 
     private boolean parsed;
-    private SQLStatement ast;
+    public SQLStatement ast;
 
     public static SqlHolder of(String sql) {
         return new SqlHolder(sql);
@@ -112,5 +114,101 @@ public class SqlHolder {
         String params = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
         params = StringUtils.replace(params, "\"", "\\\"");
         return params;
+    }
+
+    public String getSqlItems(String db) {
+        Map<String, LinkedHashSet<String>> itemMap = new HashMap<String, LinkedHashSet<String>>();
+        try {
+            SchemaStatVisitor schemaStatVisitor = new MySqlSchemaStatVisitor();
+            ast.accept(schemaStatVisitor);
+            List<TableStat.Condition> conditionList = schemaStatVisitor.getConditions();
+            for (TableStat.Condition condition : conditionList) {
+                String tableName = condition.getColumn().getTable();
+                LinkedHashSet<String> condLinkedSet = itemMap.get(tableName);
+                if (condLinkedSet == null) {
+                    condLinkedSet = new LinkedHashSet<String>();
+                    itemMap.put(tableName, condLinkedSet);
+                }
+                TableStat.Column column = condition.getColumn();
+                String upperClnName = column.toString().toUpperCase();
+                String finalClnName = filterChar(db, upperClnName);
+                condLinkedSet.add(finalClnName);
+            }
+        } catch (Exception ex) {
+        }
+        if (itemMap.isEmpty())
+            return null;
+        StringBuilder resSb = new StringBuilder();
+        for (Map.Entry<String, LinkedHashSet<String>> entry : itemMap.entrySet()) {
+            resSb.append(StringUtils.join(entry.getValue(), ",")).append(",");
+        }
+        return resSb.substring(0, resSb.length() - 1);
+    }
+
+    public static String filterChar(String db, String name) {
+        String resName;
+        if (StringUtils.isNotBlank(name)) {
+            String[] names = name.split("\\.");
+            StringBuilder nameSb = new StringBuilder();
+            boolean isFirst = true;
+            int size = names.length;
+            int k = 0;
+            for (String n : names) {
+                String tempN = n;
+                if (n.startsWith("`") && n.endsWith("`")) {
+                    tempN = n.substring(1, n.length() - 1);
+                }
+                if (k == size - 1) {
+                    nameSb.append(tempN).append(".");
+                } else if (isFirst) {
+                    if (!n.startsWith(db)) {
+                        nameSb.append(convert(tempN)).append(".");
+                    }
+                    isFirst = false;
+                } else {
+                    nameSb.append(convert(tempN)).append(".");
+                }
+                k++;
+            }
+            resName = nameSb.substring(0, nameSb.length() - 1);
+        } else {
+            resName = name;
+        }
+        return db + "." + resName;
+    }
+
+    public static String convert(String tableName) {
+        if (StringUtils.isBlank(tableName)) {
+            return tableName;
+        }
+        int len = tableName.length();
+        int k = -1;
+        int min = Math.min(4, len);
+        for (int i = 1; i <= min; i++) {
+            String ch = String.valueOf(tableName.charAt(len - i));
+            boolean isNum = StringUtils.isNumeric(ch);
+            if (isNum) {
+                k = i;
+            } else {
+                break;
+            }
+        }
+
+        if (k != -1) {
+            tableName = tableName.substring(0, len - k);
+            if (tableName.endsWith("_")) {
+                tableName = tableName.substring(0, tableName.length() - 1);
+            }
+        }
+        int idx = tableName.lastIndexOf("_");
+        if (idx == -1 || (tableName.length() - 1 == idx)) {
+            return tableName;
+        }
+        String num = tableName.substring(idx + 1);
+        boolean isNum = StringUtils.isNumeric(num);
+        if (isNum) {
+            return tableName.substring(0, idx);
+        }
+        return tableName;
     }
 }

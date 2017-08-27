@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -73,10 +74,13 @@ public class PGLexer extends Lexer {
         DEFAULT_PG_KEYWORDS = new Keywords(map);
     }
 
-    public PGLexer(String input){
+    public PGLexer(String input, SQLParserFeature... features){
         super(input);
         super.keywods = DEFAULT_PG_KEYWORDS;
         super.dbType = JdbcConstants.POSTGRESQL;
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
     }
     
     protected void scanString() {

@@ -15,7 +15,12 @@
  */
 package com.alibaba.druid.sql.repository;
 
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wenshao on 03/08/2017.
@@ -25,7 +30,8 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
     boolean isEnabled(Option option);
 
     public static enum Option {
-        ResolveAllColumn
+        ResolveAllColumn,
+        ResolveIdentifierAlias
         ;
         private Option() {
             mask = (1 << ordinal());
@@ -45,6 +51,48 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
             }
 
             return value;
+        }
+    }
+
+    SchemaRepository getRepository();
+
+    Context getContext();
+    Context createContext(SQLObject object);
+    void popContext();
+
+    static class Context {
+        public final Context parent;
+        public final SQLObject object;
+
+        private SQLTableSource tableSource;
+
+        private SQLTableSource from;
+
+        private Map<Long, SQLTableSource> tableSourceMap;
+
+        public Context(SQLObject object, Context parent) {
+            this.object = object;
+            this.parent = parent;
+        }
+
+        public SQLTableSource getFrom() {
+            return from;
+        }
+
+        public void setFrom(SQLTableSource from) {
+            this.from = from;
+        }
+
+        public SQLTableSource getTableSource() {
+            return tableSource;
+        }
+
+        public void setTableSource(SQLTableSource tableSource) {
+            this.tableSource = tableSource;
+        }
+
+        public void addTableSource(long alias_hash, SQLTableSource tableSource) {
+            tableSourceMap.put(alias_hash, tableSource);
         }
     }
 }

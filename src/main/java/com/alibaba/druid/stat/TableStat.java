@@ -403,8 +403,8 @@ public class TableStat {
 
     public static class Column {
 
-        private String              table;
-        private String              name;
+        private final String              table;
+        private final String              name;
         private boolean             where;
         private boolean             select;
         private boolean             groupBy;
@@ -423,10 +423,6 @@ public class TableStat {
          */
         private String              dataType;
 
-        public Column(){
-
-        }
-
         public Column(String table, String name){
             this.table = table;
             this.name = name;
@@ -434,11 +430,6 @@ public class TableStat {
 
         public String getTable() {
             return table;
-        }
-
-        public void setTable(String table) {
-            this.table = table;
-            this.fullName = null;
         }
 
         public String getFullName() {
@@ -511,11 +502,6 @@ public class TableStat {
 
         public String getName() {
             return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-            this.fullName = null;
         }
         
         /**

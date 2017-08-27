@@ -19,4 +19,6 @@ public interface SQLName extends SQLExpr {
     String getSimpleName();
 
     SQLName clone();
+
+    long name_hash_lower();
 }

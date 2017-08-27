@@ -17,11 +17,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.statement.SQLExprHint;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -42,7 +38,10 @@ public class SQLServerSelectParser extends SQLSelectParser {
     public SQLSelect select() {
         SQLSelect select = new SQLSelect();
 
-        withSubquery(select);
+        if (lexer.token() == Token.WITH) {
+            SQLWithSubqueryClause with = this.parseWith();
+            select.setWithSubQuery(with);
+        }
 
         select.setQuery(query());
         select.setOrderBy(parseOrderBy());

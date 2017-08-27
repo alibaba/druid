@@ -68,9 +68,28 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return lowerName;
     }
 
-    public long hash_lower() {
-        if (hash_lower == 0) {
-            hash_lower = FNVUtils.fnv_64_lower(name);
+    public long name_hash_lower() {
+        if (hash_lower == 0
+                && name != null) {
+            final int len = name.length();
+
+            boolean quote = false;
+
+            String name = this.name;
+            if (len > 2) {
+                char c0 = name.charAt(0);
+                char c1 = name.charAt(len - 1);
+                if ((c0 == '`' && c1 == '`')
+                        || (c0 == '"' && c1 == '"')
+                        || (c0 == '[' && c1 == ']')) {
+                    quote = true;
+                }
+            }
+            if (quote) {
+                hash_lower = FNVUtils.fnv_64_lower(name, 1, len -1);
+            } else {
+                hash_lower = FNVUtils.fnv_64_lower(name);
+            }
         }
         return hash_lower;
     }
@@ -200,7 +219,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
             if (queryBlock == null) {
                 return null;
             }
-            SQLSelectItem selectItem = queryBlock.findSelectItem(name);
+            SQLSelectItem selectItem = queryBlock.findSelectItem(name_hash_lower());
             if (selectItem != null) {
                 return selectItem.computeDataType();
             }

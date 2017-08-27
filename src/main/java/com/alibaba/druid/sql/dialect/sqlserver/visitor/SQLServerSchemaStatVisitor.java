@@ -33,13 +33,12 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQLServerASTVisitor {
-
-    @Override
-    public String getDbType() {
-        return JdbcUtils.SQL_SERVER;
+    public SQLServerSchemaStatVisitor() {
+        super(JdbcConstants.SQL_SERVER);
     }
 
     @Override

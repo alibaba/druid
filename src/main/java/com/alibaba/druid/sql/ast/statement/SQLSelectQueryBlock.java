@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FNVUtils;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery, SQLReplaceable {
     private boolean                     bracket         = false;
@@ -448,6 +449,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return from.findTableSourceWithColumn(column);
     }
 
+    public SQLTableSource findTableSourceWithColumn(long columnHash) {
+        if (from == null) {
+            return null;
+        }
+        return from.findTableSourceWithColumn(columnHash);
+    }
+
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
         if (where == expr) {
@@ -462,10 +470,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             return null;
         }
 
-        String ident_normalized = SQLUtils.normalize(ident);
+        long hash = FNVUtils.fnv_64_lower_normalized(ident);
+        return findSelectItem(hash);
+    }
 
+    public SQLSelectItem findSelectItem(long identHash) {
         for (SQLSelectItem item : this.selectList) {
-            if (item.match(ident_normalized)) {
+            if (item.match(identHash)) {
                 return item;
             }
         }
@@ -478,7 +489,8 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             return null;
         }
 
-        return from.findColumn(columnName);
+        long hash = FNVUtils.fnv_64_lower_normalized(columnName);
+        return from.findColumn(hash);
     }
 
     public void addCondition(SQLExpr expr) {

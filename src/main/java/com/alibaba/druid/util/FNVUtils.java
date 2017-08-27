@@ -80,6 +80,7 @@ public class FNVUtils {
     public final static long MATCH = fnv_64_lower("MATCH");
     public final static long EXTRACT = fnv_64_lower("EXTRACT");
     public final static long POSITION = fnv_64_lower("POSITION");
+    public final static long DUAL = fnv_64_lower("DUAL");
 
     public static long fnv_64(String input) {
         if (input == null) {
@@ -99,6 +100,46 @@ public class FNVUtils {
     public static long fnv_64_lower(String key) {
         long hashCode = 0xcbf29ce484222325L;
         for (int i = 0; i < key.length(); ++i) {
+            char ch = key.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z') {
+                ch = (char) (ch + 32);
+            }
+
+            hashCode ^= ch;
+            hashCode *= 0x100000001b3L;
+        }
+
+        return hashCode;
+    }
+
+    public static long fnv_64_lower_normalized(String name) {
+        if (name == null) {
+            return 0;
+        }
+
+        boolean quote = false;
+
+        int len = name.length();
+        if (len > 2) {
+            char c0 = name.charAt(0);
+            char c1 = name.charAt(len - 1);
+            if ((c0 == '`' && c1 == '`')
+                    || (c0 == '"' && c1 == '"')
+                    || (c0 == '[' && c1 == ']')) {
+                quote = true;
+            }
+        }
+        if (quote) {
+            return FNVUtils.fnv_64_lower(name, 1, len -1);
+        } else {
+            return FNVUtils.fnv_64_lower(name);
+        }
+    }
+
+    public static long fnv_64_lower(String key, int offset, int end) {
+        long hashCode = 0xcbf29ce484222325L;
+        for (int i = offset; i < end; ++i) {
             char ch = key.charAt(i);
 
             if (ch >= 'A' && ch <= 'Z') {

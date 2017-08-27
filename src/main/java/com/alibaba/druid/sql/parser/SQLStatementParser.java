@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEven
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -127,14 +128,12 @@ public class SQLStatementParser extends SQLParser {
 
                     continue;
                 }
-                case WITH:
-                if (!JdbcConstants.POSTGRESQL.equals(dbType)){
-                    SQLStatement stmt = parseSelect();
+                case WITH: {
+                    SQLStatement stmt = parseWith();
                     stmt.setParent(parent);
                     statementList.add(stmt);
                     continue;
                 }
-                break;
                 case SELECT: {
                     SQLStatement stmt = parseSelect();
                     stmt.setParent(parent);
@@ -2777,5 +2776,86 @@ public class SQLStatementParser extends SQLParser {
             stmt.setColumn(column);
         }
         return stmt;
+    }
+
+    public SQLWithSubqueryClause parseWithQuery() {
+        accept(Token.WITH);
+
+        SQLWithSubqueryClause withQueryClause = new SQLWithSubqueryClause();
+
+        if (lexer.token == Token.RECURSIVE || lexer.identifierEquals("RECURSIVE")) {
+            lexer.nextToken();
+            withQueryClause.setRecursive(true);
+        }
+
+        for (;;) {
+            SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
+            entry.setParent(withQueryClause);
+
+            String alias = this.lexer.stringVal();
+            lexer.nextToken();
+            entry.setAlias(alias);
+
+            if (lexer.token == Token.LPAREN) {
+                lexer.nextToken();
+                exprParser.names(entry.getColumns());
+                accept(Token.RPAREN);
+            }
+
+            accept(Token.AS);
+            accept(Token.LPAREN);
+
+            switch (lexer.token) {
+                case VALUES:
+                case SELECT:
+                    entry.setSubQuery(
+                            this.createSQLSelectParser()
+                                    .select());
+                    break;
+                case INSERT:
+                    entry.setReturningStatement(
+                            this.parseInsert()
+                    );
+                    break;
+                case UPDATE:
+                    entry.setReturningStatement(
+                            this.parseUpdateStatement()
+                    );
+                    break;
+                case DELETE:
+                    entry.setReturningStatement(
+                            this.parseDeleteStatement()
+                    );
+                    break;
+                default:
+                    break;
+            }
+
+            accept(Token.RPAREN);
+
+            withQueryClause.addEntry(entry);
+
+            if (lexer.token == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+
+        return withQueryClause;
+    }
+
+    public SQLStatement parseWith() {
+        SQLWithSubqueryClause with = this.parseWithQuery();
+
+        if (lexer.token() == Token.SELECT) {
+            SQLSelectParser selectParser = createSQLSelectParser();
+            SQLSelect select = selectParser.select();
+            select.setWithSubQuery(with);
+            return new SQLSelectStatement(select, dbType);
+        }
+
+        throw new ParserException("TODO. " + lexer.info());
     }
 }

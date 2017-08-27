@@ -20,13 +20,13 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatement {
 
-    private PGWithClause       with;
+    private SQLWithSubqueryClause with;
     private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
     private SQLExpr            returning;
     private boolean			   defaultValues = false;
@@ -55,11 +55,11 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         this.returning = returning;
     }
 
-    public PGWithClause getWith() {
+    public SQLWithSubqueryClause getWith() {
         return with;
     }
 
-    public void setWith(PGWithClause with) {
+    public void setWith(SQLWithSubqueryClause with) {
         this.with = with;
     }
 

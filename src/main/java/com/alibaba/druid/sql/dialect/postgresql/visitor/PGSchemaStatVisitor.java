@@ -21,9 +21,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -42,9 +39,13 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.Wind
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisitor {
+    public PGSchemaStatVisitor() {
+        super(JdbcConstants.POSTGRESQL);
+    }
 
     @Override
     public String getDbType() {
@@ -83,47 +84,16 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(PGWithQuery x) {
-
-    }
-
-    @Override
-    public boolean visit(PGWithQuery x) {
-        x.getQuery().accept(this);
-        
-        Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null) {
-            String alias = null;
-            if (x.getName() != null) {
-                alias = x.getName().toString();
-            }
-
-            if (alias != null) {
-                aliasMap.put(alias, null);
-                addSubQuery(alias, x.getQuery());
-            }
-        }
-        
-        return false;
-    }
-
-    @Override
-    public void endVisit(PGWithClause x) {
-
-    }
-
-    @Override
-    public boolean visit(PGWithClause x) {
-        return true;
-    }
-
-    @Override
     public void endVisit(PGDeleteStatement x) {
 
     }
 
     @Override
     public boolean visit(PGDeleteStatement x) {
+        if (repository != null) {
+            repository.resolve(x);
+        }
+
         if (x.getWith() != null) {
             x.getWith().accept(this);
         }
@@ -204,10 +174,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGSelectStatement x) {
-        if (x.getWith() != null) {
-            x.getWith().accept(this);
-        }
-
         return visit((SQLSelectStatement) x);
     }
 

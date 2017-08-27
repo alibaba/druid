@@ -23,11 +23,14 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FNVUtils;
 
 public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     private SQLExpr owner;
     private String  name;
+
+    protected long name_hash_lower;
 
     private transient SQLColumnDefinition resolvedColumn;
     private transient SQLTableSource resolvedTableSource;
@@ -39,6 +42,12 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     public SQLPropertyExpr(SQLExpr owner, String name){
         setOwner(owner);
         this.name = name;
+    }
+
+    public SQLPropertyExpr(SQLExpr owner, String name, long name_hash_lower){
+        setOwner(owner);
+        this.name = name;
+        this.name_hash_lower = name_hash_lower;
     }
 
     public SQLPropertyExpr(){
@@ -153,6 +162,32 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return false;
     }
 
+    public long name_hash_lower() {
+        if (name_hash_lower == 0
+                && name != null) {
+            final int len = name.length();
+
+            boolean quote = false;
+
+            String name = this.name;
+            if (len > 2) {
+                char c0 = name.charAt(0);
+                char c1 = name.charAt(len - 1);
+                if ((c0 == '`' && c1 == '`')
+                        || (c0 == '"' && c1 == '"')
+                        || (c0 == '[' && c1 == ']')) {
+                    quote = true;
+                }
+            }
+            if (quote) {
+                name_hash_lower = FNVUtils.fnv_64_lower(name, 1, len -1);
+            } else {
+                name_hash_lower = FNVUtils.fnv_64_lower(name);
+            }
+        }
+        return name_hash_lower;
+    }
+
     public String normalizedName() {
 
         String ownerName;
@@ -195,7 +230,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             if (queryBlock == null) {
                 return null;
             }
-            SQLSelectItem selectItem = queryBlock.findSelectItem(name);
+            SQLSelectItem selectItem = queryBlock.findSelectItem(name_hash_lower());
             if (selectItem != null) {
                 return selectItem.computeDataType();
             }

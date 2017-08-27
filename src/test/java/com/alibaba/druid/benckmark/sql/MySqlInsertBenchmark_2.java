@@ -29,8 +29,8 @@ public class MySqlInsertBenchmark_2 extends TestCase {
         System.out.println(sql);
         for (int i = 0; i < 5; ++i) {
 //            perf(); // 5043
-//            perf_toString(); // 2101
-            perf_toString_featured();
+            perf_toString(); // 2101
+//            perf_toString_featured(); // 7493
         }
     }
 
@@ -70,7 +70,7 @@ public class MySqlInsertBenchmark_2 extends TestCase {
 
     public void perf_toString_featured() {
         long startMillis = System.currentTimeMillis();
-        for (int i = 0; i < 1000 * 1000; ++i) {
+        for (int i = 0; i < 1000 * 1000 * 10; ++i) {
             SQLUtils.toMySqlString(stmtList.get(0), VisitorFeature.OutputUseInsertValueClauseOriginalString);
         }
         long millis = System.currentTimeMillis() - startMillis;

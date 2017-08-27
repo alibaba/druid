@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -30,7 +25,7 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
 
     private boolean        only      = false;
 
-    private PGWithClause   with;
+    private SQLWithSubqueryClause with;
 
     public PGUpdateStatement(){
         super (JdbcConstants.POSTGRESQL);
@@ -44,11 +39,11 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
         this.only = only;
     }
 
-    public PGWithClause getWith() {
+    public SQLWithSubqueryClause getWith() {
         return with;
     }
 
-    public void setWith(PGWithClause with) {
+    public void setWith(SQLWithSubqueryClause with) {
         this.with = with;
     }
 

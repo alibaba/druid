@@ -49,16 +49,26 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
+import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 import java.util.Map;
 
 public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlASTVisitor {
 
+    public MySqlSchemaStatVisitor() {
+        super (JdbcConstants.MYSQL);
+    }
+
     public boolean visit(SQLSelectStatement x) {
+        if (repository != null) {
+            repository.resolve(x);
+        }
+
         setAliasMap();
         getAliasMap().put("DUAL", null);
 
@@ -72,6 +82,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     // DUAL
     public boolean visit(MySqlDeleteStatement x) {
+        if (repository != null) {
+            repository.resolve(x);
+        }
+
         setAliasMap();
 
         setMode(x, Mode.Delete);
@@ -452,11 +466,14 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlExplainStatement x) {
-        if (x.getTableName() != null) {
-            String table = x.getTableName().toString();
+        SQLName tableName = x.getTableName();
+        if (tableName != null) {
+            String table = tableName.toString();
             getTableStat(table);
-            if (x.getColumnName() != null) {
-                addColumn(table, x.getColumnName().toString());
+
+            SQLName columnName = x.getColumnName();
+            if (columnName != null) {
+                addColumn(table, columnName.getSimpleName(), tableName.name_hash_lower(), columnName.name_hash_lower());
             }
         }
 
@@ -474,7 +491,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
-        
         visit((SQLUpdateStatement) x);
         for (SQLExpr item : x.getReturning()) {
             item.accept(this);
@@ -961,10 +977,13 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public boolean visit(MySqlAlterTableChangeColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
-        String table = stmt.getName().toString();
 
-        String columnName = x.getColumnName().toString();
-        addColumn(table, columnName);
+        SQLName table = stmt.getName();
+        String tableName = table.toString();
+
+        SQLName column = x.getColumnName();
+        String columnName = column.toString();
+        addColumn(tableName, columnName, table.name_hash_lower(), column.name_hash_lower());
         return false;
     }
 
@@ -976,10 +995,14 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public boolean visit(MySqlAlterTableModifyColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
-        String table = stmt.getName().toString();
 
-        String columnName = x.getNewColumnDefinition().getName().toString();
-        addColumn(table, columnName);
+        SQLName table = stmt.getName();
+        String tableName = table.toString();
+
+        SQLName column = x.getNewColumnDefinition().getName();
+        String columnName = column.toString();
+        addColumn(tableName, columnName, table.name_hash_lower(), column.name_hash_lower());
+
         return false;
     }
 
@@ -1010,6 +1033,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlCreateTableStatement x) {
+        if (repository != null) {
+            repository.resolve(x);
+        }
+
         boolean val = super.visit((SQLCreateTableStatement) x);
 
         for (SQLObject option : x.getTableOptions().values()) {

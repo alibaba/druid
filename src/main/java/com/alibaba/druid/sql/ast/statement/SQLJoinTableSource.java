@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FNVUtils;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
@@ -416,15 +417,20 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public SQLColumnDefinition findColumn(String columnName) {
+        long hash = FNVUtils.fnv_64_lower_normalized(columnName);
+        return findColumn(hash);
+    }
+
+    public SQLColumnDefinition findColumn(long columnNameHash) {
         if (left != null) {
-            SQLColumnDefinition column = left.findColumn(columnName);
+            SQLColumnDefinition column = left.findColumn(columnNameHash);
             if (column != null) {
                 return column;
             }
         }
 
         if (right != null) {
-            return right.findColumn(columnName);
+            return right.findColumn(columnNameHash);
         }
 
         return null;
@@ -432,15 +438,20 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
     @Override
     public SQLTableSource findTableSourceWithColumn(String columnName) {
+        long hash = FNVUtils.fnv_64_lower_normalized(columnName);
+        return findTableSourceWithColumn(hash);
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
         if (left != null) {
-            SQLTableSource tableSource = left.findTableSourceWithColumn(columnName);
+            SQLTableSource tableSource = left.findTableSourceWithColumn(columnNameHash);
             if (tableSource != null) {
                 return tableSource;
             }
         }
 
         if (right != null) {
-            return right.findTableSourceWithColumn(columnName);
+            return right.findTableSourceWithColumn(columnNameHash);
         }
 
         return null;
@@ -517,20 +528,20 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         return joined;
     }
 
-    public SQLTableSource findTableSource(String alias) {
-        if (alias == null) {
+    public SQLTableSource findTableSource(long alias_hash) {
+        if (alias_hash == 0) {
             return null;
         }
 
-        if (SQLUtils.nameEquals(alias, computeAlias())) {
+        if (alias_hash() == alias_hash) {
             return this;
         }
 
-        SQLTableSource result = left.findTableSource(alias);
+        SQLTableSource result = left.findTableSource(alias_hash);
         if (result != null) {
             return result;
         }
 
-        return right.findTableSource(alias);
+        return right.findTableSource(alias_hash);
     }
 }

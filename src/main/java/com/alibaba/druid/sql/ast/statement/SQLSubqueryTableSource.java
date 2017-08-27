@@ -94,4 +94,21 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
         return null;
     }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+        if (select == null) {
+            return null;
+        }
+
+        SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+        if (queryBlock == null) {
+            return null;
+        }
+
+        if (queryBlock.findSelectItem(columnNameHash) != null) {
+            return this;
+        }
+
+        return null;
+    }
 }

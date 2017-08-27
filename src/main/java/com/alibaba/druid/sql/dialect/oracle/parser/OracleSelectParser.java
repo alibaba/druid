@@ -65,7 +65,10 @@ public class OracleSelectParser extends SQLSelectParser {
     public SQLSelect select() {
         SQLSelect select = new SQLSelect();
 
-        withSubquery(select);
+        if (lexer.token() == Token.WITH) {
+            SQLWithSubqueryClause with = this.parseWith();
+            select.setWithSubQuery(with);
+        }
 
         SQLSelectQuery query = query();
         select.setQuery(query);
@@ -153,79 +156,79 @@ public class OracleSelectParser extends SQLSelectParser {
         return select;
     }
 
-    protected void withSubquery(SQLSelect select) {
-        if (lexer.token() == Token.WITH) {
+    public SQLWithSubqueryClause parseWith() {
+        accept(Token.WITH);
+        SQLWithSubqueryClause subqueryFactoringClause = new SQLWithSubqueryClause();
+        for (;;) {
+            OracleWithSubqueryEntry entry = new OracleWithSubqueryEntry();
+
+            String alias = lexer.stringVal();
             lexer.nextToken();
+            entry.setAlias(alias);
 
-            SQLWithSubqueryClause subqueryFactoringClause = new SQLWithSubqueryClause();
-            for (;;) {
-                OracleWithSubqueryEntry entry = new OracleWithSubqueryEntry();
-                entry.setName((SQLIdentifierExpr) this.exprParser.name());
-
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
-                    exprParser.names(entry.getColumns());
-                    accept(Token.RPAREN);
-                }
-
-                accept(Token.AS);
-                accept(Token.LPAREN);
-                entry.setSubQuery(select());
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                exprParser.names(entry.getColumns());
                 accept(Token.RPAREN);
-
-                if (lexer.identifierEquals("SEARCH")) {
-                    lexer.nextToken();
-                    SearchClause searchClause = new SearchClause();
-
-                    if (lexer.token() != Token.IDENTIFIER) {
-                        throw new ParserException("syntax erorr : " + lexer.token());
-                    }
-
-                    searchClause.setType(SearchClause.Type.valueOf(lexer.stringVal()));
-                    lexer.nextToken();
-
-                    acceptIdentifier("FIRST");
-                    accept(Token.BY);
-
-                    searchClause.addItem(exprParser.parseSelectOrderByItem());
-
-                    while (lexer.token() == (Token.COMMA)) {
-                        lexer.nextToken();
-                        searchClause.addItem(exprParser.parseSelectOrderByItem());
-                    }
-
-                    accept(Token.SET);
-
-                    searchClause.setOrderingColumn((SQLIdentifierExpr) exprParser.name());
-
-                    entry.setSearchClause(searchClause);
-                }
-
-                if (lexer.identifierEquals("CYCLE")) {
-                    lexer.nextToken();
-                    CycleClause cycleClause = new CycleClause();
-                    exprParser.exprList(cycleClause.getAliases(), cycleClause);
-                    accept(Token.SET);
-                    cycleClause.setMark(exprParser.expr());
-                    accept(Token.TO);
-                    cycleClause.setValue(exprParser.expr());
-                    accept(Token.DEFAULT);
-                    cycleClause.setDefaultValue(exprParser.expr());
-                    entry.setCycleClause(cycleClause);
-                }
-
-                subqueryFactoringClause.addEntry(entry);
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-
-                break;
             }
 
-            select.setWithSubQuery(subqueryFactoringClause);
+            accept(Token.AS);
+            accept(Token.LPAREN);
+            entry.setSubQuery(select());
+            accept(Token.RPAREN);
+
+            if (lexer.identifierEquals("SEARCH")) {
+                lexer.nextToken();
+                SearchClause searchClause = new SearchClause();
+
+                if (lexer.token() != Token.IDENTIFIER) {
+                    throw new ParserException("syntax erorr : " + lexer.token());
+                }
+
+                searchClause.setType(SearchClause.Type.valueOf(lexer.stringVal()));
+                lexer.nextToken();
+
+                acceptIdentifier("FIRST");
+                accept(Token.BY);
+
+                searchClause.addItem(exprParser.parseSelectOrderByItem());
+
+                while (lexer.token() == (Token.COMMA)) {
+                    lexer.nextToken();
+                    searchClause.addItem(exprParser.parseSelectOrderByItem());
+                }
+
+                accept(Token.SET);
+
+                searchClause.setOrderingColumn((SQLIdentifierExpr) exprParser.name());
+
+                entry.setSearchClause(searchClause);
+            }
+
+            if (lexer.identifierEquals("CYCLE")) {
+                lexer.nextToken();
+                CycleClause cycleClause = new CycleClause();
+                exprParser.exprList(cycleClause.getAliases(), cycleClause);
+                accept(Token.SET);
+                cycleClause.setMark(exprParser.expr());
+                accept(Token.TO);
+                cycleClause.setValue(exprParser.expr());
+                accept(Token.DEFAULT);
+                cycleClause.setDefaultValue(exprParser.expr());
+                entry.setCycleClause(cycleClause);
+            }
+
+            subqueryFactoringClause.addEntry(entry);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
         }
+
+        return subqueryFactoringClause;
     }
 
     public SQLSelectQuery query() {

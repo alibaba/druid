@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FNVUtils;
 
 public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr {
 
     private SQLExpr expr;
     private String  dbLink;
+
+    protected transient long dbLink_hash;
 
     public OracleDbLinkExpr(){
 
@@ -116,5 +119,30 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
         x.dbLink = dbLink;
 
         return x;
+    }
+
+    public long name_hash_lower() {
+        if (dbLink_hash == 0
+                && dbLink != null) {
+            final int len = dbLink.length();
+
+            boolean quote = false;
+
+            String name = this.dbLink;
+            if (len > 2) {
+                char c0 = name.charAt(0);
+                char c1 = name.charAt(len - 1);
+                if (c0 == c1
+                        && (c0 == '`' || c1 == '"')) {
+                    quote = true;
+                }
+            }
+            if (quote) {
+                dbLink_hash = FNVUtils.fnv_64_lower(name, 1, len -1);
+            } else {
+                dbLink_hash = FNVUtils.fnv_64_lower(name);
+            }
+        }
+        return dbLink_hash;
     }
 }

@@ -20,15 +20,14 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatement {
 
-    private PGWithClause  with;
+    private SQLWithSubqueryClause  with;
     private List<SQLName> using = new ArrayList<SQLName>(2);
     private boolean       returning;
     private String        alias;
@@ -63,11 +62,11 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
 
 
 
-    public PGWithClause getWith() {
+    public SQLWithSubqueryClause getWith() {
         return with;
     }
 
-    public void setWith(PGWithClause with) {
+    public void setWith(SQLWithSubqueryClause with) {
         this.with = with;
     }
 

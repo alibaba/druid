@@ -21,12 +21,15 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.util.FNVUtils;
 
 public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements SQLServerExpr, SQLName {
 
     private String server;
     private String database;
     private String schema;
+
+    protected long schema_hash;
 
     public SQLServerObjectReferenceExpr(){
 
@@ -117,5 +120,31 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
         x.database = database;
         x.schema = schema;
         return x;
+    }
+
+    public long name_hash_lower() {
+        if (schema_hash == 0
+                && schema != null) {
+            final int len = schema.length();
+
+            boolean quote = false;
+
+            String name = this.schema;
+            if (len > 2) {
+                char c0 = name.charAt(0);
+                char c1 = name.charAt(len - 1);
+                if ((c0 == '`' && c1 == '`')
+                        || (c0 == '"' && c1 == '"')
+                        || (c0 == '[' && c1 == ']')) {
+                    quote = true;
+                }
+            }
+            if (quote) {
+                schema_hash = FNVUtils.fnv_64_lower(name, 1, len -1);
+            } else {
+                schema_hash = FNVUtils.fnv_64_lower(name);
+            }
+        }
+        return schema_hash;
     }
 }

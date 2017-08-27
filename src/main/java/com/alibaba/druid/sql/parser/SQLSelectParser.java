@@ -43,7 +43,10 @@ public class SQLSelectParser extends SQLParser {
     public SQLSelect select() {
         SQLSelect select = new SQLSelect();
 
-        withSubquery(select);
+        if (lexer.token() == Token.WITH) {
+            SQLWithSubqueryClause with = this.parseWith();
+            select.setWithSubQuery(with);
+        }
 
         select.setQuery(query());
         select.setOrderBy(parseOrderBy());
@@ -211,7 +214,10 @@ public class SQLSelectParser extends SQLParser {
             for (;;) {
                 SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
                 entry.setParent(withQueryClause);
-                entry.setName((SQLIdentifierExpr) this.exprParser.name());
+
+                String alias = this.lexer.stringVal();
+                lexer.nextToken();
+                entry.setAlias(alias);
 
                 if (lexer.token == Token.LPAREN) {
                     lexer.nextToken();
@@ -236,6 +242,56 @@ public class SQLSelectParser extends SQLParser {
 
             select.setWithSubQuery(withQueryClause);
         }
+    }
+
+    public SQLWithSubqueryClause parseWith() {
+        accept(Token.WITH);
+
+        SQLWithSubqueryClause withQueryClause = new SQLWithSubqueryClause();
+
+        if (lexer.token == Token.RECURSIVE || lexer.identifierEquals("RECURSIVE")) {
+            lexer.nextToken();
+            withQueryClause.setRecursive(true);
+        }
+
+        for (;;) {
+            SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
+            entry.setParent(withQueryClause);
+
+            String alias = this.lexer.stringVal();
+            lexer.nextToken();
+            entry.setAlias(alias);
+
+            if (lexer.token == Token.LPAREN) {
+                lexer.nextToken();
+                exprParser.names(entry.getColumns());
+                accept(Token.RPAREN);
+            }
+
+            accept(Token.AS);
+            accept(Token.LPAREN);
+
+            switch (lexer.token) {
+                case SELECT:
+                    entry.setSubQuery(select());
+                    break;
+                default:
+                    break;
+            }
+
+            accept(Token.RPAREN);
+
+            withQueryClause.addEntry(entry);
+
+            if (lexer.token == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+
+        return withQueryClause;
     }
 
     protected void parseWhere(SQLSelectQueryBlock queryBlock) {

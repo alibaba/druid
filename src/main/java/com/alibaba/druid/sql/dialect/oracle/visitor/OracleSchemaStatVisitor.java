@@ -475,10 +475,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public boolean visit(OracleWithSubqueryEntry x) {
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
-            String alias = null;
-            if (x.getName() != null) {
-                alias = x.getName().toString();
-            }
+            String alias = x.getAlias();
 
             if (alias != null) {
                 putAliasMap(aliasMap, alias, null);

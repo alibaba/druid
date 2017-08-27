@@ -24,6 +24,7 @@ import java.util.Map;
 import com.alibaba.druid.sql.parser.*;
 
 public class MySqlLexer extends Lexer {
+    public static SymbolTable quoteTable = new SymbolTable(8192);
 
     public final static Keywords DEFAULT_MYSQL_KEYWORDS;
 
@@ -251,20 +252,30 @@ public class MySqlLexer extends Lexer {
             bufPos = 1;
             char ch;
 
-            int quoteIndex = text.indexOf('`', pos + 1);
+            int startPos = pos + 1;
+            int quoteIndex = text.indexOf('`', startPos);
             if (quoteIndex == -1) {
                 throw new ParserException("illegal identifier. " + info());
             }
 
+            hash_lower = 0xcbf29ce484222325L;
+            hash = 0xcbf29ce484222325L;
+
+            for (int i = startPos; i < quoteIndex; ++i) {
+                ch = text.charAt(i);
+
+                hash_lower ^= ((ch >= 'A' && ch <= 'Z') ? (ch + 32) : ch);
+                hash_lower *= 0x100000001b3L;
+
+                hash ^= ch;
+                hash *= 0x100000001b3L;
+            }
+
+            stringVal = quoteTable.addSymbol(text, pos, quoteIndex + 1 - pos, hash);
+            //stringVal = text.substring(mark, pos);
             pos = quoteIndex + 1;
             this.ch = charAt(pos);
-            stringVal = text.substring(mark, pos);
-            Token tok = keywods.getKeyword(stringVal);
-            if (tok != null) {
-                token = tok;
-            } else {
-                token = Token.IDENTIFIER;
-            }
+            token = Token.IDENTIFIER;
         } else {
             final boolean firstFlag = isFirstIdentifierChar(first);
             if (!firstFlag) {

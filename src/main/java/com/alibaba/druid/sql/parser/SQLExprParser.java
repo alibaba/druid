@@ -906,7 +906,7 @@ public class SQLExprParser extends SQLParser {
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             methodName = identifierExpr.getName();
-            hash_lower = identifierExpr.hash_lower();
+            hash_lower = identifierExpr.name_hash_lower();
 
             if (hash_lower == FNVUtils.TRIM) {
                 if (lexer.identifierEquals(FNVUtils.LEADING)) {
@@ -1005,9 +1005,14 @@ public class SQLExprParser extends SQLParser {
             expr = new SQLPropertyExpr(expr, "*");
         } else {
             String name;
+            long hash_lower = 0L;
 
-            if (lexer.token == Token.IDENTIFIER || lexer.token == Token.LITERAL_CHARS
-                || lexer.token == Token.LITERAL_ALIAS) {
+            if (lexer.token == Token.IDENTIFIER) {
+                name = lexer.stringVal();
+                hash_lower = lexer.hash_lower;
+                lexer.nextToken();
+            } else if (lexer.token == Token.LITERAL_CHARS
+                    || lexer.token == Token.LITERAL_ALIAS) {
                 name = lexer.stringVal();
                 lexer.nextToken();
             } else if (lexer.getKeywods().containsValue(lexer.token)) {
@@ -1055,7 +1060,7 @@ public class SQLExprParser extends SQLParser {
                     expr = methodInvokeExpr;
                 }
             } else {
-                expr = new SQLPropertyExpr(expr, name);
+                expr = new SQLPropertyExpr(expr, name, hash_lower);
             }
         }
 
@@ -1642,7 +1647,7 @@ public class SQLExprParser extends SQLParser {
                 if (lexer.token == Token.AND
                         && lexer.isEnabled(SQLParserFeature.EnableSQLBinaryOpExprGroup)) {
 
-                    SQLBinaryOpExprGroup group = new SQLBinaryOpExprGroup(SQLBinaryOperator.BooleanAnd);
+                    SQLBinaryOpExprGroup group = new SQLBinaryOpExprGroup(SQLBinaryOperator.BooleanAnd, dbType);
                     group.add(expr);
                     group.add(rightExp);
 
@@ -1697,25 +1702,31 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLExpr orRest(SQLExpr expr) {
-// SQLBinaryOpExprGroup group = new SQLBinaryOpExprGroup(SQLBinaryOperator.BooleanAnd);
         for (;;) {
             if (lexer.token == Token.OR) {
                 lexer.nextToken();
                 SQLExpr rightExp = and();
 
-//                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanOr, rightExp, dbType);
                 if (lexer.token == Token.OR
                         && lexer.isEnabled(SQLParserFeature.EnableSQLBinaryOpExprGroup)) {
 
-                    SQLBinaryOpExprGroup group = new SQLBinaryOpExprGroup(SQLBinaryOperator.BooleanOr);
+                    SQLBinaryOpExprGroup group = new SQLBinaryOpExprGroup(SQLBinaryOperator.BooleanOr, dbType);
                     group.add(expr);
                     group.add(rightExp);
+
+                    if (lexer.isKeepComments() && lexer.hasComment()) {
+                        rightExp.addAfterComment(lexer.readAndResetComments());
+                    }
 
                     for (;;) {
                         lexer.nextToken();
                         SQLExpr more = relational();
                         group.add(more);
                         if (lexer.token == Token.OR) {
+                            if (lexer.isKeepComments() && lexer.hasComment()) {
+                                more.addAfterComment(lexer.readAndResetComments());
+                            }
+
                             continue;
                         }
                         break;

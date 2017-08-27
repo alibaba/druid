@@ -171,7 +171,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (into != null) {
             println();
             print0(ucase ? "INTO " : "into ");
-            into.accept(this);
+            printTableSource(into);
         }
 
         SQLTableSource from = x.getFrom();
@@ -479,10 +479,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (x.getSelect() != null) {
-            incrementIndent();
+            this.indentCount++;
             println();
             x.getSelect().accept(this);
-            decrementIndent();
+            this.indentCount--;
         }
 
         for (SQLCommentHint hint : x.getOptionHints()) {
@@ -580,7 +580,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             if (this.parameterized) {
                 this.appender.append('?');
                 incrementReplaceCunt();
-                if (this instanceof ExportParameterVisitor || this.parameters != null) {
+                if (this.parameters != null) {
                     ExportParameterVisitorUtils.exportParameter(this.parameters, x);
                 }
                 return false;
@@ -819,13 +819,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getUsing().accept(this);
         }
 
-        if (x.getWhere() != null) {
+        SQLExpr where = x.getWhere();
+        if (where != null) {
             println();
-            incrementIndent();
+            this.indentCount++;
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().accept(this);
-            decrementIndent();
+            printExpr(where);
+            this.indentCount--;
         }
+
 
         if (x.getOrderBy() != null) {
             println();
@@ -880,7 +882,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         List<SQLExpr> columns = x.getColumns();
         if (columns.size() > 0) {
-            incrementIndent();
+            this.indentCount++;
             print0(" (");
             for (int i = 0, size = columns.size(); i < size; ++i) {
                 if (i != 0) {
@@ -890,16 +892,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                     print0(", ");
                 }
 
-                SQLExpr columnn = columns.get(i);
-                if (columnn instanceof SQLIdentifierExpr) {
-                    visit((SQLIdentifierExpr) columnn);
-                }
-                else {
-                    columnn.accept(this);
+                SQLExpr column = columns.get(i);
+                if (column instanceof SQLIdentifierExpr) {
+                    visit((SQLIdentifierExpr) column);
+                } else {
+                    printExpr(column);
                 }
             }
             print(')');
-            decrementIndent();
+            this.indentCount--;
         }
 
         List<SQLInsertStatement.ValuesClause>  valuesList = x.getValuesList();
@@ -913,17 +914,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getQuery().accept(this);
         }
 
-        if (x.getDuplicateKeyUpdate().size() != 0) {
+        List<SQLExpr> duplicateKeyUpdate = x.getDuplicateKeyUpdate();
+        if (duplicateKeyUpdate.size() != 0) {
             println();
             print0(ucase ? "ON DUPLICATE KEY UPDATE " : "on duplicate key update ");
-            for (int i = 0, size = x.getDuplicateKeyUpdate().size(); i < size; ++i) {
+            for (int i = 0, size = duplicateKeyUpdate.size(); i < size; ++i) {
                 if (i != 0) {
                     if (i % 5 == 0) {
                         println();
                     }
                     print0(", ");
                 }
-                x.getDuplicateKeyUpdate().get(i).accept(this);
+                duplicateKeyUpdate.get(i).accept(this);
             }
         }
 
@@ -934,9 +936,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (this.parameterized) {
             print0(ucase ? "VALUES " : "values ");
-            incrementIndent();
+            this.indentCount++;
             valuesList.get(0).accept(this);
-            decrementIndent();
+            this.indentCount--;
             if (valuesList.size() > 1) {
                 this.incrementReplaceCunt();
             }
@@ -1070,23 +1072,27 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print0(ucase ? "INTO " : "into ");
 
-        x.getTableName().accept(this);
+        printExpr(x.getTableName());
 
-        if (x.getColumns().size() > 0) {
+        List<SQLExpr> columns = x.getColumns();
+        if (columns.size() > 0) {
             print0(" (");
-            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+            for (int i = 0, size = columns.size(); i < size; ++i) {
                 if (i != 0) {
                     print0(", ");
                 }
-                x.getColumns().get(i).accept(this);
+
+                SQLExpr columnn = columns.get(i);
+                printExpr(columnn);
             }
             print(')');
         }
 
-        if (x.getValuesList().size() != 0) {
+        List<SQLInsertStatement.ValuesClause> valuesClauseList = x.getValuesList();
+        if (valuesClauseList.size() != 0) {
             println();
             print0(ucase ? "VALUES " : "values ");
-            int size = x.getValuesList().size();
+            int size = valuesClauseList.size();
             if (size == 0) {
                 print0("()");
             } else {
@@ -1094,13 +1100,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                     if (i != 0) {
                         print0(", ");
                     }
-                    x.getValuesList().get(i).accept(this);
+                    visit(valuesClauseList.get(i));
                 }
             }
         }
 
-        if (x.getQuery() != null) {
-            x.getQuery().accept(this);
+        SQLQueryExpr query = x.getQuery();
+        if (query != null) {
+            visit(query);
         }
 
         return false;
@@ -1596,13 +1603,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "QUEUE_ON_PK " : "queue_on_pk ");
         }
 
-        if (x.getTargetAffectRow() != null) {
+        SQLExpr targetAffectRow = x.getTargetAffectRow();
+        if (targetAffectRow != null) {
             print0(ucase ? "TARGET_AFFECT_ROW " : "target_affect_row ");
-            x.getTargetAffectRow().accept(this);
+            printExpr(targetAffectRow);
             print(' ');
         }
 
-        x.getTableSource().accept(this);
+        printTableSource(x.getTableSource());
 
         println();
         print0(ucase ? "SET " : "set ");
@@ -1610,25 +1618,29 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             if (i != 0) {
                 print0(", ");
             }
-            x.getItems().get(i).accept(this);
+            SQLUpdateSetItem item = x.getItems().get(i);
+            visit(item);
         }
 
-        if (x.getWhere() != null) {
+        SQLExpr where = x.getWhere();
+        if (where != null) {
             println();
-            incrementIndent();
+            indentCount++;
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().accept(this);
-            decrementIndent();
+            printExpr(where);
+            indentCount--;
         }
 
-        if (x.getOrderBy() != null) {
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
             println();
-            x.getOrderBy().accept(this);
+            visit(orderBy);
         }
 
-        if (x.getLimit() != null) {
+        SQLLimit limit = x.getLimit();
+        if (limit != null) {
             println();
-            x.getLimit().accept(this);
+            visit(limit);
         }
         return false;
     }
@@ -2356,7 +2368,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "ALTER TABLE " : "alter table ");
         }
         printTableSourceExpr(x.getName());
-        incrementIndent();
+        this.indentCount++;
         for (int i = 0; i < x.getItems().size(); ++i) {
             SQLAlterTableItem item = x.getItems().get(i);
             if (i != 0) {
@@ -2380,7 +2392,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             println();
         }
 
-        decrementIndent();
+        this.indentCount--;
 
         int i = 0;
         for (Map.Entry<String, SQLObject> option : x.getTableOptions().entrySet()) {
@@ -2532,9 +2544,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(SQLExprTableSource x) {
         printTableSourceExpr(x.getExpr());
 
-        if (x.getAlias() != null) {
+        String alias = x.getAlias();
+        if (alias != null) {
             print(' ');
-            print0(x.getAlias());
+            print0(alias);
         }
 
         for (int i = 0; i < x.getHintsSize(); ++i) {
@@ -2701,7 +2714,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (this.parameterized) {
             print('?');
             incrementReplaceCunt();
-            if (this instanceof ExportParameterVisitor || this.parameters != null) {
+            if (this.parameters != null) {
                 ExportParameterVisitorUtils.exportParameter(this.parameters, x);
             }
             return false;
@@ -2999,7 +3012,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(": ");
         }
         if (x.getParameters().size() != 0) {
-            incrementIndent();
+            this.indentCount++;
             if (x.getParent() instanceof SQLCreateProcedureStatement) {
                 printIndent();
             }
@@ -3017,11 +3030,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print(';');
             }
 
-            decrementIndent();
+            this.indentCount--;
             println();
         }
         print0(ucase ? "BEGIN" : "begin");
-        incrementIndent();
+        this.indentCount++;
         println();
         for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
             if (i != 0) {
@@ -3030,7 +3043,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             SQLStatement stmt = x.getStatementList().get(i);
             stmt.accept(this);
         }
-        decrementIndent();
+        this.indentCount--;
         println();
         print0(ucase ? "END" : "end");
         if (x.getLabelName() != null && !x.getLabelName().equals("")) {
@@ -3045,7 +3058,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(ucase ? "IF " : "if ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
-        incrementIndent();
+        this.indentCount++;
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
@@ -3054,7 +3067,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 println();
             }
         }
-        decrementIndent();
+        this.indentCount--;
         println();
         for (SQLIfStatement.ElseIf iterable_element : x.getElseIfList()) {
             iterable_element.accept(this);
@@ -3071,7 +3084,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(ucase ? "ELSE IF " : "else if ");
         x.getCondition().accept(this);
         print0(ucase ? " THEN" : " then");
-        incrementIndent();
+        this.indentCount++;
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
@@ -3080,7 +3093,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 println();
             }
         }
-        decrementIndent();
+        this.indentCount--;
         println();
         return false;
     }
@@ -3088,7 +3101,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(SQLIfStatement.Else x) {
         print0(ucase ? "ELSE " : "else ");
-        incrementIndent();
+        this.indentCount++;
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
@@ -3097,7 +3110,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 println();
             }
         }
-        decrementIndent();
+        this.indentCount--;
         println();
         return false;
     }
@@ -3177,7 +3190,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         print0(ucase ? "LOOP " : "loop ");
-        incrementIndent();
+        this.indentCount++;
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
@@ -3186,7 +3199,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 println();
             }
         }
-        decrementIndent();
+        this.indentCount--;
         println();
         print0(ucase ? "END LOOP" : "end loop");
         if (x.getLabelName() != null && !x.getLabelName().equals("")) {
@@ -3231,7 +3244,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         print0(ucase ? "REPEAT " : "repeat ");
-        incrementIndent();
+        this.indentCount++;
         println();
         for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
             SQLStatement item = x.getStatements().get(i);
@@ -3240,7 +3253,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 println();
             }
         }
-        decrementIndent();
+        this.indentCount--;
         println();
         print0(ucase ? "UNTIL " : "until ");
         x.getCondition().accept(this);
@@ -3264,10 +3277,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(ucase ? "DECLARE " : "declare ");
         print0(x.getCursorName());
         print0(ucase ? " CURSOR FOR" : " cursor for");
-        incrementIndent();
+        this.indentCount++;
         println();
         x.getSelect().accept(this);
-        decrementIndent();
+        this.indentCount--;
         return false;
     }
 
@@ -3389,10 +3402,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             }
 
         }
-        incrementIndent();
+        this.indentCount++;
         println();
         x.getSpStatement().accept(this);
-        decrementIndent();
+        this.indentCount--;
         return false;
     }
 
@@ -3459,7 +3472,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print0(" (");
         if (paramSize > 0) {
-            incrementIndent();
+            this.indentCount++;
             println();
 
             for (int i = 0; i < paramSize; ++i) {
@@ -3471,7 +3484,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 param.accept(this);
             }
 
-            decrementIndent();
+            this.indentCount--;
             println();
         }
         print(')');
@@ -3517,7 +3530,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (paramSize > 0) {
             print0(" (");
-            incrementIndent();
+            this.indentCount++;
             println();
 
             for (int i = 0; i < paramSize; ++i) {
@@ -3529,7 +3542,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 param.accept(this);
             }
 
-            decrementIndent();
+            this.indentCount--;
             println();
             print(')');
         }

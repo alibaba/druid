@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
 
@@ -216,13 +217,20 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public SQLColumnDefinition findColumn(String columName) {
-        columName = SQLUtils.normalize(columName);
+        if (columName == null) {
+            return null;
+        }
 
+        long hash = FNVUtils.fnv_64_lower_normalized(columName);
+        return findColumn(hash);
+    }
+
+    public SQLColumnDefinition findColumn(long columName_hash) {
         for (SQLTableElement element : tableElementList) {
             if (element instanceof SQLColumnDefinition) {
                 SQLColumnDefinition column = (SQLColumnDefinition) element;
-                String name = column.computeAlias();
-                if (columName.equalsIgnoreCase(name)) {
+                SQLName columnName = column.getName();
+                if (columnName != null && columnName.name_hash_lower() == columName_hash) {
                     return column;
                 }
             }

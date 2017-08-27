@@ -21,10 +21,15 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.Map;
 
 public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTVisitor {
+
+    public OdpsSchemaStatVisitor() {
+        super(JdbcConstants.ODPS);
+    }
 
     @Override
     public void endVisit(OdpsCreateTableStatement x) {

@@ -44,7 +44,6 @@ public class OracleWithSubqueryEntry extends Entry implements OracleSQLObject {
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, name);
             acceptChild(visitor, columns);
             acceptChild(visitor, subQuery);
             acceptChild(visitor, searchClause);

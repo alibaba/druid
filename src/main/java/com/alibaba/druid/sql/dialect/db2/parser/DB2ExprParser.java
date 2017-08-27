@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FNVUtils;
 
@@ -45,6 +46,11 @@ public class DB2ExprParser extends SQLExprParser {
 
     public DB2ExprParser(String sql){
         this(new DB2Lexer(sql));
+        this.lexer.nextToken();
+    }
+
+    public DB2ExprParser(String sql, SQLParserFeature... features){
+        this(new DB2Lexer(sql, features));
         this.lexer.nextToken();
     }
 

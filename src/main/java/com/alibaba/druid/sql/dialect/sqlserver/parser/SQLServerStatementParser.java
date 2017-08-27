@@ -37,16 +37,16 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class SQLServerStatementParser extends SQLStatementParser {
 
     public SQLServerStatementParser(String sql){
         super(new SQLServerExprParser(sql));
+    }
+
+    public SQLServerStatementParser(String sql, SQLParserFeature... features){
+        super(new SQLServerExprParser(sql, features));
     }
 
     public SQLSelectParser createSQLSelectParser() {

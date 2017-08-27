@@ -22,12 +22,20 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.support.logging.Log;
@@ -64,6 +72,10 @@ public class SchemaRepository {
     }
 
     private Map<String, Schema> schemas = new LinkedHashMap<String, Schema>();
+
+    public String getDbType() {
+        return dbType;
+    }
 
     public String getDefaultSchemaName() {
         return getDefaultSchema().getName();
@@ -245,17 +257,28 @@ public class SchemaRepository {
 
         SchemaResolveVisitor resolveVisitor;
         if (JdbcConstants.MYSQL.equals(dbType)) {
-            resolveVisitor = new MySqlResolveVisitor(optionsValue);
+            resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.ORACLE.equals(dbType)) {
-            resolveVisitor = new OracleResolveVisitor(optionsValue);
+            resolveVisitor = new SchemaResolveVisitorFactory.OracleResolveVisitor(this, optionsValue);
+        } else if (JdbcConstants.DB2.equals(dbType)) {
+            resolveVisitor = new SchemaResolveVisitorFactory.DB2ResolveVisitor(this, optionsValue);
+        } else if (JdbcConstants.ODPS.equals(dbType)) {
+            resolveVisitor = new SchemaResolveVisitorFactory.OdpsResolveVisitor(this, optionsValue);
+        } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+            resolveVisitor = new SchemaResolveVisitorFactory.PGResolveVisitor(this, optionsValue);
+        } else if (JdbcConstants.SQL_SERVER.equals(dbType)) {
+            resolveVisitor = new SchemaResolveVisitorFactory.SQLServerResolveVisitor(this, optionsValue);
         } else {
-            throw new DruidRuntimeException("dbType not support : " + dbType);
+            resolveVisitor = new SchemaResolveVisitorFactory.SQLResolveVisitor(this, optionsValue);
         }
         return resolveVisitor;
     }
 
     public String resolve(String input) {
-        SchemaResolveVisitor visitor = createResolveVisitor(SchemaResolveVisitor.Option.ResolveAllColumn);
+        SchemaResolveVisitor visitor
+                = createResolveVisitor(
+                    SchemaResolveVisitor.Option.ResolveAllColumn,
+                    SchemaResolveVisitor.Option.ResolveIdentifierAlias);
 
         List<SQLStatement> stmtList = SQLUtils.parseStatements(input, dbType);
 
@@ -393,198 +416,15 @@ public class SchemaRepository {
         return true;
     }
 
-    private class MySqlResolveVisitor extends MySqlASTVisitorAdapter implements SchemaResolveVisitor {
-        private int options;
 
-        public MySqlResolveVisitor(int options) {
-            this.options = options;
-        }
 
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
 
-        public boolean visit(MySqlSelectQueryBlock x) {
-            x.getFrom().accept(this);
 
-            resolve(this, x);
-            return super.visit(x);
-        }
 
-        public boolean visit(SQLIdentifierExpr x) {
-            resolve(this, x);
-            return true;
-        }
 
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return true;
-        }
 
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
 
-        @Override
-        public boolean isEnabled(Option option) {
-            return (options & option.mask) != 0;
-        }
-    }
-
-    private class OracleResolveVisitor extends OracleASTVisitorAdapter implements SchemaResolveVisitor {
-        private int options;
-
-        public OracleResolveVisitor(int options) {
-            this.options = options;
-        }
-
-        public boolean visit(OracleSelectTableReference x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(SQLExprTableSource x) {
-            resolve(this, x);
-            return false;
-        }
-
-        public boolean visit(OracleSelectQueryBlock x) {
-            SQLTableSource from = x.getFrom();
-            if (from != null) {
-                from.accept(this);
-            }
-            resolve(this, x);
-            return super.visit(x);
-        }
-
-        public boolean visit(SQLIdentifierExpr x) {
-            resolve(this, x);
-            return true;
-        }
-
-        public boolean visit(SQLPropertyExpr x) {
-            resolve(this, x);
-            return true;
-        }
-
-        public boolean visit(SQLAllColumnExpr x) {
-            resolve(this, x);
-            return false;
-        }
-
-        @Override
-        public boolean isEnabled(Option option) {
-            return (options & option.mask) != 0;
-        }
-    }
-
-    private void resolve(SchemaResolveVisitor visitor, SQLAllColumnExpr x) {
-        SQLSelectQueryBlock queryBlock = null;
-        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
-            if (parent instanceof SQLTableSource) {
-                return;
-            }
-            if (parent instanceof SQLSelectQueryBlock) {
-                queryBlock = (SQLSelectQueryBlock) parent;
-                break;
-            }
-        }
-
-        if (queryBlock == null) {
-            return;
-        }
-
-        SQLTableSource from = queryBlock.getFrom();
-        if (from == null || from instanceof SQLJoinTableSource) {
-            return;
-        }
-
-        x.setResolvedTableSource(from);
-    }
-
-    private void resolve(SchemaResolveVisitor visitor, SQLPropertyExpr x) {
-        String owner = x.getOwnernName();
-        if (owner == null) {
-            return;
-        }
-
-        SQLSelectQueryBlock queryBlock = null;
-        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
-            if (parent instanceof SQLTableSource) {
-                return;
-            }
-            if (parent instanceof SQLSelectQueryBlock) {
-                queryBlock = (SQLSelectQueryBlock) parent;
-                break;
-            }
-        }
-
-        if (queryBlock == null) {
-            return;
-        }
-
-        SQLTableSource tableSource = queryBlock.findTableSource(owner);
-        if (tableSource != null) {
-            x.setResolvedTableSource(tableSource);
-            SQLColumnDefinition column = tableSource.findColumn(x.getName());
-            if (column != null) {
-                x.setResolvedColumn(column);
-            }
-        }
-    }
-
-    private void resolve(SchemaResolveVisitor visitor, SQLIdentifierExpr x) {
-        SQLSelectQueryBlock queryBlock = null;
-        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
-            if (parent instanceof SQLTableSource) {
-                return;
-            }
-            if (parent instanceof SQLSelectQueryBlock) {
-                queryBlock = (SQLSelectQueryBlock) parent;
-                break;
-            }
-        }
-
-        if (queryBlock == null) {
-            return;
-        }
-
-        String ident = x.getName();
-        SQLTableSource tableSource = null;
-        if (queryBlock.getFrom() instanceof SQLJoinTableSource
-                || queryBlock.getFrom() instanceof SQLSubqueryTableSource) {
-            tableSource = queryBlock.findTableSourceWithColumn(ident);
-        } else {
-            tableSource = queryBlock.getFrom();
-            if (tableSource instanceof SQLExprTableSource) {
-                SchemaObject table = ((SQLExprTableSource) tableSource).getSchemaObject();
-                if (table != null) {
-                    if (table.findColumn(ident) == null) {
-                        tableSource = null; // maybe parent
-                    }
-                }
-            }
-        }
-
-        if (tableSource != null) {
-            x.setResolvedTableSource(tableSource);
-
-            SQLColumnDefinition column = tableSource.findColumn(ident);
-            if (column != null) {
-                x.setResolvedColumn(column);
-            }
-
-            if (queryBlock.getFrom() instanceof SQLJoinTableSource) {
-                String alias = tableSource.computeAlias();
-                SQLPropertyExpr propertyExpr = new SQLPropertyExpr(alias, ident);
-                SQLUtils.replaceInParent(x, propertyExpr);
-            }
-        }
-    }
-
-    private void resolve(SchemaResolveVisitor visitor, SQLExprTableSource x) {
+    protected void resolve(SchemaResolveVisitor visitor, SQLExprTableSource x) {
         if (x.getSchemaObject() != null) {
             return;
         }
@@ -598,81 +438,9 @@ public class SchemaRepository {
         }
     }
 
-    private void resolve(SchemaResolveVisitor visitor, SQLSelectQueryBlock x) {
-        SQLTableSource from = x.getFrom();
-        if (from != null) {
-            from.accept(visitor);
-        }
-        List<SQLSelectItem> selectList = x.getSelectList();
 
-        List<SQLSelectItem> columns = new ArrayList<SQLSelectItem>();
-        for (int i = selectList.size() - 1; i >= 0; i--) {
-            SQLSelectItem selectItem = selectList.get(i);
-            SQLExpr expr = selectItem.getExpr();
-            if (expr instanceof SQLAllColumnExpr) {
-                if (visitor.isEnabled(SchemaResolveVisitor.Option.ResolveAllColumn)) {
-                    extractColumns(from, columns);
-                }
-            } else if (expr instanceof SQLPropertyExpr) {
-                SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
-                String ownerName = propertyExpr.getOwnernName();
-                if (propertyExpr.getName().equals("*")) {
-                    if (visitor.isEnabled(SchemaResolveVisitor.Option.ResolveAllColumn)) {
-                        SQLTableSource tableSource = x.findTableSource(ownerName);
-                        extractColumns(tableSource, columns);
-                    }
-                }
 
-                SQLColumnDefinition column = propertyExpr.getResolvedColumn();
-                if (column != null) {
-                    continue;
-                }
-                SQLTableSource tableSource = x.findTableSource(propertyExpr.getOwnernName());
-                if (tableSource != null) {
-                    column = tableSource.findColumn(propertyExpr.getName());
-                    if (column != null) {
-                        propertyExpr.setResolvedColumn(column);
-                    }
-                }
-            } else if (expr instanceof SQLIdentifierExpr) {
-                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                SQLColumnDefinition column = identExpr.getResolvedColumn();
-                if (column != null) {
-                    continue;
-                }
-                column = from.findColumn(identExpr.getName());
-                if (column != null) {
-                    identExpr.setResolvedColumn(column);
-                }
-            }
 
-            if (columns.size() > 0) {
-                for (SQLSelectItem column : columns) {
-                    column.setParent(x);
-                }
-
-                selectList.remove(i);
-                selectList.addAll(i, columns);
-            }
-        }
-    }
-
-    private void extractColumns(SQLTableSource from, List<SQLSelectItem> columns) {
-        if (from instanceof SQLExprTableSource) {
-            SchemaObject table = findTable((SQLExprTableSource) from);
-            if (table != null) {
-                SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) table.getStatement();
-                for (SQLTableElement e : createTableStmt.getTableElementList()) {
-                    if (e instanceof SQLColumnDefinition) {
-                        SQLColumnDefinition column = (SQLColumnDefinition) e;
-                        SQLIdentifierExpr name = (SQLIdentifierExpr) column.getName().clone();
-                        name.setResolvedColumn(column);
-                        columns.add(new SQLSelectItem(name));
-                    }
-                }
-            }
-        }
-    }
 
     public SchemaObject findTable(SQLExprTableSource x) {
         if (x == null) {

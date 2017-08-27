@@ -133,6 +133,7 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, tableSource);
+            acceptChild(visitor, from);
             acceptChild(visitor, items);
             acceptChild(visitor, where);
         }

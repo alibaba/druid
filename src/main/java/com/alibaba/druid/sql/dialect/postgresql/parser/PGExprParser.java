@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.JdbcConstants;
@@ -63,6 +64,12 @@ public class PGExprParser extends SQLExprParser {
     }
 
     public PGExprParser(String sql){
+        this(new PGLexer(sql));
+        this.lexer.nextToken();
+        this.dbType = JdbcConstants.POSTGRESQL;
+    }
+
+    public PGExprParser(String sql, SQLParserFeature... features){
         this(new PGLexer(sql));
         this.lexer.nextToken();
         this.dbType = JdbcConstants.POSTGRESQL;
