@@ -1107,6 +1107,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     private void initValidConnectionChecker() {
+        if (this.validConnectionChecker != null) {
+            return;
+        }
+
         String realDriverClassName = driver.getClass().getName();
         if (JdbcUtils.isMySqlDriver(realDriverClassName)) {
             this.validConnectionChecker = new MySqlValidConnectionChecker();
