@@ -23,19 +23,21 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatement {
 
-    private SQLWithSubqueryClause with;
+
     private List<ValuesClause> valuesList = new ArrayList<ValuesClause>();
     private SQLExpr            returning;
     private boolean			   defaultValues = false;
 
+    public PGInsertStatement() {
+        dbType = JdbcConstants.POSTGRESQL;
+    }
+
     public void cloneTo(PGInsertStatement x) {
         super.cloneTo(x);
-        if (with != null) {
-            x.setWith(with.clone());
-        }
         for (ValuesClause v : valuesList) {
             ValuesClause v2 = v.clone();
             v2.setParent(x);
@@ -55,13 +57,6 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
         this.returning = returning;
     }
 
-    public SQLWithSubqueryClause getWith() {
-        return with;
-    }
-
-    public void setWith(SQLWithSubqueryClause with) {
-        this.with = with;
-    }
 
     public ValuesClause getValues() {
         if (valuesList.size() == 0) {

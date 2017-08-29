@@ -52,6 +52,8 @@ public class OracleSelectTest38 extends OracleTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
 
+//        System.out.println(stmt.toString());
+
         {
             String result = SQLUtils.toOracleString(stmt);
             Assert.assertEquals("SELECT *\n" +
@@ -153,6 +155,8 @@ public class OracleSelectTest38 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
+        System.out.println(stmt);
+
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
 
@@ -166,10 +170,11 @@ public class OracleSelectTest38 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("acduser.vw_acd_info")));
 
-        Assert.assertEquals(12, visitor.getColumns().size());
+        Assert.assertEquals(18, visitor.getColumns().size());
 
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "sglx")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_sc_kreis_code_lv2", "kreis_code")));
 
         // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }

@@ -26,12 +26,17 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
 
     protected transient long userName_hash;
 
+    protected long hashCode64;
+
     public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
+
+        hashCode64 = 0;
+        userName_hash = 0;
     }
 
     public String getHost() {
@@ -40,6 +45,9 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
 
     public void setHost(String host) {
         this.host = host;
+
+        hashCode64 = 0;
+        userName_hash = 0;
     }
 
     @Override
@@ -86,5 +94,17 @@ public class MySqlUserName extends MySqlExprImpl implements SQLName, Cloneable {
             }
         }
         return userName_hash;
+    }
+
+    @Override
+    public long hashCode64() {
+        if (hashCode64 == 0) {
+            if (host != null) {
+                hashCode64 = FNVUtils.fnv_64_lower(host, userName);
+            } else {
+                hashCode64 = name_hash_lower();
+            }
+        }
+        return hashCode64;
     }
 }

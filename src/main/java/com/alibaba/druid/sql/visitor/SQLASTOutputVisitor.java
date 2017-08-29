@@ -4649,11 +4649,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "INTO " : "into ");
         x.getInto().accept(this);
 
-        if (x.getAlias() != null) {
-            print(' ');
-            print0(x.getAlias());
-        }
-
         println();
         print0(ucase ? "USING " : "using ");
         x.getUsing().accept(this);
@@ -4940,7 +4935,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     @Override
     public boolean visit(SQLWhileStatement x) {
-        if (x.getLabelName() != null && !x.getLabelName().equals("")) {
+        String label = x.getLabelName();
+
+        if (label != null && label.length() != 0) {
             print0(x.getLabelName());
             print0(": ");
         }
@@ -4957,8 +4954,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
         println();
         print0(ucase ? "END WHILE" : "end while");
-        if (x.getLabelName() != null && !x.getLabelName().equals("")) print(' ');
-        print0(x.getLabelName());
+        if (label != null && label.length() != 0) {
+            print(' ');
+            print0(label);
+        }
         return false;
     }
 

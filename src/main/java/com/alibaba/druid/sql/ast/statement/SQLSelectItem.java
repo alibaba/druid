@@ -186,10 +186,6 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
     }
 
     public boolean match(long alias_hash) {
-        if (alias == null) {
-            return false;
-        }
-
         long hash = alias_hash();
 
         if (hash == alias_hash) {

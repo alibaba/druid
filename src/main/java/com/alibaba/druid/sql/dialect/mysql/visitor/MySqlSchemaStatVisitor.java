@@ -65,7 +65,8 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     public boolean visit(SQLSelectStatement x) {
-        if (repository != null) {
+        if (repository != null
+                && x.getParent() == null) {
             repository.resolve(x);
         }
 
@@ -82,7 +83,8 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     // DUAL
     public boolean visit(MySqlDeleteStatement x) {
-        if (repository != null) {
+        if (repository != null
+                && x.getParent() == null) {
             repository.resolve(x);
         }
 
@@ -122,6 +124,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlInsertStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
         setMode(x, Mode.Insert);
 
         setAliasMap();
@@ -289,6 +296,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlReplaceStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
         setMode(x, Mode.Replace);
 
         setAliasMap();
@@ -466,6 +478,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlExplainStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
         SQLName tableName = x.getTableName();
         if (tableName != null) {
             String table = tableName.toString();
@@ -1033,7 +1050,8 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlCreateTableStatement x) {
-        if (repository != null) {
+        if (repository != null
+                && x.getParent() == null) {
             repository.resolve(x);
         }
 

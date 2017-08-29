@@ -692,7 +692,8 @@ public class MySqlStatementParser extends SQLStatementParser {
                     statementList.add(this.parseWhile(label));
                 } else if (lexer.token() == Token.BEGIN) {
                     // parse begin-end statement with label
-                    statementList.add(this.parseBlock(label));
+                    SQLBlockStatement block = this.parseBlock(label);
+                    statementList.add(block);
                 } else if (lexer.token() == Token.REPEAT) {
                     // parse repeat statement with label
                     statementList.add(this.parseRepeat(label));
@@ -808,6 +809,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public SQLBlockStatement parseBlock() {
         SQLBlockStatement block = new SQLBlockStatement();
+        block.setDbType(dbType);
 
         accept(Token.BEGIN);
         this.parseStatementList(block.getStatementList(), -1, block);
@@ -1821,7 +1823,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.VALUES || lexer.identifierEquals("VALUE")) {
             lexer.nextToken();
 
-            parseValueClause(stmt.getValuesList(), 0);
+            parseValueClause(stmt.getValuesList(), 0, stmt);
         } else if (lexer.token() == Token.SELECT) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             stmt.setQuery(queryExpr);
@@ -2176,7 +2178,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.VALUES || lexer.identifierEquals("VALUE")) {
             lexer.nextTokenLParen();
-            parseValueClause(insertStatement.getValuesList(), columnSize);
+            parseValueClause(insertStatement.getValuesList(), columnSize, insertStatement);
         } else if (lexer.token() == Token.SET) {
             lexer.nextToken();
 
@@ -2225,7 +2227,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         return insertStatement;
     }
 
-    private void parseValueClause(List<ValuesClause> valueClauseList, int columnSize) {
+    private void parseValueClause(List<ValuesClause> valueClauseList, int columnSize, SQLObject parent) {
         for (int i = 0; ; ++i) {
             int startPos = lexer.pos() - 1;
 
@@ -2281,6 +2283,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
 
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
+                values.setParent(parent);
 
                 if (lexer.isEnabled(SQLParserFeature.KeepInsertValueClauseOriginalString)) {
                     int endPos = lexer.pos();
@@ -4022,14 +4025,15 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlCursorDeclareStatement stmt = new MySqlCursorDeclareStatement();
         accept(Token.DECLARE);
 
-        stmt.setCursorName(exprParser.name().getSimpleName());
+        stmt.setCursorName(exprParser.name());
 
         accept(Token.CURSOR);
 
         accept(Token.FOR);
 
-        SQLSelectStatement selelctStmt = (SQLSelectStatement) parseSelect();
-        stmt.setSelect(selelctStmt);
+        //SQLSelectStatement selelctStmt = (SQLSelectStatement) parseSelect();
+        SQLSelect select = this.createSQLSelectParser().select();
+        stmt.setSelect(select);
 
         accept(Token.SEMI);
 

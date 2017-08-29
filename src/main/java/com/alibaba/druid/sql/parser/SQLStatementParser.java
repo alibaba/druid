@@ -369,7 +369,15 @@ public class SQLStatementParser extends SQLParser {
                 }
             }
 
+            int size = statementList.size();
             if (parseStatementListDialect(statementList)) {
+                if (parent != null) {
+                    for (int i = size; i < statementList.size(); ++i) {
+                        SQLStatement dialectStmt = statementList.get(i);
+                        dialectStmt.setParent(parent);
+                    }
+                }
+
                 continue;
             }
 
@@ -2593,6 +2601,7 @@ public class SQLStatementParser extends SQLParser {
         accept(Token.MERGE);
 
         SQLMergeStatement stmt = new SQLMergeStatement();
+        stmt.setDbType(dbType);
 
         parseHints(stmt.getHints());
 
@@ -2608,7 +2617,7 @@ public class SQLStatementParser extends SQLParser {
             stmt.setInto(exprParser.name());
         }
         
-        stmt.setAlias(tableAlias());
+        stmt.getInto().setAlias(tableAlias());
 
         accept(Token.USING);
 

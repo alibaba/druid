@@ -106,7 +106,12 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     }
 
     public SQLColumnDefinition findColumn(String columnName) {
-        return null;
+        if (columnName == null) {
+            return null;
+        }
+
+        long hash = FNVUtils.fnv_64_lower_normalized(alias);
+        return findColumn(hash);
     }
 
     public SQLColumnDefinition findColumn(long columnNameHash) {
@@ -114,7 +119,12 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     }
 
     public SQLTableSource findTableSourceWithColumn(String columnName) {
-        return null;
+        if (columnName == null) {
+            return null;
+        }
+
+        long hash = FNVUtils.fnv_64_lower_normalized(alias);
+        return findTableSourceWithColumn(hash);
     }
 
     public SQLTableSource findTableSourceWithColumn(long columnNameHash) {

@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -48,11 +49,25 @@ public class SQLSelectParser extends SQLParser {
             select.setWithSubQuery(with);
         }
 
-        select.setQuery(query());
-        select.setOrderBy(parseOrderBy());
+        SQLSelectQuery query = query();
+        select.setQuery(query);
 
-        if (select.getOrderBy() == null) {
-            select.setOrderBy(parseOrderBy());
+        SQLOrderBy orderBy = this.parseOrderBy();
+
+        if (query instanceof SQLSelectQueryBlock) {
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+
+            if (queryBlock.getOrderBy() == null) {
+                queryBlock.setOrderBy(orderBy);
+            } else {
+                select.setOrderBy(orderBy);
+            }
+
+            if (orderBy != null) {
+                parseFetchClause(queryBlock);
+            }
+        } else {
+            select.setOrderBy(orderBy);
         }
 
         while (lexer.token == Token.HINT) {
@@ -609,17 +624,20 @@ public class SQLSelectParser extends SQLParser {
                 rightTableSource = new SQLExprTableSource(expr);
             }
 
-            if (lexer.identifierEquals("USING")) {
+            if (lexer.token == Token.USING
+                ||lexer.identifierEquals(FNVUtils.USING))
+            {
+                Lexer.SavePoint savePoint = lexer.mark();
                 lexer.nextToken();
-                if (lexer.token == Token.LPAREN) {
-                    lexer.nextToken();
-                    this.exprParser.exprList(join.getUsing(), join);
-                    accept(Token.RPAREN);
-                } else {
-                    join.getUsing().add(this.expr());
-                }
 
-                join.setAlias(this.tableAlias());
+                if (lexer.token == Token.LPAREN
+                        || lexer.token == Token.IDENTIFIER) {
+                    lexer.reset(savePoint);
+                    join.setRight(rightTableSource);
+                    return join;
+                } else {
+                    join.setAlias(this.tableAlias());
+                }
             } else {
                 rightTableSource.setAlias(this.tableAlias());
 
@@ -659,14 +677,16 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token == Token.ON) {
                 lexer.nextToken();
                 join.setCondition(expr());
-            } else if (lexer.identifierEquals("USING")) {
+            } else if (lexer.token == Token.USING
+                    || lexer.identifierEquals(FNVUtils.USING)) {
+                Lexer.SavePoint savePoint = lexer.mark();
                 lexer.nextToken();
                 if (lexer.token == Token.LPAREN) {
                     lexer.nextToken();
                     this.exprParser.exprList(join.getUsing(), join);
                     accept(Token.RPAREN);
                 } else {
-                    join.getUsing().add(this.expr());
+                    lexer.reset(savePoint);
                 }
             }
 

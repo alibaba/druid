@@ -16,9 +16,7 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FNVUtils;
@@ -32,7 +30,10 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     private transient Boolean parameter;
 
     private transient SQLColumnDefinition resolvedColumn;
-    private transient SQLTableSource resolvedTableSource;
+    private transient SQLParameter        resolvedParameter;
+    private transient SQLDeclareItem      resolvedDeclareItem;
+
+    private transient SQLObject           resolvedOwnerObject;
 
     public SQLIdentifierExpr(){
 
@@ -69,6 +70,11 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     }
 
     public long name_hash_lower() {
+        return hashCode64();
+    }
+
+    @Override
+    public long hashCode64() {
         if (hash_lower == 0
                 && name != null) {
             final int len = name.length();
@@ -183,7 +189,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     public SQLIdentifierExpr clone() {
         SQLIdentifierExpr x = new SQLIdentifierExpr(this.name);
         x.resolvedColumn = resolvedColumn;
-        x.resolvedTableSource = resolvedTableSource;
+        x.resolvedOwnerObject = resolvedOwnerObject;
         return x;
     }
 
@@ -200,11 +206,39 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLTableSource getResolvedTableSource() {
-        return resolvedTableSource;
+        if (resolvedOwnerObject instanceof SQLTableSource) {
+            return (SQLTableSource) resolvedOwnerObject;
+        }
+
+        return null;
     }
 
     public void setResolvedTableSource(SQLTableSource resolvedTableSource) {
-        this.resolvedTableSource = resolvedTableSource;
+        this.resolvedOwnerObject = resolvedTableSource;
+    }
+
+    public SQLObject getResolvedOwnerObject() {
+        return resolvedOwnerObject;
+    }
+
+    public void setResolvedOwnerObject(SQLObject resolvedOwnerObject) {
+        this.resolvedOwnerObject = resolvedOwnerObject;
+    }
+
+    public SQLParameter getResolvedParameter() {
+        return resolvedParameter;
+    }
+
+    public void setResolvedParameter(SQLParameter resolvedParameter) {
+        this.resolvedParameter = resolvedParameter;
+    }
+
+    public SQLDeclareItem getResolvedDeclareItem() {
+        return resolvedDeclareItem;
+    }
+
+    public void setResolvedDeclareItem(SQLDeclareItem resolvedDeclareItem) {
+        this.resolvedDeclareItem = resolvedDeclareItem;
     }
 
     public SQLDataType computeDataType() {
@@ -212,9 +246,9 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
             return resolvedColumn.getDataType();
         }
 
-        if (resolvedTableSource != null
-                && resolvedTableSource instanceof SQLSubqueryTableSource) {
-            SQLSelect select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+        if (resolvedOwnerObject != null
+                && resolvedOwnerObject instanceof SQLSubqueryTableSource) {
+            SQLSelect select = ((SQLSubqueryTableSource) resolvedOwnerObject).getSelect();
             SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
             if (queryBlock == null) {
                 return null;

@@ -416,6 +416,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getModelClause().accept(this);
         }
 
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            println();
+            orderBy.accept(this);
+        }
+
         printFetchFirst(x);
 
         if (x.isForUpdate()) {

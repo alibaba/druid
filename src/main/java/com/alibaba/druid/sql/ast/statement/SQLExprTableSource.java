@@ -33,6 +33,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
 
     protected SQLExpr     expr;
     private List<SQLName> partitions;
+
     private SchemaObject  schemaObject;
 
     public SQLExprTableSource(){
@@ -257,15 +258,20 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public SQLTableSource findTableSourceWithColumn(long columnName_hash) {
-        if (schemaObject == null) {
-            return null;
+        if (schemaObject != null) {
+            SQLStatement stmt = schemaObject.getStatement();
+            if (stmt instanceof SQLCreateTableStatement) {
+                SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
+                if (createTableStmt.findColumn(columnName_hash) != null) {
+                    return this;
+                }
+            }
         }
 
-        SQLStatement stmt = schemaObject.getStatement();
-        if (stmt instanceof SQLCreateTableStatement) {
-            SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) stmt;
-            if (createTableStmt.findColumn(columnName_hash) != null) {
-                return this;
+        if (expr instanceof SQLIdentifierExpr) {
+            SQLTableSource tableSource = ((SQLIdentifierExpr) expr).getResolvedTableSource();
+            if (tableSource != null) {
+                return tableSource.findTableSourceWithColumn(columnName_hash);
             }
         }
 
@@ -284,6 +290,13 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
         if (expr instanceof SQLName) {
             long exprNameHash = ((SQLName) expr).name_hash_lower();
             if (exprNameHash == alias_hash) {
+                return this;
+            }
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            long hash = ((SQLPropertyExpr) expr).hashCode64();
+            if (hash == alias_hash) {
                 return this;
             }
         }

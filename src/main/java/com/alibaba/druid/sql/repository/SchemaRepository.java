@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
@@ -256,7 +257,8 @@ public class SchemaRepository {
         int optionsValue = SchemaResolveVisitor.Option.of(options);
 
         SchemaResolveVisitor resolveVisitor;
-        if (JdbcConstants.MYSQL.equals(dbType)) {
+        if (JdbcConstants.MYSQL.equals(dbType)
+                || JdbcConstants.SQLITE.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.MySqlResolveVisitor(this, optionsValue);
         } else if (JdbcConstants.ORACLE.equals(dbType)) {
             resolveVisitor = new SchemaResolveVisitorFactory.OracleResolveVisitor(this, optionsValue);
@@ -415,31 +417,6 @@ public class SchemaRepository {
         }
         return true;
     }
-
-
-
-
-
-
-
-
-
-    protected void resolve(SchemaResolveVisitor visitor, SQLExprTableSource x) {
-        if (x.getSchemaObject() != null) {
-            return;
-        }
-
-        SQLExpr expr = x.getExpr();
-        if (expr instanceof SQLName) {
-            SchemaObject table = findTable((SQLName) expr);
-            if (table != null) {
-                x.setSchemaObject(table);
-            }
-        }
-    }
-
-
-
 
 
     public SchemaObject findTable(SQLExprTableSource x) {
@@ -648,6 +625,12 @@ public class SchemaRepository {
             if (queryBlock != null) {
                 List<SQLSelectItem> selectList = queryBlock.getSelectList();
                 for (SQLSelectItem selectItem : selectList) {
+                    SQLExpr selectItemExpr = selectItem.getExpr();
+                    if (selectItemExpr instanceof SQLAllColumnExpr
+                            || (selectItemExpr instanceof SQLPropertyExpr && ((SQLPropertyExpr) selectItemExpr).getName().equals("*"))) {
+                        continue;
+                    }
+
                     String name = selectItem.computeAlias();
                     SQLDataType dataType = selectItem.computeDataType();
                     SQLColumnDefinition column = new SQLColumnDefinition();
@@ -656,7 +639,34 @@ public class SchemaRepository {
                     column.setDbType(dbType);
                     x1.getTableElementList().add(column);
                 }
-                x1.setSelect(null);
+                if (x1.getTableElementList().size() > 0) {
+                    x1.setSelect(null);
+                }
+            }
+        }
+
+        SQLExprTableSource like = x1.getLike();
+        if (like != null) {
+            SchemaObject tableObject = null;
+
+            SQLName name = like.getName();
+            if (name != null) {
+                tableObject = findTable(name);
+            }
+
+            SQLCreateTableStatement tableStmt = null;
+            if (tableObject != null) {
+                SQLStatement stmt = tableObject.getStatement();
+                if (stmt instanceof SQLCreateTableStatement) {
+                    tableStmt = (SQLCreateTableStatement) stmt;
+                }
+            }
+
+            if (tableStmt != null) {
+                SQLName tableName = x1.getName();
+                tableStmt.cloneTo(x1);
+                x1.setName(tableName);
+                x1.setLike((SQLExprTableSource) null);
             }
         }
 

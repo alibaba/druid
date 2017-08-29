@@ -21,4 +21,6 @@ public interface SQLName extends SQLExpr {
     SQLName clone();
 
     long name_hash_lower();
+
+    long hashCode64();
 }

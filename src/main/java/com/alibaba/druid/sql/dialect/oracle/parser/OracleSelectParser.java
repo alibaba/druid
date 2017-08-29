@@ -74,14 +74,22 @@ public class OracleSelectParser extends SQLSelectParser {
         select.setQuery(query);
 
         SQLOrderBy orderBy = this.parseOrderBy();
-        select.setOrderBy(orderBy);
 
         OracleSelectQueryBlock queryBlock = null;
         if (query instanceof SQLSelectQueryBlock) {
             queryBlock = (OracleSelectQueryBlock) query;
+
+            if (queryBlock.getOrderBy() == null) {
+                queryBlock.setOrderBy(orderBy);
+            } else {
+                select.setOrderBy(orderBy);
+            }
+
             if (orderBy != null) {
                 parseFetchClause(queryBlock);
             }
+        } else {
+            select.setOrderBy(orderBy);
         }
 
         if (lexer.token() == (Token.FOR)) {
@@ -114,8 +122,15 @@ public class OracleSelectParser extends SQLSelectParser {
             }
         }
 
-        if (select.getOrderBy() == null) {
-            select.setOrderBy(this.exprParser.parseOrderBy());
+        if (lexer.token() == Token.ORDER) {
+            orderBy = this.exprParser.parseOrderBy();
+            if (queryBlock != null && queryBlock.getOrderBy() == null) {
+                queryBlock.setOrderBy(orderBy);
+            } else if (select.getOrderBy() == null){
+                select.setOrderBy(orderBy);
+            } else {
+                throw new ParserException("illegal state.");
+            }
         }
 
         if (lexer.token() == Token.WITH) {

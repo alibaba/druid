@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SQLParameter extends SQLObjectImpl implements SQLObjectWithDataType {
 
-    private SQLExpr       name;
+    private SQLName       name;
     private SQLDataType   dataType;
     private SQLExpr       defaultValue;
     private ParameterType paramType;
@@ -43,11 +43,11 @@ public class SQLParameter extends SQLObjectImpl implements SQLObjectWithDataType
         this.defaultValue = deaultValue;
     }
 
-    public SQLExpr getName() {
+    public SQLName getName() {
         return name;
     }
 
-    public void setName(SQLExpr name) {
+    public void setName(SQLName name) {
         if (name != null) {
             name.setParent(this);
         }

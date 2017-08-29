@@ -3275,7 +3275,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlCursorDeclareStatement x) {
         print0(ucase ? "DECLARE " : "declare ");
-        print0(x.getCursorName());
+        printExpr(x.getCursorName());
         print0(ucase ? " CURSOR FOR" : " cursor for");
         this.indentCount++;
         println();

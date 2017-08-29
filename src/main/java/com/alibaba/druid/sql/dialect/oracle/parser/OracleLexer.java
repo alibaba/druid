@@ -110,6 +110,8 @@ public class OracleLexer extends Lexer {
         map.put("FETCH", Token.FETCH);
         map.put("TABLESPACE", Token.TABLESPACE);
         map.put("PARTITION", Token.PARTITION);
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
 
         map.put("，", Token.COMMA);
         map.put("（", Token.LPAREN);

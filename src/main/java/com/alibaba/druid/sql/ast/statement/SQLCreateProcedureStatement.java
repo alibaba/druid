@@ -166,4 +166,14 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQL
     public void setModifiesSqlData(boolean modifiesSqlData) {
         this.modifiesSqlData = modifiesSqlData;
     }
+
+    public SQLParameter findParameter(long hash) {
+        for (SQLParameter param : this.parameters) {
+            if (param.getName().name_hash_lower() == hash) {
+                return param;
+            }
+        }
+
+        return null;
+    }
 }

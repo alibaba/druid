@@ -16,10 +16,7 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLDataType;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -33,7 +30,10 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     protected long name_hash_lower;
 
     private transient SQLColumnDefinition resolvedColumn;
-    private transient SQLTableSource resolvedTableSource;
+
+    private transient SQLObject           resolvedTableSource;
+
+    private transient long hash_ower;
 
     public SQLPropertyExpr(String owner, String name){
         this(new SQLIdentifierExpr(owner), name);
@@ -75,6 +75,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             owner.setParent(this);
         }
         this.owner = owner;
+        this.hash_ower = 0;
     }
 
     public void setOwner(String owner) {
@@ -87,6 +88,8 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     public void setName(String name) {
         this.name = name;
+        this.hash_ower = 0;
+        this.name_hash_lower = 0;
     }
 
     public void output(StringBuffer buf) {
@@ -105,11 +108,15 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-        return result;
+        long hash = hashCode64();
+        return (int)(hash ^ (hash >>> 32));
+    }
+
+    public long hashCode64() {
+        if (hash_ower == 0) {
+            hash_ower = FNVUtils.fnv_64_lower(this);
+        }
+        return hash_ower;
     }
 
     @Override
@@ -175,6 +182,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
                 char c1 = name.charAt(len - 1);
                 if ((c0 == '`' && c1 == '`')
                         || (c0 == '"' && c1 == '"')
+                        || (c0 == '\'' && c1 == '\'')
                         || (c0 == '[' && c1 == ']')) {
                     quote = true;
                 }
@@ -211,11 +219,31 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLTableSource getResolvedTableSource() {
-        return resolvedTableSource;
+        if (resolvedTableSource instanceof SQLTableSource) {
+            return (SQLTableSource) resolvedTableSource;
+        }
+
+        return null;
     }
 
     public void setResolvedTableSource(SQLTableSource resolvedTableSource) {
         this.resolvedTableSource = resolvedTableSource;
+    }
+
+    public void setResolvedProcedure(SQLCreateProcedureStatement stmt) {
+        this.resolvedTableSource = stmt;
+    }
+
+    public void setResolvedOwnerObject(SQLObject resolvedOwnerObject) {
+        this.resolvedTableSource = resolvedOwnerObject;
+    }
+
+    public SQLCreateProcedureStatement getResolvedProcudure() {
+        if (this.resolvedTableSource instanceof SQLCreateProcedureStatement) {
+            return (SQLCreateProcedureStatement) this.resolvedTableSource;
+        }
+
+        return null;
     }
 
     public SQLDataType computeDataType() {

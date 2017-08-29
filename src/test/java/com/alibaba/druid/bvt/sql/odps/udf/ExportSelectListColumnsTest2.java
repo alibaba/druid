@@ -14,9 +14,11 @@ public class ExportSelectListColumnsTest2 extends TestCase {
         String sql = "SELECT * "
                 + "\n FROM fund_base_cv_ad_auction_ocr_pv_tfs a"
                 + "\n WHERE ds=20150819";
-        
+
         String text = udf.evaluate(sql, "odps");
         
         Assert.assertEquals("fund_base_cv_ad_auction_ocr_pv_tfs.*", text);
+
+
     }
 }

@@ -34,6 +34,10 @@ public class SQLBlockStatement extends SQLStatementImpl {
 
     public SQLStatement exception;
 
+    public SQLBlockStatement() {
+
+    }
+
     public List<SQLStatement> getStatementList() {
         return statementList;
     }
@@ -109,5 +113,15 @@ public class SQLBlockStatement extends SQLStatementImpl {
         }
 
         return x;
+    }
+
+    public SQLParameter findParameter(long hash) {
+        for (SQLParameter param : this.parameters) {
+            if (param.getName().name_hash_lower() == hash) {
+                return param;
+            }
+        }
+
+        return null;
     }
 }

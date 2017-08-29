@@ -48,7 +48,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
 
     private List<SQLCommentHint>   optionHints  = new ArrayList<SQLCommentHint>();
 
-    private SQLExprTableSource     like;
+
     
     private SQLName                tableGroup;
 
@@ -56,20 +56,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         super (JdbcConstants.MYSQL);
     }
 
-    public SQLExprTableSource getLike() {
-        return like;
-    }
 
-    public void setLike(SQLName like) {
-        this.setLike(new SQLExprTableSource(like));
-    }
-
-    public void setLike(SQLExprTableSource like) {
-        if (like != null) {
-            like.setParent(this);
-        }
-        this.like = like;
-    }
 
     public List<SQLCommentHint> getHints() {
         return hints;
@@ -135,6 +122,9 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         }
 
         public void setName(SQLName name) {
+            if (name != null) {
+                name.setParent(this);
+            }
             this.name = name;
         }
 
@@ -143,6 +133,9 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
         }
 
         public void setStorage(SQLExpr storage) {
+            if (storage != null) {
+                storage.setParent(this);
+            }
             this.storage = storage;
         }
 
@@ -153,6 +146,20 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
                 acceptChild(visitor, getStorage());
             }
             visitor.endVisit(this);
+        }
+
+        public TableSpaceOption clone() {
+            TableSpaceOption x = new TableSpaceOption();
+
+            if (name != null) {
+                x.setName(name.clone());
+            }
+
+            if (storage != null) {
+                x.setStorage(storage.clone());
+            }
+
+            return x;
         }
 
     }

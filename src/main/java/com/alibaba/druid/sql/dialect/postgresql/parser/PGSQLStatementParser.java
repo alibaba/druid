@@ -185,15 +185,9 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
-            for (;;) {
-                SQLName name = this.exprParser.name();
-                deleteStatement.getUsing().add(name);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-                break;
-            }
+
+            SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
+            deleteStatement.setUsing(tableSource);
         }
 
         if (lexer.token() == (Token.WHERE)) {

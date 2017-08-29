@@ -147,12 +147,12 @@ public class OdpsSelectTest22 extends TestCase {
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(2, visitor.getTables().size());
-        assertEquals(17, visitor.getColumns().size());
+        assertEquals(15, visitor.getColumns().size());
         assertEquals(6, visitor.getConditions().size());
 
         System.out.println(SQLUtils.formatOdps(sql));
         
-//        assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
+        assertTrue(visitor.containsColumn("alimama_algo.fund_mlr_n_chicago_user_track_distinct_shark", "item_id"));
     }
 
 

@@ -117,6 +117,6 @@ public class OracleCreateTableTest19 extends OracleTest {
 
         Assert.assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SONAR.ACTIVE_DASHBOARDS", "ID")));
+        Assert.assertTrue(visitor.containsColumn("SONAR.ACTIVE_DASHBOARDS", "ID"));
     }
 }

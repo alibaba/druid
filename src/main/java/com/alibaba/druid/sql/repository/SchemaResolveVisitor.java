@@ -15,11 +15,15 @@
  */
 package com.alibaba.druid.sql.repository;
 
+import com.alibaba.druid.sql.ast.SQLDeclareItem;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,6 +74,8 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
 
         private Map<Long, SQLTableSource> tableSourceMap;
 
+        protected Map<Long, SQLDeclareItem> declares;
+
         public Context(SQLObject object, Context parent) {
             this.object = object;
             this.parent = parent;
@@ -93,6 +99,20 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
 
         public void addTableSource(long alias_hash, SQLTableSource tableSource) {
             tableSourceMap.put(alias_hash, tableSource);
+        }
+
+        protected void declare(SQLDeclareItem x) {
+            if (declares == null) {
+                declares = new HashMap<Long, SQLDeclareItem>();
+            }
+            declares.put(x.getName().name_hash_lower(), x);
+        }
+
+        protected SQLDeclareItem findDeclare(long nameHash) {
+            if (declares == null) {
+                return null;
+            }
+            return declares.get(nameHash);
         }
     }
 }

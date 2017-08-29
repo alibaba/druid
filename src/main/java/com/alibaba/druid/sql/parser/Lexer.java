@@ -190,6 +190,8 @@ public class Lexer {
         int   sp;
         int   np;
         char  ch;
+        long hash;
+        long hash_lower;
         Token token;
         String stringVal;
     }
@@ -206,6 +208,8 @@ public class Lexer {
         savePoint.ch = ch;
         savePoint.token = token;
         savePoint.stringVal = stringVal;
+        savePoint.hash = hash;
+        savePoint.hash_lower = hash_lower;
         return this.savePoint = savePoint;
     }
 
@@ -216,6 +220,8 @@ public class Lexer {
         this.ch = savePoint.ch;
         this.token = savePoint.token;
         this.stringVal = savePoint.stringVal;
+        this.hash = savePoint.hash;
+        this.hash_lower = savePoint.hash_lower;
     }
 
     public void reset() {

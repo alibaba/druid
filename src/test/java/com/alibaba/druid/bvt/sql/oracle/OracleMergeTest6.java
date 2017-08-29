@@ -55,13 +55,15 @@ public class OracleMergeTest6 extends OracleTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("console_stb_ipstatus")));
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(7, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "stbid"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "ip"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "port"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "status"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "time"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "id"));
+         Assert.assertTrue(visitor.containsColumn("console_stb_ipstatus", "firsttime"));
     }
 
 }

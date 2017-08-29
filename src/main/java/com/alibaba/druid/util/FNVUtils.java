@@ -15,7 +15,14 @@
  */
 package com.alibaba.druid.util;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class FNVUtils {
     public final static long HIGH_PRIORITY = fnv_64_lower("HIGH_PRIORITY");
@@ -81,6 +88,10 @@ public class FNVUtils {
     public final static long EXTRACT = fnv_64_lower("EXTRACT");
     public final static long POSITION = fnv_64_lower("POSITION");
     public final static long DUAL = fnv_64_lower("DUAL");
+    public final static long LEVEL = fnv_64_lower("LEVEL");
+    public final static long CONNECT_BY_ISCYCLE = fnv_64_lower("CONNECT_BY_ISCYCLE");
+    public final static long CURRENT_TIMESTAMP = fnv_64_lower("CURRENT_TIMESTAMP");
+    public final static long FALSE = fnv_64_lower("FALSE");
 
     public static long fnv_64(String input) {
         if (input == null) {
@@ -126,12 +137,13 @@ public class FNVUtils {
             char c1 = name.charAt(len - 1);
             if ((c0 == '`' && c1 == '`')
                     || (c0 == '"' && c1 == '"')
+                    || (c0 == '\'' && c1 == '\'')
                     || (c0 == '[' && c1 == ']')) {
                 quote = true;
             }
         }
         if (quote) {
-            return FNVUtils.fnv_64_lower(name, 1, len -1);
+            return FNVUtils.fnv_64_lower(name, 1, len - 1);
         } else {
             return FNVUtils.fnv_64_lower(name);
         }
@@ -181,5 +193,135 @@ public class FNVUtils {
             Arrays.sort(hashCodes);
         }
         return hashCodes;
+    }
+
+    public static long fnv_64_lower(SQLPropertyExpr propertyExpr) {
+        List<String> items = new ArrayList<String>();
+        items.add(propertyExpr.getName());
+
+        for (SQLExpr x = propertyExpr.getOwner();x != null;) {
+            if (x instanceof SQLPropertyExpr) {
+                SQLPropertyExpr p = (SQLPropertyExpr) x;
+                items.add(p.getName());
+                x = p.getOwner();
+                continue;
+            }
+            items.add(x.toString());
+            break;
+        }
+
+        Collections.reverse(items);
+
+        long hashCode = 0xcbf29ce484222325L;
+
+        for (int i = 0; i < items.size(); i++) {
+            if (i != 0) {
+                hashCode ^= '.';
+                hashCode *= 0x100000001b3L;
+            }
+
+            String item = items.get(i);
+
+            boolean quote = false;
+
+            int len = item.length();
+            if (len > 2) {
+                char c0 = item.charAt(0);
+                char c1 = item.charAt(len - 1);
+                if ((c0 == '`' && c1 == '`')
+                        || (c0 == '"' && c1 == '"')
+                        || (c0 == '\'' && c1 == '\'')
+                        || (c0 == '[' && c1 == ']')) {
+                    quote = true;
+                }
+            }
+
+            int start = quote ? 1 : 0;
+            int end   = quote ? len - 1 : len;
+            for (int j = start; j < end; ++j) {
+                char ch = item.charAt(j);
+
+                if (ch >= 'A' && ch <= 'Z') {
+                    ch = (char) (ch + 32);
+                }
+
+                hashCode ^= ch;
+                hashCode *= 0x100000001b3L;
+            }
+        }
+
+        return hashCode;
+    }
+
+    public static long fnv_64_lower(String owner, String name) {
+        long hashCode = 0xcbf29ce484222325L;
+
+        if (owner != null) {
+            String item = owner;
+
+            boolean quote = false;
+
+            int len = item.length();
+            if (len > 2) {
+                char c0 = item.charAt(0);
+                char c1 = item.charAt(len - 1);
+                if ((c0 == '`' && c1 == '`')
+                        || (c0 == '"' && c1 == '"')
+                        || (c0 == '\'' && c1 == '\'')
+                        || (c0 == '[' && c1 == ']')) {
+                    quote = true;
+                }
+            }
+
+            int start = quote ? 1 : 0;
+            int end   = quote ? len - 1 : len;
+            for (int j = start; j < end; ++j) {
+                char ch = item.charAt(j);
+
+                if (ch >= 'A' && ch <= 'Z') {
+                    ch = (char) (ch + 32);
+                }
+
+                hashCode ^= ch;
+                hashCode *= 0x100000001b3L;
+            }
+
+            hashCode ^= '.';
+            hashCode *= 0x100000001b3L;
+        }
+
+
+        if (name != null) {
+            String item = name;
+
+            boolean quote = false;
+
+            int len = item.length();
+            if (len > 2) {
+                char c0 = item.charAt(0);
+                char c1 = item.charAt(len - 1);
+                if ((c0 == '`' && c1 == '`')
+                        || (c0 == '"' && c1 == '"')
+                        || (c0 == '\'' && c1 == '\'')
+                        || (c0 == '[' && c1 == ']')) {
+                    quote = true;
+                }
+            }
+
+            int start = quote ? 1 : 0;
+            int end   = quote ? len - 1 : len;
+            for (int j = start; j < end; ++j) {
+                char ch = item.charAt(j);
+
+                if (ch >= 'A' && ch <= 'Z') {
+                    ch = (char) (ch + 32);
+                }
+
+                hashCode ^= ch;
+                hashCode *= 0x100000001b3L;
+            }
+        }
+
+        return hashCode;
     }
 }

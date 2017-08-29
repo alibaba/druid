@@ -34,5 +34,7 @@ public class PGAlterTableAddUnique0 extends PGTest {
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("products")).getAlterCount() == 1);
 
         Assert.assertTrue(visitor.getColumns().size() == 1);
+
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("products", "product_no")));
     }
 }

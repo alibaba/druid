@@ -15,6 +15,11 @@
  */
 package com.alibaba.druid.stat;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.ArrayList;
@@ -423,6 +428,8 @@ public class TableStat {
          */
         private String              dataType;
 
+        protected long              hashCode64;
+
         public Column(String table, String name){
             this.table = table;
             this.name = name;
@@ -442,6 +449,28 @@ public class TableStat {
             }
 
             return fullName;
+        }
+
+        public long hashCode64() {
+            if (hashCode64 == 0) {
+                int p = table.indexOf('.');
+                if (p != -1) {
+                    String dbType = null;
+                    if (table.indexOf('`') != -1) {
+                        dbType = JdbcConstants.MYSQL;
+                    } else if (table.indexOf('[') != -1) {
+                        dbType = JdbcConstants.SQL_SERVER;
+                    } else if (table.indexOf('@') != -1) {
+                        dbType = JdbcConstants.ORACLE;
+                    }
+                    SQLExpr owner = SQLUtils.toSQLExpr(table, dbType);
+                    hashCode64 = FNVUtils.fnv_64_lower(new SQLPropertyExpr(owner, name));
+                } else {
+                    hashCode64 = FNVUtils.fnv_64_lower(table, name);
+                }
+            }
+
+            return hashCode64;
         }
 
         public boolean isWhere() {
@@ -527,10 +556,8 @@ public class TableStat {
         }
 
         public int hashCode() {
-            int tableHashCode = table != null ? StringUtils.lowerHashCode(table) : 0;
-            int nameHashCode = name != null ? StringUtils.lowerHashCode(name) : 0;
-
-            return tableHashCode + nameHashCode;
+            long hash = hashCode64();
+            return (int)(hash ^ (hash >>> 32));
         }
 
         public String toString() {
@@ -542,34 +569,13 @@ public class TableStat {
         }
 
         public boolean equals(Object obj) {
-
             if (!(obj instanceof Column)) {
                 return false;
             }
 
             Column column = (Column) obj;
 
-            if (table == null) {
-                if (column.getTable() != null) {
-                    return false;
-                }
-            } else {
-                if (!table.equalsIgnoreCase(column.getTable())) {
-                    return false;
-                }
-            }
-
-            if (name == null) {
-                if (column.getName() != null) {
-                    return false;
-                }
-            } else {
-                if (!name.equalsIgnoreCase(column.getName())) {
-                    return false;
-                }
-            }
-
-            return true;
+            return hashCode64() == column.hashCode64();
         }
     }
 

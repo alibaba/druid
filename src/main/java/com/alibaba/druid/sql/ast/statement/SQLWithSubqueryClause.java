@@ -126,6 +126,15 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         public List<SQLName> getColumns() {
             return columns;
         }
+
+        public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+            for (SQLName column : columns) {
+                if (column.name_hash_lower() == columnNameHash) {
+                    return this;
+                }
+            }
+            return null;
+        }
     }
 
     public Entry findEntry(long alias_hash) {

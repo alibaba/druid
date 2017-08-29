@@ -32,8 +32,9 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE LOW_PRIORITY FROM id1.id, id USING (t1) AS a" + //
-                            "\nWHERE col1 = ?", output);
+        Assert.assertEquals("DELETE LOW_PRIORITY FROM id1.id, id\n" +
+                "USING t1 a\n" +
+                "WHERE col1 = ?", output);
     }
 
     public void testDelete_1() throws Exception {
@@ -52,10 +53,10 @@ public class DMLDeleteParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DELETE FROM offer.*, wp_image.*" + //
-                            " USING (offer) AS a, wp_image b\n" + //
-                            "WHERE a.member_id = b.member_id\n" + //
-                            "\tAND a.member_id = 'abc'", output);
+        Assert.assertEquals("DELETE FROM offer.*, wp_image.*\n" +
+                "USING offer a, wp_image b\n" +
+                "WHERE a.member_id = b.member_id\n" +
+                "\tAND a.member_id = 'abc'", output);
     }
 
     public void testDelete_3() throws Exception {

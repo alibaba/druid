@@ -20,9 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FNVUtils;
@@ -51,6 +49,9 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected SQLExpr                   waitTime;
 
     protected SQLLimit                  limit;
+
+    // for oracle
+    protected List<SQLExpr>            forUpdateOf;
 
     public SQLSelectQueryBlock(){
 
@@ -313,6 +314,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         if (visitor.visit(this)) {
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.from);
+            acceptChild(visitor, this.into);
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.startWith);
             acceptChild(visitor, this.connectBy);
@@ -368,6 +370,21 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         SQLSelectQueryBlock x = new SQLSelectQueryBlock();
         cloneTo(x);
         return x;
+    }
+
+    public List<SQLExpr> getForUpdateOf() {
+        if (forUpdateOf == null) {
+            forUpdateOf = new ArrayList<SQLExpr>(1);
+        }
+        return forUpdateOf;
+    }
+
+    public int getForUpdateOfSize() {
+        if (forUpdateOf == null) {
+            return 0;
+        }
+
+        return forUpdateOf.size();
     }
 
     public void cloneTo(SQLSelectQueryBlock x) {
@@ -482,6 +499,28 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         return null;
+    }
+
+    public boolean selectItemHashAllColumn() {
+        for (SQLSelectItem item : this.selectList) {
+            SQLExpr expr = item.getExpr();
+
+            boolean allColumn = expr instanceof SQLAllColumnExpr
+                    || (expr instanceof SQLPropertyExpr && ((SQLPropertyExpr) expr).getName().equals("*"));
+
+            if (allColumn) {
+                if (from instanceof SQLSubqueryTableSource) {
+                    SQLSelect subSelect = ((SQLSubqueryTableSource) from).select;
+                    SQLSelectQueryBlock queryBlock = subSelect.getQueryBlock();
+                    if (queryBlock != null) {
+                        return queryBlock.selectItemHashAllColumn();
+                    }
+                }
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public SQLColumnDefinition findColumn(String columnName) {

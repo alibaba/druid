@@ -25,7 +25,7 @@ public class SQLDeclareItem extends SQLObjectImpl implements SQLObjectWithDataTy
 
     protected Type                  type;
 
-    protected SQLExpr               name;
+    protected SQLName               name;
 
     protected SQLDataType           dataType;
 
@@ -33,16 +33,18 @@ public class SQLDeclareItem extends SQLObjectImpl implements SQLObjectWithDataTy
 
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
+    protected transient SQLObject             resolvedObject;
+
     public SQLDeclareItem() {
 
     }
 
-    public SQLDeclareItem(SQLExpr name, SQLDataType dataType) {
+    public SQLDeclareItem(SQLName name, SQLDataType dataType) {
         this.setName(name);
         this.setDataType(dataType);
     }
 
-    public SQLDeclareItem(SQLExpr name, SQLDataType dataType, SQLExpr value) {
+    public SQLDeclareItem(SQLName name, SQLDataType dataType, SQLExpr value) {
         this.setName(name);
         this.setDataType(dataType);
         this.setValue(value);
@@ -59,11 +61,11 @@ public class SQLDeclareItem extends SQLObjectImpl implements SQLObjectWithDataTy
         visitor.endVisit(this);
     }
 
-    public SQLExpr getName() {
+    public SQLName getName() {
         return name;
     }
 
-    public void setName(SQLExpr name) {
+    public void setName(SQLName name) {
         if (name != null) {
             name.setParent(this);
         }
@@ -112,4 +114,11 @@ public class SQLDeclareItem extends SQLObjectImpl implements SQLObjectWithDataTy
         this.type = type;
     }
 
+    public SQLObject getResolvedObject() {
+        return resolvedObject;
+    }
+
+    public void setResolvedObject(SQLObject resolvedObject) {
+        this.resolvedObject = resolvedObject;
+    }
 }

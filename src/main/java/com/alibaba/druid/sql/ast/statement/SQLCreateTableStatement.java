@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FNVUtils;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
+import oracle.sql.SQLUtil;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
 
@@ -46,6 +47,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     protected SQLSelect             select;
 
     protected SQLExpr               comment;
+
+    protected SQLExprTableSource     like;
 
     public SQLCreateTableStatement(){
 
@@ -157,6 +160,21 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             select.setParent(this);
         }
         this.select = select;
+    }
+
+    public SQLExprTableSource getLike() {
+        return like;
+    }
+
+    public void setLike(SQLName like) {
+        this.setLike(new SQLExprTableSource(like));
+    }
+
+    public void setLike(SQLExprTableSource like) {
+        if (like != null) {
+            like.setParent(this);
+        }
+        this.like = like;
     }
 
     @Override
@@ -569,13 +587,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             identExpr.setName(tableName);
         }
 
-        if (name instanceof SQLIdentifierExpr) {
-            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) name;
-            String tableName = identExpr.getName();
-            tableName = SQLUtils.normalize(tableName);
-            identExpr.setName(tableName);
-        }
-
         for (SQLTableElement element : this.tableElementList) {
             if (element instanceof SQLColumnDefinition) {
                 SQLColumnDefinition column = (SQLColumnDefinition) element;
@@ -901,8 +912,12 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public SQLCreateTableStatement clone() {
-        SQLCreateTableStatement x = new SQLCreateTableStatement();
+        SQLCreateTableStatement x = new SQLCreateTableStatement(dbType);
         cloneTo(x);
         return x;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, dbType);
     }
 }

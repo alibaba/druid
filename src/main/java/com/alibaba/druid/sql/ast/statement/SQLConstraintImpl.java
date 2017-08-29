@@ -64,6 +64,10 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
         this.name = name;
     }
 
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
+    }
+
     public Boolean getEnable() {
         return enable;
     }
@@ -107,7 +111,7 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
             String columnName = identExpr.getName();
             columnName = SQLUtils.normalize(columnName, dbType);
-            identExpr.setName(columnName);
+            this.setName(columnName);
         }
     }
 }

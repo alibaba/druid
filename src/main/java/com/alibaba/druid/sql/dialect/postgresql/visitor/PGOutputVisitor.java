@@ -246,10 +246,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(x.getAlias());
         }
 
-        if (x.getUsing().size() > 0) {
+        SQLTableSource using = x.getUsing();
+        if (using != null) {
             println();
             print0(ucase ? "USING " : "using ");
-            printAndAccept(x.getUsing(), ", ");
+            using.accept(this);
         }
 
         if (x.getWhere() != null) {

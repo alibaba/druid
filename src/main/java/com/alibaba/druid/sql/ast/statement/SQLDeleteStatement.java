@@ -20,10 +20,12 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceable {
+    protected SQLWithSubqueryClause  with;
 
     protected SQLTableSource tableSource;
     protected SQLExpr        where;
     protected SQLTableSource from;
+    protected SQLTableSource using;
 
     protected boolean        only      = false;
 
@@ -44,6 +46,10 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
             }
         }
 
+        if (with != null) {
+            x.setWith(with.clone());
+        }
+
         if (tableSource != null) {
             x.setTableSource(tableSource.clone());
         }
@@ -52,6 +58,9 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
         }
         if (from != null) {
             x.setFrom(from.clone());
+        }
+        if (using != null) {
+            x.setUsing(using.clone());
         }
         x.only = only;
     }
@@ -131,6 +140,7 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, with);
             acceptChild(visitor, tableSource);
             acceptChild(visitor, where);
         }
@@ -164,5 +174,24 @@ public class SQLDeleteStatement extends SQLStatementImpl implements SQLReplaceab
 
     public void setOnly(boolean only) {
         this.only = only;
+    }
+
+    public SQLTableSource getUsing() {
+        return using;
+    }
+
+    public void setUsing(SQLTableSource using) {
+        this.using = using;
+    }
+
+    public SQLWithSubqueryClause getWith() {
+        return with;
+    }
+
+    public void setWith(SQLWithSubqueryClause with) {
+        if (with != null) {
+            with.setParent(this);
+        }
+        this.with = with;
     }
 }

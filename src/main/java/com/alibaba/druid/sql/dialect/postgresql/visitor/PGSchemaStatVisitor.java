@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -41,6 +42,7 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.PGUtils;
 
 public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisitor {
     public PGSchemaStatVisitor() {
@@ -90,7 +92,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGDeleteStatement x) {
-        if (repository != null) {
+        if (repository != null
+                && x.getParent() == null) {
             repository.resolve(x);
         }
 
@@ -100,16 +103,9 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
         setAliasMap();
 
-        for (SQLName name : x.getUsing()) {
-            String ident = name.toString();
-
-            TableStat stat = getTableStat(ident);
-            stat.incrementSelectCount();
-
-            Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                aliasMap.put(ident, ident);
-            }
+        SQLTableSource using = x.getUsing();
+        if (using != null) {
+            using.accept(this);
         }
 
         x.putAttribute("_original_use_mode", getMode());
@@ -133,6 +129,11 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGInsertStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
         setAliasMap();
 
         if (x.getWith() != null) {
@@ -144,8 +145,9 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
         String originalTable = getCurrentTable();
 
-        if (x.getTableName() instanceof SQLName) {
-            String ident = ((SQLName) x.getTableName()).toString();
+        SQLName tableName = x.getTableName();
+        {
+            String ident = tableName.toString();
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
@@ -182,8 +184,17 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     }
 
+    public boolean isPseudoColumn(long hash) {
+        return PGUtils.isPseudoColumn(hash);
+    }
+
     @Override
     public boolean visit(PGUpdateStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
         Map<String, String> oldAliasMap = getAliasMap();
 
         setAliasMap();

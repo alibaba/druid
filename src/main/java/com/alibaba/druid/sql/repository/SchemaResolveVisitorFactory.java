@@ -1,35 +1,29 @@
 package com.alibaba.druid.sql.repository;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsCreateTableStatement;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.odps.ast.*;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
+import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.PGUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +39,32 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
+        public boolean visit(MySqlRepeatStatement x) {
+            return true;
+        }
+
+        public boolean visit(MySqlDeclareStatement x) {
+            for (SQLDeclareItem declareItem : x.getVarList()) {
+                visit(declareItem);
+            }
+            return false;
+        }
+
+        public boolean visit(MySqlCursorDeclareStatement x) {
+            return true;
+        }
+
         public boolean visit(SQLExprTableSource x) {
-            repository.resolve(this, x);
+            resolve(this, x);
             return false;
         }
 
         public boolean visit(MySqlSelectQueryBlock x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectQueryBlock x) {
             resolve(this, x);
             return false;
         }
@@ -114,6 +128,66 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLAlterTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(MySqlInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(MySqlReplaceStatement x) {
+            Context ctx = createContext(x);
+
+            SQLExprTableSource tableSource = x.getTableSource();
+            ctx.setTableSource(tableSource);
+            visit(tableSource);
+
+            for (SQLExpr column : x.getColumns()) {
+                column.accept(this);
+            }
+
+            SQLQueryExpr queryExpr = x.getQuery();
+            if (queryExpr != null) {
+                visit(queryExpr.getSubQuery());
+            }
+
+            popContext();
+            return false;
+        }
+
+        public boolean visit(SQLMergeStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateProcedureStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLBlockStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLParameter x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeclareItem x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -153,7 +227,12 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLExprTableSource x) {
-            repository.resolve(this, x);
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectQueryBlock x) {
+            resolve(this, x);
             return false;
         }
 
@@ -217,6 +296,41 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLAlterTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLMergeStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateProcedureStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLBlockStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLParameter x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeclareItem x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -254,13 +368,29 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
+        public boolean visit(OracleCreatePackageStatement x) {
+            Context ctx = createContext(x);
+
+            for (SQLStatement stmt : x.getStatements()) {
+                stmt.accept(this);
+            }
+
+            popContext();
+            return false;
+        }
+
         public boolean visit(OracleSelectTableReference x) {
-            repository.resolve(this, x);
+            resolve(this, x);
             return false;
         }
 
         public boolean visit(SQLExprTableSource x) {
-            repository.resolve(this, x);
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectQueryBlock x) {
+            resolve(this, x);
             return false;
         }
 
@@ -339,6 +469,74 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(OracleMultiInsertStatement x) {
+            Context ctx = createContext(x);
+
+            SQLSelect select = x.getSubQuery();
+            visit(select);
+
+            OracleSelectSubqueryTableSource tableSource = new OracleSelectSubqueryTableSource(select);
+            tableSource.setParent(x);
+            ctx.setTableSource(tableSource);
+
+            for (OracleMultiInsertStatement.Entry entry : x.getEntries()) {
+                entry.accept(this);
+            }
+
+            popContext();
+            return false;
+        }
+
+        public boolean visit(OracleMultiInsertStatement.InsertIntoClause x) {
+            for (SQLExpr column : x.getColumns()) {
+                if (column instanceof SQLIdentifierExpr) {
+                    SQLIdentifierExpr identColumn = (SQLIdentifierExpr) column;
+                    identColumn.setResolvedTableSource(x.getTableSource());
+                }
+            }
+            return true;
+        }
+
+        public boolean visit(OracleInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLMergeStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateProcedureStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLBlockStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLParameter x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeclareItem x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -376,7 +574,12 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLExprTableSource x) {
-            repository.resolve(this, x);
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectQueryBlock x) {
+            resolve(this, x);
             return false;
         }
 
@@ -445,6 +648,63 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(OdpsInsert x) {
+            Context ctx = createContext(x);
+
+            SQLExprTableSource tableSource = x.getTableSource();
+            if (tableSource != null) {
+                ctx.setTableSource(x.getTableSource());
+                visit(tableSource);
+            }
+
+            for (SQLAssignItem item : x.getPartitions()) {
+                item.accept(this);
+            }
+
+            SQLSelect select = x.getQuery();
+            if (select != null) {
+                visit(select);
+            }
+
+            popContext();
+            return false;
+        }
+
+        public boolean visit(SQLInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLMergeStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateProcedureStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLBlockStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLParameter x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeclareItem x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -482,12 +742,29 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLExprTableSource x) {
-            repository.resolve(this, x);
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectQueryBlock x) {
+            resolve(this, x);
             return false;
         }
 
         public boolean visit(PGSelectQueryBlock x) {
             resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(PGFunctionTableSource x) {
+            for (SQLParameter parameter : x.getParameters()) {
+                SQLName name = parameter.getName();
+                if (name instanceof SQLIdentifierExpr) {
+                    SQLIdentifierExpr identName = (SQLIdentifierExpr) name;
+                    identName.setResolvedTableSource(x);
+                }
+            }
+
             return false;
         }
 
@@ -507,6 +784,10 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
+            if (PGUtils.isPseudoColumn(x.name_hash_lower())) {
+                return false;
+            }
+
             resolve(this, x);
             return true;
         }
@@ -563,6 +844,46 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(PGInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLMergeStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateProcedureStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLBlockStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLParameter x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeclareItem x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -600,7 +921,12 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLExprTableSource x) {
-            repository.resolve(this, x);
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLSelectQueryBlock x) {
+            resolve(this, x);
             return false;
         }
 
@@ -669,6 +995,46 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLServerInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLMergeStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateProcedureStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLBlockStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLParameter x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeclareItem x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -706,7 +1072,7 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLExprTableSource x) {
-            repository.resolve(this, x);
+            resolve(this, x);
             return false;
         }
 
@@ -766,6 +1132,41 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLWithSubqueryClause x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLInsertStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLAlterTableStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLMergeStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLCreateProcedureStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLBlockStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLParameter x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLDeclareItem x) {
             resolve(this, x);
             return false;
         }
@@ -839,6 +1240,11 @@ class SchemaResolveVisitorFactory {
             visitor.visit(select);
         }
 
+        SchemaRepository repository = visitor.getRepository();
+        if (repository != null) {
+            repository.acceptCreateTable(x);
+        }
+
         visitor.popContext();
     }
 
@@ -862,6 +1268,18 @@ class SchemaResolveVisitorFactory {
             if (column instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) column;
                 identifierExpr.setResolvedTableSource(table);
+                visitor.visit(identifierExpr);
+            } else if (column instanceof SQLListExpr) {
+                SQLListExpr columnGroup = (SQLListExpr) column;
+                for (SQLExpr columnGroupItem : columnGroup.getItems()) {
+                    if (columnGroupItem instanceof SQLIdentifierExpr) {
+                        SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) columnGroupItem;
+                        identifierExpr.setResolvedTableSource(table);
+                        visitor.visit(identifierExpr);
+                    } else {
+                        columnGroupItem.accept(visitor);
+                    }
+                }
             } else {
                 column.accept(visitor);
             }
@@ -876,34 +1294,83 @@ class SchemaResolveVisitorFactory {
             where.accept(visitor);
         }
 
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            orderBy.accept(visitor);
+        }
+
+        for (SQLExpr sqlExpr : x.getReturning()) {
+            sqlExpr.accept(visitor);
+        }
+
         visitor.popContext();
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLDeleteStatement x) {
         SchemaResolveVisitor.Context ctx = visitor.createContext(x);
 
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            visitor.visit(with);
+        }
+
         SQLTableSource table = x.getTableSource();
         SQLTableSource from = x.getFrom();
+
+        if (from == null) {
+            from = x.getUsing();
+        }
 
         if (table == null && from != null) {
             table = from;
             from = null;
         }
 
-        ctx.setTableSource(table);
-        ctx.setFrom(from);
+        if (from != null) {
+            ctx.setFrom(from);
+            from.accept(visitor);
+        }
 
         if (table != null) {
             table.accept(visitor);
-        }
-
-        if (from != null) {
-            from.accept(visitor);
+            ctx.setTableSource(table);
         }
 
         SQLExpr where = x.getWhere();
         if (where != null) {
             where.accept(visitor);
+        }
+
+        visitor.popContext();
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLInsertStatement x) {
+        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            visitor.visit(with);
+        }
+
+        SQLTableSource table = x.getTableSource();
+
+        ctx.setTableSource(table);
+
+        if (table != null) {
+            table.accept(visitor);
+        }
+
+        for (SQLExpr column : x.getColumns()) {
+            column.accept(visitor);
+        }
+
+        for (SQLInsertStatement.ValuesClause valuesClause : x.getValuesList()) {
+            valuesClause.accept(visitor);
+        }
+
+        SQLSelect query = x.getQuery();
+        if (query != null) {
+            visitor.visit(query);
         }
 
         visitor.popContext();
@@ -919,47 +1386,125 @@ class SchemaResolveVisitorFactory {
         long hash = x.name_hash_lower();
         SQLTableSource tableSource = null;
 
+        if ((hash == FNVUtils.LEVEL || hash == FNVUtils.CONNECT_BY_ISCYCLE)
+                && ctx.object instanceof SQLSelectQueryBlock) {
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) ctx.object;
+            if (queryBlock.getStartWith() != null
+                    || queryBlock.getConnectBy() != null) {
+                return;
+            }
+        }
+
         SQLTableSource ctxTable = ctx.getTableSource();
 
-        if (ctxTable instanceof SQLJoinTableSource
-                || ctxTable instanceof SQLSubqueryTableSource) {
+        if (ctxTable instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) ctxTable;
+            tableSource = join.findTableSourceWithColumn(hash);
+            if (tableSource == null) {
+                final SQLTableSource left = join.getLeft(), right = join.getRight();
+
+                if (left instanceof SQLSubqueryTableSource
+                        && right instanceof SQLExprTableSource) {
+                    SQLSelect leftSelect = ((SQLSubqueryTableSource) left).getSelect();
+                    if (leftSelect.getQuery() instanceof SQLSelectQueryBlock) {
+                        boolean hasAllColumn = ((SQLSelectQueryBlock) leftSelect.getQuery()).selectItemHashAllColumn();
+                        if (!hasAllColumn) {
+                            tableSource = right;
+                        }
+                    }
+                } else if (right instanceof SQLSubqueryTableSource
+                        && left instanceof SQLExprTableSource) {
+                    SQLSelect rightSelect = ((SQLSubqueryTableSource) right).getSelect();
+                    if (rightSelect.getQuery() instanceof SQLSelectQueryBlock) {
+                        boolean hasAllColumn = ((SQLSelectQueryBlock) rightSelect.getQuery()).selectItemHashAllColumn();
+                        if (!hasAllColumn) {
+                            tableSource = left;
+                        }
+                    }
+                } else if (left instanceof SQLExprTableSource && right instanceof SQLExprTableSource) {
+                    SQLExprTableSource leftExprTableSource = (SQLExprTableSource) left;
+                    SQLExprTableSource rightExprTableSource = (SQLExprTableSource) right;
+
+                    if (leftExprTableSource.getSchemaObject() != null
+                            && rightExprTableSource.getSchemaObject() == null) {
+                        tableSource = rightExprTableSource;
+
+                    } else if (rightExprTableSource.getSchemaObject() != null
+                            && leftExprTableSource.getSchemaObject() == null) {
+                        tableSource = leftExprTableSource;
+                    }
+                }
+            }
+        } else if (ctxTable instanceof SQLSubqueryTableSource) {
             tableSource = ctxTable.findTableSourceWithColumn(hash);
+        } else if (ctxTable instanceof OdpsLateralViewTableSource) {
+            tableSource = ctxTable.findTableSourceWithColumn(hash);
+
+            if (tableSource == null) {
+                tableSource = ((OdpsLateralViewTableSource) ctxTable).getTableSource();
+            }
         } else {
+            SQLDeclareItem declareItem = ctx.findDeclare(hash);
+            if (declareItem != null) {
+                x.setResolvedDeclareItem(declareItem);
+                return;
+            }
+
+            for (SchemaResolveVisitor.Context parentCtx = ctx.parent;
+                 parentCtx != null;
+                 parentCtx = parentCtx.parent)
+            {
+                declareItem = parentCtx.findDeclare(hash);
+                if (declareItem != null) {
+                    x.setResolvedDeclareItem(declareItem);
+                    return;
+                }
+
+                if (parentCtx.object instanceof SQLBlockStatement) {
+                    SQLBlockStatement block = (SQLBlockStatement) parentCtx.object;
+                    SQLParameter parameter = block.findParameter(hash);
+                    if (parameter != null) {
+                        x.setResolvedParameter(parameter);
+                        return;
+                    }
+                } else if (parentCtx.object instanceof SQLCreateProcedureStatement) {
+                    SQLCreateProcedureStatement createProc = (SQLCreateProcedureStatement) parentCtx.object;
+                    SQLParameter parameter = createProc.findParameter(hash);
+                    if (parameter != null) {
+                        x.setResolvedParameter(parameter);
+                        return;
+                    }
+                }
+            }
+
             tableSource = ctxTable;
             if (tableSource instanceof SQLExprTableSource) {
                 SchemaObject table = ((SQLExprTableSource) tableSource).getSchemaObject();
                 if (table != null) {
                     if (table.findColumn(hash) == null) {
-                        tableSource = null; // maybe parent
+                        SQLCreateTableStatement createStmt = null;
+                        {
+                            SQLStatement smt = table.getStatement();
+                            if (smt instanceof SQLCreateTableStatement) {
+                                createStmt = (SQLCreateTableStatement) smt;
+                            }
+                        }
+
+                        if (createStmt != null && createStmt.getTableElementList().size() > 0) {
+                            tableSource = null; // maybe parent
+                        }
                     }
                 }
             }
         }
 
         if (tableSource instanceof SQLExprTableSource) {
-            SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
+                    SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 long identHash = identExpr.name_hash_lower();
 
-                for (SchemaResolveVisitor.Context parentCtx = ctx.parent;
-                     parentCtx != null;
-                     parentCtx = parentCtx.parent) {
-
-                    if (parentCtx.object instanceof SQLSelect) {
-                        SQLSelect select = (SQLSelect) parentCtx.object;
-                        SQLWithSubqueryClause with = select.getWithSubQuery();
-                        if (with != null) {
-                            SQLWithSubqueryClause.Entry entry = with.findEntry(identHash);
-                            if (entry != null) {
-                                tableSource = entry;
-                                break;
-                            }
-                        }
-                    } else if (parentCtx.object instanceof PGSelectStatement) {
-
-                    }
-                }
+                tableSource = unwrapAlias(ctx, tableSource, identHash);
             }
         }
 
@@ -974,9 +1519,132 @@ class SchemaResolveVisitorFactory {
             if (ctxTable instanceof SQLJoinTableSource) {
                 String alias = tableSource.computeAlias();
                 SQLPropertyExpr propertyExpr = new SQLPropertyExpr(new SQLIdentifierExpr(alias), ident, hash);
+                propertyExpr.setResolvedColumn(x.getResolvedColumn());
+                propertyExpr.setResolvedTableSource(x.getResolvedTableSource());
                 SQLUtils.replaceInParent(x, propertyExpr);
             }
         }
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLPropertyExpr x) {
+        SchemaResolveVisitor.Context ctx = visitor.getContext();
+        if (ctx == null) {
+            return;
+        }
+
+        long owner_hash = 0;
+        {
+            SQLExpr ownerObj = x.getOwner();
+            if (ownerObj instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr owner = (SQLIdentifierExpr) ownerObj;
+                owner_hash = owner.name_hash_lower();
+            } else if (ownerObj instanceof SQLPropertyExpr) {
+                owner_hash = ((SQLPropertyExpr) ownerObj).hashCode64();
+            }
+        }
+
+        SQLTableSource tableSource = null;
+        SQLTableSource ctxTable = ctx.getTableSource();
+
+        if (ctxTable != null) {
+            tableSource = ctxTable.findTableSource(owner_hash);
+        }
+
+        if (tableSource == null) {
+            SQLTableSource ctxFrom = ctx.getFrom();
+            if (ctxFrom != null) {
+                tableSource = ctxFrom.findTableSource(owner_hash);
+            }
+        }
+
+        if (tableSource == null) {
+            for (SchemaResolveVisitor.Context parentCtx = ctx;
+                 parentCtx != null;
+                 parentCtx = parentCtx.parent) {
+
+                SQLTableSource parentCtxTable = parentCtx.getTableSource();
+
+                if (parentCtxTable != null) {
+                    tableSource = parentCtxTable.findTableSource(owner_hash);
+                    if (tableSource == null) {
+                        SQLTableSource ctxFrom = parentCtx.getFrom();
+                        if (ctxFrom != null) {
+                            tableSource = ctxFrom.findTableSource(owner_hash);
+                        }
+                    }
+
+                    if (tableSource != null) {
+                        break;
+                    }
+                } else {
+                    if (parentCtx.object instanceof SQLBlockStatement) {
+                        SQLBlockStatement block = (SQLBlockStatement) parentCtx.object;
+                        SQLParameter parameter = block.findParameter(owner_hash);
+                        if (parameter != null) {
+                            x.setResolvedOwnerObject(parameter);
+                            return;
+                        }
+                    }
+
+                    SQLDeclareItem declareItem = parentCtx.findDeclare(owner_hash);
+                    if (declareItem != null) {
+                        SQLObject resolvedObject = declareItem.getResolvedObject();
+                        if (resolvedObject instanceof SQLCreateProcedureStatement) {
+                            x.setResolvedProcedure((SQLCreateProcedureStatement) resolvedObject);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (tableSource != null) {
+            x.setResolvedTableSource(tableSource);
+            SQLColumnDefinition column = tableSource.findColumn(x.name_hash_lower());
+            if (column != null) {
+                x.setResolvedColumn(column);
+            }
+        }
+    }
+
+    private static SQLTableSource unwrapAlias(SchemaResolveVisitor.Context ctx, SQLTableSource tableSource, long identHash) {
+        if (ctx == null) {
+            return tableSource;
+        }
+
+        if (ctx.object instanceof SQLDeleteStatement
+                && (ctx.getTableSource() == null || tableSource == ctx.getTableSource())
+                && ctx.getFrom() != null) {
+            SQLTableSource found = ctx.getFrom().findTableSource(identHash);
+            if (found != null) {
+                return found;
+            }
+        }
+
+        for (SchemaResolveVisitor.Context parentCtx = ctx.parent;
+             parentCtx != null;
+             parentCtx = parentCtx.parent) {
+
+            SQLWithSubqueryClause with = null;
+            if (parentCtx.object instanceof SQLSelect) {
+                SQLSelect select = (SQLSelect) parentCtx.object;
+                with = select.getWithSubQuery();
+            } else if (parentCtx.object instanceof SQLDeleteStatement) {
+                SQLDeleteStatement delete = (SQLDeleteStatement) parentCtx.object;
+                with = delete.getWith();
+            } else if (parentCtx.object instanceof SQLInsertStatement) {
+                SQLInsertStatement insertStmt = (SQLInsertStatement) parentCtx.object;
+                with = insertStmt.getWith();
+            }
+
+            if (with != null) {
+                SQLWithSubqueryClause.Entry entry = with.findEntry(identHash);
+                if (entry != null) {
+                    return entry;
+                }
+            }
+        }
+        return tableSource;
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLSelectQueryBlock x) {
@@ -996,6 +1664,13 @@ class SchemaResolveVisitorFactory {
             SQLSelectItem selectItem = selectList.get(i);
             SQLExpr expr = selectItem.getExpr();
             if (expr instanceof SQLAllColumnExpr) {
+                SQLAllColumnExpr allColumnExpr = (SQLAllColumnExpr) expr;
+                if (from instanceof SQLExprTableSource) {
+                    allColumnExpr.setResolvedTableSource(from);
+                }
+
+                visitor.visit(allColumnExpr);
+
                 if (visitor.isEnabled(SchemaResolveVisitor.Option.ResolveAllColumn)) {
                     extractColumns(visitor, from, columns);
                 }
@@ -1054,6 +1729,11 @@ class SchemaResolveVisitorFactory {
             }
         }
 
+        SQLExprTableSource into = x.getInto();
+        if (into != null) {
+            into.accept(visitor);
+        }
+
         SQLExpr where = x.getWhere();
         if (where != null) {
             where.accept(visitor);
@@ -1076,7 +1756,38 @@ class SchemaResolveVisitorFactory {
 
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
-            orderBy.accept(visitor);
+            for (SQLSelectOrderByItem orderByItem : orderBy.getItems()) {
+                SQLExpr orderByItemExpr = orderByItem.getExpr();
+
+                if (orderByItemExpr instanceof SQLIdentifierExpr) {
+                    SQLIdentifierExpr orderByItemIdentExpr = (SQLIdentifierExpr) orderByItemExpr;
+                    long hash = orderByItemIdentExpr.name_hash_lower();
+                    SQLSelectItem selectItem = x.findSelectItem(hash);
+
+                    if (selectItem != null) {
+                        orderByItem.setResolvedSelectItem(selectItem);
+
+                        SQLExpr selectItemExpr = selectItem.getExpr();
+                        if (selectItemExpr instanceof SQLIdentifierExpr) {
+                            orderByItemIdentExpr.setResolvedTableSource(((SQLIdentifierExpr) selectItemExpr).getResolvedTableSource());
+                            orderByItemIdentExpr.setResolvedColumn(((SQLIdentifierExpr) selectItemExpr).getResolvedColumn());
+                        } else if (selectItemExpr instanceof SQLPropertyExpr) {
+                            orderByItemIdentExpr.setResolvedTableSource(((SQLPropertyExpr) selectItemExpr).getResolvedTableSource());
+                            orderByItemIdentExpr.setResolvedColumn(((SQLPropertyExpr) selectItemExpr).getResolvedColumn());
+                        }
+                        continue;
+                    }
+                }
+
+                orderByItemExpr.accept(visitor);
+            }
+        }
+
+        int forUpdateOfSize = x.getForUpdateOfSize();
+        if (forUpdateOfSize > 0) {
+            for (SQLExpr sqlExpr : x.getForUpdateOf()) {
+                sqlExpr.accept(visitor);
+            }
         }
 
         visitor.popContext();
@@ -1104,64 +1815,43 @@ class SchemaResolveVisitorFactory {
         }
     }
 
-    static void resolve(SchemaResolveVisitor visitor, SQLPropertyExpr x) {
-        SchemaResolveVisitor.Context ctx = visitor.getContext();
-        if (ctx == null) {
-            return;
-        }
-
-        SQLIdentifierExpr owner;
-        {
-            SQLExpr ownerObj = x.getOwner();
-            if (ownerObj instanceof SQLIdentifierExpr) {
-                owner = (SQLIdentifierExpr) ownerObj;
-            } else {
-                return;
-            }
-        }
-        long owner_hash = owner.name_hash_lower();
-
-        SQLTableSource ctxTable = ctx.getTableSource();
-
-        SQLTableSource tableSource = ctxTable.findTableSource(owner_hash);
-        if (tableSource == null) {
-            SQLTableSource ctxFrom = ctx.getFrom();
-            if (ctxFrom != null) {
-                tableSource = ctxFrom.findTableSource(owner_hash);
-            }
-        }
-
-        if (tableSource != null) {
-            x.setResolvedTableSource(tableSource);
-            SQLColumnDefinition column = tableSource.findColumn(x.name_hash_lower());
-            if (column != null) {
-                x.setResolvedColumn(column);
-            }
-        }
-    }
-
     static void resolve(SchemaResolveVisitor visitor, SQLAllColumnExpr x) {
-        SQLSelectQueryBlock queryBlock = null;
-        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
-            if (parent instanceof SQLTableSource) {
+        SQLTableSource tableSource = x.getResolvedTableSource();
+
+        if (tableSource == null) {
+            SQLSelectQueryBlock queryBlock = null;
+            for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
+                if (parent instanceof SQLTableSource) {
+                    return;
+                }
+                if (parent instanceof SQLSelectQueryBlock) {
+                    queryBlock = (SQLSelectQueryBlock) parent;
+                    break;
+                }
+            }
+
+            if (queryBlock == null) {
                 return;
             }
-            if (parent instanceof SQLSelectQueryBlock) {
-                queryBlock = (SQLSelectQueryBlock) parent;
-                break;
+
+            SQLTableSource from = queryBlock.getFrom();
+            if (from == null || from instanceof SQLJoinTableSource) {
+                return;
+            }
+
+            x.setResolvedTableSource(from);
+            tableSource = from;
+        }
+
+        if (tableSource instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
+            if (expr instanceof SQLIdentifierExpr) {
+                SQLTableSource resolvedTableSource = ((SQLIdentifierExpr) expr).getResolvedTableSource();
+                if (resolvedTableSource != null) {
+                    x.setResolvedTableSource(resolvedTableSource);
+                }
             }
         }
-
-        if (queryBlock == null) {
-            return;
-        }
-
-        SQLTableSource from = queryBlock.getFrom();
-        if (from == null || from instanceof SQLJoinTableSource) {
-            return;
-        }
-
-        x.setResolvedTableSource(from);
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLSelect x) {
@@ -1177,9 +1867,39 @@ class SchemaResolveVisitorFactory {
             query.accept(visitor);
         }
 
+        SQLSelectQueryBlock queryBlock = x.getFirstQueryBlock();
+
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
-            visitor.visit(orderBy);
+            for (SQLSelectOrderByItem orderByItem : orderBy.getItems()) {
+                SQLExpr orderByItemExpr = orderByItem.getExpr();
+
+                if (orderByItemExpr instanceof SQLIdentifierExpr) {
+                    SQLIdentifierExpr orderByItemIdentExpr = (SQLIdentifierExpr) orderByItemExpr;
+                    long hash = orderByItemIdentExpr.name_hash_lower();
+
+                    SQLSelectItem selectItem = null;
+                    if (queryBlock != null) {
+                        selectItem = queryBlock.findSelectItem(hash);
+                    }
+
+                    if (selectItem != null) {
+                        orderByItem.setResolvedSelectItem(selectItem);
+
+                        SQLExpr selectItemExpr = selectItem.getExpr();
+                        if (selectItemExpr instanceof SQLIdentifierExpr) {
+                            orderByItemIdentExpr.setResolvedTableSource(((SQLIdentifierExpr) selectItemExpr).getResolvedTableSource());
+                            orderByItemIdentExpr.setResolvedColumn(((SQLIdentifierExpr) selectItemExpr).getResolvedColumn());
+                        } else if (selectItemExpr instanceof SQLPropertyExpr) {
+                            orderByItemIdentExpr.setResolvedTableSource(((SQLPropertyExpr) selectItemExpr).getResolvedTableSource());
+                            orderByItemIdentExpr.setResolvedColumn(((SQLPropertyExpr) selectItemExpr).getResolvedColumn());
+                        }
+                        continue;
+                    }
+                }
+
+                orderByItemExpr.accept(visitor);
+            }
         }
 
         visitor.popContext();
@@ -1197,4 +1917,203 @@ class SchemaResolveVisitorFactory {
         }
     }
 
+    static void resolve(SchemaResolveVisitor visitor, SQLExprTableSource x) {
+        SQLExpr expr = x.getExpr();
+        if (expr instanceof SQLName) {
+            if (x.getSchemaObject() != null) {
+                return;
+            }
+
+            SchemaRepository repository = visitor.getRepository();
+            if (repository != null) {
+                SchemaObject table = repository.findTable((SQLName) expr);
+                if (table != null) {
+                    x.setSchemaObject(table);
+                }
+            }
+
+            SQLIdentifierExpr identifierExpr = null;
+
+            if (expr instanceof SQLIdentifierExpr) {
+                identifierExpr = (SQLIdentifierExpr) expr;
+            } else if (expr instanceof SQLPropertyExpr) {
+                SQLExpr owner = ((SQLPropertyExpr) expr).getOwner();
+                if (owner instanceof SQLIdentifierExpr) {
+                    identifierExpr = (SQLIdentifierExpr) owner;
+                }
+            }
+
+            if (identifierExpr != null) {
+                SQLTableSource tableSource = unwrapAlias(visitor.getContext(), null, identifierExpr.name_hash_lower());
+                if (tableSource != null) {
+                    identifierExpr.setResolvedTableSource(tableSource);
+                }
+            }
+
+        } else if (expr instanceof SQLMethodInvokeExpr) {
+            expr.accept(visitor);
+        } else {
+            expr.accept(visitor);
+        }
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLAlterTableStatement x) {
+        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
+        SQLTableSource tableSource = x.getTableSource();
+        ctx.setTableSource(tableSource);
+
+        for (SQLAlterTableItem item : x.getItems()) {
+            item.accept(visitor);
+        }
+
+        visitor.popContext();
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLMergeStatement x) {
+        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
+        SQLTableSource into = x.getInto();
+        ctx.setTableSource(into);
+
+        SQLTableSource using = x.getUsing();
+        if (using != null) {
+            using.accept(visitor);
+            ctx.setFrom(using);
+        }
+
+        SQLExpr on = x.getOn();
+        if (on != null) {
+            on.accept(visitor);
+        }
+
+        SQLMergeStatement.MergeUpdateClause updateClause  = x.getUpdateClause();
+        if (updateClause != null) {
+            for (SQLUpdateSetItem item : updateClause.getItems()) {
+                SQLExpr column = item.getColumn();
+
+                if (column instanceof SQLIdentifierExpr) {
+                    ((SQLIdentifierExpr) column).setResolvedTableSource(into);
+                } else if (column instanceof SQLPropertyExpr) {
+                    ((SQLPropertyExpr) column).setResolvedTableSource(into);
+                } else {
+                    column.accept(visitor);
+                }
+
+                SQLExpr value = item.getValue();
+                if (value != null) {
+                    value.accept(visitor);
+                }
+            }
+
+            SQLExpr where = updateClause.getWhere();
+            if (where != null) {
+                where.accept(visitor);
+            }
+
+            SQLExpr deleteWhere = updateClause.getDeleteWhere();
+            if (deleteWhere != null) {
+                deleteWhere.accept(visitor);
+            }
+        }
+
+        SQLMergeStatement.MergeInsertClause insertClause = x.getInsertClause();
+        if (insertClause != null) {
+            for (SQLExpr column : insertClause.getColumns()) {
+                if (column instanceof SQLIdentifierExpr) {
+                    ((SQLIdentifierExpr) column).setResolvedTableSource(into);
+                } else if (column instanceof SQLPropertyExpr) {
+                    ((SQLPropertyExpr) column).setResolvedTableSource(into);
+                }
+                column.accept(visitor);
+            }
+            for (SQLExpr value : insertClause.getValues()) {
+                value.accept(visitor);
+            }
+            SQLExpr where = insertClause.getWhere();
+            if (where != null) {
+                where.accept(visitor);
+            }
+        }
+
+        visitor.popContext();
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLCreateProcedureStatement x) {
+        {
+            SchemaResolveVisitor.Context parentCtx = visitor.getContext();
+            if (parentCtx != null) {
+                SQLDeclareItem declareItem = new SQLDeclareItem(x.getName().clone(), null);
+                declareItem.setResolvedObject(x);
+                parentCtx.declare(declareItem);
+            }
+        }
+
+        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
+        for (SQLParameter parameter : x.getParameters()) {
+            parameter.accept0(visitor);
+        }
+
+        SQLStatement block = x.getBlock();
+        if (block != null) {
+            block.accept(visitor);
+        }
+
+        visitor.popContext();
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLBlockStatement x) {
+        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
+        for (SQLParameter parameter : x.getParameters()) {
+            parameter.accept0(visitor);
+        }
+
+        for (SQLStatement stmt : x.getStatementList()) {
+            stmt.accept(visitor);
+        }
+
+        SQLStatement exception = x.getException();
+        if (exception != null) {
+            exception.accept(visitor);
+        }
+
+        visitor.popContext();
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLParameter x) {
+        SQLExpr expr = x.getDefaultValue();
+
+        SchemaResolveVisitor.Context ctx = null;
+        if (expr != null) {
+            if (expr instanceof SQLQueryExpr) {
+                ctx = visitor.createContext(x);
+
+                SQLSubqueryTableSource tableSource = new SQLSubqueryTableSource(((SQLQueryExpr) expr).getSubQuery());
+                tableSource.setParent(x);
+                tableSource.setAlias(x.getName().getSimpleName());
+
+                ctx.setTableSource(tableSource);
+            }
+
+            expr.accept(visitor);
+        }
+
+        if (ctx != null) {
+            visitor.popContext();
+        }
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLDeclareItem x) {
+        SchemaResolveVisitor.Context ctx = visitor.getContext();
+        if (ctx != null) {
+            ctx.declare(x);
+        }
+
+        SQLName name = x.getName();
+        if (name instanceof SQLIdentifierExpr) {
+            ((SQLIdentifierExpr) name).setResolvedDeclareItem(x);
+        }
+    }
 }

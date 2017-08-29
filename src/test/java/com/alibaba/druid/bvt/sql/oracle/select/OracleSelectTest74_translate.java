@@ -28,11 +28,11 @@ public class OracleSelectTest74_translate extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-                "SELECT TRANSLATE(SUBSTR(TRIM(E.BZ)||\n" +
-                        "                        TRIM(I.BZ)||\n" +
-                        "                        TRIM(H.MC)||\n" +
-                        "                        TRIM(A.MLPH)||\n" +
-                        "                        TRIM(A.MLXZ),1,35)\n" +
+                "SELECT TRANSLATE(SUBSTR(TRIM(T.BZ)||\n" +
+                        "                        TRIM(T.BZ)||\n" +
+                        "                        TRIM(T.MC)||\n" +
+                        "                        TRIM(T.MLPH)||\n" +
+                        "                        TRIM(T.MLXZ),1,35)\n" +
                         "                 USING CHAR_CS) FROM T"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
@@ -53,12 +53,12 @@ public class OracleSelectTest74_translate extends OracleTest {
 
         assertEquals(1, visitor.getTables().size());
 
-        assertEquals(5, visitor.getColumns().size());
+        assertEquals(4, visitor.getColumns().size());
 
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT TRANSLATE(SUBSTR(TRIM(E.BZ) || TRIM(I.BZ) || TRIM(H.MC) || TRIM(A.MLPH) || TRIM(A.MLXZ), 1, 35) USING CHAR_CS)\n" +
+            assertEquals("SELECT TRANSLATE(SUBSTR(TRIM(T.BZ) || TRIM(T.BZ) || TRIM(T.MC) || TRIM(T.MLPH) || TRIM(T.MLXZ), 1, 35) USING CHAR_CS)\n" +
                     "FROM T", text);
         }
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));

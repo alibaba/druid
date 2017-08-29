@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSourceImpl;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FNVUtils;
 
 public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
 
@@ -52,6 +53,9 @@ public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
     }
 
     public void setTableSource(SQLTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
         this.tableSource = tableSource;
     }
 
@@ -60,6 +64,9 @@ public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
     }
 
     public void setMethod(SQLMethodInvokeExpr method) {
+        if (method != null) {
+            method.setParent(this);
+        }
         this.method = method;
     }
 
@@ -71,4 +78,35 @@ public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
         this.columns = columns;
     }
 
+    public SQLTableSource findTableSource(long alias_hash) {
+        long hash = this.alias_hash();
+        if (hash != 0 && hash == alias_hash) {
+            return this;
+        }
+
+        for (SQLName column : columns) {
+            if (column.name_hash_lower() == alias_hash) {
+                return this;
+            }
+        }
+
+        if (tableSource != null) {
+            return tableSource.findTableSource(alias_hash);
+        }
+
+        return null;
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+        for (SQLName column : columns) {
+            if (column.name_hash_lower() == columnNameHash) {
+                return this;
+            }
+        }
+
+        if (tableSource != null) {
+            return tableSource.findTableSourceWithColumn(columnNameHash);
+        }
+        return null;
+    }
 }

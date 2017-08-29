@@ -147,4 +147,10 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
         }
         return schema_hash;
     }
+
+    @Override
+    public long hashCode64() {
+        // TODO hashCode64
+        return 0;
+    }
 }

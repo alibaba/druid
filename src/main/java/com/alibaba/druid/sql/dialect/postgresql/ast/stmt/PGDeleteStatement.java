@@ -27,8 +27,6 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatement {
 
-    private SQLWithSubqueryClause  with;
-    private List<SQLName> using = new ArrayList<SQLName>(2);
     private boolean       returning;
     private String        alias;
     
@@ -52,23 +50,7 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
         this.alias = alias;
     }
 
-    public List<SQLName> getUsing() {
-        return using;
-    }
 
-    public void setUsing(List<SQLName> using) {
-        this.using = using;
-    }
-
-
-
-    public SQLWithSubqueryClause getWith() {
-        return with;
-    }
-
-    public void setWith(SQLWithSubqueryClause with) {
-        this.with = with;
-    }
 
     protected void accept0(SQLASTVisitor visitor) {
         accept0((PGASTVisitor) visitor);
@@ -90,14 +72,6 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
         PGDeleteStatement x = new PGDeleteStatement();
         cloneTo(x);
 
-        if (with != null) {
-            x.setWith(with.clone());
-        }
-        for (SQLName item : using) {
-            SQLName item2 = item.clone();
-            item2.setParent(x);
-            x.using.add(item2);
-        }
         x.returning = returning;
         x.alias = alias;
 

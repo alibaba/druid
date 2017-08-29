@@ -145,4 +145,10 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
         }
         return dbLink_hash;
     }
+
+    @Override
+    public long hashCode64() {
+        // TODO hashCode64
+        return 0;
+    }
 }

@@ -160,17 +160,19 @@ public class MySqlReplaceTest_1 extends MysqlTest {
 
         assertEquals(1, statementList.size());
 
+        System.out.println(stmt);
+
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(3, visitor.getTables().size());
-        assertEquals(16, visitor.getColumns().size());
-        assertEquals(8, visitor.getConditions().size());
+        assertEquals(12, visitor.getColumns().size());
+        assertEquals(4, visitor.getConditions().size());
 
         assertTrue(visitor.containsTable("tb_001"));
 

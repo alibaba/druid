@@ -63,6 +63,7 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
@@ -72,16 +73,11 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public OracleSchemaStatVisitor(List<Object> parameters){
-        super(parameters);
+        super(JdbcConstants.ORACLE, parameters);
         this.variants.put("DUAL", null);
         this.variants.put("NOTFOUND", null);
         this.variants.put("TRUE", null);
         this.variants.put("FALSE", null);
-    }
-
-    @Override
-    public String getDbType() {
-        return JdbcUtils.ORACLE;
     }
 
     protected Column getColumn(SQLExpr expr) {
@@ -172,6 +168,11 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public boolean visit(OracleUpdateStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
         setAliasMap();
         setMode(x, Mode.Update);
 
@@ -729,6 +730,11 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleMultiInsertStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
         x.putAttribute("_original_use_mode", getMode());
         setMode(x, Mode.Insert);
 
@@ -1355,7 +1361,15 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleCreatePackageStatement x) {
-        return true;
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
+        for (SQLStatement stmt : x.getStatements()) {
+            stmt.accept(this);
+        }
+        return false;
     }
 
     @Override

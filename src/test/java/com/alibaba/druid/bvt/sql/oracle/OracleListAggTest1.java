@@ -58,7 +58,7 @@ public class OracleListAggTest1 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
 
         Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(8, visitor.getColumns().size());
+        Assert.assertEquals(9, visitor.getColumns().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WEP_USER_ROLE")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WEP_ROLE")));

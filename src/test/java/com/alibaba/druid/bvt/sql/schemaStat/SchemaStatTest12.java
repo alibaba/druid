@@ -50,7 +50,7 @@ public class SchemaStatTest12 extends TestCase {
         System.out.println(statVisitor.getConditions());
         assertEquals(3, relationships.size());
 
-        Assert.assertEquals(21, statVisitor.getColumns().size());
+        Assert.assertEquals(22, statVisitor.getColumns().size());
         Assert.assertEquals(20, statVisitor.getConditions().size());
         assertEquals(1, statVisitor.getFunctions().size());
     }
