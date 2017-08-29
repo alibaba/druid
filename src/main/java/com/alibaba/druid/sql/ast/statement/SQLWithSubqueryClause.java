@@ -21,7 +21,6 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLWithSubqueryClause extends SQLObjectImpl {
@@ -129,7 +128,7 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
 
         public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
             for (SQLName column : columns) {
-                if (column.name_hash_lower() == columnNameHash) {
+                if (column.nameHashCode64() == columnNameHash) {
                     return this;
                 }
             }
@@ -143,7 +142,7 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         }
 
         for (Entry entry : entries) {
-            if (entry.alias_hash() == alias_hash) {
+            if (entry.aliasHashCode64() == alias_hash) {
                 return entry;
             }
         }

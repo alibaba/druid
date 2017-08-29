@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 public interface SQLTableSource extends SQLObject {
 
     String getAlias();
+    long aliasHashCode64();
 
     void setAlias(String alias);
     

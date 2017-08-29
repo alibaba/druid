@@ -23,7 +23,8 @@ import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.FnvConstants;
 
 import java.util.Arrays;
 
@@ -35,10 +36,10 @@ public class DB2ExprParser extends SQLExprParser {
     static {
         String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
                 "ROWNUMBER" };
-        AGGREGATE_FUNCTIONS_CODES = FNVUtils.fnv_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
-            long hash = FNVUtils.fnv_64_lower(str);
+            long hash = FnvHash.fnv_64_lower(str);
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }
@@ -61,17 +62,16 @@ public class DB2ExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (lexer.identifierEquals(FNVUtils.VALUE)) {
+        if (lexer.identifierEquals(FnvConstants.VALUE)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                String ident = identExpr.getName();
-                if (ident.equalsIgnoreCase("NEXT")) {
+                if (identExpr.hashCode64() == FnvConstants.NEXT) {
                     lexer.nextToken();
                     accept(Token.FOR);
                     SQLName seqName = this.name();
                     SQLSequenceExpr seqExpr = new SQLSequenceExpr(seqName, SQLSequenceExpr.Function.NextVal);
                     return seqExpr;
-                } else if (ident.equalsIgnoreCase("PREVIOUS")) {
+                } else if (identExpr.hashCode64() == FnvConstants.PREVIOUS) {
                     lexer.nextToken();
                     accept(Token.FOR);
                     SQLName seqName = this.name();
@@ -79,21 +79,19 @@ public class DB2ExprParser extends SQLExprParser {
                     return seqExpr;
                 }
             }
-        } else if (lexer.identifierEquals("DATE")) {
+        } else if (lexer.identifierEquals(FnvConstants.DATE)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                String ident = identExpr.getName();
-                if (ident.equalsIgnoreCase("CURRENT")) {
+                if (identExpr.hashCode64() == FnvConstants.CURRENT) {
                     lexer.nextToken();
 
                     expr = new SQLIdentifierExpr("CURRENT DATE");
                 }
             }
-        } else if (lexer.identifierEquals("TIMESTAMP")) {
+        } else if (lexer.identifierEquals(FnvConstants.TIMESTAMP)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                String ident = identExpr.getName();
-                if (ident.equalsIgnoreCase("CURRENT")) {
+                if (identExpr.hashCode64() == FnvConstants.CURRENT) {
                     lexer.nextToken();
 
                     expr = new SQLIdentifierExpr("CURRENT DATE");

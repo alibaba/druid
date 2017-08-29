@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
 import java.math.BigInteger;
-import java.sql.Savepoint;
 import java.util.Arrays;
 
 import com.alibaba.druid.sql.ast.*;
@@ -29,7 +28,6 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
@@ -53,7 +51,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.parser.*;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.FnvConstants;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleExprParser extends SQLExprParser {
@@ -112,10 +111,10 @@ public class OracleExprParser extends SQLExprParser {
                 "VARIANCE", //
                 "WM_CONCAT"
         };
-        AGGREGATE_FUNCTIONS_CODES = FNVUtils.fnv_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
-            long hash = FNVUtils.fnv_64_lower(str);
+            long hash = FnvHash.fnv_64_lower(str);
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }
@@ -140,15 +139,14 @@ public class OracleExprParser extends SQLExprParser {
         this.dbType = JdbcConstants.ORACLE;
     }
     
-    protected boolean isCharType(String dataTypeName) {
-        return "varchar2".equalsIgnoreCase(dataTypeName) //
-                || "nvarchar2".equalsIgnoreCase(dataTypeName) //
-                || "char".equalsIgnoreCase(dataTypeName) //
-               || "varchar".equalsIgnoreCase(dataTypeName) //
-               || "nchar".equalsIgnoreCase(dataTypeName) //
-               || "nvarchar".equalsIgnoreCase(dataTypeName) //
-        //
-        ;
+    protected boolean isCharType(long hash) {
+        return hash == FnvConstants.CHAR
+                || hash == FnvConstants.NCHAR
+                || hash == FnvConstants.VARCHAR
+                || hash == FnvConstants.VARCHAR2
+                || hash == FnvConstants.NVARCHAR
+                || hash == FnvConstants.NVARCHAR2
+                ;
     }
 
     public SQLDataType parseDataType(boolean restrict) {
@@ -203,10 +201,10 @@ public class OracleExprParser extends SQLExprParser {
         if (lexer.token() == Token.EXCEPTION) {
             typeName = "EXCEPTION";
             lexer.nextToken();
-        } else if (lexer.identifierEquals("LONG")) {
+        } else if (lexer.identifierEquals(FnvConstants.LONG)) {
             lexer.nextToken();
 
-            if (lexer.identifierEquals("RAW")) {
+            if (lexer.identifierEquals(FnvConstants.RAW)) {
                 lexer.nextToken();
                 typeName = "LONG RAW";
             } else {

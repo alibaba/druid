@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvConstants;
 import com.alibaba.druid.util.PGUtils;
 
 import java.util.ArrayList;
@@ -815,7 +815,7 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
-            if (PGUtils.isPseudoColumn(x.name_hash_lower())) {
+            if (PGUtils.isPseudoColumn(x.nameHashCode64())) {
                 return false;
             }
 
@@ -1255,7 +1255,7 @@ class SchemaResolveVisitorFactory {
                         SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) orderByItemExpr;
                         identifierExpr.setResolvedTableSource(table);
 
-                        SQLColumnDefinition column = x.findColumn(identifierExpr.name_hash_lower());
+                        SQLColumnDefinition column = x.findColumn(identifierExpr.nameHashCode64());
                         if (column != null) {
                             identifierExpr.setResolvedColumn(column);
                         }
@@ -1414,10 +1414,10 @@ class SchemaResolveVisitorFactory {
         }
 
         String ident = x.getName();
-        long hash = x.name_hash_lower();
+        long hash = x.nameHashCode64();
         SQLTableSource tableSource = null;
 
-        if ((hash == FNVUtils.LEVEL || hash == FNVUtils.CONNECT_BY_ISCYCLE)
+        if ((hash == FnvConstants.LEVEL || hash == FnvConstants.CONNECT_BY_ISCYCLE)
                 && ctx.object instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) ctx.object;
             if (queryBlock.getStartWith() != null
@@ -1527,7 +1527,7 @@ class SchemaResolveVisitorFactory {
                     SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                long identHash = identExpr.name_hash_lower();
+                long identHash = identExpr.nameHashCode64();
 
                 tableSource = unwrapAlias(ctx, tableSource, identHash);
             }
@@ -1562,7 +1562,7 @@ class SchemaResolveVisitorFactory {
             SQLExpr ownerObj = x.getOwner();
             if (ownerObj instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr owner = (SQLIdentifierExpr) ownerObj;
-                owner_hash = owner.name_hash_lower();
+                owner_hash = owner.nameHashCode64();
             } else if (ownerObj instanceof SQLPropertyExpr) {
                 owner_hash = ((SQLPropertyExpr) ownerObj).hashCode64();
             }
@@ -1625,7 +1625,7 @@ class SchemaResolveVisitorFactory {
 
         if (tableSource != null) {
             x.setResolvedTableSource(tableSource);
-            SQLColumnDefinition column = tableSource.findColumn(x.name_hash_lower());
+            SQLColumnDefinition column = tableSource.findColumn(x.nameHashCode64());
             if (column != null) {
                 x.setResolvedColumn(column);
             }
@@ -1717,7 +1717,7 @@ class SchemaResolveVisitorFactory {
                 }
                 SQLTableSource tableSource = x.findTableSource(propertyExpr.getOwnernName());
                 if (tableSource != null) {
-                    column = tableSource.findColumn(propertyExpr.name_hash_lower());
+                    column = tableSource.findColumn(propertyExpr.nameHashCode64());
                     if (column != null) {
                         propertyExpr.setResolvedColumn(column);
                     }
@@ -1726,7 +1726,7 @@ class SchemaResolveVisitorFactory {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 visitor.visit(identExpr);
 
-                long name_hash = identExpr.name_hash_lower();
+                long name_hash = identExpr.nameHashCode64();
 
                 SQLColumnDefinition column = identExpr.getResolvedColumn();
                 if (column != null) {
@@ -1786,7 +1786,7 @@ class SchemaResolveVisitorFactory {
 
                 if (orderByItemExpr instanceof SQLIdentifierExpr) {
                     SQLIdentifierExpr orderByItemIdentExpr = (SQLIdentifierExpr) orderByItemExpr;
-                    long hash = orderByItemIdentExpr.name_hash_lower();
+                    long hash = orderByItemIdentExpr.nameHashCode64();
                     SQLSelectItem selectItem = x.findSelectItem(hash);
 
                     if (selectItem != null) {
@@ -1901,7 +1901,7 @@ class SchemaResolveVisitorFactory {
 
                 if (orderByItemExpr instanceof SQLIdentifierExpr) {
                     SQLIdentifierExpr orderByItemIdentExpr = (SQLIdentifierExpr) orderByItemExpr;
-                    long hash = orderByItemIdentExpr.name_hash_lower();
+                    long hash = orderByItemIdentExpr.nameHashCode64();
 
                     SQLSelectItem selectItem = null;
                     if (queryBlock != null) {
@@ -1971,7 +1971,7 @@ class SchemaResolveVisitorFactory {
             if (identifierExpr != null) {
                 checkParameter(visitor, identifierExpr);
 
-                SQLTableSource tableSource = unwrapAlias(visitor.getContext(), null, identifierExpr.name_hash_lower());
+                SQLTableSource tableSource = unwrapAlias(visitor.getContext(), null, identifierExpr.nameHashCode64());
                 if (tableSource != null) {
                     identifierExpr.setResolvedTableSource(tableSource);
                 }

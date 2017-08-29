@@ -22,17 +22,13 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
-
     protected String        alias;
-
     protected List<SQLHint> hints;
-
     protected SQLExpr       flashback;
-
-    protected long          alias_hash;
+    protected long          aliasHashCod64;
 
     public SQLTableSourceImpl(){
 
@@ -48,7 +44,7 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
 
     public void setAlias(String alias) {
         this.alias = alias;
-        this.alias_hash = 0L;
+        this.aliasHashCod64 = 0L;
     }
 
     public int getHintsSize() {
@@ -97,12 +93,12 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
         return false;
     }
 
-    public long alias_hash() {
-        if (alias_hash == 0
+    public long aliasHashCode64() {
+        if (aliasHashCod64 == 0
                 && alias != null) {
-            alias_hash = FNVUtils.fnv_64_lower_normalized(alias);
+            aliasHashCod64 = FnvHash.hashCode64(alias);
         }
-        return alias_hash;
+        return aliasHashCod64;
     }
 
     public SQLColumnDefinition findColumn(String columnName) {
@@ -110,7 +106,7 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
             return null;
         }
 
-        long hash = FNVUtils.fnv_64_lower_normalized(alias);
+        long hash = FnvHash.hashCode64(alias);
         return findColumn(hash);
     }
 
@@ -123,7 +119,7 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
             return null;
         }
 
-        long hash = FNVUtils.fnv_64_lower_normalized(alias);
+        long hash = FnvHash.hashCode64(alias);
         return findTableSourceWithColumn(hash);
     }
 
@@ -132,12 +128,12 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     }
 
     public SQLTableSource findTableSource(String alias) {
-        long hash = FNVUtils.fnv_64_lower_normalized(alias);
+        long hash = FnvHash.hashCode64(alias);
         return findTableSource(hash);
     }
 
     public SQLTableSource findTableSource(long alias_hash) {
-        long hash = this.alias_hash();
+        long hash = this.aliasHashCode64();
         if (hash != 0 && hash == alias_hash) {
             return this;
         }

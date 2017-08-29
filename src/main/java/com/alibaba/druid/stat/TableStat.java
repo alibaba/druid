@@ -18,9 +18,8 @@ package com.alibaba.druid.stat;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -187,12 +186,11 @@ public class TableStat {
 
     public static class Name {
         private final String name;
-
-        private final long hash;
+        private final long   hashCode64;
 
         public Name(String name){
-            this.name = name;
-            hash = FNVUtils.fnv_64_lower_normalized(name);
+            this.name  = name;
+            hashCode64 = FnvHash.hashCode64(name);
         }
 
         public String getName() {
@@ -205,7 +203,7 @@ public class TableStat {
         }
 
         public long hashCode64() {
-            return hash;
+            return hashCode64;
         }
 
         public boolean equals(Object o) {
@@ -214,7 +212,7 @@ public class TableStat {
             }
 
             Name other = (Name) o;
-            return this.hash == other.hash;
+            return this.hashCode64 == other.hashCode64;
         }
 
         public String toString() {
@@ -223,7 +221,6 @@ public class TableStat {
     }
 
     public static class Relationship {
-
         private Column left;
         private Column right;
         private String operator;
@@ -437,9 +434,9 @@ public class TableStat {
                     dbType = JdbcConstants.ORACLE;
                 }
                 SQLExpr owner = SQLUtils.toSQLExpr(table, dbType);
-                hashCode64 = FNVUtils.fnv_64_lower(new SQLPropertyExpr(owner, name));
+                hashCode64 = new SQLPropertyExpr(owner, name).hashCode64();
             } else {
-                hashCode64 = FNVUtils.fnv_64_lower(table, name);
+                hashCode64 = FnvHash.fnv_64_lower(table, name);
             }
         }
 

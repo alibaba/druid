@@ -20,15 +20,12 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplaceable {
 
@@ -417,7 +414,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
     }
 
     public SQLColumnDefinition findColumn(String columnName) {
-        long hash = FNVUtils.fnv_64_lower_normalized(columnName);
+        long hash = FnvHash.hashCode64(columnName);
         return findColumn(hash);
     }
 
@@ -438,7 +435,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
 
     @Override
     public SQLTableSource findTableSourceWithColumn(String columnName) {
-        long hash = FNVUtils.fnv_64_lower_normalized(columnName);
+        long hash = FnvHash.hashCode64(columnName);
         return findTableSourceWithColumn(hash);
     }
 
@@ -533,7 +530,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             return null;
         }
 
-        if (alias_hash() == alias_hash) {
+        if (aliasHashCode64() == alias_hash) {
             return this;
         }
 

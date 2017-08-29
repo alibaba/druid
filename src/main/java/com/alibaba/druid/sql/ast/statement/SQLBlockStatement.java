@@ -117,7 +117,7 @@ public class SQLBlockStatement extends SQLStatementImpl {
 
     public SQLParameter findParameter(long hash) {
         for (SQLParameter param : this.parameters) {
-            if (param.getName().name_hash_lower() == hash) {
+            if (param.getName().nameHashCode64() == hash) {
                 return param;
             }
         }

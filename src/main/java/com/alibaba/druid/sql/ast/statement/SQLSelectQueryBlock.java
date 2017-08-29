@@ -21,9 +21,8 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery, SQLReplaceable {
     private boolean                     bracket         = false;
@@ -487,7 +486,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             return null;
         }
 
-        long hash = FNVUtils.fnv_64_lower_normalized(ident);
+        long hash = FnvHash.hashCode64(ident);
         return findSelectItem(hash);
     }
 
@@ -528,7 +527,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
             return null;
         }
 
-        long hash = FNVUtils.fnv_64_lower_normalized(columnName);
+        long hash = FnvHash.hashCode64(columnName);
         return from.findColumn(hash);
     }
 

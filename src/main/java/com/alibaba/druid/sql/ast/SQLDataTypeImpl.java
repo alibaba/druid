@@ -17,24 +17,24 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
-    protected String              name;
+    private   String              name;
+    private   long                nameHashCode64;
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
-    private Boolean withTimeZone;
-
-    private boolean withLocalTimeZone = false;
+    private Boolean               withTimeZone;
+    private boolean               withLocalTimeZone = false;
 
     public SQLDataTypeImpl(){
 
     }
 
     public SQLDataTypeImpl(String name){
-
         this.name = name;
     }
 
@@ -62,8 +62,16 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
         return this.name;
     }
 
+    public long nameHashCode64() {
+        if (nameHashCode64 == 0) {
+            nameHashCode64 = FnvHash.hashCode64(name);
+        }
+        return nameHashCode64;
+    }
+
     public void setName(String name) {
         this.name = name;
+        nameHashCode64 = 0L;
     }
 
     public List<SQLExpr> getArguments() {

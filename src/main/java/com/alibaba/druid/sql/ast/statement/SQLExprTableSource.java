@@ -23,11 +23,10 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLExprTableSource extends SQLTableSourceImpl {
 
@@ -218,13 +217,13 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public boolean containsAlias(long aliasHash) {
-        if (this.alias_hash() == aliasHash) {
+        if (this.aliasHashCode64() == aliasHash) {
             return true;
         }
 
         if (expr instanceof SQLName) {
-            long exprNameHash = ((SQLName) expr).name_hash_lower();
-            return exprNameHash == alias_hash;
+            long exprNameHash = ((SQLName) expr).nameHashCode64();
+            return exprNameHash == aliasHashCod64;
         }
 
         return false;
@@ -235,7 +234,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
             return null;
         }
 
-        long hash = FNVUtils.fnv_64_lower_normalized(columnName);
+        long hash = FnvHash.hashCode64(columnName);
         return findColumn(hash);
     }
 
@@ -257,7 +256,7 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
             return null;
         }
 
-        long hash = FNVUtils.fnv_64_lower_normalized(columnName);
+        long hash = FnvHash.hashCode64(columnName);
         return findTableSourceWithColumn(hash);
     }
 
@@ -287,12 +286,12 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
             return null;
         }
 
-        if (alias_hash() == alias_hash) {
+        if (aliasHashCode64() == alias_hash) {
             return this;
         }
 
         if (expr instanceof SQLName) {
-            long exprNameHash = ((SQLName) expr).name_hash_lower();
+            long exprNameHash = ((SQLName) expr).nameHashCode64();
             if (exprNameHash == alias_hash) {
                 return this;
             }

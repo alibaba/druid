@@ -36,7 +36,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExpr;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.repository.SchemaObject;
 import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.stat.TableStat;
@@ -44,7 +43,8 @@ import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.FnvConstants;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
@@ -268,7 +268,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         } else if (tableSource instanceof SQLWithSubqueryClause.Entry
                 || tableSource instanceof SQLSubqueryTableSource) {
-            SQLTableSource xx = tableSource.findTableSourceWithColumn(x.name_hash_lower());
+            SQLTableSource xx = tableSource.findTableSourceWithColumn(x.nameHashCode64());
             if (xx != null) {
 
             }
@@ -930,7 +930,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                     return false;
                 }
 
-                column = addColumn(table.getName(), ident, table.name_hash_lower(), x.name_hash_lower());
+                column = addColumn(table.getName(), ident, table.nameHashCode64(), x.nameHashCode64());
 
                 if (column != null && isParentGroupBy(x)) {
                     this.groupByColumns.add(column);
@@ -939,7 +939,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr table = (SQLPropertyExpr) expr;
                 String tableName = table.toString();
-                column = addColumn(tableName, ident, 0, x.name_hash_lower());
+                column = addColumn(tableName, ident, 0, x.nameHashCode64());
 
                 if (column != null && isParentGroupBy(x)) {
                     this.groupByColumns.add(column);
@@ -969,7 +969,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                         tableName = table.toString();
                     }
 
-                    column = addColumn(tableName, ident, 0, x.name_hash_lower());
+                    column = addColumn(tableName, ident, 0, x.nameHashCode64());
                 }
             }
         } else if (tableSource instanceof SQLWithSubqueryClause.Entry
@@ -1188,12 +1188,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
-        long hash = x.name_hash_lower();
+        long hash = x.nameHashCode64();
         if (isPseudoColumn(hash)) {
             return false;
         }
 
-        if ((hash == FNVUtils.LEVEL || hash == FNVUtils.CONNECT_BY_ISCYCLE)
+        if ((hash == FnvConstants.LEVEL || hash == FnvConstants.CONNECT_BY_ISCYCLE)
                 && x.getResolvedColumn() == null
                 && tableSource == null) {
             return false;
@@ -1206,7 +1206,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr table = (SQLIdentifierExpr) expr;
-                column = addColumn(table.getName(), ident, table.name_hash_lower(), hash);
+                column = addColumn(table.getName(), ident, table.nameHashCode64(), hash);
 
                 if (column != null && isParentGroupBy(x)) {
                     this.groupByColumns.add(column);
@@ -1244,7 +1244,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                         tableName = table.toString();
                     }
 
-                    column = addColumn(tableName, ident, 0, x.name_hash_lower());
+                    column = addColumn(tableName, ident, 0, x.nameHashCode64());
                 }
             }
         } else if (tableSource instanceof SQLWithSubqueryClause.Entry
@@ -1421,9 +1421,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         int p = tableName.indexOf('.');
         if (p != -1) {
             SQLExpr owner = SQLUtils.toSQLExpr(tableName, dbType);
-            hashCode = FNVUtils.fnv_64_lower(new SQLPropertyExpr(owner, columnName));
+            hashCode = new SQLPropertyExpr(owner, columnName).hashCode64();
         } else {
-            hashCode = FNVUtils.fnv_64_lower(tableName, columnName);
+            hashCode = FnvHash.fnv_64_lower(tableName, columnName);
         }
         return columns.containsKey(hashCode);
     }

@@ -49,7 +49,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
-import com.alibaba.druid.sql.repository.SchemaRepository;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
@@ -485,7 +484,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
             SQLName columnName = x.getColumnName();
             if (columnName != null) {
-                addColumn(table, columnName.getSimpleName(), tableName.name_hash_lower(), columnName.name_hash_lower());
+                addColumn(table, columnName.getSimpleName(), tableName.nameHashCode64(), columnName.nameHashCode64());
             }
         }
 
@@ -995,7 +994,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         SQLName column = x.getColumnName();
         String columnName = column.toString();
-        addColumn(tableName, columnName, table.name_hash_lower(), column.name_hash_lower());
+        addColumn(tableName, columnName, table.nameHashCode64(), column.nameHashCode64());
         return false;
     }
 
@@ -1013,7 +1012,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         SQLName column = x.getNewColumnDefinition().getName();
         String columnName = column.toString();
-        addColumn(tableName, columnName, table.name_hash_lower(), column.name_hash_lower());
+        addColumn(tableName, columnName, table.nameHashCode64(), column.nameHashCode64());
 
         return false;
     }

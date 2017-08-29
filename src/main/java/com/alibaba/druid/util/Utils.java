@@ -24,8 +24,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.servlet.GenericServlet;
-
 public class Utils {
 
     public final static int DEFAULT_BUFFER_SIZE = 1024 * 4;
@@ -409,15 +407,15 @@ public class Utils {
     }
 
     public static long fnv_64(String input) {
-        return FNVUtils.fnv_64(input);
+        return FnvHash.fnv_64(input);
     }
 
     public static long fnv_64_lower(String key) {
-        return FNVUtils.fnv_64_lower(key);
+        return FnvHash.fnv_64_lower(key);
     }
 
     public static long fnv_32_lower(String key) {
-        return FNVUtils.fnv_32_lower(key);
+        return FnvHash.fnv_32_lower(key);
     }
 
     public static void loadFromFile(String path, Set<String> set) {

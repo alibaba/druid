@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 /**
  * Created by wenshao on 08/06/2017.
@@ -51,7 +51,7 @@ public class SchemaObjectImpl implements SchemaObject {
     }
 
     public SQLColumnDefinition findColumn(String columName) {
-        long hash = FNVUtils.fnv_64_lower_normalized(columName);
+        long hash = FnvHash.hashCode64(columName);
         return findColumn(hash);
     }
 

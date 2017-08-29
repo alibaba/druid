@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements SQLServerExpr, SQLName {
 
@@ -29,7 +29,8 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
     private String database;
     private String schema;
 
-    protected long schema_hash;
+    protected long schemaHashCode64;
+    protected long hashCode64;
 
     public SQLServerObjectReferenceExpr(){
 
@@ -116,41 +117,33 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
 
     public SQLServerObjectReferenceExpr clone() {
         SQLServerObjectReferenceExpr x = new SQLServerObjectReferenceExpr();
-        x.server = server;
-        x.database = database;
-        x.schema = schema;
+
+        x.server           = server;
+        x.database         = database;
+        x.schema           = schema;
+
+        x.schemaHashCode64 = schemaHashCode64;
+        x.hashCode64       = hashCode64;
+
         return x;
     }
 
-    public long name_hash_lower() {
-        if (schema_hash == 0
+    public long nameHashCode64() {
+        if (schemaHashCode64 == 0
                 && schema != null) {
-            final int len = schema.length();
-
-            boolean quote = false;
-
-            String name = this.schema;
-            if (len > 2) {
-                char c0 = name.charAt(0);
-                char c1 = name.charAt(len - 1);
-                if ((c0 == '`' && c1 == '`')
-                        || (c0 == '"' && c1 == '"')
-                        || (c0 == '[' && c1 == ']')) {
-                    quote = true;
-                }
-            }
-            if (quote) {
-                schema_hash = FNVUtils.fnv_64_lower(name, 1, len -1);
-            } else {
-                schema_hash = FNVUtils.fnv_64_lower(name);
-            }
+            schemaHashCode64 = FnvHash.hashCode64(schema);
         }
-        return schema_hash;
+        return schemaHashCode64;
     }
 
     @Override
     public long hashCode64() {
-        // TODO hashCode64
-        return 0;
+        if (hashCode64 == 0) {
+            hashCode64 = new SQLPropertyExpr(
+                            new SQLPropertyExpr(server, database)
+                            , schema)
+                    .hashCode64();
+        }
+        return hashCode64;
     }
 }

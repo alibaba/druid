@@ -19,14 +19,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
-
-    protected String          name;
-
-    private transient String  lowerName;
-    protected transient long hashCode64;
+    protected         String    name;
+    private transient String    lowerName;
+    private transient long      hashCode64;
 
     private transient SQLObject resolvedColumn;
     private transient SQLObject resolvedOwnerObject;
@@ -65,7 +63,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return lowerName;
     }
 
-    public long name_hash_lower() {
+    public long nameHashCode64() {
         return hashCode64();
     }
 
@@ -73,7 +71,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     public long hashCode64() {
         if (hashCode64 == 0
                 && name != null) {
-            hashCode64 = FNVUtils.fnv_64_lower_normalized(name);
+            hashCode64 = FnvHash.hashCode64(name);
         }
         return hashCode64;
     }
@@ -186,7 +184,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
             if (queryBlock == null) {
                 return null;
             }
-            SQLSelectItem selectItem = queryBlock.findSelectItem(name_hash_lower());
+            SQLSelectItem selectItem = queryBlock.findSelectItem(nameHashCode64());
             if (selectItem != null) {
                 return selectItem.computeDataType();
             }

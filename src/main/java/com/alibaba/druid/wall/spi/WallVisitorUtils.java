@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.sql.visitor.functions.Nil;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.FnvConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.ServletPathMatcher;
 import com.alibaba.druid.util.StringUtils;
@@ -1622,7 +1623,8 @@ public class WallVisitorUtils {
             if (queryBlock.getSelectList().size() == 1) {
                 SQLExpr selectItemExpr = queryBlock.getSelectList().get(0).getExpr();
                 if (selectItemExpr instanceof SQLAggregateExpr) {
-                    if (((SQLAggregateExpr) selectItemExpr).getMethodName().equalsIgnoreCase("COUNT")) {
+                    if (((SQLAggregateExpr) selectItemExpr)
+                            .methodNameHashCod64() == FnvConstants.COUNT) {
                         simpleCount = true;
                     }
                 }

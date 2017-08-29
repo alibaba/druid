@@ -20,14 +20,16 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr {
 
     private SQLExpr expr;
     private String  dbLink;
 
-    protected transient long dbLink_hash;
+    private long    dbLinkHashCode64;
+    private long    hashCode64;
+
 
     public OracleDbLinkExpr(){
 
@@ -121,34 +123,35 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
         return x;
     }
 
-    public long name_hash_lower() {
-        if (dbLink_hash == 0
+    public long nameHashCode64() {
+        if (dbLinkHashCode64 == 0
                 && dbLink != null) {
-            final int len = dbLink.length();
-
-            boolean quote = false;
-
-            String name = this.dbLink;
-            if (len > 2) {
-                char c0 = name.charAt(0);
-                char c1 = name.charAt(len - 1);
-                if (c0 == c1
-                        && (c0 == '`' || c1 == '"')) {
-                    quote = true;
-                }
-            }
-            if (quote) {
-                dbLink_hash = FNVUtils.fnv_64_lower(name, 1, len -1);
-            } else {
-                dbLink_hash = FNVUtils.fnv_64_lower(name);
-            }
+            dbLinkHashCode64 = FnvHash.hashCode64(dbLink);
         }
-        return dbLink_hash;
+        return dbLinkHashCode64;
     }
 
     @Override
     public long hashCode64() {
-        // TODO hashCode64
-        return 0;
+        if (hashCode64 == 0) {
+            long hash;
+            if (expr instanceof SQLName) {
+                hash = ((SQLName) expr).hashCode64();
+
+                hash ^= '.';
+                hash *= FnvHash.PRIME;
+            } else if (expr == null){
+                hash = FnvHash.BASIC;
+            } else {
+                hash = FnvHash.fnv_64_lower(expr.toString());
+
+                hash ^= '.';
+                hash *= FnvHash.PRIME;
+            }
+            hash = FnvHash.hashCode64(hash, dbLink);
+            hashCode64 = hash;
+        }
+
+        return hashCode64;
     }
 }

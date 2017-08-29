@@ -40,7 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
@@ -1529,7 +1529,7 @@ public class Lexer {
             if (stringVal == null) {
                 stringVal = subString(mark, bufPos);
             }
-            this.hash_lower = FNVUtils.fnv_64_lower(stringVal);
+            this.hash_lower = FnvHash.fnv_64_lower(stringVal);
         }
         return this.hash_lower == hash_lower;
     }
@@ -1539,7 +1539,7 @@ public class Lexer {
             if (stringVal == null) {
                 stringVal = subString(mark, bufPos);
             }
-            this.hash_lower = FNVUtils.fnv_64_lower(stringVal);
+            this.hash_lower = FnvHash.fnv_64_lower(stringVal);
         }
         return hash_lower;
     }

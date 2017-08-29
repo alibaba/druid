@@ -38,7 +38,7 @@ public class MySqlParameterizedBenchmark extends TestCase {
 //            perf_parse(sql3); // 9174 5875 5805 5536 5717
 //            perf_parse(sql4); // 2953 2502
 
-            perf_stat(sql); // 11793 13628 13561 13259 9909
+            perf_stat(sql); // 11793 13628 13561 13259 9819
 
 //            perf_resolve(sql); // 4970 4586
         }

@@ -41,7 +41,7 @@ import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.Arrays;
@@ -54,10 +54,10 @@ public class PGExprParser extends SQLExprParser {
 
     static {
         String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
-        AGGREGATE_FUNCTIONS_CODES = FNVUtils.fnv_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
-            long hash = FNVUtils.fnv_64_lower(str);
+            long hash = FnvHash.fnv_64_lower(str);
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }

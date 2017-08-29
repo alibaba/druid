@@ -16,14 +16,11 @@
 package com.alibaba.druid.sql.repository;
 
 import com.alibaba.druid.sql.ast.SQLDeclareItem;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -105,7 +102,7 @@ public interface SchemaResolveVisitor extends SQLASTVisitor {
             if (declares == null) {
                 declares = new HashMap<Long, SQLDeclareItem>();
             }
-            declares.put(x.getName().name_hash_lower(), x);
+            declares.put(x.getName().nameHashCode64(), x);
         }
 
         protected SQLDeclareItem findDeclare(long nameHash) {

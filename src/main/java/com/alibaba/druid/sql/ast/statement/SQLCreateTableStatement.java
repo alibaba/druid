@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import java.io.IOException;
 import java.util.*;
 
 import com.alibaba.druid.sql.SQLUtils;
@@ -24,14 +23,12 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
-import oracle.sql.SQLUtil;
 
 public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
 
@@ -239,7 +236,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             return null;
         }
 
-        long hash = FNVUtils.fnv_64_lower_normalized(columName);
+        long hash = FnvHash.hashCode64(columName);
         return findColumn(hash);
     }
 
@@ -248,7 +245,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             if (element instanceof SQLColumnDefinition) {
                 SQLColumnDefinition column = (SQLColumnDefinition) element;
                 SQLName columnName = column.getName();
-                if (columnName != null && columnName.name_hash_lower() == columName_hash) {
+                if (columnName != null && columnName.nameHashCode64() == columName_hash) {
                     return column;
                 }
             }

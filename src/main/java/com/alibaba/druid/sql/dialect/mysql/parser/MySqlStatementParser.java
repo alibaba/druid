@@ -45,7 +45,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlSelectIntoStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement.LockType;
 import com.alibaba.druid.sql.parser.*;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvConstants;
 import com.alibaba.druid.util.JdbcConstants;
 
 import java.util.ArrayList;
@@ -181,7 +181,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 throw new ParserException("syntax error. " + lexer.info());
             }
 
-            if (lexer.identifierEquals(FNVUtils.USING)) {
+            if (lexer.identifierEquals(FnvConstants.USING)) {
                 lexer.nextToken();
 
                 SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
@@ -340,13 +340,13 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     private void parseCreateIndexUsing(SQLCreateIndexStatement stmt) {
-        if (lexer.identifierEquals(FNVUtils.USING)) {
+        if (lexer.identifierEquals(FnvConstants.USING)) {
             lexer.nextToken();
 
-            if (lexer.identifierEquals(FNVUtils.BTREE)) {
+            if (lexer.identifierEquals(FnvConstants.BTREE)) {
                 stmt.setUsing("BTREE");
                 lexer.nextToken();
-            } else if (lexer.identifierEquals(FNVUtils.HASH)) {
+            } else if (lexer.identifierEquals(FnvConstants.HASH)) {
                 stmt.setUsing("HASH");
                 lexer.nextToken();
             } else {
@@ -962,7 +962,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.STAR);
             accept(Token.RPAREN);
 
-            if (lexer.identifierEquals(FNVUtils.ERRORS)) {
+            if (lexer.identifierEquals(FnvConstants.ERRORS)) {
                 lexer.nextToken();
 
                 MySqlShowErrorsStatement stmt = new MySqlShowErrorsStatement();
@@ -979,7 +979,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
         }
 
-        if (lexer.identifierEquals(FNVUtils.ERRORS)) {
+        if (lexer.identifierEquals(FnvConstants.ERRORS)) {
             lexer.nextToken();
 
             MySqlShowErrorsStatement stmt = new MySqlShowErrorsStatement();
@@ -3321,7 +3321,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         stmt.setDbType(dbType);
 
         if (lexer.token() != Token.PROCEDURE) {
-            if (lexer.identifierEquals("DEFINER")) {
+            if (lexer.identifierEquals(FnvConstants.DEFINER)) {
                 lexer.nextToken();
                 accept(Token.EQ);
                 SQLName definer = this.exprParser.name();
@@ -3347,19 +3347,19 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         for (;;) {
-            if (lexer.identifierEquals("DETERMINISTIC")) {
+            if (lexer.identifierEquals(FnvConstants.DETERMINISTIC)) {
                 lexer.nextToken();
                 stmt.setDeterministic(true);
                 continue;
             }
-            if (lexer.identifierEquals("CONTAINS")) {
+            if (lexer.identifierEquals(FnvConstants.CONTAINS)) {
                 lexer.nextToken();
                 acceptIdentifier("SQL");
                 stmt.setContainsSql(true);
                 continue;
             }
 
-            if (lexer.identifierEquals("SQL")) {
+            if (lexer.identifierEquals(FnvConstants.SQL)) {
                 lexer.nextToken();
                 acceptIdentifier("SECURITY");
                 SQLName authid = this.exprParser.name();

@@ -18,22 +18,18 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
+    private           SQLExpr             owner;
+    private           String              name;
 
-    private SQLExpr owner;
-    private String  name;
-
-    protected long name_hash_lower;
+    private transient long                nameHashCod64;
+    private transient long                hashCode64;
 
     private transient SQLColumnDefinition resolvedColumn;
-
     private transient SQLObject           resolvedTableSource;
-
-    private transient long hash_ower;
 
     public SQLPropertyExpr(String owner, String name){
         this(new SQLIdentifierExpr(owner), name);
@@ -44,10 +40,10 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         this.name = name;
     }
 
-    public SQLPropertyExpr(SQLExpr owner, String name, long name_hash_lower){
+    public SQLPropertyExpr(SQLExpr owner, String name, long nameHashCod64){
         setOwner(owner);
         this.name = name;
-        this.name_hash_lower = name_hash_lower;
+        this.nameHashCod64 = nameHashCod64;
     }
 
     public SQLPropertyExpr(){
@@ -75,7 +71,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             owner.setParent(this);
         }
         this.owner = owner;
-        this.hash_ower = 0;
+        this.hashCode64 = 0;
     }
 
     public void setOwner(String owner) {
@@ -88,8 +84,8 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     public void setName(String name) {
         this.name = name;
-        this.hash_ower = 0;
-        this.name_hash_lower = 0;
+        this.hashCode64 = 0;
+        this.nameHashCod64 = 0;
     }
 
     public void output(StringBuffer buf) {
@@ -113,10 +109,26 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public long hashCode64() {
-        if (hash_ower == 0) {
-            hash_ower = FNVUtils.fnv_64_lower(this);
+        if (hashCode64 == 0) {
+            long hash;
+            if (owner instanceof SQLName) {
+                hash = ((SQLName) owner).hashCode64();
+
+                hash ^= '.';
+                hash *= FnvHash.PRIME;
+            } else if (owner == null){
+                hash = FnvHash.BASIC;
+            } else {
+                hash = FnvHash.fnv_64_lower(owner.toString());
+
+                hash ^= '.';
+                hash *= FnvHash.PRIME;
+            }
+            hash = FnvHash.hashCode64(hash, name);
+            hashCode64 = hash;
         }
-        return hash_ower;
+
+        return hashCode64;
     }
 
     @Override
@@ -149,12 +161,14 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLPropertyExpr clone() {
-        SQLPropertyExpr x = new SQLPropertyExpr();
-        x.name = this.name;
+        SQLExpr owner_x = null;
         if (owner != null) {
-            x.setOwner(owner.clone());
+            owner_x = owner.clone();
         }
 
+        SQLPropertyExpr x = new SQLPropertyExpr(owner_x, name, nameHashCod64);
+
+        x.hashCode64 = hashCode64;
         x.resolvedColumn = resolvedColumn;
         x.resolvedTableSource = resolvedTableSource;
 
@@ -169,31 +183,12 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         return false;
     }
 
-    public long name_hash_lower() {
-        if (name_hash_lower == 0
+    public long nameHashCode64() {
+        if (nameHashCod64 == 0
                 && name != null) {
-            final int len = name.length();
-
-            boolean quote = false;
-
-            String name = this.name;
-            if (len > 2) {
-                char c0 = name.charAt(0);
-                char c1 = name.charAt(len - 1);
-                if ((c0 == '`' && c1 == '`')
-                        || (c0 == '"' && c1 == '"')
-                        || (c0 == '\'' && c1 == '\'')
-                        || (c0 == '[' && c1 == ']')) {
-                    quote = true;
-                }
-            }
-            if (quote) {
-                name_hash_lower = FNVUtils.fnv_64_lower(name, 1, len -1);
-            } else {
-                name_hash_lower = FNVUtils.fnv_64_lower(name);
-            }
+            nameHashCod64 = FnvHash.hashCode64(name);
         }
-        return name_hash_lower;
+        return nameHashCod64;
     }
 
     public String normalizedName() {
@@ -258,7 +253,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             if (queryBlock == null) {
                 return null;
             }
-            SQLSelectItem selectItem = queryBlock.findSelectItem(name_hash_lower());
+            SQLSelectItem selectItem = queryBlock.findSelectItem(nameHashCode64());
             if (selectItem != null) {
                 return selectItem.computeDataType();
             }

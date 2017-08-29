@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FNVUtils;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
@@ -30,7 +30,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected boolean connectByRoot = false;
 
-    protected transient long alias_hash;
+    protected transient long aliasHashCode64;
 
     public SQLSelectItem(){
 
@@ -174,15 +174,15 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             return false;
         }
 
-        long hash = FNVUtils.fnv_64_lower_normalized(alias);
+        long hash = FnvHash.hashCode64(alias);
         return match(hash);
     }
 
     public long alias_hash() {
-        if (this.alias_hash == 0) {
-            this.alias_hash = FNVUtils.fnv_64_lower_normalized(alias);
+        if (this.aliasHashCode64 == 0) {
+            this.aliasHashCode64 = FnvHash.hashCode64(alias);
         }
-        return alias_hash;
+        return aliasHashCode64;
     }
 
     public boolean match(long alias_hash) {
@@ -202,7 +202,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
 
         if (expr instanceof SQLIdentifierExpr) {
-            return ((SQLIdentifierExpr) expr).name_hash_lower() == alias_hash;
+            return ((SQLIdentifierExpr) expr).nameHashCode64() == alias_hash;
         }
 
         if (expr instanceof SQLPropertyExpr) {
@@ -216,7 +216,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
                 return false;
             }
 
-            return ((SQLPropertyExpr) expr).name_hash_lower() == alias_hash;
+            return ((SQLPropertyExpr) expr).nameHashCode64() == alias_hash;
         }
 
         return false;

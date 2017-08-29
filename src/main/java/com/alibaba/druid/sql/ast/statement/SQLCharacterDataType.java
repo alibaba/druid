@@ -107,7 +107,7 @@ public class SQLCharacterDataType extends SQLDataTypeImpl {
 
 
     public SQLCharacterDataType clone() {
-        SQLCharacterDataType x = new SQLCharacterDataType(name);
+        SQLCharacterDataType x = new SQLCharacterDataType(getName());
 
         super.cloneTo(x);
 
