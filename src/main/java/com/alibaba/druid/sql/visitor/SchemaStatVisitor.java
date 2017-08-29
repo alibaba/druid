@@ -214,28 +214,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return aliasMap;
     }
     
-    public void setCurrentTable(String table) {
-        this.currentTable = table;
-    }
-
-    public void setCurrentTable(SQLObject x) {
-        x.putAttribute("_old_local_", this.currentTable);
-    }
-
-    public void restoreCurrentTable(SQLObject x) {
-        String table = (String) x.getAttribute("_old_local_");
-        this.currentTable = table;
-    }
-
-    public void setCurrentTable(SQLObject x, String table) {
-        x.putAttribute("_old_local_", this.currentTable);
-        this.currentTable = table;
-    }
-
-    public String getCurrentTable() {
-        return currentTable;
-    }
-
     protected Mode getMode() {
         return mode;
     }
@@ -696,7 +674,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
-            if (isParam(identifierExpr)) {
+            if (identifierExpr.getResolvedParameter() != null) {
                 return null;
             }
 
@@ -710,7 +688,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
 
             String column = identifierExpr.getName();
-            String table = getCurrentTable();
+
+            String table = null;
+            SQLTableSource tableSource = identifierExpr.getResolvedTableSource();
+            if (tableSource instanceof SQLExprTableSource) {
+                SQLName tableName = ((SQLExprTableSource) tableSource).getName();
+                if (tableName != null) {
+                    table = tableName.toString();
+                }
+            }
+
             if (table != null && aliasMap.containsKey(table)) {
                 table = aliasMap.get(table);
                 if (table == null) {
@@ -738,14 +725,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setAliasMap();
 
-        String originalTable = getCurrentTable();
-
         for (SQLExprTableSource tableSource : x.getTableSources()) {
             SQLName name = (SQLName) tableSource.getExpr();
 
             String ident = name.toString();
-            setCurrentTable(ident);
-            x.putAttribute("_old_local_", originalTable);
 
             TableStat stat = getTableStat(ident);
             stat.incrementDeleteCount();
@@ -769,13 +752,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setAliasMap();
 
-        String originalTable = getCurrentTable();
-
         for (SQLExprTableSource tableSource : x.getTableSources()) {
             SQLName name = (SQLName) tableSource.getExpr();
             String ident = name.toString();
-            setCurrentTable(ident);
-            x.putAttribute("_old_local_", originalTable);
 
             TableStat stat = getTableStat(ident);
             stat.incrementDropCount();
@@ -798,12 +777,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setAliasMap();
 
-        String originalTable = getCurrentTable();
-
         if (x.getTableName() instanceof SQLName) {
             String ident = ((SQLName) x.getTableName()).toString();
-            setCurrentTable(ident);
-            x.putAttribute("_old_local_", originalTable);
 
             TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
@@ -865,19 +840,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         }
 
-        String originalTable = getCurrentTable();
-
         if (x.getFrom() instanceof SQLExprTableSource) {
             SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
             if (tableSource.getExpr() instanceof SQLName) {
                 String ident = tableSource.getExpr().toString();
 
-                setCurrentTable(x, ident);
                 x.putAttribute(ATTR_TABLE, ident);
                 if (x.getParent() instanceof SQLSelect) {
                     x.getParent().putAttribute(ATTR_TABLE, ident);
                 }
-                x.putAttribute("_old_local_", originalTable);
             }
         }
 
@@ -903,40 +874,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public static boolean isParam(SQLIdentifierExpr x) {
-        if (x.isParameter() != null) {
-            return x.isParameter();
-        }
-
-        for (SQLObject parent = x.getParent(); parent != null; parent = parent.getParent()) {
-            if (parent instanceof SQLCreateProcedureStatement) {
-                SQLCreateProcedureStatement stmt = (SQLCreateProcedureStatement) parent;
-                for (SQLParameter parameter : stmt.getParameters()) {
-                    if (x.equals(parameter.getName())) {
-                        x.setParameter(true);
-                        return true;
-                    }
-                }
-                break;
-            }
-
-            if (parent instanceof SQLBlockStatement) {
-                SQLBlockStatement stmt = (SQLBlockStatement) parent;
-                for (SQLParameter parameter : stmt.getParameters()) {
-                    if (x.equals(parameter.getName())) {
-                        x.setParameter(true);
-                        return true;
-                    }
-                }
-            }
+        if (x.getResolvedParameter() != null
+                || x.getResolvedDeclareItem() != null) {
+            return true;
         }
         return false;
     }
 
     public void endVisit(SQLSelectQueryBlock x) {
-        String originalTable = (String) x.getAttribute("_old_local_");
-        x.putAttribute("table", getCurrentTable());
-        setCurrentTable(originalTable);
-
         setModeOrigin(x);
     }
 
@@ -1666,12 +1611,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public void endVisit(SQLSelect x) {
-        restoreCurrentTable(x);
     }
 
     public boolean visit(SQLSelect x) {
-        setCurrentTable(x);
-
         if (x.getOrderBy() != null) {
             x.getOrderBy().setParent(x);
         }
@@ -1679,14 +1621,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         accept(x.getWithSubQuery());
         accept(x.getQuery());
 
-        String originalTable = getCurrentTable();
-
-        setCurrentTable((String) x.getQuery().getAttribute("table"));
-        x.putAttribute("_old_local_", originalTable);
-
         accept(x.getOrderBy());
 
-        setCurrentTable(originalTable);
 
         return false;
     }
@@ -1720,7 +1656,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (tableSource instanceof SQLExprTableSource) {
             SQLName identName = ((SQLExprTableSource) tableSource).getName();
             String ident = identName.toString();
-            setCurrentTable(ident);
 
             TableStat stat = getTableStat(ident);
             stat.incrementUpdateCount();
@@ -1750,7 +1685,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         setMode(x, Mode.Delete);
 
         String tableName = x.getTableName().toString();
-        setCurrentTable(tableName);
 
         if (x.getAlias() != null) {
             putAliasMap(this.aliasMap, x.getAlias(), tableName);
@@ -1813,11 +1747,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         TableStat stat = getTableStat(tableName);
         stat.incrementCreateCount();
-        setCurrentTable(x, tableName);
 
         accept(x.getTableElementList());
-
-        restoreCurrentTable(x);
 
         if (x.getInherits() != null) {
             x.getInherits().accept(this);
@@ -1942,7 +1873,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         TableStat stat = getTableStat(tableName);
         stat.incrementAlterCount();
 
-        setCurrentTable(x, tableName);
 
         for (SQLAlterTableItem item : x.getItems()) {
             item.setParent(x);
@@ -1965,7 +1895,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             SQLName name = (SQLName) table.getExpr();
 
             String ident = name.toString();
-            setCurrentTable(ident);
 
             TableStat stat = getTableStat(ident);
             stat.incrementDropIndexCount();
@@ -1983,7 +1912,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLName name = (SQLName) ((SQLExprTableSource) x.getTable()).getExpr();
 
         String table = name.toString();
-        setCurrentTable(table);
 
         TableStat stat = getTableStat(table);
         stat.incrementCreateIndexCount();
@@ -2011,7 +1939,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         String table = x.getReferencedTableName().getSimpleName();
-        setCurrentTable(table);
 
         TableStat stat = getTableStat(table);
         stat.incrementReferencedCount();
@@ -2303,16 +2230,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setAliasMap();
 
-        String originalTable = getCurrentTable();
-
         setMode(x.getUsing(), Mode.Select);
         x.getUsing().accept(this);
 
         setMode(x, Mode.Merge);
 
         String ident = x.getInto().toString();
-        setCurrentTable(x, ident);
-        x.putAttribute("_old_local_", originalTable);
 
         TableStat stat = getTableStat(ident);
         stat.incrementMergeCount();
@@ -2440,5 +2363,4 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
         return true;
     }
-
 }

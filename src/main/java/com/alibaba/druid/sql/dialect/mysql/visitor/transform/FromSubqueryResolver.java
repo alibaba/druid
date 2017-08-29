@@ -88,7 +88,7 @@ public class FromSubqueryResolver extends OracleASTVisitorAdapter {
             String ident = identifierExpr.getName();
             String mappingIdent = mappings.get(ident);
             if (mappingIdent != null) {
-                identifierExpr.setName(mappingIdent);
+                x.setExpr(new SQLIdentifierExpr(mappingIdent));
             }
         }
         return false;

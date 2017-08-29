@@ -60,6 +60,10 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
         this.expr = expr;
     }
 
+    public void setExpr(String name) {
+        this.setExpr(new SQLIdentifierExpr(name));
+    }
+
     public SQLName getName() {
         if (expr instanceof SQLName) {
             return (SQLName) expr;

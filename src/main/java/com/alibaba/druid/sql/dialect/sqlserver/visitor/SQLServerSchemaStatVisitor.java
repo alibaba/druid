@@ -87,7 +87,6 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
         setAliasMap();
 
         String ident = x.getTableName().toString();
-        setCurrentTable(ident);
 
         TableStat stat = getTableStat(ident);
         stat.incrementUpdateCount();

@@ -98,7 +98,7 @@ public class SQLUnique extends SQLConstraintImpl implements SQLUniqueConstraint,
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) column;
                 String columnName = identExpr.getName();
                 columnName = SQLUtils.normalize(columnName, dbType);
-                identExpr.setName(columnName);
+                item.setExpr(new SQLIdentifierExpr(columnName));
             }
         }
     }

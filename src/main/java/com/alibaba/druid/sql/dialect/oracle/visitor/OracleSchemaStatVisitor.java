@@ -164,7 +164,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                 x.putAttribute(ATTR_TABLE, table);
             }
         }
-        restoreCurrentTable(x);
     }
 
     public boolean visit(OracleUpdateStatement x) {
@@ -185,7 +184,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         if (tableExpr instanceof SQLName) {
             String ident = tableExpr.toString();
-            setCurrentTable(ident);
 
             TableStat stat = getTableStat(ident);
             stat.incrementUpdateCount();
@@ -431,7 +429,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                 this.aliasMap.put(x.getAlias(), table);
             }
             addSubQuery(x.getAlias(), x.getSelect());
-            this.setCurrentTable(x.getAlias());
         }
 
         if (table != null) {
@@ -701,7 +698,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         if (x.getTableName() instanceof SQLName) {
             String ident = ((SQLName) x.getTableName()).toString();
-            setCurrentTable(x, ident);
 
             TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
@@ -769,14 +765,9 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         }
         if (parent instanceof OracleMultiInsertStatement) {
             SQLSelect subQuery = ((OracleMultiInsertStatement) parent).getSubQuery();
-            if (subQuery != null) {
-                String table = (String) subQuery.getAttribute("_table_");
-                setCurrentTable(x, table);
-            }
         }
         x.getWhen().accept(this);
         x.getThen().accept(this);
-        restoreCurrentTable(x);
         return false;
     }
 
@@ -935,7 +926,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(SQLAlterTableStatement x) {
-        restoreCurrentTable(x);
     }
 
     @Override
@@ -1004,7 +994,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleCreateIndexStatement x) {
-        restoreCurrentTable(x);
     }
 
     @Override

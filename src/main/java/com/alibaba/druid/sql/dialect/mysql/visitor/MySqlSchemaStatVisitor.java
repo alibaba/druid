@@ -99,7 +99,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         if (x.getTableSource() instanceof SQLExprTableSource) {
             SQLName tableName = (SQLName) ((SQLExprTableSource) x.getTableSource()).getExpr();
             String ident = tableName.toString();
-            setCurrentTable(x, ident);
 
             TableStat stat = this.getTableStat(ident);
             stat.incrementDeleteCount();
@@ -146,8 +145,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         }
 
         if (ident != null) {
-            setCurrentTable(x, ident);
-
             TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
 
@@ -318,8 +315,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         }
 
         if (ident != null) {
-            setCurrentTable(x, ident);
-
             TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
 

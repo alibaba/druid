@@ -584,7 +584,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) name;
             String tableName = identExpr.getName();
             tableName = SQLUtils.normalize(tableName, dbType);
-            identExpr.setName(tableName);
+            setName(tableName);
         }
 
         for (SQLTableElement element : this.tableElementList) {

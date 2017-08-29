@@ -1643,7 +1643,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 if (database instanceof SQLIdentifierExpr) {
                     SQLIdentifierExpr ident = (SQLIdentifierExpr) database;
-                    ident.setName(ident.getName() + "-" + strVal);
+                    database = new SQLIdentifierExpr(ident.getName() + "-" + strVal);
                 }
             }
             stmt.setDatabase(database);

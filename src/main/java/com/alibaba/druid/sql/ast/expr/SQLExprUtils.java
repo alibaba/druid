@@ -37,7 +37,7 @@ public class SQLExprUtils {
         if (clazz_a == SQLIdentifierExpr.class) {
             SQLIdentifierExpr x_a = (SQLIdentifierExpr) a;
             SQLIdentifierExpr x_b = (SQLIdentifierExpr) b;
-            return x_a.equals(x_b);
+            return x_a.hashCode() == x_b.hashCode();
         }
 
         if (clazz_a == SQLBinaryOpExpr.class) {

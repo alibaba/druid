@@ -112,7 +112,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         setMode(x, Mode.Delete);
 
         String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
-        setCurrentTable(ident);
 
         TableStat stat = getTableStat(ident, x.getAlias());
         stat.incrementDeleteCount();
@@ -143,13 +142,10 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         x.putAttribute("_original_use_mode", getMode());
         setMode(x, Mode.Insert);
 
-        String originalTable = getCurrentTable();
 
         SQLName tableName = x.getTableName();
         {
             String ident = tableName.toString();
-            setCurrentTable(ident);
-            x.putAttribute("_old_local_", originalTable);
 
             TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
@@ -204,7 +200,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         }
 
         String ident = x.getTableName().toString();
-        setCurrentTable(ident);
 
         TableStat stat = getTableStat(ident);
         stat.incrementUpdateCount();

@@ -123,7 +123,7 @@ public class Demo1 extends TestCase {
                 String tableName = identExpr.getName();
                 
                 if (tableName.equals("user")) {
-                    identExpr.setName(this.tableName);
+                    x.setExpr(this.tableName);
                 }
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr proExpr = (SQLPropertyExpr) expr;
@@ -144,7 +144,7 @@ public class Demo1 extends TestCase {
                 String tableName = identExpr.getName();
                 
                 if (tableName.equals("user")) {
-                    identExpr.setName(this.tableName);
+                    x.setExpr(this.tableName);
                 }
             } else if (expr instanceof SQLPropertyExpr) {
                 SQLPropertyExpr proExpr = (SQLPropertyExpr) expr;

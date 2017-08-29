@@ -380,7 +380,7 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
             String columnName = identExpr.getName();
             columnName = SQLUtils.normalize(columnName, dbType);
-            identExpr.setName(columnName);
+            this.setName(columnName);
         }
     }
 

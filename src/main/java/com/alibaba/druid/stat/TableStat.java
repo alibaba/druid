@@ -186,13 +186,13 @@ public class TableStat {
     }
 
     public static class Name {
+        private final String name;
 
-        private String name;
-
-        private int hash;
+        private final long hash;
 
         public Name(String name){
             this.name = name;
+            hash = FNVUtils.fnv_64_lower_normalized(name);
         }
 
         public String getName() {
@@ -200,11 +200,12 @@ public class TableStat {
         }
 
         public int hashCode() {
-            int h = hash;
-            if (h == 0 && name != null && name.length() > 0) {
-                hash = h = StringUtils.lowerHashCode(name);
-            }
-            return h;
+            long value = hashCode64();
+            return (int)(value ^ (value >>> 32));
+        }
+
+        public long hashCode64() {
+            return hash;
         }
 
         public boolean equals(Object o) {
@@ -213,16 +214,7 @@ public class TableStat {
             }
 
             Name other = (Name) o;
-            
-            if (this.name == other.name) {
-                return true;
-            }
-            
-            if (this.name == null | other.name == null) {
-                return false;
-            }
-
-            return this.name.equalsIgnoreCase(other.name);
+            return this.hash == other.hash;
         }
 
         public String toString() {
@@ -410,6 +402,8 @@ public class TableStat {
 
         private final String              table;
         private final String              name;
+        protected final long              hashCode64;
+
         private boolean             where;
         private boolean             select;
         private boolean             groupBy;
@@ -428,11 +422,25 @@ public class TableStat {
          */
         private String              dataType;
 
-        protected long              hashCode64;
-
         public Column(String table, String name){
             this.table = table;
             this.name = name;
+
+            int p = table.indexOf('.');
+            if (p != -1) {
+                String dbType = null;
+                if (table.indexOf('`') != -1) {
+                    dbType = JdbcConstants.MYSQL;
+                } else if (table.indexOf('[') != -1) {
+                    dbType = JdbcConstants.SQL_SERVER;
+                } else if (table.indexOf('@') != -1) {
+                    dbType = JdbcConstants.ORACLE;
+                }
+                SQLExpr owner = SQLUtils.toSQLExpr(table, dbType);
+                hashCode64 = FNVUtils.fnv_64_lower(new SQLPropertyExpr(owner, name));
+            } else {
+                hashCode64 = FNVUtils.fnv_64_lower(table, name);
+            }
         }
 
         public String getTable() {
@@ -452,24 +460,6 @@ public class TableStat {
         }
 
         public long hashCode64() {
-            if (hashCode64 == 0) {
-                int p = table.indexOf('.');
-                if (p != -1) {
-                    String dbType = null;
-                    if (table.indexOf('`') != -1) {
-                        dbType = JdbcConstants.MYSQL;
-                    } else if (table.indexOf('[') != -1) {
-                        dbType = JdbcConstants.SQL_SERVER;
-                    } else if (table.indexOf('@') != -1) {
-                        dbType = JdbcConstants.ORACLE;
-                    }
-                    SQLExpr owner = SQLUtils.toSQLExpr(table, dbType);
-                    hashCode64 = FNVUtils.fnv_64_lower(new SQLPropertyExpr(owner, name));
-                } else {
-                    hashCode64 = FNVUtils.fnv_64_lower(table, name);
-                }
-            }
-
             return hashCode64;
         }
 
@@ -574,8 +564,7 @@ public class TableStat {
             }
 
             Column column = (Column) obj;
-
-            return hashCode64() == column.hashCode64();
+            return hashCode64 == column.hashCode64;
         }
     }
 
