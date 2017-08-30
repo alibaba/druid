@@ -25,7 +25,7 @@ Druid Spring Boot Starter 用于帮助你在Spring Boot项目中轻松集成Drui
     spring.datasource.url= 
     spring.datasource.username=
     spring.datasource.password=
-    # ...其他配置（可选，不是必须的）
+    # ...其他配置（可选，不是必须的，使用内嵌数据库的话上述三项也可省略不填）
     ```
 
 ## 配置属性
