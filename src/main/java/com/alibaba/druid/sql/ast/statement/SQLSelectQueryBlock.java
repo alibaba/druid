@@ -512,6 +512,10 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     }
 
     public boolean selectItemHasAllColumn() {
+        return selectItemHasAllColumn(true);
+    }
+
+    public boolean selectItemHasAllColumn(boolean recursive) {
         for (SQLSelectItem item : this.selectList) {
             SQLExpr expr = item.getExpr();
 
@@ -519,7 +523,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
                     || (expr instanceof SQLPropertyExpr && ((SQLPropertyExpr) expr).getName().equals("*"));
 
             if (allColumn) {
-                if (from instanceof SQLSubqueryTableSource) {
+                if (recursive && from instanceof SQLSubqueryTableSource) {
                     SQLSelect subSelect = ((SQLSubqueryTableSource) from).select;
                     SQLSelectQueryBlock queryBlock = subSelect.getQueryBlock();
                     if (queryBlock != null) {
@@ -575,33 +579,5 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         setLimit(limit);
-    }
-
-    public int selectIndexOf(SQLExpr expr) {
-        String ident = null;
-        if (expr instanceof SQLIdentifierExpr) {
-            ident = ((SQLIdentifierExpr) expr).getName();
-        }
-
-        for (int i = 0; i < selectList.size(); i++) {
-            SQLSelectItem selectItem = selectList.get(i);
-            if (ident != null && SQLUtils.nameEquals(ident, selectItem.alias)) {
-                return i;
-            }
-
-            SQLExpr selectItemExpr = selectItem.getExpr();
-            if (selectItemExpr instanceof SQLName) {
-                String name = ((SQLName) selectItemExpr).getSimpleName();
-                if (SQLUtils.nameEquals(ident, name)) {
-                    return i;
-                }
-            }
-
-            if (expr.equals(selectItemExpr)) {
-                return i;
-            }
-        }
-
-        return -1;
     }
 }

@@ -23,7 +23,6 @@ import com.alibaba.druid.util.FnvHash;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     protected String    name;
-    private   String    lowerName;
     private   long      hashCode64;
 
     private   SQLObject resolvedColumn;
@@ -52,15 +51,12 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
     public void setName(String name) {
         this.name = name;
-        this.lowerName = null;
         this.hashCode64 = 0L;
-    }
 
-    public String getLowerName() {
-        if (lowerName == null && name != null) {
-            lowerName = name.toLowerCase();
+        if (parent instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) parent;
+            propertyExpr.computeHashCode64();
         }
-        return lowerName;
     }
 
     public long nameHashCode64() {

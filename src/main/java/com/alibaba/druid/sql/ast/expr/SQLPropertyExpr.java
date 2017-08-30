@@ -22,14 +22,14 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
 public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
-    private           SQLExpr             owner;
-    private           String              name;
+    private   SQLExpr             owner;
+    private   String              name;
 
-    private transient long                nameHashCod64;
-    private transient long                hashCode64;
+    protected long                nameHashCod64;
+    protected long                hashCode64;
 
-    private transient SQLColumnDefinition resolvedColumn;
-    private transient SQLObject           resolvedOwnerObject;
+    protected SQLColumnDefinition resolvedColumn;
+    protected SQLObject           resolvedOwnerObject;
 
     public SQLPropertyExpr(String owner, String name){
         this(new SQLIdentifierExpr(owner), name);
@@ -70,8 +70,33 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         if (owner != null) {
             owner.setParent(this);
         }
+
+        if (parent instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) parent;
+            propertyExpr.computeHashCode64();
+        }
+
         this.owner = owner;
         this.hashCode64 = 0;
+    }
+
+    protected void computeHashCode64() {
+        long hash;
+        if (owner instanceof SQLName) {
+            hash = ((SQLName) owner).hashCode64();
+
+            hash ^= '.';
+            hash *= FnvHash.PRIME;
+        } else if (owner == null){
+            hash = FnvHash.BASIC;
+        } else {
+            hash = FnvHash.fnv1a_64_lower(owner.toString());
+
+            hash ^= '.';
+            hash *= FnvHash.PRIME;
+        }
+        hash = FnvHash.hashCode64(hash, name);
+        hashCode64 = hash;
     }
 
     public void setOwner(String owner) {
@@ -86,6 +111,11 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         this.name = name;
         this.hashCode64 = 0;
         this.nameHashCod64 = 0;
+
+        if (parent instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) parent;
+            propertyExpr.computeHashCode64();
+        }
     }
 
     public void output(StringBuffer buf) {
@@ -110,22 +140,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     public long hashCode64() {
         if (hashCode64 == 0) {
-            long hash;
-            if (owner instanceof SQLName) {
-                hash = ((SQLName) owner).hashCode64();
-
-                hash ^= '.';
-                hash *= FnvHash.PRIME;
-            } else if (owner == null){
-                hash = FnvHash.BASIC;
-            } else {
-                hash = FnvHash.fnv1a_64_lower(owner.toString());
-
-                hash ^= '.';
-                hash *= FnvHash.PRIME;
-            }
-            hash = FnvHash.hashCode64(hash, name);
-            hashCode64 = hash;
+            computeHashCode64();
         }
 
         return hashCode64;

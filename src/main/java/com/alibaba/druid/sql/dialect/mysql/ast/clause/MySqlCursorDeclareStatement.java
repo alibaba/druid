@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.clause;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStatementImpl;
@@ -36,7 +37,14 @@ public class MySqlCursorDeclareStatement extends MySqlStatementImpl{
 	}
 	
 	public void setCursorName(SQLName cursorName) {
+		if (cursorName != null) {
+			cursorName.setParent(this);
+		}
 		this.cursorName = cursorName;
+	}
+
+	public void setCursorName(String cursorName) {
+		this.setCursorName(new SQLIdentifierExpr(cursorName));
 	}
 
 	public SQLSelect getSelect() {
