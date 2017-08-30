@@ -29,7 +29,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     private transient long                hashCode64;
 
     private transient SQLColumnDefinition resolvedColumn;
-    private transient SQLObject           resolvedTableSource;
+    private transient SQLObject           resolvedOwnerObject;
 
     public SQLPropertyExpr(String owner, String name){
         this(new SQLIdentifierExpr(owner), name);
@@ -119,7 +119,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             } else if (owner == null){
                 hash = FnvHash.BASIC;
             } else {
-                hash = FnvHash.fnv_64_lower(owner.toString());
+                hash = FnvHash.fnv1a_64_lower(owner.toString());
 
                 hash ^= '.';
                 hash *= FnvHash.PRIME;
@@ -170,7 +170,7 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
         x.hashCode64 = hashCode64;
         x.resolvedColumn = resolvedColumn;
-        x.resolvedTableSource = resolvedTableSource;
+        x.resolvedOwnerObject = resolvedOwnerObject;
 
         return x;
     }
@@ -214,31 +214,35 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLTableSource getResolvedTableSource() {
-        if (resolvedTableSource instanceof SQLTableSource) {
-            return (SQLTableSource) resolvedTableSource;
+        if (resolvedOwnerObject instanceof SQLTableSource) {
+            return (SQLTableSource) resolvedOwnerObject;
         }
 
         return null;
     }
 
     public void setResolvedTableSource(SQLTableSource resolvedTableSource) {
-        this.resolvedTableSource = resolvedTableSource;
+        this.resolvedOwnerObject = resolvedTableSource;
     }
 
     public void setResolvedProcedure(SQLCreateProcedureStatement stmt) {
-        this.resolvedTableSource = stmt;
+        this.resolvedOwnerObject = stmt;
     }
 
     public void setResolvedOwnerObject(SQLObject resolvedOwnerObject) {
-        this.resolvedTableSource = resolvedOwnerObject;
+        this.resolvedOwnerObject = resolvedOwnerObject;
     }
 
     public SQLCreateProcedureStatement getResolvedProcudure() {
-        if (this.resolvedTableSource instanceof SQLCreateProcedureStatement) {
-            return (SQLCreateProcedureStatement) this.resolvedTableSource;
+        if (this.resolvedOwnerObject instanceof SQLCreateProcedureStatement) {
+            return (SQLCreateProcedureStatement) this.resolvedOwnerObject;
         }
 
         return null;
+    }
+
+    public SQLObject getResolvedOwnerObject() {
+        return resolvedOwnerObject;
     }
 
     public SQLDataType computeDataType() {
@@ -246,9 +250,9 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
             return resolvedColumn.getDataType();
         }
 
-        if (resolvedTableSource != null
-                && resolvedTableSource instanceof SQLSubqueryTableSource) {
-            SQLSelect select = ((SQLSubqueryTableSource) resolvedTableSource).getSelect();
+        if (resolvedOwnerObject != null
+                && resolvedOwnerObject instanceof SQLSubqueryTableSource) {
+            SQLSelect select = ((SQLSubqueryTableSource) resolvedOwnerObject).getSelect();
             SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
             if (queryBlock == null) {
                 return null;

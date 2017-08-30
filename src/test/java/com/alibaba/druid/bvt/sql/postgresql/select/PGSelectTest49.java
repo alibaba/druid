@@ -37,6 +37,8 @@ public class PGSelectTest49 extends TestCase {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         SQLStatement stmt = stmtList.get(0);
 
+        System.out.println(stmt);
+
         assertEquals("WITH sel AS (\n" +
                 "\t\tSELECT unnest(ARRAY[4275]) AS gdid, unnest(ARRAY[1]) AS gdnumber\n" +
                 "\t)\n" +
@@ -58,8 +60,8 @@ public class PGSelectTest49 extends TestCase {
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
         assertEquals(4, visitor.getColumns().size());

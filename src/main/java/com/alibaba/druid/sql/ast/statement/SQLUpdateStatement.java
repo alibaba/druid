@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceable {
+    protected SQLWithSubqueryClause with; // for pg
 
     protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
     protected SQLExpr                      where;
@@ -160,5 +161,16 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             orderBy.setParent(this);
         }
         this.orderBy = orderBy;
+    }
+
+    public SQLWithSubqueryClause getWith() {
+        return with;
+    }
+
+    public void setWith(SQLWithSubqueryClause with) {
+        if (with != null) {
+            with.setParent(this);
+        }
+        this.with = with;
     }
 }

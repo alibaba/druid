@@ -25,8 +25,6 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
 
     private boolean        only      = false;
 
-    private SQLWithSubqueryClause with;
-
     public PGUpdateStatement(){
         super (JdbcConstants.POSTGRESQL);
     }
@@ -37,14 +35,6 @@ public class PGUpdateStatement extends SQLUpdateStatement implements PGSQLStatem
 
     public void setOnly(boolean only) {
         this.only = only;
-    }
-
-    public SQLWithSubqueryClause getWith() {
-        return with;
-    }
-
-    public void setWith(SQLWithSubqueryClause with) {
-        this.with = with;
     }
 
     protected void accept0(SQLASTVisitor visitor) {

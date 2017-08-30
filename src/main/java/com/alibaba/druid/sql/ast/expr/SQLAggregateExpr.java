@@ -133,7 +133,9 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.arguments);
+            acceptChild(visitor, this.keep);
             acceptChild(visitor, this.over);
+            acceptChild(visitor, this.withinGroup);
         }
 
         visitor.endVisit(this);

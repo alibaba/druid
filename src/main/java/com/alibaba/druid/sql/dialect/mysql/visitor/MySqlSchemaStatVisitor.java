@@ -69,9 +69,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
             repository.resolve(x);
         }
 
-        setAliasMap();
-        getAliasMap().put("DUAL", null);
-
         return true;
     }
 
@@ -87,8 +84,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
             repository.resolve(x);
         }
 
-        setAliasMap();
-
         setMode(x, Mode.Delete);
 
         accept(x.getFrom());
@@ -96,10 +91,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         x.getTableSource().accept(this);
 
         if (x.getTableSource() instanceof SQLExprTableSource) {
-            SQLName tableName = (SQLName) ((SQLExprTableSource) x.getTableSource()).getExpr();
-            String ident = tableName.toString();
-
-            TableStat stat = this.getTableStat(ident);
+            TableStat stat = this.getTableStat(x.getExprTableSource());
             stat.incrementDeleteCount();
         }
 
@@ -112,7 +104,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     public void endVisit(MySqlDeleteStatement x) {
-        setAliasMap(null);
     }
 
     @Override
@@ -129,27 +120,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         setMode(x, Mode.Insert);
 
-        setAliasMap();
+        TableStat stat = getTableStat(x.getTableSource());
 
-        SQLName tableName = x.getTableName();
-
-        String ident = null;
-        if (tableName instanceof SQLIdentifierExpr) {
-            ident = ((SQLIdentifierExpr) tableName).getName();
-        } else if (tableName instanceof SQLPropertyExpr) {
-            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) tableName;
-            if (propertyExpr.getOwner() instanceof SQLIdentifierExpr) {
-                ident = propertyExpr.toString();
-            }
-        }
-
-        if (ident != null) {
-            TableStat stat = getTableStat(ident);
+        if (stat != null) {
             stat.incrementInsertCount();
-
-            Map<String, String> aliasMap = getAliasMap();
-            putAliasMap(aliasMap, x.getAlias(), ident);
-            putAliasMap(aliasMap, ident, ident);
         }
 
         accept(x.getColumns());
@@ -299,26 +273,12 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         setMode(x, Mode.Replace);
 
-        setAliasMap();
-
         SQLName tableName = x.getTableName();
 
-        String ident = null;
-        if (tableName instanceof SQLIdentifierExpr) {
-            ident = ((SQLIdentifierExpr) tableName).getName();
-        } else if (tableName instanceof SQLPropertyExpr) {
-            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) tableName;
-            if (propertyExpr.getOwner() instanceof SQLIdentifierExpr) {
-                ident = propertyExpr.toString();
-            }
-        }
+        TableStat stat = getTableStat(tableName);
 
-        if (ident != null) {
-            TableStat stat = getTableStat(ident);
+        if (stat != null) {
             stat.incrementInsertCount();
-
-            Map<String, String> aliasMap = getAliasMap();
-            putAliasMap(aliasMap, ident, ident);
         }
 
         accept(x.getColumns());
@@ -480,7 +440,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         SQLName tableName = x.getTableName();
         if (tableName != null) {
             String table = tableName.toString();
-            getTableStat(table);
+            getTableStat(tableName);
 
             SQLName columnName = x.getColumnName();
             if (columnName != null) {
@@ -1217,12 +1177,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlDeclareStatement x) {
-        for (SQLDeclareItem item : x.getVarList()) {
-            SQLName var = (SQLName) item.getName();
-            this.variants.put(var.toString(), var);
-        }
-
-        return false;
+        return true;
     }
 
     @Override
@@ -1355,4 +1310,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlFlushStatement x) {
 
     }
+
+
 }

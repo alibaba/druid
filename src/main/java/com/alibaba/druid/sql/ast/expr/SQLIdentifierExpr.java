@@ -22,12 +22,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
 public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
-    protected         String    name;
-    private transient String    lowerName;
-    private transient long      hashCode64;
+    protected String    name;
+    private   String    lowerName;
+    private   long      hashCode64;
 
-    private transient SQLObject resolvedColumn;
-    private transient SQLObject resolvedOwnerObject;
+    private   SQLObject resolvedColumn;
+    private   SQLObject resolvedOwnerObject;
 
     public SQLIdentifierExpr(){
 
@@ -123,6 +123,10 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         }
 
         return null;
+    }
+
+    public SQLObject getResolvedColumnObject() {
+        return resolvedColumn;
     }
 
     public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {

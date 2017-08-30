@@ -33,14 +33,14 @@ public class MySqlParameterizedBenchmark extends TestCase {
 //            perf(sql3); // 15093 10392 10416 10154 10007 9126 8907
 //            perf(sql4); // 4429 4190 4023 3747
 
-//            perf_parse(sql); // 4643 4377 4345 3801 3627 3228 2961
+//            perf_parse(sql); // 4643 4377 4345 3801 3627 3228 2961 2959
 //            perf_parse(sql2); // 1918 1779 1666 1646
 //            perf_parse(sql3); // 9174 5875 5805 5536 5717
 //            perf_parse(sql4); // 2953 2502
 
-            perf_stat(sql); // 11793 13628 13561 13259 9819
+            perf_stat(sql); // 11793 13628 13561 13259 9946 7637
 
-//            perf_resolve(sql); // 4970 4586
+//            perf_resolve(sql); // 4970 4586 3600
         }
     }
     public void perf(String sql) {

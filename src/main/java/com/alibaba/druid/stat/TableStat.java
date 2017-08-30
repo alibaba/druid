@@ -436,7 +436,7 @@ public class TableStat {
                 SQLExpr owner = SQLUtils.toSQLExpr(table, dbType);
                 hashCode64 = new SQLPropertyExpr(owner, name).hashCode64();
             } else {
-                hashCode64 = FnvHash.fnv_64_lower(table, name);
+                hashCode64 = FnvHash.hashCode64(table, name);
             }
         }
 

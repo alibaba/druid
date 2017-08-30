@@ -21,7 +21,7 @@ public final class FnvHash {
     public final static long BASIC = 0xcbf29ce484222325L;
     public final static long PRIME = 0x100000001b3L;
 
-    public static long fnv_64(String input) {
+    public static long fnv1a_64(String input) {
         if (input == null) {
             return 0;
         }
@@ -68,7 +68,7 @@ public final class FnvHash {
         }
     }
 
-    public static long fnv_64_lower(String key) {
+    public static long fnv1a_64_lower(String key) {
         long hashCode = BASIC;
         for (int i = 0; i < key.length(); ++i) {
             char ch = key.charAt(i);
@@ -156,10 +156,10 @@ public final class FnvHash {
         return hashCode;
     }
 
-    public static long[] fnv_64_lower(String[] strings, boolean sort) {
+    public static long[] fnv1a_64_lower(String[] strings, boolean sort) {
         long[] hashCodes = new long[strings.length];
         for (int i = 0; i < strings.length; i++) {
-            hashCodes[i] = fnv_64_lower(strings[i]);
+            hashCodes[i] = fnv1a_64_lower(strings[i]);
         }
         if (sort) {
             Arrays.sort(hashCodes);
@@ -167,7 +167,13 @@ public final class FnvHash {
         return hashCodes;
     }
 
-    public static long fnv_64_lower(String owner, String name) {
+    /**
+     * normalized & lower & fnv1a_64_hash
+     * @param owner
+     * @param name
+     * @return
+     */
+    public static long hashCode64(String owner, String name) {
         long hashCode = BASIC;
 
         if (owner != null) {

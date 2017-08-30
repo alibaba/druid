@@ -64,20 +64,14 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
     public boolean visit(OdpsInsert x) {
         setMode(x, TableStat.Mode.Insert);
 
-        setAliasMap();
-
         SQLExprTableSource tableSource = x.getTableSource();
         SQLExpr tableName = tableSource.getExpr();
 
         if (tableName instanceof SQLName) {
             String ident = ((SQLName) tableName).toString();
-
-            TableStat stat = getTableStat(ident);
+            TableStat stat = getTableStat(tableName);
             stat.incrementInsertCount();
 
-            Map<String, String> aliasMap = getAliasMap();
-            putAliasMap(aliasMap, tableSource.getAlias(), ident);
-            putAliasMap(aliasMap, ident, ident);
         }
 
         for (SQLAssignItem partition : x.getPartitions()) {
@@ -289,11 +283,6 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
 
     @Override
     public boolean visit(OdpsValuesTableSource x) {
-        Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null && x.getAlias() != null) {
-            putAliasMap(aliasMap, x.getAlias(), null);
-            addSubQuery(x.getAlias(), x);
-        }
         return false;
     }
 }

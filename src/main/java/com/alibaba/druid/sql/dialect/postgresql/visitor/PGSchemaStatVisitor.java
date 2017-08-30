@@ -101,8 +101,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             x.getWith().accept(this);
         }
 
-        setAliasMap();
-
         SQLTableSource using = x.getUsing();
         if (using != null) {
             using.accept(this);
@@ -111,9 +109,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         x.putAttribute("_original_use_mode", getMode());
         setMode(x, Mode.Delete);
 
-        String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
-
-        TableStat stat = getTableStat(ident, x.getAlias());
+        TableStat stat = getTableStat(x.getTableName());
         stat.incrementDeleteCount();
 
         accept(x.getWhere());
@@ -133,8 +129,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             repository.resolve(x);
         }
 
-        setAliasMap();
-
         if (x.getWith() != null) {
             x.getWith().accept(this);
         }
@@ -149,14 +143,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
             TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
-
-            Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
-                }
-                aliasMap.put(ident, ident);
-            }
         }
 
         accept(x.getColumns());
@@ -191,10 +177,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             repository.resolve(x);
         }
 
-        Map<String, String> oldAliasMap = getAliasMap();
-
-        setAliasMap();
-
         if (x.getWith() != null) {
             x.getWith().accept(this);
         }
@@ -206,13 +188,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
         accept(x.getFrom());
 
-        Map<String, String> aliasMap = getAliasMap();
-        aliasMap.put(ident, ident);
-
         accept(x.getItems());
         accept(x.getWhere());
-
-        setAliasMap(oldAliasMap);
 
         return false;
     }

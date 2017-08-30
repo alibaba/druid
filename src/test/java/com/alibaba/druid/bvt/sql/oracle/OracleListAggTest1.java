@@ -32,6 +32,8 @@ public class OracleListAggTest1 extends OracleTest {
         SQLStatement stmt = statementList.get(0);
         // print(statementList);
 
+        System.out.println(stmt);
+
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("SELECT COUNT(0)\n" +
@@ -58,13 +60,13 @@ public class OracleListAggTest1 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
 
         Assert.assertEquals(3, visitor.getTables().size());
-        Assert.assertEquals(9, visitor.getColumns().size());
+        Assert.assertEquals(8, visitor.getColumns().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WEP_USER_ROLE")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WEP_ROLE")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("WEP_USER_ROLE", "IS_DELETED")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("WEP_ROLE", "IS_DELETED")));
+        Assert.assertTrue(visitor.containsColumn("WEP_USER_ROLE", "IS_DELETED"));
+        Assert.assertTrue(visitor.containsColumn("WEP_ROLE", "IS_DELETED"));
 
         WallUtils.isValidateOracle(sql);
     }

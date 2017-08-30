@@ -1529,7 +1529,7 @@ public class Lexer {
             if (stringVal == null) {
                 stringVal = subString(mark, bufPos);
             }
-            this.hash_lower = FnvHash.fnv_64_lower(stringVal);
+            this.hash_lower = FnvHash.fnv1a_64_lower(stringVal);
         }
         return this.hash_lower == hash_lower;
     }
@@ -1539,7 +1539,7 @@ public class Lexer {
             if (stringVal == null) {
                 stringVal = subString(mark, bufPos);
             }
-            this.hash_lower = FnvHash.fnv_64_lower(stringVal);
+            this.hash_lower = FnvHash.fnv1a_64_lower(stringVal);
         }
         return hash_lower;
     }

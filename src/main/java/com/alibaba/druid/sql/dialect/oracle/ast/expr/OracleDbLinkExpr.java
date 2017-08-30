@@ -143,7 +143,7 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
             } else if (expr == null){
                 hash = FnvHash.BASIC;
             } else {
-                hash = FnvHash.fnv_64_lower(expr.toString());
+                hash = FnvHash.fnv1a_64_lower(expr.toString());
 
                 hash ^= '.';
                 hash *= FnvHash.PRIME;

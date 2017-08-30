@@ -203,6 +203,11 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLOver x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -346,6 +351,11 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLOver x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -397,12 +407,28 @@ class SchemaResolveVisitorFactory {
         public boolean visit(OracleForStatement x) {
             Context ctx = createContext(x);
 
-            SQLExpr index = x.getIndex();
+            SQLName index = x.getIndex();
+            SQLExpr range = x.getRange();
+
             if (index != null) {
+                SQLDeclareItem declareItem = new SQLDeclareItem(index, null);
+                declareItem.setParent(x);
+
+                if (index instanceof SQLIdentifierExpr) {
+                    ((SQLIdentifierExpr) index).setResolvedDeclareItem(declareItem);
+                }
+                declareItem.setResolvedObject(range);
+                ctx.declare(declareItem);
+                if (range instanceof SQLQueryExpr) {
+                    SQLSelect select = ((SQLQueryExpr) range).getSubQuery();
+                    SQLSubqueryTableSource tableSource = new SQLSubqueryTableSource(select);
+                    declareItem.setResolvedObject(tableSource);
+                }
+
                 index.accept(this);
             }
 
-            SQLExpr range = x.getRange();
+
             if (range != null) {
                 range.accept(this);
             }
@@ -583,6 +609,11 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLOver x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -747,6 +778,11 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLDeclareItem x) {
+            resolve(this, x);
+            return false;
+        }
+
+        public boolean visit(SQLOver x) {
             resolve(this, x);
             return false;
         }
@@ -930,6 +966,11 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLOver x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -1081,6 +1122,11 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLOver x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -1217,6 +1263,11 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLOver x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -1296,6 +1347,11 @@ class SchemaResolveVisitorFactory {
 
     static void resolve(SchemaResolveVisitor visitor, SQLUpdateStatement x) {
         SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            with.accept(visitor);
+        }
 
         SQLTableSource table = x.getTableSource();
         SQLTableSource from = x.getFrom();
@@ -1453,7 +1509,7 @@ class SchemaResolveVisitorFactory {
                         && right instanceof SQLExprTableSource) {
                     SQLSelect leftSelect = ((SQLSubqueryTableSource) left).getSelect();
                     if (leftSelect.getQuery() instanceof SQLSelectQueryBlock) {
-                        boolean hasAllColumn = ((SQLSelectQueryBlock) leftSelect.getQuery()).selectItemHashAllColumn();
+                        boolean hasAllColumn = ((SQLSelectQueryBlock) leftSelect.getQuery()).selectItemHasAllColumn();
                         if (!hasAllColumn) {
                             tableSource = right;
                         }
@@ -1462,7 +1518,7 @@ class SchemaResolveVisitorFactory {
                         && left instanceof SQLExprTableSource) {
                     SQLSelect rightSelect = ((SQLSubqueryTableSource) right).getSelect();
                     if (rightSelect.getQuery() instanceof SQLSelectQueryBlock) {
-                        boolean hasAllColumn = ((SQLSelectQueryBlock) rightSelect.getQuery()).selectItemHashAllColumn();
+                        boolean hasAllColumn = ((SQLSelectQueryBlock) rightSelect.getQuery()).selectItemHasAllColumn();
                         if (!hasAllColumn) {
                             tableSource = left;
                         }
@@ -1629,8 +1685,10 @@ class SchemaResolveVisitorFactory {
                     SQLDeclareItem declareItem = parentCtx.findDeclare(owner_hash);
                     if (declareItem != null) {
                         SQLObject resolvedObject = declareItem.getResolvedObject();
-                        if (resolvedObject instanceof SQLCreateProcedureStatement) {
-                            x.setResolvedProcedure((SQLCreateProcedureStatement) resolvedObject);
+                        if (resolvedObject instanceof SQLCreateProcedureStatement
+                                || resolvedObject instanceof SQLCreateFunctionStatement
+                                || resolvedObject instanceof SQLTableSource) {
+                            x.setResolvedOwnerObject(resolvedObject);
                         }
                         break;
                     }
@@ -1661,7 +1719,7 @@ class SchemaResolveVisitorFactory {
             }
         }
 
-        for (SchemaResolveVisitor.Context parentCtx = ctx.parent;
+        for (SchemaResolveVisitor.Context parentCtx = ctx;
              parentCtx != null;
              parentCtx = parentCtx.parent) {
 
@@ -1675,6 +1733,9 @@ class SchemaResolveVisitorFactory {
             } else if (parentCtx.object instanceof SQLInsertStatement) {
                 SQLInsertStatement insertStmt = (SQLInsertStatement) parentCtx.object;
                 with = insertStmt.getWith();
+            } else if (parentCtx.object instanceof SQLUpdateStatement) {
+                SQLUpdateStatement updateStmt = (SQLUpdateStatement) parentCtx.object;
+                with = updateStmt.getWith();
             }
 
             if (with != null) {
@@ -2082,16 +2143,19 @@ class SchemaResolveVisitorFactory {
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLCreateFunctionStatement x) {
+        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
         {
+            SQLDeclareItem declareItem = new SQLDeclareItem(x.getName().clone(), null);
+            declareItem.setResolvedObject(x);
+
             SchemaResolveVisitor.Context parentCtx = visitor.getContext();
             if (parentCtx != null) {
-                SQLDeclareItem declareItem = new SQLDeclareItem(x.getName().clone(), null);
-                declareItem.setResolvedObject(x);
                 parentCtx.declare(declareItem);
+            } else {
+                ctx.declare(declareItem);
             }
         }
-
-        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
 
         for (SQLParameter parameter : x.getParameters()) {
             parameter.accept(visitor);
@@ -2105,16 +2169,20 @@ class SchemaResolveVisitorFactory {
         visitor.popContext();
     }
     static void resolve(SchemaResolveVisitor visitor, SQLCreateProcedureStatement x) {
+        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
         {
+            SQLDeclareItem declareItem = new SQLDeclareItem(x.getName().clone(), null);
+            declareItem.setResolvedObject(x);
+
+
             SchemaResolveVisitor.Context parentCtx = visitor.getContext();
             if (parentCtx != null) {
-                SQLDeclareItem declareItem = new SQLDeclareItem(x.getName().clone(), null);
-                declareItem.setResolvedObject(x);
                 parentCtx.declare(declareItem);
+            } else {
+                ctx.declare(declareItem);
             }
         }
-
-        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
 
         for (SQLParameter parameter : x.getParameters()) {
             parameter.accept(visitor);
@@ -2212,6 +2280,23 @@ class SchemaResolveVisitorFactory {
         }
     }
 
+    static void resolve(SchemaResolveVisitor visitor, SQLOver x) {
+        SQLName of = x.getOf();
+        SQLOrderBy orderBy = x.getOrderBy();
+        List<SQLExpr> partitionBy = x.getPartitionBy();
+
+
+        if (of == null // skip if of is not null
+                && orderBy != null) {
+            orderBy.accept(visitor);
+        }
+
+        if (partitionBy != null) {
+            for (SQLExpr expr : partitionBy) {
+                expr.accept(visitor);
+            }
+        }
+    }
 
     private static boolean checkParameter(SchemaResolveVisitor visitor, SQLIdentifierExpr x) {
         if (x.getResolvedParameter() != null) {
@@ -2244,6 +2329,24 @@ class SchemaResolveVisitorFactory {
                     x.setResolvedParameter(parameter);
                     return true;
                 }
+            }
+
+            if (parentCtx.object instanceof SQLSelect) {
+                SQLSelect select = (SQLSelect) parentCtx.object;
+                SQLWithSubqueryClause with = select.getWithSubQuery();
+                if (with != null) {
+                    SQLWithSubqueryClause.Entry entry = with.findEntry(hash);
+                    if (entry != null) {
+                        x.setResolvedTableSource(entry);
+                        return true;
+                    }
+                }
+            }
+
+            SQLDeclareItem declareItem = parentCtx.findDeclare(hash);
+            if (declareItem != null) {
+                x.setResolvedDeclareItem(declareItem);
+                break;
             }
         }
         return false;

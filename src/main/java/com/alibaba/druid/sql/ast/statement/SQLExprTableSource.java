@@ -32,7 +32,6 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
 
     protected SQLExpr     expr;
     private List<SQLName> partitions;
-
     private SchemaObject  schemaObject;
 
     public SQLExprTableSource(){

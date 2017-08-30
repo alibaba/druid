@@ -56,10 +56,10 @@ public class SQLExprParser extends SQLParser {
 
     static {
         String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM" };
-        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
-            long hash = FnvHash.fnv_64_lower(str);
+            long hash = FnvHash.fnv1a_64_lower(str);
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }
@@ -896,7 +896,6 @@ public class SQLExprParser extends SQLParser {
         }
 
         String methodName = null;
-        boolean isAggregate = false;
         String aggMethodName = null;
         SQLMethodInvokeExpr methodInvokeExpr;
         SQLExpr owner = null;
@@ -933,7 +932,7 @@ public class SQLExprParser extends SQLParser {
         } else if (expr instanceof SQLPropertyExpr) {
             methodName = expr.toString();
             aggMethodName = SQLUtils.normalize(methodName);
-            hash_lower = FnvHash.fnv_64_lower(aggMethodName);
+            hash_lower = FnvHash.fnv1a_64_lower(aggMethodName);
             aggMethodName = getAggreateFunction(hash_lower);
 
             owner = ((SQLPropertyExpr) expr).getOwner();
@@ -1229,7 +1228,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public boolean isAggreateFunction(String word) {
-        long hash_lower = FnvHash.fnv_64_lower(word);
+        long hash_lower = FnvHash.fnv1a_64_lower(word);
         return isAggreateFunction(hash_lower);
     }
 
@@ -1296,7 +1295,7 @@ public class SQLExprParser extends SQLParser {
         
         if (lexer.token == Token.OF) {
             lexer.nextToken();
-            SQLExpr of = this.expr();
+            SQLName of = this.name();
             over.setOf(of);
         }
 

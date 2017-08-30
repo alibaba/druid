@@ -172,7 +172,7 @@ public class MySqlReplaceTest_1 extends MysqlTest {
         
         assertEquals(3, visitor.getTables().size());
         assertEquals(12, visitor.getColumns().size());
-        assertEquals(4, visitor.getConditions().size());
+        assertEquals(6, visitor.getConditions().size());
 
         assertTrue(visitor.containsTable("tb_001"));
 

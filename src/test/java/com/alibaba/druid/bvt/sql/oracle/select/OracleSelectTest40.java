@@ -52,7 +52,8 @@ public class OracleSelectTest40 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
+
+        System.out.println(stmt);
 
         Assert.assertEquals(1, statementList.size());
         
@@ -67,7 +68,7 @@ public class OracleSelectTest40 extends OracleTest {
 
         Assert.assertEquals(6, visitor.getTables().size());
 
-        Assert.assertEquals(19, visitor.getColumns().size());
+        Assert.assertEquals(18, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

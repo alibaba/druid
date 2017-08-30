@@ -133,7 +133,7 @@ public class OdpsSelectTest25 extends TestCase {
         
         assertEquals(2, visitor.getTables().size());
         assertEquals(6, visitor.getColumns().size());
-        assertEquals(2, visitor.getConditions().size());
+        assertEquals(4, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
         

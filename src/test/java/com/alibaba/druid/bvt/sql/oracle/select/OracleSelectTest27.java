@@ -56,7 +56,7 @@ public class OracleSelectTest27 extends OracleTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("search.retl_table_config_search")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.col$")));
 
-        Assert.assertEquals(18, visitor.getColumns().size());
+        Assert.assertEquals(17, visitor.getColumns().size());
 
          Assert.assertTrue(visitor.containsColumn("search.retl_table_config_search", "tid"));
          Assert.assertTrue(visitor.containsColumn("dba_objects", "owner"));

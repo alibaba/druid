@@ -111,10 +111,10 @@ public class OracleExprParser extends SQLExprParser {
                 "VARIANCE", //
                 "WM_CONCAT"
         };
-        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
         AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
         for (String str : strings) {
-            long hash = FnvHash.fnv_64_lower(str);
+            long hash = FnvHash.fnv1a_64_lower(str);
             int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
             AGGREGATE_FUNCTIONS[index] = str;
         }

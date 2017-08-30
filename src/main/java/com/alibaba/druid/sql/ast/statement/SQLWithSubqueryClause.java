@@ -132,6 +132,15 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
                     return this;
                 }
             }
+
+            if (subQuery != null) {
+                SQLSelectQueryBlock queryBlock = subQuery.getFirstQueryBlock();
+                if (queryBlock != null) {
+                    if (queryBlock.findSelectItem(columnNameHash) != null) {
+                        return this;
+                    }
+                }
+            }
             return null;
         }
     }

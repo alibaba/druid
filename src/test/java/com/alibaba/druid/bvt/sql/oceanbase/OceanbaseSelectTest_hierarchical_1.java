@@ -65,7 +65,7 @@ public class OceanbaseSelectTest_hierarchical_1 extends MysqlTest {
 
         assertEquals(1, visitor.getTables().size());
         assertEquals(3, visitor.getColumns().size());
-        assertEquals(0, visitor.getConditions().size());
+        assertEquals(2, visitor.getConditions().size());
 
         // assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 

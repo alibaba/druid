@@ -63,6 +63,7 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
+import com.alibaba.druid.util.FnvConstants;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -74,10 +75,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     public OracleSchemaStatVisitor(List<Object> parameters){
         super(JdbcConstants.ORACLE, parameters);
-        this.variants.put("DUAL", null);
-        this.variants.put("NOTFOUND", null);
-        this.variants.put("TRUE", null);
-        this.variants.put("FALSE", null);
     }
 
     protected Column getColumn(SQLExpr expr) {
@@ -90,41 +87,24 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     public boolean visit(OracleSelectTableReference x) {
         SQLExpr expr = x.getExpr();
-
-        if (expr instanceof SQLMethodInvokeExpr) {
-            SQLMethodInvokeExpr methodInvoke = (SQLMethodInvokeExpr) expr;
-            if ("TABLE".equalsIgnoreCase(methodInvoke.getMethodName()) && methodInvoke.getParameters().size() == 1) {
-                expr = methodInvoke.getParameters().get(0);
-            }
-        }
-
-        Map<String, String> aliasMap = getAliasMap();
+        TableStat stat = getTableStat(x);
 
         if (expr instanceof SQLName) {
-            String ident;
+            if (((SQLName) expr).nameHashCode64() == FnvConstants.DUAL) {
+                return false;
+            }
+
             if (expr instanceof SQLPropertyExpr) {
-                String owner = ((SQLPropertyExpr) expr).getOwner().toString();
-                String name = ((SQLPropertyExpr) expr).getName();
-
-                if (aliasMap.containsKey(owner)) {
-                    owner = aliasMap.get(owner);
+                SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+                if (isSubQueryOrParamOrVariant(propertyExpr)) {
+                    return false;
                 }
-                ident = owner + "." + name;
-            } else {
-                ident = expr.toString();
+            } else if (expr instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+                if (isSubQueryOrParamOrVariant(identifierExpr)) {
+                    return false;
+                }
             }
-
-            if (containsSubQuery(ident)) {
-                return false;
-            }
-
-            if ("DUAL".equalsIgnoreCase(ident)) {
-                return false;
-            }
-
-            x.putAttribute(ATTR_TABLE, ident);
-
-            TableStat stat = getTableStat(ident);
 
             Mode mode = getMode();
             switch (mode) {
@@ -147,23 +127,15 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                     break;
             }
 
-            putAliasMap(aliasMap, x.getAlias(), ident);
-            putAliasMap(aliasMap, ident, ident);
             return false;
         }
 
-        accept(x.getExpr());
+        // accept(x.getExpr());
 
         return false;
     }
 
     public void endVisit(SQLSelect x) {
-        if (x.getQuery() != null) {
-            String table = (String) x.getQuery().getAttribute(ATTR_TABLE);
-            if (table != null) {
-                x.putAttribute(ATTR_TABLE, table);
-            }
-        }
     }
 
     public boolean visit(OracleUpdateStatement x) {
@@ -172,7 +144,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             repository.resolve(x);
         }
 
-        setAliasMap();
         setMode(x, Mode.Update);
 
         SQLTableSource tableSource = x.getTableSource();
@@ -187,10 +158,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
             TableStat stat = getTableStat(ident);
             stat.incrementUpdateCount();
-
-            Map<String, String> aliasMap = getAliasMap();
-            aliasMap.put(ident, ident);
-            aliasMap.put(tableSource.getAlias(), ident);
         } else {
             tableSource.accept(this);
         }
@@ -220,9 +187,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             }
         }
 
-        visit((SQLSelectQueryBlock) x);
-
-        return true;
+        return visit((SQLSelectQueryBlock) x);
     }
 
     public void endVisit(OracleSelectQueryBlock x) {
@@ -366,29 +331,29 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     @Override
     public boolean visit(OracleSelectJoin x) {
         super.visit(x);
-
-        for (SQLExpr item : x.getUsing()) {
-            if (item instanceof SQLIdentifierExpr) {
-                String columnName = ((SQLIdentifierExpr) item).getName();
-                String leftTable = (String) x.getLeft().getAttribute(ATTR_TABLE);
-                String rightTable = (String) x.getRight().getAttribute(ATTR_TABLE);
-                if (leftTable != null && rightTable != null) {
-                    Relationship relationship = new Relationship();
-                    relationship.setLeft(new Column(leftTable, columnName));
-                    relationship.setRight(new Column(rightTable, columnName));
-                    relationship.setOperator("USING");
-                    relationships.add(relationship);
-                }
-
-                if (leftTable != null) {
-                    addColumn(leftTable, columnName);
-                }
-
-                if (rightTable != null) {
-                    addColumn(rightTable, columnName);
-                }
-            }
-        }
+//
+//        for (SQLExpr item : x.getUsing()) {
+//            if (item instanceof SQLIdentifierExpr) {
+//                String columnName = ((SQLIdentifierExpr) item).getName();
+//                String leftTable = (String) x.getLeft().getAttribute(ATTR_TABLE);
+//                String rightTable = (String) x.getRight().getAttribute(ATTR_TABLE);
+//                if (leftTable != null && rightTable != null) {
+//                    Relationship relationship = new Relationship();
+//                    relationship.setLeft(new Column(leftTable, columnName));
+//                    relationship.setRight(new Column(rightTable, columnName));
+//                    relationship.setOperator("USING");
+//                    relationships.add(relationship);
+//                }
+//
+//                if (leftTable != null) {
+//                    addColumn(leftTable, columnName);
+//                }
+//
+//                if (rightTable != null) {
+//                    addColumn(rightTable, columnName);
+//                }
+//            }
+//        }
 
         return false;
     }
@@ -422,18 +387,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         accept(x.getSelect());
         accept(x.getPivot());
         accept(x.getFlashback());
-
-        String table = (String) x.getSelect().getAttribute(ATTR_TABLE);
-        if (x.getAlias() != null) {
-            if (table != null) {
-                this.aliasMap.put(x.getAlias(), table);
-            }
-            addSubQuery(x.getAlias(), x.getSelect());
-        }
-
-        if (table != null) {
-            x.putAttribute(ATTR_TABLE, table);
-        }
         return false;
     }
 
@@ -471,15 +424,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleWithSubqueryEntry x) {
-        Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null) {
-            String alias = x.getAlias();
-
-            if (alias != null) {
-                putAliasMap(aliasMap, alias, null);
-                addSubQuery(alias, x.getSubQuery());
-            }
-        }
         x.getSubQuery().accept(this);
         return false;
     }
@@ -701,14 +645,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
             TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
-
-            Map<String, String> aliasMap = getAliasMap();
-            if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    putAliasMap(aliasMap, x.getAlias(), ident);
-                }
-                putAliasMap(aliasMap, ident, ident);
-            }
         }
 
         accept(x.getColumns());
@@ -733,8 +669,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         x.putAttribute("_original_use_mode", getMode());
         setMode(x, Mode.Insert);
-
-        setAliasMap();
 
         accept(x.getSubQuery());
         accept(x.getEntries());
@@ -1008,12 +942,8 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleForStatement x) {
-        SQLName index = x.getIndex();
-        this.getVariants().put(index.toString(), x);
-
         x.getRange().accept(this);
         accept(x.getStatements());
-
         return false;
     }
 

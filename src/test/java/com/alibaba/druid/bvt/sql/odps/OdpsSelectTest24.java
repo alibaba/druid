@@ -205,12 +205,12 @@ public class OdpsSelectTest24 extends TestCase {
         
         System.out.println("Tables : " + visitor.getTables());
       System.out.println("fields : " + visitor.getColumns());
-//      System.out.println("coditions : " + visitor.getConditions());
+      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         assertEquals(3, visitor.getTables().size());
         assertEquals(18, visitor.getColumns().size());
-        assertEquals(12, visitor.getConditions().size());
+        assertEquals(13, visitor.getConditions().size());
 
 //        System.out.println(SQLUtils.formatOdps(sql));
         

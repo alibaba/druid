@@ -50,7 +50,10 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
     protected SQLLimit                  limit;
 
     // for oracle
-    protected List<SQLExpr>            forUpdateOf;
+    protected List<SQLExpr>             forUpdateOf;
+
+    protected List<SQLExpr>             distributeBy;
+    protected List<SQLSelectOrderByItem> sortBy;
 
     public SQLSelectQueryBlock(){
 
@@ -308,6 +311,14 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         this.noCycle = noCycle;
     }
 
+    public List<SQLExpr> getDistributeBy() {
+        return distributeBy;
+    }
+
+    public List<SQLSelectOrderByItem> getSortBy() {
+        return sortBy;
+    }
+
 	@Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -500,7 +511,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return null;
     }
 
-    public boolean selectItemHashAllColumn() {
+    public boolean selectItemHasAllColumn() {
         for (SQLSelectItem item : this.selectList) {
             SQLExpr expr = item.getExpr();
 
@@ -512,7 +523,7 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
                     SQLSelect subSelect = ((SQLSubqueryTableSource) from).select;
                     SQLSelectQueryBlock queryBlock = subSelect.getQueryBlock();
                     if (queryBlock != null) {
-                        return queryBlock.selectItemHashAllColumn();
+                        return queryBlock.selectItemHasAllColumn();
                     }
                 }
                 return true;
@@ -520,6 +531,23 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         return false;
+    }
+
+    public SQLSelectItem findAllColumnSelectItem() {
+        SQLSelectItem allColumnItem = null;
+        for (SQLSelectItem item : this.selectList) {
+            SQLExpr expr = item.getExpr();
+
+            boolean allColumn = expr instanceof SQLAllColumnExpr
+                    || (expr instanceof SQLPropertyExpr && ((SQLPropertyExpr) expr).getName().equals("*"));
+
+            if (allColumnItem != null) {
+                return null; // duplicateAllColumn
+            }
+            allColumnItem = item;
+        }
+
+        return allColumnItem;
     }
 
     public SQLColumnDefinition findColumn(String columnName) {
