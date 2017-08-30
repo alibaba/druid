@@ -319,16 +319,26 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.LPAREN) {
-                char ch = lexer.current();
-                int bp = lexer.bp();
+                Lexer.SavePoint savePoint = lexer.mark();
                 lexer.nextToken();
 
+                int parenCount = 0;
+                while (lexer.token() == Token.LPAREN) {
+                    savePoint = lexer.mark();
+                    lexer.nextToken();
+                    parenCount++;
+                }
+
                 if (lexer.token() == Token.SELECT) {
-                    lexer.reset(bp, ch, Token.LPAREN);
+                    lexer.reset(savePoint);
 
                     SQLStatement stmt = parseSelect();
                     stmt.setParent(parent);
                     statementList.add(stmt);
+
+                    for (int i = 0; i < parenCount; ++i) {
+                        accept(Token.RPAREN);
+                    }
                     continue;
                 } else {
                     throw new ParserException("TODO : " + lexer.info());
