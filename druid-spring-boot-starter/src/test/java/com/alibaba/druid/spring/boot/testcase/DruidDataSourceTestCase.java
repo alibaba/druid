@@ -56,13 +56,13 @@ public class DruidDataSourceTestCase {
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "pool-prepared-statements=true");
         //EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-open-prepared-statements=5");//Duplicated with following
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "max-pool-prepared-statement-per-connection-size=5");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "validation-query=select 'x'");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "validation-query=select 1");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "validation-query-timeout=1");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-on-borrow=true");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-while-idle=true");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "test-on-return=true");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "time-between-eviction-runs-millis=10000");
-        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "min-evictable-idle-time-millis=12345");
+        EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "min-evictable-idle-time-millis=30001");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "connection-properties=druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000");
         EnvironmentTestUtils.addEnvironment(this.context, PREFIX + "async-close-connection-enable=true");
 
@@ -77,13 +77,13 @@ public class DruidDataSourceTestCase {
         assertThat(ds.isPoolPreparedStatements()).isTrue();
         //assertThat(ds.getMaxOpenPreparedStatements()).isEqualTo(5); //Duplicated with following
         assertThat(ds.getMaxPoolPreparedStatementPerConnectionSize()).isEqualTo(5);
-        assertThat(ds.getValidationQuery()).isEqualTo("select 'x'");
+        assertThat(ds.getValidationQuery()).isEqualTo("select 1");
         assertThat(ds.getValidationQueryTimeout()).isEqualTo(1);
         assertThat(ds.isTestWhileIdle()).isTrue();
         assertThat(ds.isTestOnBorrow()).isTrue();
         assertThat(ds.isTestOnReturn()).isTrue();
         assertThat(ds.getTimeBetweenEvictionRunsMillis()).isEqualTo(10000);
-        assertThat(ds.getMinEvictableIdleTimeMillis()).isEqualTo(12345);
+        assertThat(ds.getMinEvictableIdleTimeMillis()).isEqualTo(30001);
         assertThat(ds.getConnectProperties().size()).isEqualTo(2);
         assertThat(ds.isAsyncCloseConnectionEnable()).isEqualTo(true);
     }
