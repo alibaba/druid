@@ -534,8 +534,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 break;
         }
 
-        left.accept(this);
-        right.accept(this);
+        statExpr(left);
+        statExpr(right);
 
         return false;
     }
@@ -1417,7 +1417,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             repository.resolve(x);
         }
 
-        return true;
+        visit(x.getSelect());
+
+        return false;
     }
 
     public void endVisit(SQLSelectStatement x) {
@@ -1602,14 +1604,20 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelect x) {
-        if (x.getOrderBy() != null) {
-            x.getOrderBy().setParent(x);
+        SQLWithSubqueryClause with = x.getWithSubQuery();
+        if (with != null) {
+            with.accept(this);
         }
 
-        accept(x.getWithSubQuery());
-        accept(x.getQuery());
+        SQLSelectQuery query = x.getQuery();
+        if (query != null) {
+            query.accept(this);
+        }
 
-        accept(x.getOrderBy());
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
+            accept(x.getOrderBy());
+        }
 
 
         return false;
@@ -2315,8 +2323,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             visit((SQLPropertyExpr) x);
 //        } else if (clazz == SQLAggregateExpr.class) {
 //            visit((SQLAggregateExpr) x);
-//        } else if (clazz == SQLBinaryOpExpr.class) {
-//            visit((SQLBinaryOpExpr) x);
+        } else if (clazz == SQLBinaryOpExpr.class) {
+            visit((SQLBinaryOpExpr) x);
 //        } else if (clazz == SQLCharExpr.class) {
 //            visit((SQLCharExpr) x);
 //        } else if (clazz == SQLNullExpr.class) {
