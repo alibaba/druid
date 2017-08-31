@@ -35,6 +35,7 @@ public interface SchemaObject {
     SchemaObjectType getType();
 
     String getName();
+    long nameHashCode64();
 
     long getRowCount();
 }

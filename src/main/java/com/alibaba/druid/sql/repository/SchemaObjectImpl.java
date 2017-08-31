@@ -27,6 +27,8 @@ import com.alibaba.druid.util.FnvHash;
  */
 public class SchemaObjectImpl implements SchemaObject {
     private final String name;
+    private final long   hashCode64;
+
     private final SchemaObjectType type;
     private SQLStatement statement;
 
@@ -40,6 +42,12 @@ public class SchemaObjectImpl implements SchemaObject {
         this.name = name;
         this.type = type;
         this.statement = statement;
+
+        this.hashCode64 = FnvHash.hashCode64(name);
+    }
+
+    public long nameHashCode64() {
+        return hashCode64;
     }
 
     public static enum Type {

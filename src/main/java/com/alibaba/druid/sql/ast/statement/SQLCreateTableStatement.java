@@ -601,11 +601,13 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public boolean apply(SQLDropIndexStatement x) {
+        long indexNameHashCode64 = x.getIndexName().nameHashCode64();
+
         for (int i = tableElementList.size() - 1; i >= 0; i--) {
             SQLTableElement e = tableElementList.get(i);
             if (e instanceof SQLUniqueConstraint) {
                 SQLUniqueConstraint unique = (SQLUniqueConstraint) e;
-                if (SQLUtils.nameEquals(unique.getName(), x.getIndexName())) {
+                if (unique.getName().nameHashCode64() == indexNameHashCode64) {
                     tableElementList.remove(i);
                     return true;
                 }
@@ -643,7 +645,10 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 return false;
             }
 
-            SQLColumnDefinition column = this.findColumn(propertyExpr.getName());
+            SQLColumnDefinition column
+                    = this.findColumn(
+                        propertyExpr.nameHashCode64());
+
             if (column != null) {
                 column.setComment(comment.clone());
             }

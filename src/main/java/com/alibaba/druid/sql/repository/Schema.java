@@ -30,12 +30,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -44,9 +43,9 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class Schema {
     private String name;
 
-    protected final Map<String, SchemaObject> objects = new ConcurrentSkipListMap<String, SchemaObject>();
+    protected final Map<Long, SchemaObject> objects = new ConcurrentHashMap<Long, SchemaObject>();
 
-    protected final Map<String, SchemaObject> functions  = new ConcurrentSkipListMap<String, SchemaObject>();
+    protected final Map<Long, SchemaObject> functions  = new ConcurrentHashMap<Long, SchemaObject>();
 
     private SchemaRepository repository;
 
@@ -69,9 +68,12 @@ public class Schema {
 
 
     public SchemaObject findTable(String tableName) {
-        tableName = SQLUtils.normalize(tableName);
-        String lowerName = tableName.toLowerCase();
-        SchemaObject object = objects.get(lowerName);
+        long hashCode64 = FnvHash.hashCode64(tableName);
+        return findTable(hashCode64);
+    }
+
+    public SchemaObject findTable(long nameHashCode64) {
+        SchemaObject object = objects.get(nameHashCode64);
 
         if (object != null && object.getType() == SchemaObjectType.Table) {
             return object;
@@ -81,9 +83,12 @@ public class Schema {
     }
 
     public SchemaObject findTableOrView(String tableName) {
-        tableName = SQLUtils.normalize(tableName);
-        String lowerName = tableName.toLowerCase();
-        SchemaObject object = objects.get(lowerName);
+        long hashCode64 = FnvHash.hashCode64(tableName);
+        return findTableOrView(hashCode64);
+    }
+
+    public SchemaObject findTableOrView(long hashCode64) {
+        SchemaObject object = objects.get(hashCode64);
 
         if (object == null) {
             return null;
@@ -104,10 +109,8 @@ public class Schema {
     }
 
     public boolean isSequence(String name) {
-        name = SQLUtils.normalize(name);
-        String lowerName = name.toLowerCase();
-
-        SchemaObject object = objects.get(lowerName);
+        long nameHashCode64 = FnvHash.hashCode64(name);
+        SchemaObject object = objects.get(nameHashCode64);
         return object != null
                 && object.getType() == SchemaObjectType.Sequence;
     }
@@ -125,9 +128,9 @@ public class Schema {
 
                 SQLExpr expr = exprTableSource.getExpr();
                 if (expr instanceof SQLIdentifierExpr) {
-                    String tableName = ((SQLIdentifierExpr) expr).getName();
+                    long tableNameHashCode64 = ((SQLIdentifierExpr) expr).nameHashCode64();
 
-                    tableObject = findTable(tableName);
+                    tableObject = findTable(tableNameHashCode64);
                     if (tableObject != null) {
                         exprTableSource.setSchemaObject(tableObject);
                     }
@@ -135,9 +138,9 @@ public class Schema {
                 }
 
                 if (expr instanceof SQLPropertyExpr) {
-                    String tableName = ((SQLPropertyExpr) expr).getName();
+                    long tableNameHashCode64 = ((SQLPropertyExpr) expr).nameHashCode64();
 
-                    tableObject = findTable(tableName);
+                    tableObject = findTable(tableNameHashCode64);
                     if (tableObject != null) {
                         exprTableSource.setSchemaObject(tableObject);
                     }
@@ -253,11 +256,12 @@ public class Schema {
 
             SQLExpr expr = exprTableSource.getExpr();
             if (expr instanceof SQLIdentifierExpr) {
+                long tableNameHashCode64 = ((SQLIdentifierExpr) expr).nameHashCode64();
                 String tableName = ((SQLIdentifierExpr) expr).getName();
 
                 SchemaObject table = exprTableSource.getSchemaObject();
                 if (table == null) {
-                    table = findTable(tableName);
+                    table = findTable(tableNameHashCode64);
 
                     if (table != null) {
                         exprTableSource.setSchemaObject(table);
@@ -294,8 +298,8 @@ public class Schema {
         return count;
     }
 
-    public Map<String, SchemaObject> getObjects() {
-        return this.objects;
+    public Collection<SchemaObject> getObjects() {
+        return this.objects.values();
     }
 
     public int getViewCount() {
@@ -315,6 +319,7 @@ public class Schema {
                 tables.add(object.getName());
             }
         }
+        Collections.sort(tables);
         return tables;
     }
 }

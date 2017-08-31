@@ -132,6 +132,13 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         return (SQLName) getTableSource().getExpr();
     }
 
+    public long nameHashCode64() {
+        if (getTableSource() == null) {
+            return 0L;
+        }
+        return ((SQLName) getTableSource().getExpr()).nameHashCode64();
+    }
+
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
     }

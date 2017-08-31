@@ -818,7 +818,15 @@ public class SQLUtils {
     }
 
     public static boolean nameEquals(SQLName a, SQLName b) {
-        return nameEquals(a.getSimpleName(), b.getSimpleName());
+        if (a == b) {
+            return true;
+        }
+
+        if (a == null || b == null) {
+            return false;
+        }
+
+        return a.nameHashCode64() == b.nameHashCode64();
     }
 
     public static boolean nameEquals(String a, String b) {

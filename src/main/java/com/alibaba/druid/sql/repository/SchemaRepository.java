@@ -20,23 +20,12 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
-import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
-import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 import com.alibaba.druid.support.logging.Log;
@@ -236,12 +225,21 @@ public class SchemaRepository {
         return getDefaultSchema().getTableCount();
     }
 
-    public Map<String, SchemaObject> getObjects() {
+    public Collection<SchemaObject> getObjects() {
         return getDefaultSchema().getObjects();
     }
 
     public int getViewCount() {
         return getDefaultSchema().getViewCount();
+    }
+
+    public void resolve(SQLSelectStatement stmt, SchemaResolveVisitor.Option... options) {
+        if (stmt == null) {
+            return;
+        }
+
+        SchemaResolveVisitor resolveVisitor = createResolveVisitor(options);
+        resolveVisitor.visit(stmt);
     }
 
     public void resolve(SQLStatement stmt, SchemaResolveVisitor.Option... options) {
@@ -312,7 +310,7 @@ public class SchemaRepository {
                     SchemaObject schemaObject = null;
                     if (schema != null) {
                         table = showColumns.getTable();
-                        schemaObject = schema.findTable(table.getSimpleName());
+                        schemaObject = schema.findTable(table.nameHashCode64());
                     }
 
                     if (schemaObject == null) {
@@ -375,14 +373,14 @@ public class SchemaRepository {
         if (name instanceof SQLPropertyExpr) {
             SQLPropertyExpr propertyExpr = (SQLPropertyExpr) name;
             String schema = propertyExpr.getOwnernName();
-            String table = propertyExpr.getName();
+            long tableHashCode64 = propertyExpr.nameHashCode64();
 
             Schema schemaObj = findSchema(schema);
             if (schemaObj == null) {
                 return null;
             }
 
-            return schemaObj.findTable(table);
+            return schemaObj.findTable(tableHashCode64);
         }
 
         return null;
@@ -401,19 +399,16 @@ public class SchemaRepository {
             return false;
         }
 
-        String tableName = name.getSimpleName();
-        SchemaObject schemaObject = schema.findTable(tableName);
+        long nameHashCode64 = name.nameHashCode64();
+        SchemaObject schemaObject = schema.findTable(nameHashCode64);
         if (schemaObject != null) {
             MySqlCreateTableStatement createTableStmt = (MySqlCreateTableStatement) schemaObject.getStatement();
             if (createTableStmt != null) {
                 createTableStmt.setName(to.clone());
             }
 
-            String toName = SQLUtils.normalize(to.getSimpleName()).toLowerCase();
-            schema.objects.put(toName, schemaObject);
-
-            String name_lower = SQLUtils.normalize(tableName).toLowerCase();
-            schema.objects.remove(name_lower);
+            schema.objects.put(to.hashCode64(), schemaObject);
+            schema.objects.remove(nameHashCode64);
         }
         return true;
     }
@@ -679,8 +674,7 @@ public class SchemaRepository {
         }
 
         table = new SchemaObjectImpl(name, SchemaObjectType.Table, x1);
-        String name_lower = SQLUtils.normalize(name).toLowerCase();
-        schema.objects.put(name_lower, table);
+        schema.objects.put(table.nameHashCode64(), table);
         return true;
     }
 
@@ -691,9 +685,8 @@ public class SchemaRepository {
             if (schema == null) {
                 continue;
             }
-            String name = table.getName().getSimpleName();
-            String name_lower = SQLUtils.normalize(name).toLowerCase();
-            schema.objects.remove(name_lower);
+            long nameHashCode64 = table.getName().nameHashCode64();
+            schema.objects.remove(nameHashCode64);
         }
         return true;
     }
@@ -710,8 +703,7 @@ public class SchemaRepository {
         }
 
         SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.View, x.clone());
-        String name_lower = SQLUtils.normalize(name).toLowerCase();
-        schema.objects.put(name_lower, object);
+        schema.objects.put(object.nameHashCode64(), object);
         return true;
     }
 
@@ -737,8 +729,7 @@ public class SchemaRepository {
 
         String name = x.getName().getSimpleName();
         SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Index, x.clone());
-        String name_lower = SQLUtils.normalize(name).toLowerCase();
-        schema.objects.put(name_lower, object);
+        schema.objects.put(object.nameHashCode64(), object);
 
         return true;
     }
@@ -749,8 +740,7 @@ public class SchemaRepository {
 
         String name = x.getName().getSimpleName();
         SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Function, x.clone());
-        String name_lower = SQLUtils.normalize(name).toLowerCase();
-        schema.functions.put(name_lower, object);
+        schema.functions.put(object.nameHashCode64(), object);
 
         return true;
     }
@@ -759,7 +749,7 @@ public class SchemaRepository {
         String schemaName = x.getSchema();
         Schema schema = findSchema(schemaName, true);
 
-        SchemaObject object = schema.findTable(x.getTableName());
+        SchemaObject object = schema.findTable(x.nameHashCode64());
         if (object != null) {
             SQLCreateTableStatement stmt = (SQLCreateTableStatement) object.getStatement();
             if (stmt != null) {
@@ -777,8 +767,7 @@ public class SchemaRepository {
 
         String name = x.getName().getSimpleName();
         SchemaObject object = new SchemaObjectImpl(name, SchemaObjectType.Sequence);
-        String name_lower = SQLUtils.normalize(name).toLowerCase();
-        schema.objects.put(name_lower, object);
+        schema.objects.put(object.nameHashCode64(), object);
         return false;
     }
 
@@ -786,9 +775,8 @@ public class SchemaRepository {
         String schemaName = x.getSchema();
         Schema schema = findSchema(schemaName, true);
 
-        String name = x.getName().getSimpleName();
-        String name_lower = SQLUtils.normalize(name).toLowerCase();
-        schema.objects.remove(name_lower);
+        long nameHashCode64 = x.getName().nameHashCode64();
+        schema.objects.remove(nameHashCode64);
         return false;
     }
 }

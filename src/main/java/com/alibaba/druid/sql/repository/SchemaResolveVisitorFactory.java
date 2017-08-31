@@ -54,6 +54,11 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
+        public boolean visit(SQLSelectStatement x) {
+            resolve(this, x.getSelect());
+            return false;
+        }
+
         public boolean visit(MySqlRepeatStatement x) {
             return true;
         }
@@ -246,6 +251,11 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
+        public boolean visit(SQLSelectStatement x) {
+            resolve(this, x.getSelect());
+            return false;
+        }
+
         public boolean visit(SQLExprTableSource x) {
             resolve(this, x);
             return false;
@@ -391,6 +401,11 @@ class SchemaResolveVisitorFactory {
         public OracleResolveVisitor(SchemaRepository repository, int options) {
             this.repository = repository;
             this.options = options;
+        }
+
+        public boolean visit(SQLSelectStatement x) {
+            resolve(this, x.getSelect());
+            return false;
         }
 
         public boolean visit(OracleCreatePackageStatement x) {
@@ -650,6 +665,11 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
+        public boolean visit(SQLSelectStatement x) {
+            resolve(this, x.getSelect());
+            return false;
+        }
+
         public boolean visit(SQLExprTableSource x) {
             resolve(this, x);
             return false;
@@ -821,6 +841,11 @@ class SchemaResolveVisitorFactory {
         public PGResolveVisitor(SchemaRepository repository, int options) {
             this.repository = repository;
             this.options = options;
+        }
+
+        public boolean visit(SQLSelectStatement x) {
+            resolve(this, x.getSelect());
+            return false;
         }
 
         public boolean visit(SQLExprTableSource x) {
@@ -1007,6 +1032,11 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
+        public boolean visit(SQLSelectStatement x) {
+            resolve(this, x.getSelect());
+            return false;
+        }
+
         public boolean visit(SQLExprTableSource x) {
             resolve(this, x);
             return false;
@@ -1161,6 +1191,11 @@ class SchemaResolveVisitorFactory {
         public SQLResolveVisitor(SchemaRepository repository, int options) {
             this.repository = repository;
             this.options = options;
+        }
+
+        public boolean visit(SQLSelectStatement x) {
+            resolve(this, x.getSelect());
+            return false;
         }
 
         public boolean visit(SQLExprTableSource x) {
@@ -1837,7 +1872,24 @@ class SchemaResolveVisitorFactory {
 
         SQLExpr where = x.getWhere();
         if (where != null) {
-            where.accept(visitor);
+            if (where instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) where;
+                resolveExpr(visitor, binaryOpExpr.getLeft());
+                resolveExpr(visitor, binaryOpExpr.getRight());
+            } else if (where instanceof SQLBinaryOpExprGroup) {
+                SQLBinaryOpExprGroup binaryOpExprGroup = (SQLBinaryOpExprGroup) where;
+                for (SQLExpr item : binaryOpExprGroup.getItems()) {
+                    if (item instanceof SQLBinaryOpExpr) {
+                        SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) item;
+                        resolveExpr(visitor, binaryOpExpr.getLeft());
+                        resolveExpr(visitor, binaryOpExpr.getRight());
+                    } else {
+                        item.accept(visitor);
+                    }
+                }
+            } else {
+                where.accept(visitor);
+            }
         }
 
         SQLExpr startWith = x.getStartWith();
@@ -2350,5 +2402,23 @@ class SchemaResolveVisitorFactory {
             }
         }
         return false;
+    }
+
+    // for performance
+    static void resolveExpr(SchemaResolveVisitor visitor, SQLExpr x) {
+        if (x == null) {
+            return;
+        }
+
+        Class<?> clazz = x.getClass();
+        if (clazz == SQLIdentifierExpr.class) {
+            visitor.visit((SQLIdentifierExpr) x);
+            return;
+        } else if (clazz == SQLIntegerExpr.class || clazz == SQLCharExpr.class) {
+            // skip
+            return;
+        }
+
+        x.accept(visitor);
     }
 }
