@@ -94,6 +94,14 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         return name;
     }
 
+    public long nameHashCode64() {
+        if (name == null) {
+            return 0;
+        }
+
+        return name.hashCode64();
+    }
+
     public String getNameAsString() {
         if (name == null) {
             return null;
@@ -379,8 +387,10 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
         if (this.name instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
             String columnName = identExpr.getName();
-            columnName = SQLUtils.normalize(columnName, dbType);
-            this.setName(columnName);
+            String normalized = SQLUtils.normalize(columnName, dbType);
+            if (normalized != columnName) {
+                this.setName(normalized);
+            }
         }
     }
 

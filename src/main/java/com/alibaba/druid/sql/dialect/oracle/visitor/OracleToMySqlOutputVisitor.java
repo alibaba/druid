@@ -27,7 +27,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
-import com.alibaba.druid.util.FnvConstants;
+import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.FnvHash.Constants;
 
 public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
 
@@ -153,7 +154,7 @@ public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
     static boolean isRowNumber(SQLExpr expr) {
         if (expr instanceof SQLIdentifierExpr) {
             return ((SQLIdentifierExpr) expr)
-                    .hashCode64() == FnvConstants.ROWNUM;
+                    .hashCode64() == FnvHash.Constants.ROWNUM;
         }
 
         return false;

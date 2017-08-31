@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.FnvConstants;
 
 import java.util.Arrays;
 
@@ -62,16 +61,16 @@ public class DB2ExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (lexer.identifierEquals(FnvConstants.VALUE)) {
+        if (lexer.identifierEquals(FnvHash.Constants.VALUE)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                if (identExpr.hashCode64() == FnvConstants.NEXT) {
+                if (identExpr.hashCode64() == FnvHash.Constants.NEXT) {
                     lexer.nextToken();
                     accept(Token.FOR);
                     SQLName seqName = this.name();
                     SQLSequenceExpr seqExpr = new SQLSequenceExpr(seqName, SQLSequenceExpr.Function.NextVal);
                     return seqExpr;
-                } else if (identExpr.hashCode64() == FnvConstants.PREVIOUS) {
+                } else if (identExpr.hashCode64() == FnvHash.Constants.PREVIOUS) {
                     lexer.nextToken();
                     accept(Token.FOR);
                     SQLName seqName = this.name();
@@ -79,19 +78,19 @@ public class DB2ExprParser extends SQLExprParser {
                     return seqExpr;
                 }
             }
-        } else if (lexer.identifierEquals(FnvConstants.DATE)) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.DATE)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                if (identExpr.hashCode64() == FnvConstants.CURRENT) {
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
                     lexer.nextToken();
 
                     expr = new SQLIdentifierExpr("CURRENT DATE");
                 }
             }
-        } else if (lexer.identifierEquals(FnvConstants.TIMESTAMP)) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.TIMESTAMP)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                if (identExpr.hashCode64() == FnvConstants.CURRENT) {
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
                     lexer.nextToken();
 
                     expr = new SQLIdentifierExpr("CURRENT DATE");

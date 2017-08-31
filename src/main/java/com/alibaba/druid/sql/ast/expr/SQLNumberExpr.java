@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.Utils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -80,13 +81,12 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
 
     @Override
     public int hashCode() {
-        if (chars != null && number == null) {
-            this.number = new BigDecimal(chars);
+        Number number = getNumber();
+        if (number == null) {
+            return 0;
         }
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((number == null) ? 0 : number.hashCode());
-        return result;
+
+        return number.hashCode();
     }
 
     @Override
@@ -104,19 +104,9 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
         if (getClass() != obj.getClass()) {
             return false;
         }
-        SQLNumberExpr other = (SQLNumberExpr) obj;
-        if (other.chars != null && other.number == null) {
-            other.number = new BigDecimal(other.chars);
-        }
 
-        if (number == null) {
-            if (other.number != null) {
-                return false;
-            }
-        } else if (!number.equals(other.number)) {
-            return false;
-        }
-        return true;
+        SQLNumberExpr other = (SQLNumberExpr) obj;
+        return Utils.equals(getNumber(), other.getNumber());
     }
 
     public SQLNumberExpr clone() {

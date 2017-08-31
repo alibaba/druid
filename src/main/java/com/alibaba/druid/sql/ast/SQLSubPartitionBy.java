@@ -22,11 +22,9 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 
 public abstract class SQLSubPartitionBy extends SQLObjectImpl {
 
-    protected SQLExpr                 subPartitionsCount;
-    protected boolean                 linear;
-
-    protected List<SQLAssignItem>     options              = new ArrayList<SQLAssignItem>();
-
+    protected SQLExpr               subPartitionsCount;
+    protected boolean               linear;
+    protected List<SQLAssignItem>   options              = new ArrayList<SQLAssignItem>();
     protected List<SQLSubPartition> subPartitionTemplate = new ArrayList<SQLSubPartition>();
 
     public SQLExpr getSubPartitionsCount() {

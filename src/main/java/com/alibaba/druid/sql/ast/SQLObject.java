@@ -21,37 +21,24 @@ import java.util.Map;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface SQLObject {
+    void                accept(SQLASTVisitor visitor);
+    SQLObject           clone();
 
-    void accept(SQLASTVisitor visitor);
-
-    SQLObject getParent();
-
-    void setParent(SQLObject parent);
+    SQLObject           getParent();
+    void                setParent(SQLObject parent);
 
     Map<String, Object> getAttributes();
-
-    Object getAttribute(String name);
-
-    void putAttribute(String name, Object value);
-
+    Object              getAttribute(String name);
+    void                putAttribute(String name, Object value);
     Map<String, Object> getAttributesDirect();
-    
-    void addBeforeComment(String comment);
-    void addBeforeComment(List<String> comments);
-    
-    List<String> getBeforeCommentsDirect();
-    
-    void addAfterComment(String comment);
-    
-    void addAfterComment(List<String> comments);
-    
-    List<String> getAfterCommentsDirect();
-    
-    boolean hasBeforeComment();
-    
-    boolean hasAfterComment();
+    void                output(StringBuffer buf);
 
-    void output(StringBuffer buf);
-
-    SQLObject clone();
+    void                addBeforeComment(String comment);
+    void                addBeforeComment(List<String> comments);
+    List<String>        getBeforeCommentsDirect();
+    void                addAfterComment(String comment);
+    void                addAfterComment(List<String> comments);
+    List<String>        getAfterCommentsDirect();
+    boolean             hasBeforeComment();
+    boolean             hasAfterComment();
 }

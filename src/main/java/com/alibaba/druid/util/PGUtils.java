@@ -74,7 +74,7 @@ public class PGUtils {
     private final static long[] pseudoColumnHashCodes;
     static {
         long[] array = {
-                FnvConstants.CURRENT_TIMESTAMP
+                FnvHash.Constants.CURRENT_TIMESTAMP
         };
         Arrays.sort(array);
         pseudoColumnHashCodes = array;

@@ -21,11 +21,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.List;
 
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {
-
-    protected String dbType;
-
-    private boolean afterSemi;
-
+    protected String               dbType;
+    protected boolean              afterSemi;
     protected List<SQLCommentHint> headHints;
 
     public SQLStatementImpl(){

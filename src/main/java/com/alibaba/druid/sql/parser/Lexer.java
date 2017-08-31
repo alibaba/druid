@@ -49,7 +49,7 @@ import com.alibaba.druid.util.StringUtils;
  */
 public class Lexer {
 
-    protected int          features = 0; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
+    protected int          features       = 0; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
     protected final String text;
     protected int          pos;
     protected int          mark;
@@ -61,40 +61,35 @@ public class Lexer {
 
     protected Token        token;
 
-    protected Keywords     keywods      = Keywords.DEFAULT_KEYWORDS;
+    protected Keywords     keywods        = Keywords.DEFAULT_KEYWORDS;
 
     protected String       stringVal;
     protected long         hash_lower; // fnv1a_64
-    protected long hash;
+    protected long         hash;
 
-    protected int          commentCount = 0;
+    protected int            commentCount = 0;
 
-    protected List<String> comments = new ArrayList<String>(2);
+    protected List<String>   comments     = new ArrayList<String>(2);
 
-    protected boolean      skipComment  = true;
+    protected boolean        skipComment  = true;
 
-    private SavePoint      savePoint    = null;
+    private SavePoint        savePoint    = null;
 
     /*
      * anti sql injection
      */
     private boolean          allowComment = true;
-
+    
     private int              varIndex     = -1;
 
     protected CommentHandler commentHandler;
-
     protected boolean        endOfComment = false;
-    
     protected boolean        keepComments = false;
     
     protected int            line         = 0;
-    
     protected int            lines        = 0;
 
     protected String         dbType;
-
-    protected boolean        hasSpecial = false;
 
     private int startPos;
     private int posLine;

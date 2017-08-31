@@ -573,15 +573,21 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         if (name instanceof SQLPropertyExpr) {
             String tableName = ((SQLPropertyExpr) name).getName();
             tableName = SQLUtils.normalize(tableName);
-            setName(tableName);
-            name = getName();
+
+            String normalized = SQLUtils.normalize(tableName, dbType);
+            if (tableName != normalized) {
+                this.setName(normalized);
+                name = getName();
+            }
         }
 
         if (name instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) name;
             String tableName = identExpr.getName();
-            tableName = SQLUtils.normalize(tableName, dbType);
-            setName(tableName);
+            String normalized = SQLUtils.normalize(tableName, dbType);
+            if (normalized != tableName) {
+                setName(normalized);
+            }
         }
 
         for (SQLTableElement element : this.tableElementList) {

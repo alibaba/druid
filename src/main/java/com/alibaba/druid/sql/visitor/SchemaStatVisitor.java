@@ -43,7 +43,6 @@ import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.FnvConstants;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
 
@@ -1169,9 +1168,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
-        if ((hash == FnvConstants.LEVEL
-                || hash == FnvConstants.CONNECT_BY_ISCYCLE
-                || hash == FnvConstants.ROWNUM)
+        if ((hash == FnvHash.Constants.LEVEL
+                || hash == FnvHash.Constants.CONNECT_BY_ISCYCLE
+                || hash == FnvHash.Constants.ROWNUM)
                 && x.getResolvedColumn() == null
                 && tableSource == null) {
             return false;
@@ -1471,7 +1470,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
 
-            if (identifierExpr.nameHashCode64() == FnvConstants.DUAL) {
+            if (identifierExpr.nameHashCode64() == FnvHash.Constants.DUAL) {
                 return null;
             }
 

@@ -37,7 +37,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
-import com.alibaba.druid.util.FnvConstants;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.PGUtils;
 
 import java.util.ArrayList;
@@ -1488,7 +1488,7 @@ class SchemaResolveVisitorFactory {
         long hash = x.nameHashCode64();
         SQLTableSource tableSource = null;
 
-        if ((hash == FnvConstants.LEVEL || hash == FnvConstants.CONNECT_BY_ISCYCLE)
+        if ((hash == FnvHash.Constants.LEVEL || hash == FnvHash.Constants.CONNECT_BY_ISCYCLE)
                 && ctx.object instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) ctx.object;
             if (queryBlock.getStartWith() != null

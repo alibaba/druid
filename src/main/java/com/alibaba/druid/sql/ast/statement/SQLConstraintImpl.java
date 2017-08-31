@@ -110,8 +110,11 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
         if (this.name instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
             String columnName = identExpr.getName();
-            columnName = SQLUtils.normalize(columnName, dbType);
-            this.setName(columnName);
+
+            String normalized = SQLUtils.normalize(columnName, dbType);
+            if (columnName != normalized) {
+                this.setName(normalized);
+            }
         }
     }
 }

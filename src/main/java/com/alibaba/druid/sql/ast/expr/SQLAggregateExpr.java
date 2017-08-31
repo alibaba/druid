@@ -22,7 +22,7 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.FnvConstants;
+import com.alibaba.druid.util.FnvHash.Constants;
 import com.alibaba.druid.util.FnvHash;
 
 public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
@@ -220,8 +220,8 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
     public SQLDataType computeDataType() {
         long hash = methodNameHashCod64();
 
-        if (hash == FnvConstants.COUNT
-                || hash == FnvConstants.ROW_NUMBER) {
+        if (hash == FnvHash.Constants.COUNT
+                || hash == FnvHash.Constants.ROW_NUMBER) {
             return SQLIntegerExpr.DEFAULT_DATA_TYPE;
         }
 
@@ -232,8 +232,8 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLRe
             }
         }
 
-        if (hash == FnvConstants.WM_CONAT
-                || hash == FnvConstants.GROUP_CONCAT) {
+        if (hash == FnvHash.Constants.WM_CONAT
+                || hash == FnvHash.Constants.GROUP_CONCAT) {
             return SQLCharExpr.DEFAULT_DATA_TYPE;
         }
 

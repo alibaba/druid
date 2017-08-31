@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
@@ -62,10 +61,8 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
-import com.alibaba.druid.stat.TableStat.Relationship;
-import com.alibaba.druid.util.FnvConstants;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
 
@@ -90,7 +87,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         TableStat stat = getTableStat(x);
 
         if (expr instanceof SQLName) {
-            if (((SQLName) expr).nameHashCode64() == FnvConstants.DUAL) {
+            if (((SQLName) expr).nameHashCode64() == FnvHash.Constants.DUAL) {
                 return false;
             }
 

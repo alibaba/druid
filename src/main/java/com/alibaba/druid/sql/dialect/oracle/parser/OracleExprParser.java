@@ -52,7 +52,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.FnvConstants;
+import com.alibaba.druid.util.FnvHash.Constants;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleExprParser extends SQLExprParser {
@@ -140,12 +140,12 @@ public class OracleExprParser extends SQLExprParser {
     }
     
     protected boolean isCharType(long hash) {
-        return hash == FnvConstants.CHAR
-                || hash == FnvConstants.NCHAR
-                || hash == FnvConstants.VARCHAR
-                || hash == FnvConstants.VARCHAR2
-                || hash == FnvConstants.NVARCHAR
-                || hash == FnvConstants.NVARCHAR2
+        return hash == FnvHash.Constants.CHAR
+                || hash == FnvHash.Constants.NCHAR
+                || hash == FnvHash.Constants.VARCHAR
+                || hash == FnvHash.Constants.VARCHAR2
+                || hash == FnvHash.Constants.NVARCHAR
+                || hash == FnvHash.Constants.NVARCHAR2
                 ;
     }
 
@@ -201,10 +201,10 @@ public class OracleExprParser extends SQLExprParser {
         if (lexer.token() == Token.EXCEPTION) {
             typeName = "EXCEPTION";
             lexer.nextToken();
-        } else if (lexer.identifierEquals(FnvConstants.LONG)) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.LONG)) {
             lexer.nextToken();
 
-            if (lexer.identifierEquals(FnvConstants.RAW)) {
+            if (lexer.identifierEquals(FnvHash.Constants.RAW)) {
                 lexer.nextToken();
                 typeName = "LONG RAW";
             } else {

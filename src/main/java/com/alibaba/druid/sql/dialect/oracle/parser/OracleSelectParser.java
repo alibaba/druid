@@ -600,11 +600,16 @@ public class OracleSelectParser extends SQLSelectParser {
     public SQLTableSource parseTableSourcePrimary() {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
+
             OracleSelectSubqueryTableSource tableSource;
             if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
                 tableSource = new OracleSelectSubqueryTableSource(select());
             } else if (lexer.token() == (Token.LPAREN)) {
                 tableSource = new OracleSelectSubqueryTableSource(select());
+            } else if (lexer.token() == Token.IDENTIFIER) {
+                SQLTableSource identTable = parseTableSource();
+                accept(Token.RPAREN);
+                return identTable;
             } else {
                 throw new ParserException("TODO :" + lexer.info());
             }
