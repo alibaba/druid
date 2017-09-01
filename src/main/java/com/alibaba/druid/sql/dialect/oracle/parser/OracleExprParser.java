@@ -480,7 +480,7 @@ public class OracleExprParser extends SQLExprParser {
         if (acceptLPAREN) {
             accept(Token.LPAREN);
         }
-        
+
         if (lexer.token() == Token.PLUS) {
             lexer.nextToken();
             accept(Token.RPAREN);
@@ -508,7 +508,7 @@ public class OracleExprParser extends SQLExprParser {
                 return primaryRest(treatExpr);
             }
         }
-        
+
         return super.methodRest(expr, false);
     }
 
@@ -878,11 +878,31 @@ public class OracleExprParser extends SQLExprParser {
         interval.setValue(new SQLCharExpr(lexer.stringVal()));
         lexer.nextToken();
 
-        
-        OracleIntervalType type = OracleIntervalType.valueOf(lexer.stringVal());
+        OracleIntervalType type;
+        if (lexer.identifierEquals(FnvHash.Constants.YEAR)) {
+            lexer.nextToken();
+            type = OracleIntervalType.YEAR;
+        } else if (lexer.identifierEquals(FnvHash.Constants.MONTH)) {
+            lexer.nextToken();
+            type = OracleIntervalType.MONTH;
+        } else if (lexer.identifierEquals(FnvHash.Constants.DAY)) {
+            lexer.nextToken();
+            type = OracleIntervalType.DAY;
+        } else if (lexer.identifierEquals(FnvHash.Constants.HOUR)) {
+            lexer.nextToken();
+            type = OracleIntervalType.HOUR;
+        } else if (lexer.identifierEquals(FnvHash.Constants.MINUTE)) {
+            lexer.nextToken();
+            type = OracleIntervalType.MINUTE;
+        } else if (lexer.identifierEquals(FnvHash.Constants.SECOND)) {
+            lexer.nextToken();
+            type = OracleIntervalType.SECOND;
+        } else {
+            throw new ParserException("illegal interval type. " + lexer.info());
+        }
+
         interval.setType(type);
-        lexer.nextToken();
-        
+
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             if (lexer.token() != Token.LITERAL_INT) {

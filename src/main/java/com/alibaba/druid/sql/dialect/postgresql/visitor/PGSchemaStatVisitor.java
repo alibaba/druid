@@ -139,9 +139,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
         SQLName tableName = x.getTableName();
         {
-            String ident = tableName.toString();
-
-            TableStat stat = getTableStat(ident);
+            TableStat stat = getTableStat(tableName);
             stat.incrementInsertCount();
         }
 
@@ -181,9 +179,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             x.getWith().accept(this);
         }
 
-        String ident = x.getTableName().toString();
-
-        TableStat stat = getTableStat(ident);
+        TableStat stat = getTableStat(x.getTableName());
         stat.incrementUpdateCount();
 
         accept(x.getFrom());

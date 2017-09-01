@@ -30,7 +30,7 @@ public class OracleSelectTest24 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "select /*+ no_parallel_index(t, \"HT_TASK_TRADE_HIS_GOR_IND \") dbms_stats cursor_sharing_exact use_weak_name_resl dynamic_sampling(0) no_monitoring no_expand index_ffs(t, \"HT_TASK_TRADE_HIS_GOR_IND \") */ count(*) as nrw,count(distinct sys_op_lbid(196675,'L',t.rowid)) as nlb,count(distinct hextoraw(sys_op_descend( \"GMT_MODIFIED \")||sys_op_descend( \"OWNER \")||sys_op_descend( \"RECORD_TYPE \"))) as ndk,sys_op_countchg(substrb(t.rowid,1,15),1) as clf from  \"ESCROW \". \"HT_TASK_TRADE_HISTORY \" sample block ( 34.6426417370,1)  t where  \"GMT_MODIFIED \" is not null or  \"OWNER \" is not null or  \"RECORD_TYPE \" is not null"; //
+        "select /*+ no_parallel_index(t, \"HT_TASK_TRADE_HIS_GOR_IND \") dbms_stats cursor_sharing_exact use_weak_name_resl dynamic_sampling(0) no_monitoring no_expand index_ffs(t, \"HT_TASK_TRADE_HIS_GOR_IND \") */ count(*) as nrw,count(distinct sys_op_lbid(196675,'L',t.rowid)) as nlb,count(distinct hextoraw(sys_op_descend( \"GMT_MODIFIED \")||sys_op_descend( \"OWNER \")||sys_op_descend( \"RECORD_TYPE \"))) as ndk,sys_op_countchg(substrb(t.rowid,1,15),1) as clf from  \"ESCROW\". \"HT_TASK_TRADE_HISTORY\" sample block ( 34.6426417370,1)  t where  \"GMT_MODIFIED \" is not null or  \"OWNER \" is not null or  \"RECORD_TYPE \" is not null"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

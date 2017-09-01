@@ -101,6 +101,10 @@ public final class FnvHash {
     }
 
     public static long hashCode64(long basic, String name) {
+        if (name == null) {
+            return basic;
+        }
+
         boolean quote = false;
 
         int len = name.length();
@@ -387,5 +391,12 @@ public final class FnvHash {
         long RECURSIVE = fnv1a_64_lower("RECURSIVE");
         long ROLLUP = fnv1a_64_lower("ROLLUP");
         long CUBE = fnv1a_64_lower("CUBE");
+
+        long YEAR = fnv1a_64_lower("YEAR");
+        long MONTH = fnv1a_64_lower("MONTH");
+        long DAY = fnv1a_64_lower("DAY");
+        long HOUR = fnv1a_64_lower("HOUR");
+        long MINUTE = fnv1a_64_lower("MINUTE");
+        long SECOND = fnv1a_64_lower("SECOND");
     }
 }

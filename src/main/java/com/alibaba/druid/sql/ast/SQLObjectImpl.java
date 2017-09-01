@@ -199,7 +199,11 @@ public abstract class SQLObjectImpl implements SQLObject {
     }
     
     public boolean hasAfterComment() {
-        List<String> comments = getAfterCommentsDirect();
+        if (attributes == null) {
+            return false;
+        }
+
+        List<String> comments = (List<String>) attributes.get("format.after_comment");
         if (comments == null) {
             return false;
         }

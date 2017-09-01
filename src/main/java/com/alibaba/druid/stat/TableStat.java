@@ -189,8 +189,12 @@ public class TableStat {
         private final long   hashCode64;
 
         public Name(String name){
+            this(name, FnvHash.hashCode64(name));
+        }
+
+        public Name(String name, long hashCode64){
             this.name  = name;
-            hashCode64 = FnvHash.hashCode64(name);
+            this.hashCode64 = hashCode64;
         }
 
         public String getName() {
@@ -225,32 +229,22 @@ public class TableStat {
         private Column right;
         private String operator;
 
-        public Relationship(){
-
+        public Relationship(Column left, Column right, String operator) {
+            this.left = left;
+            this.right = right;
+            this.operator = operator;
         }
 
         public Column getLeft() {
             return left;
         }
 
-        public void setLeft(Column left) {
-            this.left = left;
-        }
-
         public Column getRight() {
             return right;
         }
 
-        public void setRight(Column right) {
-            this.right = right;
-        }
-
         public String getOperator() {
             return operator;
-        }
-
-        public void setOperator(String operator) {
-            this.operator = operator;
         }
 
         @Override
@@ -308,25 +302,21 @@ public class TableStat {
 
     public static class Condition {
 
-        private Column       column;
-        private String       operator;
+        private final Column       column;
+        private final String       operator;
+        private final List<Object> values = new ArrayList<Object>();
 
-        private List<Object> values = new ArrayList<Object>();
+        public Condition(Column column, String operator) {
+            this.column = column;
+            this.operator = operator;
+        }
 
         public Column getColumn() {
             return column;
         }
 
-        public void setColumn(Column column) {
-            this.column = column;
-        }
-
         public String getOperator() {
             return operator;
-        }
-
-        public void setOperator(String operator) {
-            this.operator = operator;
         }
 
         public List<Object> getValues() {
@@ -438,6 +428,12 @@ public class TableStat {
             } else {
                 hashCode64 = FnvHash.hashCode64(table, name);
             }
+        }
+
+        public Column(String table, String name, long hashCode64){
+            this.table = table;
+            this.name = name;
+            this.hashCode64 = hashCode64;
         }
 
         public String getTable() {

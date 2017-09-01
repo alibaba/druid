@@ -922,8 +922,6 @@ public class OracleStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.ELSE) {
             lexer.nextToken();
 
-
-
             SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
             this.parseStatementList(elseItem.getStatements(), -1, elseItem);
             stmt.setElseItem(elseItem);

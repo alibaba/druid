@@ -84,9 +84,7 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
 
     @Override
     public boolean visit(SQLServerUpdateStatement x) {
-        String ident = x.getTableName().toString();
-
-        TableStat stat = getTableStat(ident);
+        TableStat stat = getTableStat(x.getTableName());
         stat.incrementUpdateCount();
 
         accept(x.getItems());

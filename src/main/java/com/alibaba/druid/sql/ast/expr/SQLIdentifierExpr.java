@@ -112,7 +112,7 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     public SQLIdentifierExpr simplify() {
         String normalized = SQLUtils.normalize(name);
         if (normalized != name) {
-           return new SQLIdentifierExpr(name, hashCode64);
+           return new SQLIdentifierExpr(normalized, hashCode64);
         }
         return this;
     }

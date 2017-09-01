@@ -151,9 +151,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         }
 
         if (tableExpr instanceof SQLName) {
-            String ident = tableExpr.toString();
-
-            TableStat stat = getTableStat(ident);
+            TableStat stat = getTableStat((SQLName) tableExpr);
             stat.incrementUpdateCount();
         } else {
             tableSource.accept(this);
@@ -176,13 +174,13 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public boolean visit(OracleSelectQueryBlock x) {
-        if (x.getInto() instanceof SQLName) {
-            String tableName = x.getInto().toString();
-            TableStat stat = getTableStat(tableName);
-            if (stat != null) {
-                stat.incrementInsertCount();
-            }
-        }
+        SQLExprTableSource into = x.getInto();
+//        if (into != null && into.getExpr() instanceof SQLName) {
+//            TableStat stat = getTableStat((SQLName) into.getExpr());
+//            if (stat != null) {
+//                stat.incrementInsertCount();
+//            }
+//        }
 
         return visit((SQLSelectQueryBlock) x);
     }
@@ -638,9 +636,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public boolean visit(InsertIntoClause x) {
 
         if (x.getTableName() instanceof SQLName) {
-            String ident = ((SQLName) x.getTableName()).toString();
-
-            TableStat stat = getTableStat(ident);
+            TableStat stat = getTableStat(x.getTableName());
             stat.incrementInsertCount();
         }
 
@@ -729,8 +725,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleLockTableStatement x) {
-        String tableName = x.getTable().toString();
-        getTableStat(tableName);
+        getTableStat(x.getTable());
         return false;
     }
 
@@ -902,11 +897,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     @Override
     public boolean visit(OracleAlterTableModify x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
-        String table = stmt.getName().toString();
+        SQLName tableName = stmt.getName();
+        String table = tableName.toString();
 
         for (SQLColumnDefinition column : x.getColumns()) {
-            String columnName = column.getName().toString();
-            addColumn(table, columnName);
+            SQLName columnName = column.getName();
+            addColumn(table, columnName.toString());
 
         }
 
@@ -1333,7 +1329,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         }
 
         if (sql != null) {
-            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, getDbType());
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
             for (SQLStatement stmt : stmtList) {
                 stmt.accept(this);
             }

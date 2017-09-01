@@ -68,8 +68,7 @@ public class OdpsSchemaStatVisitor extends SchemaStatVisitor implements OdpsASTV
         SQLExpr tableName = tableSource.getExpr();
 
         if (tableName instanceof SQLName) {
-            String ident = ((SQLName) tableName).toString();
-            TableStat stat = getTableStat(tableName);
+            TableStat stat = getTableStat((SQLName) tableName);
             stat.incrementInsertCount();
 
         }

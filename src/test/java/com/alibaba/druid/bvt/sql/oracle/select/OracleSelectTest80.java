@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.oracle.insert;
-
-import java.util.List;
-
-import org.junit.Assert;
+package com.alibaba.druid.bvt.sql.oracle.select;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.util.JdbcConstants;
+import org.junit.Assert;
 
-public class OracleInsertTest15 extends OracleTest {
+import java.util.List;
+
+public class OracleSelectTest80 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "INSERT INTO employees@remote" //
-                     + "   VALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL, "//
-                     + "   TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, "//
-                     + "   NULL, 121, 20); ";
+        String sql = //
+                "select * from t"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -42,29 +37,31 @@ public class OracleInsertTest15 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO employees@remote" //
-                            + "\nVALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL"//
-                            + "\n\t, TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, NULL, 121"//
-                            + "\n\t, 20);",//
-                            SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
-
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);
+
+        {
+            String text = SQLUtils.toOracleString(stmt);
+
+            assertEquals("SELECT *\n" +
+                    "FROM t", text);
+        }
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(1, visitor.getColumns().size());
+        assertEquals(0, visitor.getConditions().size());
+        assertEquals(0, visitor.getRelationships().size());
+        assertEquals(0, visitor.getOrderByColumns().size());
 
-        Assert.assertTrue(visitor
-                .getTables()
-                .containsKey(
-                        new TableStat.Name("employees@remote")));
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
+
+        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
-
 }

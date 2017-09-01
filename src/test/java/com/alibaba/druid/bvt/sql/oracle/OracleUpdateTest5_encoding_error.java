@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.oracle.insert;
-
-import java.util.List;
-
-import org.junit.Assert;
+package com.alibaba.druid.bvt.sql.oracle;
 
 import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.SQLUtils;
@@ -27,25 +23,29 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OracleInsertTest15 extends OracleTest {
+import java.util.List;
+
+public class OracleUpdateTest5_encoding_error extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "INSERT INTO employees@remote" //
-                     + "   VALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL, "//
-                     + "   TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, "//
-                     + "   NULL, 121, 20); ";
+        String sql = "update x1_use_agent t2   set t2.start_time =to_date((select to_char(sysdate,'yyyy-mm-dd HH24:mi:ss') from dual), 'yyyy-mm-dd HH24:mi:ss'),  t2.end_time=to_date((select to_char(sysdate + interval '1' year ,'yyyy-mm-dd HH24:mi:ss') from dual), 'yyyy-mm-dd HH24:mi:ss') where t2.attr2 ='ZB201708311440560'";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("INSERT INTO employees@remote" //
-                            + "\nVALUES (8002, 'Juan', 'Fernandez', 'juanf@example.com', NULL"//
-                            + "\n\t, TO_DATE('04-OCT-1992', 'DD-MON-YYYY'), 'SH_CLERK', 3000, NULL, 121"//
-                            + "\n\t, 20);",//
+        assertEquals("UPDATE x1_use_agent t2\n" +
+                        "SET t2.start_time = to_date((\n" +
+                        "\tSELECT to_char(SYSDATE, 'yyyy-mm-dd HH24:mi:ss')\n" +
+                        "\tFROM dual\n" +
+                        "), 'yyyy-mm-dd HH24:mi:ss'), t2.end_time = to_date((\n" +
+                        "\tSELECT to_char(SYSDATE + INTERVAL '1' YEAR, 'yyyy-mm-dd HH24:mi:ss')\n" +
+                        "\tFROM dual\n" +
+                        "), 'yyyy-mm-dd HH24:mi:ss')\n" +
+                        "WHERE t2.attr2 = 'ZB201708311440560'",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -53,18 +53,15 @@ public class OracleInsertTest15 extends OracleTest {
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("relationships : " + visitor.getRelationships());
+//        System.out.println("coditions : " + visitor.getConditions());
+//        System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
+        assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor
-                .getTables()
-                .containsKey(
-                        new TableStat.Name("employees@remote")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("x1_use_agent")));
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+         assertTrue(visitor.getColumns().contains(new TableStat.Column("x1_use_agent", "start_time")));
     }
 
 }

@@ -76,11 +76,8 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((dbLink == null) ? 0 : dbLink.hashCode());
-        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
-        return result;
+        long value = hashCode64();
+        return (int)(value ^ (value >>> 32));
     }
 
     @Override
@@ -95,21 +92,7 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
             return false;
         }
         OracleDbLinkExpr other = (OracleDbLinkExpr) obj;
-        if (dbLink == null) {
-            if (other.dbLink != null) {
-                return false;
-            }
-        } else if (!dbLink.equals(other.dbLink)) {
-            return false;
-        }
-        if (expr == null) {
-            if (other.expr != null) {
-                return false;
-            }
-        } else if (!expr.equals(other.expr)) {
-            return false;
-        }
-        return true;
+        return this.hashCode64() == other.hashCode64();
     }
 
     public OracleDbLinkExpr clone() {
@@ -138,14 +121,14 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
             if (expr instanceof SQLName) {
                 hash = ((SQLName) expr).hashCode64();
 
-                hash ^= '.';
+                hash ^= '@';
                 hash *= FnvHash.PRIME;
             } else if (expr == null){
                 hash = FnvHash.BASIC;
             } else {
                 hash = FnvHash.fnv1a_64_lower(expr.toString());
 
-                hash ^= '.';
+                hash ^= '@';
                 hash *= FnvHash.PRIME;
             }
             hash = FnvHash.hashCode64(hash, dbLink);

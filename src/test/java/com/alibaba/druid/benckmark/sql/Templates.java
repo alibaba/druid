@@ -18,7 +18,7 @@ public class Templates {
     public static String parameterize(SQLStatement ast, Set<String> physicalNames, List<Object> params) {
 
         List<Object> parameters = null;
-        StringBuilder out = new StringBuilder();
+        Appendable out = new StringBuilder();
         SQLASTOutputVisitor visitor = new MySqlOutputVisitor(out);
         visitor.setParameterized(true);
         visitor.setParameterizedMergeInList(true);

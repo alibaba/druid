@@ -10,6 +10,9 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.wall.WallUtils;
+import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -28,7 +31,7 @@ public class MySqlParameterizedBenchmark extends TestCase {
                 + "WHERE `sub_biz_order_id` = ? AND `biz_order_type` = ? AND `id` = ? AND `ti_id` = ? AND `optype` = ? AND `root_id` = ?";
 
         for (int i = 0; i < 5; ++i) {
-//            perf(sql); // 6740 6201 4752 4514
+            perf(sql); // 6740 6201 4752 4514 4391 4218 4127 4124
 //            perf(sql2); // 2948 2928 2869 2780 2502
 //            perf(sql3); // 15093 10392 10416 10154 10007 9126 8907
 //            perf(sql4); // 4429 4190 4023 3747
@@ -38,9 +41,11 @@ public class MySqlParameterizedBenchmark extends TestCase {
 //            perf_parse(sql3); // 9174 5875 5805 5536 5717
 //            perf_parse(sql4); // 2953 2502
 
-            perf_stat(sql); // 11793 13628 13561 13259 9946 7637 7444 7389 7326
+//            perf_stat(sql); // 15214 11793 13628 13561 13259 9946 7637 7444 7389 7326 7176 6687 5973 5660
 
-//            perf_resolve(sql); // 4970 4586 3600
+//            perf_resolve(sql); // 4970 4586 3600 3595
+
+//            perf_wall(sql); // 9695 5017
         }
     }
     public void perf(String sql) {
@@ -82,6 +87,16 @@ public class MySqlParameterizedBenchmark extends TestCase {
             holder.ensureParsed();
 
             new SchemaRepository(JdbcConstants.MYSQL).resolve(holder.ast);
+        }
+        long millis = System.currentTimeMillis() - startMillis;
+        System.out.println("millis : " + millis);
+    }
+
+    MySqlWallProvider provider = new MySqlWallProvider();
+    public void perf_wall(String sql) {
+        long startMillis = System.currentTimeMillis();
+        for (int i = 0; i < 1000 * 1000; ++i) {
+            provider.checkValid(sql);
         }
         long millis = System.currentTimeMillis() - startMillis;
         System.out.println("millis : " + millis);

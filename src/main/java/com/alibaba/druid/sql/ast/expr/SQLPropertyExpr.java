@@ -284,4 +284,18 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     public boolean nameEquals(String name) {
         return SQLUtils.nameEquals(this.name, name);
     }
+
+    public SQLPropertyExpr simplify() {
+        String normalizedName = SQLUtils.normalize(name);
+        SQLExpr normalizedOwner = this.owner;
+        if (normalizedOwner instanceof SQLIdentifierExpr) {
+            normalizedOwner = ((SQLIdentifierExpr) normalizedOwner).simplify();
+        }
+
+        if (normalizedName != name || normalizedOwner != owner) {
+            return new SQLPropertyExpr(normalizedOwner, normalizedName, hashCode64);
+        }
+
+        return this;
+    }
 }
