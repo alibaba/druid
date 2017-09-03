@@ -36,7 +36,19 @@ public final class FnvHash {
         return hash;
     }
 
+    public static long fnv1a_64(char[] chars) {
+        if (chars == null) {
+            return 0;
+        }
+        long hash = BASIC;
+        for (int i = 0; i < chars.length; ++i) {
+            char c = chars[i];
+            hash ^= c;
+            hash *= PRIME;
+        }
 
+        return hash;
+    }
 
     /**
      * lower & normalized & fnv_1a_64

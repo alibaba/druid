@@ -190,7 +190,12 @@ public abstract class SQLObjectImpl implements SQLObject {
     }
     
     public boolean hasBeforeComment() {
-        List<String> comments = getBeforeCommentsDirect();
+        if (attributes == null) {
+            return false;
+        }
+
+        List<String> comments = (List<String>) attributes.get("format.before_comment");
+
         if (comments == null) {
             return false;
         }

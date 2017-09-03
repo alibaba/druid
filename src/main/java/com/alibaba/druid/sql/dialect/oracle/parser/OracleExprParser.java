@@ -52,7 +52,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUnique;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUsingIndexClause;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.FnvHash.Constants;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OracleExprParser extends SQLExprParser {

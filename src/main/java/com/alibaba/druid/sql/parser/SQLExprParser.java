@@ -45,7 +45,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.FnvHash.Constants;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLExprParser extends SQLParser {

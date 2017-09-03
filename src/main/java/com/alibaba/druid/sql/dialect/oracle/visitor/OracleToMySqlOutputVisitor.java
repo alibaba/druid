@@ -28,7 +28,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.util.FnvHash;
-import com.alibaba.druid.util.FnvHash.Constants;
 
 public class OracleToMySqlOutputVisitor extends OracleOutputVisitor {
 
