@@ -34,17 +34,17 @@ public class PGCreateTableTest_6 extends PGTest {
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
         
-        Assert.assertEquals("CREATE TABLE xxx\n" +
+        assertEquals("CREATE TABLE xxx\n" +
                 "AS\n" +
                 "SELECT *\n" +
                 "FROM xxx", SQLUtils.toPGString(stmt));
         
-        Assert.assertEquals("create table xxx\n" +
+        assertEquals("create table xxx\n" +
                 "as\n" +
                 "select *\n" +
                 "from xxx", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         stmt.accept(visitor);
@@ -52,11 +52,11 @@ public class PGCreateTableTest_6 extends PGTest {
 //        System.out.println("Tables : " + visitor.getTables());
 //        System.out.println("fields : " + visitor.getColumns());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("xxx")));
+        assertTrue(visitor.getTables().containsKey(new TableStat.Name("xxx")));
 
-        Assert.assertTrue(visitor.getTables().get(new TableStat.Name("xxx")).getCreateCount() == 1);
+        assertTrue(visitor.getTables().get(new TableStat.Name("xxx")).getCreateCount() == 1);
 
-        Assert.assertTrue(visitor.getColumns().size() == 1);
+        assertTrue(visitor.getColumns().size() == 1);
     }
 
 }
