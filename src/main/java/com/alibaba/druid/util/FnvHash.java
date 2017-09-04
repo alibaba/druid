@@ -51,7 +51,7 @@ public final class FnvHash {
     }
 
     /**
-     * lower & normalized & fnv_1a_64
+     * lower and normalized and fnv_1a_64
      * @param name
      * @return
      */
@@ -184,7 +184,7 @@ public final class FnvHash {
     }
 
     /**
-     * normalized & lower & fnv1a_64_hash
+     * normalized and lower and fnv1a_64_hash
      * @param owner
      * @param name
      * @return
