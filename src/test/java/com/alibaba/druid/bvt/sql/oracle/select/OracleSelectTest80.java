@@ -28,7 +28,7 @@ public class OracleSelectTest80 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-                "select * from t"; //
+                "select (o.STORE - o.LAST_STORE) STORE from t_order o;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -43,8 +43,8 @@ public class OracleSelectTest80 extends OracleTest {
         {
             String text = SQLUtils.toOracleString(stmt);
 
-            assertEquals("SELECT *\n" +
-                    "FROM t", text);
+            assertEquals("SELECT o.STORE - o.LAST_STORE AS STORE\n" +
+                    "FROM t_order o;", text);
         }
 
         System.out.println("Tables : " + visitor.getTables());
@@ -54,14 +54,14 @@ public class OracleSelectTest80 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         assertEquals(1, visitor.getTables().size());
-        assertEquals(1, visitor.getColumns().size());
+        assertEquals(2, visitor.getColumns().size());
         assertEquals(0, visitor.getConditions().size());
         assertEquals(0, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
-
-        // Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+         Assert.assertTrue(visitor.containsColumn("t_order", "STORE"));
+         Assert.assertTrue(visitor.containsColumn("t_order", "LAST_STORE"));
+//
     }
 }
