@@ -2367,12 +2367,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLCreateTableStatement x) {
-        printCreateTable(x);
+        printCreateTable(x, true);
 
         return false;
     }
 
-    protected void printCreateTable(SQLCreateTableStatement x) {
+    protected void printCreateTable(SQLCreateTableStatement x, boolean printSelect) {
         print0(ucase ? "CREATE " : "create ");
 
         final SQLCreateTableStatement.Type tableType = x.getType();
@@ -2394,7 +2394,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         SQLSelect select = x.getSelect();
-        if (select != null) {
+        if (printSelect && select != null) {
             println();
             print0(ucase ? "AS" : "as");
 

@@ -195,7 +195,15 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();
                 }
-                stmt.getTableOptions().put("ENGINE", this.exprParser.expr());
+
+                SQLExpr expr = null;
+                if (lexer.token() == Token.MERGE) {
+                    expr = new SQLIdentifierExpr(lexer.stringVal());
+                    lexer.nextToken();
+                } else {
+                    expr = this.exprParser.expr();
+                }
+                stmt.getTableOptions().put("ENGINE", expr);
                 continue;
             }
 

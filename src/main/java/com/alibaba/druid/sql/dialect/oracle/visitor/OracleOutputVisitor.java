@@ -2097,7 +2097,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleCreateTableStatement x) {
-        printCreateTable(x);
+        printCreateTable(x, false);
 
         if (x.getOf() != null) {
             println();
