@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
@@ -27,15 +28,21 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
 
     private SQLName                  name;
 
-    private boolean                  orReplace     = false;
+    private boolean                  orReplace      = false;
 
     private TriggerType              triggerType;
-    private final List<TriggerEvent> triggerEvents = new ArrayList<TriggerEvent>();
+
+    private boolean                  update;
+    private boolean                  delete;
+    private boolean                  insert;
 
     private SQLName                  on;
 
-    private boolean                  forEachRow    = false;
+    private boolean                  forEachRow     = false;
 
+    private List<SQLName>            updateOfColumns = new ArrayList<SQLName>();
+
+    private SQLExpr                  when;
     private SQLStatement             body;
     
     public SQLCreateTriggerStatement() {
@@ -49,7 +56,9 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
+            acceptChild(visitor, updateOfColumns);
             acceptChild(visitor, on);
+            acceptChild(visitor, when);
             acceptChild(visitor, body);
         }
         visitor.endVisit(this);
@@ -102,7 +111,7 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
     }
 
     public List<TriggerEvent> getTriggerEvents() {
-        return triggerEvents;
+        return null;
     }
 
     public boolean isForEachRow() {
@@ -111,6 +120,45 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
 
     public void setForEachRow(boolean forEachRow) {
         this.forEachRow = forEachRow;
+    }
+
+    public List<SQLName> getUpdateOfColumns() {
+        return updateOfColumns;
+    }
+
+    public SQLExpr getWhen() {
+        return when;
+    }
+
+    public void setWhen(SQLExpr when) {
+        if (when != null) {
+            when.setParent(this);
+        }
+        this.when = when;
+    }
+
+    public boolean isUpdate() {
+        return update;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update = update;
+    }
+
+    public boolean isDelete() {
+        return delete;
+    }
+
+    public void setDelete(boolean delete) {
+        this.delete = delete;
+    }
+
+    public boolean isInsert() {
+        return insert;
+    }
+
+    public void setInsert(boolean insert) {
+        this.insert = insert;
     }
 
     public static enum TriggerType {

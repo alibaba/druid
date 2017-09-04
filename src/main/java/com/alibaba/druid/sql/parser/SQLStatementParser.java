@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +26,9 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
-import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -2012,13 +2009,13 @@ public class SQLStatementParser extends SQLParser {
 
         stmt.setName(this.exprParser.name());
 
-        if (lexer.identifierEquals("BEFORE")) {
+        if (lexer.identifierEquals(FnvHash.Constants.BEFORE)) {
             stmt.setTriggerType(TriggerType.BEFORE);
             lexer.nextToken();
-        } else if (lexer.identifierEquals("AFTER")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.AFTER)) {
             stmt.setTriggerType(TriggerType.AFTER);
             lexer.nextToken();
-        } else if (lexer.identifierEquals("INSTEAD")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.INSTEAD)) {
             lexer.nextToken();
             accept(Token.OF);
             stmt.setTriggerType(TriggerType.INSTEAD_OF);
@@ -2027,21 +2024,26 @@ public class SQLStatementParser extends SQLParser {
         for (;;) {
             if (lexer.token == Token.INSERT) {
                 lexer.nextToken();
-                stmt.getTriggerEvents().add(TriggerEvent.INSERT);
+                stmt.setInsert(true);
+            } else if (lexer.token == Token.UPDATE) {
+                lexer.nextToken();
+                stmt.setUpdate(true);
+
+                if (lexer.token == Token.OF) {
+                    lexer.nextToken();
+                    this.exprParser.names(stmt.getUpdateOfColumns(), stmt);
+                }
+            } else if (lexer.token == Token.DELETE) {
+                lexer.nextToken();
+                stmt.setDelete(true);
+            }
+
+            if (lexer.token == Token.COMMA
+                    || lexer.token == Token.OR) {
+                lexer.nextToken();
                 continue;
             }
 
-            if (lexer.token == Token.UPDATE) {
-                lexer.nextToken();
-                stmt.getTriggerEvents().add(TriggerEvent.UPDATE);
-                continue;
-            }
-
-            if (lexer.token == Token.DELETE) {
-                lexer.nextToken();
-                stmt.getTriggerEvents().add(TriggerEvent.DELETE);
-                continue;
-            }
             break;
         }
 
@@ -2053,6 +2055,12 @@ public class SQLStatementParser extends SQLParser {
             acceptIdentifier("EACH");
             accept(Token.ROW);
             stmt.setForEachRow(true);
+        }
+
+        if (lexer.token == Token.WHEN) {
+            lexer.nextToken();
+            SQLExpr condition = this.exprParser.expr();
+            stmt.setWhen(condition);
         }
 
         List<SQLStatement> body = this.parseStatementList();

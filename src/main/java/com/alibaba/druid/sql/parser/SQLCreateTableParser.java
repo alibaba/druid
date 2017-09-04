@@ -18,11 +18,7 @@ package com.alibaba.druid.sql.parser;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLCreateTableParser extends SQLDDLParser {
@@ -141,6 +137,12 @@ public class SQLCreateTableParser extends SQLDDLParser {
                 createTable.setInherits(new SQLExprTableSource(inherits));
                 accept(Token.RPAREN);
             }
+        }
+
+        if (lexer.token == Token.AS) {
+            lexer.nextToken();
+            SQLSelect select = this.createSQLSelectParser().select();
+            createTable.setSelect(select);
         }
 
         return createTable;

@@ -39,21 +39,12 @@ public class PGSelectTest56 extends TestCase {
                 "\tAND cs.CreateDate <= to_date('2017-08-31 23:00:00', 'YYYY-MM-DD HH24:MI:SS')\n" +
                 "GROUP BY to_char(CreateDate || ' ' || CAST(HourArgment AS VARCHAR) || ':00:00'::TIMESTAMP, 'YYYY-MM-DD HH24')", SQLUtils.toPGString(stmt));
         
-        assertEquals("select b.*, st_astext(p.pos) as pos, st_astext(p.polygon) as polygon\n" +
-                "from ts_biz b\n" +
-                "\tjoin (\n" +
-                "\t\tselect *\n" +
-                "\t\tfrom ts_polygon\n" +
-                "\t\twhere type in (?)\n" +
-                "\t\t\tand st_intersects(st_transform(ST_GeomFromText(?, 4326), 26986), st_transform(polygon, 26986))\n" +
-                "\t) p\n" +
-                "\ton b.objid = p.objid\n" +
-                "\t\tand b.type = p.type\n" +
-                "\t\tand (b.cp_code = p.cp_code\n" +
-                "\t\t\tor (b.cp_code is null\n" +
-                "\t\t\t\tand p.cp_code is null))\n" +
-                "where b.cp_code = ?\n" +
-                "\tor b.cp_code is null", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("select to_char(CreateDate || ' ' || cast(HourArgment as VARCHAR) || ':00:00'::TIMESTAMP, 'YYYY-MM-DD HH24') as \"intoTime \"\n" +
+                "from analyzedata.StatTime cs\n" +
+                "where 1 = 1\n" +
+                "\tand cs.CreateDate >= to_date('2017-08-31 00:00:00', 'YYYY-MM-DD HH24:MI:SS')\n" +
+                "\tand cs.CreateDate <= to_date('2017-08-31 23:00:00', 'YYYY-MM-DD HH24:MI:SS')\n" +
+                "group by to_char(CreateDate || ' ' || cast(HourArgment as VARCHAR) || ':00:00'::TIMESTAMP, 'YYYY-MM-DD HH24')", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());
 
@@ -64,7 +55,7 @@ public class PGSelectTest56 extends TestCase {
 //        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        assertEquals(7, visitor.getColumns().size());
-        assertEquals(2, visitor.getTables().size());
+        assertEquals(2, visitor.getColumns().size());
+        assertEquals(1, visitor.getTables().size());
     }
 }

@@ -410,5 +410,9 @@ public final class FnvHash {
         long HOUR = fnv1a_64_lower("HOUR");
         long MINUTE = fnv1a_64_lower("MINUTE");
         long SECOND = fnv1a_64_lower("SECOND");
+
+        long BEFORE = fnv1a_64_lower("BEFORE");
+        long AFTER = fnv1a_64_lower("AFTER");
+        long INSTEAD = fnv1a_64_lower("INSTEAD");
     }
 }

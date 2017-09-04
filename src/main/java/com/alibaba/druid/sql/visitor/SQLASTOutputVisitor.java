@@ -2392,6 +2392,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             x.getInherits().accept(this);
             print(')');
         }
+
+        SQLSelect select = x.getSelect();
+        if (select != null) {
+            println();
+            print0(ucase ? "AS" : "as");
+
+            println();
+            visit(select);
+        }
     }
 
     public boolean visit(SQLUniqueConstraint x) {
@@ -3735,10 +3744,30 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             print0(ucase ? triggerTypeName : triggerTypeName.toLowerCase());
         }
 
-        for (TriggerEvent event : x.getTriggerEvents()) {
-            print(' ');
-            print0(event.name());
+        if (x.isInsert()) {
+            print0(ucase ? " INSERT" : " insert");
         }
+
+        if (x.isDelete()) {
+            if (x.isInsert()) {
+                print0(ucase ? " OR" : " or");
+            }
+            print0(ucase ? " DELETE" : " delete");
+        }
+
+        if (x.isUpdate()) {
+            if (x.isInsert() || x.isDelete()) {
+                print0(ucase ? " OR" : " or");
+            }
+            print0(ucase ? " UPDATE" : " update");
+
+            List<SQLName> colums = x.getUpdateOfColumns();
+            for (SQLName colum : colums) {
+                print(' ');
+                colum.accept(this);
+            }
+        }
+
         println();
         print0(ucase ? "ON " : "on ");
         x.getOn().accept(this);
@@ -3746,6 +3775,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isForEachRow()) {
             println();
             print0(ucase ? "FOR EACH ROW" : "for each row");
+        }
+
+        SQLExpr when = x.getWhen();
+        if (when != null) {
+            println();
+            print0(ucase ? "WHEN " : "when ");
+            when.accept(this);
         }
         this.indentCount--;
         println();
