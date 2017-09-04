@@ -35,22 +35,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.datasource.druid")
 class DruidDataSourceWrapper extends DruidDataSource implements InitializingBean {
     @Autowired
-    private DataSourceProperties sourceProperties;
+    private DataSourceProperties basicProperties;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         //if not found prefix 'spring.datasource.druid' jdbc properties ,'spring.datasource' prefix jdbc properties will be used.
         if (super.getUsername() == null) {
-            super.setUsername(sourceProperties.determineUsername());
+            super.setUsername(basicProperties.determineUsername());
         }
         if (super.getPassword() == null) {
-            super.setPassword(sourceProperties.determinePassword());
+            super.setPassword(basicProperties.determinePassword());
         }
         if (super.getUrl() == null) {
-            super.setUrl(sourceProperties.determineUrl());
+            super.setUrl(basicProperties.determineUrl());
         }
         if (super.getDriverClassName() == null) {
-            super.setDriverClassName(sourceProperties.determineDriverClassName());
+            super.setDriverClassName(basicProperties.determineDriverClassName());
         }
     }
 
