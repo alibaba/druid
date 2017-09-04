@@ -696,12 +696,6 @@ public class SQLUtils {
         return SQLUtils.toSQLString(stmtList, dbType, null, null, tableMapping);
     }
 
-    public static boolean containsIndexDDL(String sql, String dbType) {
-        List<SQLStatement> stmtList = parseStatements(sql, dbType);
-
-        return false;
-    }
-
     public static long hash(String sql, String dbType) {
         Lexer lexer = SQLParserUtils.createLexer(sql, dbType);
 
@@ -871,10 +865,6 @@ public class SQLUtils {
         return false;
     }
 
-    public static SQLExpr decodeToCase(SQLMethodInvokeExpr x) {
-       return SQLTransformUtils.transformDecode(x);
-    }
-
     public static boolean replaceInParent(SQLExpr expr, SQLExpr target) {
         if (expr == null) {
             return false;
@@ -900,7 +890,7 @@ public class SQLUtils {
     }
 
     /**
-     * 重新排序建表语句
+     * 重新排序建表语句，解决建表语句的依赖关系
      * @param sql
      * @param dbType
      * @return
