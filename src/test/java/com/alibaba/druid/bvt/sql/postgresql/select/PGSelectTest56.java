@@ -32,19 +32,19 @@ public class PGSelectTest56 extends TestCase {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         SQLStatement stmt = stmtList.get(0);
 
-        assertEquals("SELECT to_char(CreateDate || ' ' || CAST(HourArgment AS VARCHAR) || ':00:00'::TIMESTAMP, 'YYYY-MM-DD HH24') AS \"intoTime \"\n" +
+        assertEquals("SELECT to_char((CreateDate || ' ' || CAST(HourArgment AS VARCHAR) || ':00:00')::TIMESTAMP, 'YYYY-MM-DD HH24') AS \"intoTime \"\n" +
                 "FROM analyzedata.StatTime cs\n" +
                 "WHERE 1 = 1\n" +
                 "\tAND cs.CreateDate >= to_date('2017-08-31 00:00:00', 'YYYY-MM-DD HH24:MI:SS')\n" +
                 "\tAND cs.CreateDate <= to_date('2017-08-31 23:00:00', 'YYYY-MM-DD HH24:MI:SS')\n" +
-                "GROUP BY to_char(CreateDate || ' ' || CAST(HourArgment AS VARCHAR) || ':00:00'::TIMESTAMP, 'YYYY-MM-DD HH24')", SQLUtils.toPGString(stmt));
+                "GROUP BY to_char((CreateDate || ' ' || CAST(HourArgment AS VARCHAR) || ':00:00')::TIMESTAMP, 'YYYY-MM-DD HH24')", SQLUtils.toPGString(stmt));
         
-        assertEquals("select to_char(CreateDate || ' ' || cast(HourArgment as VARCHAR) || ':00:00'::TIMESTAMP, 'YYYY-MM-DD HH24') as \"intoTime \"\n" +
+        assertEquals("select to_char((CreateDate || ' ' || cast(HourArgment as VARCHAR) || ':00:00')::TIMESTAMP, 'YYYY-MM-DD HH24') as \"intoTime \"\n" +
                 "from analyzedata.StatTime cs\n" +
                 "where 1 = 1\n" +
                 "\tand cs.CreateDate >= to_date('2017-08-31 00:00:00', 'YYYY-MM-DD HH24:MI:SS')\n" +
                 "\tand cs.CreateDate <= to_date('2017-08-31 23:00:00', 'YYYY-MM-DD HH24:MI:SS')\n" +
-                "group by to_char(CreateDate || ' ' || cast(HourArgment as VARCHAR) || ':00:00'::TIMESTAMP, 'YYYY-MM-DD HH24')", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "group by to_char((CreateDate || ' ' || cast(HourArgment as VARCHAR) || ':00:00')::TIMESTAMP, 'YYYY-MM-DD HH24')", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());
 

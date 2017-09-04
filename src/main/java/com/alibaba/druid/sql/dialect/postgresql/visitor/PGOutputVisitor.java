@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
@@ -409,7 +410,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(PGTypeCastExpr x) {
-        x.getExpr().accept(this);
+        SQLExpr expr = x.getExpr();
+        if (expr != null) {
+            if (expr instanceof SQLBinaryOpExpr) {
+                print('(');
+                expr.accept(this);
+                print(')');
+            } else {
+                expr.accept(this);
+            }
+        }
         print0("::");
         x.getDataType().accept(this);
         return false;
