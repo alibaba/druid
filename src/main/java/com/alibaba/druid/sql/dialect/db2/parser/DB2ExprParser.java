@@ -21,35 +21,56 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
+
+import java.util.Arrays;
 
 public class DB2ExprParser extends SQLExprParser {
+    public final static String[] AGGREGATE_FUNCTIONS;
 
-    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
-                                                         "ROWNUMBER" };
+    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER",
+                "ROWNUMBER" };
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FnvHash.fnv1a_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
 
     public DB2ExprParser(String sql){
         this(new DB2Lexer(sql));
         this.lexer.nextToken();
     }
 
+    public DB2ExprParser(String sql, SQLParserFeature... features){
+        this(new DB2Lexer(sql, features));
+        this.lexer.nextToken();
+    }
+
     public DB2ExprParser(Lexer lexer){
         super(lexer);
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (identifierEquals("VALUE")) {
+        if (lexer.identifierEquals(FnvHash.Constants.VALUE)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                String ident = identExpr.getName();
-                if (ident.equalsIgnoreCase("NEXT")) {
+                if (identExpr.hashCode64() == FnvHash.Constants.NEXT) {
                     lexer.nextToken();
                     accept(Token.FOR);
                     SQLName seqName = this.name();
                     SQLSequenceExpr seqExpr = new SQLSequenceExpr(seqName, SQLSequenceExpr.Function.NextVal);
                     return seqExpr;
-                } else if (ident.equalsIgnoreCase("PREVIOUS")) {
+                } else if (identExpr.hashCode64() == FnvHash.Constants.PREVIOUS) {
                     lexer.nextToken();
                     accept(Token.FOR);
                     SQLName seqName = this.name();
@@ -57,21 +78,19 @@ public class DB2ExprParser extends SQLExprParser {
                     return seqExpr;
                 }
             }
-        } else if (identifierEquals("DATE")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.DATE)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                String ident = identExpr.getName();
-                if (ident.equalsIgnoreCase("CURRENT")) {
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
                     lexer.nextToken();
 
                     expr = new SQLIdentifierExpr("CURRENT DATE");
                 }
             }
-        } else if (identifierEquals("TIMESTAMP")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.TIMESTAMP)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                String ident = identExpr.getName();
-                if (ident.equalsIgnoreCase("CURRENT")) {
+                if (identExpr.hashCode64() == FnvHash.Constants.CURRENT) {
                     lexer.nextToken();
 
                     expr = new SQLIdentifierExpr("CURRENT DATE");
@@ -83,21 +102,21 @@ public class DB2ExprParser extends SQLExprParser {
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
-        if (identifierEquals("NEXTVAL")) {
+        if (lexer.identifierEquals("NEXTVAL")) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 SQLSequenceExpr seqExpr = new SQLSequenceExpr(identExpr, SQLSequenceExpr.Function.NextVal);
                 lexer.nextToken();
                 return seqExpr;
             }
-        } else if (identifierEquals("PREVVAL")) {
+        } else if (lexer.identifierEquals("PREVVAL")) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 SQLSequenceExpr seqExpr = new SQLSequenceExpr(identExpr, SQLSequenceExpr.Function.PrevVal);
                 lexer.nextToken();
                 return seqExpr;
             }
-        } else if (identifierEquals("CURRVAL")) {
+        } else if (lexer.identifierEquals("CURRVAL")) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 SQLSequenceExpr seqExpr = new SQLSequenceExpr(identExpr, SQLSequenceExpr.Function.CurrVal);

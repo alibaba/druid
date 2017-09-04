@@ -33,6 +33,17 @@ public class SQLAssignItem extends SQLObjectImpl implements SQLReplaceable {
         setValue(value);
     }
 
+    public SQLAssignItem clone() {
+        SQLAssignItem x = new SQLAssignItem();
+        if (target != null) {
+            x.setTarget(target.clone());
+        }
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getTarget() {
         return target;
     }

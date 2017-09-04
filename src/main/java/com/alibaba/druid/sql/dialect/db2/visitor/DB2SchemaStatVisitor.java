@@ -19,13 +19,12 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2ValuesStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class DB2SchemaStatVisitor extends SchemaStatVisitor implements DB2ASTVisitor {
-
-    @Override
-    public String getDbType() {
-        return JdbcUtils.DB2;
+    public DB2SchemaStatVisitor() {
+        super (JdbcConstants.DB2);
     }
 
     @Override

@@ -36,6 +36,27 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
 
     }
 
+    public void cloneTo(SQLInsertInto x) {
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLExpr column : columns) {
+            SQLExpr column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+        for (ValuesClause v : valuesList) {
+            ValuesClause v2 = v.clone();
+            v2.setParent(x);
+            x.valuesList.add(v2);
+        }
+    }
+
+    public abstract SQLInsertInto clone();
+
     public String getAlias() {
         return tableSource.getAlias();
     }

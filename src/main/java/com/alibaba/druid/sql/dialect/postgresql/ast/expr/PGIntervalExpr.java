@@ -65,4 +65,12 @@ public class PGIntervalExpr extends SQLExprImpl implements SQLLiteralExpr,PGExpr
     protected void accept0(SQLASTVisitor visitor) {
         this.accept0((PGASTVisitor) visitor);
     }
+
+    public PGIntervalExpr clone() {
+        PGIntervalExpr x = new PGIntervalExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
 }

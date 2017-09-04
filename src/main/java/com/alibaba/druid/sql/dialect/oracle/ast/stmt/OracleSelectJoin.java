@@ -145,4 +145,9 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         }
         this.setRight(tableSource);
     }
+
+    public SQLJoinTableSource join(SQLTableSource right, JoinType joinType, SQLExpr condition) {
+        SQLJoinTableSource joined = new OracleSelectJoin(this, joinType, right, condition);
+        return joined;
+    }
 }

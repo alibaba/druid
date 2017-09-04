@@ -20,26 +20,32 @@ import java.util.*;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
-import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.ListDG;
 import com.alibaba.druid.util.lang.Consumer;
-import org.apache.ibatis.jdbc.SQL;
 
-public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLCreateStatement {
 
-    protected boolean            ifNotExiists = false;
-    protected Type               type;
-    protected SQLExprTableSource tableSource;
+    protected boolean               ifNotExiists = false;
+    protected Type                  type;
+    protected SQLExprTableSource    tableSource;
 
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
     // for postgresql
-    private SQLExprTableSource inherits;
+    private SQLExprTableSource      inherits;
 
-    protected SQLSelect select;
+    protected SQLSelect             select;
+
+    protected SQLExpr               comment;
+
+    protected SQLExprTableSource     like;
 
     public SQLCreateTableStatement(){
 
@@ -49,12 +55,43 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         super(dbType);
     }
 
+    public SQLExpr getComment() {
+        return comment;
+    }
+
+    public void setComment(SQLExpr comment) {
+        if (comment != null) {
+            comment.setParent(this);
+        }
+        this.comment = comment;
+    }
+
     public SQLName getName() {
         if (tableSource == null) {
             return null;
         }
 
         return (SQLName) tableSource.getExpr();
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
+
+    public void setSchema(String name) {
+        if (this.tableSource == null) {
+            return;
+        }
+        tableSource.setSchema(name);
     }
 
     public void setName(SQLName name) {
@@ -116,7 +153,25 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public void setSelect(SQLSelect select) {
+        if (select != null) {
+            select.setParent(this);
+        }
         this.select = select;
+    }
+
+    public SQLExprTableSource getLike() {
+        return like;
+    }
+
+    public void setLike(SQLName like) {
+        this.setLike(new SQLExprTableSource(like));
+    }
+
+    public void setLike(SQLExprTableSource like) {
+        if (like != null) {
+            like.setParent(this);
+        }
+        this.like = like;
     }
 
     @Override
@@ -177,14 +232,101 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public SQLColumnDefinition findColumn(String columName) {
-        columName = SQLUtils.normalize(columName);
+        if (columName == null) {
+            return null;
+        }
 
+        long hash = FnvHash.hashCode64(columName);
+        return findColumn(hash);
+    }
+
+    public SQLColumnDefinition findColumn(long columName_hash) {
         for (SQLTableElement element : tableElementList) {
             if (element instanceof SQLColumnDefinition) {
                 SQLColumnDefinition column = (SQLColumnDefinition) element;
-                String name = column.computeAlias();
-                if (columName.equalsIgnoreCase(name)) {
+                SQLName columnName = column.getName();
+                if (columnName != null && columnName.nameHashCode64() == columName_hash) {
                     return column;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public boolean isPrimaryColumn(String columnName) {
+        SQLPrimaryKey pk = this.findPrimaryKey();
+        if (pk == null) {
+            return false;
+        }
+
+        return pk.containsColumn(columnName);
+    }
+
+    /**
+     * only for show columns
+     */
+    public boolean isMUL(String columnName) {
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof MySqlUnique) {
+                MySqlUnique unique = (MySqlUnique) element;
+
+                SQLExpr column = unique.getColumns().get(0).getExpr();
+                if (column instanceof SQLIdentifierExpr
+                        && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
+                    return unique.columns.size() > 1;
+                } else if (column instanceof SQLMethodInvokeExpr
+                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
+                    return true;
+                }
+            } else if (element instanceof MySqlKey) {
+                MySqlKey unique = (MySqlKey) element;
+
+                SQLExpr column = unique.getColumns().get(0).getExpr();
+                if (column instanceof SQLIdentifierExpr
+                        && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
+                    return true;
+                } else if (column instanceof SQLMethodInvokeExpr
+                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * only for show columns
+     */
+    public boolean isUNI(String columnName) {
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof MySqlUnique) {
+                MySqlUnique unique = (MySqlUnique) element;
+
+                if (unique.getColumns().size() == 0) {
+                    continue;
+                }
+
+                SQLExpr column = unique.getColumns().get(0).getExpr();
+                if (column instanceof SQLIdentifierExpr
+                        && SQLUtils.nameEquals(columnName, ((SQLIdentifierExpr) column).getName())) {
+                    return unique.columns.size() == 1;
+                } else if (column instanceof SQLMethodInvokeExpr
+                        && SQLUtils.nameEquals(((SQLMethodInvokeExpr) column).getMethodName(), columnName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public MySqlUnique findUnique(String columnName) {
+        for (SQLTableElement element : this.tableElementList) {
+            if (element instanceof MySqlUnique) {
+                MySqlUnique unique = (MySqlUnique) element;
+
+                if (unique.containsColumn(columnName)) {
+                    return unique;
                 }
             }
         }
@@ -194,27 +336,33 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     public SQLTableElement findIndex(String columnName) {
         for (SQLTableElement element : tableElementList) {
-            List<SQLExpr> keyColumns = null;
             if (element instanceof SQLUniqueConstraint) {
                 SQLUniqueConstraint unique = (SQLUniqueConstraint) element;
-                keyColumns = unique.getColumns();
+                for (SQLSelectOrderByItem item : unique.getColumns()) {
+                    SQLExpr columnExpr = item.getExpr();
+                    if (columnExpr instanceof SQLIdentifierExpr) {
+                        String keyColumName = ((SQLIdentifierExpr) columnExpr).getName();
+                        keyColumName = SQLUtils.normalize(keyColumName);
+                        if (keyColumName.equalsIgnoreCase(columnName)) {
+                            return element;
+                        }
+                    }
+                }
+
             } else if (element instanceof MySqlTableIndex) {
-                keyColumns = ((MySqlTableIndex) element).getColumns();
-            }
-
-            if (keyColumns == null) {
-                continue;
-            }
-
-            for (SQLExpr columnExpr : keyColumns) {
-                if (columnExpr instanceof SQLIdentifierExpr) {
-                    String keyColumName = ((SQLIdentifierExpr) columnExpr).getName();
-                    keyColumName = SQLUtils.normalize(keyColumName);
-                    if (keyColumName.equalsIgnoreCase(columnName)) {
-                        return element;
+                List<SQLSelectOrderByItem> indexColumns = ((MySqlTableIndex) element).getColumns();
+                for (SQLSelectOrderByItem orderByItem : indexColumns) {
+                    SQLExpr columnExpr = orderByItem.getExpr();
+                    if (columnExpr instanceof SQLIdentifierExpr) {
+                        String keyColumName = ((SQLIdentifierExpr) columnExpr).getName();
+                        keyColumName = SQLUtils.normalize(keyColumName);
+                        if (keyColumName.equalsIgnoreCase(columnName)) {
+                            return element;
+                        }
                     }
                 }
             }
+
         }
 
         return null;
@@ -418,7 +566,6 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 }
             }
         }
-
     }
 
     public void simplify() {
@@ -426,22 +573,21 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
         if (name instanceof SQLPropertyExpr) {
             String tableName = ((SQLPropertyExpr) name).getName();
             tableName = SQLUtils.normalize(tableName);
-            setName(tableName);
-            name = getName();
+
+            String normalized = SQLUtils.normalize(tableName, dbType);
+            if (tableName != normalized) {
+                this.setName(normalized);
+                name = getName();
+            }
         }
 
         if (name instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identExpr = (SQLIdentifierExpr) name;
             String tableName = identExpr.getName();
-            tableName = SQLUtils.normalize(tableName, dbType);
-            identExpr.setName(tableName);
-        }
-
-        if (name instanceof SQLIdentifierExpr) {
-            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) name;
-            String tableName = identExpr.getName();
-            tableName = SQLUtils.normalize(tableName);
-            identExpr.setName(tableName);
+            String normalized = SQLUtils.normalize(tableName, dbType);
+            if (normalized != tableName) {
+                setName(normalized);
+            }
         }
 
         for (SQLTableElement element : this.tableElementList) {
@@ -452,5 +598,334 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
                 ((SQLConstraint) element).simplify();
             }
         }
+    }
+
+    public boolean apply(SQLDropIndexStatement x) {
+        long indexNameHashCode64 = x.getIndexName().nameHashCode64();
+
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLUniqueConstraint) {
+                SQLUniqueConstraint unique = (SQLUniqueConstraint) e;
+                if (unique.getName().nameHashCode64() == indexNameHashCode64) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+
+            } else if (e instanceof MySqlTableIndex) {
+                MySqlTableIndex tableIndex = (MySqlTableIndex) e;
+                if (SQLUtils.nameEquals(tableIndex.getName(), x.getIndexName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean apply(SQLCommentStatement x) {
+        SQLName on = x.getOn();
+        SQLExpr comment = x.getComment();
+        if (comment == null) {
+            return false;
+        }
+
+        SQLCommentStatement.Type type = x.getType();
+        if (type == SQLCommentStatement.Type.TABLE) {
+            if (!SQLUtils.nameEquals(getName(), on)) {
+                return false;
+            }
+
+            setComment(comment.clone());
+
+            return true;
+        } else if (type == SQLCommentStatement.Type.COLUMN) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) on;
+            if (!SQLUtils.nameEquals(getName(), (SQLName) propertyExpr.getOwner())) {
+                return false;
+            }
+
+            SQLColumnDefinition column
+                    = this.findColumn(
+                        propertyExpr.nameHashCode64());
+
+            if (column != null) {
+                column.setComment(comment.clone());
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean apply(SQLAlterTableStatement alter) {
+        if (!SQLUtils.nameEquals(alter.getName(), this.getName())) {
+            return false;
+        }
+
+        int applyCount = 0;
+        for (SQLAlterTableItem item : alter.getItems()) {
+            if (alterApply(item)) {
+                applyCount++;
+            }
+        }
+
+        return applyCount > 0;
+    }
+
+    protected boolean alterApply(SQLAlterTableItem item) {
+        if (item instanceof SQLAlterTableDropColumnItem) {
+            return apply((SQLAlterTableDropColumnItem) item);
+
+        } else if (item instanceof SQLAlterTableAddColumn) {
+            return apply((SQLAlterTableAddColumn) item);
+
+        } else if (item instanceof SQLAlterTableAddConstraint) {
+            return apply((SQLAlterTableAddConstraint) item);
+
+        } else if (item instanceof SQLAlterTableDropPrimaryKey) {
+            return apply((SQLAlterTableDropPrimaryKey) item);
+
+        } else if (item instanceof SQLAlterTableDropIndex) {
+            return apply((SQLAlterTableDropIndex) item);
+
+        } else if (item instanceof SQLAlterTableDropConstraint) {
+            return apply((SQLAlterTableDropConstraint) item);
+
+        } else if (item instanceof SQLAlterTableDropKey) {
+            return apply((SQLAlterTableDropKey) item);
+
+        } else if (item instanceof SQLAlterTableDropForeignKey) {
+            return apply((SQLAlterTableDropForeignKey) item);
+
+        } else if (item instanceof SQLAlterTableRename) {
+            return apply((SQLAlterTableRename) item);
+
+        } else if (item instanceof SQLAlterTableRenameColumn) {
+            return apply((SQLAlterTableRenameColumn) item);
+
+        } else if (item instanceof SQLAlterTableAddIndex) {
+            return apply((SQLAlterTableAddIndex) item);
+        }
+
+        return false;
+    }
+
+    // SQLAlterTableRenameColumn
+
+    private boolean apply(SQLAlterTableRenameColumn item) {
+        int columnIndex = columnIndexOf(item.getColumn());
+        if (columnIndex == -1) {
+            return false;
+        }
+
+        SQLColumnDefinition column = (SQLColumnDefinition) tableElementList.get(columnIndex);
+        column.setName(item.getTo().clone());
+
+        return true;
+    }
+
+    private boolean apply(SQLAlterTableRename item) {
+        SQLName name = item.getToName();
+        if (name == null) {
+            return false;
+        }
+
+        this.setName(name.clone());
+
+        return true;
+    }
+
+    private boolean apply(SQLAlterTableDropForeignKey item) {
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLUniqueConstraint) {
+                SQLForeignKeyConstraint fk = (SQLForeignKeyConstraint) e;
+                if (SQLUtils.nameEquals(fk.getName(), item.getIndexName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean apply(SQLAlterTableDropKey item) {
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLUniqueConstraint) {
+                SQLUniqueConstraint unique = (SQLUniqueConstraint) e;
+                if (SQLUtils.nameEquals(unique.getName(), item.getKeyName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean apply(SQLAlterTableDropConstraint item) {
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLConstraint) {
+                SQLConstraint constraint = (SQLConstraint) e;
+                if (SQLUtils.nameEquals(constraint.getName(), item.getConstraintName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean apply(SQLAlterTableDropIndex item) {
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLUniqueConstraint) {
+                SQLUniqueConstraint unique = (SQLUniqueConstraint) e;
+                if (SQLUtils.nameEquals(unique.getName(), item.getIndexName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+
+            } else if (e instanceof MySqlTableIndex) {
+                MySqlTableIndex tableIndex = (MySqlTableIndex) e;
+                if (SQLUtils.nameEquals(tableIndex.getName(), item.getIndexName())) {
+                    tableElementList.remove(i);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean apply(SQLAlterTableDropPrimaryKey item) {
+        for (int i = tableElementList.size() - 1; i >= 0; i--) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLPrimaryKey) {
+                tableElementList.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean apply(SQLAlterTableAddConstraint item) {
+        tableElementList.add((SQLTableElement) item.getConstraint());
+        return true;
+    }
+
+    private boolean apply(SQLAlterTableDropColumnItem item) {
+        for (SQLName column : item.getColumns()) {
+            String columnName = column.getSimpleName();
+            for (int i = tableElementList.size() - 1; i >= 0; --i) {
+                SQLTableElement e = tableElementList.get(i);
+                if (e instanceof SQLColumnDefinition) {
+                    if (SQLUtils.nameEquals(columnName, ((SQLColumnDefinition) e).getName().getSimpleName())) {
+                        tableElementList.remove(i);
+                    }
+                }
+            }
+
+            for (int i = tableElementList.size() - 1; i >= 0; --i) {
+                SQLTableElement e = tableElementList.get(i);
+                if (e instanceof SQLUnique) {
+                    SQLUnique unique = (SQLUnique) e;
+                    unique.applyDropColumn(column);
+                    if (unique.getColumns().size() == 0) {
+                        tableElementList.remove(i);
+                    }
+                } else if (e instanceof MySqlTableIndex) {
+                    MySqlTableIndex index = (MySqlTableIndex) e;
+                    index.applyDropColumn(column);
+                    if (index.getColumns().size() == 0) {
+                        tableElementList.remove(i);
+                    }
+                }
+            }
+        }
+
+
+
+        return true;
+    }
+
+    protected boolean apply(SQLAlterTableAddIndex item) {
+        return false;
+    }
+
+    private boolean apply(SQLAlterTableAddColumn item) {
+        int startIndex = tableElementList.size();
+        if (item.isFirst()) {
+            startIndex = 0;
+        }
+
+        int afterIndex = columnIndexOf(item.getAfterColumn());
+        if (afterIndex != -1) {
+            startIndex = afterIndex + 1;
+        }
+
+        int beforeIndex = columnIndexOf(item.getFirstColumn());
+        if (beforeIndex != -1) {
+            startIndex = beforeIndex;
+        }
+
+        for (int i = 0; i < item.getColumns().size(); i++) {
+            SQLColumnDefinition column = item.getColumns().get(i);
+            tableElementList.add(i + startIndex, column);
+            column.setParent(this);
+        }
+
+        return true;
+    }
+
+    protected int columnIndexOf(SQLName column) {
+        if (column == null) {
+            return -1;
+        }
+
+        String columnName = column.getSimpleName();
+        for (int i = tableElementList.size() - 1; i >= 0; --i) {
+            SQLTableElement e = tableElementList.get(i);
+            if (e instanceof SQLColumnDefinition) {
+                if (SQLUtils.nameEquals(columnName, ((SQLColumnDefinition) e).getName().getSimpleName())) {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    public void cloneTo(SQLCreateTableStatement x) {
+        x.ifNotExiists = ifNotExiists;
+        x.type = type;
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLTableElement e : tableElementList) {
+            SQLTableElement e2 = e.clone();
+            e2.setParent(x);
+            x.tableElementList.add(e2);
+        }
+        if (inherits != null) {
+            x.setInherits(inherits.clone());
+        }
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
+    }
+
+    public SQLCreateTableStatement clone() {
+        SQLCreateTableStatement x = new SQLCreateTableStatement(dbType);
+        cloneTo(x);
+        return x;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, dbType);
     }
 }

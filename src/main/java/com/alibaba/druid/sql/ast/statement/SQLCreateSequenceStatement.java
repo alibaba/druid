@@ -19,13 +19,14 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
  * Created by wenshao on 16/9/14.
  */
-public class SQLCreateSequenceStatement extends SQLStatementImpl {
+public class SQLCreateSequenceStatement extends SQLStatementImpl implements SQLCreateStatement {
     private SQLName name;
 
     private SQLExpr startWith;
@@ -37,6 +38,8 @@ public class SQLCreateSequenceStatement extends SQLStatementImpl {
 
     private Boolean cycle;
     private Boolean cache;
+    private SQLExpr cacheValue;
+
     private Boolean order;
 
     @Override
@@ -129,5 +132,29 @@ public class SQLCreateSequenceStatement extends SQLStatementImpl {
 
     public void setNoMinValue(boolean noMinValue) {
         this.noMinValue = noMinValue;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
+
+    public SQLExpr getCacheValue() {
+        return cacheValue;
+    }
+
+    public void setCacheValue(SQLExpr cacheValue) {
+        if (cacheValue != null) {
+            cacheValue.setParent(this);
+        }
+        this.cacheValue = cacheValue;
     }
 }

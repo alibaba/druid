@@ -18,12 +18,9 @@ package com.alibaba.druid.sql.ast;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSubPartition extends SQLObjectImpl {
-
     protected SQLName           name;
-
     protected SQLPartitionValue values;
-
-    private SQLName             tableSpace;
+    protected SQLName           tableSpace;
 
     public SQLName getName() {
         return name;
@@ -68,4 +65,21 @@ public class SQLSubPartition extends SQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public SQLSubPartition clone() {
+        SQLSubPartition x = new SQLSubPartition();
+
+        if (name != null) {
+            x.setName(name.clone());
+        }
+
+        if (values != null) {
+            x.setValues(values.clone());
+        }
+
+        if (tableSpace != null) {
+            x.setTableSpace(tableSpace.clone());
+        }
+
+        return x;
+    }
 }

@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuableExpr{
+    public static final SQLDataType DEFAULT_DATA_TYPE = new SQLDataTypeImpl("bigint");
 
     private Number number;
 
@@ -85,5 +88,9 @@ public class SQLIntegerExpr extends SQLNumericLiteralExpr implements SQLValuable
 
     public SQLIntegerExpr clone() {
         return new SQLIntegerExpr(this.number);
+    }
+
+    public SQLDataType computeDataType() {
+        return DEFAULT_DATA_TYPE;
     }
 }

@@ -135,4 +135,16 @@ public class SQLUnionQuery extends SQLObjectImpl implements SQLSelectQuery {
 
         return x;
     }
+
+    public SQLSelectQueryBlock getFirstQueryBlock() {
+        if (left instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) left;
+        }
+
+        if (left instanceof SQLUnionQuery) {
+            return ((SQLUnionQuery) left).getFirstQueryBlock();
+        }
+
+        return null;
+    }
 }

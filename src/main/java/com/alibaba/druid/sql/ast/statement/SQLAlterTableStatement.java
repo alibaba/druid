@@ -28,7 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement, SQLAlterStatement {
 
     private SQLExprTableSource      tableSource;
     private List<SQLAlterTableItem> items                   = new ArrayList<SQLAlterTableItem>();
@@ -132,6 +132,13 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         return (SQLName) getTableSource().getExpr();
     }
 
+    public long nameHashCode64() {
+        if (getTableSource() == null) {
+            return 0L;
+        }
+        return ((SQLName) getTableSource().getExpr()).nameHashCode64();
+    }
+
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
     }
@@ -158,6 +165,19 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
             return ((SQLIdentifierExpr) expr).getName();
         } else if (expr instanceof SQLPropertyExpr) {
             return ((SQLPropertyExpr) expr).getName();
+        }
+
+        return null;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
         }
 
         return null;

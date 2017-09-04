@@ -35,16 +35,16 @@ public class SQLite_SelectTest_0 extends MysqlTest {
         String sql = "select first_name, last_name from mytable limit 3, 4";
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.SQLITE);
-        SQLStatement statemen = statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         SchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
         

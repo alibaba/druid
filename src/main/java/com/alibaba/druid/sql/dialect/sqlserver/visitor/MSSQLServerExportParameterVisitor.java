@@ -111,12 +111,12 @@ public class MSSQLServerExportParameterVisitor extends SQLServerOutputVisitor im
         return true;
     }
 
-    public boolean visit(SQLBinaryOpExpr x) {
-        if(requireParameterizedOutput){
-            return super.visit(x);
-        }
-        ExportParameterVisitorUtils.exportParameter(this.parameters, x);
-        return true;
-    }
+//    public boolean visit(SQLBinaryOpExpr x) {
+//        if(requireParameterizedOutput){
+//            return super.visit(x);
+//        }
+//        ExportParameterVisitorUtils.exportParameter(this.parameters, x);
+//        return true;
+//    }
 
 }

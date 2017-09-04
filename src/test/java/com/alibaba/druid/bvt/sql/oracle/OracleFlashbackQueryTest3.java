@@ -36,7 +36,7 @@ public class OracleFlashbackQueryTest3 extends TestCase {
                 "\t, AVG(salary) * 12 AS \"Average Sal\"\n" +
                 "FROM employees e, departments d\n" +
                 "WHERE d.department_id = e.department_id\n" +
-                "GROUP BY ROLLUP(department_name, job_id);";
+                "GROUP BY ROLLUP (department_name, job_id);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

@@ -138,6 +138,8 @@ public enum SQLBinaryOperator {
             case NotRLike:
             case RegExp:
             case NotRegExp:
+            case Is:
+            case IsNot:
                 return true;
             default:
                 return false;

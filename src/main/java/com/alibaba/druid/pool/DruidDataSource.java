@@ -388,9 +388,31 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (property != null && property.length() > 0) {
                 try {
                     int value = Integer.parseInt(property);
-                    super.setInitialSize(value);
+                    this.setInitialSize(value);
                 } catch (NumberFormatException e) {
                     LOG.error("illegal property 'druid.initialSize'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty("druid.minIdle");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setMinIdle(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.minIdle'", e);
+                }
+            }
+        }
+        {
+            String property = properties.getProperty("druid.maxActive");
+            if (property != null && property.length() > 0) {
+                try {
+                    int value = Integer.parseInt(property);
+                    this.setMaxActive(value);
+                } catch (NumberFormatException e) {
+                    LOG.error("illegal property 'druid.maxActive'", e);
                 }
             }
         }
@@ -398,6 +420,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             Boolean value = getBoolean(properties, "druid.killWhenSocketReadTimeout");
             if (value != null) {
                 setKillWhenSocketReadTimeout(value);
+            }
+        }
+        {
+            String property = properties.getProperty("druid.connectProperties");
+            if (property != null) {
+                this.setConnectionProperties(property);
             }
         }
     }
@@ -837,7 +865,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw e;
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
-        } finally {
+        } catch (RuntimeException e){
+            LOG.error("{dataSource-" + this.getID() + "} init error", e);
+            throw e;
+        } catch (Error e){
+            LOG.error("{dataSource-" + this.getID() + "} init error", e);
+            throw e;
+        }
+        finally {
             inited = true;
             lock.unlock();
 
@@ -1072,18 +1107,25 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     private void initValidConnectionChecker() {
+        if (this.validConnectionChecker != null) {
+            return;
+        }
+
         String realDriverClassName = driver.getClass().getName();
-        if (realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
-            || realDriverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)) {
+        if (JdbcUtils.isMySqlDriver(realDriverClassName)) {
             this.validConnectionChecker = new MySqlValidConnectionChecker();
+
         } else if (realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER)
                 || realDriverClassName.equals(JdbcConstants.ORACLE_DRIVER2)) {
             this.validConnectionChecker = new OracleValidConnectionChecker();
+
         } else if (realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER)
                    || realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER_SQLJDBC4)
                    || realDriverClassName.equals(JdbcConstants.SQL_SERVER_DRIVER_JTDS)) {
             this.validConnectionChecker = new MSSQLValidConnectionChecker();
-        } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)) {
+
+        } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
+                || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)) {
             this.validConnectionChecker = new PGValidConnectionChecker();
         }
     }
@@ -1110,7 +1152,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
             this.exceptionSorter = new SybaseExceptionSorter();
 
-        } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)) {
+        } else if (realDriverClassName.equals(JdbcConstants.POSTGRESQL_DRIVER)
+                || realDriverClassName.equals(JdbcConstants.ENTERPRISEDB_DRIVER)) {
             this.exceptionSorter = new PGExceptionSorter();
 
         } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
@@ -1782,6 +1825,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
+        if (this.username == null
+                && this.password == null
+                && username != null
+                && password != null) {
+            this.username = username;
+            this.password = password;
+
+            return getConnection();
+        }
+
         if (!StringUtils.equals(username, this.username)) {
             throw new UnsupportedOperationException("Not supported by DruidDataSource");
         }
@@ -2066,6 +2119,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     setFailContinuous(false);
                 } catch (SQLException e) {
                     LOG.error("create connection error, url: " + jdbcUrl, e);
+                    System.out.println();
 
                     errorCount++;
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {

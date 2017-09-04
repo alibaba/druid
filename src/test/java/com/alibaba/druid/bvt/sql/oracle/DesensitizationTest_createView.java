@@ -28,11 +28,11 @@ public class DesensitizationTest_createView extends TestCase {
         System.out.println("-------------------");
         System.out.println(desens_Sql);
 
-        assertEquals("CREATE VIEW T_14856F0E5B66E911\n" +
+        assertEquals("CREATE VIEW T_2BB49C83CE16E971\n" +
                 "AS\n" +
                 "SELECT suppliers.supplier_id, orders.quantity, orders.price\n" +
-                "FROM T_126BF2439561E30E\n" +
-                "\tINNER JOIN T_C5B90BBF325E96EC ON suppliers.supplier_id = orders.supplier_id \n" +
+                "FROM T_2EBB0E6843F14AEE\n" +
+                "\tINNER JOIN T_00125D9250BE8B4C ON suppliers.supplier_id = orders.supplier_id \n" +
                 "WHERE suppliers.supplier_name = ?;", desens_Sql);
 
         Map<String, String> tableMapping = new HashMap<String, String>();

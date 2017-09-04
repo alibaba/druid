@@ -55,6 +55,7 @@ public class MySqlParameterizedOutputVisitorTest_43 extends TestCase {
         stmt.accept(schemaStatVisitor);
         JSONArray srcArray = new JSONArray();
         for (Map.Entry<TableStat.Name, TableStat> entry : schemaStatVisitor.getTables().entrySet()) {
+            System.out.println(entry.getKey().getName());
             srcArray.add(entry.getKey().getName());
         }
 

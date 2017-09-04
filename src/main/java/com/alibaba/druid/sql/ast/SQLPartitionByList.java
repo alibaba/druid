@@ -59,4 +59,20 @@ public class SQLPartitionByList extends SQLPartitionBy {
         }
         this.columns.add(column);
     }
+
+    public SQLPartitionByList clone() {
+        SQLPartitionByList x = new SQLPartitionByList();
+
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+
+        return x;
+    }
 }

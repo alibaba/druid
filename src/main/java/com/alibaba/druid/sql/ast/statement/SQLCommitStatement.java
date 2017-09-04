@@ -35,6 +35,24 @@ public class SQLCommitStatement extends SQLStatementImpl {
     private SQLExpr transactionName;
     private SQLExpr delayedDurability;
 
+    public SQLCommitStatement clone() {
+        SQLCommitStatement x = new SQLCommitStatement();
+        x.write = write;
+        x.wait = wait;
+        x.immediate = immediate;
+        x.work = work;
+        x.chain = chain;
+        x.release = release;
+
+        if(transactionName != null) {
+            x.setTransactionName(transactionName.clone());
+        }
+        if (delayedDurability != null) {
+            x.setDelayedDurability(delayedDurability.clone());
+        }
+        return x;
+    }
+
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, transactionName);

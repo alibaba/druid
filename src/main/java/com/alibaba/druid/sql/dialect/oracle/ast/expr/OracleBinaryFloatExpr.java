@@ -32,6 +32,10 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements Orac
         this.value = value;
     }
 
+    public OracleBinaryFloatExpr clone() {
+        return new OracleBinaryFloatExpr(value);
+    }
+
     @Override
     public Number getNumber() {
         return value;

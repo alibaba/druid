@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
@@ -34,6 +35,10 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
     private final List<SQLExpr> parameters       = new ArrayList<SQLExpr>();
 
     private SQLExpr             from;
+    private SQLExpr             using;
+    private SQLExpr             _for;
+
+    private String              trimOption;
 
     public SQLMethodInvokeExpr(){
 
@@ -172,11 +177,18 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
             x.setFrom(from.clone());
         }
 
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+
         return x;
     }
 
     @Override
     public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (target == null) {
+            return false;
+        }
         for (int i = 0; i < parameters.size(); ++i) {
             if (parameters.get(i) == expr) {
                 parameters.set(i, target);
@@ -209,5 +221,60 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements SQLReplaceable, 
         }
 
         return false;
+    }
+
+    public SQLDataType computeDataType() {
+        if (SQLUtils.nameEquals("to_date", methodName)
+                || SQLUtils.nameEquals("add_months", methodName)) {
+            return SQLDateExpr.DEFAULT_DATA_TYPE;
+        }
+
+        if (parameters.size() == 1) {
+            if (SQLUtils.nameEquals("trunc", methodName)) {
+                return parameters.get(0).computeDataType();
+            }
+        } else if (parameters.size() == 2) {
+            SQLExpr param0 = parameters.get(0);
+            SQLExpr param1 = parameters.get(1);
+            if (SQLUtils.nameEquals("nvl", methodName) || SQLUtils.nameEquals("ifnull", methodName)) {
+                SQLDataType dataType = param0.computeDataType();
+                if (dataType != null) {
+                    return dataType;
+                }
+
+                return param1.computeDataType();
+            }
+        }
+        return null;
+    }
+
+    public SQLExpr getUsing() {
+        return using;
+    }
+
+    public void setUsing(SQLExpr using) {
+        if (using != null) {
+            using.setParent(this);
+        }
+        this.using = using;
+    }
+
+    public SQLExpr getFor() {
+        return _for;
+    }
+
+    public void setFor(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this._for = x;
+    }
+
+    public String getTrimOption() {
+        return trimOption;
+    }
+
+    public void setTrimOption(String trimOption) {
+        this.trimOption = trimOption;
     }
 }

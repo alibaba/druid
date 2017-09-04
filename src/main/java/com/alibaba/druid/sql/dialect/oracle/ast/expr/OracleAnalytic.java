@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -59,5 +60,9 @@ public class OracleAnalytic extends SQLOver implements OracleExpr {
 
     public void setWindowing(OracleAnalyticWindowing windowing) {
         this.windowing = windowing;
+    }
+
+    public SQLDataType computeDataType() {
+        return null;
     }
 }

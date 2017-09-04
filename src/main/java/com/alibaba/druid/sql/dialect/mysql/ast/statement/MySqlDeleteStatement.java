@@ -34,7 +34,6 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
     private boolean              quick       = false;
     private boolean              ignore      = false;
 
-    private SQLTableSource       using;
     private SQLOrderBy           orderBy;
     private SQLLimit limit;
 
@@ -42,6 +41,27 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
 
     public MySqlDeleteStatement(){
         super(JdbcConstants.MYSQL);
+    }
+
+    public MySqlDeleteStatement clone() {
+        MySqlDeleteStatement x = new MySqlDeleteStatement();
+        cloneTo(x);
+
+        x.lowPriority = lowPriority;
+        x.quick = quick;
+        x.ignore = ignore;
+
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+        if (limit != null) {
+            x.setLimit(limit.clone());
+        }
+
+        return x;
     }
 
     public List<SQLCommentHint> getHints() {
@@ -81,14 +101,6 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
 
     public void setIgnore(boolean ignore) {
         this.ignore = ignore;
-    }
-
-    public SQLTableSource getUsing() {
-        return using;
-    }
-
-    public void setUsing(SQLTableSource using) {
-        this.using = using;
     }
 
     public SQLOrderBy getOrderBy() {

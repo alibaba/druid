@@ -26,9 +26,10 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private boolean     orReplace   = false;
     private boolean     force       = false;
@@ -68,6 +69,19 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         if (expr instanceof SQLName) {
             String name = ((SQLName) expr).getSimpleName();
             return SQLUtils.normalize(name);
+        }
+
+        return null;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
         }
 
         return null;
@@ -265,5 +279,41 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
                 acceptChild(visitor, comment);
             }
         }
+    }
+
+
+    public SQLCreateViewStatement clone() {
+        SQLCreateViewStatement x = new SQLCreateViewStatement();
+
+        x.orReplace = orReplace;
+        x.force = force;
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        x.ifNotExists = ifNotExists;
+
+        x.algorithm = algorithm;
+        if (definer != null) {
+            x.setDefiner(definer.clone());
+        }
+        x.sqlSecurity = sqlSecurity;
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLTableElement column : columns) {
+            SQLTableElement column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        x.withCheckOption = withCheckOption;
+        x.withCascaded = withCascaded;
+        x.withLocal = withLocal;
+        x.withReadOnly = withReadOnly;
+
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
+
+        return x;
     }
 }

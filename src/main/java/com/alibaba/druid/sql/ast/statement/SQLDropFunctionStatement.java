@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLDropFunctionStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private SQLName name;
     private boolean ifExists;

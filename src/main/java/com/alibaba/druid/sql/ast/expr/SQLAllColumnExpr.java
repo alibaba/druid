@@ -16,9 +16,11 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAllColumnExpr extends SQLExprImpl {
+    private transient SQLTableSource resolvedTableSource;
 
     public SQLAllColumnExpr(){
 
@@ -42,6 +44,17 @@ public class SQLAllColumnExpr extends SQLExprImpl {
     }
 
     public SQLAllColumnExpr clone() {
-        return new SQLAllColumnExpr();
+        SQLAllColumnExpr x = new SQLAllColumnExpr();
+
+        x.resolvedTableSource = resolvedTableSource;
+        return x;
+    }
+
+    public SQLTableSource getResolvedTableSource() {
+        return resolvedTableSource;
+    }
+
+    public void setResolvedTableSource(SQLTableSource resolvedTableSource) {
+        this.resolvedTableSource = resolvedTableSource;
     }
 }

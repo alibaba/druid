@@ -17,6 +17,7 @@ package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -39,7 +40,7 @@ public class PGWallProvider extends WallProvider {
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new PGSQLStatementParser(sql);
+        return new PGSQLStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
     }
 
     @Override

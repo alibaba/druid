@@ -90,6 +90,6 @@ public class OracleCreateTableTest60 extends OracleTest {
 
         Assert.assertEquals(5, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "MEMBER_ID")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "MEMBER_ID"));
     }
 }

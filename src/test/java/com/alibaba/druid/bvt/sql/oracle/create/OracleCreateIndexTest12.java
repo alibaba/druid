@@ -54,7 +54,6 @@ public class OracleCreateIndexTest12 extends OracleTest {
 
         assertEquals("CREATE BITMAP INDEX product_bm_ix ON hash_products(list_price)\n" +
                         "TABLESPACE tbs_1\n" +
-                        "TABLESPACE tbs_1\n" +
                         "LOCAL (\n" +
                         "\tPARTITION ix_p1\n" +
                         "\t\tTABLESPACE tbs_02,\n" +

@@ -40,33 +40,27 @@ public class PGSelectTest18 extends PGTest {
         SQLStatement stmt = statementList.get(0);
         {
             String result = SQLUtils.toPGString(stmt);
-            Assert.assertEquals("WITH RECURSIVE "
-                    + "\n\tt (n)"
-                    + "\n\tAS"
-                    + "\n\t("
-                    + "\n\t\tSELECT 1"
-                    + "\n\t\tUNION ALL"
-                    + "\n\t\tSELECT n + 1"
-                    + "\n\t\tFROM t"
-                    + "\n\t)"
-                    + "\nSELECT n"
-                    + "\nFROM t"
-                    + "\nLIMIT 100;", result);
+            Assert.assertEquals("WITH RECURSIVE t (n) AS (\n" +
+                    "\t\tSELECT 1\n" +
+                    "\t\tUNION ALL\n" +
+                    "\t\tSELECT n + 1\n" +
+                    "\t\tFROM t\n" +
+                    "\t)\n" +
+                    "SELECT n\n" +
+                    "FROM t\n" +
+                    "LIMIT 100;", result);
         }
         {
             String result = SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
-            Assert.assertEquals("with recursive "
-                    + "\n\tt (n)"
-                    + "\n\tas"
-                    + "\n\t("
-                    + "\n\t\tselect 1"
-                    + "\n\t\tunion all"
-                    + "\n\t\tselect n + 1"
-                    + "\n\t\tfrom t"
-                    + "\n\t)"
-                    + "\nselect n"
-                    + "\nfrom t"
-                    + "\nlimit 100;", result);
+            Assert.assertEquals("with recursive t (n) as (\n" +
+                    "\t\tselect 1\n" +
+                    "\t\tunion all\n" +
+                    "\t\tselect n + 1\n" +
+                    "\t\tfrom t\n" +
+                    "\t)\n" +
+                    "select n\n" +
+                    "from t\n" +
+                    "limit 100;", result);
         }
         
         Assert.assertEquals(1, statementList.size());
@@ -74,12 +68,12 @@ public class PGSelectTest18 extends PGTest {
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
-        Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getTables().size());
     }
 }
 

@@ -18,13 +18,11 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceable {
+    protected SQLWithSubqueryClause with; // for pg
 
     protected final List<SQLUpdateSetItem> items = new ArrayList<SQLUpdateSetItem>();
     protected SQLExpr                      where;
@@ -32,6 +30,9 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     protected SQLTableSource               tableSource;
     protected List<SQLExpr>                returning;
+
+    // for mysql
+    protected SQLOrderBy orderBy;
 
     public SQLUpdateStatement(){
 
@@ -58,8 +59,14 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
 
     public SQLName getTableName() {
         if (tableSource instanceof SQLExprTableSource) {
-            SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
-            return (SQLName) exprTableSource.getExpr();
+            return ((SQLExprTableSource) tableSource).getName();
+        }
+
+        if (tableSource instanceof SQLJoinTableSource) {
+            SQLTableSource left = ((SQLJoinTableSource) tableSource).getLeft();
+            if (left instanceof SQLExprTableSource) {
+                return ((SQLExprTableSource) left).getName();
+            }
         }
         return null;
     }
@@ -127,8 +134,10 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, tableSource);
+            acceptChild(visitor, from);
             acceptChild(visitor, items);
             acceptChild(visitor, where);
+            acceptChild(visitor, orderBy);
         }
         visitor.endVisit(this);
     }
@@ -140,5 +149,28 @@ public class SQLUpdateStatement extends SQLStatementImpl implements SQLReplaceab
             return true;
         }
         return false;
+    }
+
+
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
+        this.orderBy = orderBy;
+    }
+
+    public SQLWithSubqueryClause getWith() {
+        return with;
+    }
+
+    public void setWith(SQLWithSubqueryClause with) {
+        if (with != null) {
+            with.setParent(this);
+        }
+        this.with = with;
     }
 }

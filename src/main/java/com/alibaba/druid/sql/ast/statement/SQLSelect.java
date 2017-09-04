@@ -93,6 +93,9 @@ public class SQLSelect extends SQLObjectImpl {
     }
 
     public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
         this.orderBy = orderBy;
     }
 
@@ -272,4 +275,15 @@ public class SQLSelect extends SQLObjectImpl {
         this.xmlPath = xmlPath;
     }
 
+    public SQLSelectQueryBlock getFirstQueryBlock() {
+        if (query instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) query;
+        }
+
+        if (query instanceof SQLUnionQuery) {
+            return ((SQLUnionQuery) query).getFirstQueryBlock();
+        }
+
+        return null;
+    }
 }

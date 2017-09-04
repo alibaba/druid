@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -41,6 +40,8 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.StringUtils;
+
+import java.util.List;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor {
 
@@ -121,58 +122,8 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
-    @Override
-    public void endVisit(PGWithQuery x) {
-
-    }
-
-    @Override
-    public boolean visit(PGWithQuery x) {
-        x.getName().accept(this);
-
-        if (x.getColumns().size() > 0) {
-            print0(" (");
-            printAndAccept(x.getColumns(), ", ");
-            print(')');
-        }
-        println();
-        print0(ucase ? "AS" : "as");
-        println();
-        print('(');
-        incrementIndent();
-        println();
-        x.getQuery().accept(this);
-        decrementIndent();
-        println();
-        print(')');
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(PGWithClause x) {
-
-    }
-
-    @Override
-    public boolean visit(PGWithClause x) {
-        print0(ucase ? "WITH" : "with");
-        if (x.isRecursive()) {
-            print0(ucase ? " RECURSIVE " : " recursive ");
-        }
-        incrementIndent();
-        println();
-        printlnAndAccept(x.getWithQuery(), ", ");
-        decrementIndent();
-        return false;
-    }
 
     public boolean visit(PGSelectQueryBlock x) {
-        if (x.getWith() != null) {
-            x.getWith().accept(this);
-            println();
-        }
-
         print0(ucase ? "SELECT " : "select ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) {
@@ -208,7 +159,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         if (x.getWhere() != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -297,19 +247,19 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(x.getAlias());
         }
 
-        if (x.getUsing().size() > 0) {
+        SQLTableSource using = x.getUsing();
+        if (using != null) {
             println();
             print0(ucase ? "USING " : "using ");
-            printAndAccept(x.getUsing(), ", ");
+            using.accept(this);
         }
 
         if (x.getWhere() != null) {
             println();
             print0(ucase ? "WHERE " : "where ");
-            incrementIndent();
-            x.getWhere().setParent(x);
+            this.indentCount++;
             x.getWhere().accept(this);
-            decrementIndent();
+            this.indentCount--;
         }
 
         if (x.isReturning()) {
@@ -365,11 +315,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(PGSelectStatement x) {
-        if (x.getWith() != null) {
-            x.getWith().accept(this);
-            println();
-        }
-
         return visit((SQLSelectStatement) x);
     }
 
@@ -380,8 +325,9 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(PGUpdateStatement x) {
-        if (x.getWith() != null) {
-            x.getWith().accept(this);
+        SQLWithSubqueryClause with = x.getWith();
+        if (with != null) {
+            visit(with);
             println();
         }
 
@@ -391,7 +337,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print0(ucase ? "ONLY " : "only ");
         }
 
-        x.getTableSource().accept(this);
+        printTableSource(x.getTableSource());
 
         println();
         print0(ucase ? "SET " : "set ");
@@ -399,28 +345,31 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             if (i != 0) {
                 print0(", ");
             }
-            x.getItems().get(i).accept(this);
+            SQLUpdateSetItem item = x.getItems().get(i);
+            visit(item);
         }
 
-        if (x.getFrom() != null) {
+        SQLTableSource from = x.getFrom();
+        if (from != null) {
             println();
             print0(ucase ? "FROM " : "from ");
-            x.getFrom().accept(this);
+            printTableSource(from);
         }
 
-        if (x.getWhere() != null) {
+        SQLExpr where = x.getWhere();
+        if (where != null) {
             println();
+            indentCount++;
             print0(ucase ? "WHERE " : "where ");
-            incrementIndent();
-            x.getWhere().setParent(x);
-            x.getWhere().accept(this);
-            decrementIndent();
+            printExpr(where);
+            indentCount--;
         }
 
-        if (x.getReturning().size() > 0) {
+        List<SQLExpr> returning = x.getReturning();
+        if (returning.size() > 0) {
             println();
             print0(ucase ? "RETURNING " : "returning ");
-            printAndAccept(x.getReturning(), ", ");
+            printAndAccept(returning, ", ");
         }
 
         return false;
@@ -461,7 +410,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public boolean visit(PGTypeCastExpr x) {
-        x.getExpr().accept(this);
+        SQLExpr expr = x.getExpr();
+        if (expr != null) {
+            if (expr instanceof SQLBinaryOpExpr) {
+                print('(');
+                expr.accept(this);
+                print(')');
+            } else {
+                expr.accept(this);
+            }
+        }
         print0("::");
         x.getDataType().accept(this);
         return false;

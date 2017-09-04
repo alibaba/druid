@@ -69,9 +69,13 @@ public class OracleBlockTest5 extends OracleTest {
          Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab_ipay_out_order_ids")));
          Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ipay_contract")));
 
-        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(5, visitor.getColumns().size());
         Assert.assertEquals(3, visitor.getConditions().size());
 
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
+         Assert.assertTrue(visitor.containsColumn("escrow_trade", "id"));
+         Assert.assertTrue(visitor.containsColumn("escrow_trade", "out_order_id"));
+         Assert.assertTrue(visitor.containsColumn("tab_ipay_out_order_ids", "out_order_id"));
+         Assert.assertTrue(visitor.containsColumn("ipay_contract", "is_chargeback"));
+         Assert.assertTrue(visitor.containsColumn("ipay_contract", "out_ref"));
     }
 }

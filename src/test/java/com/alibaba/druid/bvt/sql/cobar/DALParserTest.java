@@ -191,7 +191,7 @@ public class DALParserTest extends TestCase {
         SQLStatement set = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(set);
-        Assert.assertEquals("SET NAMES 'utf8' COLLATE latin1_danish_ci", output);
+        Assert.assertEquals("SET NAMES 'utf8' COLLATE \"latin1_danish_ci\"", output);
     }
     
     public void test_setNames_2() throws Exception {

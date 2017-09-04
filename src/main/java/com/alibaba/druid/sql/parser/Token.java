@@ -130,6 +130,8 @@ public enum Token {
     SHOW("SHOW"),
     REPLACE("REPLACE"),
 
+    BITS,
+
     // MySql procedure add by zz
     WHILE("WHILE"),
     DO("DO"),
@@ -256,7 +258,7 @@ public enum Token {
     LITERAL_HEX,
     LITERAL_CHARS,
     LITERAL_NCHARS,
-    
+
     LITERAL_ALIAS,
     LINE_COMMENT,
     MULTI_LINE_COMMENT,

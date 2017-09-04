@@ -182,6 +182,9 @@ public class OdpsLexer extends Lexer {
     }
 
     public void scanIdentifier() {
+        hash_lower = 0;
+        hash = 0;
+
         final char first = ch;
         
         if (first == '`') {
@@ -361,9 +364,5 @@ public class OdpsLexer extends Lexer {
 
     protected final void scanString() {
         scanString2();
-    }
-    
-    protected final void scanAlias() {
-        scanAlias2();
     }
 }

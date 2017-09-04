@@ -90,7 +90,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             accept(Token.BY);
             this.exprParser.exprList(queryBlock.getDistributeBy(), queryBlock);
 
-            if (identifierEquals("SORT")) {
+            if (lexer.identifierEquals("SORT")) {
                 lexer.nextToken();
                 accept(Token.BY);
                 
@@ -168,7 +168,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             return parseLateralView(tableSource);
         }
         
-        if (identifierEquals("LATERAL")) {
+        if (lexer.identifierEquals("LATERAL")) {
             lexer.nextToken();
             return parseLateralView(tableSource);
         }

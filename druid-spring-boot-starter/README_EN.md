@@ -24,7 +24,7 @@ Spring Boot with Druid support, help you simplify Druid config in Spring Boot.
     spring.datasource.url= 
     spring.datasource.username=
     spring.datasource.password=
-    # ...other config (optional)
+    # ...other config (optional, use the embedded database, then the above three items can also be omitted)
     ```
 ## Configuration Properties
 Druid Spring Boot Starter properties name in full compliance with Druid configuration, you can configure the Druid database connection pool and monitor the configuration properties through the following configuration properties, using default values if not configured.

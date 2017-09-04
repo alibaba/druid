@@ -16,18 +16,21 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.ast.SQLReplaceable;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr expr;
     protected String  alias;
+
     protected boolean connectByRoot = false;
+
+    protected transient long aliasHashCode64;
 
     public SQLSelectItem(){
 
@@ -61,10 +64,10 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
     }
 
     public void setExpr(SQLExpr expr) {
-        this.expr = expr;
         if (expr != null) {
             expr.setParent(this);
         }
+        this.expr = expr;
     }
 
     public String computeAlias() {
@@ -78,6 +81,14 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
 
         return SQLUtils.normalize(alias);
+    }
+
+    public SQLDataType computeDataType() {
+        if (expr == null) {
+            return null;
+        }
+
+        return expr.computeDataType();
     }
 
     public String getAlias() {
@@ -142,7 +153,7 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         SQLSelectItem x = new SQLSelectItem();
         x.alias = alias;
         if (expr != null) {
-            x.expr = expr.clone();
+            x.setExpr(expr.clone());
         }
         x.connectByRoot = connectByRoot;
         return x;
@@ -163,20 +174,49 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
             return false;
         }
 
-        String alias_normalized = SQLUtils.normalize(alias);
+        long hash = FnvHash.hashCode64(alias);
+        return match(hash);
+    }
 
-        if (alias_normalized.equalsIgnoreCase(this.alias)) {
+    public long alias_hash() {
+        if (this.aliasHashCode64 == 0) {
+            this.aliasHashCode64 = FnvHash.hashCode64(alias);
+        }
+        return aliasHashCode64;
+    }
+
+    public boolean match(long alias_hash) {
+        long hash = alias_hash();
+
+        if (hash == alias_hash) {
             return true;
         }
 
+        if (expr instanceof SQLAllColumnExpr) {
+            SQLTableSource resolvedTableSource = ((SQLAllColumnExpr) expr).getResolvedTableSource();
+            if (resolvedTableSource != null
+                    && resolvedTableSource.findColumn(alias_hash) != null) {
+                return true;
+            }
+            return false;
+        }
+
         if (expr instanceof SQLIdentifierExpr) {
-            String ident = ((SQLIdentifierExpr) expr).getName();
-            return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));
+            return ((SQLIdentifierExpr) expr).nameHashCode64() == alias_hash;
         }
 
         if (expr instanceof SQLPropertyExpr) {
             String ident = ((SQLPropertyExpr) expr).getName();
-            return alias_normalized.equalsIgnoreCase(SQLUtils.normalize(ident));
+            if ("*".equals(ident)) {
+                SQLTableSource resolvedTableSource = ((SQLPropertyExpr) expr).getResolvedTableSource();
+                if (resolvedTableSource != null
+                        && resolvedTableSource.findColumn(alias_hash) != null) {
+                    return true;
+                }
+                return false;
+            }
+
+            return ((SQLPropertyExpr) expr).nameHashCode64() == alias_hash;
         }
 
         return false;

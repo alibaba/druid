@@ -16,16 +16,20 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
+    private   SQLExpr             owner;
+    private   String              name;
 
-    private SQLExpr owner;
-    private String  name;
+    protected long                nameHashCod64;
+    protected long                hashCode64;
+
+    protected SQLColumnDefinition resolvedColumn;
+    protected SQLObject           resolvedOwnerObject;
 
     public SQLPropertyExpr(String owner, String name){
         this(new SQLIdentifierExpr(owner), name);
@@ -34,6 +38,12 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     public SQLPropertyExpr(SQLExpr owner, String name){
         setOwner(owner);
         this.name = name;
+    }
+
+    public SQLPropertyExpr(SQLExpr owner, String name, long nameHashCod64){
+        setOwner(owner);
+        this.name = name;
+        this.nameHashCod64 = nameHashCod64;
     }
 
     public SQLPropertyExpr(){
@@ -60,7 +70,37 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         if (owner != null) {
             owner.setParent(this);
         }
+
+        if (parent instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) parent;
+            propertyExpr.computeHashCode64();
+        }
+
         this.owner = owner;
+        this.hashCode64 = 0;
+    }
+
+    protected void computeHashCode64() {
+        long hash;
+        if (owner instanceof SQLName) {
+            hash = ((SQLName) owner).hashCode64();
+
+            hash ^= '.';
+            hash *= FnvHash.PRIME;
+        } else if (owner == null){
+            hash = FnvHash.BASIC;
+        } else {
+            hash = FnvHash.fnv1a_64_lower(owner.toString());
+
+            hash ^= '.';
+            hash *= FnvHash.PRIME;
+        }
+        hash = FnvHash.hashCode64(hash, name);
+        hashCode64 = hash;
+    }
+
+    public void setOwner(String owner) {
+        this.setOwner(new SQLIdentifierExpr(owner));
     }
 
     public String getName() {
@@ -69,6 +109,13 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     public void setName(String name) {
         this.name = name;
+        this.hashCode64 = 0;
+        this.nameHashCod64 = 0;
+
+        if (parent instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) parent;
+            propertyExpr.computeHashCode64();
+        }
     }
 
     public void output(StringBuffer buf) {
@@ -87,11 +134,16 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-        return result;
+        long hash = hashCode64();
+        return (int)(hash ^ (hash >>> 32));
+    }
+
+    public long hashCode64() {
+        if (hashCode64 == 0) {
+            computeHashCode64();
+        }
+
+        return hashCode64;
     }
 
     @Override
@@ -124,12 +176,18 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLPropertyExpr clone() {
-        SQLPropertyExpr propertyExpr = new SQLPropertyExpr();
-        propertyExpr.name = this.name;
+        SQLExpr owner_x = null;
         if (owner != null) {
-            propertyExpr.setOwner(owner.clone());
+            owner_x = owner.clone();
         }
-        return propertyExpr;
+
+        SQLPropertyExpr x = new SQLPropertyExpr(owner_x, name, nameHashCod64);
+
+        x.hashCode64 = hashCode64;
+        x.resolvedColumn = resolvedColumn;
+        x.resolvedOwnerObject = resolvedOwnerObject;
+
+        return x;
     }
 
     public boolean matchOwner(String alias) {
@@ -138,6 +196,14 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         }
 
         return false;
+    }
+
+    public long nameHashCode64() {
+        if (nameHashCod64 == 0
+                && name != null) {
+            nameHashCod64 = FnvHash.hashCode64(name);
+        }
+        return nameHashCod64;
     }
 
     public String normalizedName() {
@@ -152,5 +218,84 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         }
 
         return ownerName + '.' + SQLUtils.normalize(name);
+    }
+
+    public SQLColumnDefinition getResolvedColumn() {
+        return resolvedColumn;
+    }
+
+    public void setResolvedColumn(SQLColumnDefinition resolvedColumn) {
+        this.resolvedColumn = resolvedColumn;
+    }
+
+    public SQLTableSource getResolvedTableSource() {
+        if (resolvedOwnerObject instanceof SQLTableSource) {
+            return (SQLTableSource) resolvedOwnerObject;
+        }
+
+        return null;
+    }
+
+    public void setResolvedTableSource(SQLTableSource resolvedTableSource) {
+        this.resolvedOwnerObject = resolvedTableSource;
+    }
+
+    public void setResolvedProcedure(SQLCreateProcedureStatement stmt) {
+        this.resolvedOwnerObject = stmt;
+    }
+
+    public void setResolvedOwnerObject(SQLObject resolvedOwnerObject) {
+        this.resolvedOwnerObject = resolvedOwnerObject;
+    }
+
+    public SQLCreateProcedureStatement getResolvedProcudure() {
+        if (this.resolvedOwnerObject instanceof SQLCreateProcedureStatement) {
+            return (SQLCreateProcedureStatement) this.resolvedOwnerObject;
+        }
+
+        return null;
+    }
+
+    public SQLObject getResolvedOwnerObject() {
+        return resolvedOwnerObject;
+    }
+
+    public SQLDataType computeDataType() {
+        if (resolvedColumn != null) {
+            return resolvedColumn.getDataType();
+        }
+
+        if (resolvedOwnerObject != null
+                && resolvedOwnerObject instanceof SQLSubqueryTableSource) {
+            SQLSelect select = ((SQLSubqueryTableSource) resolvedOwnerObject).getSelect();
+            SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+            if (queryBlock == null) {
+                return null;
+            }
+            SQLSelectItem selectItem = queryBlock.findSelectItem(nameHashCode64());
+            if (selectItem != null) {
+                return selectItem.computeDataType();
+            }
+        }
+
+        return null;
+    }
+
+    public boolean nameEquals(String name) {
+        return SQLUtils.nameEquals(this.name, name);
+    }
+
+    public SQLPropertyExpr simplify() {
+        String normalizedName = SQLUtils.normalize(name);
+        SQLExpr normalizedOwner = this.owner;
+        if (normalizedOwner instanceof SQLIdentifierExpr) {
+            normalizedOwner = ((SQLIdentifierExpr) normalizedOwner).simplify();
+        }
+
+        if (normalizedName != name || normalizedOwner != owner) {
+            return new SQLPropertyExpr(normalizedOwner, normalizedName, hashCode64);
+        }
+
+        return this;
     }
 }

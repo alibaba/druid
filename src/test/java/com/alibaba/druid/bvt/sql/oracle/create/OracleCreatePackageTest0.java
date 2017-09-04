@@ -224,8 +224,12 @@ public class OracleCreatePackageTest0 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getTables().size());
 
-        Assert.assertEquals(11, visitor.getColumns().size());
+        Assert.assertEquals(5, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+        Assert.assertTrue(visitor.containsColumn("employees", "employee_id"));
+        Assert.assertTrue(visitor.containsColumn("employees", "*"));
+        Assert.assertTrue(visitor.containsColumn("departments", "department_id"));
+        Assert.assertTrue(visitor.containsColumn("employees", "salary"));
+        Assert.assertTrue(visitor.containsColumn("employees", "commission_pct"));
     }
 }

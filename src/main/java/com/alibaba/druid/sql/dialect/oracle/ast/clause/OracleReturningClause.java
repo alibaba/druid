@@ -58,4 +58,21 @@ public class OracleReturningClause extends OracleSQLObjectImpl {
         visitor.endVisit(this);
     }
 
+    public OracleReturningClause clone() {
+        OracleReturningClause x = new OracleReturningClause();
+
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+
+        for (SQLExpr v : values) {
+            SQLExpr v2 = v.clone();
+            v2.setParent(x);
+            x.values.add(v2);
+        }
+
+        return x;
+    }
 }

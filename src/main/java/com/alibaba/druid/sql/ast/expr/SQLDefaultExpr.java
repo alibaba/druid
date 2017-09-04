@@ -39,4 +39,8 @@ public class SQLDefaultExpr extends SQLExprImpl implements SQLLiteralExpr {
     public String toString() {
         return "DEFAULT";
     }
+
+    public SQLDefaultExpr clone() {
+        return new SQLDefaultExpr();
+    }
 }

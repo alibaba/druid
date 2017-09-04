@@ -268,7 +268,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT PI() + 0E-18", text);
+        Assert.assertEquals("SELECT PI() + 0.000000000000000000", text);
     }
 
     public void test_22() throws Exception {
@@ -323,7 +323,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT ROUND(2.5), ROUND(2.5)", text);
+        Assert.assertEquals("SELECT ROUND(2.5), ROUND(25E-1)", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

@@ -28,6 +28,8 @@ public class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceabl
     protected SQLOrderingSpecification type;
     protected NullsOrderType           nullsOrderType;
 
+    protected transient SQLSelectItem  resolvedSelectItem;
+
     public SQLSelectOrderByItem(){
 
     }
@@ -139,5 +141,13 @@ public class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceabl
         x.type = type;
         x.nullsOrderType = nullsOrderType;
         return x;
+    }
+
+    public SQLSelectItem getResolvedSelectItem() {
+        return resolvedSelectItem;
+    }
+
+    public void setResolvedSelectItem(SQLSelectItem resolvedSelectItem) {
+        this.resolvedSelectItem = resolvedSelectItem;
     }
 }

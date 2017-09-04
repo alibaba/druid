@@ -25,15 +25,8 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.sql.Connection;
+import java.sql.*;
 import java.sql.Date;
-import java.sql.Driver;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.util.*;
 
 /**
@@ -112,6 +105,30 @@ public final class JdbcUtils implements JdbcConstants {
 
         try {
             x.close();
+        } catch (Exception e) {
+            LOG.debug("close error", e);
+        }
+    }
+
+    public static void close(Blob x) {
+        if (x == null) {
+            return;
+        }
+
+        try {
+            x.free();
+        } catch (Exception e) {
+            LOG.debug("close error", e);
+        }
+    }
+
+    public static void close(Clob x) {
+        if (x == null) {
+            return;
+        }
+
+        try {
+            x.free();
         } catch (Exception e) {
             LOG.debug("close error", e);
         }
@@ -767,6 +784,21 @@ public final class JdbcUtils implements JdbcConstants {
         }
     }
 
+    public static List<String> showTables(Connection conn, String dbType) throws SQLException {
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            return MySqlUtils.showTables(conn);
+        }
+
+        if (JdbcConstants.ORACLE.equals(dbType)) {
+            return OracleUtils.showTables(conn);
+        }
+
+        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+            return PGUtils.showTables(conn);
+        }
+        throw new SQLException("show tables dbType not support for " + dbType);
+    }
+
     public static String getCreateTableScript(Connection conn, String dbType) throws SQLException {
         return getCreateTableScript(conn, dbType, true, true);
     }
@@ -781,5 +813,11 @@ public final class JdbcUtils implements JdbcConstants {
         }
 
         throw new SQLException("getCreateTableScript dbType not support for " + dbType);
+    }
+
+    public static boolean isMySqlDriver(String driverClassName) {
+        return driverClassName.equals(JdbcConstants.MYSQL_DRIVER) //
+                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_6)
+                || driverClassName.equals(JdbcConstants.MYSQL_DRIVER_REPLICATE);
     }
 }

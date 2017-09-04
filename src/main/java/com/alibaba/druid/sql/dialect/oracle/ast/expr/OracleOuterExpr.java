@@ -33,6 +33,14 @@ public class OracleOuterExpr extends SQLExprImpl implements OracleExpr {
         this.expr = expr;
     }
 
+    public OracleOuterExpr clone() {
+        OracleOuterExpr x = new OracleOuterExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getExpr() {
         return this.expr;
     }

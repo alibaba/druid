@@ -37,7 +37,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
     private ModelClause                modelClause;
 
-    private List<SQLExpr>              forUpdateOf;
+
     private boolean                    skipLocked  = false;
 
     public OracleSelectQueryBlock clone() {
@@ -95,21 +95,6 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
         }
 
         return hints.size();
-    }
-
-    public List<SQLExpr> getForUpdateOf() {
-        if (forUpdateOf == null) {
-            forUpdateOf = new ArrayList<SQLExpr>(1);
-        }
-        return forUpdateOf;
-    }
-
-    public int getForUpdateOfSize() {
-        if (forUpdateOf == null) {
-            return 0;
-        }
-
-        return forUpdateOf.size();
     }
 
     public boolean isSkipLocked() {

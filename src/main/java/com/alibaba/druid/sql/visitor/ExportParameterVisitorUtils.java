@@ -91,7 +91,7 @@ public final class ExportParameterVisitorUtils {
         }
 
         if (param instanceof SQLBooleanExpr) {
-            value = ((SQLBooleanExpr) param).getValue();
+            value = ((SQLBooleanExpr) param).getBooleanValue();
             replace = true;
         }
 
@@ -108,7 +108,10 @@ public final class ExportParameterVisitorUtils {
         if (replace) {
             SQLObject parent = param.getParent();
             if (parent != null) {
-                List<SQLObject> mergedList = (List<SQLObject>) parent.getAttribute(ParameterizedOutputVisitorUtils.ATTR_MERGED);
+                List<SQLObject> mergedList = null;
+                if (parent instanceof SQLBinaryOpExpr) {
+                    mergedList = ((SQLBinaryOpExpr) parent).getMergedList();
+                }
                 if (mergedList != null) {
                     List<Object> mergedListParams = new ArrayList<Object>(mergedList.size() + 1);
                     for (int i = 0; i < mergedList.size(); ++i) {

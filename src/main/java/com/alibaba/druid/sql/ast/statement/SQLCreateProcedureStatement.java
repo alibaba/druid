@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateProcedureStatement extends SQLStatementImpl {
+public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private SQLName            definer;
 
@@ -165,5 +165,15 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
     public void setModifiesSqlData(boolean modifiesSqlData) {
         this.modifiesSqlData = modifiesSqlData;
+    }
+
+    public SQLParameter findParameter(long hash) {
+        for (SQLParameter param : this.parameters) {
+            if (param.getName().nameHashCode64() == hash) {
+                return param;
+            }
+        }
+
+        return null;
     }
 }

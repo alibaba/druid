@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * Created by wenshao on 23/05/2017.
  */
-public class SQLCreateFunctionStatement extends SQLStatementImpl {
+public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLCreateStatement, SQLObjectWithDataType {
     private SQLName definer;
 
     private boolean            create     = true;
@@ -46,12 +47,45 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl {
 
     private boolean            deterministic  = false;
 
+    public SQLCreateFunctionStatement clone() {
+        SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
+
+        if (definer != null) {
+            x.setDefiner(definer.clone());
+        }
+        x.create = create;
+        x.orReplace = orReplace;
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        if (block != null) {
+            x.setBlock(block.clone());
+        }
+        for (SQLParameter p : parameters) {
+            SQLParameter p2 = p.clone();
+            p2.setParent(x);
+            x.parameters.add(p2);
+        }
+        x.javaCallSpec = javaCallSpec;
+        if (authid != null) {
+            x.setAuthid(authid.clone());
+        }
+        if (returnDataType != null) {
+            x.setReturnDataType(returnDataType.clone());
+        }
+        x.comment = comment;
+        x.deterministic = deterministic;
+
+        return x;
+    }
+
     @Override
     public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, definer);
             acceptChild(visitor, name);
             acceptChild(visitor, parameters);
+            acceptChild(visitor, returnDataType);
             acceptChild(visitor, block);
         }
         visitor.endVisit(this);
@@ -152,5 +186,28 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl {
 
     public void setDeterministic(boolean deterministic) {
         this.deterministic = deterministic;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
+
+    @Override
+    public SQLDataType getDataType() {
+        return returnDataType;
+    }
+
+    @Override
+    public void setDataType(SQLDataType dataType) {
+        this.setReturnDataType(dataType);
     }
 }

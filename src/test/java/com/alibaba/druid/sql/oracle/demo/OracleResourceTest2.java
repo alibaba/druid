@@ -30,7 +30,7 @@ import java.util.List;
 public class OracleResourceTest2 extends OracleTest {
 
     public void test_0() throws Exception {
-        File file = new File("/Users/wenshao/Downloads/Procedures.sql");
+        File file = new File("/Users/wenshao/Downloads/ff.sql");
 
         String sql = FileUtils.readFileToString(file);
 

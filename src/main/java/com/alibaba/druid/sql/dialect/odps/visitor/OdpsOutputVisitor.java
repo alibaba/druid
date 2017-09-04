@@ -75,7 +75,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                 printlnComment(x.getBodyBeforeCommentsDirect());
             }
             
-            incrementIndent();
+            this.indentCount++;
             println();
             for (int i = 0; i < size; ++i) {
                 SQLTableElement element = x.getTableElementList().get(i);
@@ -93,7 +93,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                     println();
                 }
             }
-            decrementIndent();
+            this.indentCount--;
             println();
             print(')');
         }
@@ -108,7 +108,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         if (partitionSize > 0) {
             println();
             print0(ucase ? "PARTITIONED BY (" : "partitioned by (");
-            incrementIndent();
+            this.indentCount++;
             println();
             for (int i = 0; i < partitionSize; ++i) {
                 SQLColumnDefinition column = x.getPartitionColumns().get(i);
@@ -126,7 +126,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
                     println();
                 }
             }
-            decrementIndent();
+            this.indentCount--;
             println();
             print(')');
         }
@@ -194,10 +194,10 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
             if (from instanceof SQLSubqueryTableSource) {
                 SQLSelect select = ((SQLSubqueryTableSource) from).getSelect();
                 print0(ucase ? "FROM (" : "from (");
-                incrementIndent();
+                this.indentCount++;
                 println();
                 select.accept(this);
-                decrementIndent();
+                this.indentCount--;
                 println();
                 print0(") ");
                 print0(x.getFrom().getAlias());
@@ -260,7 +260,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     }
 
 //    protected void printSelectList(List<SQLSelectItem> selectList) {
-//        incrementIndent();
+//        this.indentCount++;
 //        for (int i = 0, size = selectList.size(); i < size; ++i) {
 //            SQLSelectItem selectItem = selectList.get(i);
 //
@@ -282,16 +282,16 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 //                printlnComments(selectItem.getAfterCommentsDirect());
 //            }
 //        }
-//        decrementIndent();
+//        this.indentCount--;
 //    }
 
     @Override
     public boolean visit(SQLSubqueryTableSource x) {
         print('(');
-        incrementIndent();
+        this.indentCount++;
         println();
         x.getSelect().accept(this);
-        decrementIndent();
+        this.indentCount--;
         println();
         print(')');
 
@@ -319,9 +319,9 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         if (x.getCondition() != null) {
             println();
             print0(ucase ? "ON " : "on ");
-            incrementIndent();
+            this.indentCount++;
             x.getCondition().accept(this);
-            decrementIndent();
+            this.indentCount--;
         }
 
         if (x.getUsing().size() > 0) {
@@ -352,7 +352,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
 
         int aliasSize = x.getAliasList().size();
         if (aliasSize > 5) {
-            incrementIndent();
+            this.indentCount++;
             println();
         }
 
@@ -368,7 +368,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         }
 
         if (aliasSize > 5) {
-            decrementIndent();
+            this.indentCount--;
             println();
         }
         print(')');
@@ -511,14 +511,14 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         int itemSize = x.getItems().size();
         if (itemSize > 0) {
             print0(ucase ? "ORDER BY " : "order by ");
-            incrementIndent();
+            this.indentCount++;
             for (int i = 0; i < itemSize; ++i) {
                 if (i != 0) {
                     println(", ");
                 }
                 x.getItems().get(i).accept(this);
             }
-            decrementIndent();
+            this.indentCount--;
         }
 
         return false;
@@ -807,7 +807,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
     @Override
     public boolean visit(OdpsLateralViewTableSource x) {
         x.getTableSource().accept(this);
-        incrementIndent();
+        this.indentCount++;
         println();
         print0(ucase ? "LATERAL VIEW " : "lateral view ");
         x.getMethod().accept(this);
@@ -815,7 +815,7 @@ public class OdpsOutputVisitor extends SQLASTOutputVisitor implements OdpsASTVis
         print0(x.getAlias());
         print0(ucase ? " AS " : " as ");
         printAndAccept(x.getColumns(), ", ");
-        decrementIndent();
+        this.indentCount--;
         return false;
     }
     

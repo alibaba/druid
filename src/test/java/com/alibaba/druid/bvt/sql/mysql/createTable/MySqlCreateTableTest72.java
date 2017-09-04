@@ -51,8 +51,8 @@ public class MySqlCreateTableTest72 extends MysqlTest {
             Assert.assertEquals("CREATE TABLE \"MessageInstance\" ("
                     + "\n\t\"id\" int(11) NOT NULL AUTO_INCREMENT,"
                     + "\n\t\"messageId\" int(11) NOT NULL,"
-                    + "\n\tPRIMARY KEY ('id'),"
-                    + "\n\tKEY \"ix_messageId\" ('messageId')"
+                    + "\n\tPRIMARY KEY (\"id\"),"
+                    + "\n\tKEY \"ix_messageId\" (\"messageId\")"
                     + "\n)", output);
         }
         
@@ -61,8 +61,8 @@ public class MySqlCreateTableTest72 extends MysqlTest {
             Assert.assertEquals("create table \"MessageInstance\" ("
                     + "\n\t\"id\" int(11) not null auto_increment,"
                     + "\n\t\"messageId\" int(11) not null,"
-                    + "\n\tprimary key ('id'),"
-                    + "\n\tkey \"ix_messageId\" ('messageId')"
+                    + "\n\tprimary key (\"id\"),"
+                    + "\n\tkey \"ix_messageId\" (\"messageId\")"
                     + "\n)", output);
         }
     }

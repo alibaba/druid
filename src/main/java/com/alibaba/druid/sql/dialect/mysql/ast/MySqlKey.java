@@ -16,15 +16,16 @@
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTableConstraint {
-
 
     private String  indexType;
 
@@ -66,4 +67,15 @@ public class MySqlKey extends SQLUnique implements SQLUniqueConstraint, SQLTable
         this.hasConstaint = hasConstaint;
     }
 
+    public void cloneTo(MySqlKey x) {
+        super.cloneTo(x);
+        x.indexType = indexType;
+        x.hasConstaint = hasConstaint;
+    }
+
+    public MySqlKey clone() {
+        MySqlKey x = new MySqlKey();
+        cloneTo(x);
+        return x;
+    }
 }

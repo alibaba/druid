@@ -46,7 +46,9 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     public SQLSetStatement(SQLExpr target, SQLExpr value, String dbType){
         super (dbType);
-        this.items.add(new SQLAssignItem(target, value));
+        SQLAssignItem item = new SQLAssignItem(target, value);
+        item.setParent(this);
+        this.items.add(item);
     }
 
     public static SQLSetStatement plus(SQLName target) {
@@ -90,5 +92,22 @@ public class SQLSetStatement extends SQLStatementImpl {
             SQLAssignItem item = items.get(i);
             item.output(buf);
         }
+    }
+
+    public SQLSetStatement clone() {
+        SQLSetStatement x = new SQLSetStatement();
+        for (SQLAssignItem item : items) {
+            SQLAssignItem item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        if (hints != null) {
+            for (SQLCommentHint hint : hints) {
+                SQLCommentHint h2 = hint.clone();
+                h2.setParent(x);
+                x.hints.add(h2);
+            }
+        }
+        return x;
     }
 }

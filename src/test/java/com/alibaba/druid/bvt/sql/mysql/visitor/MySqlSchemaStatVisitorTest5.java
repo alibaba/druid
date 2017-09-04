@@ -35,12 +35,14 @@ public class MySqlSchemaStatVisitorTest5 extends TestCase {
 //		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
 		MySqlStatementParser parser = new MySqlStatementParser(sql);
 		List<SQLStatement> statementList = parser.parseStatementList();
-		SQLStatement statemen = statementList.get(0);
+		SQLStatement stmt = statementList.get(0);
 
 		Assert.assertEquals(1, statementList.size());
 
+		System.out.println(stmt);
+
 		MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
-		statemen.accept(visitor);
+		stmt.accept(visitor);
 
 		System.out.println(sql);
 		System.out.println("Tables : " + visitor.getTables());

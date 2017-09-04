@@ -86,4 +86,24 @@ public class OracleForStatement extends OracleStatementImpl {
         }
         this.endLabel = endLabel;
     }
+
+    public OracleForStatement clone() {
+        OracleForStatement x = new OracleForStatement();
+        if (index != null) {
+            x.setIndex(index.clone());
+        }
+        if (range != null) {
+            x.setRange(range.clone());
+        }
+        for (SQLStatement stmt : statements) {
+            SQLStatement stmt2 = stmt.clone();
+            stmt2.setParent(x);
+            x.statements.add(stmt2);
+        }
+        x.all = all;
+        if (endLabel != null) {
+            x.setEndLabel(endLabel.clone());
+        }
+        return x;
+    }
 }

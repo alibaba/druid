@@ -22,6 +22,14 @@ public class PGLineSegmentsExpr extends PGExprImpl {
 
     private SQLExpr value;
 
+    public PGLineSegmentsExpr clone() {
+        PGLineSegmentsExpr x = new PGLineSegmentsExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }

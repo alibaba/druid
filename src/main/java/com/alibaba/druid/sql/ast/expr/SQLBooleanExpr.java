@@ -15,11 +15,14 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralExpr {
+public class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralExpr, SQLValuableExpr {
+    public static final SQLDataType DEFAULT_DATA_TYPE = new SQLCharacterDataType("boolean");
 
     private boolean value;
 
@@ -31,7 +34,11 @@ public class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralEx
         this.value = value;
     }
 
-    public boolean getValue() {
+    public boolean getBooleanValue() {
+        return value;
+    }
+
+    public Boolean getValue() {
         return value;
     }
 
@@ -77,4 +84,11 @@ public class SQLBooleanExpr extends SQLExprImpl implements SQLExpr, SQLLiteralEx
         return true;
     }
 
+    public SQLDataType computeDataType() {
+        return DEFAULT_DATA_TYPE;
+    }
+
+    public SQLBooleanExpr clone() {
+        return new SQLBooleanExpr(value);
+    }
 }

@@ -21,6 +21,8 @@ public interface SQLDataType extends SQLObject {
 
     String getName();
 
+    long nameHashCode64();
+
     void setName(String name);
 
     List<SQLExpr> getArguments();

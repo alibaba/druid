@@ -33,6 +33,15 @@ public class SQLSequenceExpr extends SQLExprImpl {
         this.function = function;
     }
 
+    public SQLSequenceExpr clone() {
+        SQLSequenceExpr x = new SQLSequenceExpr();
+        if (sequence != null) {
+            x.setSequence(sequence.clone());
+        }
+        x.function = function;
+        return x;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {

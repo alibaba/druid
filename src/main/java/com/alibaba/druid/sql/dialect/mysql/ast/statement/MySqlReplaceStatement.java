@@ -90,7 +90,9 @@ public class MySqlReplaceStatement extends MySqlStatementImpl {
     }
 
     public void setQuery(SQLQueryExpr query) {
-        query.setParent(this);
+        if (query != null) {
+            query.setParent(this);
+        }
         this.query = query;
     }
 

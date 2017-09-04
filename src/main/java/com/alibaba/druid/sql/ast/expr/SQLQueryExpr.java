@@ -16,9 +16,13 @@
 package com.alibaba.druid.sql.ast.expr;
 
 import java.io.Serializable;
+import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLQueryExpr extends SQLExprImpl implements Serializable {
@@ -96,5 +100,23 @@ public class SQLQueryExpr extends SQLExprImpl implements Serializable {
         }
 
         return x;
+    }
+
+    public SQLDataType computeDataType() {
+        if (subQuery == null) {
+            return null;
+        }
+
+        SQLSelectQueryBlock queryBlock = subQuery.getFirstQueryBlock();
+        if (queryBlock == null) {
+            return null;
+        }
+
+        List<SQLSelectItem> selectList = queryBlock.getSelectList();
+        if (selectList.size() == 1) {
+            return selectList.get(0).computeDataType();
+        }
+
+        return null;
     }
 }

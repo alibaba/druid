@@ -22,7 +22,7 @@ public class DesensitizationTest_update extends TestCase {
         System.out.println("-------------------");
         System.out.println(desens_Sql);
 
-        assertEquals("UPDATE T_69BFC132C09344DE\n" +
+        assertEquals("UPDATE T_0C9879D1E6FFA3BE\n" +
                 "SET last_name = ?\n" +
                 "WHERE customer_id = ?;", desens_Sql);
     }

@@ -57,4 +57,18 @@ public class MySqlSubPartitionByKey extends SQLSubPartitionBy implements MySqlOb
         this.columns.add(column);
     }
 
+    public void cloneTo(MySqlSubPartitionByKey x) {
+        super.cloneTo(x);
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+    }
+
+    public MySqlSubPartitionByKey clone() {
+        MySqlSubPartitionByKey x = new MySqlSubPartitionByKey();
+        cloneTo(x);
+        return x;
+    }
 }
