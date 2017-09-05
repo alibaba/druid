@@ -36,6 +36,9 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public SQLPropertyExpr(SQLExpr owner, String name){
+        if (name == null) {
+            throw new IllegalArgumentException("name is null.");
+        }
         setOwner(owner);
         this.name = name;
     }
@@ -59,8 +62,8 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     }
 
     public String getOwnernName() {
-        if (owner instanceof SQLIdentifierExpr) {
-            return ((SQLIdentifierExpr) owner).getName();
+        if (owner instanceof SQLName) {
+            return ((SQLName) owner).toString();
         }
 
         return null;

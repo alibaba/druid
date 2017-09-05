@@ -197,22 +197,9 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public boolean containsAlias(String alias) {
-        if (SQLUtils.nameEquals(this.alias, alias)) {
-            return true;
-        }
+        long hashCode64 = FnvHash.hashCode64(alias);
 
-        String name = null;
-        if (expr instanceof SQLIdentifierExpr) {
-            name = ((SQLIdentifierExpr) expr).getName();
-        } else if (expr instanceof SQLPropertyExpr) {
-            name = ((SQLPropertyExpr) expr).getName();
-        }
-
-        if (name != null && SQLUtils.nameEquals(name, alias)) {
-            return true;
-        }
-
-        return false;
+        return containsAlias(hashCode64);
     }
 
     public boolean containsAlias(long aliasHash) {
@@ -220,9 +207,16 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
             return true;
         }
 
+        if (expr instanceof SQLPropertyExpr) {
+            long exprNameHash = ((SQLPropertyExpr) expr).hashCode64();
+            if (exprNameHash == aliasHash) {
+                return true;
+            }
+        }
+
         if (expr instanceof SQLName) {
             long exprNameHash = ((SQLName) expr).nameHashCode64();
-            return exprNameHash == aliasHashCod64;
+            return exprNameHash == aliasHash;
         }
 
         return false;

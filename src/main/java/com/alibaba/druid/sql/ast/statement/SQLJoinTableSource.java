@@ -459,11 +459,13 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             return false;
         }
 
-        if (left.containsAlias(alias_a) && right.containsAlias(alias_b)) {
+        if (left.containsAlias(alias_a)
+                && right.containsAlias(alias_b)) {
             return true;
         }
 
-        return right.containsAlias(alias_a) && left.containsAlias(alias_b);
+        return right.containsAlias(alias_a)
+                && left.containsAlias(alias_b);
     }
 
     public boolean conditionContainsTable(String alias) {
@@ -498,5 +500,17 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
         }
 
         return right.findTableSource(alias_hash);
+    }
+
+    public SQLTableSource other(SQLTableSource x) {
+        if (left == x) {
+            return right;
+        }
+
+        if (right == x) {
+            return left;
+        }
+
+        return null;
     }
 }

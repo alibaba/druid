@@ -1649,6 +1649,10 @@ class SchemaResolveVisitorFactory {
 
             if (ctxTable instanceof SQLJoinTableSource) {
                 String alias = tableSource.computeAlias();
+                if (alias == null) {
+                    return;
+                }
+
                 SQLPropertyExpr propertyExpr = new SQLPropertyExpr(new SQLIdentifierExpr(alias), ident, hash);
                 propertyExpr.setResolvedColumn(x.getResolvedColumn());
                 propertyExpr.setResolvedTableSource(x.getResolvedTableSource());
