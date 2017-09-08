@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
@@ -145,7 +146,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         try {
             sql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
         } catch (Exception e) {
-            LOG.error("merge sql error, dbType " + dbType + ", sql : " + sql, e);
+            LOG.error("merge sql error, dbType " + dbType + ", druid-" + VERSION.getVersionNumber() + ", sql : " + sql, e);
         }
 
         return sql;

@@ -31,13 +31,13 @@ public class SQLCreateTableParser extends SQLDDLParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCrateTable() {
+    public SQLCreateTableStatement parseCreateTable() {
         List<String> comments = null;
         if (lexer.isKeepComments() && lexer.hasComment()) {
             comments = lexer.readAndResetComments();
         }
 
-        SQLCreateTableStatement stmt = parseCrateTable(true);
+        SQLCreateTableStatement stmt = parseCreateTable(true);
         if (comments != null) {
             stmt.addBeforeComment(comments);
         }
@@ -45,7 +45,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
         return stmt;
     }
 
-    public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
         SQLCreateTableStatement createTable = newCreateStatement();
 
         if (acceptCreate) {

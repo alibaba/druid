@@ -168,7 +168,7 @@ public class SQLTransformUtils {
                         dataType = new SQLDataTypeImpl("smallint");
                     } else if (precision < 9) {
                         dataType = new SQLDataTypeImpl("int");
-                    } else if (precision < 19) {
+                    } else if (precision <= 20) {
                         dataType = new SQLDataTypeImpl("bigint");
                     } else {
                         dataType = new SQLDataTypeImpl("decimal", precision);
@@ -468,7 +468,7 @@ public class SQLTransformUtils {
                         dataType = new SQLDataTypeImpl("smallint");
                     } else if (precision < 9) {
                         dataType = new SQLDataTypeImpl("int");
-                    } else if (precision < 19) {
+                    } else if (precision <= 20) {
                         dataType = new SQLDataTypeImpl("bigint");
                     } else {
                         dataType = new SQLDataTypeImpl("decimal", precision);

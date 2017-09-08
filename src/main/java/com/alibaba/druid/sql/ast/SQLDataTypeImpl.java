@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
@@ -24,11 +25,12 @@ import java.util.List;
 
 public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
-    private   String              name;
-    private   long                nameHashCode64;
+    private         String        name;
+    private         long          nameHashCode64;
     protected final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
-    private Boolean               withTimeZone;
-    private boolean               withLocalTimeZone = false;
+    private         Boolean       withTimeZone;
+    private         boolean       withLocalTimeZone = false;
+    private         String        dbType;
 
     public SQLDataTypeImpl(){
 
@@ -122,6 +124,14 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
         this.withLocalTimeZone = withLocalTimeZone;
     }
 
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
     public SQLDataTypeImpl clone() {
         SQLDataTypeImpl x = new SQLDataTypeImpl();
 
@@ -131,6 +141,7 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     }
 
     public void cloneTo(SQLDataTypeImpl x) {
+        x.dbType = dbType;
         x.name = name;
 
         for (SQLExpr arg : arguments) {
@@ -139,5 +150,9 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
         x.withTimeZone = withTimeZone;
         x.withLocalTimeZone = withLocalTimeZone;
+    }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, dbType);
     }
 }

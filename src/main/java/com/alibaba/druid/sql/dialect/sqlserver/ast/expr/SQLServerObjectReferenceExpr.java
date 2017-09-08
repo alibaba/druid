@@ -139,10 +139,15 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
     @Override
     public long hashCode64() {
         if (hashCode64 == 0) {
-            hashCode64 = new SQLPropertyExpr(
-                            new SQLPropertyExpr(server, database)
-                            , schema)
-                    .hashCode64();
+            if (server == null) {
+                hashCode64 = new SQLPropertyExpr(
+                        new SQLPropertyExpr(server, database)
+                        , schema)
+                        .hashCode64();
+            } else {
+                hashCode64 = new SQLPropertyExpr(database, schema)
+                        .hashCode64();
+            }
         }
         return hashCode64;
     }

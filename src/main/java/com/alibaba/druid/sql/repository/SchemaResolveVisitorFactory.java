@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
+import com.alibaba.druid.sql.dialect.mysql.ast.MysqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlCursorDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlDeclareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.clause.MySqlRepeatStatement;
@@ -72,6 +73,11 @@ class SchemaResolveVisitorFactory {
 
         public boolean visit(MySqlCursorDeclareStatement x) {
             return true;
+        }
+
+        public boolean visit(MysqlForeignKey x) {
+            resolve(this, x);
+            return false;
         }
 
         public boolean visit(SQLExprTableSource x) {
@@ -249,6 +255,11 @@ class SchemaResolveVisitorFactory {
         public DB2ResolveVisitor(SchemaRepository repository, int options) {
             this.repository = repository;
             this.options = options;
+        }
+
+        public boolean visit(SQLForeignKeyImpl x) {
+            resolve(this, x);
+            return false;
         }
 
         public boolean visit(SQLSelectStatement x) {
@@ -453,6 +464,11 @@ class SchemaResolveVisitorFactory {
             }
 
             popContext();
+            return false;
+        }
+
+        public boolean visit(OracleForeignKey x) {
+            resolve(this, x);
             return false;
         }
 
@@ -665,6 +681,11 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
+        public boolean visit(SQLForeignKeyImpl x) {
+            resolve(this, x);
+            return false;
+        }
+
         public boolean visit(SQLSelectStatement x) {
             resolve(this, x.getSelect());
             return false;
@@ -841,6 +862,11 @@ class SchemaResolveVisitorFactory {
         public PGResolveVisitor(SchemaRepository repository, int options) {
             this.repository = repository;
             this.options = options;
+        }
+
+        public boolean visit(SQLForeignKeyImpl x) {
+            resolve(this, x);
+            return false;
         }
 
         public boolean visit(SQLSelectStatement x) {
@@ -1032,6 +1058,11 @@ class SchemaResolveVisitorFactory {
             this.options = options;
         }
 
+        public boolean visit(SQLForeignKeyImpl x) {
+            resolve(this, x);
+            return false;
+        }
+
         public boolean visit(SQLSelectStatement x) {
             resolve(this, x.getSelect());
             return false;
@@ -1191,6 +1222,11 @@ class SchemaResolveVisitorFactory {
         public SQLResolveVisitor(SchemaRepository repository, int options) {
             this.repository = repository;
             this.options = options;
+        }
+
+        public boolean visit(SQLForeignKeyImpl x) {
+            resolve(this, x);
+            return false;
         }
 
         public boolean visit(SQLSelectStatement x) {
@@ -2408,6 +2444,62 @@ class SchemaResolveVisitorFactory {
         return false;
     }
 
+    static void resolve(SchemaResolveVisitor visitor, SQLForeignKeyConstraint x) {
+        SchemaRepository repository = visitor.getRepository();
+        SQLObject parent = x.getParent();
+
+        if (parent instanceof SQLCreateTableStatement) {
+            SQLCreateTableStatement createTableStmt = (SQLCreateTableStatement) parent;
+            SQLTableSource table = createTableStmt.getTableSource();
+            for (SQLName item : x.getReferencingColumns()) {
+                SQLIdentifierExpr columnName = (SQLIdentifierExpr) item;
+                columnName.setResolvedTableSource(table);
+
+                SQLColumnDefinition column = createTableStmt.findColumn(columnName.nameHashCode64());
+                if (column != null) {
+                    columnName.setResolvedColumn(column);
+                }
+            }
+        } else if (parent instanceof SQLAlterTableAddConstraint) {
+            SQLAlterTableStatement stmt = (SQLAlterTableStatement) parent.getParent();
+            SQLTableSource table = stmt.getTableSource();
+            for (SQLName item : x.getReferencingColumns()) {
+                SQLIdentifierExpr columnName = (SQLIdentifierExpr) item;
+                columnName.setResolvedTableSource(table);
+            }
+        }
+
+
+        if (repository == null) {
+            return;
+        }
+
+        SQLExprTableSource table = x.getReferencedTable();
+        for (SQLName item : x.getReferencedColumns()) {
+            SQLIdentifierExpr columnName = (SQLIdentifierExpr) item;
+            columnName.setResolvedTableSource(table);
+        }
+
+        SQLName tableName = table.getName();
+
+        SchemaObject tableObject = repository.findTable(tableName);
+        if (tableObject == null) {
+            return;
+        }
+
+        SQLStatement tableStmt = tableObject.getStatement();
+        if (tableStmt instanceof SQLCreateTableStatement) {
+            SQLCreateTableStatement refCreateTableStmt = (SQLCreateTableStatement) tableStmt;
+            for (SQLName item : x.getReferencedColumns()) {
+                SQLIdentifierExpr columnName = (SQLIdentifierExpr) item;
+                SQLColumnDefinition column = refCreateTableStmt.findColumn(columnName.nameHashCode64());
+                if (column != null) {
+                    columnName.setResolvedColumn(column);
+                }
+            }
+        }
+    }
+
     // for performance
     static void resolveExpr(SchemaResolveVisitor visitor, SQLExpr x) {
         if (x == null) {
@@ -2425,4 +2517,6 @@ class SchemaResolveVisitorFactory {
 
         x.accept(visitor);
     }
+
+
 }

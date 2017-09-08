@@ -6,8 +6,10 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.repository.SchemaRepository;
+import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
@@ -33,6 +35,20 @@ public class MySqlParameterizedBenchmark extends TestCase {
                 + "`table_3966` AS `table_3966_11` SET `version` = `version` + 3, `gmt_modified` = NOW(), `optype` = ?, `feature` = ? "
                 + "WHERE `sub_biz_order_id` = ? AND `biz_order_type` = ? AND `id` = ? AND `ti_id` = ? AND `optype` = ? AND `root_id` = ?";
         String sql5= "SELECT id, item_id, rule_id, tag_id, ext , gmt_create, gmt_modified FROM wukong_preview_item_tag WHERE item_id = ? AND rule_id = ?";
+        String sql6 = "/* 0ab23d3915048393791723851d05b8/9.1.19.1.10176122173.14//8b4757d2/ */SELECT pay_order_id, total_fee, title, alipay_seller_id, alipay_buyer_id, pay_status, out_pay_id, pay_time, end_time, gmt_create, gmt_modified, coupon_fee, actual_total_fee, discount_fee, adjust_fee, closer, point_fee, real_point_fee, obtain_point, refund_fee, confirm_paid_fee, cod_fee, from_group, attributes, attribute_cc, buyer_id, seller_id FROM tc_pay_order_3134 AS tc_pay_order WHERE pay_order_id = 52708022289887078";
+        String sql7 = "SELECT batch.warehouse_code AS '仓库CODE', cage.delivery_order_id AS '运单ID', batch.batch_id AS '批次ID', batch.batch_gmt_create AS '批次创建时间', waybill.biz_order_id AS '订单ID'\n" +
+                "\t, package.box_id AS '包裹ID', cage.cage_id AS '笼车ID', batch.batch_name AS '批次名称', CASE WHEN batch.status = 1 THEN '初始化' ELSE '待揽收' END AS '状态', waybill.biz_order_remark AS '运单备注'\n" +
+                "\t, CASE WHEN SUBSTRING(batch.batch_name, instr(batch.batch_name, ' ') + 1, 2) + 0 >= 18 THEN '晚上送' ELSE '白天送' END AS '备注'\n" +
+                "FROM delivery_operator_batch batch, waybill, batch_box package, delivery_order_batch cage\n" +
+                "WHERE batch.batch_id = waybill.batch_id\n" +
+                "\tAND batch.batch_id = package.batch_id\n" +
+                "\tAND package.batch_id = cage.batch_id\n" +
+                "\tAND package.cage_id = cage.cage_id\n" +
+                "\tAND batch.status IN (1, 2)\n" +
+                "\tAND NOT (batch.batch_name IS NULL\n" +
+                "\tOR batch.batch_name = '')\n" +
+                "ORDER BY batch_gmt_create DESC\n" +
+                "LIMIT 0, 50";
 
         for (int i = 0; i < 5; ++i) {
 //            perf(sql); // 6740 6201 4752 4514 4391 4218 4127 4124
@@ -40,14 +56,23 @@ public class MySqlParameterizedBenchmark extends TestCase {
 //            perf(sql3); // 15093 10392 10416 10154 10007 9126 8907
 //            perf(sql4); // 4429 4190 4023 3747
 //            perf(sql5); // 1917
+//            perf(sql6); // 4193
 
 //            perf_parse(sql); // 4643 4377 4345 3801 3627 3228 2961 2959
 //            perf_parse(sql2); // 1918 1779 1666 1646
 //            perf_parse(sql3); // 9174 5875 5805 5536 5717
 //            perf_parse(sql4); // 2953 2502
-            perf_parse(sql5); // 1339
+//            perf_parse(sql5); // 1339
+//            perf_parse(sql6);
+//            perf_parse(sql7); // 9831 8581 8552
 
-//            perf_lexer(sql5); // 813
+//            perf_lexer(sql4); // 2051 1802
+//            perf_lexer(sql5); // 1125 1054
+//            perf_lexer(sql6); // millis : 2811
+
+//            perfParameterized(sql6); // 4224 4083
+
+            perfFormat(sql7); // 14865 14132 13812 13714 12917
 
 //            perf_hashCode64(sql5); // 181
 
@@ -115,22 +140,16 @@ public class MySqlParameterizedBenchmark extends TestCase {
     public void perf_lexer(String sql) {
         long startMillis = System.currentTimeMillis();
         for (int i = 0; i < 1000 * 1000; ++i) {
-            int literal_count = 0;
+            Lexer.parameterize(sql, JdbcConstants.MYSQL);
+        }
+        long millis = System.currentTimeMillis() - startMillis;
+        System.out.println("millis : " + millis);
+    }
 
-            MySqlLexer lexer = new MySqlLexer(sql);
-
-            for (; ; ) {
-                lexer.nextToken();
-                Token token = lexer.token();
-
-                if (token == Token.LITERAL_INT || token == Token.LITERAL_CHARS) {
-                    literal_count++;
-                    break;
-                } else if (token == Token.EOF || token == Token.ERROR) {
-                    break;
-                }
-            }
-
+    public void perfParameterized(String sql) {
+        long startMillis = System.currentTimeMillis();
+        for (int i = 0; i < 1000 * 1000; ++i) {
+            ParameterizedOutputVisitorUtils.parameterize(sql, JdbcConstants.MYSQL);
         }
         long millis = System.currentTimeMillis() - startMillis;
         System.out.println("millis : " + millis);
@@ -140,6 +159,15 @@ public class MySqlParameterizedBenchmark extends TestCase {
         long startMillis = System.currentTimeMillis();
         for (int i = 0; i < 1000 * 1000; ++i) {
             FnvHash.fnv1a_64(sql);
+        }
+        long millis = System.currentTimeMillis() - startMillis;
+        System.out.println("millis : " + millis);
+    }
+
+    public void perfFormat(String sql) {
+        long startMillis = System.currentTimeMillis();
+        for (int i = 0; i < 1000 * 1000; ++i) {
+            SQLUtils.format(sql, JdbcConstants.MYSQL);
         }
         long millis = System.currentTimeMillis() - startMillis;
         System.out.println("millis : " + millis);

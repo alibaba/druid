@@ -1057,7 +1057,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MysqlForeignKey x) {
-        return super.visit(x);
+        return super.visit((SQLForeignKeyImpl) x);
     }
 
     @Override
@@ -1310,6 +1310,4 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlFlushStatement x) {
 
     }
-
-
 }

@@ -72,7 +72,7 @@ public class OdpsStatementParser extends SQLStatementParser {
 
     public SQLCreateTableStatement parseCreateTable() {
         SQLCreateTableParser parser = new OdpsCreateTableParser(this.exprParser);
-        return parser.parseCrateTable();
+        return parser.parseCreateTable();
     }
 
     public SQLCreateTableParser getSQLCreateTableParser() {

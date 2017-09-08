@@ -103,8 +103,8 @@ public class SQLParser {
 
         if (token == Token.AS) {
             lexer.nextToken();
-
-            alias = alias();
+            alias = lexer.stringVal();
+            lexer.nextToken();
 
             if (alias != null) {
                 while (lexer.token == Token.DOT) {
@@ -142,6 +142,7 @@ public class SQLParser {
                 case OUTER:
                 case DO:
                 case STORE:
+                case MOD:
                     alias = lexer.stringVal();
                     lexer.nextToken();
                     break;

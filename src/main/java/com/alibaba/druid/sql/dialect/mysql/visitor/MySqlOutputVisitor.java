@@ -200,13 +200,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         SQLOrderBy orderBy = x.getOrderBy();
         if (orderBy != null) {
             println();
-            orderBy.accept(this);
+            visit(orderBy);
         }
 
         SQLLimit limit = x.getLimit();
         if (limit != null) {
             println();
-            limit.accept(this);
+            visit(limit);
         }
 
         SQLName procedureName = x.getProcedureName();

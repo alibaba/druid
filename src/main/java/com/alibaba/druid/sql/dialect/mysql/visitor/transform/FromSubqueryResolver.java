@@ -118,6 +118,7 @@ public class FromSubqueryResolver extends OracleASTVisitorAdapter {
                 String entryName = entry.getAlias();
 
                 SQLCreateViewStatement entryStmt = new SQLCreateViewStatement();
+                entryStmt.setOrReplace(true);
                 entryStmt.setDbType(stmt.getDbType());
 
                 String entryViewName = visitor.generateSubViewName();
@@ -136,6 +137,7 @@ public class FromSubqueryResolver extends OracleASTVisitorAdapter {
         String dbType = stmt.getDbType();
         for (int i = 0; i < targetList.size() - 1; ++i) {
             SQLCreateViewStatement targetStmt = (SQLCreateViewStatement) targetList.get(i);
+            targetStmt.setOrReplace(true);
             targetStmt.setDbType(dbType);
             targetStmt.setAfterSemi(true);
         }

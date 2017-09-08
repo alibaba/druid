@@ -216,6 +216,7 @@ public class OracleExprParser extends SQLExprParser {
         
         if ("TIMESTAMP".equalsIgnoreCase(typeName)) {
             SQLDataTypeImpl timestamp = new SQLDataTypeImpl(typeName);
+            timestamp.setDbType(dbType);
             
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
@@ -280,7 +281,8 @@ public class OracleExprParser extends SQLExprParser {
         }
 
 
-        SQLDataType dataType = new SQLDataTypeImpl(typeName);        
+        SQLDataTypeImpl dataType = new SQLDataTypeImpl(typeName);
+        dataType.setDbType(dbType);
         return parseDataTypeRest(dataType);
     }
 
@@ -700,14 +702,14 @@ public class OracleExprParser extends SQLExprParser {
             return expr;
         }
         
-        if (lexer.identifierEquals("NEXTVAL")) {
+        if (lexer.identifierEquals(FnvHash.Constants.NEXTVAL)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 SQLSequenceExpr seqExpr = new SQLSequenceExpr(identExpr, SQLSequenceExpr.Function.NextVal);
                 lexer.nextToken();
                 return seqExpr;
             }
-        } else if (lexer.identifierEquals("CURRVAL")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.CURRVAL)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 SQLSequenceExpr seqExpr = new SQLSequenceExpr(identExpr, SQLSequenceExpr.Function.CurrVal);
@@ -1404,12 +1406,12 @@ public class OracleExprParser extends SQLExprParser {
                 continue;
             }
 
-            if (lexer.identifierEquals("VALIDATE")) {
+            if (lexer.identifierEquals(FnvHash.Constants.VALIDATE)) {
                 lexer.nextToken();
                 constraint.setValidate(Boolean.TRUE);
                 continue;
             }
-            if (lexer.identifierEquals("NOVALIDATE")) {
+            if (lexer.identifierEquals(FnvHash.Constants.NOVALIDATE)) {
                 lexer.nextToken();
                 constraint.setValidate(Boolean.FALSE);
                 continue;
@@ -1431,7 +1433,7 @@ public class OracleExprParser extends SQLExprParser {
             
             if (lexer.token() == Token.NOT) {
                 lexer.nextToken();
-                if (lexer.identifierEquals("DEFERRABLE")) {
+                if (lexer.identifierEquals(FnvHash.Constants.DEFERRABLE)) {
                     lexer.nextToken();
                     constraint.setDeferrable(false);
                     continue;
@@ -1439,10 +1441,15 @@ public class OracleExprParser extends SQLExprParser {
                 throw new ParserException("TODO " + lexer.info());
             }
             
-            if (lexer.identifierEquals("DEFERRABLE")) {
+            if (lexer.identifierEquals(FnvHash.Constants.DEFERRABLE)) {
                 lexer.nextToken();
                 constraint.setDeferrable(true);
                 continue;
+            }
+
+            if (lexer.token() == Token.USING) {
+                OracleUsingIndexClause using = parseUsingIndex();
+                constraint.setUsing(using);
             }
             
             break;

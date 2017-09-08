@@ -114,7 +114,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public SQLCreateTableStatement parseCreateTable() {
         MySqlCreateTableParser parser = new MySqlCreateTableParser(this.exprParser);
-        return parser.parseCrateTable();
+        return parser.parseCreateTable();
     }
 
     public SQLStatement parseSelect() {
@@ -230,7 +230,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.reset(markBp, markChar, Token.CREATE);
             }
             MySqlCreateTableParser parser = new MySqlCreateTableParser(this.exprParser);
-            MySqlCreateTableStatement stmt = parser.parseCrateTable(false);
+            MySqlCreateTableStatement stmt = parser.parseCreateTable(false);
             stmt.setHints(hints);
 
             if (comments != null) {

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerEvent;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.util.FnvHash;
@@ -1814,7 +1813,7 @@ public class SQLStatementParser extends SQLParser {
 
         if (token == Token.TABLE || lexer.identifierEquals("GLOBAL")) {
             SQLCreateTableParser createTableParser = getSQLCreateTableParser();
-            SQLCreateTableStatement stmt = createTableParser.parseCrateTable(false);
+            SQLCreateTableStatement stmt = createTableParser.parseCreateTable(false);
             
             if (comments != null) {
                 stmt.addBeforeComment(comments);
@@ -2230,7 +2229,7 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLCreateTableStatement parseCreateTable() {
         // SQLCreateTableParser parser = new SQLCreateTableParser(this.lexer);
-        // return parser.parseCrateTable();
+        // return parser.parseCreateTable();
         throw new ParserException("TODO");
     }
 

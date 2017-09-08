@@ -234,7 +234,9 @@ public class SQLUtils {
 
     public static String format(String sql, String dbType, List<Object> parameters, FormatOption option) {
         try {
-            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, true);
+            SQLParserFeature[] features = {SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup};
+
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, features);
             parser.setKeepComments(true);
 
             List<SQLStatement> statementList = parser.parseStatementList();

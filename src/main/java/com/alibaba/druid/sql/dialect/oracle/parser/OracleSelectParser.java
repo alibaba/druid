@@ -247,7 +247,7 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     public SQLSelectQuery query() {
-        if (lexer.token() == (Token.LPAREN)) {
+        if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
             SQLSelectQuery select = query();
@@ -270,13 +270,13 @@ public class OracleSelectParser extends SQLSelectParser {
 
             parseHints(queryBlock);
 
-            if (lexer.token() == (Token.DISTINCT)) {
+            if (lexer.token() == Token.DISTINCT) {
                 queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
                 lexer.nextToken();
-            } else if (lexer.token() == (Token.UNIQUE)) {
+            } else if (lexer.token() == Token.UNIQUE) {
                 queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
                 lexer.nextToken();
-            } else if (lexer.token() == (Token.ALL)) {
+            } else if (lexer.token() == Token.ALL) {
                 queryBlock.setDistionOption(SQLSetQuantifier.ALL);
                 lexer.nextToken();
             }
@@ -304,16 +304,16 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     public SQLSelectQuery queryRest(SQLSelectQuery selectQuery) {
-        if (lexer.token() == (Token.UNION)) {
+        if (lexer.token() == Token.UNION) {
             SQLUnionQuery union = new SQLUnionQuery();
             union.setLeft(selectQuery);
 
             lexer.nextToken();
 
-            if (lexer.token() == (Token.ALL)) {
+            if (lexer.token() == Token.ALL) {
                 union.setOperator(SQLUnionOperator.UNION_ALL);
                 lexer.nextToken();
-            } else if (lexer.token() == (Token.DISTINCT)) {
+            } else if (lexer.token() == Token.DISTINCT) {
                 union.setOperator(SQLUnionOperator.DISTINCT);
                 lexer.nextToken();
             }
@@ -582,10 +582,6 @@ public class OracleSelectParser extends SQLSelectParser {
         }
     }
 
-    protected String as() {
-        return super.as();
-    }
-
     @Override
     public SQLTableSource parseTableSource() {
         SQLTableSource tableSource = parseTableSourcePrimary();
@@ -601,11 +597,11 @@ public class OracleSelectParser extends SQLSelectParser {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
 
-            OracleSelectSubqueryTableSource tableSource;
+            OracleSelectTableSource tableSource;
             if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
                 tableSource = new OracleSelectSubqueryTableSource(select());
-            } else if (lexer.token() == (Token.LPAREN)) {
-                tableSource = new OracleSelectSubqueryTableSource(select());
+            } else if (lexer.token() == Token.LPAREN) {
+                tableSource = (OracleSelectTableSource) parseTableSource();
             } else if (lexer.token() == Token.IDENTIFIER) {
                 SQLTableSource identTable = parseTableSource();
                 accept(Token.RPAREN);
@@ -613,9 +609,17 @@ public class OracleSelectParser extends SQLSelectParser {
             } else {
                 throw new ParserException("TODO :" + lexer.info());
             }
+
             accept(Token.RPAREN);
 
-            parsePivot((OracleSelectTableSource) tableSource);
+            if (lexer.token() == Token.UNION && tableSource instanceof OracleSelectSubqueryTableSource) {
+                OracleSelectSubqueryTableSource selectSubqueryTableSource = (OracleSelectSubqueryTableSource) tableSource;
+                SQLSelect select = selectSubqueryTableSource.getSelect();
+                SQLSelectQuery selectQuery = this.queryRest(select.getQuery());
+                select.setQuery(selectQuery);
+            }
+
+            parsePivot(tableSource);
 
             return tableSource;
         }

@@ -1606,6 +1606,7 @@ public class OracleStatementParser extends SQLStatementParser {
                     accept(Token.CURSOR);
 
                     dataType = new SQLDataTypeImpl("REF CURSOR");
+                    dataType.setDbType(dbType);
                 } else if (lexer.token() == Token.TABLE) {
                     lexer.nextToken();
                     accept(Token.OF);
@@ -1619,6 +1620,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                     String typeName = "TABLE OF " + name.toString() + "%TYPE";
                     dataType = new SQLDataTypeImpl(typeName);
+                    dataType.setDbType(dbType);
                 } else if (lexer.identifierEquals("VARRAY")) {
                     lexer.nextToken();
                     accept(Token.LPAREN);
@@ -1630,6 +1632,7 @@ public class OracleStatementParser extends SQLStatementParser {
                         lexer.nextToken();
                         String typeName = "VARRAY(" + len + ") OF NUMBER";
                         dataType = new SQLDataTypeImpl(typeName);
+                        dataType.setDbType(dbType);
                     } else {
                         throw new ParserException("TODO : " + lexer.info());
                     }

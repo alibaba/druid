@@ -712,7 +712,7 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         accept(Token.LPAREN);
-        this.names(fk.getReferencingColumns());
+        this.names(fk.getReferencingColumns(), fk);
         accept(Token.RPAREN);
 
         accept(Token.REFERENCES);

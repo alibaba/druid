@@ -45,6 +45,14 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         return name;
     }
 
+    public String getLowerName() {
+        if (name == null) {
+            return null;
+        }
+
+        return name.toLowerCase();
+    }
+
     public String getName() {
         return this.name;
     }

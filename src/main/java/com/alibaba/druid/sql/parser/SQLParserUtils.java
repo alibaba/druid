@@ -42,26 +42,37 @@ import com.alibaba.druid.util.JdbcUtils;
 public class SQLParserUtils {
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType) {
-        boolean keepComments;
+        SQLParserFeature[] features;
         if (JdbcConstants.ODPS.equals(dbType) || JdbcConstants.MYSQL.equals(dbType)) {
-            keepComments = true;
+            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
         } else {
-            keepComments = false;
+            features = new SQLParserFeature[] {};
         }
-        return createSQLStatementParser(sql, dbType, keepComments);
+        return createSQLStatementParser(sql, dbType, features);
     }
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType, boolean keepComments) {
+        SQLParserFeature[] features;
+        if (keepComments) {
+            features = new SQLParserFeature[] {SQLParserFeature.KeepComments};
+        } else {
+            features = new SQLParserFeature[] {};
+        }
+
+        return createSQLStatementParser(sql, dbType, features);
+    }
+
+    public static SQLStatementParser createSQLStatementParser(String sql, String dbType, SQLParserFeature... features) {
         if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleStatementParser(sql);
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlStatementParser(sql, keepComments);
+            return new MySqlStatementParser(sql, features);
         }
 
         if (JdbcUtils.MARIADB.equals(dbType)) {
-            return new MySqlStatementParser(sql, keepComments);
+            return new MySqlStatementParser(sql, features);
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)

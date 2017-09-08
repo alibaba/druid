@@ -834,6 +834,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             visit((SQLVariantRefExpr) x);
         } else if (clazz == SQLBinaryOpExprGroup.class) {
             visit((SQLBinaryOpExprGroup) x);
+        } else if (clazz == SQLCaseExpr.class) {
+            visit((SQLCaseExpr) x);
+        } else if (clazz == SQLInListExpr.class) {
+            visit((SQLInListExpr) x);
+        } else if (clazz == SQLNotExpr.class) {
+            visit((SQLNotExpr) x);
         } else {
             x.accept(this);
         }
@@ -861,7 +867,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (elExpr instanceof SQLCaseExpr) {
                 this.indentCount++;
                 println();
-                printExpr(elExpr);
+                visit((SQLCaseExpr) elExpr);
                 this.indentCount--;
             } else {
                 printExpr(elExpr);
@@ -1831,14 +1837,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLOrderBy x) {
-        if (x.getItems().size() > 0) {
+        List<SQLSelectOrderByItem> items = x.getItems();
+
+        if (items.size() > 0) {
             if (x.isSibings()) {
                 print0(ucase ? "ORDER SIBLINGS BY " : "order siblings by ");
             } else {
                 print0(ucase ? "ORDER BY " : "order by ");
             }
 
-            printAndAccept(x.getItems(), ", ");
+            for (int i = 0, size = items.size(); i < size; ++i) {
+                if (i != 0) {
+                    print0(", ");
+                }
+                SQLSelectOrderByItem item = items.get(i);
+                visit(item);
+            }
         }
         return false;
     }
@@ -1851,20 +1865,23 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         } else {
             printExpr(expr);
         }
-        if (x.getType() != null) {
+
+        SQLOrderingSpecification type = x.getType();
+        if (type != null) {
             print(' ');
-            SQLOrderingSpecification type = x.getType();
             print0(ucase ? type.name : type.name_lcase);
         }
 
-        if (x.getCollate() != null) {
+        String collate = x.getCollate();
+        if (collate != null) {
             print0(ucase ? " COLLATE " : " collate ");
-            print0(x.getCollate());
+            print0(collate);
         }
 
-        if (x.getNullsOrderType() != null) {
+        SQLSelectOrderByItem.NullsOrderType nullsOrderType = x.getNullsOrderType();
+        if (nullsOrderType != null) {
             print(' ');
-            print0(x.getNullsOrderType().toFormalString());
+            print0(nullsOrderType.toFormalString());
         }
 
         return false;
@@ -4887,11 +4904,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     public boolean visit(SQLLimit x) {
         print0(ucase ? "LIMIT " : "limit ");
-        if (x.getOffset() != null) {
-            x.getOffset().accept(this);
+        SQLExpr offset = x.getOffset();
+        if (offset != null) {
+            printExpr(offset);
             print0(", ");
         }
-        x.getRowCount().accept(this);
+
+        SQLExpr rowCount = x.getRowCount();
+        printExpr(rowCount);
 
         return false;
     }

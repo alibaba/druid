@@ -414,5 +414,10 @@ public final class FnvHash {
         long BEFORE = fnv1a_64_lower("BEFORE");
         long AFTER = fnv1a_64_lower("AFTER");
         long INSTEAD = fnv1a_64_lower("INSTEAD");
+
+        long DEFERRABLE = fnv1a_64_lower("DEFERRABLE");
+        long AS = fnv1a_64_lower("AS");
+
+        long STAR = fnv1a_64_lower("*");
     }
 }

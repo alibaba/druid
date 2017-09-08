@@ -33,4 +33,7 @@ public interface SQLDataType extends SQLObject {
     boolean isWithLocalTimeZone();
 
     SQLDataType clone();
+
+    void setDbType(String dbType);
+    String getDbType();
 }

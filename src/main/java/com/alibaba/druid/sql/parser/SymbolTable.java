@@ -27,8 +27,6 @@ public class SymbolTable {
     public SymbolTable(int tableSize){
         this.indexMask = tableSize - 1;
         this.entries = new Entry[tableSize];
-
-//        this.addSymbol("id", 0, 2, "id".hashCode());
     }
 
 

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 public class MySqlLexer extends Lexer {
     public static SymbolTable quoteTable = new SymbolTable(8192);
@@ -226,7 +227,8 @@ public class MySqlLexer extends Lexer {
 
         final char first = ch;
 
-        if (ch == 'b' && charAt(pos + 1) == '\'') {
+        if (ch == 'b'
+                && charAt(pos + 1) == '\'') {
             int i = 2;
             int mark = pos + 2;
             for (;;++i) {
@@ -336,6 +338,7 @@ public class MySqlLexer extends Lexer {
                 token = Token.IDENTIFIER;
                 stringVal = SymbolTable.global.addSymbol(text, mark, bufPos, hash);
             }
+
         }
     }
 
@@ -395,7 +398,9 @@ public class MySqlLexer extends Lexer {
                         stringVal = this.subString(mark + startHintSp, starIndex - startHintSp - mark);
                         token = Token.HINT;
                     } else {
-                        stringVal = this.subString(mark, starIndex + 2 - mark);
+                        if (!optimizedForParameterized) {
+                            stringVal = this.subString(mark, starIndex + 2 - mark);
+                        }
                         token = Token.MULTI_LINE_COMMENT;
                         commentCount++;
                         if (keepComments) {

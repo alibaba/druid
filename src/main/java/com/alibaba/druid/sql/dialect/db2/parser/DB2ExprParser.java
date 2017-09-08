@@ -102,21 +102,21 @@ public class DB2ExprParser extends SQLExprParser {
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
-        if (lexer.identifierEquals("NEXTVAL")) {
+        if (lexer.identifierEquals(FnvHash.Constants.NEXTVAL)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 SQLSequenceExpr seqExpr = new SQLSequenceExpr(identExpr, SQLSequenceExpr.Function.NextVal);
                 lexer.nextToken();
                 return seqExpr;
             }
-        } else if (lexer.identifierEquals("PREVVAL")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.PREVVAL)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 SQLSequenceExpr seqExpr = new SQLSequenceExpr(identExpr, SQLSequenceExpr.Function.PrevVal);
                 lexer.nextToken();
                 return seqExpr;
             }
-        } else if (lexer.identifierEquals("CURRVAL")) {
+        } else if (lexer.identifierEquals(FnvHash.Constants.CURRVAL)) {
             if (expr instanceof SQLIdentifierExpr) {
                 SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
                 SQLSequenceExpr seqExpr = new SQLSequenceExpr(identExpr, SQLSequenceExpr.Function.CurrVal);

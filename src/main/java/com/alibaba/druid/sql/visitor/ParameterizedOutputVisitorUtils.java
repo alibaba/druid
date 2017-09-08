@@ -15,30 +15,23 @@
  */
 package com.alibaba.druid.sql.visitor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.phoenix.visitor.PhoenixOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
-import com.alibaba.druid.sql.parser.SQLParserFeature;
-import com.alibaba.druid.sql.parser.SQLParserUtils;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class ParameterizedOutputVisitorUtils {
     public static String parameterize(String sql, String dbType) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         parser.config(SQLParserFeature.EnableSQLBinaryOpExprGroup, true);
+        parser.config(SQLParserFeature.OptimizedForParameterized, true);
         List<SQLStatement> statementList = parser.parseStatementList();
         if (statementList.size() == 0) {
             return sql;

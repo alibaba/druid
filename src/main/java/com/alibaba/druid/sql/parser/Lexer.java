@@ -19,19 +19,9 @@ import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
-import static com.alibaba.druid.sql.parser.Token.COLONCOLON;
-import static com.alibaba.druid.sql.parser.Token.COLONEQ;
-import static com.alibaba.druid.sql.parser.Token.COMMA;
-import static com.alibaba.druid.sql.parser.Token.EOF;
-import static com.alibaba.druid.sql.parser.Token.ERROR;
-import static com.alibaba.druid.sql.parser.Token.LBRACE;
-import static com.alibaba.druid.sql.parser.Token.LBRACKET;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_ALIAS;
-import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
-import static com.alibaba.druid.sql.parser.Token.LPAREN;
-import static com.alibaba.druid.sql.parser.Token.RBRACE;
-import static com.alibaba.druid.sql.parser.Token.RBRACKET;
-import static com.alibaba.druid.sql.parser.Token.RPAREN;
+import static com.alibaba.druid.sql.parser.SQLParserFeature.KeepComments;
+import static com.alibaba.druid.sql.parser.SQLParserFeature.OptimizedForParameterized;
+import static com.alibaba.druid.sql.parser.Token.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -49,6 +39,7 @@ import com.alibaba.druid.util.StringUtils;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class Lexer {
+    protected static SymbolTable symbols_l2 = new SymbolTable(512);
 
     protected int          features       = 0; //SQLParserFeature.of(SQLParserFeature.EnableSQLBinaryOpExprGroup);
     protected final String text;
@@ -69,28 +60,23 @@ public class Lexer {
     protected long         hash;
 
     protected int            commentCount = 0;
-
     protected List<String>   comments     = new ArrayList<String>(2);
-
     protected boolean        skipComment  = true;
-
     private SavePoint        savePoint    = null;
 
     /*
      * anti sql injection
      */
     private boolean          allowComment = true;
-    
     private int              varIndex     = -1;
-
     protected CommentHandler commentHandler;
     protected boolean        endOfComment = false;
     protected boolean        keepComments = false;
-    
     protected int            line         = 0;
     protected int            lines        = 0;
-
     protected String         dbType;
+
+    protected boolean        optimizedForParameterized = false;
 
     private int startPos;
     private int posLine;
@@ -313,6 +299,12 @@ public class Lexer {
         if (ch == ')' || ch == '）') {
             scanChar();
             token = RPAREN;
+            return;
+        }
+
+        if (ch == '.') {
+            scanChar();
+            token = DOT;
             return;
         }
 
@@ -837,6 +829,7 @@ public class Lexer {
     protected void scanString() {
         mark = pos;
         boolean hasSpecial = false;
+        Token preToken = this.token;
 
         for (;;) {
             if (isEOF()) {
@@ -875,7 +868,11 @@ public class Lexer {
         }
 
         if (!hasSpecial) {
-            stringVal = subString(mark + 1, bufPos);
+            if (preToken == Token.AS) {
+                stringVal = subString(mark, bufPos + 2);
+            } else {
+                stringVal = subString(mark + 1, bufPos);
+            }
         } else {
             stringVal = new String(buf, 0, bufPos);
         }
@@ -902,7 +899,12 @@ public class Lexer {
                 throw new ParserException("unclosed str. " + info());
             }
 
-            String stringVal = subString(startIndex, endIndex - startIndex);
+            String stringVal;
+            if (token == Token.AS) {
+                stringVal = subString(pos, endIndex + 1 - pos);
+            } else {
+                stringVal = subString(startIndex, endIndex - startIndex);
+            }
             // hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
@@ -1537,6 +1539,15 @@ public class Lexer {
         return stringVal;
     }
 
+    private final void stringVal(StringBuffer out) {
+        if (stringVal != null) {
+            out.append(stringVal);
+            return;
+        }
+
+        out.append(text, mark, mark + bufPos);
+    }
+
     public final boolean identifierEquals(String text) {
         if (token != Token.IDENTIFIER) {
             return false;
@@ -1799,9 +1810,69 @@ public class Lexer {
 
     public void config(SQLParserFeature feature, boolean state) {
         features = SQLParserFeature.config(features, feature, state);
+
+        if (feature == OptimizedForParameterized) {
+            optimizedForParameterized = state;
+        } else if (feature == KeepComments) {
+            this.keepComments = state;
+        }
     }
 
     public final boolean isEnabled(SQLParserFeature feature) {
         return SQLParserFeature.isEnabled(this.features, feature);
+    }
+
+    public static String parameterize(String sql, String dbType) {
+        Lexer lexer = SQLParserUtils.createLexer(sql, dbType);
+        lexer.optimizedForParameterized = true; // optimized
+
+        lexer.nextToken();
+
+        StringBuffer buf = new StringBuffer();
+
+        for_:
+        for (;;) {
+            Token token = lexer.token;
+            switch (token) {
+                case LITERAL_ALIAS:
+                case LITERAL_FLOAT:
+                case LITERAL_CHARS:
+                case LITERAL_INT:
+                case LITERAL_NCHARS:
+                case LITERAL_HEX:
+                case VARIANT:
+                    if (buf.length() != 0) {
+                        buf.append(' ');
+                    }
+                    buf.append('?');
+                    break;
+                case COMMA:
+                    buf.append(',');
+                    break;
+                case EQ:
+                    buf.append('=');
+                    break;
+                case EOF:
+                    break for_;
+                case ERROR:
+                    return sql;
+                case SELECT:
+                    buf.append("SELECT");
+                    break;
+                case UPDATE:
+                    buf.append("UPDATE");
+                    break;
+                default:
+                    if (buf.length() != 0) {
+                        buf.append(' ');
+                    }
+                    lexer.stringVal(buf);
+                    break;
+            }
+
+            lexer.nextToken();
+        }
+
+        return buf.toString();
     }
 }

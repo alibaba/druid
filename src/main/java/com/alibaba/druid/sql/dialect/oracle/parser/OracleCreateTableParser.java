@@ -15,19 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLPartition;
-import com.alibaba.druid.sql.ast.SQLPartitionBy;
 import com.alibaba.druid.sql.ast.SQLPartitionByHash;
 import com.alibaba.druid.sql.ast.SQLPartitionByList;
 import com.alibaba.druid.sql.ast.SQLPartitionByRange;
-import com.alibaba.druid.sql.ast.SQLSubPartition;
-import com.alibaba.druid.sql.ast.SQLSubPartitionBy;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByHash;
-import com.alibaba.druid.sql.ast.SQLSubPartitionByList;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -53,8 +46,8 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         return new OracleCreateTableStatement();
     }
 
-    public OracleCreateTableStatement parseCrateTable(boolean acceptCreate) {
-        OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCrateTable(acceptCreate);
+    public OracleCreateTableStatement parseCreateTable(boolean acceptCreate) {
+        OracleCreateTableStatement stmt = (OracleCreateTableStatement) super.parseCreateTable(acceptCreate);
 
         if (lexer.token() == Token.OF) {
             lexer.nextToken();

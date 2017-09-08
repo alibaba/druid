@@ -63,15 +63,15 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCrateTable() {
-        return parseCrateTable(true);
+    public SQLCreateTableStatement parseCreateTable() {
+        return parseCreateTable(true);
     }
 
     public MySqlExprParser getExprParser() {
         return (MySqlExprParser) exprParser;
     }
 
-    public MySqlCreateTableStatement parseCrateTable(boolean acceptCreate) {
+    public MySqlCreateTableStatement parseCreateTable(boolean acceptCreate) {
         MySqlCreateTableStatement stmt = new MySqlCreateTableStatement();
         if (acceptCreate) {
             if (lexer.hasComment() && lexer.isKeepComments()) {
@@ -120,6 +120,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                                || lexer.token() == Token.PRIMARY //
                                || lexer.token() == Token.UNIQUE) {
                         SQLTableConstraint constraint = this.parseConstraint();
+                        constraint.setParent(stmt);
                         stmt.getTableElementList().add(constraint);
                     } else if (lexer.token() == (Token.INDEX)) {
                         lexer.nextToken();

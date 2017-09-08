@@ -35,7 +35,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
         OdpsCreateTableStatement stmt = new OdpsCreateTableStatement();
         
         if (acceptCreate) {
