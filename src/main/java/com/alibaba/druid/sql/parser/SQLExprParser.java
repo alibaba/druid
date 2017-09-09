@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLUnique;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -1462,12 +1463,38 @@ public class SQLExprParser extends SQLParser {
             accept(Token.RPAREN);
             item.setColumn(list);
         } else {
-            item.setColumn(this.primary());
+            String identName;
+            long hash;
+
+            Token token = lexer.token();
+            if (token == Token.IDENTIFIER) {
+                identName = lexer.stringVal();
+                hash = lexer.hash_lower();
+            } else if (token == Token.LITERAL_CHARS) {
+                identName = '\'' + lexer.stringVal() + '\'';
+                hash = 0;
+            } else {
+                identName = lexer.stringVal();
+                hash = 0;
+            }
+            lexer.nextTokenEq();
+            SQLExpr expr = new SQLIdentifierExpr(identName, hash);
+            while (lexer.token() == Token.DOT) {
+                lexer.nextToken();
+                String propertyName = lexer.stringVal();
+                lexer.nextTokenEq();
+                expr = new SQLPropertyExpr(expr, propertyName);
+            }
+
+            item.setColumn(expr);
         }
         if (lexer.token == Token.COLONEQ) {
-            lexer.nextToken();
+            lexer.nextTokenValue();
+        } else if (lexer.token == Token.EQ) {
+            lexer.nextTokenValue();
         } else {
-            accept(Token.EQ);
+            throw new ParserException("syntax error, expect EQ, actual " + lexer.token + " "
+                    + lexer.info());
         }
 
         item.setValue(this.expr());
@@ -1519,28 +1546,28 @@ public class SQLExprParser extends SQLParser {
             } catch (EOFParserException e) {
                 throw new ParserException("EOF, " + expr + "=", e);
             }
-            rightExp = equalityRest(rightExp);
+
+            if (lexer.token == Token.COLONEQ) {
+                lexer.nextToken();
+                SQLExpr colonExpr = expr();
+                rightExp = new SQLBinaryOpExpr(rightExp, SQLBinaryOperator.Assignment, colonExpr, dbType);
+            }
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, dbType);
-        } else if (token == Token.BANGEQ) {
+        } else if (lexer.token() == Token.EQGT) {
+            lexer.nextToken();
+            rightExp = expr();
+            String argumentName = ((SQLIdentifierExpr) expr).getName();
+            return new OracleArgumentExpr(argumentName, rightExp);
+        } else if (token == Token.BANGEQ || token == Token.CARETEQ) {
             lexer.nextToken();
             rightExp = bitOr();
-
             rightExp = equalityRest(rightExp);
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotEqual, rightExp, getDbType());
-        } else if (token == Token.BANG) {
-            lexer.nextToken();
-            accept(Token.EQ);
-            rightExp = bitOr();
-
-            rightExp = equalityRest(rightExp);
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotEqual, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotEqual, rightExp, dbType);
         } else if (token == Token.COLONEQ) {
             lexer.nextToken();
             rightExp = expr();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, rightExp, getDbType());
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, rightExp, dbType);
         }
 
         return expr;
@@ -1562,9 +1589,19 @@ public class SQLExprParser extends SQLParser {
                     return queryExpr;
                 }
 
-                exprList(inListExpr.getTargetList(), inListExpr);
+                List<SQLExpr> targetList = inListExpr.getTargetList();
+                for (;;) {
+                    SQLExpr item = this.expr();
+                    item.setParent(inListExpr);
+                    targetList.add(item);
+                    if (lexer.token == Token.COMMA) {
+                        lexer.nextTokenValue();
+                        continue;
+                    }
+                    break;
+                }
+
                 accept(Token.RPAREN);
-                expr = inListExpr;
             } else {
                 SQLExpr itemExpr = primary();
                 itemExpr.setParent(inListExpr);
@@ -2632,6 +2669,13 @@ public class SQLExprParser extends SQLParser {
                 String as = lexer.stringVal();
 
                 lexer.nextTokenComma();
+
+                if (lexer.token == Token.DOT) {
+                    lexer.nextToken();
+                    as += '.' + lexer.stringVal();
+                    lexer.nextToken();
+                }
+
                 return new SQLSelectItem(expr, as, connectByRoot);
             }
 

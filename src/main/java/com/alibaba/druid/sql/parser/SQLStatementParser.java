@@ -19,12 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement.TriggerType;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
@@ -77,7 +75,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public void parseStatementList(List<SQLStatement> statementList) {
-        parseStatementList(statementList, -1);
+        parseStatementList(statementList, -1, null);
     }
 
     public void parseStatementList(List<SQLStatement> statementList, int max) {
@@ -2430,7 +2428,7 @@ public class SQLStatementParser extends SQLParser {
     */
     public SQLStatement parseStatement( final boolean tryBest) {
         List<SQLStatement> list = new ArrayList<SQLStatement>();
-        this.parseStatementList(list, 1);
+        this.parseStatementList(list, 1, null);
         if (tryBest) {
             if (lexer.token != Token.EOF) {
                 throw new ParserException("sql syntax error, no terminated. " + lexer.token);

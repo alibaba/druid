@@ -153,24 +153,6 @@ public class OdpsExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
     
-    public SQLExpr equalityRest(SQLExpr expr) {
-        if (lexer.token() == Token.EQEQ) {
-            SQLExpr rightExp;
-            lexer.nextToken();
-            try {
-                rightExp = bitOr();
-            } catch (EOFParserException e) {
-                throw new ParserException("EOF, " + expr + "=", e);
-            }
-            rightExp = equalityRest(rightExp);
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, getDbType());
-            
-            return expr;
-        }
-        
-        return super.equalityRest(expr);
-    }
 
     public SQLExpr relationalRest(SQLExpr expr) {
         if (lexer.identifierEquals("REGEXP")) {

@@ -168,6 +168,10 @@ public abstract class SQLObjectImpl implements SQLObject {
     
     @SuppressWarnings("unchecked")
     public void addAfterComment(List<String> comments) {
+        if (comments == null) {
+            return;
+        }
+
         if (attributes == null) {
             attributes = new HashMap<String, Object>(1);
         }

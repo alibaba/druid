@@ -18,8 +18,11 @@ package com.alibaba.druid.sql.parser;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
@@ -317,7 +320,7 @@ public class SQLSelectParser extends SQLParser {
             }
             SQLExpr where = expr();
             
-            if (where != null && beforeComments != null) {
+            if (beforeComments != null) {
                 where.addBeforeComment(beforeComments);
             }
             

@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -223,11 +222,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public void endVisit(OraclePLSQLCommitStatement astNode) {
-
-    }
-
-    @Override
     public void endVisit(OracleAnalytic x) {
 
     }
@@ -288,7 +282,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OraclePLSQLCommitStatement astNode) {
+    public boolean visit(SQLScriptCommitStatement astNode) {
 
         return true;
     }

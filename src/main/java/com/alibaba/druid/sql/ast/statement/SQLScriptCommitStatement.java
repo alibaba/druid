@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
+package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OraclePLSQLCommitStatement extends OracleStatementImpl {
+public class SQLScriptCommitStatement extends SQLStatementImpl {
 
-    public OraclePLSQLCommitStatement(){
+    public SQLScriptCommitStatement(){
 
     }
 
-    public void accept0(OracleASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
     }

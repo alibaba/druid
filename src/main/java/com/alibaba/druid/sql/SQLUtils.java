@@ -284,7 +284,12 @@ public class SQLUtils {
             visitor.setTableMapping(tableMapping);
         }
 
-        boolean printStmtSeperator = !JdbcConstants.ORACLE.equals(dbType);
+        boolean printStmtSeperator;
+        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
+            printStmtSeperator = false;
+        } else {
+            printStmtSeperator = !JdbcConstants.ORACLE.equals(dbType);
+        }
 
         for (int i = 0, size = statementList.size(); i < size; i++) {
             SQLStatement stmt = statementList.get(i);

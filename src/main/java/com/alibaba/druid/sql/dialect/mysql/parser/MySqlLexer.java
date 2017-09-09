@@ -144,17 +144,12 @@ public class MySqlLexer extends Lexer {
     }
 
     public void scanVariable() {
-        if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
+        if (ch != ':' && ch != '#' && ch != '$') {
             throw new ParserException("illegal variable. " + info());
         }
 
         mark = pos;
         bufPos = 1;
-
-        if (charAt(pos + 1) == '@') {
-            ch = charAt(++pos);
-            bufPos++;
-        }
 
         if (charAt(pos + 1) == '`') {
             ++pos;
@@ -204,6 +199,61 @@ public class MySqlLexer extends Lexer {
             token = Token.VARIANT;
         } else {
             for (;;) {
+                ch = charAt(++pos);
+
+                if (!isIdentifierChar(ch)) {
+                    break;
+                }
+
+                bufPos++;
+                continue;
+            }
+        }
+
+        this.ch = charAt(pos);
+
+        stringVal = subString(mark, bufPos);
+        token = Token.VARIANT;
+    }
+
+    protected void scanVariable_at() {
+        if (ch != '@') {
+            throw new ParserException("illegal variable. " + info());
+        }
+
+        mark = pos;
+        bufPos = 1;
+
+        if (charAt(pos + 1) == '@') {
+            ch = charAt(++pos);
+            bufPos++;
+        }
+
+        if (charAt(pos + 1) == '`') {
+            ++pos;
+            ++bufPos;
+            char ch;
+            for (;;) {
+                ch = charAt(++pos);
+
+                if (ch == '`') {
+                    bufPos++;
+                    ++pos;
+                    break;
+                } else if (ch == EOI) {
+                    throw new ParserException("illegal identifier. " + info());
+                }
+
+                bufPos++;
+                continue;
+            }
+
+            this.ch = charAt(pos);
+
+            stringVal = subString(mark, bufPos);
+            token = Token.VARIANT;
+        } else {
+            for (; ; ) {
                 ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
@@ -341,6 +391,8 @@ public class MySqlLexer extends Lexer {
 
         }
     }
+
+
 
     protected final void scanString() {
         scanString2();

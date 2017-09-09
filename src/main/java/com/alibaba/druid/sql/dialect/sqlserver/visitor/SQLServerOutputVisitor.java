@@ -573,4 +573,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         return false;
     }
+
+    @Override
+    public boolean visit(SQLScriptCommitStatement x) {
+        print0(ucase ? "GO" : "go");
+        return false;
+    }
 }

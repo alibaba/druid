@@ -417,6 +417,11 @@ public final class FnvHash {
 
         long DEFERRABLE = fnv1a_64_lower("DEFERRABLE");
         long AS = fnv1a_64_lower("AS");
+        long DELAYED = fnv1a_64_lower("DELAYED");
+        long GO = fnv1a_64_lower("GO");
+        long WAITFOR = fnv1a_64_lower("WAITFOR");
+        long EXEC = fnv1a_64_lower("EXEC");
+        long EXECUTE = fnv1a_64_lower("EXECUTE");
 
         long STAR = fnv1a_64_lower("*");
     }

@@ -144,12 +144,6 @@ public class OracleLexer extends Lexer {
     }
 
     public void scanVariable() {
-        if (ch == '@') {
-            scanChar();
-            token = Token.MONKEYS_AT;
-            return;
-        }
-
         if (ch != ':' && ch != '#' && ch != '$') {
             throw new ParserException("illegal variable. " + info());
         }
@@ -204,6 +198,12 @@ public class OracleLexer extends Lexer {
         } else {
             token = Token.VARIANT;
         }
+    }
+
+    protected void scanVariable_at() {
+        scanChar();
+        token = Token.MONKEYS_AT;
+        return;
     }
 
     public void scanComment() {

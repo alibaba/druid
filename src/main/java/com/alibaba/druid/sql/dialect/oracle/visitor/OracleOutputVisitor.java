@@ -212,7 +212,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OraclePLSQLCommitStatement astNode) {
+    public boolean visit(SQLScriptCommitStatement astNode) {
         print('/');
         println();
         return false;
@@ -622,11 +622,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         return false;
-    }
-
-    @Override
-    public void endVisit(OraclePLSQLCommitStatement astNode) {
-
     }
 
     @Override

@@ -738,5 +738,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLBinaryOpExprGroup x);
 
     void endVisit(SQLBinaryOpExprGroup x);
-    //
+
+    boolean visit(SQLScriptCommitStatement astNode);
+
+    void endVisit(SQLScriptCommitStatement astNode);
 }

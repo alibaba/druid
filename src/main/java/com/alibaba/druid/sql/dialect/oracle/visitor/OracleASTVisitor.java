@@ -36,7 +36,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface OracleASTVisitor extends SQLASTVisitor {
 
-    void endVisit(OraclePLSQLCommitStatement astNode);
+
 
     void endVisit(OracleAnalytic x);
 
@@ -67,8 +67,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleSelectUnPivot x);
 
     void endVisit(OracleUpdateStatement x);
-
-    boolean visit(OraclePLSQLCommitStatement astNode);
 
     boolean visit(OracleAnalytic x);
 

@@ -362,6 +362,10 @@ public class OdpsLexer extends Lexer {
         super.scanVariable();
     }
 
+    protected void scanVariable_at() {
+        scanVariable();
+    }
+
     protected final void scanString() {
         scanString2();
     }

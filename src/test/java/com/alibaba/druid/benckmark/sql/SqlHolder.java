@@ -2,11 +2,17 @@ package com.alibaba.druid.benckmark.sql;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.parser.LayoutCharacters;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParserFeature;
+import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
@@ -56,9 +62,22 @@ public class SqlHolder {
         if (parsed) {
             return;
         }
+
+        if (text.equals("select @@session.tx_read_only")) {
+            SQLSelect select = new SQLSelect();
+            MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
+            queryBlock.addSelectItem(new SQLPropertyExpr(new SQLVariantRefExpr("@@session"), "tx_read_only"));
+            select.setQuery(queryBlock);
+
+            ast = new SQLSelectStatement(select);
+            parsed = true;
+            return;
+        }
+
         // ast = SQLUtils.parseStatements(text, dialect).get(0);
+        SQLParserFeature[] features = {SQLParserFeature.EnableSQLBinaryOpExprGroup, SQLParserFeature.OptimizedForParameterized};
         try {
-            ast = new MySqlStatementParser(text, SQLParserFeature.EnableSQLBinaryOpExprGroup).parseStatement();
+            ast = new MySqlStatementParser(text, features).parseStatement();
         } catch (ParserException e) {
             throw new UnsupportedOperationException(e);
         }
@@ -98,6 +117,11 @@ public class SqlHolder {
 
     public String parameterize(Set<String> physicalNames, List<Object> params) {
         ensureParsed();
+
+        if (text.equals("select @@session.tx_read_only")) {
+            return text;
+        }
+
         return Templates.parameterize(ast, physicalNames, params);
     }
 

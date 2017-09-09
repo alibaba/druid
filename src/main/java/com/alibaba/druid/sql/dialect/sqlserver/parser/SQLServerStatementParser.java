@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionI
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 public class SQLServerStatementParser extends SQLStatementParser {
 
@@ -64,7 +65,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (lexer.identifierEquals("EXEC") || lexer.identifierEquals("EXECUTE")) {
+        if (lexer.identifierEquals(FnvHash.Constants.EXEC) || lexer.identifierEquals(FnvHash.Constants.EXECUTE)) {
             lexer.nextToken();
 
             SQLServerExecStatement execStmt = new SQLServerExecStatement();
@@ -109,8 +110,16 @@ public class SQLServerStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (lexer.identifierEquals("WAITFOR")) {
+        if (lexer.identifierEquals(FnvHash.Constants.WAITFOR)) {
             statementList.add(this.parseWaitFor());
+            return true;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.GO)) {
+            lexer.nextToken();
+
+            SQLStatement stmt = new SQLScriptCommitStatement();
+            statementList.add(stmt);
             return true;
         }
         
@@ -442,7 +451,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         stmt.setCondition(this.exprParser.expr());
 
-        this.parseStatementList(stmt.getStatements(), 1);
+        this.parseStatementList(stmt.getStatements(), 1, stmt);
         
         if(lexer.token() == Token.SEMI) {
             lexer.nextToken();
@@ -452,7 +461,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             SQLIfStatement.Else elseItem = new SQLIfStatement.Else();
-            this.parseStatementList(elseItem.getStatements(), 1);
+            this.parseStatementList(elseItem.getStatements(), 1, elseItem);
             stmt.setElseItem(elseItem);
         }
 

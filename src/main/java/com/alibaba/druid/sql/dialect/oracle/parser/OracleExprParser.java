@@ -998,43 +998,6 @@ public class OracleExprParser extends SQLExprParser {
         return name;
     }
     
-    public SQLExpr equalityRest(SQLExpr expr) {
-        SQLExpr rightExp;
-        if (lexer.token() == Token.EQ) {
-            lexer.nextToken();
-            
-            if (lexer.token() == Token.GT) {
-                lexer.nextToken();
-                rightExp = expr();
-                String argumentName = ((SQLIdentifierExpr) expr).getName();
-                return new OracleArgumentExpr(argumentName, rightExp);
-            }
-            
-            rightExp = shift();
-
-            rightExp = equalityRest(rightExp);
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, getDbType());
-        } else if (lexer.token() == Token.BANGEQ || lexer.token() == Token.CARETEQ) {
-            lexer.nextToken();
-            rightExp = shift();
-
-            rightExp = equalityRest(rightExp);
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotEqual, rightExp, getDbType());
-        } else if (lexer.token() == Token.BANG) {
-            lexer.nextToken();
-            accept(Token.EQ);
-            rightExp = shift();
-
-            rightExp = equalityRest(rightExp);
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotEqual, rightExp, getDbType());
-        }
-
-        return expr;
-    }
-    
     public OraclePrimaryKey parsePrimaryKey() {
         lexer.nextToken();
         accept(Token.KEY);
@@ -1043,7 +1006,6 @@ public class OracleExprParser extends SQLExprParser {
         accept(Token.LPAREN);
         orderBy(primaryKey.getColumns(), primaryKey);
         accept(Token.RPAREN);
-
         
         if (lexer.token() == Token.USING) {
             OracleUsingIndexClause using = parseUsingIndex();

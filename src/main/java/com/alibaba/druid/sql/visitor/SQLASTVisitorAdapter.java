@@ -1689,6 +1689,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
         features = VisitorFeature.config(features, feature, state);
     }
 
+    @Override
+    public boolean visit(SQLScriptCommitStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLScriptCommitStatement astNode) {
+
+    }
+
     public final boolean isEnabled(VisitorFeature feature) {
         return VisitorFeature.isEnabled(this.features, feature);
     }

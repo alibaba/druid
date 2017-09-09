@@ -325,6 +325,40 @@ public class Lexer {
         nextToken();
     }
 
+    public final void nextTokenEq() {
+        if (ch == ' ') {
+            scanChar();
+        }
+
+        if (ch == '=') {
+            scanChar();
+            token = EQ;
+            return;
+        }
+
+        if (ch == '.') {
+            scanChar();
+            token = DOT;
+            return;
+        }
+
+        if (ch == 'a' || ch == 'A') {
+            char ch_next = charAt(pos + 1);
+            if (ch_next == 's' || ch_next == 'S') {
+                char ch_next_2 = charAt(pos + 2);
+                if (ch_next_2 == ' ') {
+                    pos += 2;
+                    ch = ' ';
+                    token = Token.AS;
+                    stringVal = "AS";
+                    return;
+                }
+            }
+        }
+
+        nextToken();
+    }
+
     public final void nextTokenLParen() {
         if (ch == ' ') {
             scanChar();
@@ -362,7 +396,30 @@ public class Lexer {
             return;
         }
 
-        if (isFirstIdentifierChar(ch) && ch != 'N') {
+        if (ch == 'n' || ch == 'N') {
+            char c1 = 0, c2, c3, c4;
+            if (pos + 4 < text.length()
+                    && ((c1 = text.charAt(pos + 1)) == 'u' || c1 == 'U')
+                    && ((c2 = text.charAt(pos + 2)) == 'l' || c2 == 'L')
+                    && ((c3 = text.charAt(pos + 3)) == 'l' || c3 == 'L')
+                    && (isWhitespace(c4 = text.charAt(pos + 4)) || c4 == ',' || c4 == ')')) {
+                pos += 4;
+                ch = c4;
+                token = Token.NULL;
+                stringVal = "NULL";
+                return;
+            }
+
+            if (c1 == '\'') {
+                ++pos;
+                ch = '\'';
+                scanString();
+                token = Token.LITERAL_NCHARS;
+                return;
+            }
+        }
+
+        if (isFirstIdentifierChar(ch)) {
             scanIdentifier();
             return;
         }
@@ -608,7 +665,7 @@ public class Lexer {
                 case '`':
                     throw new ParserException("TODO. " + info()); // TODO
                 case '@':
-                    scanVariable();
+                    scanVariable_at();
                     return;
                 case '-':
                     if (charAt(pos +1) == '-') {
@@ -736,6 +793,9 @@ public class Lexer {
                 if (ch == '=') {
                     scanChar();
                     token = Token.EQEQ;
+                } else if (ch == '>') {
+                    scanChar();
+                    token = Token.EQGT;
                 } else {
                     token = Token.EQ;
                 }
@@ -781,6 +841,9 @@ public class Lexer {
                 break;
             case '!':
                 scanChar();
+                while (isWhitespace(ch)) {
+                    scanChar();
+                }
                 if (ch == '=') {
                     scanChar();
                     token = Token.BANGEQ;
@@ -1145,7 +1208,7 @@ public class Lexer {
     }
 
     public void scanVariable() {
-        if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
+        if (ch != ':' && ch != '#' && ch != '$') {
             throw new ParserException("illegal variable. " + info());
         }
 
@@ -1154,17 +1217,7 @@ public class Lexer {
         char ch;
 
         final char c1 = charAt(pos + 1);
-        if (c1 == '@') {
-            if (JdbcConstants.POSTGRESQL.equalsIgnoreCase(dbType)) {
-                pos += 2;
-                token = Token.MONKEYS_AT_AT;
-                this.ch = charAt(++pos);
-                return;
-            }
-            ch = charAt(++pos);
-
-            bufPos++;
-        } else if (c1 == '>' && JdbcConstants.POSTGRESQL.equalsIgnoreCase(dbType)) {
+        if (c1 == '>' && JdbcConstants.POSTGRESQL.equalsIgnoreCase(dbType)) {
             pos += 2;
             token = Token.MONKEYS_AT_GT;
             this.ch = charAt(++pos);
@@ -1195,6 +1248,38 @@ public class Lexer {
             stringVal = addSymbol();
             token = Token.VARIANT;
             return;
+        }
+
+        for (;;) {
+            ch = charAt(++pos);
+
+            if (!isIdentifierChar(ch)) {
+                break;
+            }
+
+            bufPos++;
+            continue;
+        }
+
+        this.ch = charAt(pos);
+
+        stringVal = addSymbol();
+        token = Token.VARIANT;
+    }
+
+    protected void scanVariable_at() {
+        if (ch != '@') {
+            throw new ParserException("illegal variable. " + info());
+        }
+
+        mark = pos;
+        bufPos = 1;
+        char ch;
+
+        final char c1 = charAt(pos + 1);
+        if (c1 == '@') {
+            ++pos;
+            bufPos++;
         }
 
         for (;;) {
@@ -1641,12 +1726,12 @@ public class Lexer {
         }
         multmin = negative ? MULTMIN_RADIX_TEN : N_MULTMAX_RADIX_TEN;
         if (i < max) {
-            digit = digits[charAt(i++)];
+            digit = charAt(i++) - '0';
             result = -digit;
         }
         while (i < max) {
             // Accumulating negatively avoids surprises near MAX_VALUE
-            digit = digits[charAt(i++)];
+            digit = charAt(i++) - '0';
             if (result < multmin) {
                 return new BigInteger(numberString());
             }

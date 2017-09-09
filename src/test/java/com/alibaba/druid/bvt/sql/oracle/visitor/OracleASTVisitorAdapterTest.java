@@ -70,7 +70,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
+import com.alibaba.druid.sql.ast.statement.SQLScriptCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -89,7 +89,7 @@ public class OracleASTVisitorAdapterTest extends TestCase {
     public void test_adapter() throws Exception {
         OracleASTVisitorAdapter adapter = new OracleASTVisitorAdapter();
 
-        new OraclePLSQLCommitStatement().accept(adapter);
+        new SQLScriptCommitStatement().accept(adapter);
         new OracleAnalytic().accept(adapter);
         new OracleAnalyticWindowing().accept(adapter);
         new SQLDateExpr().accept(adapter);

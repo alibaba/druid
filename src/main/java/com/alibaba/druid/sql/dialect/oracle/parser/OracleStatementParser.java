@@ -129,7 +129,7 @@ public class OracleStatementParser extends SQLStatementParser {
             if (lexer.token() == (Token.SLASH)) {
                 lexer.nextToken();
 
-                SQLStatement stmt = new OraclePLSQLCommitStatement();
+                SQLStatement stmt = new SQLScriptCommitStatement();
                 stmt.setParent(parent);
                 statementList.add(stmt);
                 continue;

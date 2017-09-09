@@ -1072,7 +1072,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print0(ucase ? "INTO " : "into ");
 
-        printExpr(x.getTableName());
+        printTableSourceExpr(x.getTableName());
 
         List<SQLExpr> columns = x.getColumns();
         if (columns.size() > 0) {

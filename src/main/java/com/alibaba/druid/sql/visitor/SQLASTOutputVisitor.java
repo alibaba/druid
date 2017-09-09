@@ -1041,13 +1041,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLIdentifierExpr x) {
-        final String name = x.getName();
-        if (!this.parameterized) {
-            print0(x.getName());
-            return false;
-        }
-
-        return printName(x, name);
+        print0(x.getName());
+        return false;
     }
 
     private boolean printName(SQLName x, String name) {
@@ -1535,7 +1530,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (mapTableName != null) {
             print0(mapTableName);
         } else {
-            printExpr(owner);
+            if (owner instanceof SQLIdentifierExpr) {
+                SQLIdentifierExpr ownerIdent = (SQLIdentifierExpr) owner;
+                printName(ownerIdent, ownerIdent.getName());
+            } else {
+                printExpr(owner);
+            }
         }
         print('.');
 
@@ -1961,9 +1961,54 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         if (expr instanceof SQLIdentifierExpr) {
-            visit((SQLIdentifierExpr) expr);
+            SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
+            final String name = identifierExpr.getName();
+            if (!this.parameterized) {
+                print0(name);
+                return;
+            }
+
+            boolean shardingSupport = this.shardingSupport
+                    && this.parameterized;
+
+            if (shardingSupport) {
+                String nameUnwrappe = unwrapShardingTable(name);
+
+                if (!name.equals(nameUnwrappe)) {
+                    incrementReplaceCunt();
+                }
+
+                print0(nameUnwrappe);
+            } else {
+                print0(name);
+            }
         } else if (expr instanceof SQLPropertyExpr) {
-            visit((SQLPropertyExpr) expr);
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) expr;
+            SQLExpr owner = propertyExpr.getOwner();
+
+            printTableSourceExpr(owner);
+            print('.');
+
+            final String name = propertyExpr.getName();
+            if (!this.parameterized) {
+                print0(propertyExpr.getName());
+                return;
+            }
+
+            boolean shardingSupport = this.shardingSupport
+                    && this.parameterized;
+
+            if (shardingSupport) {
+                String nameUnwrappe = unwrapShardingTable(name);
+
+                if (!name.equals(nameUnwrappe)) {
+                    incrementReplaceCunt();
+                }
+
+                print0(nameUnwrappe);
+            } else {
+                print0(name);
+            }
         } else {
             expr.accept(this);
         }

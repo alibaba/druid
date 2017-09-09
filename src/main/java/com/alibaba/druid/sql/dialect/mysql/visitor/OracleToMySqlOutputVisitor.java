@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLScriptCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.*;
@@ -34,10 +35,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
         super(appender, parameterized);
     }
 
-    @Override
-    public void endVisit(OraclePLSQLCommitStatement astNode) {
-
-    }
 
     @Override
     public void endVisit(OracleAnalytic x) {
@@ -107,11 +104,6 @@ public class OracleToMySqlOutputVisitor extends MySqlOutputVisitor implements Or
     @Override
     public void endVisit(OracleUpdateStatement x) {
 
-    }
-
-    @Override
-    public boolean visit(OraclePLSQLCommitStatement astNode) {
-        return false;
     }
 
     @Override
