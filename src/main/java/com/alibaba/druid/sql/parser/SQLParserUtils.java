@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
+import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -85,7 +86,7 @@ public class SQLParserUtils {
         }
 
         if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlStatementParser(sql);
+            return new H2StatementParser(sql);
         }
         
         if (JdbcUtils.DB2.equals(dbType)) {

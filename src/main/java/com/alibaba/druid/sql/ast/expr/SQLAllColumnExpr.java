@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLAllColumnExpr extends SQLExprImpl {
+public final class SQLAllColumnExpr extends SQLExprImpl {
     private transient SQLTableSource resolvedTableSource;
 
     public SQLAllColumnExpr(){

@@ -1983,6 +1983,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLCreateTriggerStatement x) {
+        SQLExprTableSource on = x.getOn();
+        on.accept(this);
         return false;
     }
 
@@ -2304,6 +2306,29 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             repository.resolve(x);
         }
         return true;
+    }
+
+    public boolean visit(SQLReplaceStatement x) {
+        if (repository != null
+                && x.getParent() == null) {
+            repository.resolve(x);
+        }
+
+        setMode(x, Mode.Replace);
+
+        SQLName tableName = x.getTableName();
+
+        TableStat stat = getTableStat(tableName);
+
+        if (stat != null) {
+            stat.incrementInsertCount();
+        }
+
+        accept(x.getColumns());
+        accept(x.getValuesList());
+        accept(x.getQuery());
+
+        return false;
     }
 
     protected final void statExpr(SQLExpr x) {

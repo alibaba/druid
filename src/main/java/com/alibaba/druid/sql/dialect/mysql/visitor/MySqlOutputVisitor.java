@@ -803,20 +803,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print0(ucase ? "IGNORE " : "ignore ");
         }
 
-        if (x.getFrom() == null) {
+        SQLTableSource from = x.getFrom();
+        if (from == null) {
             print0(ucase ? "FROM " : "from ");
             x.getTableSource().accept(this);
         } else {
             x.getTableSource().accept(this);
             println();
             print0(ucase ? "FROM " : "from ");
-            x.getFrom().accept(this);
+            from.accept(this);
         }
 
-        if (x.getUsing() != null) {
+        SQLTableSource using = x.getUsing();
+        if (using != null) {
             println();
             print0(ucase ? "USING " : "using ");
-            x.getUsing().accept(this);
+            using.accept(this);
         }
 
         SQLExpr where = x.getWhere();
@@ -894,7 +896,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
                 SQLExpr column = columns.get(i);
                 if (column instanceof SQLIdentifierExpr) {
-                    visit((SQLIdentifierExpr) column);
+                    print0(((SQLIdentifierExpr) column).getName());
                 } else {
                     printExpr(column);
                 }
@@ -1053,13 +1055,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    @Override
-    public void endVisit(MySqlReplaceStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlReplaceStatement x) {
+    public boolean visit(SQLReplaceStatement x) {
         print0(ucase ? "REPLACE " : "replace ");
 
         if (x.isLowPriority()) {
@@ -1574,9 +1570,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
-        if (x.getReturning() != null && x.getReturning().size() > 0) {
+        List<SQLExpr> returning = x.getReturning();
+        if (returning != null && returning.size() > 0) {
             print0(ucase ? "SELECT " : "select ");
-            printAndAccept(x.getReturning(), ", ");
+            printAndAccept(returning, ", ");
             println();
             print0(ucase ? "FROM " : "from ");
         }
@@ -1614,11 +1611,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         println();
         print0(ucase ? "SET " : "set ");
-        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+        List<SQLUpdateSetItem> items = x.getItems();
+        for (int i = 0, size = items.size(); i < size; ++i) {
             if (i != 0) {
                 print0(", ");
             }
-            SQLUpdateSetItem item = x.getItems().get(i);
+            SQLUpdateSetItem item = items.get(i);
             visit(item);
         }
 
@@ -3007,26 +3005,31 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(SQLBlockStatement x) {
-        if (x.getLabelName() != null && !x.getLabelName().equals("")) {
-            print0(x.getLabelName());
+        SQLObject parent = x.getParent();
+        String labelName = x.getLabelName();
+
+        if (labelName != null && !labelName.equals("")) {
+            print0(labelName);
             print0(": ");
         }
-        if (x.getParameters().size() != 0) {
+
+        List<SQLParameter> parameters = x.getParameters();
+        if (parameters.size() != 0) {
             this.indentCount++;
-            if (x.getParent() instanceof SQLCreateProcedureStatement) {
+            if (parent instanceof SQLCreateProcedureStatement) {
                 printIndent();
             }
-            if (!(x.getParent() instanceof SQLCreateProcedureStatement)) {
+            if (!(parent instanceof SQLCreateProcedureStatement)) {
                 print0(ucase ? "DECLARE" : "declare");
                 println();
             }
 
-            for (int i = 0, size = x.getParameters().size(); i < size; ++i) {
+            for (int i = 0, size = parameters.size(); i < size; ++i) {
                 if (i != 0) {
                     println();
                 }
-                SQLParameter param = x.getParameters().get(i);
-                param.accept(this);
+                SQLParameter param = parameters.get(i);
+                visit(param);
                 print(';');
             }
 
@@ -3036,19 +3039,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(ucase ? "BEGIN" : "begin");
         this.indentCount++;
         println();
-        for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
+        List<SQLStatement> statementList = x.getStatementList();
+        for (int i = 0, size = statementList.size(); i < size; ++i) {
             if (i != 0) {
                 println();
             }
-            SQLStatement stmt = x.getStatementList().get(i);
+            SQLStatement stmt = statementList.get(i);
             stmt.accept(this);
         }
         this.indentCount--;
         println();
         print0(ucase ? "END" : "end");
-        if (x.getLabelName() != null && !x.getLabelName().equals("")) {
+        if (labelName != null && !labelName.equals("")) {
             print(' ');
-            print0(x.getLabelName());
+            print0(labelName);
         }
         return false;
     }
@@ -3060,8 +3064,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print0(ucase ? " THEN" : " then");
         this.indentCount++;
         println();
-        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
-            SQLStatement item = x.getStatements().get(i);
+        List<SQLStatement> statements = x.getStatements();
+        for (int i = 0, size = statements.size(); i < size; ++i) {
+            SQLStatement item = statements.get(i);
             item.accept(this);
             if (i != size - 1) {
                 println();
@@ -3073,7 +3078,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             iterable_element.accept(this);
         }
 
-        if (x.getElseItem() != null) x.getElseItem().accept(this);
+        if (x.getElseItem() != null) {
+            x.getElseItem().accept(this);
+        }
 
         print0(ucase ? "END IF" : "end if");
         return false;

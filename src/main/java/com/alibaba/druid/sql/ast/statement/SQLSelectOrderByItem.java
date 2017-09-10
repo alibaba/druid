@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.SQLReplaceable;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
+public final class SQLSelectOrderByItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr                  expr;
     protected String                   collate;

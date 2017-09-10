@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
+public final class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
     protected String    name;
     private   long      hashCode64;
 

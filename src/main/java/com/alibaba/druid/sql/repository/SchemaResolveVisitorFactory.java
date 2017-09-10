@@ -169,23 +169,8 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
-        public boolean visit(MySqlReplaceStatement x) {
-            Context ctx = createContext(x);
-
-            SQLExprTableSource tableSource = x.getTableSource();
-            ctx.setTableSource(tableSource);
-            visit(tableSource);
-
-            for (SQLExpr column : x.getColumns()) {
-                column.accept(this);
-            }
-
-            SQLQueryExpr queryExpr = x.getQuery();
-            if (queryExpr != null) {
-                visit(queryExpr.getSubQuery());
-            }
-
-            popContext();
+        public boolean visit(SQLReplaceStatement x) {
+            resolve(this, x);
             return false;
         }
 
@@ -1339,6 +1324,11 @@ class SchemaResolveVisitorFactory {
             return false;
         }
 
+        public boolean visit(SQLReplaceStatement x) {
+            resolve(this, x);
+            return false;
+        }
+
         @Override
         public boolean isEnabled(Option option) {
             return (options & option.mask) != 0;
@@ -2442,6 +2432,25 @@ class SchemaResolveVisitorFactory {
             }
         }
         return false;
+    }
+
+    static void resolve(SchemaResolveVisitor visitor, SQLReplaceStatement x) {
+        SchemaResolveVisitor.Context ctx = visitor.createContext(x);
+
+        SQLExprTableSource tableSource = x.getTableSource();
+        ctx.setTableSource(tableSource);
+        visitor.visit(tableSource);
+
+        for (SQLExpr column : x.getColumns()) {
+            column.accept(visitor);
+        }
+
+        SQLQueryExpr queryExpr = x.getQuery();
+        if (queryExpr != null) {
+            visitor.visit(queryExpr.getSubQuery());
+        }
+
+        visitor.popContext();
     }
 
     static void resolve(SchemaResolveVisitor visitor, SQLForeignKeyConstraint x) {

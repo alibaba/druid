@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import java.util.List;
 
-public class SQLSomeExpr extends SQLExprImpl {
+public final class SQLSomeExpr extends SQLExprImpl {
 
     public SQLSelect subQuery;
 

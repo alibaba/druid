@@ -5,7 +5,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 
 /**
@@ -49,10 +48,10 @@ public class StatementConverter {
             } else {
                 throw new UnsupportedOperationException("only insert..select.. is supported");
             }
-        } else if (stmt instanceof MySqlReplaceStatement) {
-            SQLQueryExpr sqlQueryExpr = ((MySqlReplaceStatement) stmt).getQuery();
+        } else if (stmt instanceof SQLReplaceStatement) {
+            SQLQueryExpr sqlQueryExpr = ((SQLReplaceStatement) stmt).getQuery();
             if (sqlQueryExpr != null) {
-                SQLSelect sqlSelect = ((MySqlReplaceStatement) stmt).getQuery().getSubQuery();
+                SQLSelect sqlSelect = ((SQLReplaceStatement) stmt).getQuery().getSubQuery();
                 selectStmt = new SQLSelectStatement();
                 selectStmt.setSelect(sqlSelect);
             } else {

@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLParameter extends SQLObjectImpl implements SQLObjectWithDataType {
+public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDataType {
 
     private SQLName       name;
     private SQLDataType   dataType;

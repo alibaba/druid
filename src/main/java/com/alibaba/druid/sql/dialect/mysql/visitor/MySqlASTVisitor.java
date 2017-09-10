@@ -103,10 +103,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     boolean visit(MySqlLoadXmlStatement x);
 
-    void endVisit(MySqlReplaceStatement x);
-
-    boolean visit(MySqlReplaceStatement x);
-
     void endVisit(MySqlShowColumnsStatement x);
 
     boolean visit(MySqlShowColumnsStatement x);

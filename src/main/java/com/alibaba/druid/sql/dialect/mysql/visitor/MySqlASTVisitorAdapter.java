@@ -187,17 +187,6 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     }
 
     @Override
-    public void endVisit(MySqlReplaceStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlReplaceStatement x) {
-
-        return true;
-    }
-
-    @Override
     public void endVisit(MySqlShowColumnsStatement x) {
 
     }

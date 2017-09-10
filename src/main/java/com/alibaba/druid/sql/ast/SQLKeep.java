@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLKeep extends SQLObjectImpl {
+public final class SQLKeep extends SQLObjectImpl {
 
     protected DenseRank  denseRank;
 

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
-public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
+public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
     private   SQLExpr             owner;
     private   String              name;
 

@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLInListExpr extends SQLExprImpl implements Serializable {
+public final class SQLInListExpr extends SQLExprImpl implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private boolean           not              = false;

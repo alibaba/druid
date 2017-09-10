@@ -426,7 +426,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     // ////////////////////
 
     public boolean visit(SQLBetweenExpr x) {
-        x.getTestExpr().accept(this);
+        printExpr(x.getTestExpr());
 
         if (x.isNot()) {
             print0(ucase ? " NOT BETWEEN " : " not between ");
@@ -1154,9 +1154,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                 printExpr(x.getExpr());
 
                 if (x.isNot()) {
-                    print(isUppCase() ? " NOT IN (?)" : " not in (?)");
+                    print(ucase ? " NOT IN (?)" : " not in (?)");
                 } else {
-                    print(isUppCase() ? " IN (?)" : " in (?)");
+                    print(ucase ? " IN (?)" : " in (?)");
                 }
 
                 if (changed) {
@@ -1296,7 +1296,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             if (i != 0) {
                 print0(", ");
             }
-            SQLExpr param = x.getParameters().get(i);
+            SQLExpr param = parameters.get(i);
 
             if (this.parameterized) {
                 if (size == 2 && i == 1 && param instanceof SQLCharExpr) {
@@ -1365,11 +1365,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         boolean parameterized = this.parameterized;
         this.parameterized = false;
 
-        print0(ucase ? x.getMethodName() : x.getMethodName().toLowerCase());
+        String methodName = x.getMethodName();
+        print0(ucase ? methodName : methodName.toLowerCase());
         print('(');
 
-        if (x.getOption() != null) {
-            print0(x.getOption().toString());
+        SQLAggregateOption option = x.getOption();
+        if (option != null) {
+            print0(option.toString());
             print(' ');
         }
 
@@ -1388,19 +1390,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         SQLOrderBy withGroup = x.getWithinGroup();
         if (withGroup != null) {
             print0(ucase ? " WITHIN GROUP (" : " within group (");
-            withGroup.accept(this);
+            visit(withGroup);
             print(')');
         }
 
         SQLKeep keep = x.getKeep();
         if (keep != null) {
             print(' ');
-            keep.accept(this);
+            visit(keep);
         }
 
-        if (x.getOver() != null) {
+        SQLOver over = x.getOver();
+        if (over != null) {
             print(' ');
-            x.getOver().accept(this);
+            over.accept(this);
         }
 
         this.parameterized = parameterized;
@@ -2449,9 +2452,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         printTableElements(x.getTableElementList());
 
-        if (x.getInherits() != null) {
+        SQLExprTableSource inherits = x.getInherits();
+        if (inherits != null) {
             print0(ucase ? " INHERITS (" : " inherits (");
-            x.getInherits().accept(this);
+            inherits.accept(this);
             print(')');
         }
 
@@ -2473,26 +2477,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         }
 
         print0(ucase ? "UNIQUE (" : "unique (");
-        for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+        List<SQLSelectOrderByItem> columns = x.getColumns();
+        for (int i = 0, size = columns.size(); i < size; ++i) {
             if (i != 0) {
                 print0(", ");
             }
-            x.getColumns().get(i).accept(this);
+            visit(columns.get(i));
         }
         print(')');
         return false;
     }
 
     public boolean visit(SQLNotNullConstraint x) {
-        if (x.getName() != null) {
+        SQLName name = x.getName();
+        if (name != null) {
             print0(ucase ? "CONSTRAINT " : "constraint ");
-            x.getName().accept(this);
+            name.accept(this);
             print(' ');
         }
         print0(ucase ? "NOT NULL" : "not null");
 
         List<SQLCommentHint> hints = x.hints;
-
         if (hints != null) {
             print(' ');
             for (SQLCommentHint hint : hints) {
@@ -2504,9 +2509,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
     }
 
     public boolean visit(SQLNullConstraint x) {
-    	if (x.getName() != null) {
+        SQLName name = x.getName();
+    	if (name != null) {
     		print0(ucase ? "CONSTRAINT " : "constraint ");
-    		x.getName().accept(this);
+            name.accept(this);
     		print(' ');
     	}
     	print0(ucase ? "NULL" : "null");

@@ -83,6 +83,9 @@ public class OracleSelectTest82_wmsysconcat extends OracleTest {
         assertEquals(1, visitor.getRelationships().size());
         assertEquals(0, visitor.getOrderByColumns().size());
 
+        Assert.assertTrue(visitor.containsTable("sup_registration"));
+        Assert.assertTrue(visitor.containsTable("sup_task"));
+        Assert.assertTrue(visitor.containsTable("sys_org"));
 
          Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));
          Assert.assertTrue(visitor.containsColumn("sup_task", "orgid"));

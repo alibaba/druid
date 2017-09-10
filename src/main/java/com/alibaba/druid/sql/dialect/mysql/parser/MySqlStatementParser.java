@@ -504,7 +504,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.REPLACE) {
-            MySqlReplaceStatement stmt = parseReplicate();
+            SQLReplaceStatement stmt = parseReplace();
             statementList.add(stmt);
             return true;
         }
@@ -1773,8 +1773,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public MySqlReplaceStatement parseReplicate() {
-        MySqlReplaceStatement stmt = new MySqlReplaceStatement();
+    public SQLReplaceStatement parseReplace() {
+        SQLReplaceStatement stmt = new SQLReplaceStatement();
 
         accept(Token.REPLACE);
 
@@ -2260,95 +2260,6 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return insertStatement;
-    }
-
-    private void parseValueClause(List<ValuesClause> valueClauseList, int columnSize, SQLObject parent) {
-        for (int i = 0; ; ++i) {
-            int startPos = lexer.pos() - 1;
-
-            if (lexer.token() != Token.LPAREN) {
-                throw new ParserException("syntax error, expect ')', " + lexer.info());
-            }
-            lexer.nextTokenValue();
-
-            if (lexer.token() != Token.RPAREN) {
-                List<SQLExpr> valueExprList;
-                if (columnSize > 0) {
-                    valueExprList = new ArrayList<SQLExpr>(columnSize);
-                } else {
-                    valueExprList = new ArrayList<SQLExpr>();
-                }
-
-                for (; ; ) {
-                    SQLExpr expr;
-                    if (lexer.token() == Token.LITERAL_INT) {
-                        expr = new SQLIntegerExpr(lexer.integerValue());
-                        lexer.nextTokenComma();
-                    } else if (lexer.token() == Token.LITERAL_CHARS) {
-                        expr = new SQLCharExpr(lexer.stringVal());
-                        lexer.nextTokenComma();
-                    } else if (lexer.token() == Token.LITERAL_NCHARS) {
-                        expr = new SQLNCharExpr(lexer.stringVal());
-                        lexer.nextTokenComma();
-                    } else {
-                        expr = exprParser.expr();
-                    }
-
-                    if (lexer.token() == Token.COMMA) {
-                        valueExprList.add(expr);
-                        lexer.nextTokenValue();
-                        continue;
-                    } else if (lexer.token() == Token.RPAREN) {
-                        valueExprList.add(expr);
-                        break;
-                    } else {
-                        expr = this.exprParser.primaryRest(expr);
-                        if (lexer.token() != Token.COMMA && lexer.token() != Token.RPAREN) {
-                            expr = this.exprParser.exprRest(expr);
-                        }
-
-                        valueExprList.add(expr);
-                        if (lexer.token() == Token.COMMA) {
-                            lexer.nextToken();
-                            continue;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-
-                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
-                values.setParent(parent);
-
-                if (lexer.isEnabled(SQLParserFeature.KeepInsertValueClauseOriginalString)) {
-                    int endPos = lexer.pos();
-                    String orginalString = lexer.subString(startPos, endPos - startPos);
-                    values.setOriginalString(orginalString);
-                }
-
-                valueClauseList.add(values);
-            } else {
-                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
-                valueClauseList.add(values);
-            }
-
-            if (lexer.token() != Token.RPAREN) {
-                throw new ParserException("syntax error. " + lexer.info());
-            }
-
-            if (!parseCompleteValues && valueClauseList.size() >= parseValuesSize) {
-                lexer.skipToEOF();
-                break;
-            }
-
-            lexer.nextTokenComma();
-            if (lexer.token() == Token.COMMA) {
-                lexer.nextTokenLParen();
-                continue;
-            } else {
-                break;
-            }
-        }
     }
 
     public SQLSelectParser createSQLSelectParser() {

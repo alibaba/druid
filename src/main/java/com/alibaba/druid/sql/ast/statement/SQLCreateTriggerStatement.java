@@ -36,7 +36,7 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
     private boolean                  delete;
     private boolean                  insert;
 
-    private SQLName                  on;
+    private SQLExprTableSource       on;
 
     private boolean                  forEachRow     = false;
 
@@ -64,11 +64,18 @@ public class SQLCreateTriggerStatement extends SQLStatementImpl implements SQLCr
         visitor.endVisit(this);
     }
 
-    public SQLName getOn() {
+    public SQLExprTableSource getOn() {
         return on;
     }
 
     public void setOn(SQLName on) {
+        this.setOn(new SQLExprTableSource(on));
+    }
+
+    public void setOn(SQLExprTableSource on) {
+        if (on != null) {
+            on.setParent(this);
+        }
         this.on = on;
     }
 

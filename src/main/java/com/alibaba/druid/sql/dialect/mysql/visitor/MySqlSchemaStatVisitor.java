@@ -260,35 +260,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public void endVisit(MySqlReplaceStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlReplaceStatement x) {
-        if (repository != null
-                && x.getParent() == null) {
-            repository.resolve(x);
-        }
-
-        setMode(x, Mode.Replace);
-
-        SQLName tableName = x.getTableName();
-
-        TableStat stat = getTableStat(tableName);
-
-        if (stat != null) {
-            stat.incrementInsertCount();
-        }
-
-        accept(x.getColumns());
-        accept(x.getValuesList());
-        accept(x.getQuery());
-
-        return false;
-    }
-
-    @Override
     public void endVisit(SQLStartTransactionStatement x) {
 
     }

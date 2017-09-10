@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
@@ -43,6 +44,11 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.*;
 
 public class SQLUtils {
+    private final static SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
+            SQLParserFeature.KeepComments,
+            SQLParserFeature.EnableSQLBinaryOpExprGroup
+    };
+
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption(true, true);
     public static FormatOption DEFAULT_LCASE_FORMAT_OPTION
             = new FormatOption(false, true);
@@ -234,13 +240,8 @@ public class SQLUtils {
 
     public static String format(String sql, String dbType, List<Object> parameters, FormatOption option) {
         try {
-            SQLParserFeature[] features = {SQLParserFeature.KeepComments, SQLParserFeature.EnableSQLBinaryOpExprGroup};
-
-            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, features);
-            parser.setKeepComments(true);
-
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, FORMAT_DEFAULT_FEATURES);
             List<SQLStatement> statementList = parser.parseStatementList();
-
             return toSQLString(statementList, dbType, parameters, option);
         } catch (ParserException ex) {
             LOG.warn("format error", ex);
@@ -363,8 +364,7 @@ public class SQLUtils {
         }
 
         if (JdbcConstants.MYSQL.equals(dbType) //
-                || JdbcConstants.MARIADB.equals(dbType) //
-                || JdbcConstants.H2.equals(dbType)) {
+                || JdbcConstants.MARIADB.equals(dbType)) {
             return new MySqlOutputVisitor(out);
         }
 
@@ -382,6 +382,10 @@ public class SQLUtils {
 
         if (JdbcConstants.ODPS.equals(dbType)) {
             return new OdpsOutputVisitor(out);
+        }
+
+        if (JdbcConstants.H2.equals(dbType)) {
+            return new H2OutputVisitor(out);
         }
 
         return new SQLASTOutputVisitor(out, dbType);

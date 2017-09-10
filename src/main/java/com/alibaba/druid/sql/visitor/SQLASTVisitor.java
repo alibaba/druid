@@ -739,7 +739,11 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLBinaryOpExprGroup x);
 
-    boolean visit(SQLScriptCommitStatement astNode);
+    boolean visit(SQLScriptCommitStatement x);
 
-    void endVisit(SQLScriptCommitStatement astNode);
+    void endVisit(SQLScriptCommitStatement x);
+
+    boolean visit(SQLReplaceStatement x);
+
+    void endVisit(SQLReplaceStatement x);
 }

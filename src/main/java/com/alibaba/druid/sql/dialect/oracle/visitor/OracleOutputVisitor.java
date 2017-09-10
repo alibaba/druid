@@ -97,19 +97,21 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             space = true;
         }
 
-        if (x.getOrderBy() != null) {
+        SQLOrderBy orderBy = x.getOrderBy();
+        if (orderBy != null) {
             if (space) {
                 print(' ');
             }
-            x.getOrderBy().accept(this);
+            visit(orderBy);
             space = true;
         }
 
-        if (x.getWindowing() != null) {
+        OracleAnalyticWindowing windowing = x.getWindowing();
+        if (windowing != null) {
             if (space) {
                 print(' ');
             }
-            x.getWindowing().accept(this);
+            visit(windowing);
         }
 
         print(')');

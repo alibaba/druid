@@ -2181,7 +2181,7 @@ public class WallVisitorUtils {
                         tableStat.incrementDeleteCount();
                     } else if (parent instanceof SQLUpdateStatement) {
                         tableStat.incrementUpdateCount();
-                    } else if (parent instanceof MySqlReplaceStatement) {
+                    } else if (parent instanceof SQLReplaceStatement) {
                         tableStat.incrementReplaceCount();
                     }
                 }
@@ -2512,7 +2512,7 @@ public class WallVisitorUtils {
             allow = config.isSetAllow();
             denyMessage = "set not allow";
             errorCode = ErrorCode.SET_NOT_ALLOW;
-        } else if (x instanceof MySqlReplaceStatement) {
+        } else if (x instanceof SQLReplaceStatement) {
             allow = config.isReplaceAllow();
             denyMessage = "replace not allow";
             errorCode = ErrorCode.REPLACE_NOT_ALLOW;

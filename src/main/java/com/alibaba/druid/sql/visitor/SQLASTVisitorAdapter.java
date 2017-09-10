@@ -1695,7 +1695,17 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
-    public void endVisit(SQLScriptCommitStatement astNode) {
+    public void endVisit(SQLScriptCommitStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLReplaceStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLReplaceStatement x) {
 
     }
 
