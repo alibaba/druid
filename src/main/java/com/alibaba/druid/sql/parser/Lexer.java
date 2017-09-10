@@ -1960,4 +1960,8 @@ public class Lexer {
 
         return buf.toString();
     }
+
+    public String getSource() {
+        return text;
+    }
 }

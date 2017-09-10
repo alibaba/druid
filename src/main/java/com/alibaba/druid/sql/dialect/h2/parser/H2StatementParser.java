@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.h2.ast.H2MergeStatement;
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class H2StatementParser extends SQLStatementParser {
     public H2StatementParser(String sql) {
@@ -32,6 +33,7 @@ public class H2StatementParser extends SQLStatementParser {
         accept(Token.INTO);
 
         SQLReplaceStatement stmt = new SQLReplaceStatement();
+        stmt.setDbType(JdbcConstants.H2);
 
         SQLName tableName = exprParser.name();
         stmt.setTableName(tableName);

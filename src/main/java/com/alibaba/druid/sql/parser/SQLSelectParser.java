@@ -310,7 +310,7 @@ public class SQLSelectParser extends SQLParser {
         return withQueryClause;
     }
 
-    protected void parseWhere(SQLSelectQueryBlock queryBlock) {
+    public void parseWhere(SQLSelectQueryBlock queryBlock) {
         if (lexer.token == Token.WHERE) {
             lexer.nextToken();
 

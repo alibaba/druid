@@ -54,9 +54,10 @@ public class MySqlParameterizedBenchmark extends TestCase {
         String sql10 = "update seller_spu_site_1976 set gmt_modified = NOW(), spu_id = 0, site_id = null, site_en = null, features = null, outer_id = null, auction_status = -2 where ((sellerid = 2027808696) AND (item_id = 552891941272))";
         String sql11 = "select seller_item_sku.item_id,seller_item_sku.gmt_modified,seller_item_sku.gmt_create,seller_item_sku.sku_id,seller_item_sku.seller_id,seller_item_sku.outer_id,seller_item_sku.status,seller_item_sku.sync_version,seller_item_sku.sku_feature from seller_item_sku_2047 seller_item_sku where ((seller_item_sku.item_id = 558182960563) AND (seller_item_sku.seller_id = 673619967) AND (seller_item_sku.sku_id = 3634115286014))";
         String sql12 = "/* 0ba9776a15048393743937000d1936/0//7d21f1f2/ */select `auction_relation`.`id`,`auction_relation`.`item_id`,`auction_relation`.`sku_id`,`auction_relation`.`user_id`,`auction_relation`.`target_id`,`auction_relation`.`extra_id`,`auction_relation`.`type`,`auction_relation`.`target_type`,`auction_relation`.`type_attr`,`auction_relation`.`status`,`auction_relation`.`target_user_id`,`auction_relation`.`options`,`auction_relation`.`features`,`auction_relation`.`version`,`auction_relation`.`sub_type`,`auction_relation`.`gmt_create`,`auction_relation`.`gmt_modified` from `auction_relation_1080` `auction_relation` where ((`auction_relation`.`item_id` = 556887226360) AND (`auction_relation`.`target_Type` IN (1,2,3,4)) AND (`auction_relation`.`status` = 0) AND (`auction_relation`.`type` IN (16,17,6,7,8,9,10,11,12,13,14,15)))";
+        String sql13 = "/* 0b802d4e15048393680475983ea57a/0.1.5.24.1.1113363181//f7972bef/ */SELECT id, dispute_id, buyer_id, seller_id, total_fee, refund_fee, max_apply_goods_fee, apply_goods_fee, apply_carriage_fee, refund_goods_fee, refund_carriage_fee, refund_point, refund_coupon, refund_return_point, refund_cash, real_deduct_refund_point, real_refund_return_point, refund_return_commission, gmt_create, gmt_modified, attributes, attributes_cc FROM dispute_funds_0502 AS dispute_funds WHERE dispute_id = 3079439578090614";
 
         for (int i = 0; i < 5; ++i) {
-            perf(sql); // 6740 6201 4752 4514 4391 4218 4127 4124
+//            perf(sql); // 6740 6201 4752 4514 4391 4218 4127 4124
 //            perf(sql2); // 2948 2928 2869 2780 2502
 //            perf(sql3); // 15093 10392 10416 10154 10007 9126 8907
 //            perf(sql4); // 4429 4190 4023 3747
@@ -65,6 +66,7 @@ public class MySqlParameterizedBenchmark extends TestCase {
 //            perf(sql8); // 601 585 314
 //            perf(sql9); // 2403 2392 2188 2169
 //            perf(sql10); // 3163 2866
+            perf(sql13); //
 
 //            perf_parse(sql); // 4643 4377 4345 3801 3627 3228 2961 2959
 //            perf_parse(sql2); // 1918 1779 1666 1646
@@ -77,6 +79,7 @@ public class MySqlParameterizedBenchmark extends TestCase {
 //            perf_parse(sql10); // 2291 2025 2024 2010
 //            perf_parse(sql11); // 3209
 //            perf_parse(sql12); // 4873 4767
+//            perf_parse(sql13); //
 
 //            perf_lexer(sql4); // 2051 1802
 //            perf_lexer(sql5); // 1125 1054

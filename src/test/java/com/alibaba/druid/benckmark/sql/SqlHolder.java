@@ -1,12 +1,15 @@
 package com.alibaba.druid.benckmark.sql;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlSelectParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.LayoutCharacters;
@@ -63,21 +66,21 @@ public class SqlHolder {
             return;
         }
 
-        if (text.equals("select @@session.tx_read_only")) {
-            SQLSelect select = new SQLSelect();
-            MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
-            queryBlock.addSelectItem(new SQLPropertyExpr(new SQLVariantRefExpr("@@session"), "tx_read_only"));
-            select.setQuery(queryBlock);
-
-            ast = new SQLSelectStatement(select);
-            parsed = true;
-            return;
-        }
+//        if (text.equals("select @@session.tx_read_only")) {
+//            SQLSelect select = new SQLSelect();
+//            MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
+//            queryBlock.addSelectItem(new SQLPropertyExpr(new SQLVariantRefExpr("@@session"), "tx_read_only"));
+//            select.setQuery(queryBlock);
+//
+//            ast = new SQLSelectStatement(select);
+//            parsed = true;
+//            return;
+//        }
 
         // ast = SQLUtils.parseStatements(text, dialect).get(0);
         SQLParserFeature[] features = {SQLParserFeature.EnableSQLBinaryOpExprGroup, SQLParserFeature.OptimizedForParameterized};
         try {
-            ast = new MySqlStatementParser(text, features).parseStatement();
+            ast = new SqlHolderParser(text, features).parseStatement();
         } catch (ParserException e) {
             throw new UnsupportedOperationException(e);
         }
@@ -118,9 +121,9 @@ public class SqlHolder {
     public String parameterize(Set<String> physicalNames, List<Object> params) {
         ensureParsed();
 
-        if (text.equals("select @@session.tx_read_only")) {
-            return text;
-        }
+//        if (text.equals("select @@session.tx_read_only")) {
+//            return text;
+//        }
 
         return Templates.parameterize(ast, physicalNames, params);
     }
@@ -234,5 +237,76 @@ public class SqlHolder {
             return tableName.substring(0, idx);
         }
         return tableName;
+    }
+
+    public static class SqlHolderParser extends MySqlStatementParser {
+
+        public SqlHolderParser(String sql, SQLParserFeature... features) {
+            super(sql, features);
+        }
+
+        public void parseStatementList(List<SQLStatement> statementList, int max, SQLObject parent) {
+            // special optimized
+            if (lexer.token() == Token.SELECT) {
+                String source = lexer.getSource();
+                if ("select @@session.tx_read_only".equals(source)) {
+                    SQLSelect select = new SQLSelect();
+                    MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
+                    queryBlock.addSelectItem(new SQLPropertyExpr(new SQLVariantRefExpr("@@session"), "tx_read_only"));
+                    select.setQuery(queryBlock);
+
+                    SQLSelectStatement stmt = new SQLSelectStatement(select);
+                    statementList.add(stmt);
+
+                    lexer.reset(29, '\u001A', Token.EOF);
+                    return;
+                }
+
+                int pos = lexer.pos();
+                if (source.startsWith(" id, dispute_id, buyer_id, seller_id, total_fee, refund_fee, max_apply_goods_fee, apply_goods_fee, apply_carriage_fee, refund_goods_fee, refund_carriage_fee, refund_point, refund_coupon, refund_return_point, refund_cash, real_deduct_refund_point, real_refund_return_point, refund_return_commission, gmt_create, gmt_modified, attributes, attributes_cc FROM", pos)) {
+                    MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("id"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("dispute_id"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("buyer_id"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("seller_id"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("total_fee"));
+
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("refund_fee"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("max_apply_goods_fee"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("apply_goods_fee"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("apply_carriage_fee"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("refund_goods_fee"));
+
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("refund_carriage_fee"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("refund_point"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("refund_coupon"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("refund_return_point"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("refund_cash"));
+
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("real_deduct_refund_point"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("real_refund_return_point"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("refund_return_commission"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("gmt_create"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("gmt_modified"));
+
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("attributes"));
+                    queryBlock.addSelectItem(new SQLIdentifierExpr("attributes_cc"));
+
+                    lexer.reset(430, ' ', Token.FROM);
+
+                    MySqlSelectParser selectParser = new MySqlSelectParser(this.exprParser);
+                    selectParser.parseFrom(queryBlock);
+                    selectParser.parseWhere(queryBlock);
+
+                    SQLSelect select = new SQLSelect(queryBlock);
+                    SQLSelectStatement stmt = new SQLSelectStatement(select);
+                    stmt.setDbType(JdbcConstants.MYSQL);
+                    statementList.add(stmt);
+                    return;
+                }
+            }
+
+            super.parseStatementList(statementList, max, parent);
+        }
     }
 }
