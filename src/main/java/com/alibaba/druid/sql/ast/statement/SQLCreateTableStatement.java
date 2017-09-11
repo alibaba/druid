@@ -624,7 +624,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     }
 
     public boolean apply(SQLCommentStatement x) {
-        SQLName on = x.getOn();
+        SQLName on = x.getOn().getName();
         SQLExpr comment = x.getComment();
         if (comment == null) {
             return false;

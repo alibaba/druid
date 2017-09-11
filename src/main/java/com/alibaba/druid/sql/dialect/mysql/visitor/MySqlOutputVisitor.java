@@ -3580,20 +3580,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(SQLCommentStatement x) {
         SQLCommentStatement.Type type = x.getType();
 
-        SQLExpr on = x.getOn();
+        SQLExprTableSource on = x.getOn();
         if (type == SQLCommentStatement.Type.TABLE) {
             print0(ucase ? "ALTER TABLE " : "alter table ");
             on.accept(this);
             print0(ucase ? " COMMENT = " : " comment = ");
             x.getComment().accept(this);
         } else {
-            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) on;
+            SQLPropertyExpr propertyExpr = (SQLPropertyExpr) on.getExpr();
 
             SQLExpr table = propertyExpr.getOwner();
             String column = propertyExpr.getName();
 
             print0(ucase ? "ALTER TABLE " : "alter table ");
-            table.accept(this);
+            printTableSourceExpr(table);
             print0(ucase ? " MODIFY COLUMN " : " modify column ");
             print(column);
             print0(ucase ? " COMMENT " : " comment ");

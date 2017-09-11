@@ -27,9 +27,9 @@ public class SQLCommentStatement extends SQLStatementImpl {
         TABLE, COLUMN
     }
 
-    private SQLName on;
-    private Type    type;
-    private SQLExpr comment;
+    private SQLExprTableSource on;
+    private Type               type;
+    private SQLExpr            comment;
 
     public SQLExpr getComment() {
         return comment;
@@ -47,12 +47,19 @@ public class SQLCommentStatement extends SQLStatementImpl {
         this.type = type;
     }
 
-    public SQLName getOn() {
+    public SQLExprTableSource getOn() {
         return on;
     }
 
-    public void setOn(SQLName on) {
+    public void setOn(SQLExprTableSource on) {
+        if (on != null) {
+            on.setParent(this);
+        }
         this.on = on;
+    }
+
+    public void setOn(SQLName on) {
+        this.setOn(new SQLExprTableSource(on));
     }
 
     @Override
