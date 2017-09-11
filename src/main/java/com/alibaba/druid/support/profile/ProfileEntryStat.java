@@ -36,7 +36,7 @@ public class ProfileEntryStat {
         ProfileEntryStatValue val = new ProfileEntryStatValue();
 
         val.setExecuteCount(get(this, executeCountUpdater, reset));
-        val.setExecuteTimeNanos(get(this, executeCountUpdater, reset));
+        val.setExecuteTimeNanos(get(this, executeTimeNanosUpdater, reset));
 
         return val;
     }

@@ -428,7 +428,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         StatFilterContext.getInstance().executeBefore(sql, inTransaction);
 
-        Profiler.enter(sql, Profiler.PROFILE_TYPE_SQL);
+        String mergedSql;
+        if (sqlStat != null) {
+            mergedSql = sqlStat.getSql();
+        } else {
+            mergedSql = sql;
+        }
+        Profiler.enter(mergedSql, Profiler.PROFILE_TYPE_SQL);
     }
 
     private final void internalAfterStatementExecute(StatementProxy statement, boolean firstResult,
