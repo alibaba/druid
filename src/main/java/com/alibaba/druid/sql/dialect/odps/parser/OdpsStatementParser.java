@@ -266,7 +266,7 @@ public class OdpsStatementParser extends SQLStatementParser {
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new OdpsSelectParser(this.exprParser);
+        return new OdpsSelectParser(this.exprParser, selectListCache);
     }
 
     public OdpsInsert parseOdpsInsert() {

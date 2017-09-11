@@ -51,7 +51,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new SQLServerSelectParser(this.exprParser);
+        return new SQLServerSelectParser(this.exprParser, selectListCache);
     }
 
     public SQLServerStatementParser(Lexer lexer){

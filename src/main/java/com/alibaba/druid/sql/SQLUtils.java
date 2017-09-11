@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
+import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
@@ -402,8 +403,7 @@ public class SQLUtils {
         }
 
         if (JdbcConstants.MYSQL.equals(dbType) || //
-                JdbcConstants.MARIADB.equals(dbType) || //
-                JdbcConstants.H2.equals(dbType)) {
+                JdbcConstants.MARIADB.equals(dbType)) {
             return new MySqlSchemaStatVisitor();
         }
 
@@ -421,6 +421,10 @@ public class SQLUtils {
 
         if (JdbcConstants.ODPS.equals(dbType)) {
             return new OdpsSchemaStatVisitor();
+        }
+
+        if (JdbcConstants.H2.equals(dbType)) {
+            return new H2SchemaStatVisitor();
         }
 
         return new SchemaStatVisitor();

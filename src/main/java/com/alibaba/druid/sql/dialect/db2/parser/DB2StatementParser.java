@@ -39,7 +39,7 @@ public class DB2StatementParser extends SQLStatementParser {
     }
     
     public DB2SelectParser createSQLSelectParser() {
-        return new DB2SelectParser(this.exprParser);
+        return new DB2SelectParser(this.exprParser, selectListCache);
     }
     
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {

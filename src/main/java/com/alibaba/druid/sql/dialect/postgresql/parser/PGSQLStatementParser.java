@@ -60,7 +60,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
     }
 
     public PGSelectParser createSQLSelectParser() {
-        return new PGSelectParser(this.exprParser);
+        return new PGSelectParser(this.exprParser, selectListCache);
     }
 
     public SQLUpdateStatement parseUpdateStatement() {

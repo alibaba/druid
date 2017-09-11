@@ -108,7 +108,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLStatement parseSelect() {
-        MySqlSelectParser selectParser = new MySqlSelectParser(this.exprParser);
+        MySqlSelectParser selectParser = createSQLSelectParser();
 
         SQLSelect select = selectParser.select();
 
@@ -120,7 +120,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
-        return new MySqlSelectParser(this.exprParser).parseUpdateStatment();
+        return new MySqlSelectParser(this.exprParser, selectListCache).parseUpdateStatment();
     }
 
     protected MySqlUpdateStatement createUpdateStatement() {
@@ -2262,8 +2262,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         return insertStatement;
     }
 
-    public SQLSelectParser createSQLSelectParser() {
-        return new MySqlSelectParser(this.exprParser);
+    public MySqlSelectParser createSQLSelectParser() {
+        return new MySqlSelectParser(this.exprParser, selectListCache);
     }
 
     public SQLStatement parseSet() {

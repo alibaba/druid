@@ -1,0 +1,78 @@
+/*
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.druid.sql.parser;
+
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class SQLSelectListCache {
+    private final String dbType;
+    private List<String> sqlCache = new ArrayList<String>();
+    private List<SQLSelectQueryBlock> queryBlockCache = new ArrayList<SQLSelectQueryBlock>();
+    private List<String> printSqlList = new ArrayList<String>();
+
+    public SQLSelectListCache(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public void add(String select) {
+        if (select == null || select.length() == 0) {
+            return;
+        }
+
+        SQLSelectParser selectParser = SQLParserUtils.createSQLStatementParser(select, dbType)
+                                                     .createSQLSelectParser();
+        SQLSelectQueryBlock queryBlock = SQLParserUtils.createSelectQueryBlock(dbType);
+        selectParser.accept(Token.SELECT);
+
+        selectParser.parseSelectList(queryBlock);
+
+        selectParser.accept(Token.FROM);
+        selectParser.accept(Token.EOF);
+
+        sqlCache.add(select.substring(6));
+        queryBlockCache.add(queryBlock);
+        printSqlList.add(queryBlock.toString());
+    }
+
+    public boolean match(Lexer lexer, SQLSelectQueryBlock queryBlock) {
+        if (lexer.token != Token.SELECT) {
+            return false;
+        }
+
+        int pos = lexer.pos;
+        String text = lexer.text;
+
+        for (int i = 0; i < sqlCache.size(); i++) {
+            String block = sqlCache.get(i);
+            if (text.startsWith(block, pos)) {
+                //SQLSelectQueryBlock queryBlockCached = queryBlockCache.get(i);
+                // queryBlockCached.cloneSelectListTo(queryBlock);
+                String printSql = printSqlList.get(i);
+                queryBlock.setCachedSelectList(printSql);
+
+                int len = pos + block.length();
+                lexer.reset(len, text.charAt(len), Token.FROM);
+                return true;
+            }
+        }
+        return false;
+    }
+}

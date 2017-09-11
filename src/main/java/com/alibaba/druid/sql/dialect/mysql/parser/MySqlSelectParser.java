@@ -31,10 +31,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateTableSource;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 
 import java.util.List;
@@ -46,6 +43,10 @@ public class MySqlSelectParser extends SQLSelectParser {
 
     public MySqlSelectParser(SQLExprParser exprParser){
         super(exprParser);
+    }
+
+    public MySqlSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+        super(exprParser, selectListCache);
     }
 
     public MySqlSelectParser(String sql){
@@ -91,6 +92,12 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         if (lexer.hasComment() && lexer.isKeepComments()) {
             queryBlock.addBeforeComment(lexer.readAndResetComments());
+        }
+
+        if (lexer.token() == Token.SELECT) {
+            if (selectListCache != null) {
+                selectListCache.match(lexer, queryBlock);
+            }
         }
 
         if (lexer.token() == Token.SELECT) {

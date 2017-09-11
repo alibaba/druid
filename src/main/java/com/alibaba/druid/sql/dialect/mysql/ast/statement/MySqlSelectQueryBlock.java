@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -28,21 +29,16 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import oracle.sql.SQLUtil;
 
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
-
     private boolean              hignPriority;
     private boolean              straightJoin;
-
     private boolean              smallResult;
     private boolean              bigResult;
     private boolean              bufferResult;
     private Boolean              cache;
     private boolean              calcFoundRows;
-
     private SQLName              procedureName;
     private List<SQLExpr>        procedureArgumentList;
-
-    private boolean              lockInShareMode = false;
-
+    private boolean              lockInShareMode;
     private List<SQLCommentHint> hints;
 
     public MySqlSelectQueryBlock(){

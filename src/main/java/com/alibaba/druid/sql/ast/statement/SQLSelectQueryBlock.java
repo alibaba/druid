@@ -25,35 +25,35 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
 
 public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery, SQLReplaceable {
-    private boolean                     bracket         = false;
-    protected int                       distionOption;
-    protected final List<SQLSelectItem> selectList      = new ArrayList<SQLSelectItem>();
+    private boolean                      bracket         = false;
+    protected int                        distionOption;
+    protected final List<SQLSelectItem>  selectList      = new ArrayList<SQLSelectItem>();
 
-    protected SQLTableSource            from;
-    protected SQLExprTableSource        into;
-    protected SQLExpr                   where;
+    protected SQLTableSource             from;
+    protected SQLExprTableSource         into;
+    protected SQLExpr                    where;
 
     // for oracle & oceanbase
-    protected SQLExpr                   startWith;
-    protected SQLExpr                   connectBy;
-    protected boolean                   prior           = false;
-    protected boolean                   noCycle         = false;
-    protected SQLOrderBy                orderBySiblings;
+    protected SQLExpr                    startWith;
+    protected SQLExpr                    connectBy;
+    protected boolean                    prior           = false;
+    protected boolean                    noCycle         = false;
+    protected SQLOrderBy                 orderBySiblings;
 
-    protected SQLSelectGroupByClause    groupBy;
-    protected SQLOrderBy                orderBy;
-    protected boolean                   parenthesized   = false;
-    protected boolean                   forUpdate       = false;
-    protected boolean                   noWait          = false;
-    protected SQLExpr                   waitTime;
-
-    protected SQLLimit                  limit;
+    protected SQLSelectGroupByClause     groupBy;
+    protected SQLOrderBy                 orderBy;
+    protected boolean                    parenthesized   = false;
+    protected boolean                    forUpdate       = false;
+    protected boolean                    noWait          = false;
+    protected SQLExpr                    waitTime;
+    protected SQLLimit                   limit;
 
     // for oracle
-    protected List<SQLExpr>             forUpdateOf;
-
-    protected List<SQLExpr>             distributeBy;
+    protected List<SQLExpr>              forUpdateOf;
+    protected List<SQLExpr>              distributeBy;
     protected List<SQLSelectOrderByItem> sortBy;
+
+    protected String                     cachedSelectList; // optimized for SelectListCache
 
     public SQLSelectQueryBlock(){
 
@@ -397,6 +397,15 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         return forUpdateOf.size();
     }
 
+    public void cloneSelectListTo(SQLSelectQueryBlock x) {
+        x.distionOption = distionOption;
+        for (SQLSelectItem item : this.selectList) {
+            SQLSelectItem item2 = item.clone();
+            item2.setParent(x);
+            x.selectList.add(item2);
+        }
+    }
+
     public void cloneTo(SQLSelectQueryBlock x) {
 
         x.distionOption = distionOption;
@@ -579,5 +588,13 @@ public class SQLSelectQueryBlock extends SQLObjectImpl implements SQLSelectQuery
         }
 
         setLimit(limit);
+    }
+
+    public String getCachedSelectList() {
+        return cachedSelectList;
+    }
+
+    public void setCachedSelectList(String cachedSelectList) {
+        this.cachedSelectList = cachedSelectList;
     }
 }

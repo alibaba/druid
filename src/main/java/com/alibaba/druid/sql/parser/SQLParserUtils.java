@@ -15,16 +15,20 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2ExprParser;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2Lexer;
 import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
 import com.alibaba.druid.sql.dialect.h2.parser.H2StatementParser;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsExprParser;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsLexer;
 import com.alibaba.druid.sql.dialect.odps.parser.OdpsStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
@@ -173,4 +177,32 @@ public class SQLParserUtils {
 
         return new Lexer(sql);
     }
+
+    public static SQLSelectQueryBlock createSelectQueryBlock(String dbType) {
+        if (JdbcConstants.MYSQL.equals(dbType)) {
+            return new MySqlSelectQueryBlock();
+        }
+
+        if (JdbcConstants.ORACLE.equals(dbType)) {
+            return new OracleSelectQueryBlock();
+        }
+
+        if (JdbcConstants.DB2.equals(dbType)) {
+            return new DB2SelectQueryBlock();
+        }
+
+        if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+            return new DB2SelectQueryBlock();
+        }
+
+        if (JdbcConstants.ODPS.equals(dbType)) {
+            return new DB2SelectQueryBlock();
+        }
+
+        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
+            return new DB2SelectQueryBlock();
+        }
+
+        return new SQLSelectQueryBlock();
+     }
 }

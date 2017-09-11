@@ -47,10 +47,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class OracleSelectParser extends SQLSelectParser {
 
@@ -60,6 +57,10 @@ public class OracleSelectParser extends SQLSelectParser {
 
     public OracleSelectParser(SQLExprParser exprParser){
         super(exprParser);
+    }
+
+    public OracleSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+        super(exprParser, selectListCache);
     }
 
     public SQLSelect select() {

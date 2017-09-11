@@ -30,15 +30,16 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class PGSelectParser extends SQLSelectParser {
 
     public PGSelectParser(SQLExprParser exprParser){
         super(exprParser);
+    }
+
+    public PGSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+        super(exprParser, selectListCache);
     }
 
     public PGSelectParser(String sql){

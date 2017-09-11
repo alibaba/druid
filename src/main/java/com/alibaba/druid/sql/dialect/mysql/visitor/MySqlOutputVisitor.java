@@ -116,62 +116,68 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             printlnComments(x.getBeforeCommentsDirect());
         }
 
-        print0(ucase ? "SELECT " : "select ");
+        String cachedSelectList = x.getCachedSelectList();
 
-        for (int i = 0, size = x.getHintsSize(); i < size; ++i) {
-            SQLCommentHint hint = x.getHints().get(i);
-            hint.accept(this);
-            print(' ');
-        }
+        if (cachedSelectList != null) {
+            print0(cachedSelectList);
+        } else {
+            print0(ucase ? "SELECT " : "select ");
 
-        final int distionOption = x.getDistionOption();
-        if (SQLSetQuantifier.ALL == distionOption) {
-            print0(ucase ? "ALL " : "all ");
-        } else if (SQLSetQuantifier.DISTINCT == distionOption) {
-            print0(ucase ? "DISTINCT " : "distinct ");
-        } else if (SQLSetQuantifier.DISTINCTROW == distionOption) {
-            print0(ucase ? "DISTINCTROW " : "distinctrow ");
-        }
-
-        if (x.isHignPriority()) {
-            print0(ucase ? "HIGH_PRIORITY " : "high_priority ");
-        }
-
-        if (x.isStraightJoin()) {
-            print0(ucase ? "STRAIGHT_JOIN " : "straight_join ");
-        }
-
-        if (x.isSmallResult()) {
-            print0(ucase ? "SQL_SMALL_RESULT " : "sql_small_result ");
-        }
-
-        if (x.isBigResult()) {
-            print0(ucase ? "SQL_BIG_RESULT " : "sql_big_result ");
-        }
-
-        if (x.isBufferResult()) {
-            print0(ucase ? "SQL_BUFFER_RESULT " : "sql_buffer_result ");
-        }
-
-        if (x.getCache() != null) {
-            if (x.getCache().booleanValue()) {
-                print0(ucase ? "SQL_CACHE " : "sql_cache ");
-            } else {
-                print0(ucase ? "SQL_NO_CACHE " : "sql_no_cache ");
+            for (int i = 0, size = x.getHintsSize(); i < size; ++i) {
+                SQLCommentHint hint = x.getHints().get(i);
+                hint.accept(this);
+                print(' ');
             }
-        }
 
-        if (x.isCalcFoundRows()) {
-            print0(ucase ? "SQL_CALC_FOUND_ROWS " : "sql_calc_found_rows ");
-        }
+            final int distionOption = x.getDistionOption();
+            if (SQLSetQuantifier.ALL == distionOption) {
+                print0(ucase ? "ALL " : "all ");
+            } else if (SQLSetQuantifier.DISTINCT == distionOption) {
+                print0(ucase ? "DISTINCT " : "distinct ");
+            } else if (SQLSetQuantifier.DISTINCTROW == distionOption) {
+                print0(ucase ? "DISTINCTROW " : "distinctrow ");
+            }
 
-        printSelectList(x.getSelectList());
+            if (x.isHignPriority()) {
+                print0(ucase ? "HIGH_PRIORITY " : "high_priority ");
+            }
 
-        SQLExprTableSource into = x.getInto();
-        if (into != null) {
-            println();
-            print0(ucase ? "INTO " : "into ");
-            printTableSource(into);
+            if (x.isStraightJoin()) {
+                print0(ucase ? "STRAIGHT_JOIN " : "straight_join ");
+            }
+
+            if (x.isSmallResult()) {
+                print0(ucase ? "SQL_SMALL_RESULT " : "sql_small_result ");
+            }
+
+            if (x.isBigResult()) {
+                print0(ucase ? "SQL_BIG_RESULT " : "sql_big_result ");
+            }
+
+            if (x.isBufferResult()) {
+                print0(ucase ? "SQL_BUFFER_RESULT " : "sql_buffer_result ");
+            }
+
+            if (x.getCache() != null) {
+                if (x.getCache().booleanValue()) {
+                    print0(ucase ? "SQL_CACHE " : "sql_cache ");
+                } else {
+                    print0(ucase ? "SQL_NO_CACHE " : "sql_no_cache ");
+                }
+            }
+
+            if (x.isCalcFoundRows()) {
+                print0(ucase ? "SQL_CALC_FOUND_ROWS " : "sql_calc_found_rows ");
+            }
+
+            printSelectList(x.getSelectList());
+
+            SQLExprTableSource into = x.getInto();
+            if (into != null) {
+                println();
+                print0(ucase ? "INTO " : "into ");
+                printTableSource(into);
+            }
         }
 
         SQLTableSource from = x.getFrom();

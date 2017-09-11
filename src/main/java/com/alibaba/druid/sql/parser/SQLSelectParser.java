@@ -27,7 +27,8 @@ import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLSelectParser extends SQLParser {
-    protected SQLExprParser exprParser;
+    protected SQLExprParser      exprParser;
+    protected SQLSelectListCache selectListCache;
 
     public SQLSelectParser(String sql){
         super(sql);
@@ -38,8 +39,13 @@ public class SQLSelectParser extends SQLParser {
     }
 
     public SQLSelectParser(SQLExprParser exprParser){
+        this(exprParser, null);
+    }
+
+    public SQLSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
         super(exprParser.getLexer(), exprParser.getDbType());
         this.exprParser = exprParser;
+        this.selectListCache = selectListCache;
     }
 
     public SQLSelect select() {

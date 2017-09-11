@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -35,6 +36,12 @@ public class OdpsSelectParser extends SQLSelectParser {
     public OdpsSelectParser(SQLExprParser exprParser){
         super(exprParser.getLexer());
         this.exprParser = exprParser;
+    }
+
+    public OdpsSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+        super(exprParser.getLexer());
+        this.exprParser = exprParser;
+        this.selectListCache = selectListCache;
     }
 
     @Override

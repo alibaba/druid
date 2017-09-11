@@ -29,9 +29,10 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLStatementParser extends SQLParser {
 
-    protected SQLExprParser exprParser;
-    protected boolean       parseCompleteValues = true;
-    protected int           parseValuesSize     = 3;
+    protected SQLExprParser      exprParser;
+    protected boolean            parseCompleteValues = true;
+    protected int                parseValuesSize     = 3;
+    protected SQLSelectListCache selectListCache     = null;
 
     public SQLStatementParser(String sql){
         this(sql, null);
@@ -83,6 +84,20 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public void parseStatementList(List<SQLStatement> statementList, int max, SQLObject parent) {
+        if ("select @@session.tx_read_only".equals(lexer.text)
+                && lexer.token == Token.SELECT) {
+            SQLSelect select = new SQLSelect();
+            MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
+            queryBlock.addSelectItem(new SQLPropertyExpr(new SQLVariantRefExpr("@@session"), "tx_read_only"));
+            select.setQuery(queryBlock);
+
+            SQLSelectStatement stmt = new SQLSelectStatement(select);
+            statementList.add(stmt);
+
+            lexer.reset(29, '\u001A', Token.EOF);
+            return;
+        }
+
         for (;;) {
             if (max != -1) {
                 if (statementList.size() >= max) {
@@ -2150,7 +2165,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new SQLSelectParser(this.exprParser);
+        return new SQLSelectParser(this.exprParser, selectListCache);
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
@@ -2958,5 +2973,13 @@ public class SQLStatementParser extends SQLParser {
                 break;
             }
         }
+    }
+
+    public SQLSelectListCache getSelectListCache() {
+        return selectListCache;
+    }
+
+    public void setSelectListCache(SQLSelectListCache selectListCache) {
+        this.selectListCache = selectListCache;
     }
 }

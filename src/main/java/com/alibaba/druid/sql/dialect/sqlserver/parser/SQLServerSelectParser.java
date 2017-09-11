@@ -20,10 +20,7 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class SQLServerSelectParser extends SQLSelectParser {
 
@@ -33,6 +30,10 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
     public SQLServerSelectParser(SQLExprParser exprParser){
         super(exprParser);
+    }
+
+    public SQLServerSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+        super(exprParser, selectListCache);
     }
 
     public SQLSelect select() {

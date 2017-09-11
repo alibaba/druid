@@ -1692,7 +1692,7 @@ public class OracleStatementParser extends SQLStatementParser {
     }
 
     public OracleSelectParser createSQLSelectParser() {
-        return new OracleSelectParser(this.exprParser);
+        return new OracleSelectParser(this.exprParser, selectListCache);
     }
 
     public OracleStatement parseInsert() {
