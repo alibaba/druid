@@ -167,4 +167,18 @@ public class Oracle2PG_DataTypeTest_number_int extends TestCase {
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
         assertEquals("decimal(21)", pgDataType.toString());
     }
+
+    public void test_oracle2pg_decimal() throws Exception {
+        String sql = "decimal(19,1)";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("decimal(19, 1)", pgDataType.toString());
+    }
+
+    public void test_oracle2pg_dec() throws Exception {
+        String sql = "dec(19,1)";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("decimal(19, 1)", pgDataType.toString());
+    }
 }

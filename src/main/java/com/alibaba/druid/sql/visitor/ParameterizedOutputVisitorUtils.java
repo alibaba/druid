@@ -28,10 +28,22 @@ import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class ParameterizedOutputVisitorUtils {
+    private final static SQLParserFeature[] features = {
+            SQLParserFeature.EnableSQLBinaryOpExprGroup,
+            SQLParserFeature.OptimizedForParameterized
+    };
+
     public static String parameterize(String sql, String dbType) {
-        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
-        parser.config(SQLParserFeature.EnableSQLBinaryOpExprGroup, true);
-        parser.config(SQLParserFeature.OptimizedForParameterized, true);
+        return parameterize(sql, dbType, null);
+    }
+
+    public static String parameterize(String sql, String dbType, SQLSelectListCache selectListCache) {
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, features);
+
+        if (selectListCache != null) {
+            parser.setSelectListCache(selectListCache);
+        }
+
         List<SQLStatement> statementList = parser.parseStatementList();
         if (statementList.size() == 0) {
             return sql;

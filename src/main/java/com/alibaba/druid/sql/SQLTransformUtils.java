@@ -432,7 +432,9 @@ public class SQLTransformUtils {
 
         } else if (nameHash == FnvHash.Constants.BINARY_DOUBLE
                 || nameHash == FnvHash.Constants.FLOAT
-                || nameHash == FnvHash.Constants.REAL) {
+                || nameHash == FnvHash.Constants.DOUBLE
+                || nameHash == FnvHash.Constants.REAL
+                || nameHash == FnvHash.Constants.DOUBLE_PRECISION) {
             dataType = new SQLDataTypeImpl("double precision");
 
         } else if (nameHash == FnvHash.Constants.NUMBER) {
@@ -497,8 +499,23 @@ public class SQLTransformUtils {
                 }
             }
 
-        } else if (nameHash == FnvHash.Constants.CHAR
-                || nameHash == FnvHash.Constants.CHARACTER) {
+        } else if (nameHash == FnvHash.Constants.CHARACTER) {
+            if (argumentns.size() == 1) {
+                SQLExpr arg0 = argumentns.get(0);
+
+                int len;
+                if (arg0 instanceof SQLNumericLiteralExpr) {
+                    len = ((SQLNumericLiteralExpr) arg0).getNumber().intValue();
+                } else {
+                    throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+                }
+                dataType = new SQLCharacterDataType("char", len);
+            } else if (argumentns.size() == 0) {
+                dataType = new SQLCharacterDataType("char");
+            } else {
+                throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
+            }
+        } else if (nameHash == FnvHash.Constants.CHAR) {
             if (argumentns.size() == 1) {
                 SQLExpr arg0 = argumentns.get(0);
 
@@ -509,40 +526,21 @@ public class SQLTransformUtils {
                     throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
                 }
 
-                if (len <= 255) {
-                    dataType = new SQLCharacterDataType("char", len);
+                if (len <= 2000) {
+                    dataType = x;
                 } else {
-                    dataType = new SQLCharacterDataType("varchar", len);
+                    dataType = new SQLCharacterDataType("text");
                 }
             } else if (argumentns.size() == 0) {
                 dataType = new SQLCharacterDataType("char");
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
             }
-
         } else if (nameHash == FnvHash.Constants.NCHAR) {
-            if (argumentns.size() == 1) {
-                SQLExpr arg0 = argumentns.get(0);
-
-                int len;
-                if (arg0 instanceof SQLNumericLiteralExpr) {
-                    len = ((SQLNumericLiteralExpr) arg0).getNumber().intValue();
-                } else {
-                    throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
-                }
-
-                if (len <= 255) {
-                    dataType = new SQLCharacterDataType("char", len);
-                } else {
-                    dataType = new SQLCharacterDataType("varchar", len);
-                }
-            } else if (argumentns.size() == 0) {
-                dataType = new SQLCharacterDataType("char");
-            } else {
-                throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
-            }
-
-        } else if (nameHash == FnvHash.Constants.VARCHAR2) {
+            // no changed
+            dataType = x;
+        } else if (nameHash == FnvHash.Constants.VARCHAR
+                || nameHash == FnvHash.Constants.VARCHAR2) {
             if (argumentns.size() > 0) {
                 int len;
                 SQLExpr arg0 = argumentns.get(0);
@@ -551,7 +549,12 @@ public class SQLTransformUtils {
                 } else {
                     throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
                 }
-                dataType = new SQLCharacterDataType("varchar", len);
+
+                if (len <= 4000) {
+                    dataType = new SQLCharacterDataType("varchar", len);
+                } else {
+                    dataType = new SQLCharacterDataType("text");
+                }
             } else {
                 dataType = new SQLCharacterDataType("varchar");
             }
