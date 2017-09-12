@@ -308,8 +308,27 @@ public final class FnvHash {
         long PRIOR = fnv1a_64_lower("PRIOR");
         long NOCYCLE = fnv1a_64_lower("NOCYCLE");
         long CONNECT_BY_ROOT = fnv1a_64_lower("CONNECT_BY_ROOT");
+
         long DATE = fnv1a_64_lower("DATE");
+        long DATETIME = fnv1a_64_lower("DATETIME");
         long TIMESTAMP = fnv1a_64_lower("TIMESTAMP");
+        long CLOB = fnv1a_64_lower("CLOB");
+        long NCLOB = fnv1a_64_lower("NCLOB");
+        long BLOB = fnv1a_64_lower("BLOB");
+        long XMLTYPE = fnv1a_64_lower("XMLTYPE");
+        long BFILE = fnv1a_64_lower("BFILE");
+        long UROWID = fnv1a_64_lower("UROWID");
+        long ROWID = fnv1a_64_lower("ROWID");
+        long INTEGER = fnv1a_64_lower("INTEGER");
+        long INT = fnv1a_64_lower("INT");
+        long BINARY_FLOAT = fnv1a_64_lower("BINARY_FLOAT");
+        long BINARY_DOUBLE = fnv1a_64_lower("BINARY_DOUBLE");
+        long FLOAT = fnv1a_64_lower("FLOAT");
+        long REAL = fnv1a_64_lower("REAL");
+        long NUMBER = fnv1a_64_lower("NUMBER");
+        long DEC = fnv1a_64_lower("DEC");
+        long DECIMAL = fnv1a_64_lower("DECIMAL");
+
         long CURRENT = fnv1a_64_lower("CURRENT");
         long COUNT = fnv1a_64_lower("COUNT");
         long ROW_NUMBER = fnv1a_64_lower("ROW_NUMBER");
@@ -328,6 +347,7 @@ public final class FnvHash {
         long NCHAR = fnv1a_64_lower("NCHAR");
         long NVARCHAR = fnv1a_64_lower("NVARCHAR");
         long NVARCHAR2 = fnv1a_64_lower("NVARCHAR2");
+        long NCHAR_VARYING = fnv1a_64_lower("nchar varying");
         long TINYTEXT = fnv1a_64_lower("TINYTEXT");
         long TEXT = fnv1a_64_lower("TEXT");
         long MEDIUMTEXT = fnv1a_64_lower("MEDIUMTEXT");
@@ -351,10 +371,12 @@ public final class FnvHash {
         long MAXVALUE = fnv1a_64_lower("MAXVALUE");
         long OFFSET = fnv1a_64_lower("OFFSET");
         long RAW = fnv1a_64_lower("RAW");
+        long LONG_RAW = fnv1a_64_lower("LONG RAW");
         long LONG = fnv1a_64_lower("LONG");
         long ROWNUM = fnv1a_64_lower("ROWNUM");
         long PRECISION = fnv1a_64_lower("PRECISION");
         long DOUBLE = fnv1a_64_lower("DOUBLE");
+        long DOUBLE_PRECISION = fnv1a_64_lower("DOUBLE PRECISION");
         long WITHOUT = fnv1a_64_lower("WITHOUT");
 
         long DEFINER = fnv1a_64_lower("DEFINER");
@@ -422,6 +444,8 @@ public final class FnvHash {
         long WAITFOR = fnv1a_64_lower("WAITFOR");
         long EXEC = fnv1a_64_lower("EXEC");
         long EXECUTE = fnv1a_64_lower("EXECUTE");
+
+        long SOURCE = fnv1a_64_lower("SOURCE");
 
         long STAR = fnv1a_64_lower("*");
     }

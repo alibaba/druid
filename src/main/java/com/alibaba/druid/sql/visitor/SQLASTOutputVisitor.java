@@ -1541,9 +1541,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             }
         }
         print('.');
-
-        String name = x.getName();
-        printName(x, name);
+        print0(x.getName());
 
         return false;
     }
@@ -1899,11 +1897,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printTableSourceExpr(SQLExpr expr) {
         if (exportTables) {
+            if (expr instanceof SQLIdentifierExpr) {
+
+            }
             addTable(expr.toString());
         }
 
         if (isEnabled(VisitorFeature.OutputDesensitize)) {
-            SQLExpr owner = null;
             String ident = null;
             if (expr instanceof SQLIdentifierExpr) {
                 ident = ((SQLIdentifierExpr) expr).getName();

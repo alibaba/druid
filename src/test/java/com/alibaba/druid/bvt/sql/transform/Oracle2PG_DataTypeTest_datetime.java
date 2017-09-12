@@ -1,0 +1,37 @@
+package com.alibaba.druid.bvt.sql.transform;
+
+import com.alibaba.druid.sql.SQLTransformUtils;
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.parser.SQLParserUtils;
+import com.alibaba.druid.util.JdbcConstants;
+import junit.framework.TestCase;
+
+public class Oracle2PG_DataTypeTest_datetime extends TestCase {
+    public void test_oracle2pg_timestamp() throws Exception {
+        String sql = "timestamp";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("timestamp", pgDataType.toString());
+    }
+
+    public void test_oracle2pg_timestamp_arg() throws Exception {
+        String sql = "timestamp(2)";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("timestamp(2)", pgDataType.toString());
+    }
+
+    public void test_oracle2pg_date() throws Exception {
+        String sql = "date";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("timestamp", pgDataType.toString());
+    }
+
+    public void test_oracle2pg_datetime() throws Exception {
+        String sql = "datetime";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("timestamp", pgDataType.toString());
+    }
+}

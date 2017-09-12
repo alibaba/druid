@@ -403,4 +403,8 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
         return false;
     }
+
+    public String toString() {
+        return SQLUtils.toSQLString(this, dbType);
+    }
 }

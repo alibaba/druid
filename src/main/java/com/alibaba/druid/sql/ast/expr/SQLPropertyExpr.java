@@ -298,4 +298,12 @@ public final class SQLPropertyExpr extends SQLExprImpl implements SQLName {
 
         return this;
     }
+
+    public String toString() {
+        if (owner == null) {
+            return this.name;
+        }
+
+        return owner.toString() + '.' + name;
+    }
 }
