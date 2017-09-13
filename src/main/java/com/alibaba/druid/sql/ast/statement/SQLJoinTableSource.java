@@ -245,6 +245,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl implements SQLReplace
             x.setRight(right.clone());
         }
 
+        if(condition != null){
+            x.setCondition(condition);
+        }
+
         for (SQLExpr item : using) {
             SQLExpr item2 = item.clone();
             item2.setParent(x);
