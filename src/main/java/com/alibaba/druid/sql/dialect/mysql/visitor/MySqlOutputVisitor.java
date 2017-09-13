@@ -942,10 +942,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     protected void printValuesList(List<SQLInsertStatement.ValuesClause> valuesList) {
 
-        if (this.parameterized) {
+        if (this.parameterized && valuesList.size() > 0) {
             print0(ucase ? "VALUES " : "values ");
             this.indentCount++;
-            valuesList.get(0).accept(this);
+            visit(valuesList.get(0));
             this.indentCount--;
             if (valuesList.size() > 1) {
                 this.incrementReplaceCunt();

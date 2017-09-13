@@ -462,6 +462,8 @@ public final class JdbcUtils implements JdbcConstants {
             return JdbcConstants.PHOENIX_DRIVER;
         } else if (rawUrl.startsWith("jdbc:kylin:")) {
             return JdbcConstants.KYLIN_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:elastic:")) {
+            return JdbcConstants.ELASTIC_SEARCH_DRIVER;
         } else {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
@@ -547,6 +549,8 @@ public final class JdbcUtils implements JdbcConstants {
             return HIVE;
         } else if (rawUrl.startsWith("jdbc:phoenix:")) {
             return PHOENIX;
+        } else if (rawUrl.startsWith("jdbc:elastic:")) {
+            return ELASTIC_SEARCH;
         } else {
             return null;
         }

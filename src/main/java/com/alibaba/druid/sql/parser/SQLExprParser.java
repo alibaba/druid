@@ -362,6 +362,9 @@ public class SQLExprParser extends SQLParser {
                 }
 
                 SQLVariantRefExpr varRefExpr = new SQLVariantRefExpr(varName);
+                if (varName.startsWith(":")) {
+                    varRefExpr.setIndex(lexer.nextVarIndex());
+                }
                 if (varRefExpr.getName().equals("@") && lexer.token == Token.LITERAL_CHARS) {
                     varRefExpr.setName("@'" + lexer.stringVal() + "'");
                     lexer.nextToken();
@@ -1575,11 +1578,12 @@ public class SQLExprParser extends SQLParser {
 
     public final SQLExpr inRest(SQLExpr expr) {
         if (lexer.token == Token.IN) {
-            lexer.nextToken();
+            lexer.nextTokenLParen();
 
             SQLInListExpr inListExpr = new SQLInListExpr(expr);
+            List<SQLExpr> targetList = inListExpr.getTargetList();
             if (lexer.token == Token.LPAREN) {
-                lexer.nextToken();
+                lexer.nextTokenValue();
 
                 if (lexer.token == Token.WITH) {
                     SQLSelect select = this.createSelectParser().select();
@@ -1589,7 +1593,6 @@ public class SQLExprParser extends SQLParser {
                     return queryExpr;
                 }
 
-                List<SQLExpr> targetList = inListExpr.getTargetList();
                 for (;;) {
                     SQLExpr item = this.expr();
                     item.setParent(inListExpr);
@@ -1605,13 +1608,13 @@ public class SQLExprParser extends SQLParser {
             } else {
                 SQLExpr itemExpr = primary();
                 itemExpr.setParent(inListExpr);
-                inListExpr.getTargetList().add(itemExpr);
+                targetList.add(itemExpr);
             }
 
             expr = inListExpr;
 
-            if (inListExpr.getTargetList().size() == 1) {
-                SQLExpr targetExpr = inListExpr.getTargetList().get(0);
+            if (targetList.size() == 1) {
+                SQLExpr targetExpr = targetList.get(0);
                 if (targetExpr instanceof SQLQueryExpr) {
                     SQLInSubQueryExpr inSubQueryExpr = new SQLInSubQueryExpr();
                     inSubQueryExpr.setExpr(inListExpr.getExpr());
@@ -2629,7 +2632,7 @@ public class SQLExprParser extends SQLParser {
             token = lexer.token;
 
             if (token == Token.DOT) {
-                lexer.nextToken();
+                lexer.nextTokenIdent();
                 String name;
                 long name_hash_lower;
 

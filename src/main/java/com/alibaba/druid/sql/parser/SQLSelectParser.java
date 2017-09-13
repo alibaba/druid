@@ -18,8 +18,7 @@ package com.alibaba.druid.sql.parser;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.*;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOrderingExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
@@ -318,13 +317,47 @@ public class SQLSelectParser extends SQLParser {
 
     public void parseWhere(SQLSelectQueryBlock queryBlock) {
         if (lexer.token == Token.WHERE) {
-            lexer.nextToken();
+            lexer.nextTokenIdent();
 
             List<String> beforeComments = null;
             if (lexer.hasComment() && lexer.isKeepComments()) {
                 beforeComments = lexer.readAndResetComments();
             }
-            SQLExpr where = expr();
+
+            SQLExpr where;
+
+            if (lexer.token == Token.IDENTIFIER) {
+                String ident = lexer.stringVal();
+                long hash_lower = lexer.hash_lower();
+                lexer.nextTokenEq();
+
+                SQLExpr identExpr = new SQLIdentifierExpr(ident, hash_lower);
+
+                if (lexer.token == Token.DOT) {
+                    identExpr = this.exprParser.primaryRest(identExpr);
+                }
+
+                if (lexer.token == Token.EQ) {
+                    SQLExpr rightExp;
+
+                    lexer.nextToken();
+                    try {
+                        rightExp = this.exprParser.bitOr();
+                    } catch (EOFParserException e) {
+                        throw new ParserException("EOF, " + ident + "=", e);
+                    }
+
+                    where = new SQLBinaryOpExpr(identExpr, SQLBinaryOperator.Equality, rightExp, dbType);
+                    where = this.exprParser.andRest(where);
+                    where = this.exprParser.orRest(where);
+                } else {
+                    identExpr = this.exprParser.primaryRest(identExpr);
+                    where = this.exprParser.exprRest(identExpr);
+                }
+            } else {
+                where = this.exprParser.expr();
+            }
+//            where = this.exprParser.expr();
             
             if (beforeComments != null) {
                 where.addBeforeComment(beforeComments);

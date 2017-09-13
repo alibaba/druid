@@ -83,4 +83,19 @@ public class Oracle2PG_DataTypeTest_chars extends TestCase {
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
         assertEquals("varchar(255)", pgDataType.toString());
     }
+
+    public void test_oracle2pg_varchar2_8000() throws Exception {
+        String sql = "varchar2(8000)";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("text", pgDataType.toString());
+    }
+
+
+    public void test_oracle2pg_varchar2_10000() throws Exception {
+        String sql = "varchar2(10000)";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("text", pgDataType.toString());
+    }
 }

@@ -214,9 +214,8 @@ public class Lexer {
         this.skipComment = skipComment;
 
         this.text = input;
-        this.pos = -1;
-
-        scanChar();
+        this.pos = 0;
+        ch = charAt(pos);
     }
 
     public Lexer(char[] input, int inputLength, boolean skipComment){
@@ -419,6 +418,12 @@ public class Lexer {
             }
         }
 
+        if (ch == ')') {
+            scanChar();
+            token = Token.RPAREN;
+            return;
+        }
+
         if (isFirstIdentifierChar(ch)) {
             scanIdentifier();
             return;
@@ -482,6 +487,25 @@ public class Lexer {
                 stringVal = "NULL";
                 return;
             }
+        }
+
+        nextToken();
+    }
+
+    public final void nextTokenIdent() {
+        while (ch == ' ') {
+            scanChar();
+        }
+
+        if (isFirstIdentifierChar(ch)) {
+            scanIdentifier();
+            return;
+        }
+
+        if (ch == ')') {
+            scanChar();
+            token = RPAREN;
+            return;
         }
 
         nextToken();

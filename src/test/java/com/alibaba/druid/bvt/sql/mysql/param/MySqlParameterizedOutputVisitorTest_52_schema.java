@@ -17,9 +17,9 @@ import java.util.List;
 public class MySqlParameterizedOutputVisitorTest_52_schema extends TestCase {
     public void test_for_parameterize() throws Exception {
         final String dbType = JdbcConstants.MYSQL;
-        String sql = "UPDATE `buyer_0158`.xc_yy_order\n" +
-                "SET `ALIPAY_BUYER_ID` = ?, `GMT_MODIFIED` = ?\n" +
-                "WHERE `PAY_ORDER_ID` = ?";
+        String sql = "UPDATE `buyer_0158`.xc_yy_order_1082\n" +
+                "SET `ALIPAY_BUYER_ID` = 1025, `GMT_MODIFIED` = 'aaaa'\n" +
+                "WHERE `PAY_ORDER_ID` = 'kkk'";
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();

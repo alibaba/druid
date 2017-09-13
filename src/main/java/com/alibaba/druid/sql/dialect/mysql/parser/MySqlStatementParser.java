@@ -2199,7 +2199,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         columnSize++;
 
                         if (lexer.token() == Token.COMMA) {
-                            lexer.nextToken();
+                            lexer.nextTokenIdent();
                             continue;
                         }
 
@@ -2256,7 +2256,27 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.KEY);
             accept(Token.UPDATE);
 
-            exprParser.exprList(insertStatement.getDuplicateKeyUpdate(), insertStatement);
+            List<SQLExpr> duplicateKeyUpdate = insertStatement.getDuplicateKeyUpdate();
+            for (;;) {
+                SQLName name = this.exprParser.name();
+                accept(Token.EQ);
+                SQLExpr value;
+                try {
+                    value = this.exprParser.expr();
+                } catch (EOFParserException e) {
+                    throw new ParserException("EOF, " + name + "=", e);
+                }
+
+                SQLBinaryOpExpr assignment = new SQLBinaryOpExpr(name, SQLBinaryOperator.Equality, value);
+                assignment.setParent(insertStatement);
+                duplicateKeyUpdate.add(assignment);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextTokenIdent();
+                    continue;
+                }
+                break;
+            }
         }
 
         return insertStatement;

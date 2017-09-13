@@ -119,6 +119,10 @@ public class ParameterizedOutputVisitorUtils {
             return new PhoenixOutputVisitor(out, true);
         }
 
+        if (JdbcUtils.ELASTIC_SEARCH.equals(dbType)) {
+            return new MySqlOutputVisitor(out, true);
+        }
+
         return new SQLASTOutputVisitor(out, true);
     }
 }

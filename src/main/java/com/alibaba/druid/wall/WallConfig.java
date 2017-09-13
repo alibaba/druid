@@ -864,6 +864,18 @@ public class WallConfig implements WallConfigMBean {
                 }
             }
         }
+        {
+            Boolean propertyValue = getBoolean(properties, "druid.wall.updateWhereNoneCheck");
+            if (propertyValue != null) {
+                this.setUpdateWhereNoneCheck(propertyValue);
+            }
+        }
+        {
+            Boolean propertyValue = getBoolean(properties, "druid.wall.deleteWhereNoneCheck");
+            if (propertyValue != null) {
+                this.setDeleteWhereNoneCheck(propertyValue);
+            }
+        }
     }
 
     public void addUpdateCheckCoumns(String columnInfo) {

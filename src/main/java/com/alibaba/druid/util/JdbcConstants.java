@@ -105,4 +105,7 @@ public interface JdbcConstants {
     public static final String ALIYUN_DRDS         = "aliyun_drds";
 
     public static final String PRESTO              = "presto";
+
+    public static final String ELASTIC_SEARCH      = "elastic_search";
+    String ELASTIC_SEARCH_DRIVER                   = "com.alibaba.xdriver.elastic.jdbc.ElasticDriver";
 }

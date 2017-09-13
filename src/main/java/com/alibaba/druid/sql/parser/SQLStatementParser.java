@@ -2433,7 +2433,26 @@ public class SQLStatementParser extends SQLParser {
     }
     
     public SQLStatement parseStatement() {
-        return parseStatement(false);
+        if (lexer.token == Token.SELECT) {
+            return this.parseSelect();
+        }
+
+        if (lexer.token == Token.INSERT) {
+            return this.parseInsert();
+        }
+
+
+        if (lexer.token == Token.UPDATE) {
+            return this.parseUpdateStatement();
+        }
+
+        if (lexer.token == Token.DELETE) {
+            return this.parseDeleteStatement();
+        }
+
+        List<SQLStatement> list = new ArrayList<SQLStatement>(1);
+        this.parseStatementList(list, 1, null);
+        return list.get(0);
     }
     
     /**

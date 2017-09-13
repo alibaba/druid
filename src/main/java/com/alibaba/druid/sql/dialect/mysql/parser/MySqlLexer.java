@@ -74,7 +74,10 @@ public class MySqlLexer extends Lexer {
     }
 
     public MySqlLexer(String input, SQLParserFeature... features){
-        this(input, true, true);
+        super(input, true);
+        this.keepComments = true;
+        super.keywods = DEFAULT_MYSQL_KEYWORDS;
+
         for (SQLParserFeature feature : features) {
             config(feature, true);
         }

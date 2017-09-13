@@ -605,7 +605,7 @@ public class SQLTransformUtils {
                 || nameHash == FnvHash.Constants.NCLOB
                 || nameHash == FnvHash.Constants.LONG) {
             argumentns.clear();
-            dataType = new SQLCharacterDataType("TEXT");
+            dataType = new SQLCharacterDataType("text");
 
         } else if (nameHash == FnvHash.Constants.XMLTYPE) {
             dataType = new SQLDataTypeImpl("xml");

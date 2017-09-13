@@ -1897,9 +1897,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
     protected void printTableSourceExpr(SQLExpr expr) {
         if (exportTables) {
-            if (expr instanceof SQLIdentifierExpr) {
-
-            }
             addTable(expr.toString());
         }
 
