@@ -11,27 +11,27 @@ public class Oracle2PG_DataTypeTest_datetime extends TestCase {
         String sql = "timestamp";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("timestamp", pgDataType.toString());
+        assertEquals("TIMESTAMP", pgDataType.toString());
     }
 
     public void test_oracle2pg_timestamp_arg() throws Exception {
         String sql = "timestamp(2)";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("timestamp(2)", pgDataType.toString());
+        assertEquals("TIMESTAMP(2)", pgDataType.toString());
     }
 
     public void test_oracle2pg_date() throws Exception {
         String sql = "date";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("timestamp", pgDataType.toString());
+        assertEquals("TIMESTAMP", pgDataType.toString());
     }
 
     public void test_oracle2pg_datetime() throws Exception {
         String sql = "datetime";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("timestamp", pgDataType.toString());
+        assertEquals("TIMESTAMP", pgDataType.toString());
     }
 }

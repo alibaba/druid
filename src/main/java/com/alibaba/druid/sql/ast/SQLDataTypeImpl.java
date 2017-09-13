@@ -101,10 +101,8 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (arguments != null ? arguments.hashCode() : 0);
-        result = 31 * result + (withTimeZone != null ? withTimeZone.hashCode() : 0);
-        return result;
+        long value = nameHashCode64();
+        return (int)(value ^ (value >>> 32));
     }
 
     @Override
@@ -143,6 +141,7 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
     public void cloneTo(SQLDataTypeImpl x) {
         x.dbType = dbType;
         x.name = name;
+        x.nameHashCode64 = nameHashCode64;
 
         for (SQLExpr arg : arguments) {
             x.addArgument(arg.clone());

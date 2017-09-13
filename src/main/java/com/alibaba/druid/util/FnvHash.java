@@ -302,6 +302,7 @@ public final class FnvHash {
         long TARGET_AFFECT_ROW = fnv1a_64_lower("TARGET_AFFECT_ROW");
         long COLLATE = fnv1a_64_lower("COLLATE");
         long BOOLEAN = fnv1a_64_lower("BOOLEAN");
+        long SMALLINT = fnv1a_64_lower("SMALLINT");
         long CHARSET = fnv1a_64_lower("CHARSET");
         long SEMI = fnv1a_64_lower("SEMI");
         long ANTI = fnv1a_64_lower("ANTI");

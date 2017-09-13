@@ -11,27 +11,27 @@ public class Oracle2PG_DataTypeTest_lob extends TestCase {
         String sql = "blob";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("bytea", pgDataType.toString());
+        assertEquals("BYTEA", pgDataType.toString());
     }
 
     public void test_oracle2pg_long() throws Exception {
         String sql = "long";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("text", pgDataType.toString());
+        assertEquals("TEXT", pgDataType.toString());
     }
 
     public void test_oracle2pg_long_raw() throws Exception {
         String sql = "long raw";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("bytea", pgDataType.toString());
+        assertEquals("BYTEA", pgDataType.toString());
     }
 
     public void test_oracle2pg_raw() throws Exception {
         String sql = "raw(100)";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("bytea", pgDataType.toString());
+        assertEquals("BYTEA", pgDataType.toString());
     }
 }

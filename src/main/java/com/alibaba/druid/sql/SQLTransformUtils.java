@@ -416,16 +416,16 @@ public class SQLTransformUtils {
                     len = ((SQLIntegerExpr) arg0).getNumber().intValue();
                 }
             }
-            dataType = new SQLDataTypeImpl("varchar", len);
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.VARCHAR, len);
         } else if (nameHash == FnvHash.Constants.ROWID) {
-            dataType = new SQLDataTypeImpl("char", 10);
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.CHAR, 10);
 
-        } else if (nameHash == FnvHash.Constants.BOOLEAN) {
-            dataType = new SQLDataTypeImpl("tinyint");
+        } else if (nameHash == FnvHash.Constants.BOOLEAN || nameHash == FnvHash.Constants.SMALLINT) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.SMALLINT);
 
         } else if (nameHash == FnvHash.Constants.INTEGER
                 || nameHash == FnvHash.Constants.INT) {
-            dataType = new SQLDataTypeImpl("decimal", 38);
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, 38);
 
         } else if (nameHash == FnvHash.Constants.BINARY_FLOAT) {
             dataType = new SQLDataTypeImpl("real");
@@ -439,7 +439,7 @@ public class SQLTransformUtils {
 
         } else if (nameHash == FnvHash.Constants.NUMBER) {
             if (argumentns.size() == 0) {
-                dataType = new SQLDataTypeImpl("decimal", 38);
+                dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, 38);
             } else {
                 SQLExpr arg0 = argumentns.get(0);
 
@@ -468,23 +468,23 @@ public class SQLTransformUtils {
 
                 if (scale == 0) {
                     if (precision < 5) {
-                        dataType = new SQLDataTypeImpl("smallint");
+                        dataType = new SQLDataTypeImpl(SQLDataType.Constants.SMALLINT);
                     } else if (precision < 9) {
-                        dataType = new SQLDataTypeImpl("int");
+                        dataType = new SQLDataTypeImpl(SQLDataType.Constants.INT);
                     } else if (precision <= 20) {
-                        dataType = new SQLDataTypeImpl("bigint");
+                        dataType = new SQLDataTypeImpl(SQLDataType.Constants.BIGINT);
                     } else {
-                        dataType = new SQLDataTypeImpl("decimal", precision);
+                        dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, precision);
                     }
                 } else {
-                    dataType = new SQLDataTypeImpl("decimal", precision, scale);
+                    dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, precision, scale);
                 }
             }
 
         } else if (nameHash == FnvHash.Constants.DEC
                 || nameHash == FnvHash.Constants.DECIMAL) {
             dataType = x.clone();
-            dataType.setName("decimal");
+            dataType.setName(SQLDataType.Constants.DECIMAL);
 
             int precision = 0;
             if (argumentns.size() > 0) {
@@ -509,9 +509,9 @@ public class SQLTransformUtils {
                 } else {
                     throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
                 }
-                dataType = new SQLCharacterDataType("char", len);
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR, len);
             } else if (argumentns.size() == 0) {
-                dataType = new SQLCharacterDataType("char");
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR);
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
             }
@@ -528,17 +528,19 @@ public class SQLTransformUtils {
 
                 if (len <= 2000) {
                     dataType = x;
+                    dataType.setName(SQLDataType.Constants.CHAR);
                 } else {
-                    dataType = new SQLCharacterDataType("text");
+                    dataType = new SQLCharacterDataType(SQLDataType.Constants.TEXT);
                 }
             } else if (argumentns.size() == 0) {
-                dataType = new SQLCharacterDataType("char");
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.CHAR);
             } else {
                 throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
             }
         } else if (nameHash == FnvHash.Constants.NCHAR) {
             // no changed
             dataType = x;
+            dataType.setName(SQLDataType.Constants.NCHAR);
         } else if (nameHash == FnvHash.Constants.VARCHAR
                 || nameHash == FnvHash.Constants.VARCHAR2) {
             if (argumentns.size() > 0) {
@@ -551,15 +553,16 @@ public class SQLTransformUtils {
                 }
 
                 if (len <= 4000) {
-                    dataType = new SQLCharacterDataType("varchar", len);
+                    dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR, len);
                 } else {
-                    dataType = new SQLCharacterDataType("text");
+                    dataType = new SQLCharacterDataType(SQLDataType.Constants.TEXT);
                 }
             } else {
-                dataType = new SQLCharacterDataType("varchar");
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR);
             }
 
-        } else if (nameHash == FnvHash.Constants.NVARCHAR2
+        } else if (nameHash == FnvHash.Constants.NVARCHAR
+                || nameHash == FnvHash.Constants.NVARCHAR2
                 || nameHash == FnvHash.Constants.NCHAR_VARYING) {
             if (argumentns.size() > 0) {
                 int len;
@@ -569,13 +572,13 @@ public class SQLTransformUtils {
                 } else {
                     throw new UnsupportedOperationException(SQLUtils.toOracleString(x));
                 }
-                dataType = new SQLCharacterDataType("varchar", len);
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR, len);
             } else {
-                dataType = new SQLCharacterDataType("varchar");
+                dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR);
             }
 
         } else if (nameHash == FnvHash.Constants.BFILE) {
-            dataType = new SQLCharacterDataType("varchar", 255);
+            dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR, 255);
 
         } else if (nameHash == FnvHash.Constants.DATE
                 || nameHash == FnvHash.Constants.DATETIME
@@ -591,24 +594,24 @@ public class SQLTransformUtils {
             }
 
             if (len > 0) {
-                dataType = new SQLDataTypeImpl("timestamp", len);
+                dataType = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP, len);
             } else {
-                dataType = new SQLDataTypeImpl("timestamp");
+                dataType = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP);
             }
         } else if (nameHash == FnvHash.Constants.BLOB
                 || nameHash == FnvHash.Constants.LONG_RAW
                 || nameHash == FnvHash.Constants.RAW) {
             argumentns.clear();
-            dataType = new SQLDataTypeImpl("bytea");
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.BYTEA);
 
         } else if (nameHash == FnvHash.Constants.CLOB
                 || nameHash == FnvHash.Constants.NCLOB
                 || nameHash == FnvHash.Constants.LONG) {
             argumentns.clear();
-            dataType = new SQLCharacterDataType("text");
+            dataType = new SQLCharacterDataType(SQLDataType.Constants.TEXT);
 
         } else if (nameHash == FnvHash.Constants.XMLTYPE) {
-            dataType = new SQLDataTypeImpl("xml");
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.XML);
         } else {
             dataType = x;
         }

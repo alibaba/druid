@@ -36,4 +36,21 @@ public interface SQLDataType extends SQLObject {
 
     void setDbType(String dbType);
     String getDbType();
+
+    interface Constants {
+        String CHAR = "CHAR";
+        String NCHAR = "NCHAR";
+        String VARCHAR = "VARCHAR";
+        String TIMESTAMP = "TIMESTAMP";
+        String XML = "XML";
+
+        String DECIMAL = "DECIMAL";
+        String NUMBER = "NUMBER";
+        String TINYINT = "TINYINT";
+        String SMALLINT = "SMALLINT";
+        String INT = "INT";
+        String BIGINT = "BIGINT";
+        String TEXT = "TEXT";
+        String BYTEA = "BYTEA";
+    }
 }
