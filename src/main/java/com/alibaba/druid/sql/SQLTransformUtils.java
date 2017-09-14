@@ -428,14 +428,14 @@ public class SQLTransformUtils {
             dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, 38);
 
         } else if (nameHash == FnvHash.Constants.BINARY_FLOAT) {
-            dataType = new SQLDataTypeImpl("real");
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.REAL);
 
         } else if (nameHash == FnvHash.Constants.BINARY_DOUBLE
                 || nameHash == FnvHash.Constants.FLOAT
                 || nameHash == FnvHash.Constants.DOUBLE
                 || nameHash == FnvHash.Constants.REAL
                 || nameHash == FnvHash.Constants.DOUBLE_PRECISION) {
-            dataType = new SQLDataTypeImpl("double precision");
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.DOUBLE_PRECISION);
 
         } else if (nameHash == FnvHash.Constants.NUMBER) {
             if (argumentns.size() == 0) {
@@ -579,9 +579,9 @@ public class SQLTransformUtils {
 
         } else if (nameHash == FnvHash.Constants.BFILE) {
             dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR, 255);
-
-        } else if (nameHash == FnvHash.Constants.DATE
-                || nameHash == FnvHash.Constants.DATETIME
+        } else if (nameHash == FnvHash.Constants.DATE) {
+            dataType = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP, 0);
+        } else if (nameHash == FnvHash.Constants.DATETIME
                 || nameHash == FnvHash.Constants.TIMESTAMP) {
             int len = -1;
             if (argumentns.size() > 0) {

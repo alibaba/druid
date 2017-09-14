@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.sql.transform;
+package com.alibaba.druid.bvt.sql.transform.datatype.oracle2pg;
 
 import com.alibaba.druid.sql.SQLTransformUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;

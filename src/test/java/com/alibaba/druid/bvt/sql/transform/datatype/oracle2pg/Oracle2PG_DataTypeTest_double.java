@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.sql.transform;
+package com.alibaba.druid.bvt.sql.transform.datatype.oracle2pg;
 
 import com.alibaba.druid.sql.SQLTransformUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
@@ -11,42 +11,42 @@ public class Oracle2PG_DataTypeTest_double extends TestCase {
         String sql = "float";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("double precision", pgDataType.toString());
+        assertEquals("DOUBLE PRECISION", pgDataType.toString());
     }
 
     public void test_oracle2pg_double() throws Exception {
         String sql = "double";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("double precision", pgDataType.toString());
+        assertEquals("DOUBLE PRECISION", pgDataType.toString());
     }
 
     public void test_oracle2pg_real() throws Exception {
         String sql = "real";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("double precision", pgDataType.toString());
+        assertEquals("DOUBLE PRECISION", pgDataType.toString());
     }
 
     public void test_oracle2pg_binary_float() throws Exception {
         String sql = "BINARY_FLOAT";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("real", pgDataType.toString());
+        assertEquals("REAL", pgDataType.toString());
     }
 
     public void test_oracle2pg_binary_double() throws Exception {
         String sql = "BINARY_DOUBLE";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("double precision", pgDataType.toString());
+        assertEquals("DOUBLE PRECISION", pgDataType.toString());
     }
 
     public void test_oracle2pg_binary_double_precision() throws Exception {
         String sql = "double precision";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("double precision", pgDataType.toString());
+        assertEquals("DOUBLE PRECISION", pgDataType.toString());
     }
 }
 

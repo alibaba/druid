@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.sql.transform;
+package com.alibaba.druid.bvt.sql.transform.datatype.oracle2pg;
 
 import com.alibaba.druid.sql.SQLTransformUtils;
 import com.alibaba.druid.sql.ast.SQLDataType;
@@ -27,5 +27,6 @@ public class Oracle2PG_DataTypeTest_int extends TestCase {
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
         assertEquals("SMALLINT", pgDataType.toString());
     }
+
 }
 

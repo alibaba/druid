@@ -46,6 +46,9 @@ public interface SQLDataType extends SQLObject {
 
         String DECIMAL = "DECIMAL";
         String NUMBER = "NUMBER";
+        String REAL = "REAL";
+        String DOUBLE_PRECISION = "DOUBLE PRECISION";
+
         String TINYINT = "TINYINT";
         String SMALLINT = "SMALLINT";
         String INT = "INT";
