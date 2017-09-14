@@ -2206,10 +2206,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setMode(x, Mode.Merge);
 
-        String ident = x.getInto().toString();
-
-        TableStat stat = getTableStat(ident);
-        stat.incrementMergeCount();
+        SQLTableSource into = x.getInto();
+        if (into instanceof SQLExprTableSource) {
+            String ident = ((SQLExprTableSource) into).getExpr().toString();
+            TableStat stat = getTableStat(ident);
+            stat.incrementMergeCount();
+        } else {
+            into.accept(this);
+        }
 
         x.getOn().accept(this);
 

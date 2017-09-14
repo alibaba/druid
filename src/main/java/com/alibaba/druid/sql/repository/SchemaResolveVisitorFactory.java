@@ -1745,6 +1745,13 @@ class SchemaResolveVisitorFactory {
                             x.setResolvedOwnerObject(parameter);
                             return;
                         }
+                    } else if (parentCtx.object instanceof SQLMergeStatement) {
+                        SQLMergeStatement mergeStatement = (SQLMergeStatement) parentCtx.object;
+                        SQLTableSource into = mergeStatement.getInto();
+                        if (into instanceof SQLSubqueryTableSource
+                                && into.aliasHashCode64() == owner_hash) {
+                            x.setResolvedOwnerObject(into);
+                        }
                     }
 
                     SQLDeclareItem declareItem = parentCtx.findDeclare(owner_hash);
@@ -2159,7 +2166,11 @@ class SchemaResolveVisitorFactory {
         SchemaResolveVisitor.Context ctx = visitor.createContext(x);
 
         SQLTableSource into = x.getInto();
-        ctx.setTableSource(into);
+        if (into instanceof SQLExprTableSource) {
+            ctx.setTableSource(into);
+        } else {
+            into.accept(visitor);
+        }
 
         SQLTableSource using = x.getUsing();
         if (using != null) {
