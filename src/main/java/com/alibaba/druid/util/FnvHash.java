@@ -36,6 +36,25 @@ public final class FnvHash {
         return hash;
     }
 
+    public static long fnv1a_64(String input, int offset, int end) {
+        if (input == null) {
+            return 0;
+        }
+
+        if (input.length() < end) {
+            end = input.length();
+        }
+
+        long hash = BASIC;
+        for (int i = offset; i < end; ++i) {
+            char c = input.charAt(i);
+            hash ^= c;
+            hash *= PRIME;
+        }
+
+        return hash;
+    }
+
     public static long fnv1a_64(char[] chars) {
         if (chars == null) {
             return 0;

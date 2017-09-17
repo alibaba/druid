@@ -362,7 +362,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
     public SQLStatement parseSet() {
         accept(Token.SET);
 
-        if (lexer.identifierEquals("TRANSACTION")) {
+        if (lexer.identifierEquals(FnvHash.Constants.TRANSACTION)) {
             lexer.nextToken();
             acceptIdentifier("ISOLATION");
             acceptIdentifier("LEVEL");
@@ -402,7 +402,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        if (lexer.identifierEquals("STATISTICS")) {
+        if (lexer.identifierEquals(FnvHash.Constants.STATISTICS)) {
             lexer.nextToken();
 
             SQLServerSetStatement stmt = new SQLServerSetStatement();
@@ -415,10 +415,29 @@ public class SQLServerStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.ON) {
                     stmt.getItem().setValue(new SQLIdentifierExpr("ON"));
                     lexer.nextToken();
-                } else if (lexer.identifierEquals("OFF")) {
+                } else if (lexer.identifierEquals(FnvHash.Constants.OFF)) {
                     stmt.getItem().setValue(new SQLIdentifierExpr("OFF"));
                     lexer.nextToken();
                 }
+            }
+            return stmt;
+        }
+
+        if (lexer.identifierEquals(FnvHash.Constants.IDENTITY_INSERT)) {
+            SQLServerSetStatement stmt = new SQLServerSetStatement();
+            stmt.setOption(SQLServerSetStatement.Option.IDENTITY_INSERT);
+
+            lexer.nextToken();
+            SQLName table = this.exprParser.name();
+
+            if (lexer.token() == Token.ON) {
+                SQLExpr value = new SQLIdentifierExpr("ON");
+                stmt.set(table, value);
+                lexer.nextToken();
+            } else if (lexer.identifierEquals(FnvHash.Constants.OFF)) {
+                SQLExpr value = new SQLIdentifierExpr("OFF");
+                stmt.set(table, value);
+                lexer.nextToken();
             }
             return stmt;
         }

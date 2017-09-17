@@ -350,6 +350,13 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public boolean visit(SQLServerSetStatement x) {
         print0(ucase ? "SET " : "set ");
+
+        SQLServerSetStatement.Option option = x.getOption();
+        if (option != null) {
+            print(option.name());
+            print(' ');
+        }
+
         SQLAssignItem item = x.getItem();
         item.getTarget().accept(this);
         print(' ');

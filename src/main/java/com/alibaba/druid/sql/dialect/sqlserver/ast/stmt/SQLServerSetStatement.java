@@ -23,8 +23,8 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatementImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
 public class SQLServerSetStatement extends SQLServerStatementImpl implements SQLServerStatement {
-
-    private SQLAssignItem item = new SQLAssignItem();
+    private Option        option;
+    private SQLAssignItem item    = new SQLAssignItem();
 
     public SQLServerSetStatement(){
     }
@@ -38,6 +38,9 @@ public class SQLServerSetStatement extends SQLServerStatementImpl implements SQL
     }
 
     public void setItem(SQLAssignItem item) {
+        if (item != null) {
+            item.setParent(this);
+        }
         this.item = item;
     }
 
@@ -46,11 +49,28 @@ public class SQLServerSetStatement extends SQLServerStatementImpl implements SQL
         item.output(buf);
     }
 
+    public Option getOption() {
+        return option;
+    }
+
+    public void setOption(Option option) {
+        this.option = option;
+    }
+
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.item);
         }
         visitor.endVisit(this);
+    }
+
+    public void set(SQLExpr target, SQLExpr value) {
+        SQLAssignItem assignItem = new SQLAssignItem(target, value);
+        setItem(assignItem);
+    }
+
+    public static enum Option {
+        IDENTITY_INSERT
     }
 }
