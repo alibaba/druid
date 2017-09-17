@@ -41,6 +41,7 @@ public interface SQLDataType extends SQLObject {
         String CHAR = "CHAR";
         String NCHAR = "NCHAR";
         String VARCHAR = "VARCHAR";
+        String DATE = "DATE";
         String TIMESTAMP = "TIMESTAMP";
         String XML = "XML";
 

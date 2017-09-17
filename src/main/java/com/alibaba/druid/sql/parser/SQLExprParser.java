@@ -913,7 +913,7 @@ public class SQLExprParser extends SQLParser {
         SQLExpr owner = null;
         String trimOption = null;
 
-        long hash_lower;
+        long hash_lower = 0L;
         if (expr instanceof SQLIdentifierExpr) {
             SQLIdentifierExpr identifierExpr = (SQLIdentifierExpr) expr;
             methodName = identifierExpr.getName();
@@ -964,7 +964,7 @@ public class SQLExprParser extends SQLParser {
             return aggregateExpr;
         }
 
-        methodInvokeExpr = new SQLMethodInvokeExpr(methodName);
+        methodInvokeExpr = new SQLMethodInvokeExpr(methodName, hash_lower);
         if (owner != null) {
             methodInvokeExpr.setOwner(owner);
         }

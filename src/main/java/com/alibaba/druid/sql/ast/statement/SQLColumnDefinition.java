@@ -26,7 +26,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType {
+public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElement, SQLObjectWithDataType, SQLReplaceable {
     protected String                          dbType;
 
     protected SQLName                         name;
@@ -248,6 +248,21 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
 
     public void setStorage(SQLExpr storage) {
         this.storage = storage;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (defaultExpr == expr) {
+            setDefaultExpr(target);
+            return true;
+        }
+
+        if (name == expr) {
+            setName((SQLName) target);
+            return true;
+        }
+
+        return false;
     }
 
     public static class Identity extends SQLObjectImpl {

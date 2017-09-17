@@ -446,7 +446,7 @@ public class SQLTransformUtils {
                 int precision, scale = 0;
                 if (arg0 instanceof SQLAllColumnExpr) {
                     precision = 19;
-                    scale = 0;
+                    scale = -1;
                 } else {
                     precision = ((SQLIntegerExpr) arg0).getNumber().intValue();
                 }
@@ -476,6 +476,8 @@ public class SQLTransformUtils {
                     } else {
                         dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, precision);
                     }
+                } else if (scale == -1) {
+                    dataType = new SQLDataTypeImpl(SQLDataType.Constants.DOUBLE_PRECISION);
                 } else {
                     dataType = new SQLDataTypeImpl(SQLDataType.Constants.DECIMAL, precision, scale);
                 }
@@ -621,5 +623,14 @@ public class SQLTransformUtils {
         }
 
         return dataType;
+    }
+
+    public static SQLExpr transformOracleToPostgresql(SQLMethodInvokeExpr x) {
+        long nameHashCode64 = x.methodNameHashCode64();
+        if (nameHashCode64 == FnvHash.Constants.SYS_GUID) {
+            SQLMethodInvokeExpr uuid_generate_v4 = new SQLMethodInvokeExpr("uuid_generate_v4");
+            return uuid_generate_v4;
+        }
+        return x;
     }
 }

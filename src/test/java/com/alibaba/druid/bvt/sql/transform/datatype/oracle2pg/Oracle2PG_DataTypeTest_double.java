@@ -48,5 +48,13 @@ public class Oracle2PG_DataTypeTest_double extends TestCase {
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
         assertEquals("DOUBLE PRECISION", pgDataType.toString());
     }
+
+
+    public void test_oracle2pg_number_star() throws Exception {
+        String sql = "number(*)";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("DOUBLE PRECISION", pgDataType.toString());
+    }
 }
 

@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableExpr {
-    private static SQLDataType defaultDataType = new SQLDataTypeImpl("number");
+    public final static SQLDataType defaultDataType = new SQLDataTypeImpl("number");
 
     private Number number;
 

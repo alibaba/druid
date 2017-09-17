@@ -124,6 +124,12 @@ public class MySqlExprParser extends SQLExprParser {
                 lexer.reset(6, ' ', Token.UPDATE);
                 return;
             }
+
+            if (c0 == '/' && c1 == '*' && isEnabled(SQLParserFeature.OptimizedForParameterized)) {
+                MySqlLexer mySqlLexer = (MySqlLexer) lexer;
+                mySqlLexer.skipFirstHintsOrMultiCommentAndNextToken();
+                return;
+            }
         }
         this.lexer.nextToken();
 

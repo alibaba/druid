@@ -55,6 +55,25 @@ public final class FnvHash {
         return hash;
     }
 
+    public static long fnv1a_64(byte[] input, int offset, int end) {
+        if (input == null) {
+            return 0;
+        }
+
+        if (input.length < end) {
+            end = input.length;
+        }
+
+        long hash = BASIC;
+        for (int i = offset; i < end; ++i) {
+            byte c = input[i];
+            hash ^= c;
+            hash *= PRIME;
+        }
+
+        return hash;
+    }
+
     public static long fnv1a_64(char[] chars) {
         if (chars == null) {
             return 0;
@@ -468,5 +487,13 @@ public final class FnvHash {
         long SOURCE = fnv1a_64_lower("SOURCE");
 
         long STAR = fnv1a_64_lower("*");
+
+        long TO_CHAR = fnv1a_64_lower("TO_CHAR");
+        long SYS_GUID = fnv1a_64_lower("SYS_GUID");
+
+        long STATISTICS = fnv1a_64_lower("STATISTICS");
+        long TRANSACTION = fnv1a_64_lower("TRANSACTION");
+        long OFF = fnv1a_64_lower("OFF");
+        long IDENTITY_INSERT = fnv1a_64_lower("IDENTITY_INSERT");
     }
 }

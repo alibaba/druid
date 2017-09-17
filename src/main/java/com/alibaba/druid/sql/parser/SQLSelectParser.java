@@ -565,10 +565,16 @@ public class SQLSelectParser extends SQLParser {
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
-            if (lexer.token != Token.LEFT && lexer.token != Token.RIGHT && lexer.token != Token.FULL
-                    && (!lexer.identifierEquals(FnvHash.Constants.STRAIGHT_JOIN))
-                    && (!lexer.identifierEquals(FnvHash.Constants.CROSS))
-                    && lexer.token != Token.OUTER) {
+            Token token = lexer.token;
+            long hash;
+            if (token != Token.LEFT
+                    && token != Token.RIGHT
+                    && token != Token.FULL
+                    && token != Token.OUTER
+                    && !(token == Token.IDENTIFIER
+                        && ((hash = lexer.hash_lower()) == FnvHash.Constants.STRAIGHT_JOIN
+                            || hash == FnvHash.Constants.CROSS)))
+            {
                 String alias = tableAlias();
                 if (alias != null) {
                     tableSource.setAlias(alias);

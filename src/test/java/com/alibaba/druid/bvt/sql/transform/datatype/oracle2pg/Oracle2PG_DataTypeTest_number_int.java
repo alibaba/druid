@@ -158,7 +158,7 @@ public class Oracle2PG_DataTypeTest_number_int extends TestCase {
         String sql = "number(*)";
         SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
-        assertEquals("BIGINT", pgDataType.toString());
+        assertEquals("DOUBLE PRECISION", pgDataType.toString());
     }
 
     public void test_oracle2pg_int_21() throws Exception {

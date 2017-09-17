@@ -401,6 +401,89 @@ public class MySqlLexer extends Lexer {
         scanString2();
     }
 
+    public void skipFirstHintsOrMultiCommentAndNextToken() {
+        int starIndex = pos + 2;
+
+        for (;;) {
+            starIndex = text.indexOf('*', starIndex);
+            if (starIndex == -1 || starIndex == text.length() - 1) {
+                this.token = Token.ERROR;
+                return;
+            }
+
+            int slashIndex = starIndex + 1;
+            if (charAt(slashIndex) == '/') {
+                pos = slashIndex + 1;
+                ch = text.charAt(pos);
+                if (pos < text.length() - 6) {
+                    int pos_6 = pos + 6;
+                    char c0 = ch;
+                    char c1 = text.charAt(pos + 1);
+                    char c2 = text.charAt(pos + 2);
+                    char c3 = text.charAt(pos + 3);
+                    char c4 = text.charAt(pos + 4);
+                    char c5 = text.charAt(pos + 5);
+                    char c6 = text.charAt(pos_6);
+                    if (c0 == 's' && c1 == 'e' && c2 == 'l' && c3 == 'e' && c4 == 'c' && c5 == 't' && c6 == ' ') {
+                        this.comments = null;
+                        reset(pos_6, ' ', Token.SELECT);
+                        return;
+                    }
+
+                    if (c0 == 'i' && c1 == 'n' && c2 == 's' && c3 == 'e' && c4 == 'r' && c5 == 't' && c6 == ' ') {
+                        this.comments = null;
+                        reset(pos_6, ' ', Token.INSERT);
+                        return;
+                    }
+
+                    if (c0 == 'u' && c1 == 'p' && c2 == 'd' && c3 == 'a' && c4 == 't' && c5 == 'e' && c6 == ' ') {
+                        this.comments = null;
+                        reset(pos_6, ' ', Token.UPDATE);
+                        return;
+                    }
+
+
+                    if (c0 == 'd' && c1 == 'e' && c2 == 'l' && c3 == 'e' && c4 == 't' && c5 == 'e' && c6 == ' ') {
+                        this.comments = null;
+                        reset(pos_6, ' ', Token.DELETE);
+                        return;
+                    }
+
+                    if (c0 == 'S' && c1 == 'E' && c2 == 'L' && c3 == 'E' && c4 == 'C' && c5 == 'T' && c6 == ' ') {
+                        this.comments = null;
+                        reset(pos_6, ' ', Token.SELECT);
+                        return;
+                    }
+
+                    if (c0 == 'I' && c1 == 'N' && c2 == 'S' && c3 == 'E' && c4 == 'R' && c5 == 'T' && c6 == ' ') {
+                        this.comments = null;
+                        reset(pos_6, ' ', Token.INSERT);
+                        return;
+                    }
+
+                    if (c0 == 'U' && c1 == 'P' && c2 == 'D' && c3 == 'A' && c4 == 'T' && c5 == 'E' && c6 == ' ') {
+                        this.comments = null;
+                        reset(pos_6, ' ', Token.UPDATE);
+                        return;
+                    }
+
+                    if (c0 == 'D' && c1 == 'E' && c2 == 'L' && c3 == 'E' && c4 == 'T' && c5 == 'E' && c6 == ' ') {
+                        this.comments = null;
+                        reset(pos_6, ' ', Token.DELETE);
+                        return;
+                    }
+
+                    nextToken();
+                    return;
+                } else {
+                    nextToken();
+                    return;
+                }
+            }
+            starIndex++;
+        }
+    }
+
     public void scanComment() {
         Token lastToken = this.token;
         

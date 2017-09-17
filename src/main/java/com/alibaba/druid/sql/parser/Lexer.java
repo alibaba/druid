@@ -60,7 +60,7 @@ public class Lexer {
     protected long         hash;
 
     protected int            commentCount = 0;
-    protected List<String>   comments     = new ArrayList<String>(2);
+    protected List<String>   comments     = null;
     protected boolean        skipComment  = true;
     private SavePoint        savePoint    = null;
 

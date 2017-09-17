@@ -65,7 +65,7 @@ public class ParameterizedOutputVisitorUtils {
         }
 
         if (visitor.getReplaceCount() == 0
-                && parser.getLexer().getCommentCount() == 0) {
+                && parser.getLexer().getCommentCount() == 0 && sql.charAt(0) != '/') {
             return sql;
         }
 
