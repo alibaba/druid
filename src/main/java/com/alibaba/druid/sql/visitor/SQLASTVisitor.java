@@ -746,4 +746,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLReplaceStatement x);
 
     void endVisit(SQLReplaceStatement x);
+
+    boolean visit(SQLCreateUserStatement x);
+
+    void endVisit(SQLCreateUserStatement x);
 }

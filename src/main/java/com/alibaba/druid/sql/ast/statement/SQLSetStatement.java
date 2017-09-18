@@ -129,6 +129,7 @@ public class SQLSetStatement extends SQLStatementImpl {
     public static enum Option {
         IDENTITY_INSERT,
         PASSWORD, // mysql
+        GLOBAL,
         SESSION,
         LOCAL
     }

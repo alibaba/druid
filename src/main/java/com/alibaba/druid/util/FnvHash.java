@@ -496,5 +496,9 @@ public final class FnvHash {
         long OFF = fnv1a_64_lower("OFF");
         long IDENTITY_INSERT = fnv1a_64_lower("IDENTITY_INSERT");
         long PASSWORD = fnv1a_64_lower("PASSWORD");
+        long PUBLIC = fnv1a_64_lower("PUBLIC");
+        long MATERIALIZED = fnv1a_64_lower("MATERIALIZED");
+        long BITMAP = fnv1a_64_lower("BITMAP");
+        long PACKAGE = fnv1a_64_lower("PACKAGE");
     }
 }

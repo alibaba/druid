@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -44,7 +45,10 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor {
 
@@ -644,6 +648,82 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             }
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLCreateUserStatement x) {
+        print0(ucase ? "CREATE USER " : "create user ");
+        x.getUser().accept(this);
+        print0(ucase ? " PASSWORD " : " password ");
+
+        SQLExpr passoword = x.getPassword();
+
+        if (passoword instanceof SQLIdentifierExpr) {
+            print('\'');
+            passoword.accept(this);
+            print('\'');
+        } else {
+            passoword.accept(this);
+        }
+
+        return false;
+    }
+
+    protected void printGrantPrivileges(SQLGrantStatement x) {
+        List<SQLExpr> privileges = x.getPrivileges();
+        int i = 0;
+        for (SQLExpr privilege : privileges) {
+            if (i != 0) {
+                print(", ");
+            }
+
+            if (privilege instanceof SQLIdentifierExpr) {
+                String name = ((SQLIdentifierExpr) privilege).getName();
+                if ("RESOURCE".equalsIgnoreCase(name)) {
+                    continue;
+                }
+            }
+
+            privilege.accept(this);
+            i++;
+        }
+    }
+
+    public boolean visit(SQLGrantStatement x) {
+        if (x.getOn() == null) {
+            print("ALTER ROLE ");
+            x.getTo().accept(this);
+            print(' ');
+            Set<SQLIdentifierExpr> pgPrivilegs = new LinkedHashSet<SQLIdentifierExpr>();
+            for (SQLExpr privilege : x.getPrivileges()) {
+                if (privilege instanceof SQLIdentifierExpr) {
+                    String name = ((SQLIdentifierExpr) privilege).getName();
+                    if (name.equalsIgnoreCase("CONNECT")) {
+                        pgPrivilegs.add(new SQLIdentifierExpr("LOGIN"));
+                    }
+                    if (name.toLowerCase().startsWith("create ")) {
+                        pgPrivilegs.add(new SQLIdentifierExpr("CREATEDB"));
+                    }
+                }
+            }
+            int i = 0;
+            for (SQLExpr privilege : pgPrivilegs) {
+                if (i != 0) {
+                    print(' ');
+                }
+                privilege.accept(this);
+                i++;
+            }
+            return false;
+        }
+
+        return super.visit(x);
+    }
+
+    // for oracle to postsql
+    public boolean visit(OracleSysdateExpr x) {
+        print0(ucase ? "CURRENT_TIMESTAMP" : "CURRENT_TIMESTAMP");
         return false;
     }
 }

@@ -600,4 +600,23 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         print0(ucase ? "GO" : "go");
         return false;
     }
+
+    @Override
+    public boolean visit(SQLCreateUserStatement x) {
+        print0(ucase ? "CREATE USER " : "create user ");
+        x.getUser().accept(this);
+        print0(ucase ? " WITH PASSWORD = " : " with password = ");
+
+        SQLExpr passoword = x.getPassword();
+
+        if (passoword instanceof SQLIdentifierExpr) {
+            print('\'');
+            passoword.accept(this);
+            print('\'');
+        } else {
+            passoword.accept(this);
+        }
+
+        return false;
+    }
 }

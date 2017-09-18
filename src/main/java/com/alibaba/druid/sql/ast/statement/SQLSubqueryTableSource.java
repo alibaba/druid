@@ -67,14 +67,17 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         buf.append(")");
     }
 
-    public SQLSubqueryTableSource clone() {
-        SQLSubqueryTableSource x = new SQLSubqueryTableSource();
-
+    public void cloneTo(SQLSubqueryTableSource x) {
         x.alias = alias;
 
         if (select != null) {
             x.select = select.clone();
         }
+    }
+
+    public SQLSubqueryTableSource clone() {
+        SQLSubqueryTableSource x = new SQLSubqueryTableSource();
+        cloneTo(x);
         return x;
     }
 

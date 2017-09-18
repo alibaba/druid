@@ -3584,6 +3584,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    protected void printGrantPrivileges(SQLGrantStatement x) {
+
+    }
+
     @Override
     public boolean visit(SQLGrantStatement x) {
         print0(ucase ? "GRANT " : "grant ");
@@ -5262,6 +5266,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         println(ucase ? "AS" : "as");
         x.getQuery().accept(this);
+        return false;
+    }
+
+    public boolean visit(SQLCreateUserStatement x) {
+        print0(ucase ? "CREATE USER " : "create user ");
+        x.getUser().accept(this);
+        print0(ucase ? " IDENTIFIED BY " : " identified by ");
+        x.getPassword().accept(this);
         return false;
     }
 

@@ -19,8 +19,10 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLCharacterDataType;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.util.FnvHash;
+import oracle.jdbc.rowset.OracleJoinable;
 
 import java.util.List;
 
@@ -629,8 +631,58 @@ public class SQLTransformUtils {
         long nameHashCode64 = x.methodNameHashCode64();
         if (nameHashCode64 == FnvHash.Constants.SYS_GUID) {
             SQLMethodInvokeExpr uuid_generate_v4 = new SQLMethodInvokeExpr("uuid_generate_v4");
+
+            uuid_generate_v4.setParent(x.getParent());
             return uuid_generate_v4;
         }
+        return x;
+    }
+
+    public static SQLTableSource transformOracleToPostgresql(SQLTableSource x) {
+        if (x instanceof OracleSelectTableReference) {
+            OracleSelectTableReference xx = (OracleSelectTableReference) x;
+            SQLExprTableSource y = new SQLExprTableSource();
+            xx.cloneTo(y);
+
+            y.setParent(x.getParent());
+            return y;
+        }
+
+        if (x instanceof OracleSelectJoin) {
+            OracleSelectJoin xx = (OracleSelectJoin) x;
+            SQLJoinTableSource y = new SQLJoinTableSource();
+            xx.cloneTo(y);
+
+            y.setLeft(transformOracleToPostgresql(y.getLeft()));
+            y.setRight(transformOracleToPostgresql(y.getRight()));
+
+            y.setParent(x.getParent());
+            return y;
+        }
+
+        if (x instanceof OracleSelectSubqueryTableSource) {
+            OracleSelectSubqueryTableSource xx = (OracleSelectSubqueryTableSource) x;
+            SQLSubqueryTableSource y = new SQLSubqueryTableSource();
+            xx.cloneTo(y);
+
+            y.setParent(x.getParent());
+            return y;
+        }
+
+        return x;
+    }
+
+    public static SQLSelectQueryBlock transformOracleToPostgresql(SQLSelectQueryBlock x) {
+        if (x instanceof OracleSelectQueryBlock) {
+            OracleSelectQueryBlock xx = (OracleSelectQueryBlock) x;
+            SQLSelectQueryBlock y = new SQLSelectQueryBlock();
+            xx.cloneTo(y);
+            y.setFrom(transformOracleToPostgresql(y.getFrom()));
+
+            y.setParent(x.getParent());
+            return y;
+        }
+
         return x;
     }
 }

@@ -35,4 +35,8 @@ public class FnvHashTest extends TestCase {
         System.out.println("millis : " + millis);
         return val;
     }
+
+    public void test_fnv_hash_1a() throws Exception {
+        assertEquals(FnvHash.fnv1a_64("bcd"), FnvHash.fnv1a_64("abcde", 1, 4));
+    }
 }

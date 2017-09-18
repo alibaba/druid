@@ -68,4 +68,15 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
     public String toString () {
         return SQLUtils.toOracleString(this);
     }
+
+    public OracleSelectSubqueryTableSource clone() {
+        OracleSelectSubqueryTableSource x = new OracleSelectSubqueryTableSource();
+        cloneTo(x);
+
+        if (pivot != null) {
+            setParent(pivot.clone());
+        }
+
+        return x;
+    }
 }
