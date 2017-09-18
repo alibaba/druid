@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
+import jdk.nashorn.internal.runtime.regexp.joni.constants.OPCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -2289,18 +2290,23 @@ public class MySqlStatementParser extends SQLStatementParser {
     public SQLStatement parseSet() {
         accept(Token.SET);
 
-        if (lexer.identifierEquals("PASSWORD")) {
+        if (lexer.identifierEquals(FnvHash.Constants.PASSWORD)) {
             lexer.nextToken();
-            MySqlSetPasswordStatement stmt = new MySqlSetPasswordStatement();
+            SQLSetStatement stmt = new SQLSetStatement();
+            stmt.setDbType(dbType);
+            stmt.setOption(SQLSetStatement.Option.PASSWORD);
 
+            SQLExpr user = null;
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
-                stmt.setUser(this.exprParser.name());
+                user = this.exprParser.name();
             }
 
             accept(Token.EQ);
 
-            stmt.setPassword(this.exprParser.expr());
+            SQLExpr password = this.exprParser.expr();
+
+            stmt.set(user, password);
 
             return stmt;
         }

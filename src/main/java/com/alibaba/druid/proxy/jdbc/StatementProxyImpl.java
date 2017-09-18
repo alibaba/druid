@@ -34,23 +34,17 @@ import com.alibaba.druid.stat.JdbcSqlStat;
  */
 public class StatementProxyImpl extends WrapperProxyImpl implements StatementProxy {
 
-    private final ConnectionProxy  connection;
-    protected Statement        statement;
-
-    protected String               lastExecuteSql;
-    protected long                 lastExecuteStartNano;
-    protected long                 lastExecuteTimeNano;
-
-    protected JdbcSqlStat          sqlStat;
-    protected boolean              firstResultSet;
-
-    protected ArrayList<String>    batchSqlList;
-
-    protected StatementExecuteType lastExecuteType;
-
-    protected Integer     updateCount = null;
-
-    private FilterChainImpl        filterChain = null;
+    private final ConnectionProxy      connection;
+    protected     Statement            statement;
+    protected     String               lastExecuteSql;
+    protected     long                 lastExecuteStartNano;
+    protected     long                 lastExecuteTimeNano;
+    protected     JdbcSqlStat          sqlStat;
+    protected     boolean              firstResultSet;
+    protected     ArrayList<String>    batchSqlList;
+    protected     StatementExecuteType lastExecuteType;
+    protected     Integer              updateCount;
+    private       FilterChainImpl      filterChain;
 
     public StatementProxyImpl(ConnectionProxy connection, Statement statement, long id){
         super(statement, id);

@@ -2615,6 +2615,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (printSet) {
             print0(ucase ? "SET " : "set ");
         }
+        SQLSetStatement.Option option = x.getOption();
+        if (option != null) {
+            print(option.name());
+            print(' ');
+        }
+
         printAndAccept(x.getItems(), ", ");
 
         if (x.getHints() != null && x.getHints().size() > 0) {

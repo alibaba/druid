@@ -403,10 +403,6 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlOptimizeStatement x);
 
-    boolean visit(MySqlSetPasswordStatement x);
-
-    void endVisit(MySqlSetPasswordStatement x);
-
     boolean visit(MySqlHintStatement x);
 
     void endVisit(MySqlHintStatement x);

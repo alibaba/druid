@@ -46,12 +46,11 @@ import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
  * @author wenshao [szujobs@hotmail.com]
  */
 public class PreparedStatementProxyImpl extends StatementProxyImpl implements PreparedStatementProxy {
-
-    private PreparedStatement statement;
-    protected final String            sql;
-    private JdbcParameter[]           parameters;
-    private int                       parametersSize = 0;
-    private Map<Integer, JdbcParameter> paramMap       = null;
+    private         PreparedStatement           statement;
+    protected final String                      sql;
+    private         JdbcParameter[]             parameters;
+    private         int                         parametersSize;
+    private         Map<Integer, JdbcParameter> paramMap;
 
     public PreparedStatementProxyImpl(ConnectionProxy connection, PreparedStatement statement, String sql, long id){
         super(connection, statement, id);

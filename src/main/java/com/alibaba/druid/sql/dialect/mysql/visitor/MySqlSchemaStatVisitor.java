@@ -1096,16 +1096,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     @Override
-    public boolean visit(MySqlSetPasswordStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlSetPasswordStatement x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlHintStatement x) {
         return true;
     }

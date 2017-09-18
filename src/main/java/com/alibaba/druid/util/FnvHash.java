@@ -495,5 +495,6 @@ public final class FnvHash {
         long TRANSACTION = fnv1a_64_lower("TRANSACTION");
         long OFF = fnv1a_64_lower("OFF");
         long IDENTITY_INSERT = fnv1a_64_lower("IDENTITY_INSERT");
+        long PASSWORD = fnv1a_64_lower("PASSWORD");
     }
 }

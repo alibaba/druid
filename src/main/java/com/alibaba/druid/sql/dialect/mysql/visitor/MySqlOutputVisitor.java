@@ -2956,26 +2956,29 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public boolean visit(MySqlSetPasswordStatement x) {
-        print0(ucase ? "SET PASSWORD " : "set password ");
-
-        if (x.getUser() != null) {
-            print0(ucase ? "FOR " : "for ");
-            x.getUser().accept(this);
+    public boolean visit(SQLSetStatement x) {
+        boolean printSet = x.getAttribute("parser.set") == Boolean.TRUE || !JdbcConstants.ORACLE.equals(dbType);
+        if (printSet) {
+            print0(ucase ? "SET " : "set ");
+        }
+        SQLSetStatement.Option option = x.getOption();
+        if (option != null) {
+            print(option.name());
             print(' ');
         }
 
-        print0("= ");
-
-        if (x.getPassword() != null) {
-            x.getPassword().accept(this);
+        if (option == SQLSetStatement.Option.PASSWORD) {
+            print0("FOR ");
         }
+
+        printAndAccept(x.getItems(), ", ");
+
+        if (x.getHints() != null && x.getHints().size() > 0) {
+            print(' ');
+            printAndAccept(x.getHints(), " ");
+        }
+
         return false;
-    }
-
-    @Override
-    public void endVisit(MySqlSetPasswordStatement x) {
-
     }
 
     @Override

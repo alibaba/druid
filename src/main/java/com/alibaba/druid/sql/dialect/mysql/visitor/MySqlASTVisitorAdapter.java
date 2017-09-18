@@ -960,16 +960,6 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     }
 
     @Override
-    public boolean visit(MySqlSetPasswordStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(MySqlSetPasswordStatement x) {
-
-    }
-
-    @Override
     public boolean visit(MySqlHintStatement x) {
         return true;
     }

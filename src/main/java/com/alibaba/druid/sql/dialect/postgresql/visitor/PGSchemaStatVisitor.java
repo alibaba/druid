@@ -351,13 +351,4 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         return false;
     }
 
-    @Override
-    public void endVisit(PGSetStatement x) {
-        
-    }
-
-    @Override
-    public boolean visit(PGSetStatement x) {
-        return false;
-    }
 }

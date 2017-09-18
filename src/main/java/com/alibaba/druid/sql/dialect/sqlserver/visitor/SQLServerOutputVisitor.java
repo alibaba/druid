@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -25,12 +26,14 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
+
+import java.util.List;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
 
@@ -348,25 +351,36 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public boolean visit(SQLServerSetStatement x) {
+    public boolean visit(SQLSetStatement x) {
         print0(ucase ? "SET " : "set ");
 
-        SQLServerSetStatement.Option option = x.getOption();
+        SQLSetStatement.Option option = x.getOption();
         if (option != null) {
             print(option.name());
             print(' ');
         }
 
-        SQLAssignItem item = x.getItem();
-        item.getTarget().accept(this);
-        print(' ');
-        item.getValue().accept(this);
+        List<SQLAssignItem> items = x.getItems();
+        for (int i = 0; i < items.size(); i++) {
+            if (i != 0) {
+                print0(", ");
+            }
+
+            SQLAssignItem item = x.getItems().get(i);
+            item.getTarget().accept(this);
+
+            SQLExpr value = item.getValue();
+            if (value instanceof SQLIdentifierExpr
+                    && (((SQLIdentifierExpr) value).nameHashCode64() == FnvHash.Constants.ON
+                        || ((SQLIdentifierExpr) value).nameHashCode64() == FnvHash.Constants.OFF)) {
+                print(' ');
+            } else {
+                print0(" = ");
+            }
+            value.accept(this);
+        }
+
         return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerSetStatement x) {
-
     }
 
     @Override

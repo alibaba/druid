@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
@@ -39,6 +41,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.Wind
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.StringUtils;
 
 import java.util.List;
@@ -606,33 +609,41 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public void endVisit(PGSetStatement x) {
-        
-    }
-
-    @Override
-    public boolean visit(PGSetStatement x) {
+    public boolean visit(SQLSetStatement x) {
         print0(ucase ? "SET " : "set ");
-        if (!StringUtils.isEmpty(x.range)) {
-            print0(x.range);
-            print0(" ");
+
+        SQLSetStatement.Option option = x.getOption();
+        if (option != null) {
+            print(option.name());
+            print(' ');
         }
-        if (PGSQLStatementParser.TIME_ZONE.equalsIgnoreCase(x.param)) {
-            print0(PGSQLStatementParser.TIME_ZONE);
-            print0(" ");
-            x.values.get(0).accept(this);
-            return false;
-        }
-        print0(x.param);
-        print0(" ");
-        print0(Token.TO.name());
-        print0(" ");
-        for (int i = 0; i < x.values.size(); i++) {
+
+        List<SQLAssignItem> items = x.getItems();
+        for (int i = 0; i < items.size(); i++) {
             if (i != 0) {
                 print0(", ");
             }
-            x.values.get(i).accept(this);
+
+            SQLAssignItem item = x.getItems().get(i);
+            SQLExpr target = item.getTarget();
+            target.accept(this);
+
+            if (target instanceof SQLIdentifierExpr && ((SQLIdentifierExpr) target).getName().equalsIgnoreCase("TIME ZONE")) {
+                print(' ');
+            } else {
+                print0(" TO ");
+            }
+
+            SQLExpr value = item.getValue();
+
+            if (value instanceof SQLListExpr) {
+                SQLListExpr listExpr = (SQLListExpr) value;
+                printAndAccept(listExpr.getItems(), ", ");
+            } else {
+                value.accept(this);
+            }
         }
+
         return false;
     }
 }

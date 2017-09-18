@@ -16,11 +16,11 @@
 package com.alibaba.druid.bvt.sql.postgresql;
 
 import com.alibaba.druid.sql.PGTest;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 
 public class PGSetTest3 extends PGTest {
     public void testSet() throws Exception {
-        Class<?> type = PGSetStatement.class;
+        Class<?> type = SQLSetStatement.class;
 
         String sql = "SET TIME ZONE 'Europe/Rome';";
         String expectedSql = "SET TIME ZONE 'Europe/Rome';";

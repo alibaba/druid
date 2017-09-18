@@ -56,5 +56,6 @@ public interface SQLDataType extends SQLObject {
         String BIGINT = "BIGINT";
         String TEXT = "TEXT";
         String BYTEA = "BYTEA";
+        String BOOLEAN = "BOOLEAN";
     }
 }

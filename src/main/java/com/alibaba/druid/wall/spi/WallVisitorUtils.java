@@ -35,7 +35,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
@@ -2507,8 +2506,7 @@ public class WallVisitorUtils {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
             errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;
-        } else if (x instanceof SQLSetStatement //
-                   || x instanceof SQLServerSetStatement) {
+        } else if (x instanceof SQLSetStatement) {
             allow = config.isSetAllow();
             denyMessage = "set not allow";
             errorCode = ErrorCode.SET_NOT_ALLOW;

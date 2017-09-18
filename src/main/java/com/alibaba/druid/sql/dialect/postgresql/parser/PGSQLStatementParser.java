@@ -18,10 +18,7 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
@@ -327,58 +324,73 @@ public class PGSQLStatementParser extends SQLStatementParser {
         lexer.nextToken();
         return stmt;
     }
-    
-    private SQLStatement handleTimeZoneSet(String range) {
-        // ZONE
-        lexer.nextToken();
-        // VALUE
-        lexer.nextToken();
-        String value = lexer.stringVal();
-        List<SQLExpr> exprs = new ArrayList<SQLExpr>();
-        if (lexer.token() == Token.IDENTIFIER) {
-            exprs.add(new SQLIdentifierExpr(value.toUpperCase()));
-        } else {
-            exprs.add(new SQLCharExpr(value));
-        }
-        lexer.nextToken();
-        return new PGSetStatement(range, TIME_ZONE, exprs);
-    }
 
     @Override
     public SQLStatement parseSet() {
         accept(Token.SET);
         Token token = lexer.token();
         String range = "";
+
+        SQLSetStatement.Option option = null;
         if (token == Token.SESSION) {
             lexer.nextToken();
             range = Token.SESSION.name();
+            option = SQLSetStatement.Option.SESSION;
         } else if (token == Token.IDENTIFIER && LOCAL.equalsIgnoreCase(lexer.stringVal())) {
             range = LOCAL;
+            option = SQLSetStatement.Option.LOCAL;
             lexer.nextToken();
         }
         String parameter = lexer.stringVal();
+        SQLExpr paramExpr;
+        List<SQLExpr> values = new ArrayList<SQLExpr>();
         if (TIME.equalsIgnoreCase(parameter)) {
-            // SET [ SESSION | LOCAL ] TIME ZONE { timezone | LOCAL | DEFAULT }
-            return handleTimeZoneSet(range);
+            lexer.nextToken();
+            acceptIdentifier("ZONE");
+            paramExpr = new SQLIdentifierExpr("TIME ZONE");
+            String value = lexer.stringVal();
+            if (lexer.token() == Token.IDENTIFIER) {
+                values.add(new SQLIdentifierExpr(value.toUpperCase()));
+            } else {
+                values.add(new SQLCharExpr(value));
+            }
+            lexer.nextToken();
+//            return new PGSetStatement(range, TIME_ZONE, exprs);
+        } else {
+            paramExpr = new SQLIdentifierExpr(parameter);
+            lexer.nextToken();
+
+            while (!lexer.isEOF()) {
+                lexer.nextToken();
+                if (lexer.token() == Token.LITERAL_CHARS) {
+                    values.add(new SQLCharExpr(lexer.stringVal()));
+                } else if (lexer.token() == Token.LITERAL_INT) {
+                    values.add(new SQLIdentifierExpr(lexer.numberString()));
+                } else {
+                    values.add(new SQLIdentifierExpr(lexer.stringVal()));
+                }
+                // skip comma
+                lexer.nextToken();
+            }
         }
-        // TO | =
-        lexer.nextToken();
 
         // value | 'value' | DEFAULT
-        List<SQLExpr> values = new ArrayList<SQLExpr>();
-        while (!lexer.isEOF()) {
-            lexer.nextToken();
-            if (lexer.token() == Token.LITERAL_CHARS) {
-                values.add(new SQLCharExpr(lexer.stringVal()));
-            } else if (lexer.token() == Token.LITERAL_INT) {
-                values.add(new SQLIdentifierExpr(lexer.numberString()));
-            } else {
-                values.add(new SQLIdentifierExpr(lexer.stringVal()));
+
+
+
+        SQLExpr valueExpr;
+        if (values.size() == 1) {
+            valueExpr = values.get(0);
+        } else {
+            SQLListExpr listExpr = new SQLListExpr();
+            for (SQLExpr value : values) {
+                listExpr.addItem(value);
             }
-            // skip comma
-            lexer.nextToken();
+            valueExpr = listExpr;
         }
-        return new PGSetStatement(range, parameter, values);
+        SQLSetStatement stmt = new SQLSetStatement(paramExpr, valueExpr, dbType);
+        stmt.setOption(option);
+        return stmt;
     }
 
 
