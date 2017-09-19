@@ -500,5 +500,6 @@ public final class FnvHash {
         long MATERIALIZED = fnv1a_64_lower("MATERIALIZED");
         long BITMAP = fnv1a_64_lower("BITMAP");
         long PACKAGE = fnv1a_64_lower("PACKAGE");
+        long TRUNC = fnv1a_64_lower("TRUNC");
     }
 }

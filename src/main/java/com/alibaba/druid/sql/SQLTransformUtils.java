@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
 import com.alibaba.druid.util.FnvHash;
 import oracle.jdbc.rowset.OracleJoinable;
@@ -585,8 +586,10 @@ public class SQLTransformUtils {
             dataType = new SQLCharacterDataType(SQLDataType.Constants.VARCHAR, 255);
         } else if (nameHash == FnvHash.Constants.DATE) {
             dataType = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP, 0);
-        } else if (nameHash == FnvHash.Constants.DATETIME
-                || nameHash == FnvHash.Constants.TIMESTAMP) {
+        } else if (nameHash == FnvHash.Constants.TIMESTAMP) {
+            x.setName(SQLDataType.Constants.TIMESTAMP);
+            dataType = x;
+        } else if (nameHash == FnvHash.Constants.DATETIME) {
             int len = -1;
             if (argumentns.size() > 0) {
                 SQLExpr arg0 = argumentns.get(0);
@@ -628,13 +631,44 @@ public class SQLTransformUtils {
     }
 
     public static SQLExpr transformOracleToPostgresql(SQLMethodInvokeExpr x) {
-        long nameHashCode64 = x.methodNameHashCode64();
+        final long nameHashCode64 = x.methodNameHashCode64();
+        List<SQLExpr> parameters = x.getParameters();
+
         if (nameHashCode64 == FnvHash.Constants.SYS_GUID) {
             SQLMethodInvokeExpr uuid_generate_v4 = new SQLMethodInvokeExpr("uuid_generate_v4");
 
             uuid_generate_v4.setParent(x.getParent());
             return uuid_generate_v4;
         }
+
+        if (nameHashCode64 == FnvHash.Constants.TRUNC) {
+            if (parameters.size() == 1) {
+                SQLExpr param0 = parameters.get(0);
+                if (param0 instanceof OracleSysdateExpr
+                        || (param0 instanceof SQLIdentifierExpr
+                            && ((SQLIdentifierExpr) param0).nameHashCode64() == FnvHash.Constants.CURRENT_TIMESTAMP)) {
+                    SQLMethodInvokeExpr current_timestamp = new SQLMethodInvokeExpr("CURRENT_TIMESTAMP");
+                    current_timestamp.addParameter(new SQLIntegerExpr(0));
+
+                    current_timestamp.setParent(x.getParent());
+                    return current_timestamp;
+                }
+            }
+        }
+
+        if (nameHashCode64 == FnvHash.Constants.CURRENT_TIMESTAMP) {
+            if (parameters.size() == 0 && x.getParent() instanceof SQLColumnDefinition) {
+                SQLDataType dataType = ((SQLColumnDefinition) x.getParent()).getDataType();
+                if (dataType.nameHashCode64() == FnvHash.Constants.TIMESTAMP
+                        && dataType.getArguments().size() == 1) {
+                    x.addParameter(dataType.getArguments().get(0).clone());
+                } else {
+                    x.addParameter(new SQLIntegerExpr(0));
+                }
+                return x;
+            }
+        }
+
         return x;
     }
 
