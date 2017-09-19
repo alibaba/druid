@@ -1117,7 +1117,7 @@ public class Lexer {
                     }
                     if (i > 0) {
                         char ch_last = charAt(i - 1);
-                        if (ch_last == '"' || ch_last == '\'') {
+                        if (ch_last == '\'') {
                             hasSpecial = true;
                             continue;
                         }
