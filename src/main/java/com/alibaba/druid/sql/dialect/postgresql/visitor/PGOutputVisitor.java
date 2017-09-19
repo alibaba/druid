@@ -16,14 +16,14 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.*;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -720,10 +720,157 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         return super.visit(x);
     }
-
+    /** **************************************************************************/
     // for oracle to postsql
+    /** **************************************************************************/
+
     public boolean visit(OracleSysdateExpr x) {
         print0(ucase ? "CURRENT_TIMESTAMP" : "CURRENT_TIMESTAMP");
+        return false;
+    }
+
+    public boolean visit(OracleSizeExpr x) {
+        x.getValue().accept(this);
+        print0(x.getUnit().name());
+        return false;
+    }
+
+    public boolean visit(OracleSelectTableReference x) {
+        if (x.isOnly()) {
+            print0(ucase ? "ONLY (" : "only (");
+            printTableSourceExpr(x.getExpr());
+
+            if (x.getPartition() != null) {
+                print(' ');
+                x.getPartition().accept(this);
+            }
+
+            print(')');
+        } else {
+            printTableSourceExpr(x.getExpr());
+
+            if (x.getPartition() != null) {
+                print(' ');
+                x.getPartition().accept(this);
+            }
+        }
+
+        if (x.getHints().size() > 0) {
+            this.printHints(x.getHints());
+        }
+
+        if (x.getSampleClause() != null) {
+            print(' ');
+            x.getSampleClause().accept(this);
+        }
+
+        if (x.getPivot() != null) {
+            println();
+            x.getPivot().accept(this);
+        }
+
+        printAlias(x.getAlias());
+
+        return false;
+    }
+
+    private void printHints(List<SQLHint> hints) {
+        if (hints.size() > 0) {
+            print0("/*+ ");
+            printAndAccept(hints, ", ");
+            print0(" */");
+        }
+    }
+
+    public boolean visit(OracleIntervalExpr x) {
+        if (x.getValue() instanceof SQLLiteralExpr) {
+            print0(ucase ? "INTERVAL " : "interval ");
+            x.getValue().accept(this);
+            print(' ');
+        } else {
+            print('(');
+            x.getValue().accept(this);
+            print0(") ");
+        }
+
+        print0(x.getType().name());
+
+        if (x.getPrecision() != null) {
+            print('(');
+            print(x.getPrecision().intValue());
+            if (x.getFactionalSecondsPrecision() != null) {
+                print0(", ");
+                print(x.getFactionalSecondsPrecision().intValue());
+            }
+            print(')');
+        }
+
+        if (x.getToType() != null) {
+            print0(ucase ? " TO " : " to ");
+            print0(x.getToType().name());
+            if (x.getToFactionalSecondsPrecision() != null) {
+                print('(');
+                print(x.getToFactionalSecondsPrecision().intValue());
+                print(')');
+            }
+        }
+
+        return false;
+    }
+
+    public boolean visit(OracleDatetimeExpr x) {
+        x.getExpr().accept(this);
+        SQLExpr timeZone = x.getTimeZone();
+
+        if (timeZone instanceof SQLIdentifierExpr) {
+            if (((SQLIdentifierExpr) timeZone).getName().equalsIgnoreCase("LOCAL")) {
+                print0(ucase ? " AT LOCAL" : "alter session set ");
+                return false;
+            }
+        }
+
+        print0(ucase ? " AT TIME ZONE " : " at time zone ");
+        timeZone.accept(this);
+
+        return false;
+    }
+
+    public boolean visit(OracleBinaryFloatExpr x) {
+        print0(x.getValue().toString());
+        print('F');
+        return false;
+    }
+
+    public boolean visit(OracleBinaryDoubleExpr x) {
+        print0(x.getValue().toString());
+        print('D');
+        return false;
+    }
+
+    public boolean visit(OracleRangeExpr x) {
+        x.getLowBound().accept(this);
+        print0("..");
+        x.getUpBound().accept(this);
+        return false;
+    }
+
+    public boolean visit(OracleCheck x) {
+        visit((SQLCheck) x);
+        return false;
+    }
+
+    public boolean visit(OraclePrimaryKey x) {
+        visit((SQLPrimaryKey) x);
+        return false;
+    }
+
+    public boolean visit(OracleForeignKey x) {
+        visit((SQLForeignKeyImpl) x);
+        return false;
+    }
+
+    public boolean visit(OracleUnique x) {
+        visit((SQLUnique) x);
         return false;
     }
 }
