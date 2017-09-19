@@ -463,6 +463,7 @@ public class SQLExprParser extends SQLParser {
             case DO:
             case GROUP:
             case MOD:
+            case CONCAT:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
