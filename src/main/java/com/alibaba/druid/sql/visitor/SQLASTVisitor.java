@@ -750,4 +750,12 @@ public interface SQLASTVisitor {
     boolean visit(SQLCreateUserStatement x);
 
     void endVisit(SQLCreateUserStatement x);
+
+    boolean visit(SQLAlterFunctionStatement x);
+
+    void endVisit(SQLAlterFunctionStatement x);
+
+    boolean visit(SQLAlterTypeStatement x);
+
+    void endVisit(SQLAlterTypeStatement x);
 }

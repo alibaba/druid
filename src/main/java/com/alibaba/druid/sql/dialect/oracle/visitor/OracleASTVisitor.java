@@ -429,4 +429,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleCreateSynonymStatement x);
 
     void endVisit(OracleCreateSynonymStatement x);
+
+    boolean visit(OracleCreateTypeStatement x);
+
+    void endVisit(OracleCreateTypeStatement x);
 }

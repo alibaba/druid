@@ -31,6 +31,7 @@ public interface SQLDataType extends SQLObject {
     void  setWithTimeZone(Boolean value);
 
     boolean isWithLocalTimeZone();
+    void setWithLocalTimeZone(boolean value);
 
     SQLDataType clone();
 

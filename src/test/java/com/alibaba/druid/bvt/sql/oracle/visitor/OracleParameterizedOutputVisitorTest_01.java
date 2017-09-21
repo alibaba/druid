@@ -1,5 +1,5 @@
-package com.alibaba.druid.bvt.sql.oracle.visitor;
 
+package com.alibaba.druid.bvt.sql.oracle.visitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.util.JdbcConstants;
@@ -46,10 +46,4 @@ public class OracleParameterizedOutputVisitorTest_01 extends TestCase {
                 "\tAND dd.owner = 'EAIREP'", tempResult);
     }
 
-    static void f() {
-        String ip = "";
-        String port = "";
-        String[] ins = new String[]{ip, "_", port};
-
-    }
 }

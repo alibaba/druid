@@ -588,6 +588,10 @@ public class SQLTransformUtils {
             dataType = new SQLDataTypeImpl(SQLDataType.Constants.TIMESTAMP, 0);
         } else if (nameHash == FnvHash.Constants.TIMESTAMP) {
             x.setName(SQLDataType.Constants.TIMESTAMP);
+            if (x.isWithLocalTimeZone()) {
+                x.setWithLocalTimeZone(false);
+                x.setWithTimeZone(null);
+            }
             dataType = x;
         } else if (nameHash == FnvHash.Constants.DATETIME) {
             int len = -1;
@@ -667,6 +671,13 @@ public class SQLTransformUtils {
                 }
                 return x;
             }
+        }
+
+        if (nameHashCode64 == FnvHash.Constants.SYSTIMESTAMP) {
+            SQLMethodInvokeExpr xx = x.clone();
+            xx.setMethodName("CURRENT_TIMESTAMP");
+            xx.setParent(x.getParent());
+            return xx;
         }
 
         return x;

@@ -1874,9 +1874,19 @@ public class SQLStatementParser extends SQLParser {
                 return parseCreateTrigger();
             }
 
+            if (lexer.token == Token.FUNCTION) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateFunction();
+            }
+
             if (lexer.identifierEquals(FnvHash.Constants.PACKAGE)) {
                 lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreatePackage();
+            }
+
+            if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateType();
             }
 
             // lexer.reset(mark_bp, mark_ch, Token.CREATE);
@@ -1927,8 +1937,15 @@ public class SQLStatementParser extends SQLParser {
         } else if (lexer.identifierEquals(FnvHash.Constants.MATERIALIZED)) {
             lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateMaterializedView();
+        } else if (lexer.identifierEquals(FnvHash.Constants.TYPE)) {
+            lexer.reset(markBp, markChar, Token.CREATE);
+            return parseCreateType();
         }
 
+        throw new ParserException("TODO " + lexer.token);
+    }
+
+    public SQLStatement parseCreateType() {
         throw new ParserException("TODO " + lexer.token);
     }
 

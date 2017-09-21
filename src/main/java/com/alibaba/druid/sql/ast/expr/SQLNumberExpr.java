@@ -110,7 +110,10 @@ public class SQLNumberExpr extends SQLNumericLiteralExpr implements SQLValuableE
     }
 
     public SQLNumberExpr clone() {
-        return new SQLNumberExpr(number);
+        SQLNumberExpr x = new SQLNumberExpr();
+        x.chars = chars;
+        x.number = number;
+        return x;
     }
 
     public SQLDataType computeDataType() {

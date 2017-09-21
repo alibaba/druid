@@ -47,6 +47,8 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
 
     protected SQLExprTableSource     like;
 
+
+
     public SQLCreateTableStatement(){
 
     }
@@ -928,4 +930,5 @@ public class SQLCreateTableStatement extends SQLStatementImpl implements SQLDDLS
     public String toString() {
         return SQLUtils.toSQLString(this, dbType);
     }
+
 }

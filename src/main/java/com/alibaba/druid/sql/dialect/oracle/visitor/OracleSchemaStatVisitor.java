@@ -1355,4 +1355,14 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public void endVisit(OracleCreateSynonymStatement x) {
 
     }
+
+    @Override
+    public boolean visit(OracleCreateTypeStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateTypeStatement x) {
+
+    }
 }

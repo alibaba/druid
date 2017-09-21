@@ -501,5 +501,10 @@ public final class FnvHash {
         long BITMAP = fnv1a_64_lower("BITMAP");
         long PACKAGE = fnv1a_64_lower("PACKAGE");
         long TRUNC = fnv1a_64_lower("TRUNC");
+        long SYSTIMESTAMP = fnv1a_64_lower("SYSTIMESTAMP");
+        long TYPE = fnv1a_64_lower("TYPE");
+        long MEMBER = fnv1a_64_lower("MEMBER");
+        long STATIC = fnv1a_64_lower("STATIC");
+        long UNSUPPORTED = fnv1a_64_lower("UNSUPPORTED");
     }
 }

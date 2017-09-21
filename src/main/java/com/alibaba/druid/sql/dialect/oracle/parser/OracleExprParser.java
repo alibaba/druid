@@ -994,6 +994,12 @@ public class OracleExprParser extends SQLExprParser {
             dbLink.setDbLink(link);
             return dbLink;
         }
+//
+//        if (name.nameHashCode64() == FnvHash.Constants.UNSUPPORTED
+//                && lexer.identifierEquals(FnvHash.Constants.TYPE)) {
+//            name = new SQLIdentifierExpr(name.getSimpleName() + " " + lexer.stringVal());
+//            lexer.nextToken();
+//        }
         
         return name;
     }

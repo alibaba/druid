@@ -2365,4 +2365,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.accept(this);
         }
     }
+
+    public boolean visit(SQLAlterFunctionStatement x) {
+        return false;
+    }
+
+    public boolean visit(SQLAlterTypeStatement x) {
+        return false;
+    }
 }

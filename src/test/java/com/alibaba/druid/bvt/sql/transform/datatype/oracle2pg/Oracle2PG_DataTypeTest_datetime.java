@@ -34,4 +34,11 @@ public class Oracle2PG_DataTypeTest_datetime extends TestCase {
         SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
         assertEquals("TIMESTAMP", pgDataType.toString());
     }
+
+    public void test_oracle2pg_timestamp2() throws Exception {
+        String sql = "TIMESTAMP WITH TIME ZONE";
+        SQLDataType dataType = SQLParserUtils.createExprParser(sql, JdbcConstants.ORACLE).parseDataType();
+        SQLDataType pgDataType = SQLTransformUtils.transformOracleToPostgresql(dataType);
+        assertEquals("TIMESTAMP WITH TIME ZONE", pgDataType.toString());
+    }
 }

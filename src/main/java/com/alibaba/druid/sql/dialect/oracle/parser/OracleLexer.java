@@ -249,7 +249,7 @@ public class OracleLexer extends Lexer {
                 stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
                 token = Token.HINT;
             } else {
-                stringVal = subString(mark, bufPos);
+                stringVal = subString(mark, bufPos + 1);
                 token = Token.MULTI_LINE_COMMENT;
                 commentCount++;
                 if (keepComments) {

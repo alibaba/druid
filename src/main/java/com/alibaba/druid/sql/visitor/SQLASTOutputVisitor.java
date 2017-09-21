@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleSegmentAttributes;
 import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreatePackageStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleFunctionDataType;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import oracle.sql.SQLUtil;
@@ -4239,8 +4240,32 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         return false;
     }
 
+    public boolean visit(OracleFunctionDataType x) {
+        if (x.isStatic()) {
+            print0(ucase ? "STATIC " : "static ");
+        }
+
+        print0(ucase ? "FUNCTION " : "function ");
+
+        print0(x.getName());
+
+        print(" (");
+        printAndAccept(x.getParameters(), ", ");
+        print(")");
+        print0(ucase ? " RETURN " : " return ");
+        x.getReturnDataType().accept(this);
+
+        SQLStatement block = x.getBlock();
+        if (block != null) {
+            block.accept(this);
+        }
+
+        return false;
+    }
+
     @Override
     public boolean visit(SQLParameter x) {
+        SQLName name = x.getName();
         if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
             print0(ucase ? "CURSOR " : "cursor ");
             x.getName().accept(this);
@@ -4255,6 +4280,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
             SQLDataType dataType = x.getDataType();
 
             if (JdbcConstants.ORACLE.equals(dbType)) {
+                if (dataType instanceof OracleFunctionDataType) {
+                    OracleFunctionDataType functionDataType = (OracleFunctionDataType) dataType;
+                    visit(functionDataType);
+                    return false;
+                }
                 String dataTypeName = dataType.getName();
                 boolean printType = (dataTypeName.startsWith("TABLE OF") && x.getDefaultValue() == null)
                         || dataTypeName.equalsIgnoreCase("REF CURSOR")
@@ -4263,7 +4293,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
                     print0(ucase ? "TYPE " : "type ");
                 }
 
-                x.getName().accept(this);
+                name.accept(this);
                 if (x.getParamType() == SQLParameter.ParameterType.IN) {
                     print0(ucase ? " IN " : " in ");
                 } else if (x.getParamType() == SQLParameter.ParameterType.OUT) {
@@ -5274,6 +5304,44 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         x.getUser().accept(this);
         print0(ucase ? " IDENTIFIED BY " : " identified by ");
         x.getPassword().accept(this);
+        return false;
+    }
+
+    public boolean visit(SQLAlterFunctionStatement x) {
+        print0(ucase ? "ALTER FUNCTION " : "alter function ");
+        x.getName().accept(this);
+
+        if (x.isDebug()) {
+            print0(ucase ? " DEBUG" : " debug");
+        }
+
+        if (x.isReuseSettings()) {
+            print0(ucase ? " REUSE SETTINGS" : " reuse settings");
+        }
+
+        return false;
+    }
+
+    public boolean visit(SQLAlterTypeStatement x) {
+        print0(ucase ? "ALTER TYPE " : "alter type ");
+        x.getName().accept(this);
+
+        if (x.isCompile()) {
+            print0(ucase ? " COMPILE" : " compile");
+        }
+
+        if (x.isBody()) {
+            print0(ucase ? " BODY" : " body");
+        }
+
+        if (x.isDebug()) {
+            print0(ucase ? " DEBUG" : " debug");
+        }
+
+        if (x.isReuseSettings()) {
+            print0(ucase ? " REUSE SETTINGS" : " reuse settings");
+        }
+
         return false;
     }
 

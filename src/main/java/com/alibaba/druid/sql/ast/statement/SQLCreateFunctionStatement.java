@@ -46,6 +46,9 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     private String             comment;
 
     private boolean            deterministic  = false;
+    private boolean            parallelEnable;
+    private boolean            aggregate;
+    private SQLName            using;
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
@@ -209,5 +212,30 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     @Override
     public void setDataType(SQLDataType dataType) {
         this.setReturnDataType(dataType);
+    }
+
+
+    public boolean isParallelEnable() {
+        return parallelEnable;
+    }
+
+    public void setParallelEnable(boolean parallel_enable) {
+        this.parallelEnable = parallel_enable;
+    }
+
+    public boolean isAggregate() {
+        return aggregate;
+    }
+
+    public void setAggregate(boolean aggregate) {
+        this.aggregate = aggregate;
+    }
+
+    public SQLName getUsing() {
+        return using;
+    }
+
+    public void setUsing(SQLName using) {
+        this.using = using;
     }
 }

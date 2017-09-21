@@ -2683,7 +2683,25 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             return false;
         }
 
-        block.accept(this);
+        if (x.isParallelEnable()) {
+            print0(ucase ? "PARALLEL_ENABLE" : "parallel_enable");
+            println();
+        }
+
+        if (x.isAggregate()) {
+            print0(ucase ? "AGGREGATE" : "aggregate");
+            println();
+        }
+
+        SQLName using = x.getUsing();
+        if (using != null) {
+            print0(ucase ? "USING " : "using ");
+            using.accept(this);
+        }
+
+        if (block != null) {
+            block.accept(this);
+        }
         return false;
     }
 
@@ -3259,7 +3277,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleCreateSynonymStatement x) {
-
         if (x.isOrReplace()) {
             print0(ucase ? "CREATE OR REPLACE " : "create or replace ");
         } else {
@@ -3282,6 +3299,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleCreateSynonymStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleCreateTypeStatement x) {
+        if (x.isOrReplace()) {
+            print0(ucase ? "CREATE OR REPLACE TYPE " : "create or replace type ");
+        } else {
+            print0(ucase ? "CREATE TYPE " : "create type ");
+        }
+
+        x.getName().accept(this);
+
+        if (x.isForce()) {
+            print0(ucase ? "FORCE " : "force ");
+        }
+
+        print0(" AS OBJECT (");
+        indentCount++;
+        println();
+        printlnAndAccept(x.getParameters(), ", ");
+
+        indentCount--;
+        println();
+        print0(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateTypeStatement x) {
 
     }
 }
