@@ -1705,11 +1705,19 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token == Token.VALUES) {
             lexer.nextToken();
             for (;;) {
-                accept(Token.LPAREN);
-                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-                this.exprParser.exprList(values.getValues(), values);
-                insertStatement.addValueCause(values);
-                accept(Token.RPAREN);
+                if (lexer.token == Token.LPAREN) {
+                    lexer.nextToken();
+
+                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+                    this.exprParser.exprList(values.getValues(), values);
+                    insertStatement.addValueCause(values);
+                    accept(Token.RPAREN);
+                } else { // oracle
+                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+                    SQLExpr value = this.exprParser.expr();
+                    values.addValue(value);
+                    insertStatement.addValueCause(values);
+                }
                 
                 if (lexer.token == Token.COMMA) {
                     lexer.nextToken();
@@ -2051,15 +2059,17 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreateTrigger() {
-        accept(Token.CREATE);
-
         SQLCreateTriggerStatement stmt = new SQLCreateTriggerStatement(getDbType());
 
-        if (lexer.token == Token.OR) {
+        if (lexer.token == Token.CREATE) {
             lexer.nextToken();
-            accept(Token.REPLACE);
 
-            stmt.setOrReplace(true);
+            if (lexer.token == Token.OR) {
+                lexer.nextToken();
+                accept(Token.REPLACE);
+
+                stmt.setOrReplace(true);
+            }
         }
 
         accept(Token.TRIGGER);
@@ -2612,6 +2622,12 @@ public class SQLStatementParser extends SQLParser {
         SQLOpenStatement stmt = new SQLOpenStatement();
         accept(Token.OPEN);
         stmt.setCursorName(exprParser.name().getSimpleName());
+
+        if (lexer.token == Token.LPAREN) {
+            lexer.nextToken();
+            this.exprParser.names(stmt.getColumns(), stmt);
+            accept(Token.RPAREN);
+        }
 
         if (lexer.token == Token.FOR) {
             lexer.nextToken();

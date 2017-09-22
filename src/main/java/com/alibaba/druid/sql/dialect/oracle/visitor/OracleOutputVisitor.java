@@ -2654,6 +2654,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(ucase ? "RETURN " : "return ");
         x.getReturnDataType().accept(this);
 
+        if (x.isPipelined()) {
+            print(ucase ? "PIPELINED " : "pipelined ");
+        }
+
+        if (x.isDeterministic()) {
+            print(ucase ? "DETERMINISTIC " : "deterministic ");
+        }
+
         SQLName authid = x.getAuthid();
         if (authid != null) {
             print(ucase ? " AUTHID " : " authid ");
@@ -3329,6 +3337,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleCreateTypeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OraclePipeRowStatement x) {
+        print0(ucase ? "PIPE ROW(" : "pipe row(");
+        printAndAccept(x.getParameters(), ", ");
+        print(')');
+        return false;
+    }
+
+    @Override
+    public void endVisit(OraclePipeRowStatement x) {
 
     }
 }

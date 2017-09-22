@@ -400,7 +400,7 @@ public class OracleExprParser extends SQLExprParser {
                         lexer.nextToken();
                         break;
                     case LITERAL_FLOAT:
-                        sqlExpr = lexer.numberExpr();
+                        sqlExpr = lexer.numberExpr(true);
                         lexer.nextToken();
                         break;
                     case BINARY_FLOAT:

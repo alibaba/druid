@@ -433,4 +433,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleCreateTypeStatement x);
 
     void endVisit(OracleCreateTypeStatement x);
+
+    boolean visit(OraclePipeRowStatement x);
+
+    void endVisit(OraclePipeRowStatement x);
 }

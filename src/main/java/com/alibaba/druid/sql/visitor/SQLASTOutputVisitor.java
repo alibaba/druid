@@ -4112,6 +4112,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         print0(ucase ? "OPEN " : "open ");
         print0(x.getCursorName());
 
+        List<SQLName> columns = x.getColumns();
+        if (columns.size() > 0) {
+            print('(');
+            printAndAccept(columns, ", ");
+            print(')');
+        }
+
         SQLExpr forExpr = x.getFor();
         if (forExpr != null) {
             print0(ucase ? " FOR " : "for ");

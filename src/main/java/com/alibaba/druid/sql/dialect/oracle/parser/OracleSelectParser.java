@@ -1022,6 +1022,11 @@ public class OracleSelectParser extends SQLSelectParser {
     protected void parseInto(OracleSelectQueryBlock x) {
         if (lexer.token() == Token.INTO) {
             lexer.nextToken();
+
+            if (lexer.token() == Token.FROM) {
+                return;
+            }
+
             SQLExpr expr = expr();
             if (lexer.token() != Token.COMMA) {
                 x.setInto(expr);

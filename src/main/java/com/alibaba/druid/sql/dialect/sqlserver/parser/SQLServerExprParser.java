@@ -20,10 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -89,8 +86,22 @@ public class SQLServerExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (lexer.token() == Token.DOTDOT) {
+        final Token token = lexer.token();
+        if (token == Token.DOTDOT) {
             expr = nameRest((SQLName) expr);
+        } else if (lexer.identifierEquals(FnvHash.Constants.VALUE)
+                && expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+            if (identExpr.nameHashCode64() == FnvHash.Constants.NEXT) {
+                lexer.nextToken();
+                accept(Token.FOR);
+
+                SQLName name = this.name();
+                SQLSequenceExpr seq = new SQLSequenceExpr();
+                seq.setSequence(name);
+                seq.setFunction(SQLSequenceExpr.Function.NextVal);
+                expr = seq;
+            }
         }
 
         return super.primaryRest(expr);

@@ -49,6 +49,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
     private boolean            parallelEnable;
     private boolean            aggregate;
     private SQLName            using;
+    private boolean            pipelined;
 
     public SQLCreateFunctionStatement clone() {
         SQLCreateFunctionStatement x = new SQLCreateFunctionStatement();
@@ -78,6 +79,7 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
         }
         x.comment = comment;
         x.deterministic = deterministic;
+        x.pipelined = pipelined;
 
         return x;
     }
@@ -237,5 +239,13 @@ public class SQLCreateFunctionStatement extends SQLStatementImpl implements SQLC
 
     public void setUsing(SQLName using) {
         this.using = using;
+    }
+
+    public boolean isPipelined() {
+        return pipelined;
+    }
+
+    public void setPipelined(boolean pipelined) {
+        this.pipelined = pipelined;
     }
 }

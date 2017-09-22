@@ -1365,4 +1365,14 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public void endVisit(OracleCreateTypeStatement x) {
 
     }
+
+    @Override
+    public boolean visit(OraclePipeRowStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OraclePipeRowStatement x) {
+
+    }
 }

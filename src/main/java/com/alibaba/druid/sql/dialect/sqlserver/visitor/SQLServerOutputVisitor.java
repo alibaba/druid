@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLSequenceExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
@@ -29,6 +30,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStateme
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
@@ -586,7 +588,6 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public boolean visit(SQLStartTransactionStatement x) {
         print0(ucase ? "BEGIN TRANSACTION" : "begin transaction");
-
         if (x.getName() != null) {
             print(' ');
             x.getName().accept(this);
@@ -617,6 +618,19 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             passoword.accept(this);
         }
 
+        return false;
+    }
+
+    public boolean visit(SQLSequenceExpr x) {
+        SQLSequenceExpr.Function function = x.getFunction();
+        switch (function) {
+            case NextVal:
+                print0(ucase ? "NEXT VALUE FOR " : "next value for ");
+                break;
+            default:
+                throw new ParserException("not support function : " + function);
+        }
+        printExpr(x.getSequence());
         return false;
     }
 }

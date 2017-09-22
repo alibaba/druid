@@ -174,7 +174,7 @@ public class Lexer {
         char  ch;
         long hash;
         long hash_lower;
-        Token token;
+        public Token token;
         String stringVal;
     }
 

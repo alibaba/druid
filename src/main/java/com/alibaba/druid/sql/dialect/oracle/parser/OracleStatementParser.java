@@ -294,6 +294,21 @@ public class OracleStatementParser extends SQLStatementParser {
                     continue;
                 }
 
+                if (strVal.equalsIgnoreCase("PIPE")) {
+                    Lexer.SavePoint savePoint = lexer.mark();
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.ROW) {
+                        lexer.reset(savePoint);
+                        SQLStatement stmt = this.parsePipeRow();
+                        stmt.setParent(parent);
+                        statementList.add(stmt);
+                    } else {
+                        lexer.reset(savePoint);
+                    }
+                    continue;
+                }
+
                 SQLExpr expr = exprParser.expr();
 
                 if (expr instanceof SQLBinaryOpExpr) {
@@ -624,8 +639,25 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.token() == Token.TRIGGER) {
+                SQLStatement stmt = this.parseCreateTrigger();
+                stmt.setParent(parent);
+                statementList.add(stmt);
+                continue;
+            }
+
             throw new ParserException("TODO : " + lexer.info());
         }
+    }
+
+    public SQLStatement parsePipeRow() {
+        OraclePipeRowStatement stmt = new OraclePipeRowStatement();
+        acceptIdentifier("PIPE");
+        accept(Token.ROW);
+        accept(Token.LPAREN);
+        this.exprParser.exprList(stmt.getParameters(), stmt);
+        accept(Token.RPAREN);
+        return stmt;
     }
 
     public SQLStatement parseExecute() {
@@ -790,6 +822,16 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.RETURN);
         SQLDataType returnDataType = this.exprParser.parseDataType(false);
         stmt.setReturnDataType(returnDataType);
+
+        if (identifierEquals("PIPELINED")) {
+            lexer.nextToken();
+            stmt.setPipelined(true);
+        }
+
+        if (identifierEquals("DETERMINISTIC")) {
+            lexer.nextToken();
+            stmt.setDeterministic(true);
+        }
 
         if (lexer.identifierEquals("AUTHID")) {
             lexer.nextToken();
@@ -1641,7 +1683,9 @@ public class OracleStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.FUNCTION) {
-            lexer.reset(savePoint);
+            if (savePoint.token == Token.DECLARE) {
+                lexer.reset(savePoint);
+            }
             return this.parseCreateFunction();
         }
 
@@ -1731,6 +1775,17 @@ public class OracleStatementParser extends SQLStatementParser {
                         String typeName = "VARRAY(" + len + ") OF NUMBER";
                         dataType = new SQLDataTypeImpl(typeName);
                         dataType.setDbType(dbType);
+                    } else if (lexer.identifierEquals("VARCHAR2")) {
+                        lexer.nextToken();
+                        String typeName = "VARRAY(" + len + ") OF VARCHAR2";
+                        dataType = new SQLDataTypeImpl(typeName);
+                        dataType.setDbType(dbType);
+
+                        if (lexer.token() == Token.LPAREN) {
+                            lexer.nextToken();
+                            this.exprParser.exprList(dataType.getArguments(), dataType);
+                            accept(Token.RPAREN);
+                        }
                     } else {
                         throw new ParserException("TODO : " + lexer.info());
                     }
@@ -1804,7 +1859,11 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             token = lexer.token();
-            if (token != Token.BEGIN && token != Token.RPAREN && token != Token.EOF) {
+            if (token != Token.BEGIN
+                    && token != Token.RPAREN
+                    && token != Token.EOF
+                    && token != Token.FUNCTION
+                    && !lexer.identifierEquals("DETERMINISTIC")) {
                 continue;
             }
 
