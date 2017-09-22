@@ -68,6 +68,9 @@ public interface JdbcConstants {
     public static final String KINGBASE          = "kingbase";
     public static final String KINGBASE_DRIVER   = "com.kingbase.Driver";
 
+    public static final String GBASE             = "gbase";
+    public static final String GBASE_DRIVER      = "com.gbase.jdbc.Driver";
+
     public static final String OCEANBASE         = "oceanbase";
     public static final String OCEANBASE_DRIVER  = "com.mysql.jdbc.Driver";
 
