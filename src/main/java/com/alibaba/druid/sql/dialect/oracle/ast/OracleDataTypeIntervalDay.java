@@ -58,4 +58,17 @@ public class OracleDataTypeIntervalDay extends SQLDataTypeImpl implements Oracle
         return fractionalSeconds;
     }
 
+    public OracleDataTypeIntervalDay clone() {
+        OracleDataTypeIntervalDay x = new OracleDataTypeIntervalDay();
+
+        super.cloneTo(x);
+
+        for (SQLExpr arg : fractionalSeconds) {
+            arg.setParent(x);
+            x.fractionalSeconds.add(arg);
+        }
+
+        return x;
+    }
+
 }

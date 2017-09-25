@@ -20,6 +20,12 @@ import java.util.List;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLLimit;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -27,9 +33,42 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
-    private final List<SQLCommentHint>         hints = new ArrayList<SQLCommentHint>(1);
+    private List<SQLCommentHint>       hints;
 
-    private ModelClause                        modelClause;
+    private ModelClause                modelClause;
+
+
+    private boolean                    skipLocked  = false;
+
+    public OracleSelectQueryBlock clone() {
+        OracleSelectQueryBlock x = new OracleSelectQueryBlock();
+
+        super.cloneTo(x);
+
+        if (hints != null) {
+            for (SQLCommentHint hint : hints) {
+                SQLCommentHint hint1 = hint.clone();
+                hint1.setParent(x);
+                x.getHints().add(hint1);
+            }
+        }
+
+        if (modelClause != null) {
+            x.setModelClause(modelClause.clone());
+        }
+
+        if (forUpdateOf != null) {
+            for (SQLExpr item : forUpdateOf) {
+                SQLExpr item1 = item.clone();
+                item1.setParent(x);
+                forUpdateOf.add(item1);
+            }
+        }
+
+        x.skipLocked = skipLocked;
+
+        return x;
+    }
 
     public OracleSelectQueryBlock(){
 
@@ -44,7 +83,26 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public List<SQLCommentHint> getHints() {
+        if (hints == null) {
+            hints = new ArrayList<SQLCommentHint>(1);
+        }
         return this.hints;
+    }
+
+    public int getHintsSize() {
+        if (hints == null) {
+            return 0;
+        }
+
+        return hints.size();
+    }
+
+    public boolean isSkipLocked() {
+        return skipLocked;
+    }
+
+    public void setSkipLocked(boolean skipLocked) {
+        this.skipLocked = skipLocked;
     }
 
     @Override
@@ -67,12 +125,37 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.startWith);
             acceptChild(visitor, this.connectBy);
             acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.waitTime);
+            acceptChild(visitor, this.limit);
             acceptChild(visitor, this.modelClause);
+            acceptChild(visitor, this.forUpdateOf);
         }
         visitor.endVisit(this);
     }
     
     public String toString() {
         return SQLUtils.toOracleString(this);
+    }
+
+    public void limit(int rowCount, int offset) {
+        if (offset <= 0) {
+            SQLExpr rowCountExpr = new SQLIntegerExpr(rowCount);
+            SQLExpr newCondition = SQLUtils.buildCondition(SQLBinaryOperator.BooleanAnd, rowCountExpr, false,
+                    where);
+            setWhere(newCondition);
+        } else {
+            throw new UnsupportedOperationException("not support offset");
+        }
+    }
+
+    public void setFrom(String tableName) {
+        SQLExprTableSource from;
+        if (tableName == null || tableName.length() == 0) {
+            from = null;
+        } else {
+            from = new OracleSelectTableReference(new SQLIdentifierExpr(tableName));
+        }
+        this.setFrom(from);
     }
 }

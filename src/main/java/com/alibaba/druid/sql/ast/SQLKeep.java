@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLKeep extends SQLObjectImpl {
+public final class SQLKeep extends SQLObjectImpl {
 
     protected DenseRank  denseRank;
 
@@ -48,6 +48,19 @@ public class SQLKeep extends SQLObjectImpl {
             orderBy.setParent(this);
         }
         this.orderBy = orderBy;
+    }
+
+
+    public SQLKeep clone() {
+        SQLKeep x = new SQLKeep();
+
+        x.denseRank = denseRank;
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        return x;
     }
 
     public static enum DenseRank {

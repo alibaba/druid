@@ -18,36 +18,36 @@ public class MappingTest_alterTable extends TestCase {
     public void test_mapping_createTable() throws Exception {
         String result = SQLUtils.refactor(sql, null, mapping);
         assertEquals("ALTER TABLE user_01\n" +
-                "\tDROP INDEX pk_user", result);
+                "\tDROP INDEX pk_user;", result);
     }
 
     public void test_mapping_createTable_mysql() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.MYSQL, mapping);
         assertEquals("ALTER TABLE user_01\n" +
-                "\tDROP INDEX pk_user", result);
+                "\tDROP INDEX pk_user;", result);
     }
 
     public void test_mapping_createTable_oracle() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.ORACLE, mapping);
         assertEquals("ALTER TABLE user_01\n" +
-                "\tDROP INDEX pk_user", result);
+                "\tDROP INDEX pk_user;", result);
     }
 
     public void test_mapping_createTable_pg() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.POSTGRESQL, mapping);
         assertEquals("ALTER TABLE user_01\n" +
-                "\tDROP INDEX pk_user", result);
+                "\tDROP INDEX pk_user;", result);
     }
 
     public void test_mapping_createTable_sqlserver() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.SQL_SERVER, mapping);
         assertEquals("ALTER TABLE user_01\n" +
-                "\tDROP INDEX pk_user", result);
+                "\tDROP INDEX pk_user;", result);
     }
 
     public void test_mapping_createTable_db2() throws Exception {
         String result = SQLUtils.refactor(sql, JdbcConstants.DB2, mapping);
         assertEquals("ALTER TABLE user_01\n" +
-                "\tDROP INDEX pk_user", result);
+                "\tDROP INDEX pk_user;", result);
     }
 }

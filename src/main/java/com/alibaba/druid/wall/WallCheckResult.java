@@ -22,7 +22,6 @@ import java.util.Map;
 import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class WallCheckResult {
-
     private final List<SQLStatement>               statementList;
     private final Map<String, WallSqlTableStat>    tableStats;
 
@@ -35,6 +34,8 @@ public class WallCheckResult {
     private final WallSqlStat                      sqlStat;
 
     private String                                 sql;
+
+    private List<WallUpdateCheckItem>              updateCheckItems;
 
     public WallCheckResult(){
         this(null);
@@ -102,5 +103,13 @@ public class WallCheckResult {
 
     public WallSqlStat getSqlStat() {
         return sqlStat;
+    }
+
+    public List<WallUpdateCheckItem> getUpdateCheckItems() {
+        return updateCheckItems;
+    }
+
+    public void setUpdateCheckItems(List<WallUpdateCheckItem> updateCheckItems) {
+        this.updateCheckItems = updateCheckItems;
     }
 }

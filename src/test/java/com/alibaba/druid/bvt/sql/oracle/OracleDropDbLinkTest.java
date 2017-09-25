@@ -55,7 +55,7 @@ public class OracleDropDbLinkTest extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals("DROP DATABASE LINK local",
+        Assert.assertEquals("DROP DATABASE LINK local;",
                             SQLUtils.toSQLString(statement, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

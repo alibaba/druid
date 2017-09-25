@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropUserStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLDropUserStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private List<SQLExpr> users = new ArrayList<SQLExpr>(2);
     

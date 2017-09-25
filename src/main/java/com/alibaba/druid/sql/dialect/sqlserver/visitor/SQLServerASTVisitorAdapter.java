@@ -16,17 +16,13 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
@@ -105,16 +101,6 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
     }
 
     @Override
-    public boolean visit(SQLServerSetStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerSetStatement x) {
-        
-    }
-
-    @Override
     public boolean visit(SQLServerOutput x) {
         return true;
     }
@@ -122,36 +108,6 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
     @Override
     public void endVisit(SQLServerOutput x) {
 
-    }
-
-    @Override
-    public boolean visit(SQLServerDeclareStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerDeclareStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(SQLServerSelect x) {
-        return true;
-    }
-    
-    @Override
-    public void endVisit(SQLServerSelect x) {
-        
-    }
-
-    @Override
-    public boolean visit(SQLServerCommitStatement x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(SQLServerCommitStatement x) {
-        
     }
 
     @Override
@@ -174,16 +130,14 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
         
     }
 
-	@Override
-	public boolean visit(SQLServerParameter x) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean visit(SQLServerParameter x) {
+        return true;
+    }
 
-	@Override
-	public void endVisit(SQLServerParameter x) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void endVisit(SQLServerParameter x) {
+
+    }
 
 }

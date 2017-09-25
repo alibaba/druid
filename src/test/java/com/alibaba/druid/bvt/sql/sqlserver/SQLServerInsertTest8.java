@@ -51,7 +51,7 @@ public class SQLServerInsertTest8 extends TestCase {
         String formatSql = "INSERT INTO Production.ScrapReason"//
                            + "\nOUTPUT INSERTED.ScrapReasonID, INSERTED.Name, INSERTED.ModifiedDate"//
                            + "\n\tINTO @MyTableVar"//
-                           + "\nVALUES (N'Operator error', GETDATE())";
+                           + "\nVALUES (N'Operator error', GETDATE());";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 
@@ -79,7 +79,7 @@ public class SQLServerInsertTest8 extends TestCase {
                            + "\nFROM Sales.SalesPerson sp"//
                            + "\nINNER JOIN Person.Person c ON sp.BusinessEntityID = c.BusinessEntityID"//
                            + "\nWHERE sp.SalesYTD > 250000.00"//
-                           + "\nORDER BY sp.SalesYTD DESC";
+                           + "\nORDER BY sp.SalesYTD DESC;";
         Assert.assertEquals(formatSql, SQLUtils.toSQLServerString(insertStmt));
     }
 

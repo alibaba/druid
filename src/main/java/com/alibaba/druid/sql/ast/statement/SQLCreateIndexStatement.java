@@ -18,11 +18,14 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private SQLName                    name;
 
@@ -53,6 +56,19 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
 
     public void setTable(SQLTableSource table) {
         this.table = table;
+    }
+
+    public String getTableName() {
+        if (table instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) table).getExpr();
+            if (expr instanceof SQLIdentifierExpr) {
+                return ((SQLIdentifierExpr) expr).getName();
+            } else if (expr instanceof SQLPropertyExpr) {
+                return ((SQLPropertyExpr) expr).getName();
+            }
+        }
+
+        return null;
     }
 
     public List<SQLSelectOrderByItem> getItems() {
@@ -98,5 +114,44 @@ public class SQLCreateIndexStatement extends SQLStatementImpl implements SQLDDLS
             acceptChild(visitor, getItems());
         }
         visitor.endVisit(this);
+    }
+
+    public String getSchema() {
+        SQLName name = null;
+        if (table instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) table).getExpr();
+            if (expr instanceof SQLName) {
+                name = (SQLName) expr;
+            }
+        }
+
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
+
+
+    public SQLCreateIndexStatement clone() {
+        SQLCreateIndexStatement x = new SQLCreateIndexStatement();
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        if (table != null) {
+            x.setTable(table.clone());
+        }
+        for (SQLSelectOrderByItem item : items) {
+            SQLSelectOrderByItem item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        x.type = type;
+        x.using = using;
+        return x;
     }
 }

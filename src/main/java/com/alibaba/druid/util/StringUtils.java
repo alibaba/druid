@@ -122,6 +122,10 @@ public class StringUtils {
         return a.equalsIgnoreCase(b);
     }
 
+    public static boolean isEmpty(String value) {
+        return isEmpty((CharSequence) value);
+    }
+
     public static boolean isEmpty(CharSequence value) {
         if (value == null || value.length() == 0) {
             return true;
@@ -148,10 +152,108 @@ public class StringUtils {
     }
 
     public static boolean isNumber(String str) {
-        if (isEmpty(str)) {
+        if (str.length() == 0) {
             return false;
         }
-        char[] chars = str.toCharArray();
+        int sz = str.length();
+        boolean hasExp = false;
+        boolean hasDecPoint = false;
+        boolean allowSigns = false;
+        boolean foundDigit = false;
+        // deal with any possible sign up front
+        int start = (str.charAt(0) == '-') ? 1 : 0;
+        if (sz > start + 1) {
+            if (str.charAt(start) == '0' && str.charAt(start + 1) == 'x') {
+                int i = start + 2;
+                if (i == sz) {
+                    return false; // str == "0x"
+                }
+                // checking hex (it can't be anything else)
+                for (; i < str.length(); i++) {
+                    char ch = str.charAt(i);
+                    if ((ch < '0' || ch > '9')
+                            && (ch < 'a' || ch > 'f')
+                            && (ch < 'A' || ch > 'F')) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        sz--; // don't want to loop to the last char, check it afterwords
+        // for type qualifiers
+        int i = start;
+        // loop to the next to last char or to the last char if we need another digit to
+        // make a valid number (e.g. chars[0..5] = "1234E")
+        while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {
+            char ch = str.charAt(i);
+            if (ch >= '0' && ch <= '9') {
+                foundDigit = true;
+                allowSigns = false;
+
+            } else if (ch == '.') {
+                if (hasDecPoint || hasExp) {
+                    // two decimal points or dec in exponent
+                    return false;
+                }
+                hasDecPoint = true;
+            } else if (ch == 'e' || ch == 'E') {
+                // we've already taken care of hex.
+                if (hasExp) {
+                    // two E's
+                    return false;
+                }
+                if (!foundDigit) {
+                    return false;
+                }
+                hasExp = true;
+                allowSigns = true;
+            } else if (ch == '+' || ch == '-') {
+                if (!allowSigns) {
+                    return false;
+                }
+                allowSigns = false;
+                foundDigit = false; // we need a digit after the E
+            } else {
+                return false;
+            }
+            i++;
+        }
+        if (i < str.length()) {
+            char ch = str.charAt(i);
+
+            if (ch >= '0' && ch <= '9') {
+                // no type qualifier, OK
+                return true;
+            }
+            if (ch == 'e' || ch == 'E') {
+                // can't have an E at the last byte
+                return false;
+            }
+            if (!allowSigns
+                    && (ch == 'd'
+                    || ch == 'D'
+                    || ch == 'f'
+                    || ch == 'F')) {
+                return foundDigit;
+            }
+            if (ch == 'l'
+                    || ch == 'L') {
+                // not allowing L with an exponent
+                return foundDigit && !hasExp;
+            }
+            // last character is illegal
+            return false;
+        }
+        // allowSigns is true iff the val ends in 'E'
+        // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass
+        return !allowSigns && foundDigit;
+    }
+
+    public static boolean isNumber(char[] chars) {
+        if (chars.length == 0) {
+            return false;
+        }
         int sz = chars.length;
         boolean hasExp = false;
         boolean hasDecPoint = false;
@@ -167,9 +269,10 @@ public class StringUtils {
                 }
                 // checking hex (it can't be anything else)
                 for (; i < chars.length; i++) {
-                    if ((chars[i] < '0' || chars[i] > '9')
-                            && (chars[i] < 'a' || chars[i] > 'f')
-                            && (chars[i] < 'A' || chars[i] > 'F')) {
+                    char ch = chars[i];
+                    if ((ch < '0' || ch > '9')
+                            && (ch < 'a' || ch > 'f')
+                            && (ch < 'A' || ch > 'F')) {
                         return false;
                     }
                 }
@@ -182,17 +285,18 @@ public class StringUtils {
         // loop to the next to last char or to the last char if we need another digit to
         // make a valid number (e.g. chars[0..5] = "1234E")
         while (i < sz || (i < sz + 1 && allowSigns && !foundDigit)) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
+            char ch = chars[i];
+            if (ch >= '0' && ch <= '9') {
                 foundDigit = true;
                 allowSigns = false;
 
-            } else if (chars[i] == '.') {
+            } else if (ch == '.') {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
                 }
                 hasDecPoint = true;
-            } else if (chars[i] == 'e' || chars[i] == 'E') {
+            } else if (ch == 'e' || ch == 'E') {
                 // we've already taken care of hex.
                 if (hasExp) {
                     // two E's
@@ -203,7 +307,7 @@ public class StringUtils {
                 }
                 hasExp = true;
                 allowSigns = true;
-            } else if (chars[i] == '+' || chars[i] == '-') {
+            } else if (ch == '+' || ch == '-') {
                 if (!allowSigns) {
                     return false;
                 }
@@ -215,23 +319,24 @@ public class StringUtils {
             i++;
         }
         if (i < chars.length) {
-            if (chars[i] >= '0' && chars[i] <= '9') {
+            char ch = chars[i];
+            if (ch >= '0' && ch <= '9') {
                 // no type qualifier, OK
                 return true;
             }
-            if (chars[i] == 'e' || chars[i] == 'E') {
+            if (ch == 'e' || ch == 'E') {
                 // can't have an E at the last byte
                 return false;
             }
             if (!allowSigns
-                    && (chars[i] == 'd'
-                    || chars[i] == 'D'
-                    || chars[i] == 'f'
-                    || chars[i] == 'F')) {
+                    && (ch == 'd'
+                    || ch == 'D'
+                    || ch == 'f'
+                    || ch == 'F')) {
                 return foundDigit;
             }
-            if (chars[i] == 'l'
-                    || chars[i] == 'L') {
+            if (ch == 'l'
+                    || ch == 'L') {
                 // not allowing L with an exponent
                 return foundDigit && !hasExp;
             }

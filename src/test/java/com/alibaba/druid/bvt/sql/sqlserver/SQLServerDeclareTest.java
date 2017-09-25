@@ -43,7 +43,7 @@ public class SQLServerDeclareTest extends TestCase {
 
         String text = SQLUtils.toSQLString(stmtList, JdbcUtils.SQL_SERVER);
 
-        Assert.assertEquals("DECLARE @Group nvarchar(50), @Sales money = 1", text);
+        Assert.assertEquals("DECLARE @Group nvarchar(50), @Sales money = 1;", text);
     }
     
     public void test_2() {
@@ -74,7 +74,7 @@ public class SQLServerDeclareTest extends TestCase {
                           + "\n\tOldVacationHours int,"//
                           + "\n\tNewVacationHours int,"//
                           + "\n\tModifiedDate datetime"//
-                          + "\n)";
+                          + "\n);";
         Assert.assertEquals(expected, text);
     }
 

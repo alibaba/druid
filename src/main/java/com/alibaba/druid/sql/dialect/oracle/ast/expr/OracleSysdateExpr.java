@@ -36,4 +36,10 @@ public class OracleSysdateExpr extends OracleSQLObjectImpl implements SQLExpr {
         visitor.visit(this);
         visitor.endVisit(this);
     }
+
+    public OracleSysdateExpr clone() {
+        OracleSysdateExpr x = new OracleSysdateExpr();
+        x.option = option;
+        return x;
+    }
 }

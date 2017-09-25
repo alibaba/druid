@@ -41,7 +41,7 @@ public class OracleInsertTest10 extends OracleTest {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("INSERT INTO departments\n" +
-                        "VALUES (280, 'Recreation', 121, 1700)",//
+                        "VALUES (280, 'Recreation', 121, 1700);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

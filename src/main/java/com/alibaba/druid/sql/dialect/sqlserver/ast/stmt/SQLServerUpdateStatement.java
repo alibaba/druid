@@ -38,6 +38,9 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
     }
 
     public void setTop(SQLServerTop top) {
+        if (top != null) {
+            top.setParent(this);
+        }
         this.top = top;
     }
 
@@ -46,6 +49,9 @@ public class SQLServerUpdateStatement extends SQLUpdateStatement implements SQLS
     }
 
     public void setOutput(SQLServerOutput output) {
+        if (output != null) {
+            output.setParent(this);
+        }
         this.output = output;
     }
 

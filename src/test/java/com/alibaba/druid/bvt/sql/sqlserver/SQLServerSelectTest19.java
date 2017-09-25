@@ -38,7 +38,7 @@ public class SQLServerSelectTest19 extends TestCase {
                 + "\n\tJOIN Person.PersonPhone pph ON p.BusinessEntityID = pph.BusinessEntityID"
                 + "\nWHERE LastName LIKE 'G%'"
                 + "\nORDER BY LastName, FirstName"
-                + "\nFOR XML , TYPE, XMLSCHEMA, ELEMENTS XSINIL";
+                + "\nFOR XML , TYPE, XMLSCHEMA, ELEMENTS XSINIL;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

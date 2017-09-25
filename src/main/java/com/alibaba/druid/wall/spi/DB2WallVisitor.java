@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -23,28 +24,11 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTriggerStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.ast.stmt.DB2SelectQueryBlock;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ASTVisitorAdapter;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.wall.Violation;
-import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallProvider;
-import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.*;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
@@ -58,6 +42,7 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
     private final List<Violation> violations      = new ArrayList<Violation>();
     private boolean               sqlModified     = false;
     private boolean               sqlEndOfComment = false;
+    private List<WallUpdateCheckItem> updateCheckItems;
 
     public DB2WallVisitor(WallProvider provider){
         this.config = provider.getConfig();
@@ -197,6 +182,13 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
 
         WallVisitorUtils.initWallTopStatementContext();
 
+        int selectLimit = config.getSelectLimit();
+        if (selectLimit >= 0) {
+            SQLSelect select = x.getSelect();
+            PagerUtils.limit(select, getDbType(), 0, selectLimit, true);
+            this.sqlModified = true;
+        }
+
         return true;
     }
 
@@ -284,5 +276,16 @@ public class DB2WallVisitor extends DB2ASTVisitorAdapter implements WallVisitor 
     @Override
     public void setSqlEndOfComment(boolean sqlEndOfComment) {
         this.sqlEndOfComment = sqlEndOfComment;
+    }
+
+    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
+        if (updateCheckItems == null) {
+            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
+        }
+        updateCheckItems.add(item);
+    }
+
+    public List<WallUpdateCheckItem> getUpdateCheckItems() {
+        return updateCheckItems;
     }
 }

@@ -21,4 +21,6 @@ public interface ParameterizedVisitor extends PrintableVisitor {
 
     void incrementReplaceCunt();
 
+    String getDbType();
+
 }

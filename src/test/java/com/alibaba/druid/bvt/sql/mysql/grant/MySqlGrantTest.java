@@ -41,7 +41,7 @@ public class MySqlGrantTest extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT ALL ON db1.* TO 'jeffrey'@'localhost'", //
+        Assert.assertEquals("GRANT ALL ON db1.* TO 'jeffrey'@'localhost';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

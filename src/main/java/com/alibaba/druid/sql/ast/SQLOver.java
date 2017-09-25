@@ -26,7 +26,7 @@ public class SQLOver extends SQLObjectImpl {
     protected SQLOrderBy          orderBy;
 
     // for db2
-    protected SQLExpr             of;
+    protected SQLName             of;
 
     protected SQLExpr             windowing;
     protected WindowingType       windowingType = WindowingType.ROWS;
@@ -71,11 +71,11 @@ public class SQLOver extends SQLObjectImpl {
         this.orderBy = orderBy;
     }
 
-    public SQLExpr getOf() {
+    public SQLName getOf() {
         return of;
     }
 
-    public void setOf(SQLExpr of) {
+    public void setOf(SQLName of) {
         if (of != null) {
             of.setParent(this);
         }
@@ -206,6 +206,47 @@ public class SQLOver extends SQLObjectImpl {
         result = 31 * result + (windowingBetweenEndPreceding ? 1 : 0);
         result = 31 * result + (windowingBetweenEndFollowing ? 1 : 0);
         return result;
+    }
+
+    public void cloneTo(SQLOver x) {
+        for (SQLExpr item : partitionBy) {
+            SQLExpr item1 = item.clone();
+            item1.setParent(x);
+            x.partitionBy.add(item);
+        }
+
+        if (orderBy != null) {
+            x.setOrderBy(orderBy.clone());
+        }
+
+        if (of != null) {
+            x.setOf(of.clone());
+        }
+
+        if (windowing != null) {
+            x.setWindowing(windowing.clone());
+        }
+        x.windowingType = windowingType;
+        x.windowingPreceding = windowingPreceding;
+        x.windowingFollowing = windowingFollowing;
+
+        if (windowingBetweenBegin != null) {
+            x.setWindowingBetweenBegin(windowingBetweenBegin.clone());
+        }
+        x.windowingBetweenBeginPreceding = windowingBetweenBeginPreceding;
+        x.windowingBetweenBeginFollowing = windowingBetweenBeginFollowing;
+
+        if (windowingBetweenEnd != null) {
+            x.setWindowingBetweenEnd(windowingBetweenEnd.clone());
+        }
+        x.windowingBetweenEndPreceding = windowingBetweenEndPreceding;
+        x.windowingBetweenEndFollowing = windowingBetweenEndFollowing;
+    }
+
+    public SQLOver clone() {
+        SQLOver x = new SQLOver();
+        cloneTo(x);
+        return x;
     }
 
     public static enum WindowingType {

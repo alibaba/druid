@@ -33,6 +33,6 @@ public class MySqlAlterTableTest25 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE xxxx"
-                + "\n\tADD COLUMN over bigint UNSIGNED COMMENT 'xxxx'", output);
+                + "\n\tADD COLUMN over bigint UNSIGNED COMMENT 'xxxx';", output);
     }
 }

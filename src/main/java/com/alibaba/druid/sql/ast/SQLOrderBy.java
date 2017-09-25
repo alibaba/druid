@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLOrderBy extends SQLObjectImpl {
+public final class SQLOrderBy extends SQLObjectImpl {
 
     protected final List<SQLSelectOrderByItem> items = new ArrayList<SQLSelectOrderByItem>();
     
@@ -95,5 +95,19 @@ public class SQLOrderBy extends SQLObjectImpl {
 
     protected SQLSelectOrderByItem createItem() {
         return new SQLSelectOrderByItem();
+    }
+
+    public SQLOrderBy clone() {
+        SQLOrderBy x = new SQLOrderBy();
+
+        for (SQLSelectOrderByItem item : items) {
+            SQLSelectOrderByItem item1 = item.clone();
+            item1.setParent(x);
+            x.items.add(item1);
+        }
+
+        x.sibings = sibings;
+
+        return x;
     }
 }

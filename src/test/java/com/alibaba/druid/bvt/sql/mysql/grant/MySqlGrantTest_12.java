@@ -40,9 +40,9 @@ public class MySqlGrantTest_12 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
         
-        Assert.assertEquals("GRANT CREATE TEMPORARY TABLE ON mydb.* TO 'someuser'@'somehost'", //
+        Assert.assertEquals("GRANT CREATE TEMPORARY TABLE ON mydb.* TO 'someuser'@'somehost';", //
                             SQLUtils.toMySqlString(stmt));
-        Assert.assertEquals("grant CREATE TEMPORARY TABLE on mydb.* to 'someuser'@'somehost'", //
+        Assert.assertEquals("grant CREATE TEMPORARY TABLE on mydb.* to 'someuser'@'somehost';", //
                             SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
 //        System.out.println("Tables : " + visitor.getTables());

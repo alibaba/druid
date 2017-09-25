@@ -13,12 +13,8 @@ public class OdpsMultiInsertTest2 extends TestCase {
                 "select shop_name, customer_id, total_price;\n";
         Assert.assertEquals("FROM sale_detail\n" +
                 "INSERT OVERWRITE TABLE sale_detail_multi PARTITION (sale_date='2010', region='china')\n" +
-                "SELECT shop_name\n" +
-                "\t, customer_id\n" +
-                "\t, total_price\n" +
+                "SELECT shop_name, customer_id, total_price\n" +
                 "INSERT OVERWRITE TABLE sale_detail_multi PARTITION (sale_date='2011', region='china')\n" +
-                "SELECT shop_name\n" +
-                "\t, customer_id\n" +
-                "\t, total_price;", SQLUtils.formatOdps(sql));
+                "SELECT shop_name, customer_id, total_price;", SQLUtils.formatOdps(sql));
     }   
 }

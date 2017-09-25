@@ -30,15 +30,16 @@ public class OracleListAggTest extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("SELECT prod_id, LISTAGG(cust_first_name || ' ' || cust_last_name, '; ') WITHIN GROUP (ORDER BY amount_sold DESC) AS cust_list" //
-                                    + "\nFROM sales, customers"//
-                                    + "\nWHERE sales.cust_id = customers.cust_id" //
-                                    + "\n\tAND cust_gender = 'M'" //
-                                    + "\n\tAND cust_credit_limit = 15000" //
-                                    + "\n\tAND prod_id BETWEEN 15 AND 18" //
-                                    + "\n\tAND channel_id = 2" //
-                                    + "\n\tAND time_id > '01-JAN-01'" //
-                                    + "\nGROUP BY prod_id",//
+        Assert.assertEquals("SELECT prod_id\n" +
+                        "\t, LISTAGG(cust_first_name || ' ' || cust_last_name, '; ') WITHIN GROUP (ORDER BY amount_sold DESC) AS cust_list\n" +
+                        "FROM sales, customers\n" +
+                        "WHERE sales.cust_id = customers.cust_id\n" +
+                        "\tAND cust_gender = 'M'\n" +
+                        "\tAND cust_credit_limit = 15000\n" +
+                        "\tAND prod_id BETWEEN 15 AND 18\n" +
+                        "\tAND channel_id = 2\n" +
+                        "\tAND time_id > '01-JAN-01'\n" +
+                        "GROUP BY prod_id;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

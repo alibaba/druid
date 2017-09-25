@@ -52,6 +52,9 @@ public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
     }
 
     public void setTableSource(SQLTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
         this.tableSource = tableSource;
     }
 
@@ -60,6 +63,9 @@ public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
     }
 
     public void setMethod(SQLMethodInvokeExpr method) {
+        if (method != null) {
+            method.setParent(this);
+        }
         this.method = method;
     }
 
@@ -71,4 +77,35 @@ public class OdpsLateralViewTableSource extends SQLTableSourceImpl {
         this.columns = columns;
     }
 
+    public SQLTableSource findTableSource(long alias_hash) {
+        long hash = this.aliasHashCode64();
+        if (hash != 0 && hash == alias_hash) {
+            return this;
+        }
+
+        for (SQLName column : columns) {
+            if (column.nameHashCode64() == alias_hash) {
+                return this;
+            }
+        }
+
+        if (tableSource != null) {
+            return tableSource.findTableSource(alias_hash);
+        }
+
+        return null;
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+        for (SQLName column : columns) {
+            if (column.nameHashCode64() == columnNameHash) {
+                return this;
+            }
+        }
+
+        if (tableSource != null) {
+            return tableSource.findTableSourceWithColumn(columnNameHash);
+        }
+        return null;
+    }
 }

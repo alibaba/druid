@@ -19,10 +19,11 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDropStatement {
 
     private SQLName name;
-    
+    private boolean ifExists;
+
     public SQLDropTriggerStatement() {
         
     }
@@ -47,4 +48,11 @@ public class SQLDropTriggerStatement extends SQLStatementImpl implements SQLDDLS
         visitor.endVisit(this);
     }
 
+    public boolean isIfExists() {
+        return ifExists;
+    }
+
+    public void setIfExists(boolean ifExists) {
+        this.ifExists = ifExists;
+    }
 }

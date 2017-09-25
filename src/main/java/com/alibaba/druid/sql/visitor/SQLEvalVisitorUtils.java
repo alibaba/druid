@@ -36,22 +36,7 @@ import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
-import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -139,12 +124,19 @@ public class SQLEvalVisitorUtils {
     public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters, boolean throwError) {
         SQLEvalVisitor visitor = createEvalVisitor(dbType);
         visitor.setParameters(parameters);
-        sqlObject.accept(visitor);
 
-        Object value = getValue(sqlObject);
-        if (value == null) {
-            if (throwError && !sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
-                throw new DruidRuntimeException("eval error : " + SQLUtils.toSQLString(sqlObject, dbType));
+        Object value;
+        if (sqlObject instanceof SQLValuableExpr) {
+            value = ((SQLValuableExpr) sqlObject).getValue();
+        } else {
+            sqlObject.accept(visitor);
+
+            value = getValue(sqlObject);
+
+            if (value == null) {
+                if (throwError && !sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
+                    throw new DruidRuntimeException("eval error : " + SQLUtils.toSQLString(sqlObject, dbType));
+                }
             }
         }
 

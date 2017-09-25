@@ -25,7 +25,7 @@ public class MySqlParameterizedOutputVisitorTest_26 extends TestCase {
         assertEquals("SELECT `xxx_reverse_od`.`id`\n" +
                 "FROM xxx_reverse_od `xxx_reverse_od`\n" +
                 "WHERE `xxx_reverse_od`.name = ?\n" +
-                "LIMIT ?", psql);
+                "LIMIT ?;", psql);
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(psql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -54,6 +54,6 @@ public class MySqlParameterizedOutputVisitorTest_26 extends TestCase {
         assertEquals("SELECT `xxx_reverse_od`.`id`\n" +
                 "FROM xxx_reverse_od_0446 `xxx_reverse_od`\n" +
                 "WHERE `xxx_reverse_od`.name = ?\n" +
-                "LIMIT ?", buf.toString());
+                "LIMIT ?;", buf.toString());
     }
 }

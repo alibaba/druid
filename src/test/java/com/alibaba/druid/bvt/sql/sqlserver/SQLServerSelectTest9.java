@@ -30,7 +30,7 @@ public class SQLServerSelectTest9 extends TestCase {
                      "FROM Sales.SalesOrderDetail;";
 
         String expect = "SELECT AVG(UnitPrice) AS 'Average Price'" + //
-                        "\nFROM Sales.SalesOrderDetail";
+                        "\nFROM Sales.SalesOrderDetail;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

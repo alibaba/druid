@@ -17,6 +17,7 @@ package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -44,7 +45,7 @@ public class SQLServerWallProvider extends WallProvider {
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new SQLServerStatementParser(sql);
+        return new SQLServerStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup);
     }
 
     @Override

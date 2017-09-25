@@ -38,7 +38,7 @@ public class OracleGrantTest_3 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("GRANT INHERIT PRIVILEGES ON USER sh TO hr",//
+        Assert.assertEquals("GRANT INHERIT PRIVILEGES ON USER sh TO hr;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

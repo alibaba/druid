@@ -61,6 +61,7 @@ public class CharTypes {
         return c != '　' && c != '，';
     }
 
+    private final static String[] stringCache = new String[256];
     private final static boolean[] identifierFlags = new boolean[256];
     static {
         for (char c = 0; c < identifierFlags.length; ++c) {
@@ -76,6 +77,13 @@ public class CharTypes {
         identifierFlags['_'] = true;
         identifierFlags['$'] = true;
         identifierFlags['#'] = true;
+
+        for (int i = 0; i < identifierFlags.length; i++) {
+            if (identifierFlags[i]) {
+                char ch = (char) i;
+                stringCache[i] = Character.toString(ch);
+            }
+        }
     }
 
     public static boolean isIdentifierChar(char c) {
@@ -83,6 +91,13 @@ public class CharTypes {
             return identifierFlags[c];
         }
         return c != '　' && c != '，';
+    }
+
+    public static String valueOf(char ch) {
+        if (ch < stringCache.length) {
+            return stringCache[ch];
+        }
+        return null;
     }
 
     private final static boolean[] whitespaceFlags = new boolean[256];

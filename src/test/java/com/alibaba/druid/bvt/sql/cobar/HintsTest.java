@@ -32,7 +32,7 @@ public class HintsTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE /*!32302 TEMPORARY */ TABLE t (\n\ta INT\n)", output);
+        Assert.assertEquals("CREATE /*!32302 TEMPORARY */ TABLE t (\n\ta INT\n);", output);
     }
     
     public void test_hints_1() throws Exception {

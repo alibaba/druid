@@ -33,7 +33,7 @@ public class OracleOutputVisitorTest_PrettyFormat {
             statement.accept(visitor);
         }
 
-        String expectResult = "SELECT *\nFROM ge_rms_company\nSTART WITH comcode = '00'\nCONNECT BY NOCYCLE PRIOR comcode = uppercomcode;\n";
+        String expectResult = "SELECT *\nFROM ge_rms_company\nSTART WITH comcode = '00'\nCONNECT BY NOCYCLE PRIOR comcode = uppercomcode";
         Assert.assertEquals(expectResult, out.toString());
 
         out.setLength(0);

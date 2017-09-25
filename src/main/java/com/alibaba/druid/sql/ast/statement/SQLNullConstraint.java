@@ -27,4 +27,10 @@ public class SQLNullConstraint extends SQLConstraintImpl implements SQLColumnCon
         visitor.visit(this);
         visitor.endVisit(this);
     }
+
+    public SQLNullConstraint clone() {
+        SQLNullConstraint x = new SQLNullConstraint();
+        super.cloneTo(x);
+        return x;
+    }
 }

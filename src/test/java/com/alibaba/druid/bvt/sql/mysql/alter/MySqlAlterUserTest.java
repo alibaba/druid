@@ -41,7 +41,7 @@ public class MySqlAlterUserTest extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE", //
+        Assert.assertEquals("ALTER USER 'jeffrey'@'localhost' PASSWORD EXPIRE;", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

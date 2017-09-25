@@ -24,8 +24,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlStatement {
-
-    private SQLOrderBy          orderBy;
     private SQLLimit limit;
 
     private boolean             lowPriority     = false;
@@ -121,12 +119,5 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
         this.targetAffectRow = targetAffectRow;
     }
 
-    public SQLOrderBy getOrderBy() {
-        return orderBy;
-    }
-
-    public void setOrderBy(SQLOrderBy orderBy) {
-        this.orderBy = orderBy;
-    }
 
 }

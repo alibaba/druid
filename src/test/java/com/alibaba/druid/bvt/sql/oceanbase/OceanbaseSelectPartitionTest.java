@@ -37,12 +37,12 @@ public class OceanbaseSelectPartitionTest extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT *" + //
-                                "\nFROM tnhash PARTITION (p0)", result);
+                                "\nFROM tnhash PARTITION (p0);", result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select *" + //
-                                "\nfrom tnhash partition (p0)", result);
+                                "\nfrom tnhash partition (p0);", result);
         }
 
         Assert.assertEquals(1, stmtList.size());

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast;
 
-public interface SQLExpr extends SQLObject {
-
+public interface SQLExpr extends SQLObject, Cloneable {
+    SQLExpr     clone();
+    SQLDataType computeDataType();
 }

@@ -57,7 +57,7 @@ public class OracleCreateTableTest29 extends OracleTest {
                             + "\n\tcommission_pct NUMBER(7, 2)," //
                             + "\n\tdepartment_id NUMBER(2)," //
                             + "\n\tCONSTRAINT check_sal CHECK (salary * commission_pct <= 5000)" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

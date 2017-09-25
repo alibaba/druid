@@ -46,7 +46,7 @@ public class SQLServerCreateTableTest_2 extends TestCase {
                             + "\n\tC1 nvarchar(10),"//
                             + "\n\tC2 nvarchar(50),"//
                             + "\n\tC3 datetime"//
-                            + "\n)", output);
+                            + "\n);", output);
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();
         stmt.accept(visitor);

@@ -63,7 +63,7 @@ public class OracleCreateTableTest30 extends OracleTest {
                             + "\n\t\tCONSTRAINT check_qty CHECK (quantity > 0)," //
                             + "\n\tcost NUMBER" //
                             + "\n\t\tCONSTRAINT check_cost CHECK (cost > 0)" //
-                            + "\n)",//
+                            + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

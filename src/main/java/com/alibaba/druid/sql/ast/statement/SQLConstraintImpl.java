@@ -15,16 +15,21 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 
 import java.util.List;
 
 public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLConstraint {
+    protected String dbType;
 
-    private SQLName name;
+    protected SQLName name;
     private Boolean enable;
+    private Boolean validate;
+    private Boolean rely;
 
     public List<SQLCommentHint> hints;
 
@@ -32,6 +37,15 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
 
     }
 
+    public void cloneTo(SQLConstraintImpl x) {
+        if (name != null) {
+            x.setName(name.clone());
+        }
+
+        x.enable = enable;
+        x.validate = validate;
+        x.rely = rely;
+    }
 
     public List<SQLCommentHint> getHints() {
         return hints;
@@ -50,6 +64,10 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
         this.name = name;
     }
 
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
+    }
+
     public Boolean getEnable() {
         return enable;
     }
@@ -58,4 +76,45 @@ public abstract class SQLConstraintImpl extends SQLObjectImpl implements SQLCons
         this.enable = enable;
     }
 
+    public void cloneTo(SQLConstraint x) {
+        if (name != null) {
+            x.setName(name.clone());
+        }
+    }
+
+    public Boolean getValidate() {
+        return validate;
+    }
+
+    public void setValidate(Boolean validate) {
+        this.validate = validate;
+    }
+
+    public Boolean getRely() {
+        return rely;
+    }
+
+    public void setRely(Boolean rely) {
+        this.rely = rely;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public void simplify() {
+        if (this.name instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) this.name;
+            String columnName = identExpr.getName();
+
+            String normalized = SQLUtils.normalize(columnName, dbType);
+            if (columnName != normalized) {
+                this.setName(normalized);
+            }
+        }
+    }
 }

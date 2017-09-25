@@ -42,4 +42,8 @@ public class SQLCommentHint extends SQLObjectImpl implements SQLHint {
         visitor.visit(this);
         visitor.endVisit(this);
     }
+
+    public SQLCommentHint clone() {
+        return new SQLCommentHint(text);
+    }
 }

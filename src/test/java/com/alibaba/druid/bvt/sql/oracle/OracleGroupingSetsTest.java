@@ -25,7 +25,7 @@ public class OracleGroupingSetsTest extends OracleTest {
 
         Assert.assertEquals("SELECT department_id, job_id, AVG(salary)"
                 + "\nFROM hr.employees"
-                + "\nGROUP BY GROUPING SETS ((department_id, job_id))", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
+                + "\nGROUP BY GROUPING SETS ((department_id, job_id));", SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         stmt.accept(visitor);

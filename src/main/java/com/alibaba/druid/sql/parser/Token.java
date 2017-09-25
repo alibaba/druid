@@ -95,7 +95,8 @@ public enum Token {
     CASE("CASE"), 
     WHEN("WHEN"), 
     THEN("THEN"), 
-    ELSE("ELSE"), 
+    ELSE("ELSE"),
+    ELSIF("ELSIF"),
     END("END"), 
     EXISTS("EXISTS"), 
     IN("IN"),
@@ -115,6 +116,8 @@ public enum Token {
     ANY("ANY"),
     TRUNCATE("TRUNCATE"),
 
+    RETURN("RETURN"),
+
     // mysql
     TRUE("TRUE"), 
     FALSE("FALSE"),
@@ -126,6 +129,8 @@ public enum Token {
     BINARY("BINARY"),
     SHOW("SHOW"),
     REPLACE("REPLACE"),
+
+    BITS,
 
     // MySql procedure add by zz
     WHILE("WHILE"),
@@ -219,7 +224,6 @@ public enum Token {
     PCTINCREASE("PCTINCREASE"),
     FLASH_CACHE("FLASH_CACHE"),
     CELL_FLASH_CACHE("CELL_FLASH_CACHE"),
-    KEEP("KEEP"),
     NONE("NONE"),
     LOB("LOB"),
     STORE("STORE"),
@@ -254,7 +258,7 @@ public enum Token {
     LITERAL_HEX,
     LITERAL_CHARS,
     LITERAL_NCHARS,
-    
+
     LITERAL_ALIAS,
     LINE_COMMENT,
     MULTI_LINE_COMMENT,
@@ -297,7 +301,8 @@ public enum Token {
     DOTDOTDOT("..,"), 
     EQ("="), 
     GT(">"), 
-    LT("<"), 
+    LT("<"),
+    LT_SUB_GT("<->"),
     BANG("!"),
     BANGBANG("!!"),
     BANG_TILDE("!~"),
@@ -312,7 +317,8 @@ public enum Token {
     COLON(":"), 
     COLONCOLON("::"), 
     COLONEQ(":="), 
-    EQEQ("=="), 
+    EQEQ("=="),
+    EQGT("=>"),
     LTEQ("<="), 
     LTEQGT("<=>"), 
     LTGT("<>"), 
@@ -332,7 +338,8 @@ public enum Token {
     SLASH("/"), 
     AMP("&"), 
     BAR("|"), 
-    CARET("^"), 
+    CARET("^"),
+    CARETEQ("^="),
     PERCENT("%"), 
     LTLT("<<"), 
     GTGT(">>"),

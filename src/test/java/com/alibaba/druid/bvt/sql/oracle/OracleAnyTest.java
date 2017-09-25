@@ -33,7 +33,7 @@ public class OracleAnyTest extends TestCase {
         String expect = "SELECT country, prod, year, s\n" + "FROM sales_view\n" + "MODEL\n"
                         + "\tPARTITION BY (country)\n" + "\tDIMENSION BY (prod, year)\n" + "\tMEASURES (sale s)\n"
                         + "\tIGNORE NAV\n" + "\tUNIQUE DIMENSION\n"
-                        + "\tRULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0)\n" + "ORDER BY country, prod, year;\n";
+                        + "\tRULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0)\n" + "ORDER BY country, prod, year;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

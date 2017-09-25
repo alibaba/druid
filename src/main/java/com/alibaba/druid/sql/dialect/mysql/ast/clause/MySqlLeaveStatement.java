@@ -25,7 +25,15 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 public class MySqlLeaveStatement extends MySqlStatementImpl {
 	
 	private String labelName;
-	
+
+	public MySqlLeaveStatement() {
+
+	}
+
+	public MySqlLeaveStatement(String labelName) {
+		this.labelName = labelName;
+	}
+
 	@Override
     public void accept0(MySqlASTVisitor visitor) {
 		visitor.visit(this);

@@ -54,7 +54,7 @@ public class MySqlInsertTest_15 extends MysqlTest {
         assertTrue(visitor.containsTable("t.t1"));
 
         String formatSql = "INSERT INTO t.t1 (id, id2)\n" +
-                "VALUES (1, 2)";
+                "VALUES (1, 2);";
         Assert.assertEquals(formatSql, SQLUtils.toMySqlString(insertStmt));
     }
 

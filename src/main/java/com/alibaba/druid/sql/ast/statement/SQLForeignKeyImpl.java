@@ -22,10 +22,11 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKeyConstraint {
-
-    private SQLName       referencedTableName;
-    private List<SQLName> referencingColumns = new ArrayList<SQLName>();
-    private List<SQLName> referencedColumns  = new ArrayList<SQLName>();
+    private SQLExprTableSource referencedTable;
+    private List<SQLName>      referencingColumns = new ArrayList<SQLName>();
+    private List<SQLName>      referencedColumns  = new ArrayList<SQLName>();
+    private boolean            onDeleteCascade    = false;
+    private boolean            onDeleteSetNull    = false;
 
     public SQLForeignKeyImpl(){
 
@@ -37,18 +38,53 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
     }
 
     @Override
+    public SQLExprTableSource getReferencedTable() {
+        return referencedTable;
+    }
+
+    @Override
     public SQLName getReferencedTableName() {
-        return referencedTableName;
+        if (referencedTable == null) {
+            return null;
+        }
+        return referencedTable.getName();
     }
 
     @Override
     public void setReferencedTableName(SQLName value) {
-        this.referencedTableName = value;
+        if (value == null) {
+            this.referencedTable = null;
+            return;
+        }
+        this.setReferencedTable(new SQLExprTableSource(value));
+    }
+
+    public void setReferencedTable(SQLExprTableSource x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.referencedTable = x;
     }
 
     @Override
     public List<SQLName> getReferencedColumns() {
         return referencedColumns;
+    }
+
+    public boolean isOnDeleteCascade() {
+        return onDeleteCascade;
+    }
+
+    public void setOnDeleteCascade(boolean onDeleteCascade) {
+        this.onDeleteCascade = onDeleteCascade;
+    }
+
+    public boolean isOnDeleteSetNull() {
+        return onDeleteSetNull;
+    }
+
+    public void setOnDeleteSetNull(boolean onDeleteSetNull) {
+        this.onDeleteSetNull = onDeleteSetNull;
     }
 
     @Override
@@ -62,4 +98,29 @@ public class SQLForeignKeyImpl extends SQLConstraintImpl implements SQLForeignKe
         visitor.endVisit(this);        
     }
 
+    public void cloneTo(SQLForeignKeyImpl x) {
+        super.cloneTo(x);
+
+        if (referencedTable != null) {
+            x.setReferencedTable(referencedTable.clone());
+        }
+
+        for (SQLName column : referencingColumns) {
+            SQLName columnClone = column.clone();
+            columnClone.setParent(x);
+            x.getReferencingColumns().add(columnClone);
+        }
+
+        for (SQLName column : referencedColumns) {
+            SQLName columnClone = column.clone();
+            columnClone.setParent(x);
+            x.getReferencedColumns().add(columnClone);
+        }
+    }
+
+    public SQLForeignKeyImpl clone() {
+        SQLForeignKeyImpl x = new SQLForeignKeyImpl();
+        cloneTo(x);
+        return x;
+    }
 }

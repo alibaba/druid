@@ -25,8 +25,6 @@ public class SQLSelectStatement extends SQLStatementImpl {
 
     protected SQLSelect select;
 
-    private List<SQLCommentHint> headHints;
-
     public SQLSelectStatement(){
 
     }
@@ -66,11 +64,18 @@ public class SQLSelectStatement extends SQLStatementImpl {
         visitor.endVisit(this);
     }
 
-    public List<SQLCommentHint> getHeadHintsDirect() {
-        return headHints;
-    }
-
-    public void setHeadHints(List<SQLCommentHint> headHints) {
-        this.headHints = headHints;
+    public SQLSelectStatement clone() {
+        SQLSelectStatement x = new SQLSelectStatement();
+        if (select != null) {
+            x.setSelect(select.clone());
+        }
+        if (headHints != null) {
+            for (SQLCommentHint h : headHints) {
+                SQLCommentHint h2 = h.clone();
+                h2.setParent(x);
+                x.headHints.add(h2);
+            }
+        }
+        return x;
     }
 }

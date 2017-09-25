@@ -52,4 +52,11 @@ public class SQLExprHint extends SQLObjectImpl implements SQLHint {
         visitor.endVisit(this);
     }
 
+    public SQLExprHint clone() {
+        SQLExprHint x = new SQLExprHint();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        return x;
+    }
 }

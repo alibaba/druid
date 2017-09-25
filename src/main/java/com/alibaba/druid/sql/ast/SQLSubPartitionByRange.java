@@ -31,4 +31,16 @@ public class SQLSubPartitionByRange extends SQLSubPartitionBy {
     protected void accept0(SQLASTVisitor visitor) {
         
     }
+
+    public SQLSubPartitionByRange clone() {
+        SQLSubPartitionByRange x = new SQLSubPartitionByRange();
+
+        for (SQLName column : columns) {
+            SQLName c2 = column.clone();
+            c2.setParent(x);
+            x.columns.add(c2);
+        }
+
+        return x;
+    }
 }

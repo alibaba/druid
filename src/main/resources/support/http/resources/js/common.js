@@ -26,8 +26,10 @@ druid.common = function () {
 		},
 		
 		buildFooter : function() {
-			var html = '<footer class="footer">'+
+
+			var html ='<footer class="footer">'+
 					  '    		<div class="container">'+
+					  '<a href="https://render.alipay.com/p/s/taobaonpm_click/druid_banner_click" target="new"><img src="https://render.alipay.com/p/s/taobaonpm_click/druid_banner"></a><br/>' +
 				  	  '	powered by <a href="https://github.com/alibaba/" target="_blank">AlibabaTech</a> & <a href="http://www.sandzhang.com/" target="_blank">sandzhang</a> & <a href="http://melin.iteye.com/" target="_blank">melin</a> & <a href="https://github.com/shrekwang" target="_blank">shrek.wang</a>'+
 				  	  '			</div>'+
 					  ' </footer>';

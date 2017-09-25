@@ -17,4 +17,3 @@ FROM c_examinepaper a, (
 		FROM course
 	) b
 WHERE a.examine_id = b.examine_id
-

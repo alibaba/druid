@@ -20,6 +20,6 @@ public class OdpsCreateTableTest2 extends TestCase {
         Assert.assertEquals("CREATE TABLE sale_detail"
                 + "\nAS"
                 + "\nSELECT *" //
-                + "\nFROM dual", output);
+                + "\nFROM dual;", output);
     }
 }

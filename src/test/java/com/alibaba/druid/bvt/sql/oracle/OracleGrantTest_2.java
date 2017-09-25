@@ -51,7 +51,7 @@ public class OracleGrantTest_2 extends OracleTest {
                             + " QUERY REWRITE,"//
                             + " GLOBAL QUERY REWRITE"//
                             + " TO dw_manager"//
-                            + " WITH ADMIN OPTION",//
+                            + " WITH ADMIN OPTION;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

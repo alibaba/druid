@@ -18,18 +18,22 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
+public class SQLCreateViewStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private boolean     orReplace   = false;
-    protected SQLName   name;
+    private boolean     force       = false;
+    // protected SQLName   name;
     protected SQLSelect subQuery;
     protected boolean   ifNotExists = false;
 
@@ -37,9 +41,14 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     protected SQLName   definer;
     protected String    sqlSecurity;
 
-    protected final List<Column> columns = new ArrayList<Column>();
+    protected SQLExprTableSource tableSource;
 
-    private Level with;
+    protected final List<SQLTableElement> columns = new ArrayList<SQLTableElement>();
+
+    private boolean withCheckOption;
+    private boolean withCascaded;
+    private boolean withLocal;
+    private boolean withReadOnly;
 
     private SQLLiteralExpr comment;
 
@@ -51,6 +60,33 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         super(dbType);
     }
 
+    public String computeName() {
+        if (tableSource == null) {
+            return null;
+        }
+
+        SQLExpr expr = tableSource.getExpr();
+        if (expr instanceof SQLName) {
+            String name = ((SQLName) expr).getSimpleName();
+            return SQLUtils.normalize(name);
+        }
+
+        return null;
+    }
+
+    public String getSchema() {
+        SQLName name = getName();
+        if (name == null) {
+            return null;
+        }
+
+        if (name instanceof SQLPropertyExpr) {
+            return ((SQLPropertyExpr) name).getOwnernName();
+        }
+
+        return null;
+    }
+
     public boolean isOrReplace() {
         return orReplace;
     }
@@ -60,19 +96,62 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     }
 
     public SQLName getName() {
-        return name;
+        if (tableSource == null) {
+            return null;
+        }
+
+        return (SQLName) tableSource.getExpr();
     }
 
     public void setName(SQLName name) {
-        this.name = name;
+        this.setTableSource(new SQLExprTableSource(name));
     }
 
-    public Level getWith() {
-        return with;
+    public void setName(String name) {
+        this.setName(new SQLIdentifierExpr(name));
     }
 
-    public void setWith(Level with) {
-        this.with = with;
+    public SQLExprTableSource getTableSource() {
+        return tableSource;
+    }
+
+    public void setTableSource(SQLExprTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
+        this.tableSource = tableSource;
+    }
+
+    public boolean isWithCheckOption() {
+        return withCheckOption;
+    }
+
+    public void setWithCheckOption(boolean withCheckOption) {
+        this.withCheckOption = withCheckOption;
+    }
+
+    public boolean isWithCascaded() {
+        return withCascaded;
+    }
+
+    public void setWithCascaded(boolean withCascaded) {
+        this.withCascaded = withCascaded;
+    }
+
+    public boolean isWithLocal() {
+        return withLocal;
+    }
+
+    public void setWithLocal(boolean withLocal) {
+        this.withLocal = withLocal;
+    }
+
+    public boolean isWithReadOnly() {
+        return withReadOnly;
+    }
+
+    public void setWithReadOnly(boolean withReadOnly) {
+        this.withReadOnly = withReadOnly;
     }
 
     public SQLSelect getSubQuery() {
@@ -80,14 +159,17 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 
-    public List<Column> getColumns() {
+    public List<SQLTableElement> getColumns() {
         return columns;
     }
     
-    public void addColumn(Column column) {
+    public void addColumn(SQLTableElement column) {
         if (column != null) {
             column.setParent(this);
         }
@@ -140,34 +222,18 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
         this.sqlSecurity = sqlSecurity;
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("CREATE VIEW ");
-        this.name.output(buf);
+    public boolean isForce() {
+        return force;
+    }
 
-        if (this.columns.size() > 0) {
-            buf.append(" (");
-            for (int i = 0, size = this.columns.size(); i < size; ++i) {
-                if (i != 0) {
-                    buf.append(", ");
-                }
-                this.columns.get(i).output(buf);
-            }
-            buf.append(")");
-        }
-
-        buf.append(" AS ");
-        this.subQuery.output(buf);
-
-        if (this.with != null) {
-            buf.append(" WITH ");
-            buf.append(this.with.name());
-        }
+    public void setForce(boolean force) {
+        this.force = force;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.name);
+            acceptChild(visitor, this.tableSource);
             acceptChild(visitor, this.columns);
             acceptChild(visitor, this.comment);
             acceptChild(visitor, this.subQuery);
@@ -213,5 +279,41 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
                 acceptChild(visitor, comment);
             }
         }
+    }
+
+
+    public SQLCreateViewStatement clone() {
+        SQLCreateViewStatement x = new SQLCreateViewStatement();
+
+        x.orReplace = orReplace;
+        x.force = force;
+        if (subQuery != null) {
+            x.setSubQuery(subQuery.clone());
+        }
+        x.ifNotExists = ifNotExists;
+
+        x.algorithm = algorithm;
+        if (definer != null) {
+            x.setDefiner(definer.clone());
+        }
+        x.sqlSecurity = sqlSecurity;
+        if (tableSource != null) {
+            x.setTableSource(tableSource.clone());
+        }
+        for (SQLTableElement column : columns) {
+            SQLTableElement column2 = column.clone();
+            column2.setParent(x);
+            x.columns.add(column2);
+        }
+        x.withCheckOption = withCheckOption;
+        x.withCascaded = withCascaded;
+        x.withLocal = withLocal;
+        x.withReadOnly = withReadOnly;
+
+        if (comment != null) {
+            x.setComment(comment.clone());
+        }
+
+        return x;
     }
 }

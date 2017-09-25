@@ -74,4 +74,26 @@ public abstract class SQLPartitionBy extends SQLObjectImpl {
     public List<SQLName> getStoreIn() {
         return storeIn;
     }
+
+    public void cloneTo(SQLPartitionBy x) {
+        if (subPartitionBy != null) {
+            x.setSubPartitionBy(subPartitionBy.clone());
+        }
+        if (partitionsCount != null) {
+            x.setPartitionsCount(partitionsCount.clone());
+        }
+        x.linear = linear;
+        for (SQLPartition p : partitions) {
+            SQLPartition p2 = p.clone();
+            p2.setParent(x);
+            x.partitions.add(p2);
+        }
+        for (SQLName name : storeIn) {
+            SQLName name2 = name.clone();
+            name2.setParent(x);
+            x.storeIn.add(name2);
+        }
+    }
+
+    public abstract SQLPartitionBy clone();
 }

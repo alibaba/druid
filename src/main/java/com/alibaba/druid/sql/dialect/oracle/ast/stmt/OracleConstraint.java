@@ -34,6 +34,9 @@ public interface OracleConstraint extends OracleSQLObject, SQLConstraint, SQLTab
 
     void setEnable(Boolean enable);
 
+    Boolean getValidate();
+    void setValidate(Boolean validate);
+
     Initially getInitially();
 
     void setInitially(Initially value);
@@ -45,4 +48,6 @@ public interface OracleConstraint extends OracleSQLObject, SQLConstraint, SQLTab
     public static enum Initially {
         DEFERRED, IMMEDIATE
     }
+
+    OracleConstraint clone();
 }

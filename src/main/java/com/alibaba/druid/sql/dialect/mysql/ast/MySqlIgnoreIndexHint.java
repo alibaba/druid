@@ -27,4 +27,9 @@ public class MySqlIgnoreIndexHint extends MySqlIndexHintImpl {
         visitor.endVisit(this);
     }
 
+    public MySqlIgnoreIndexHint clone() {
+        MySqlIgnoreIndexHint x = new MySqlIgnoreIndexHint();
+        cloneTo(x);
+        return x;
+    }
 }

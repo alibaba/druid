@@ -16,17 +16,13 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerOutput;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerCommitStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerDeclareStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerExecStatement.SQLServerParameter;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerRollbackStatement;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerWaitForStatement;
@@ -61,27 +57,11 @@ public interface SQLServerASTVisitor extends SQLASTVisitor {
     boolean visit(SQLServerSetTransactionIsolationLevelStatement x);
 
     void endVisit(SQLServerSetTransactionIsolationLevelStatement x);
-    
-    boolean visit(SQLServerSetStatement x);
 
-    void endVisit(SQLServerSetStatement x);
-    
     boolean visit(SQLServerOutput x);
 
     void endVisit(SQLServerOutput x);
 
-    boolean visit(SQLServerDeclareStatement x);
-
-    void endVisit(SQLServerDeclareStatement x);
-    
-    boolean visit(SQLServerSelect x);
-    
-    void endVisit(SQLServerSelect x);
-    
-    boolean visit(SQLServerCommitStatement x);
-
-    void endVisit(SQLServerCommitStatement x);
-    
     boolean visit(SQLServerRollbackStatement x);
 
     void endVisit(SQLServerRollbackStatement x);

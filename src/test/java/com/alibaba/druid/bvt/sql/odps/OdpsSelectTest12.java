@@ -31,33 +31,33 @@ public class OdpsSelectTest12 extends TestCase {
 
     public void test_select() throws Exception {
         String sql = "select name, sp from abc lateral view explode(split(concat(',','1','2','3'),',')) t as sp;";//
-        Assert.assertEquals("SELECT name"
-                + "\n\t, sp"
-                + "\nFROM abc"
-                + "\n\tLATERAL VIEW EXPLODE(SPLIT(concat(',', '1', '2', '3'), ',')) t AS sp;", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select name"
-                + "\n\t, sp"
+        Assert.assertEquals("SELECT name, sp\n" +
+                "FROM abc\n" +
+                "\tLATERAL VIEW EXPLODE(SPLIT(concat(',', '1', '2', '3'), ',')) t AS sp;", SQLUtils.formatOdps(sql));
+        Assert.assertEquals("select name, sp"
                 + "\nfrom abc"
                 + "\n\tlateral view explode(split(concat(',', '1', '2', '3'), ',')) t as sp;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
         
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);
 
+        System.out.println(stmt);
+
         Assert.assertEquals(1, statementList.size());
         
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(JdbcConstants.ODPS);
         stmt.accept(visitor);
         
-//        System.out.println("Tables : " + visitor.getTables());
-//      System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+      System.out.println("fields : " + visitor.getColumns());
 //      System.out.println("coditions : " + visitor.getConditions());
 //      System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
         
-//        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("abc", "name")));
     }
     
 }

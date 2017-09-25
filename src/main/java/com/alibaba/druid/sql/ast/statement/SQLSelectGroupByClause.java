@@ -81,4 +81,19 @@ public class SQLSelectGroupByClause extends SQLObjectImpl {
             this.items.add(sqlExpr);
         }
     }
+
+    public SQLSelectGroupByClause clone() {
+        SQLSelectGroupByClause x = new SQLSelectGroupByClause();
+        for (SQLExpr item : items) {
+            SQLExpr item2 = item.clone();
+            item2.setParent(x);
+            x.items.add(item2);
+        }
+        if (having != null) {
+            x.setHaving(having.clone());
+        }
+        x.withRollUp = withRollUp;
+        x.withCube = withCube;
+        return x;
+    }
 }

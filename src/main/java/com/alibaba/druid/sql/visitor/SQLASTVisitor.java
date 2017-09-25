@@ -18,6 +18,9 @@ package com.alibaba.druid.sql.visitor;
 import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
 
 public interface SQLASTVisitor {
 
@@ -30,6 +33,10 @@ public interface SQLASTVisitor {
     void endVisit(SQLCaseExpr x);
 
     void endVisit(SQLCaseExpr.Item x);
+
+    void endVisit(SQLCaseStatement x);
+
+    void endVisit(SQLCaseStatement.Item x);
 
     void endVisit(SQLCharExpr x);
 
@@ -70,6 +77,10 @@ public interface SQLASTVisitor {
     boolean visit(SQLCaseExpr x);
 
     boolean visit(SQLCaseExpr.Item x);
+
+    boolean visit(SQLCaseStatement x);
+
+    boolean visit(SQLCaseStatement.Item x);
 
     boolean visit(SQLCastExpr x);
 
@@ -556,6 +567,10 @@ public interface SQLASTVisitor {
     boolean visit(SQLCreateProcedureStatement x);
     
     void endVisit(SQLCreateProcedureStatement x);
+
+    boolean visit(SQLCreateFunctionStatement x);
+
+    void endVisit(SQLCreateFunctionStatement x);
     
     boolean visit(SQLBlockStatement x);
     
@@ -688,4 +703,59 @@ public interface SQLASTVisitor {
 
     void endVisit(SQLDescribeStatement x);
     boolean visit(SQLDescribeStatement x);
+
+    /**
+     * support procedure
+     */
+    boolean visit(SQLWhileStatement x);
+
+    void endVisit(SQLWhileStatement x);
+
+    boolean visit(SQLDeclareStatement x);
+
+    void endVisit(SQLDeclareStatement x);
+
+    boolean visit(SQLReturnStatement x);
+
+    void endVisit(SQLReturnStatement x);
+
+    boolean visit(SQLArgument x);
+
+    void endVisit(SQLArgument x);
+
+    boolean visit(SQLCommitStatement x);
+
+    void endVisit(SQLCommitStatement x);
+
+    boolean visit(SQLFlashbackExpr x);
+
+    void endVisit(SQLFlashbackExpr x);
+
+    boolean visit(SQLCreateMaterializedViewStatement x);
+
+    void endVisit(SQLCreateMaterializedViewStatement x);
+
+    boolean visit(SQLBinaryOpExprGroup x);
+
+    void endVisit(SQLBinaryOpExprGroup x);
+
+    boolean visit(SQLScriptCommitStatement x);
+
+    void endVisit(SQLScriptCommitStatement x);
+
+    boolean visit(SQLReplaceStatement x);
+
+    void endVisit(SQLReplaceStatement x);
+
+    boolean visit(SQLCreateUserStatement x);
+
+    void endVisit(SQLCreateUserStatement x);
+
+    boolean visit(SQLAlterFunctionStatement x);
+
+    void endVisit(SQLAlterFunctionStatement x);
+
+    boolean visit(SQLAlterTypeStatement x);
+
+    void endVisit(SQLAlterTypeStatement x);
 }

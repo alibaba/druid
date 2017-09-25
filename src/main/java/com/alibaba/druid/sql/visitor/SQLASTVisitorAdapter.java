@@ -21,8 +21,13 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.ast.statement.SQLMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.ast.statement.SQLWhileStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDeclareStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommitStatement;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
+    protected int features;
 
     public void endVisit(SQLAllColumnExpr x) {
     }
@@ -37,6 +42,12 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public void endVisit(SQLCaseExpr.Item x) {
+    }
+
+    public void endVisit(SQLCaseStatement x) {
+    }
+
+    public void endVisit(SQLCaseStatement.Item x) {
     }
 
     public void endVisit(SQLCharExpr x) {
@@ -101,6 +112,14 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public boolean visit(SQLCaseExpr.Item x) {
+        return true;
+    }
+
+    public boolean visit(SQLCaseStatement x) {
+        return true;
+    }
+
+    public boolean visit(SQLCaseStatement.Item x) {
         return true;
     }
 
@@ -542,7 +561,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLSavePointStatement x) {
-        return true;
+        return false;
     }
 
     @Override
@@ -787,7 +806,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public boolean visit(SQLUnique x) {
-        for (SQLExpr column : x.getColumns()) {
+        for (SQLSelectOrderByItem column : x.getColumns()) {
             column.accept(this);
         }
         return false;
@@ -1239,6 +1258,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
+    public boolean visit(SQLCreateFunctionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCreateFunctionStatement x) {
+
+    }
+
+    @Override
     public boolean visit(SQLBlockStatement x) {
         return true;
     }
@@ -1573,5 +1602,152 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     @Override
     public boolean visit(SQLDescribeStatement x) {
         return true;
+    }
+
+    @Override
+    public boolean visit(SQLWhileStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLWhileStatement x) {
+
+    }
+
+
+    @Override
+    public boolean visit(SQLDeclareStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLDeclareStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLReturnStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLReturnStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLArgument x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLArgument x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLCommitStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCommitStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLFlashbackExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLFlashbackExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLCreateMaterializedViewStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCreateMaterializedViewStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLBinaryOpExprGroup x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLBinaryOpExprGroup x) {
+
+    }
+
+    public void config(VisitorFeature feature, boolean state) {
+        features = VisitorFeature.config(features, feature, state);
+    }
+
+    @Override
+    public boolean visit(SQLScriptCommitStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLScriptCommitStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLReplaceStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLReplaceStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLCreateUserStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCreateUserStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterFunctionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterFunctionStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(SQLAlterTypeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTypeStatement x) {
+
+    }
+
+    public final boolean isEnabled(VisitorFeature feature) {
+        return VisitorFeature.isEnabled(this.features, feature);
+    }
+
+    public int getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(int features) {
+        this.features = features;
     }
 }

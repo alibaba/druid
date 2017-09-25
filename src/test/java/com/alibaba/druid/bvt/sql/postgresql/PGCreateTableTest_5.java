@@ -39,11 +39,11 @@ public class PGCreateTableTest_5 extends PGTest {
         
         Assert.assertEquals("CREATE TABLE products ("
                 + "\n\tstate char(2)"
-                + "\n) INHERITS (cities)", SQLUtils.toPGString(stmt));
+                + "\n) INHERITS (cities);", SQLUtils.toPGString(stmt));
         
         Assert.assertEquals("create table products ("
                 + "\n\tstate char(2)"
-                + "\n) inherits (cities)", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                + "\n) inherits (cities);", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         Assert.assertEquals(1, statementList.size());
 

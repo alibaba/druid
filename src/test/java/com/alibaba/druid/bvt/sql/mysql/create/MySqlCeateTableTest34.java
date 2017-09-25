@@ -48,13 +48,13 @@ public class MySqlCeateTableTest34 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE TABLE \"item_extra\" (\n" +
-                "\t\"id\" int(10) UNSIGNED NOT NULL AUTO_INCREMENT, \n" +
-                "\t\"item_id\" int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '商品id', \n" +
-                "\t\"type\" tinyint(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '扩展属性类型，0：虚拟商品', \n" +
-                "\t\"attr_key\" varchar(50) NOT NULL COMMENT '扩展属性key', \n" +
-                "\t\"attr_value\" varchar(500) NOT NULL COMMENT '扩展属性value', \n" +
-                "\tPRIMARY KEY ('id'), \n" +
-                "\tKEY \"idx_item_type_kv\" ('item_id', 'type', 'attr_key', 'attr_value'(191))\n" +
+                "\t\"id\" int(10) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
+                "\t\"item_id\" int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '商品id',\n" +
+                "\t\"type\" tinyint(4) UNSIGNED NOT NULL DEFAULT '0' COMMENT '扩展属性类型，0：虚拟商品',\n" +
+                "\t\"attr_key\" varchar(50) NOT NULL COMMENT '扩展属性key',\n" +
+                "\t\"attr_value\" varchar(500) NOT NULL COMMENT '扩展属性value',\n" +
+                "\tPRIMARY KEY (\"id\"),\n" +
+                "\tKEY \"idx_item_type_kv\" (\"item_id\", \"type\", \"attr_key\", \"attr_value\"(191))\n" +
                 ")", output);
     }
 }

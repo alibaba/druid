@@ -27,4 +27,9 @@ public class MySqlUseIndexHint extends MySqlIndexHintImpl {
         visitor.endVisit(this);
     }
 
+    public MySqlUseIndexHint clone() {
+        MySqlUseIndexHint x = new MySqlUseIndexHint();
+        cloneTo(x);
+        return x;
+    }
 }

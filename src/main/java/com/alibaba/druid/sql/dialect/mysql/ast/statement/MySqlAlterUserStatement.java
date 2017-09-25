@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlAlterUserStatement extends MySqlStatementImpl {
+public class MySqlAlterUserStatement extends MySqlStatementImpl implements SQLAlterStatement {
 
     private final List<SQLExpr> users = new ArrayList<SQLExpr>();
     

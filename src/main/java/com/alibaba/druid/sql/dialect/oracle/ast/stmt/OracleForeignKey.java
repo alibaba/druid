@@ -86,4 +86,21 @@ public class OracleForeignKey extends SQLForeignKeyImpl implements OracleConstra
         this.using = using;
     }
 
+    public void cloneTo(OracleForeignKey x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OracleForeignKey clone() {
+        OracleForeignKey x = new OracleForeignKey();
+        cloneTo(x);
+        return x;
+    }
 }

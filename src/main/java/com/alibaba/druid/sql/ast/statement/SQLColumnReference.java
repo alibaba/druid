@@ -50,4 +50,22 @@ public class SQLColumnReference extends SQLConstraintImpl implements SQLColumnCo
         this.columns = columns;
     }
 
+    public SQLColumnReference clone() {
+        SQLColumnReference x = new SQLColumnReference();
+
+        super.cloneTo(x);
+
+        if (table != null) {
+            x.setTable(table.clone());
+        }
+
+        for (SQLName column : columns) {
+            SQLName columnCloned = column.clone();
+            columnCloned.setParent(x);
+            x.columns.add(columnCloned);
+        }
+
+        return x;
+    }
+
 }

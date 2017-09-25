@@ -23,6 +23,14 @@ public class PGPolygonExpr extends PGExprImpl {
 
     private SQLExpr value;
 
+    public PGPolygonExpr clone() {
+        PGPolygonExpr x = new PGPolygonExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }

@@ -50,7 +50,7 @@ public class OracleAlterTableTest21 extends OracleTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals("ALTER TABLE long_tab"//
-                            + "\n\tDROP COLUMN long_pics", //
+                            + "\n\tDROP COLUMN long_pics;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         Assert.assertEquals(1, visitor.getTables().size());

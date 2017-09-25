@@ -20,7 +20,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE_NULL;
 
-public class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
+public final class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValuableExpr {
 
     public SQLNullExpr(){
 
@@ -47,5 +47,9 @@ public class SQLNullExpr extends SQLExprImpl implements SQLLiteralExpr, SQLValua
     @Override
     public Object getValue() {
         return EVAL_VALUE_NULL;
+    }
+
+    public SQLNullExpr clone() {
+        return new SQLNullExpr();
     }
 }

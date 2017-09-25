@@ -137,8 +137,6 @@ public class ConfigFilter extends FilterAdapter {
     }
 
     public boolean isDecrypt(Properties connectinProperties, Properties configFileProperties) {
-        boolean decrypt = false;
-
         String decrypterId = connectinProperties.getProperty(CONFIG_DECRYPT);
         if (decrypterId == null || decrypterId.length() == 0) {
             if (configFileProperties != null) {
@@ -150,11 +148,7 @@ public class ConfigFilter extends FilterAdapter {
             decrypterId = System.getProperty(SYS_PROP_CONFIG_DECRYPT);
         }
 
-        if ("true".equals(decrypterId)) {
-            decrypt = true;
-        }
-
-        return decrypt;
+        return Boolean.valueOf(decrypterId);
     }
 
     Properties loadPropertyFromConfigFile(Properties connectinProperties) {

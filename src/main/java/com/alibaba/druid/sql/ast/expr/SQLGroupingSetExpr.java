@@ -20,11 +20,22 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLGroupingSetExpr extends SQLExprImpl {
 
     private final List<SQLExpr> parameters = new ArrayList<SQLExpr>();
+
+    public SQLGroupingSetExpr clone() {
+        SQLGroupingSetExpr x = new SQLGroupingSetExpr();
+        for (SQLExpr p : parameters) {
+            SQLExpr p2 = p.clone();
+            p2.setParent(x);
+            x.parameters.add(p2);
+        }
+        return x;
+    }
 
     public List<SQLExpr> getParameters() {
         return parameters;

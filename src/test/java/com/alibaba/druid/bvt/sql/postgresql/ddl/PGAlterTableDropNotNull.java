@@ -21,7 +21,7 @@ public class PGAlterTableDropNotNull extends PGTest {
         print(statementList);
         
         Assert.assertEquals("ALTER TABLE products"
-                + "\n\tALTER COLUMN product_no DROP NOT NULL", stmt.toString());
+                + "\n\tALTER COLUMN product_no DROP NOT NULL;", stmt.toString());
 
         Assert.assertEquals(1, statementList.size());
 

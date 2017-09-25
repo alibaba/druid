@@ -30,7 +30,8 @@ public class MySqlParameterizedOutputVisitorTest_22 extends TestCase {
                 "\t, `f`.`feature`, `f`.`domain_option`, `f`.`version`, `f`.`reference_type`, `f`.`dentry_type`\n" +
                 "\t, `f`.`space_id`, `f`.`extension`, `f`.`creator_id`, `f`.`modifier_id`, `f`.`store_type`\n" +
                 "\t, `f`.`link_mark`, `f`.`content_type`\n" +
-                "FROM (SELECT vfs_dentry.`id`\n" +
+                "FROM (\n" +
+                "\tSELECT vfs_dentry.`id`\n" +
                 "\tFROM vfs_dentry FORCE INDEX (idx_gmt)\n" +
                 "\tWHERE vfs_dentry.`extra_str1` = ?\n" +
                 "\t\tAND vfs_dentry.`biz_id` = ?\n" +
@@ -38,7 +39,7 @@ public class MySqlParameterizedOutputVisitorTest_22 extends TestCase {
                 "\t\tAND vfs_dentry.`user_id` = ?\n" +
                 "\t\tAND vfs_dentry.`dentry_type` = ?\n" +
                 "\tLIMIT ?, ?\n" +
-                "\t) `t`\n" +
+                ") `t`\n" +
                 "\tJOIN vfs_dentry `f` ON `t`.`id` = `f`.`id`\n" +
                 "WHERE `t`.`id` = `f`.`id`\n" +
                 "\tAND `f`.`user_id` = ?", psql);
@@ -75,7 +76,8 @@ public class MySqlParameterizedOutputVisitorTest_22 extends TestCase {
                 "\t, `f`.`feature`, `f`.`domain_option`, `f`.`version`, `f`.`reference_type`, `f`.`dentry_type`\n" +
                 "\t, `f`.`space_id`, `f`.`extension`, `f`.`creator_id`, `f`.`modifier_id`, `f`.`store_type`\n" +
                 "\t, `f`.`link_mark`, `f`.`content_type`\n" +
-                "FROM (SELECT vfs_dentry_001.`id`\n" +
+                "FROM (\n" +
+                "\tSELECT vfs_dentry_001.`id`\n" +
                 "\tFROM vfs_dentry_001 FORCE INDEX (idx_gmt)\n" +
                 "\tWHERE vfs_dentry_001.`extra_str1` = ?\n" +
                 "\t\tAND vfs_dentry_001.`biz_id` = ?\n" +
@@ -83,7 +85,7 @@ public class MySqlParameterizedOutputVisitorTest_22 extends TestCase {
                 "\t\tAND vfs_dentry_001.`user_id` = ?\n" +
                 "\t\tAND vfs_dentry_001.`dentry_type` = ?\n" +
                 "\tLIMIT ?, ?\n" +
-                "\t) `t`\n" +
+                ") `t`\n" +
                 "\tJOIN vfs_dentry_001 `f` ON `t`.`id` = `f`.`id`\n" +
                 "WHERE `t`.`id` = `f`.`id`\n" +
                 "\tAND `f`.`user_id` = ?", buf.toString());

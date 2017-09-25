@@ -41,7 +41,7 @@ public class MySqlSetPasswordTest extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SET PASSWORD FOR 'bob'@'%.example.org' = PASSWORD('cleartext password')", //
+        Assert.assertEquals("SET PASSWORD FOR 'bob'@'%.example.org' = PASSWORD('cleartext password');", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

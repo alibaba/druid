@@ -17,26 +17,40 @@ package com.alibaba.druid.sql.ast;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLParameter extends SQLObjectImpl {
+import java.util.ArrayList;
+import java.util.List;
 
-    private SQLExpr       name;
+public final class SQLParameter extends SQLObjectImpl implements SQLObjectWithDataType {
+
+    private SQLName       name;
     private SQLDataType   dataType;
     private SQLExpr       defaultValue;
     private ParameterType paramType;
+    private boolean       noCopy = false;
+    private boolean       constant = false;
+
+    private SQLName       cursorName;
+    private final List<SQLParameter> cursorParameters = new ArrayList<SQLParameter>();
 
     public SQLExpr getDefaultValue() {
         return defaultValue;
     }
 
     public void setDefaultValue(SQLExpr deaultValue) {
+        if (deaultValue != null) {
+            deaultValue.setParent(this);
+        }
         this.defaultValue = deaultValue;
     }
 
-    public SQLExpr getName() {
+    public SQLName getName() {
         return name;
     }
 
-    public void setName(SQLExpr name) {
+    public void setName(SQLName name) {
+        if (name != null) {
+            name.setParent(this);
+        }
         this.name = name;
     }
 
@@ -45,6 +59,9 @@ public class SQLParameter extends SQLObjectImpl {
     }
 
     public void setDataType(SQLDataType dataType) {
+        if (dataType != null) {
+            dataType.setParent(this);
+        }
         this.dataType = dataType;
     }
     
@@ -71,5 +88,61 @@ public class SQLParameter extends SQLObjectImpl {
         IN, // in
         OUT, // out
         INOUT// inout
+    }
+
+    public boolean isNoCopy() {
+        return noCopy;
+    }
+
+    public void setNoCopy(boolean noCopy) {
+        this.noCopy = noCopy;
+    }
+
+    public boolean isConstant() {
+        return constant;
+    }
+
+    public void setConstant(boolean constant) {
+        this.constant = constant;
+    }
+
+    public List<SQLParameter> getCursorParameters() {
+        return cursorParameters;
+    }
+
+    public SQLName getCursorName() {
+        return cursorName;
+    }
+
+    public void setCursorName(SQLName cursorName) {
+        if (cursorName != null) {
+            cursorName.setParent(this);
+        }
+        this.cursorName = cursorName;
+    }
+
+    public SQLParameter clone() {
+        SQLParameter x = new SQLParameter();
+        if (name != null) {
+            x.setName(name.clone());
+        }
+        if (dataType != null) {
+            x.setDataType(dataType.clone());
+        }
+        if (defaultValue != null) {
+            x.setDefaultValue(defaultValue.clone());
+        }
+        x.paramType = paramType;
+        x.noCopy = noCopy;
+        x.constant = constant;
+        if (cursorName != null) {
+            x.setCursorName(cursorName.clone());
+        }
+        for (SQLParameter p : cursorParameters) {
+            SQLParameter p2 = p.clone();
+            p2.setParent(x);
+            x.cursorParameters.add(p2);
+        }
+        return x;
     }
 }

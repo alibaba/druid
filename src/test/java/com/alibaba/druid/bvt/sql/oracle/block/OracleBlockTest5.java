@@ -17,6 +17,8 @@ package com.alibaba.druid.bvt.sql.oracle.block;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.OracleTest;
@@ -46,13 +48,14 @@ public class OracleBlockTest5 extends OracleTest {
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-        print(statementList);
+        SQLStatement stmt = statementList.get(0);
+        String output = SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE);
+        System.out.println(output);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+        stmt.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -66,9 +69,13 @@ public class OracleBlockTest5 extends OracleTest {
          Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tab_ipay_out_order_ids")));
          Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ipay_contract")));
 
-        Assert.assertEquals(7, visitor.getColumns().size());
+        Assert.assertEquals(5, visitor.getColumns().size());
         Assert.assertEquals(3, visitor.getConditions().size());
 
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
+         Assert.assertTrue(visitor.containsColumn("escrow_trade", "id"));
+         Assert.assertTrue(visitor.containsColumn("escrow_trade", "out_order_id"));
+         Assert.assertTrue(visitor.containsColumn("tab_ipay_out_order_ids", "out_order_id"));
+         Assert.assertTrue(visitor.containsColumn("ipay_contract", "is_chargeback"));
+         Assert.assertTrue(visitor.containsColumn("ipay_contract", "out_ref"));
     }
 }

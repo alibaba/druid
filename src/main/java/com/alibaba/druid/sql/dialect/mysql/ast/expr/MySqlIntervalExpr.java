@@ -28,6 +28,15 @@ public class MySqlIntervalExpr extends SQLExprImpl implements MySqlExpr {
     public MySqlIntervalExpr(){
     }
 
+    public MySqlIntervalExpr clone() {
+        MySqlIntervalExpr x = new MySqlIntervalExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        x.unit = unit;
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }

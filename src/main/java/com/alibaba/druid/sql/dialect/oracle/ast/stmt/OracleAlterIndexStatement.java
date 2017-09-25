@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleAlterIndexStatement extends OracleStatementImpl {
+public class OracleAlterIndexStatement extends OracleStatementImpl implements OracleAlterStatement {
 
     private SQLName name;
 

@@ -17,12 +17,12 @@ package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatementImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
-public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerObjectImpl implements SQLServerStatement {
+public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerStatementImpl implements SQLServerStatement {
 
     private String level;
-    private String dbType;
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
@@ -36,13 +36,5 @@ public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerObj
 
     public void setLevel(String level) {
         this.level = level;
-    }
-
-    public String getDbType() {
-        return dbType;
-    }
-    
-    public void setDbType(String dbType) {
-        this.dbType = dbType;
     }
 }

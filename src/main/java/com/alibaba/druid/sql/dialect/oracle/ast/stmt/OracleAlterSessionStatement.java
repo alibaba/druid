@@ -21,7 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleAlterSessionStatement extends OracleStatementImpl {
+public class OracleAlterSessionStatement extends OracleStatementImpl implements OracleAlterStatement {
 
     private List<SQLAssignItem> items = new ArrayList<SQLAssignItem>();
 

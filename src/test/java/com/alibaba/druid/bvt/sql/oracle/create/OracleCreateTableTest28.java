@@ -57,7 +57,7 @@ public class OracleCreateTableTest28 extends OracleTest {
                 + "\n\t\tCONSTRAINT check_divname CHECK (div_name = UPPER(div_name)) DISABLE," //
                 + "\n\toffice VARCHAR2(10)" //
                 + "\n\t\tCONSTRAINT check_office CHECK (office IN ('DALLAS', 'BOSTON', 'PARIS', 'TOKYO')) DISABLE" //
-                + "\n)",//
+                + "\n);",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

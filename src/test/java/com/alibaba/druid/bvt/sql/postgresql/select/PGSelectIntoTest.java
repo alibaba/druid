@@ -55,12 +55,12 @@ public class PGSelectIntoTest extends PGTest {
         Assert.assertEquals(result,"SELECT *" //
                 + "\nINTO films_recent" //
                 + "\nFROM films" //
-                + "\nWHERE date_prod >= '2002-01-01'");
+                + "\nWHERE date_prod >= '2002-01-01';");
         
         String result_lcase = SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
         Assert.assertEquals(result_lcase,"select *" //
                 + "\ninto films_recent" //
                 + "\nfrom films" //
-                + "\nwhere date_prod >= '2002-01-01'");
+                + "\nwhere date_prod >= '2002-01-01';");
 	}
 }

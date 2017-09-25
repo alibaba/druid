@@ -45,7 +45,7 @@ public class OracleInsertTest13 extends OracleTest {
         Assert.assertEquals("INSERT INTO bonuses" //
                             + "\nSELECT employee_id, salary * 1.1"//
                             + "\nFROM employees"//
-                            + "\nWHERE commission_pct > 0.25",//
+                            + "\nWHERE commission_pct > 0.25;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();

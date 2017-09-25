@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleExitStatement extends OracleStatementImpl {
+    private String label;
 
     private SQLExpr when;
 
@@ -27,6 +28,9 @@ public class OracleExitStatement extends OracleStatementImpl {
     }
 
     public void setWhen(SQLExpr when) {
+        if (when != null) {
+            when.setParent(this);
+        }
         this.when = when;
     }
 
@@ -38,4 +42,11 @@ public class OracleExitStatement extends OracleStatementImpl {
         visitor.endVisit(this);
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

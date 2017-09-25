@@ -79,6 +79,9 @@ public abstract class PreparedStatementBase extends StatementBase implements Pre
 
     @Override
     public void setInt(int parameterIndex, int x) throws SQLException {
+        for (int i = parameters.size(); i < parameterIndex; ++i) {
+            parameters.add(null);
+        }
         parameters.add(parameterIndex - 1, x);
     }
 

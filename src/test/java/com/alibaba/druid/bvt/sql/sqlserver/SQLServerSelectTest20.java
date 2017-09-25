@@ -31,14 +31,14 @@ public class SQLServerSelectTest20 extends TestCase {
         String expect = "SELECT First_Name + ' ' + Last AS Name" //
                         + "\nFROM Employees" //
                         + "\nORDER BY First_Name" //
-                        + "\nOFFSET 10 ROWS";
+                        + "\nOFFSET 10 ROWS;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
 
         String text = TestUtils.outputSqlServer(stmt);
 
-        Assert.assertEquals(expect, text);
+        assertEquals(expect, text);
 
 //        System.out.println(text);
     }

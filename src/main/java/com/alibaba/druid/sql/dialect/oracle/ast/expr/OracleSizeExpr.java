@@ -61,4 +61,15 @@ public class OracleSizeExpr extends OracleSQLObjectImpl implements OracleExpr {
     public static enum Unit {
         K, M, G, T, P, E
     }
+
+    public OracleSizeExpr clone() {
+        OracleSizeExpr x = new OracleSizeExpr();
+
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        x.unit = unit;
+
+        return x;
+    }
 }

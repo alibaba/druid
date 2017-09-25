@@ -17,6 +17,7 @@ package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.JdbcConstants;
@@ -38,7 +39,8 @@ public class MySqlWallProvider extends WallProvider {
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new MySqlStatementParser(sql);
+        return new MySqlStatementParser(sql, SQLParserFeature.EnableSQLBinaryOpExprGroup
+        );
     }
 
     @Override

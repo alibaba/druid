@@ -41,7 +41,7 @@ public class MySqlDropUserTest extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("DROP USER 'jeffrey'@'localhost'", //
+        Assert.assertEquals("DROP USER 'jeffrey'@'localhost';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

@@ -35,7 +35,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
         OdpsCreateTableStatement stmt = new OdpsCreateTableStatement();
         
         if (acceptCreate) {
@@ -44,7 +44,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
         
         accept(Token.TABLE);
 
-        if (lexer.token() == Token.IF || identifierEquals("IF")) {
+        if (lexer.token() == Token.IF || lexer.identifierEquals("IF")) {
             lexer.nextToken();
             accept(Token.NOT);
             accept(Token.EXISTS);
@@ -54,7 +54,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
 
         stmt.setName(this.exprParser.name());
         
-        if (identifierEquals("LIFECYCLE")) {
+        if (lexer.identifierEquals("LIFECYCLE")) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
         }
@@ -79,7 +79,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             for (;;) {
                 if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("expect identifier");
+                    throw new ParserException("expect identifier. " + lexer.info());
                 }
                 
                 SQLColumnDefinition column = this.exprParser.parseColumn();
@@ -114,7 +114,7 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             for (;;) {
                 if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("expect identifier");
+                    throw new ParserException("expect identifier. " + lexer.info());
                 }
                 
                 SQLColumnDefinition column = this.exprParser.parseColumn();
@@ -136,8 +136,35 @@ public class OdpsCreateTableParser extends SQLCreateTableParser {
             
             accept(Token.RPAREN);
         }
+
+        if (lexer.identifierEquals("CLUSTERED")) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+            this.exprParser.names(stmt.getClusteredBy());
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.identifierEquals("SORTED")) {
+            lexer.nextToken();
+            accept(Token.BY);
+            accept(Token.LPAREN);
+            this.exprParser.names(stmt.getSortedBy());
+            accept(Token.RPAREN);
+        }
+
+        if (stmt.getClusteredBy().size() > 0 || stmt.getSortedBy().size() > 0) {
+            accept(Token.INTO);
+            if (lexer.token() == Token.LITERAL_INT) {
+                stmt.setBuckets(lexer.integerValue().intValue());
+                lexer.nextToken();
+            } else {
+                throw new ParserException("into buckets must be integer. " + lexer.info());
+            }
+            acceptIdentifier("BUCKETS");
+        }
         
-        if (identifierEquals("LIFECYCLE")) {
+        if (lexer.identifierEquals("LIFECYCLE")) {
             lexer.nextToken();
             stmt.setLifecycle(this.exprParser.expr());
         }

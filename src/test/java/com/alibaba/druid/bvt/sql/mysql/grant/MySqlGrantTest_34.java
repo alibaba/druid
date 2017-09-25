@@ -41,7 +41,7 @@ public class MySqlGrantTest_34 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT USAGE ON *.* TO 'bob'@'%.example.org' IDENTIFIED BY 'cleartext password'", //
+        Assert.assertEquals("GRANT USAGE ON *.* TO 'bob'@'%.example.org' IDENTIFIED BY 'cleartext password';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

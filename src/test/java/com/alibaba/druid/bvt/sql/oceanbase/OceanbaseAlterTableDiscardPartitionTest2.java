@@ -37,13 +37,13 @@ public class OceanbaseAlterTableDiscardPartitionTest2 extends MysqlTest {
         {
             String result = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("ALTER TABLE tnrange"
-                    + "\n\tDISCARD PARTITION ALL",
+                    + "\n\tDISCARD PARTITION ALL;",
                                 result);
         }
         {
             String result = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("alter table tnrange"
-                    + "\n\tdiscard partition all",
+                    + "\n\tdiscard partition all;",
                                 result);
         }
 

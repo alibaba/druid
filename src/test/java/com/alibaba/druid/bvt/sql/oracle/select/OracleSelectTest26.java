@@ -61,7 +61,7 @@ public class OracleSelectTest26 extends OracleTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("wl_wh_in")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("wl_wh_out")));
 
-        Assert.assertEquals(21, visitor.getColumns().size());
+        Assert.assertEquals(20, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

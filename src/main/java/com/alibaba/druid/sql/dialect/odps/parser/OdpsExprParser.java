@@ -24,26 +24,42 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsUDTFSQLSelectItem;
 import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class OdpsExprParser extends SQLExprParser {
+import java.util.Arrays;
 
-    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", //
-            "COUNT", //
-            "LAG",
-            "LEAD",
-            "MAX", //
-            "MIN", //
-            "STDDEV", //
-            "SUM", //
-            "ROW_NUMBER",
-            "WM_CONCAT"//
-                                                     };
+public class OdpsExprParser extends SQLExprParser {
+    public final static String[] AGGREGATE_FUNCTIONS;
+
+    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = { "AVG", //
+                "COUNT", //
+                "LAG",
+                "LEAD",
+                "MAX", //
+                "MIN", //
+                "STDDEV", //
+                "SUM", //
+                "ROW_NUMBER",
+                "WM_CONCAT"//
+        };
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FnvHash.fnv1a_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
 
     public OdpsExprParser(Lexer lexer){
         super(lexer, JdbcConstants.ODPS);
 
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     public OdpsExprParser(String sql){
@@ -137,23 +153,18 @@ public class OdpsExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
     
-    public SQLExpr equalityRest(SQLExpr expr) {
-        if (lexer.token() == Token.EQEQ) {
-            SQLExpr rightExp;
-            lexer.nextToken();
-            try {
-                rightExp = bitOr();
-            } catch (EOFParserException e) {
-                throw new ParserException("EOF, " + expr + "=", e);
-            }
-            rightExp = equalityRest(rightExp);
 
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp, getDbType());
-            
-            return expr;
+    public SQLExpr relationalRest(SQLExpr expr) {
+        if (lexer.identifierEquals("REGEXP")) {
+            lexer.nextToken();
+            SQLExpr rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.RegExp, rightExp, JdbcConstants.MYSQL);
         }
-        
-        return super.equalityRest(expr);
+
+        return super.relationalRest(expr);
     }
 
     @Override

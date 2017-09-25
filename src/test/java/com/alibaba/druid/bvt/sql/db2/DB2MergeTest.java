@@ -38,15 +38,15 @@ public class DB2MergeTest extends DB2Test {
         DB2StatementParser parser = new DB2StatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement stmt = statementList.get(0);
-        print(statementList);
 
+        System.out.println(stmt);
         Assert.assertEquals(1, statementList.size());
 
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
@@ -54,8 +54,8 @@ public class DB2MergeTest extends DB2Test {
         Assert.assertEquals(4, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sales")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("product")));
+        Assert.assertTrue(visitor.containsTable("sales"));
+        Assert.assertTrue(visitor.containsTable("product"));
 
 //         Assert.assertTrue(visitor.getColumns().contains(new Column("DSN8B10.EMP", "WORKDEPT")));
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
@@ -63,12 +63,12 @@ public class DB2MergeTest extends DB2Test {
 
         Assert.assertEquals("MERGE INTO product T"
                 + "\nUSING sales S ON (S.id = T.id) "
-                + "\nWHEN MATCHED THEN UPDATE SET inventory = T.inventory - S.sold", //
+                + "\nWHEN MATCHED THEN UPDATE SET inventory = T.inventory - S.sold;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         
         Assert.assertEquals("merge into product T"
                 + "\nusing sales S on (S.id = T.id) "
-                + "\nwhen matched then update set inventory = T.inventory - S.sold", //
+                + "\nwhen matched then update set inventory = T.inventory - S.sold;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

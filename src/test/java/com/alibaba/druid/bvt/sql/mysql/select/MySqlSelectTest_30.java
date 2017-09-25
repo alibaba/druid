@@ -55,14 +55,14 @@ public class MySqlSelectTest_30 extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT name"
                     + "\nFROM tab1"
-                    + "\nFOR UPDATE NO_WAIT", //
+                    + "\nFOR UPDATE NOWAIT", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select name"
                     + "\nfrom tab1"
-                    + "\nfor update no_wait", //
+                    + "\nfor update nowait", //
                                 output);
         }
     }

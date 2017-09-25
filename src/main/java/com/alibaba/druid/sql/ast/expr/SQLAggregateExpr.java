@@ -19,17 +19,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLExprImpl;
-import com.alibaba.druid.sql.ast.SQLKeep;
-import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.SQLOver;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
-public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
+public class SQLAggregateExpr extends SQLExprImpl implements Serializable, SQLReplaceable {
 
     private static final long     serialVersionUID = 1L;
+
     protected String              methodName;
+    protected long                methodNameHashCod64;
+
     protected SQLAggregateOption  option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
     protected SQLKeep             keep;
@@ -52,6 +53,13 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+    }
+
+    public long methodNameHashCod64() {
+        if (methodNameHashCod64 == 0) {
+            methodNameHashCod64 = FnvHash.hashCode64(methodName);
+        }
+        return methodNameHashCod64;
     }
 
     public SQLOrderBy getWithinGroup() {
@@ -115,12 +123,18 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         this.ignoreNulls = ignoreNulls;
     }
 
+    public String toString() {
+        return SQLUtils.toSQLString(this);
+    }
+
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.arguments);
+            acceptChild(visitor, this.keep);
             acceptChild(visitor, this.over);
+            acceptChild(visitor, this.withinGroup);
         }
 
         visitor.endVisit(this);
@@ -176,4 +190,66 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         return true;
     }
 
+    public SQLAggregateExpr clone() {
+        SQLAggregateExpr x = new SQLAggregateExpr(methodName);
+
+        x.option = option;
+
+        for (SQLExpr arg : arguments) {
+            x.addArgument(arg.clone());
+        }
+
+        if (keep != null) {
+            x.setKeep(keep.clone());
+        }
+
+        if (over != null) {
+            x.setOver(over.clone());
+        }
+
+        if (withinGroup != null) {
+            x.setWithinGroup(withinGroup.clone());
+        }
+
+        x.ignoreNulls = ignoreNulls;
+
+        return x;
+    }
+
+    public SQLDataType computeDataType() {
+        long hash = methodNameHashCod64();
+
+        if (hash == FnvHash.Constants.COUNT
+                || hash == FnvHash.Constants.ROW_NUMBER) {
+            return SQLIntegerExpr.DEFAULT_DATA_TYPE;
+        }
+
+        if (arguments.size() > 0) {
+            SQLDataType dataType = arguments.get(0).computeDataType();
+            if (dataType != null) {
+                return dataType;
+            }
+        }
+
+        if (hash == FnvHash.Constants.WM_CONAT
+                || hash == FnvHash.Constants.GROUP_CONCAT) {
+            return SQLCharExpr.DEFAULT_DATA_TYPE;
+        }
+
+        return null;
+    }
+
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (target == null) {
+            return false;
+        }
+        for (int i = 0; i < arguments.size(); ++i) {
+            if (arguments.get(i) == expr) {
+                arguments.set(i, target);
+                target.setParent(this);
+                return true;
+            }
+        }
+        return false;
+    }
 }

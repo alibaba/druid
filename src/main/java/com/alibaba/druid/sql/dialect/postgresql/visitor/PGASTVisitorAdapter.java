@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGBoxExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCidrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGCircleExpr;
@@ -28,17 +26,10 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGMacAddrExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPointExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGPolygonExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGTypeCastExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.*;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGValuesQuery;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVisitor {
@@ -73,27 +64,6 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
     @Override
     public boolean visit(ForClause x) {
 
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGWithQuery x) {
-
-    }
-
-    @Override
-    public boolean visit(PGWithQuery x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(PGWithClause x) {
-
-    }
-
-    @Override
-    public boolean visit(PGWithClause x) {
         return true;
     }
 
@@ -285,6 +255,16 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
     
     @Override
     public boolean visit(PGShowStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(PGStartTransactionStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGStartTransactionStatement x) {
         return true;
     }
 

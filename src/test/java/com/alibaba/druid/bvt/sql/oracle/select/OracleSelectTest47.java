@@ -55,8 +55,7 @@ public class OracleSelectTest47 extends OracleTest {
 
         Assert.assertEquals("SELECT *" //
                             + "\nFROM abc" //
-                            + "\nWHERE model = ?;" //
-                            + "\n", text);
+                            + "\nWHERE model = ?", text);
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("acduser.vw_acd_info", "xzqh")));
 

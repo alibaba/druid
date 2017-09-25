@@ -16,6 +16,7 @@
 package com.alibaba.druid.wall;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WallContext {
@@ -32,6 +33,8 @@ public class WallContext {
     private int                                   updateNoneConditionWarnings  = 0;
     private int                                   deleteNoneConditionWarnings  = 0;
     private int                                   likeNumberWarnings           = 0;
+
+    private List<WallUpdateCheckItem>             wallUpdateCheckItems;
 
     public WallContext(String dbType){
         this.dbType = dbType;
@@ -186,4 +189,11 @@ public class WallContext {
         this.deleteNoneConditionWarnings++;
     }
 
+    public List<WallUpdateCheckItem> getWallUpdateCheckItems() {
+        return wallUpdateCheckItems;
+    }
+
+    public void setWallUpdateCheckItems(List<WallUpdateCheckItem> wallUpdateCheckItems) {
+        this.wallUpdateCheckItems = wallUpdateCheckItems;
+    }
 }

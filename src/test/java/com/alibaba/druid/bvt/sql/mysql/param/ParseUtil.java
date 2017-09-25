@@ -4,7 +4,6 @@ package com.alibaba.druid.bvt.sql.mysql.param;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
@@ -43,7 +42,7 @@ public class ParseUtil {
         //  return DML_1_PATTERN.matcher(querySql).find() || DML_2_PATTERN.matcher(querySql).find();
         return statement instanceof SQLSelectStatement ||
                 statement instanceof SQLInsertStatement ||
-                statement instanceof MySqlReplaceStatement ||
+                statement instanceof SQLReplaceStatement ||
                 statement instanceof SQLUpdateStatement ||
                 statement instanceof SQLDeleteStatement;
     }

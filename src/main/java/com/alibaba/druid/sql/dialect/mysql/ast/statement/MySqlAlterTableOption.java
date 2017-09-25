@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -22,11 +24,15 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 public class MySqlAlterTableOption extends MySqlObjectImpl implements SQLAlterTableItem {
 
     private String name;
-    private Object value;
+    private SQLObject value;
 
-    public MySqlAlterTableOption(String name, Object value){
+    public MySqlAlterTableOption(String name, String value){
+        this(name, new SQLIdentifierExpr(value));
+    }
+
+    public MySqlAlterTableOption(String name, SQLObject value){
         this.name = name;
-        this.value = value;
+        this.setValue(value);
     }
 
     public MySqlAlterTableOption(){
@@ -46,11 +52,11 @@ public class MySqlAlterTableOption extends MySqlObjectImpl implements SQLAlterTa
         this.name = name;
     }
 
-    public Object getValue() {
+    public SQLObject getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(SQLObject value) {
         this.value = value;
     }
 

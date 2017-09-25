@@ -41,7 +41,7 @@ public class SQLServerRowNumberTest extends TestCase {
                         + "\n\tINNER JOIN Person.Contact c ON s.SalesPersonID = c.ContactID"
                         + "\n\tINNER JOIN Person.Address a ON a.AddressID = c.ContactID" //
                         + "\nWHERE TerritoryID IS NOT NULL" //
-                        + "\n\tAND SalesYTD <> 0";
+                        + "\n\tAND SalesYTD <> 0;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

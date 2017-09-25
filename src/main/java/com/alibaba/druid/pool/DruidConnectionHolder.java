@@ -44,7 +44,7 @@ public final class DruidConnectionHolder {
 
     private final static Log                    LOG                      = LogFactory.getLog(DruidConnectionHolder.class);
 
-    private final DruidAbstractDataSource       dataSource;
+    protected final DruidAbstractDataSource       dataSource;
     private final long                          connectionId;
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
@@ -145,7 +145,10 @@ public final class DruidConnectionHolder {
             this.underlyingTransactionIsolation = conn.getTransactionIsolation();
         } catch (SQLException e) {
             // compartible for alibaba corba
-            if (!"HY000".equals(e.getSQLState())) {
+            if ("HY000".equals(e.getSQLState())
+                    || "com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName())) {
+                // skip
+            } else {
                 throw e;
             }
         }

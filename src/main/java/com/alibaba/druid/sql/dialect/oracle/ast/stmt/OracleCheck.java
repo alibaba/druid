@@ -84,4 +84,21 @@ public class OracleCheck extends SQLCheck implements OracleConstraint, OracleSQL
         this.using = using;
     }
 
+    public void cloneTo(OracleCheck x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OracleCheck clone() {
+        OracleCheck x = new OracleCheck();
+        cloneTo(x);
+        return x;
+    }
 }
