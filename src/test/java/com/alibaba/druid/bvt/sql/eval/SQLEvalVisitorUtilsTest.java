@@ -1,14 +1,15 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
+import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.TestCase;
+import org.junit.Assert;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SQLEvalVisitorUtilsTest extends TestCase {
 
@@ -167,5 +168,13 @@ public class SQLEvalVisitorUtilsTest extends TestCase {
                             SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? >= ?", Arrays.<Object> asList(2, 3)));
         Assert.assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? >= ?", Arrays.<Object> asList(3, 3)));
         Assert.assertEquals(true, SQLEvalVisitorUtils.evalExpr(JdbcUtils.MYSQL, "? >= ?", Arrays.<Object> asList(4, 3)));
+    }
+
+    public void test_binary() throws Exception {
+        Assert.assertEquals(1L, SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("01"), new ArrayList<Object>()));
+        Assert.assertEquals(2L, SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("10"), new ArrayList<Object>()));
+        Assert.assertEquals(3L, SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("11"), new ArrayList<Object>()));
+        Assert.assertEquals(4L, SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("100"), new ArrayList<Object>()));
+        Assert.assertEquals(new BigInteger("36893488147419103231"), SQLEvalVisitorUtils.eval(JdbcUtils.MYSQL, new SQLBinaryExpr("11111111111111111111111111111111111111111111111111111111111111111"), new ArrayList<Object>()));
     }
 }
