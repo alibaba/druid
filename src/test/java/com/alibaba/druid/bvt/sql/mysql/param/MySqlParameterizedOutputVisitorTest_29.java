@@ -69,7 +69,7 @@ public class MySqlParameterizedOutputVisitorTest_29 extends TestCase {
         StringBuilder buf = new StringBuilder();
         SQLASTOutputVisitor visitor1 = SQLUtils.createOutputVisitor(buf, dbType);
         visitor1.addTableMapping("xx_abcde_ta", "xx_abcde_ta_0018");
-        visitor1.setParameters(visitor.getParameters());
+        visitor1.setInputParameters(visitor.getParameters());
         pstmt.accept(visitor1);
 
         assertEquals("SELECT `a1`.`id`, `a1`.`gmt_create`, `a1`.`gmt_modified`, `a1`.`push_date`, `a1`.`parent_task_id`\n" +

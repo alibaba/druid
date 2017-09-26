@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateProcedureStatement extends SQLStatementImpl {
+public class SQLCreateProcedureStatement extends SQLStatementImpl implements SQLCreateStatement {
 
     private SQLName            definer;
 
@@ -38,6 +38,13 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
     private String             javaCallSpec;
 
     private SQLName            authid;
+
+    // for mysql
+    private boolean            deterministic;
+    private boolean            containsSql;
+    private boolean            noSql;
+    private boolean            readSqlData;
+    private boolean            modifiesSqlData;
 
     @Override
     public void accept0(SQLASTVisitor visitor) {
@@ -118,5 +125,55 @@ public class SQLCreateProcedureStatement extends SQLStatementImpl {
 
     public void setJavaCallSpec(String javaCallSpec) {
         this.javaCallSpec = javaCallSpec;
+    }
+
+    public boolean isDeterministic() {
+        return deterministic;
+    }
+
+    public void setDeterministic(boolean deterministic) {
+        this.deterministic = deterministic;
+    }
+
+    public boolean isContainsSql() {
+        return containsSql;
+    }
+
+    public void setContainsSql(boolean containsSql) {
+        this.containsSql = containsSql;
+    }
+
+    public boolean isNoSql() {
+        return noSql;
+    }
+
+    public void setNoSql(boolean noSql) {
+        this.noSql = noSql;
+    }
+
+    public boolean isReadSqlData() {
+        return readSqlData;
+    }
+
+    public void setReadSqlData(boolean readSqlData) {
+        this.readSqlData = readSqlData;
+    }
+
+    public boolean isModifiesSqlData() {
+        return modifiesSqlData;
+    }
+
+    public void setModifiesSqlData(boolean modifiesSqlData) {
+        this.modifiesSqlData = modifiesSqlData;
+    }
+
+    public SQLParameter findParameter(long hash) {
+        for (SQLParameter param : this.parameters) {
+            if (param.getName().nameHashCode64() == hash) {
+                return param;
+            }
+        }
+
+        return null;
     }
 }

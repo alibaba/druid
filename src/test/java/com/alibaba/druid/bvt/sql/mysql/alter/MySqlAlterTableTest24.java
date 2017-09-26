@@ -34,6 +34,6 @@ public class MySqlAlterTableTest24 extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE xxxxx"
         		+ "\n\tMODIFY COLUMN f0 DEFAULT '0',"
-        		+ "\n\tMODIFY COLUMN f1 DEFAULT '0'", output);
+        		+ "\n\tMODIFY COLUMN f1 DEFAULT '0';", output);
     }
 }

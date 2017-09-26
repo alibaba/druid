@@ -28,7 +28,7 @@ public class SQLServerGrantTest_2 extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.SQL_SERVER);
-        Assert.assertEquals("GRANT IMPERSONATE ON USER::HamithaL TO AccountsPayable17", output);
+        Assert.assertEquals("GRANT IMPERSONATE ON USER::HamithaL TO AccountsPayable17;", output);
 
         Assert.assertEquals(0, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());

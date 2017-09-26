@@ -98,8 +98,7 @@ public class OracleCreateTableTest62 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
-                        "PARTITION BY RANGE (\"GMT_VOUCHER_RECEIVE\")\n" +
-                        "(\n" +
+                        "PARTITION BY RANGE (\"GMT_VOUCHER_RECEIVE\") (\n" +
                         "\tPARTITION \"PONLY\" VALUES LESS THAN (MAXVALUE)\n" +
                         "\t\tPCTFREE 10\n" +
                         "\t\tPCTUSED 40\n" +
@@ -110,6 +109,10 @@ public class OracleCreateTableTest62 extends OracleTest {
                         "\t\tTABLESPACE \"NIRVANA1M\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 1048576\n" +
+                        "\t\t\tNEXT 131072\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -132,6 +135,6 @@ public class OracleCreateTableTest62 extends OracleTest {
 
         Assert.assertEquals(18, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "MEMBER_ID")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "MEMBER_ID"));
     }
 }

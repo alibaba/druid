@@ -21,11 +21,7 @@ import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.druid.sql.parser.Keywords;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.NotAllowCommentException;
-import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.parser.*;
 
 public class OracleLexer extends Lexer {
 
@@ -114,6 +110,12 @@ public class OracleLexer extends Lexer {
         map.put("FETCH", Token.FETCH);
         map.put("TABLESPACE", Token.TABLESPACE);
         map.put("PARTITION", Token.PARTITION);
+        map.put("TRUE", Token.TRUE);
+        map.put("FALSE", Token.FALSE);
+
+        map.put("，", Token.COMMA);
+        map.put("（", Token.LPAREN);
+        map.put("）", Token.RPAREN);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -125,18 +127,25 @@ public class OracleLexer extends Lexer {
 
     public OracleLexer(String input){
         super(input);
+        this.skipComment = true;
+        this.keepComments = true;
         super.keywods = DEFAULT_ORACLE_KEYWORDS;
     }
 
-    public void scanVariable() {
-        if (ch == '@') {
-            scanChar();
-            token = Token.MONKEYS_AT;
-            return;
-        }
+    public OracleLexer(String input, SQLParserFeature... features){
+        super(input);
+        this.skipComment = true;
+        this.keepComments = true;
+        super.keywods = DEFAULT_ORACLE_KEYWORDS;
 
+        for (SQLParserFeature feature : features) {
+            config(feature, true);
+        }
+    }
+
+    public void scanVariable() {
         if (ch != ':' && ch != '#' && ch != '$') {
-            throw new ParserException("illegal variable");
+            throw new ParserException("illegal variable. " + info());
         }
 
         mark = pos;
@@ -168,13 +177,13 @@ public class OracleLexer extends Lexer {
 
         if (quoteFlag) {
             if (ch != '"') {
-                throw new ParserException("syntax error");
+                throw new ParserException("syntax error. " + info());
             }
             ++pos;
             bufPos++;
         } else if (mybatisFlag) {
             if (ch != '}') {
-                throw new ParserException("syntax error");
+                throw new ParserException("syntax error" + info());
             }
             ++pos;
             bufPos++;
@@ -189,6 +198,12 @@ public class OracleLexer extends Lexer {
         } else {
             token = Token.VARIANT;
         }
+    }
+
+    protected void scanVariable_at() {
+        scanChar();
+        token = Token.MONKEYS_AT;
+        return;
     }
 
     public void scanComment() {
@@ -234,7 +249,7 @@ public class OracleLexer extends Lexer {
                 stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
                 token = Token.HINT;
             } else {
-                stringVal = subString(mark, bufPos);
+                stringVal = subString(mark, bufPos + 1);
                 token = Token.MULTI_LINE_COMMENT;
                 commentCount++;
                 if (keepComments) {
@@ -280,7 +295,7 @@ public class OracleLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark + 1, bufPos);
+            stringVal = subString(mark, ch != EOI ? bufPos : bufPos + 1);
             token = Token.LINE_COMMENT;
             commentCount++;
             if (keepComments) {

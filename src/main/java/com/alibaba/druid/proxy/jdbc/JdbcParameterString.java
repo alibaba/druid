@@ -22,6 +22,8 @@ public final class JdbcParameterString implements JdbcParameter {
 
     private final String value;
 
+    public final static JdbcParameterString empty = new JdbcParameterString("");
+
     public JdbcParameterString(String value){
         this.value = value;
     }

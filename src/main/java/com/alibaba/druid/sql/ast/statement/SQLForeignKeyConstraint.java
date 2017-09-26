@@ -23,6 +23,7 @@ public interface SQLForeignKeyConstraint extends SQLConstraint, SQLTableElement,
 
     List<SQLName> getReferencingColumns();
 
+    SQLExprTableSource getReferencedTable();
     SQLName getReferencedTableName();
 
     void setReferencedTableName(SQLName value);

@@ -36,6 +36,15 @@ public class SQLUnaryExpr extends SQLExprImpl implements Serializable {
         this.setExpr(expr);
     }
 
+    public SQLUnaryExpr clone() {
+        SQLUnaryExpr x = new SQLUnaryExpr();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        x.operator = operator;
+        return x;
+    }
+
     public SQLUnaryOperator getOperator() {
         return operator;
     }

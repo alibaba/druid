@@ -15,6 +15,11 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.Utils;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +29,9 @@ import java.util.Map;
 public class Keywords {
 
     private final Map<String, Token> keywords;
+
+    private long[] hashArray;
+    private Token[] tokens;
 
     public final static Keywords     DEFAULT_KEYWORDS;
 
@@ -169,11 +177,38 @@ public class Keywords {
 
     public Keywords(Map<String, Token> keywords){
         this.keywords = keywords;
+
+        this.hashArray = new long[keywords.size()];
+        this.tokens = new Token[keywords.size()];
+
+        int index = 0;
+        for (String k : keywords.keySet()) {
+            hashArray[index++] = Utils.fnv_64_lower(k);
+        }
+        Arrays.sort(hashArray);
+        for (Map.Entry<String, Token> entry : keywords.entrySet()) {
+            long k = Utils.fnv_64_lower(entry.getKey());
+            index = Arrays.binarySearch(hashArray, k);
+            tokens[index] = entry.getValue();
+        }
+    }
+
+    public Token getKeyword(long hash) {
+        int index = Arrays.binarySearch(hashArray, hash);
+        if (index < 0) {
+            return null;
+        }
+        return tokens[index];
     }
 
     public Token getKeyword(String key) {
-        key = key.toUpperCase();
-        return keywords.get(key);
+        long k = Utils.fnv_64_lower(key);
+        int index = Arrays.binarySearch(hashArray, k);
+        if (index < 0) {
+            return null;
+        }
+        return tokens[index];
+//        return keywords.get(key);
     }
 
     public Map<String, Token> getKeywords() {

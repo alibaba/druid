@@ -18,5 +18,5 @@ package com.alibaba.druid.sql.ast.expr;
 import com.alibaba.druid.sql.ast.SQLExpr;
 
 public interface SQLLiteralExpr extends SQLExpr {
-    
+    SQLLiteralExpr clone();
 }

@@ -29,8 +29,8 @@ public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
     }
 
     public OracleRangeExpr(SQLExpr lowBound, SQLExpr upBound){
-        this.lowBound = lowBound;
-        this.upBound = upBound;
+        setLowBound(lowBound);
+        setUpBound(upBound);
     }
 
     @Override
@@ -47,6 +47,9 @@ public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
     }
 
     public void setLowBound(SQLExpr lowBound) {
+        if (lowBound != null) {
+            lowBound.setParent(this);
+        }
         this.lowBound = lowBound;
     }
 
@@ -55,6 +58,9 @@ public class OracleRangeExpr extends OracleSQLObjectImpl implements SQLExpr {
     }
 
     public void setUpBound(SQLExpr upBound) {
+        if (upBound != null) {
+            upBound.setParent(this);
+        }
         this.upBound = upBound;
     }
 

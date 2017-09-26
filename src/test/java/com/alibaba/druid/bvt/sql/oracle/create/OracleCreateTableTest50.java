@@ -249,7 +249,40 @@ public class OracleCreateTableTest50 extends OracleTest {
                         "STORAGE (\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
                         ")\n" +
-                        "PARTITION BY HASH (\"COMPANY_ID\")",//
+                        "PARTITION BY HASH (\"COMPANY_ID\") (\n" +
+                        "\tPARTITION \"PRODUCT_HASH_P1\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P2\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P3\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P4\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P5\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P6\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P7\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P8\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P9\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P10\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P11\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P12\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P13\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P14\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P15\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\", \n" +
+                        "\tPARTITION \"PRODUCT_HASH_P16\"\n" +
+                        "\t\tTABLESPACE \"APPDATA1M\"\n" +
+                        ")",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
@@ -265,6 +298,6 @@ public class OracleCreateTableTest50 extends OracleTest {
 
         Assert.assertEquals(58, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "ID")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "ID"));
     }
 }

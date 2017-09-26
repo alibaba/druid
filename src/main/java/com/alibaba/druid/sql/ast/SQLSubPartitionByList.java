@@ -41,4 +41,11 @@ public class SQLSubPartitionByList extends SQLSubPartitionBy {
         this.column = column;
     }
 
+    public SQLSubPartitionByList clone() {
+        SQLSubPartitionByList x = new SQLSubPartitionByList();
+        if (column != null) {
+            x.setColumn(column.clone());
+        }
+        return x;
+    }
 }

@@ -23,6 +23,15 @@ public class PGExtractExpr extends PGExprImpl {
     private PGDateField field;
     private SQLExpr     source;
 
+    public PGExtractExpr clone() {
+        PGExtractExpr x = new PGExtractExpr();
+        x.field = field;
+        if (source != null) {
+            x.setSource(source.clone());
+        }
+        return x;
+    }
+
     public PGDateField getField() {
         return field;
     }
@@ -36,6 +45,9 @@ public class PGExtractExpr extends PGExprImpl {
     }
 
     public void setSource(SQLExpr source) {
+        if (source != null) {
+            source.setParent(this);
+        }
         this.source = source;
     }
 

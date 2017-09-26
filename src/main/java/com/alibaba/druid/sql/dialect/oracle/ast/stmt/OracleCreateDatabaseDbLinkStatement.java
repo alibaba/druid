@@ -17,9 +17,10 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleCreateDatabaseDbLinkStatement extends OracleStatementImpl {
+public class OracleCreateDatabaseDbLinkStatement extends OracleStatementImpl implements SQLCreateStatement {
 
     private boolean shared;
     private boolean _public;

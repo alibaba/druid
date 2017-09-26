@@ -77,6 +77,27 @@ public class OracleLockTableStatement extends OracleStatementImpl {
     }
 
     public static enum LockMode {
-        EXCLUSIVE, SHARE
+        ROW_SHARE,
+        ROW_EXCLUSIVE,
+        SHARE_UPDATE,
+        SHARE,
+        SHARE_ROW_EXCLUSIVE,
+        EXCLUSIVE,
+        ;
+
+        public String toString() {
+            switch (this) {
+                case ROW_SHARE:
+                    return "ROW SHARE";
+                case ROW_EXCLUSIVE:
+                    return "ROW EXCLUSIVE";
+                case SHARE_UPDATE:
+                    return "SHARE UPDATE";
+                case SHARE_ROW_EXCLUSIVE:
+                    return "SHARE ROW EXCLUSIVE";
+                default:
+                    return this.name();
+            }
+        }
     }
 }

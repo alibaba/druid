@@ -44,6 +44,12 @@ public class WebURIStatValue {
     @MField(aggregate = AggregateType.Sum)
     protected long                      requestTimeNano;
 
+    @MField(aggregate = AggregateType.Max)
+    protected long                      requestTimeNanoMax;
+
+    @MField(aggregate = AggregateType.Last)
+    protected Date                      requestTimeNanoMaxOccurTime;
+
     @MField(aggregate = AggregateType.Sum)
     protected long                      jdbcFetchRowCount;
 
@@ -175,6 +181,26 @@ public class WebURIStatValue {
 
     public void setRequestTimeNano(long requestTimeNano) {
         this.requestTimeNano = requestTimeNano;
+    }
+
+    public long getRequestTimeNanoMax() {
+        return requestTimeNanoMax;
+    }
+
+    public void setRequestTimeNanoMax(long requestTimeNanoMax) {
+        this.requestTimeNanoMax = requestTimeNanoMax;
+    }
+
+    public Date getRequestTimeNanoMaxOccurTime() {
+        return requestTimeNanoMaxOccurTime;
+    }
+
+    public void setRequestTimeNanoMaxOccurTime(long requestTimeNanoMaxOccurTime) {
+        if (requestTimeNanoMaxOccurTime > 0) {
+            this.requestTimeNanoMaxOccurTime = new Date(requestTimeNanoMaxOccurTime);
+        } else {
+            this.requestTimeNanoMaxOccurTime = null;
+        }
     }
 
     public long getJdbcFetchRowCount() {
@@ -309,6 +335,10 @@ public class WebURIStatValue {
         return getRequestTimeNano() / (1000 * 1000);
     }
 
+    public long getRequestTimeMillisMax() {
+        return getRequestTimeNanoMax() / (1000 * 1000);
+    }
+
     public Date getLastAccessTime() {
         return lastAccessTime;
     }
@@ -357,6 +387,9 @@ public class WebURIStatValue {
             }
             data.put("Profiles", profileDataList);
         }
+
+        data.put("RequestTimeMillisMax", this.getRequestTimeMillisMax());
+        data.put("RequestTimeMillisMaxOccurTime", this.getRequestTimeNanoMaxOccurTime());
 
         return data;
     }

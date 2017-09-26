@@ -40,8 +40,7 @@ public class OracleCreateViewTest0 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE OR REPLACE VIEW \"SC0\".\"V_001\"\n" +
-                        "(\n" +
+        Assert.assertEquals("CREATE OR REPLACE VIEW \"SC0\".\"V_001\" (\n" +
                         "\t\"ID\", \n" +
                         "\t\"GROUP_ID\", \n" +
                         "\t\"IND_BY_ALL\", \n" +

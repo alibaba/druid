@@ -726,4 +726,36 @@ public interface SQLASTVisitor {
     boolean visit(SQLCommitStatement x);
 
     void endVisit(SQLCommitStatement x);
+
+    boolean visit(SQLFlashbackExpr x);
+
+    void endVisit(SQLFlashbackExpr x);
+
+    boolean visit(SQLCreateMaterializedViewStatement x);
+
+    void endVisit(SQLCreateMaterializedViewStatement x);
+
+    boolean visit(SQLBinaryOpExprGroup x);
+
+    void endVisit(SQLBinaryOpExprGroup x);
+
+    boolean visit(SQLScriptCommitStatement x);
+
+    void endVisit(SQLScriptCommitStatement x);
+
+    boolean visit(SQLReplaceStatement x);
+
+    void endVisit(SQLReplaceStatement x);
+
+    boolean visit(SQLCreateUserStatement x);
+
+    void endVisit(SQLCreateUserStatement x);
+
+    boolean visit(SQLAlterFunctionStatement x);
+
+    void endVisit(SQLAlterFunctionStatement x);
+
+    boolean visit(SQLAlterTypeStatement x);
+
+    void endVisit(SQLAlterTypeStatement x);
 }

@@ -47,6 +47,7 @@ public interface JdbcConstants {
     public static final String MYSQL             = "mysql";
     public static final String MYSQL_DRIVER      = "com.mysql.jdbc.Driver";
     public static final String MYSQL_DRIVER_6    = "com.mysql.cj.jdbc.Driver";
+    public static final String MYSQL_DRIVER_REPLICATE = "com.mysql.jdbc.";
 
     public static final String MARIADB           = "mariadb";
     public static final String MARIADB_DRIVER    = "org.mariadb.jdbc.Driver";
@@ -66,6 +67,9 @@ public interface JdbcConstants {
     
     public static final String KINGBASE          = "kingbase";
     public static final String KINGBASE_DRIVER   = "com.kingbase.Driver";
+
+    public static final String GBASE             = "gbase";
+    public static final String GBASE_DRIVER      = "com.gbase.jdbc.Driver";
 
     public static final String OCEANBASE         = "oceanbase";
     public static final String OCEANBASE_DRIVER  = "com.mysql.jdbc.Driver";
@@ -99,4 +103,12 @@ public interface JdbcConstants {
 
     public static final String SQLITE              = "sqlite";
     public static final String SQLITE_DRIVER       = "org.sqlite.JDBC";
+
+    public static final String ALIYUN_ADS          = "aliyun_ads";
+    public static final String ALIYUN_DRDS         = "aliyun_drds";
+
+    public static final String PRESTO              = "presto";
+
+    public static final String ELASTIC_SEARCH      = "elastic_search";
+    String ELASTIC_SEARCH_DRIVER                   = "com.alibaba.xdriver.elastic.jdbc.ElasticDriver";
 }

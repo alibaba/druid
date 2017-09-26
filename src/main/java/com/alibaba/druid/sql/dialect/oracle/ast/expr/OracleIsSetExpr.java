@@ -31,11 +31,22 @@ public class OracleIsSetExpr extends SQLExprImpl implements OracleExpr {
         this.nestedTable = nestedTable;
     }
 
+    public OracleIsSetExpr clone() {
+        OracleIsSetExpr x = new OracleIsSetExpr();
+        if (nestedTable != null) {
+            x.setNestedTable(nestedTable.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getNestedTable() {
         return nestedTable;
     }
 
     public void setNestedTable(SQLExpr nestedTable) {
+        if (nestedTable != null) {
+            nestedTable.setParent(this);
+        }
         this.nestedTable = nestedTable;
     }
 

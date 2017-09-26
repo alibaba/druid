@@ -58,10 +58,10 @@ public class DB2SelectTest_7 extends DB2Test {
         // Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
 
         Assert.assertEquals("SELECT DISTINCT id" //
-                            + "\nFROM DSN81010.EMP", //
+                            + "\nFROM DSN81010.EMP;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2));
         Assert.assertEquals("select distinct id" //
-                            + "\nfrom DSN81010.EMP", //
+                            + "\nfrom DSN81010.EMP;", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.DB2, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

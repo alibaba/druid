@@ -17,15 +17,16 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelectTableSource {
 
     protected OracleSelectPivotBase pivot;
-    protected FlashbackQueryClause  flashback;
 
     public OracleSelectJoin(String alias){
         super(alias);
@@ -35,12 +36,8 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     }
 
-    public FlashbackQueryClause getFlashback() {
-        return flashback;
-    }
-
-    public void setFlashback(FlashbackQueryClause flashback) {
-        this.flashback = flashback;
+    public OracleSelectJoin(SQLTableSource left, JoinType joinType, SQLTableSource right, SQLExpr condition){
+        super (left, joinType, right, condition);
     }
 
     public OracleSelectPivotBase getPivot() {
@@ -127,5 +124,30 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         }
 
         return x;
+    }
+
+    public void setLeft(String tableName) {
+        SQLExprTableSource tableSource;
+        if (tableName == null || tableName.length() == 0) {
+            tableSource = null;
+        } else {
+            tableSource = new OracleSelectTableReference(new SQLIdentifierExpr(tableName));
+        }
+        this.setLeft(tableSource);
+    }
+
+    public void setRight(String tableName) {
+        SQLExprTableSource tableSource;
+        if (tableName == null || tableName.length() == 0) {
+            tableSource = null;
+        } else {
+            tableSource = new OracleSelectTableReference(new SQLIdentifierExpr(tableName));
+        }
+        this.setRight(tableSource);
+    }
+
+    public SQLJoinTableSource join(SQLTableSource right, JoinType joinType, SQLExpr condition) {
+        SQLJoinTableSource joined = new OracleSelectJoin(this, joinType, right, condition);
+        return joined;
     }
 }

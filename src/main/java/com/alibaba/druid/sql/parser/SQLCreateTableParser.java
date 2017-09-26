@@ -18,60 +18,60 @@ package com.alibaba.druid.sql.parser;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.ast.statement.SQLConstraint;
-import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLCreateTableParser extends SQLDDLParser {
 
-    public SQLCreateTableParser(String sql){
+    public SQLCreateTableParser(String sql) {
         super(sql);
     }
 
-    public SQLCreateTableParser(SQLExprParser exprParser){
+    public SQLCreateTableParser(SQLExprParser exprParser) {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCrateTable() {
+    public SQLCreateTableStatement parseCreateTable() {
         List<String> comments = null;
         if (lexer.isKeepComments() && lexer.hasComment()) {
             comments = lexer.readAndResetComments();
         }
-        
-        SQLCreateTableStatement stmt = parseCrateTable(true);
+
+        SQLCreateTableStatement stmt = parseCreateTable(true);
         if (comments != null) {
             stmt.addBeforeComment(comments);
         }
-        
+
         return stmt;
     }
 
-    public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) {
+    public SQLCreateTableStatement parseCreateTable(boolean acceptCreate) {
+        SQLCreateTableStatement createTable = newCreateStatement();
+
         if (acceptCreate) {
+            if (lexer.hasComment() && lexer.isKeepComments()) {
+                createTable.addBeforeComment(lexer.readAndResetComments());
+            }
+
             accept(Token.CREATE);
         }
 
-        SQLCreateTableStatement createTable = newCreateStatement();
-
-        if (identifierEquals("GLOBAL")) {
+        if (lexer.identifierEquals("GLOBAL")) {
             lexer.nextToken();
 
-            if (identifierEquals("TEMPORARY")) {
+            if (lexer.identifierEquals("TEMPORARY")) {
                 lexer.nextToken();
                 createTable.setType(SQLCreateTableStatement.Type.GLOBAL_TEMPORARY);
             } else {
-                throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
+                throw new ParserException("syntax error " + lexer.info());
             }
-        } else if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("LOCAL")) {
+        } else if (lexer.token == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("LOCAL")) {
             lexer.nextToken();
-            if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("TEMPORAY")) {
+            if (lexer.token == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("TEMPORAY")) {
                 lexer.nextToken();
                 createTable.setType(SQLCreateTableStatement.Type.LOCAL_TEMPORARY);
             } else {
-                throw new ParserException("syntax error");
+                throw new ParserException("syntax error. " + lexer.info());
             }
         }
 
@@ -79,38 +79,38 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
         createTable.setName(this.exprParser.name());
 
-        if (lexer.token() == Token.LPAREN) {
+        if (lexer.token == Token.LPAREN) {
             lexer.nextToken();
 
-            for (;;) {
-                Token token = lexer.token();
+            for (; ; ) {
+                Token token = lexer.token;
                 if (token == Token.IDENTIFIER
                         && lexer.stringVal().equalsIgnoreCase("SUPPLEMENTAL")
                         && JdbcConstants.ORACLE.equals(dbType)) {
                     this.parseCreateTableSupplementalLogingProps(createTable);
                 } else if (token == Token.IDENTIFIER //
-                    || token == Token.LITERAL_ALIAS) {
+                        || token == Token.LITERAL_ALIAS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
                 } else if (token == Token.PRIMARY //
-                           || token == Token.UNIQUE //
-                           || token == Token.CHECK //
-                           || token == Token.CONSTRAINT
-                           || token == Token.FOREIGN) {
+                        || token == Token.UNIQUE //
+                        || token == Token.CHECK //
+                        || token == Token.CONSTRAINT
+                        || token == Token.FOREIGN) {
                     SQLConstraint constraint = this.exprParser.parseConstaint();
                     constraint.setParent(createTable);
                     createTable.getTableElementList().add((SQLTableElement) constraint);
                 } else if (token == Token.TABLESPACE) {
-                    throw new ParserException("TODO " + token);
+                    throw new ParserException("TODO "  + lexer.info());
                 } else {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
                 }
 
-                if (lexer.token() == Token.COMMA) {
+                if (lexer.token == Token.COMMA) {
                     lexer.nextToken();
 
-                    if (lexer.token() == Token.RPAREN) { // compatible for sql server
+                    if (lexer.token == Token.RPAREN) { // compatible for sql server
                         break;
                     }
                     continue;
@@ -130,13 +130,19 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             accept(Token.RPAREN);
 
-            if (identifierEquals("INHERITS")) {
+            if (lexer.identifierEquals("INHERITS")) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 SQLName inherits = this.exprParser.name();
                 createTable.setInherits(new SQLExprTableSource(inherits));
                 accept(Token.RPAREN);
             }
+        }
+
+        if (lexer.token == Token.AS) {
+            lexer.nextToken();
+            SQLSelect select = this.createSQLSelectParser().select();
+            createTable.setSelect(select);
         }
 
         return createTable;
@@ -149,5 +155,4 @@ public class SQLCreateTableParser extends SQLDDLParser {
     protected SQLCreateTableStatement newCreateStatement() {
         return new SQLCreateTableStatement(getDbType());
     }
-
 }

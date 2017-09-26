@@ -130,6 +130,8 @@ public enum Token {
     SHOW("SHOW"),
     REPLACE("REPLACE"),
 
+    BITS,
+
     // MySql procedure add by zz
     WHILE("WHILE"),
     DO("DO"),
@@ -256,7 +258,7 @@ public enum Token {
     LITERAL_HEX,
     LITERAL_CHARS,
     LITERAL_NCHARS,
-    
+
     LITERAL_ALIAS,
     LINE_COMMENT,
     MULTI_LINE_COMMENT,
@@ -299,7 +301,8 @@ public enum Token {
     DOTDOTDOT("..,"), 
     EQ("="), 
     GT(">"), 
-    LT("<"), 
+    LT("<"),
+    LT_SUB_GT("<->"),
     BANG("!"),
     BANGBANG("!!"),
     BANG_TILDE("!~"),
@@ -314,7 +317,8 @@ public enum Token {
     COLON(":"), 
     COLONCOLON("::"), 
     COLONEQ(":="), 
-    EQEQ("=="), 
+    EQEQ("=="),
+    EQGT("=>"),
     LTEQ("<="), 
     LTEQGT("<=>"), 
     LTGT("<>"), 
@@ -334,7 +338,8 @@ public enum Token {
     SLASH("/"), 
     AMP("&"), 
     BAR("|"), 
-    CARET("^"), 
+    CARET("^"),
+    CARETEQ("^="),
     PERCENT("%"), 
     LTLT("<<"), 
     GTGT(">>"),

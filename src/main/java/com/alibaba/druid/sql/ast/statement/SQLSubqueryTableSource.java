@@ -67,14 +67,51 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
         buf.append(")");
     }
 
-    public SQLSubqueryTableSource clone() {
-        SQLSubqueryTableSource x = new SQLSubqueryTableSource();
-
+    public void cloneTo(SQLSubqueryTableSource x) {
         x.alias = alias;
 
         if (select != null) {
             x.select = select.clone();
         }
+    }
+
+    public SQLSubqueryTableSource clone() {
+        SQLSubqueryTableSource x = new SQLSubqueryTableSource();
+        cloneTo(x);
         return x;
+    }
+
+    public SQLTableSource findTableSourceWithColumn(String columnName) {
+        if (select == null) {
+            return null;
+        }
+
+        SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+        if (queryBlock == null) {
+            return null;
+        }
+
+        if (queryBlock.findSelectItem(columnName) != null) {
+            return this;
+        }
+
+        return null;
+    }
+
+    public SQLTableSource findTableSourceWithColumn(long columnNameHash) {
+        if (select == null) {
+            return null;
+        }
+
+        SQLSelectQueryBlock queryBlock = select.getFirstQueryBlock();
+        if (queryBlock == null) {
+            return null;
+        }
+
+        if (queryBlock.findSelectItem(columnNameHash) != null) {
+            return this;
+        }
+
+        return null;
     }
 }

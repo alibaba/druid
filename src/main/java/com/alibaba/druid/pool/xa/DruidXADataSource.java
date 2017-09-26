@@ -68,7 +68,7 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
             }
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || JdbcUtils.MARIADB.equals(dbType)) {
             return MySqlUtils.createXAConnection(driver, physicalConn);
         }
 

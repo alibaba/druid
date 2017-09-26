@@ -46,4 +46,14 @@ public abstract class MySqlIndexHintImpl extends MySqlObjectImpl implements MySq
         this.indexList = indexList;
     }
 
+    public abstract MySqlIndexHintImpl clone();
+
+    public void cloneTo(MySqlIndexHintImpl x) {
+        x.option = option;
+        for (SQLName name : indexList) {
+            SQLName name2 = name.clone();
+            name2.setParent(x);
+            x.indexList.add(name2);
+        }
+    }
 }

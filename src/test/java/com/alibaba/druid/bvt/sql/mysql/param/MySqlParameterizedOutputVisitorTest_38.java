@@ -32,8 +32,11 @@ public class MySqlParameterizedOutputVisitorTest_38 extends TestCase {
         visitor.setParameterizedMergeInList(true);
         //   visitor.setParameters(parameters);
         visitor.setExportTables(true);
-        visitor.setPrettyFormat(false);
+        visitor.setPrettyFormat(true);
         statement.accept(visitor);
-        assertEquals("SELECT lower(hex(file_md5)) AS file_md5, lower(hex(thumb)) AS thumb, st FROM t_f_p_thumb WHERE file_md5 = ?", out.toString());
+        assertEquals("SELECT lower(hex(file_md5)) AS file_md5\n" +
+                "\t, lower(hex(thumb)) AS thumb, st\n" +
+                "FROM t_f_p_thumb\n" +
+                "WHERE file_md5 = ?", out.toString());
     }
 }

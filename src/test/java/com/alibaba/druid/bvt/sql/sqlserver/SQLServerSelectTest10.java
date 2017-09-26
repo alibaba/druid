@@ -42,7 +42,7 @@ public class SQLServerSelectTest10 extends TestCase {
                         "\n\tJOIN HumanResources.Employee e ON e.ContactID = c.ContactID" + //
                         "\n\tJOIN HumanResources.EmployeeAddress ea ON ea.EmployeeID = e.EmployeeID" + //
                         "\n\tJOIN Person.Address a ON a.AddressID = ea.AddressID" + //
-                        "\n\tJOIN Person.StateProvince sp ON sp.StateProvinceID = a.StateProvinceID";
+                        "\n\tJOIN Person.StateProvince sp ON sp.StateProvinceID = a.StateProvinceID;";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

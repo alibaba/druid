@@ -45,7 +45,7 @@ public class OracleInsertTest6 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
 
         Assert.assertEquals(9, visitor.getTables().size());
-        Assert.assertEquals(42, visitor.getColumns().size());
+        Assert.assertEquals(36, visitor.getColumns().size());
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("raises")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 //

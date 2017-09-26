@@ -21,9 +21,8 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 public class ProfileEntryStat {
 
-    private volatile long                                         executeCount     = 0;
-    private volatile long                                         executeTimeNanos = 0;
-
+    private volatile     long                                     executeCount            = 0;
+    private volatile     long                                     executeTimeNanos        = 0;
     private static final AtomicLongFieldUpdater<ProfileEntryStat> executeCountUpdater;
     private static final AtomicLongFieldUpdater<ProfileEntryStat> executeTimeNanosUpdater;
 
@@ -36,7 +35,7 @@ public class ProfileEntryStat {
         ProfileEntryStatValue val = new ProfileEntryStatValue();
 
         val.setExecuteCount(get(this, executeCountUpdater, reset));
-        val.setExecuteTimeNanos(get(this, executeCountUpdater, reset));
+        val.setExecuteTimeNanos(get(this, executeTimeNanosUpdater, reset));
 
         return val;
     }

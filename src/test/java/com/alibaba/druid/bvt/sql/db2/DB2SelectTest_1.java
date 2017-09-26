@@ -42,8 +42,8 @@ public class DB2SelectTest_1 extends DB2Test {
         DB2SchemaStatVisitor visitor = new DB2SchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 //        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
@@ -60,7 +60,7 @@ public class DB2SelectTest_1 extends DB2Test {
         String output = SQLUtils.toSQLString(stmt, JdbcConstants.DB2);
         Assert.assertEquals("SELECT *" //
                             + "\nFROM DSN81010.EMP"
-                            + "\nFETCH FIRST 5 ROWS ONLY", //
+                            + "\nFETCH FIRST 5 ROWS ONLY;", //
                             output);
     }
 }

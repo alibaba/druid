@@ -43,7 +43,7 @@ public class SQLServerCreateIndexTest_3 extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         Assert.assertEquals("CREATE NONCLUSTERED INDEX IX_SalesPerson_SalesQuota_SalesYTD" //
-                            + " ON Sales.SalesPerson (SalesQuota, SalesYTD)", //
+                            + " ON Sales.SalesPerson (SalesQuota, SalesYTD);", //
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 
         SQLServerSchemaStatVisitor visitor = new SQLServerSchemaStatVisitor();

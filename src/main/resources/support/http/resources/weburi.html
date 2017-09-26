@@ -37,6 +37,7 @@
 									<th><a id="th-URI" class="lang" langKey="URI">URI</a></th>
 									<th><a id="th-RequestCount" class="lang" langKey="RequestCount">RequestCount</a></th>
 									<th><a id="th-RequestTimeMillis" class="lang" langKey="RequestTimeMillis">RequestTimeMillis</a></th>
+									<th><a id="th-RequestTimeMillisMax" class="lang" langKey="RequestTimeMillisMax">RequestTimeMillisMax</a></th>
 									<th><a id="th-RunningCount" class="lang" langKey="RunningCount">RunningCount</a></th>
 									<th><a id="th-ConcurrentMax" class="lang" langKey="ConcurrentMax">ConcurrentMax</a></th>
 									<th><a id="th-JdbcExecuteCount" class="lang" langKey="JdbcExecuteCount">JdbcExecuteCount</a></th>
@@ -124,6 +125,7 @@
     					html += "<td>" + '<a target="_blank" href="weburi-detail.html?uri='+ encodeURI(stat.URI) + '">' + druid.common.subSqlString(stat.URI, 64) + '</a>' + "</td>";
     					html += "<td>" + replace(stat.RequestCount) + "</td>";
     					html += "<td>" + replace(stat.RequestTimeMillis) + "</td>";
+    					html += "<td>" + replace(stat.RequestTimeMillisMax) + "</td>";
     					html += "<td>" + replace(stat.RunningCount) + "</td>";
     					html += "<td>" + replace(stat.ConcurrentMax) + "</td>";
     					html += "<td>" + replace(stat.JdbcExecuteCount) + "</td>";

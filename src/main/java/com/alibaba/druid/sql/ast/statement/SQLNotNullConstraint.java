@@ -22,8 +22,6 @@ import java.util.List;
 
 public class SQLNotNullConstraint extends SQLConstraintImpl implements SQLColumnConstraint {
 
-
-
     public SQLNotNullConstraint(){
 
     }
@@ -34,4 +32,9 @@ public class SQLNotNullConstraint extends SQLConstraintImpl implements SQLColumn
         visitor.endVisit(this);
     }
 
+    public SQLNotNullConstraint clone() {
+        SQLNotNullConstraint x = new SQLNotNullConstraint();
+        super.cloneTo(x);
+        return x;
+    }
 }

@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.ast;
 
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -38,4 +39,11 @@ public class OracleDataTypeIntervalYear extends SQLDataTypeImpl implements Oracl
         visitor.endVisit(this);
     }
 
+    public OracleDataTypeIntervalYear clone() {
+        OracleDataTypeIntervalYear x = new OracleDataTypeIntervalYear();
+
+        super.cloneTo(x);
+
+        return x;
+    }
 }

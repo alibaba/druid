@@ -45,7 +45,7 @@ public class OracleInsertTest14 extends OracleTest {
         Assert.assertEquals("INSERT INTO raises" //
                             + "\nSELECT employee_id, salary * 1.1"//
                             + "\nFROM employees"//
-                            + "\nWHERE commission_pct > 0.2"//
+                            + "\nWHERE commission_pct > .2"//
                             + "\nLOG ERRORS INTO errlog ('my_bad') REJECT LIMIT 10;",//
                             SQLUtils.toSQLString(stmt, JdbcConstants.ORACLE));
 

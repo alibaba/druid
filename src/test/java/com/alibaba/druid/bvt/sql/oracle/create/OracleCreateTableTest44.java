@@ -65,7 +65,7 @@ public class OracleCreateTableTest44 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+        assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
                         "\t\"PK1\" NUMBER,\n" +
                         "\t\"COL1\" CHAR(1),\n" +
                         "\t\"COL2\" NCHAR(20),\n" +
@@ -85,6 +85,10 @@ public class OracleCreateTableTest44 extends OracleTest {
                         "\t\tTABLESPACE \"USERS\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -103,6 +107,10 @@ public class OracleCreateTableTest44 extends OracleTest {
                         "TABLESPACE \"USERS\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 65536\n" +
+                        "\tNEXT 1048576\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
@@ -114,6 +122,10 @@ public class OracleCreateTableTest44 extends OracleTest {
                         "\tTABLESPACE \"USERS\"\n" +
                         "\tSTORAGE (\n" +
                         "\t\tINITIAL 65536\n" +
+                        "\t\tNEXT 1048576\n" +
+                        "\t\tMINEXTENTS 1\n" +
+                        "\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\tPCTINCREASE 0\n" +
                         "\t\tFREELISTS 1\n" +
                         "\t\tFREELIST GROUPS 1\n" +
                         "\t\tBUFFER_POOL DEFAULT\n" +
@@ -140,6 +152,6 @@ public class OracleCreateTableTest44 extends OracleTest {
 
         Assert.assertEquals(11, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "PK1")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "PK1"));
     }
 }

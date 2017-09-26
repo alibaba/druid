@@ -33,6 +33,6 @@ public class MySqlAlterTableTest26 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE xxxx"
-                + "\n\tUNION = (t1, t2)", output);
+                + "\n\tUNION = (t1, t2);", output);
     }
 }

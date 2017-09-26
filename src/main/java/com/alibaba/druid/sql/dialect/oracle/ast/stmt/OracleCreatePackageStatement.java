@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import org.apache.ibatis.jdbc.SQL;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * Created by wenshao on 23/05/2017.
  */
-public class OracleCreatePackageStatement extends OracleStatementImpl {
+public class OracleCreatePackageStatement extends OracleStatementImpl implements SQLCreateStatement {
     private boolean            orReplace;
     private SQLName name;
 

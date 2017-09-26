@@ -95,4 +95,7 @@ public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements Ora
         this.setValue(number.doubleValue());
     }
 
+    public OracleBinaryDoubleExpr clone() {
+        return new OracleBinaryDoubleExpr(value);
+    }
 }

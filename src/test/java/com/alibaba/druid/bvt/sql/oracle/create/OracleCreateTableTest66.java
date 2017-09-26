@@ -212,6 +212,10 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\tTABLESPACE \"RDP_IDX\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 150994944\n" +
+                        "\t\t\tNEXT 8388608\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -231,8 +235,7 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
-                        "PARTITION BY RANGE (\"LRSJ\")\n" +
-                        "(\n" +
+                        "PARTITION BY RANGE (\"LRSJ\") (\n" +
                         "\tPARTITION \"T_RANGE_V1\" VALUES LESS THAN (TO_DATE(' 2015-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))\n" +
                         "\t\tPCTFREE 80\n" +
                         "\t\tPCTUSED 40\n" +
@@ -243,6 +246,10 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\tTABLESPACE \"RDP_DATA\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 553648128\n" +
+                        "\t\t\tNEXT 16384\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -259,6 +266,10 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\tTABLESPACE \"RDP_DATA\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 553648128\n" +
+                        "\t\t\tNEXT 16384\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -275,6 +286,10 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\tTABLESPACE \"RDP_DATA\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 553648128\n" +
+                        "\t\t\tNEXT 16384\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -291,6 +306,10 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\tTABLESPACE \"RDP_DATA\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 553648128\n" +
+                        "\t\t\tNEXT 16384\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -307,6 +326,10 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\tTABLESPACE \"RDP_DATA\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 553648128\n" +
+                        "\t\t\tNEXT 16384\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -323,6 +346,10 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\tTABLESPACE \"RDP_DATA\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 553648128\n" +
+                        "\t\t\tNEXT 16384\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -339,6 +366,10 @@ public class OracleCreateTableTest66 extends OracleTest {
                         "\t\tTABLESPACE \"RDP_DATA\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 8388608\n" +
+                        "\t\t\tNEXT 8388608\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -361,6 +392,6 @@ public class OracleCreateTableTest66 extends OracleTest {
 
         Assert.assertEquals(52, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "ID")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "ID"));
     }
 }

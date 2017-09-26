@@ -60,6 +60,10 @@ public class OracleCreateTableTest51 extends OracleTest {
                         "TABLESPACE \"APP_DATA1K\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 65536\n" +
+                        "\tNEXT 1048576\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
@@ -79,6 +83,6 @@ public class OracleCreateTableTest51 extends OracleTest {
 
         Assert.assertEquals(3, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "A")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "A"));
     }
 }

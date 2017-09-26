@@ -92,6 +92,7 @@ public enum SQLBinaryOperator {
     Assignment(":=", 169),
 
     PG_And("&&", 140),
+    PG_ST_DISTANCE("<->", 20),
     ;
 
     public static int getPriority(SQLBinaryOperator operator) {
@@ -137,6 +138,8 @@ public enum SQLBinaryOperator {
             case NotRLike:
             case RegExp:
             case NotRegExp:
+            case Is:
+            case IsNot:
                 return true;
             default:
                 return false;

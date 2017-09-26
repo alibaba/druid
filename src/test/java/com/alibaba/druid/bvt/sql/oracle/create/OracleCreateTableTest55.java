@@ -50,7 +50,7 @@ public class OracleCreateTableTest55 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+        assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
                         "\t\"I\" NUMBER,\n" +
                         "\t\"C\" CLOB\n" +
                         ")\n" +
@@ -63,6 +63,10 @@ public class OracleCreateTableTest55 extends OracleTest {
                         "TABLESPACE \"USERS\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 1048576\n" +
+                        "\tNEXT 1048576\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
@@ -72,6 +76,10 @@ public class OracleCreateTableTest55 extends OracleTest {
                         "\tTABLESPACE \"USERS\"\n" +
                         "\tSTORAGE (\n" +
                         "\t\tINITIAL 1048576\n" +
+                        "\t\tNEXT 1048576\n" +
+                        "\t\tMINEXTENTS 1\n" +
+                        "\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\tPCTINCREASE 0\n" +
                         "\t\tFREELISTS 1\n" +
                         "\t\tFREELIST GROUPS 1\n" +
                         "\t\tBUFFER_POOL DEFAULT\n" +
@@ -95,6 +103,6 @@ public class OracleCreateTableTest55 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "I")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "I"));
     }
 }

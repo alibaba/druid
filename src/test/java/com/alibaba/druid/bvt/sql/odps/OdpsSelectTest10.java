@@ -33,16 +33,14 @@ public class OdpsSelectTest10 extends TestCase {
         String sql = "select /* + mapjoin(a) */ "
                 + " a.name, b.fals"
                 + " from abc a join abc1 b  on a.name = b.fals;";//
-        Assert.assertEquals("SELECT /*+ mapjoin(a) */ a.name"
-                + "\n\t, b.fals"
-                + "\nFROM abc a"
-                + "\nJOIN abc1 b"
-                + "\nON a.name = b.fals;", SQLUtils.formatOdps(sql));
-        Assert.assertEquals("select /*+ mapjoin(a) */ a.name"
-                + "\n\t, b.fals"
-                + "\nfrom abc a"
-                + "\njoin abc1 b"
-                + "\non a.name = b.fals;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+        assertEquals("SELECT /*+ mapjoin(a) */ a.name, b.fals\n" +
+                "FROM abc a\n" +
+                "JOIN abc1 b\n" +
+                "ON a.name = b.fals;", SQLUtils.formatOdps(sql));
+        assertEquals("select /*+ mapjoin(a) */ a.name, b.fals\n" +
+                "from abc a\n" +
+                "join abc1 b\n" +
+                "on a.name = b.fals;", SQLUtils.formatOdps(sql, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
         
         List<SQLStatement> statementList = SQLUtils.parseStatements(sql, JdbcConstants.ODPS);
         SQLStatement stmt = statementList.get(0);

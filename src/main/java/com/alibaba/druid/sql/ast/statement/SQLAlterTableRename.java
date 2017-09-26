@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -33,6 +34,20 @@ public class SQLAlterTableRename extends SQLObjectImpl implements SQLAlterTableI
 
     public SQLExprTableSource getTo() {
         return to;
+    }
+
+    public SQLName getToName() {
+        if (to == null) {
+            return null;
+        }
+
+        SQLExpr expr = to.expr;
+
+        if (expr instanceof SQLName) {
+            return (SQLName) expr;
+        }
+
+        return null;
     }
 
     public void setTo(SQLExprTableSource to) {

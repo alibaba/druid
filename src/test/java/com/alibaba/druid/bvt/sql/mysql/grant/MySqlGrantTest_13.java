@@ -41,7 +41,7 @@ public class MySqlGrantTest_13 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT CREATE USER ON mydb.* TO 'someuser'@'somehost'", //
+        Assert.assertEquals("GRANT CREATE USER ON mydb.* TO 'someuser'@'somehost';", //
                             output);
 
 //        System.out.println("Tables : " + visitor.getTables());

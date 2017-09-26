@@ -43,9 +43,6 @@ public class DB2OutputVisitor extends SQLASTOutputVisitor implements DB2ASTVisit
         if (x.isForReadOnly()) {
             println();
             print0(ucase ? "FOR READ ONLY" : "for read only");
-        } else if (x.isForUpdate()) {
-            println();
-            print0(ucase ? "FOR UPDATE" : "for update");
         }
 
         if (x.getIsolation() != null) {

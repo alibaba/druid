@@ -66,8 +66,7 @@ public class OracleCreateTableTest43 extends OracleTest {
                         "\tFLASH_CACHE DEFAULT\n" +
                         "\tCELL_FLASH_CACHE DEFAULT\n" +
                         ")\n" +
-                        "PARTITION BY LIST (\"DNAME\")\n" +
-                        "(\n" +
+                        "PARTITION BY LIST (\"DNAME\") (\n" +
                         "\tPARTITION \"PART02\" VALUES ('SMT', 'SALE')\n" +
                         "\t\tPCTFREE 10\n" +
                         "\t\tPCTUSED 40\n" +
@@ -77,6 +76,10 @@ public class OracleCreateTableTest43 extends OracleTest {
                         "\t\tTABLESPACE \"USERS\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -99,6 +102,6 @@ public class OracleCreateTableTest43 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "DNAME")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "DNAME"));
     }
 }

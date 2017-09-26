@@ -52,14 +52,14 @@ public class MySqlSelectTest_36 extends MysqlTest {
             String output = SQLUtils.toMySqlString(stmt);
             Assert.assertEquals("SELECT *\n" +
                             "FROM mytable t1\n" +
-                            "\tNATURAL LEFT JOIN t2", //
+                            "\tNATURAL LEFT JOIN t2;", //
                                 output);
         }
         {
             String output = SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION);
             Assert.assertEquals("select *\n" +
                             "from mytable t1\n" +
-                            "\tnatural left join t2", //
+                            "\tnatural left join t2;", //
                                 output);
         }
     }

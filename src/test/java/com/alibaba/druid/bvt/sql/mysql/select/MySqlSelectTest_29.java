@@ -38,19 +38,21 @@ public class MySqlSelectTest_29 extends MysqlTest {
         SQLStatement stmt = statementList.get(0);
 //        print(statementList);
 
+        System.out.println(stmt);
+
         Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
-//        System.out.println("coditions : " + visitor.getConditions());
-//        System.out.println("orderBy : " + visitor.getOrderByColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("orderBy : " + visitor.getOrderByColumns());
         
         Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(5, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
+        Assert.assertEquals(6, visitor.getColumns().size());
+        Assert.assertEquals(4, visitor.getConditions().size());
         Assert.assertEquals(0, visitor.getOrderByColumns().size());
         
         {

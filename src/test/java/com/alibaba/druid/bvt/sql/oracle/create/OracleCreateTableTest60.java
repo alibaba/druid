@@ -65,6 +65,10 @@ public class OracleCreateTableTest60 extends OracleTest {
                         "TABLESPACE \"ZEUS_IND\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 50331648\n" +
+                        "\tNEXT 4194304\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
@@ -86,6 +90,6 @@ public class OracleCreateTableTest60 extends OracleTest {
 
         Assert.assertEquals(5, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "MEMBER_ID")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "MEMBER_ID"));
     }
 }

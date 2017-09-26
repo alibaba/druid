@@ -49,4 +49,12 @@ public class SQLReturnStatement extends SQLStatementImpl {
         }
         visitor.endVisit(this);
     }
+
+    public SQLReturnStatement clone() {
+        SQLReturnStatement x = new SQLReturnStatement();
+        if (expr != null) {
+            x.setExpr(expr.clone());
+        }
+        return x;
+    }
 }

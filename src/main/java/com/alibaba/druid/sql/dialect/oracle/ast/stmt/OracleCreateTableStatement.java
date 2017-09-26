@@ -48,8 +48,6 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private OracleStorageClause     storage;
     private OracleLobStorageClause  lobStorage;
 
-    private boolean                 organizationIndex = false;
-
     private Integer                 pctfree;
     private Integer                 pctused;
     private Integer                 initrans;
@@ -60,8 +58,9 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     private Boolean                 compress;
     private Integer                 compressLevel;
     private boolean                 compressForOltp;
-    private boolean                 onCommit;
-    private boolean                 preserveRows;
+
+    private boolean                 onCommitPreserveRows;
+    private boolean                 onCommitDeleteRows;
 
     private Boolean                 cache;
 
@@ -78,6 +77,30 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     private SQLName                 of;
     private OIDIndex                oidIndex;
+    private boolean                 monitoring;
+
+
+    public void simplify() {
+        tablespace = null;
+        storage = null;
+        lobStorage = null;
+
+        pctfree = null;
+        pctused = null;
+        initrans = null;
+        maxtrans = null;
+        pctincrease = null;
+
+        logging = null;
+        compress = null;
+        compressLevel = null;
+        compressForOltp = false;
+
+        onCommitPreserveRows = false;
+        onCommitDeleteRows = false;
+
+        super.simplify();
+    }
     
     public OracleCreateTableStatement() {
         super (JdbcConstants.ORACLE);
@@ -115,20 +138,20 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
         this.cache = cache;
     }
 
-    public boolean isOnCommit() {
-        return onCommit;
+    public boolean isOnCommitPreserveRows() {
+        return onCommitPreserveRows;
     }
 
-    public void setOnCommit(boolean onCommit) {
-        this.onCommit = onCommit;
+    public void setOnCommitPreserveRows(boolean onCommitPreserveRows) {
+        this.onCommitPreserveRows = onCommitPreserveRows;
     }
 
-    public boolean isPreserveRows() {
-        return preserveRows;
+    public boolean isOnCommitDeleteRows() {
+        return onCommitDeleteRows;
     }
 
-    public void setPreserveRows(boolean preserveRows) {
-        this.preserveRows = preserveRows;
+    public void setOnCommitDeleteRows(boolean onCommitDeleteRows) {
+        this.onCommitDeleteRows = onCommitDeleteRows;
     }
 
     public Boolean getLogging() {
@@ -262,6 +285,14 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             oidIndex.setParent(this);
         }
         this.oidIndex = oidIndex;
+    }
+
+    public boolean isMonitoring() {
+        return monitoring;
+    }
+
+    public void setMonitoring(boolean monitoring) {
+        this.monitoring = monitoring;
     }
 
     public boolean isCompressForOltp() {
@@ -458,4 +489,5 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.name = name;
         }
     }
+
 }

@@ -21,11 +21,11 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGShowStatement;
 public class PGShowTest1 extends PGTest {
     public void testShowAll() throws Exception {
         String sql = "show all;";
-        String expected = "SHOW ALL";
+        String expected = "SHOW ALL;";
         testParseSql(sql, expected, expected, PGShowStatement.class);
 
         sql = "show transaction_read_only;";
-        expected = "SHOW transaction_read_only";
+        expected = "SHOW transaction_read_only;";
         testParseSql(sql, expected, expected, PGShowStatement.class);
     }
 }

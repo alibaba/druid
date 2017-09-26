@@ -37,7 +37,7 @@ public class MySqlWallTest87 extends TestCase {
         Assert.assertTrue(provider.checkValid(//
         "CREATE VIEW test.v AS SELECT * FROM t;"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        Assert.assertEquals(2, provider.getTableStats().size());
         Assert.assertTrue(provider.getTableStats().containsKey("t"));
     }
 

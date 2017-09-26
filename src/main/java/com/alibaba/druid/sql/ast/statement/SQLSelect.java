@@ -80,16 +80,28 @@ public class SQLSelect extends SQLObjectImpl {
         this.query = query;
     }
 
+    public SQLSelectQueryBlock getQueryBlock() {
+        if (query instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) query;
+        }
+
+        return null;
+    }
+
     public SQLOrderBy getOrderBy() {
         return this.orderBy;
     }
 
     public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
         this.orderBy = orderBy;
     }
 
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.withSubQuery);
             acceptChild(visitor, this.query);
             acceptChild(visitor, this.restriction);
             acceptChild(visitor, this.orderBy);
@@ -146,7 +158,10 @@ public class SQLSelect extends SQLObjectImpl {
         SQLSelect x = new SQLSelect();
 
         x.withSubQuery = this.withSubQuery;
-        x.query = this.query;
+        if (query != null) {
+            x.setQuery(query.clone());
+        }
+
         if (orderBy != null) {
             x.setOrderBy(this.orderBy.clone());
         }
@@ -183,7 +198,6 @@ public class SQLSelect extends SQLObjectImpl {
 
     public boolean isSimple() {
         return withSubQuery == null
-                && orderBy == null
                 && (hints == null || hints.size() == 0)
                 && restriction == null
                 && (!forBrowse)
@@ -261,4 +275,15 @@ public class SQLSelect extends SQLObjectImpl {
         this.xmlPath = xmlPath;
     }
 
+    public SQLSelectQueryBlock getFirstQueryBlock() {
+        if (query instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) query;
+        }
+
+        if (query instanceof SQLUnionQuery) {
+            return ((SQLUnionQuery) query).getFirstQueryBlock();
+        }
+
+        return null;
+    }
 }

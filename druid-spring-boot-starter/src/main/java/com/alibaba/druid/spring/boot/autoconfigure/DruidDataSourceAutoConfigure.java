@@ -16,54 +16,61 @@
 package com.alibaba.druid.spring.boot.autoconfigure;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.metadata.DruidDataSourcePoolMetadata;
+import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
+import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidFilterConfiguration;
+import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidSpringAopConfiguration;
+import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidStatViewServletConfiguration;
+import com.alibaba.druid.spring.boot.autoconfigure.stat.DruidWebStatFilterConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadata;
+import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvider;
+import org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvidersConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 /**
  * @author lihengming [89921218@qq.com]
  */
 @Configuration
 @ConditionalOnClass(com.alibaba.druid.pool.DruidDataSource.class)
-@EnableConfigurationProperties(DruidStatProperties.class)
-@Import({DruidSpringAopConfiguration.class, DruidStatViewServletConfiguration.class, DruidWebStatFilterConfiguration.class})
+@AutoConfigureBefore(DataSourceAutoConfiguration.class)
+@EnableConfigurationProperties({DruidStatProperties.class, DataSourceProperties.class})
+@Import({DruidSpringAopConfiguration.class,
+        DruidStatViewServletConfiguration.class,
+        DruidWebStatFilterConfiguration.class,
+        DruidFilterConfiguration.class})
 public class DruidDataSourceAutoConfigure {
 
     @Bean
-    @ConfigurationProperties("spring.datasource.druid")
     @ConditionalOnMissingBean
-    public DataSource dataSource(Environment env) {
-        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+    public DataSource dataSource() {
+        return new DruidDataSourceWrapper();
+    }
 
-        //if not found prefix 'spring.datasource.druid' settings,'spring.datasource' prefix settings will be used.
-        if (dataSource.getUsername() == null) {
-            dataSource.setUsername(env.getProperty("spring.datasource.username"));
-        }
-        if (dataSource.getPassword() == null) {
-            dataSource.setPassword(env.getProperty("spring.datasource.password"));
-        }
-        if (dataSource.getUrl() == null) {
-            dataSource.setUrl(env.getProperty("spring.datasource.url"));
-        }
-        if (dataSource.getDriverClassName() == null) {
-            dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-        }
-        // set filters default value on StatViewServlet enabled.
-        if (! "false".equals(env.getProperty("spring.datasource.druid.StatViewServlet.enabled"))) {
-            try {
-                dataSource.setFilters("stat");
-            } catch (SQLException e) {
-                e.printStackTrace();
+    /**
+     * Register the {@link DataSourcePoolMetadataProvider} instances to support DataSource metrics.
+     *
+     * @see DataSourcePoolMetadataProvidersConfiguration
+     */
+    @Bean
+    public DataSourcePoolMetadataProvider druidDataSourcePoolMetadataProvider() {
+        return new DataSourcePoolMetadataProvider() {
+            @Override
+            public DataSourcePoolMetadata getDataSourcePoolMetadata(DataSource dataSource) {
+                if (dataSource instanceof DruidDataSource) {
+                    return new DruidDataSourcePoolMetadata((DruidDataSource) dataSource);
+                }
+                return null;
             }
-        }
-        return dataSource;
+        };
     }
 }

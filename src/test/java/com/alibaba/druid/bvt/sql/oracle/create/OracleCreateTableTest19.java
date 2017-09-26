@@ -55,9 +55,9 @@ public class OracleCreateTableTest19 extends OracleTest {
         SQLStatement statement = statementList.get(0);
         print(statementList);
 
-        Assert.assertEquals(1, statementList.size());
+        assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" (\n" +
+        assertEquals("CREATE TABLE \"SONAR\".\"ACTIVE_DASHBOARDS\" (\n" +
                         "\t\"ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
                         "\t\"DASHBOARD_ID\" NUMBER(38, 0) NOT NULL ENABLE,\n" +
                         "\t\"USER_ID\" NUMBER(38, 0),\n" +
@@ -70,6 +70,10 @@ public class OracleCreateTableTest19 extends OracleTest {
                         "\t\tTABLESPACE \"USERS\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -88,6 +92,10 @@ public class OracleCreateTableTest19 extends OracleTest {
                         "TABLESPACE \"USERS\"\n" +
                         "STORAGE (\n" +
                         "\tINITIAL 65536\n" +
+                        "\tNEXT 1048576\n" +
+                        "\tMINEXTENTS 1\n" +
+                        "\tMAXEXTENTS 2147483645\n" +
+                        "\tPCTINCREASE 0\n" +
                         "\tFREELISTS 1\n" +
                         "\tFREELIST GROUPS 1\n" +
                         "\tBUFFER_POOL DEFAULT\n" +
@@ -109,6 +117,6 @@ public class OracleCreateTableTest19 extends OracleTest {
 
         Assert.assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SONAR.ACTIVE_DASHBOARDS", "ID")));
+        Assert.assertTrue(visitor.containsColumn("SONAR.ACTIVE_DASHBOARDS", "ID"));
     }
 }

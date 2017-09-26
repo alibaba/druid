@@ -48,6 +48,9 @@ public class SQLGrantStatement extends SQLStatementImpl {
     private boolean         adminOption;
 
     private SQLExpr         identifiedBy;
+    private String          identifiedByPassword;
+
+    private boolean         withGrantOption;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -134,5 +137,21 @@ public class SQLGrantStatement extends SQLStatementImpl {
 
     public void setIdentifiedBy(SQLExpr identifiedBy) {
         this.identifiedBy = identifiedBy;
+    }
+
+    public String getIdentifiedByPassword() {
+        return identifiedByPassword;
+    }
+
+    public void setIdentifiedByPassword(String identifiedByPassword) {
+        this.identifiedByPassword = identifiedByPassword;
+    }
+
+    public boolean getWithGrantOption() {
+        return withGrantOption;
+    }
+
+    public void setWithGrantOption(boolean withGrantOption) {
+        this.withGrantOption = withGrantOption;
     }
 }

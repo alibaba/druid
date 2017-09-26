@@ -31,7 +31,7 @@ public class MySqlAlterTableTest2 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) NULL FIRST", output);
+        Assert.assertEquals("ALTER TABLE `test`.`tb1`\n\tADD COLUMN `f2` VARCHAR(45) NULL FIRST;", output);
     }
 
     public void test_alter_add_column() throws Exception {

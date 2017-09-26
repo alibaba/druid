@@ -22,6 +22,14 @@ public class PGBoxExpr extends PGExprImpl {
 
     private SQLExpr value;
 
+    public PGBoxExpr clone() {
+        PGBoxExpr x = new PGBoxExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }

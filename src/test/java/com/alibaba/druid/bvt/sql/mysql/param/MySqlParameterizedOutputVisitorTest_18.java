@@ -36,7 +36,7 @@ public class MySqlParameterizedOutputVisitorTest_18 extends TestCase {
                 "VALUES (NOW(), NOW(), ?, ?, ?\n" +
                 "\t\t, ?, ?, ?, ?, ?\n" +
                 "\t\t, ?, ?, ?, ?, ?\n" +
-                "\t\t, ?)", psql);
+                "\t\t, ?);", psql);
 
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();
@@ -68,6 +68,6 @@ public class MySqlParameterizedOutputVisitorTest_18 extends TestCase {
                 "VALUES (NOW(), NOW(), 123, 'abc', 'abd'\n" +
                 "\t, 'tair:ldbcount:808', 0.0, 2.0, 0, 251\n" +
                 "\t, 0, '172.29.60.62', 2, 1483686655818, 12\n" +
-                "\t, 0)", buf.toString());
+                "\t, 0);", buf.toString());
     }
 }

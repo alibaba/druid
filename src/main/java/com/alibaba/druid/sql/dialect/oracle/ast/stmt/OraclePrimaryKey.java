@@ -22,12 +22,13 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKeyImpl;
+import com.alibaba.druid.sql.ast.statement.SQLTableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement {
+public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstraint, SQLPrimaryKey, SQLTableElement, SQLTableConstraint {
 
     private OracleUsingIndexClause using;
     private SQLName                exceptionsInto;
@@ -57,10 +58,6 @@ public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstra
 
     public void setDeferrable(Boolean deferrable) {
         this.deferrable = deferrable;
-    }
-
-    public List<SQLExpr> getColumns() {
-        return columns;
     }
 
     public OracleUsingIndexClause getUsing() {
@@ -95,4 +92,22 @@ public class OraclePrimaryKey extends SQLPrimaryKeyImpl implements OracleConstra
         this.initially = initially;
     }
 
+    public void cloneTo(OraclePrimaryKey x) {
+        super.cloneTo(x);
+        if (using != null) {
+            x.setUsing(using.clone());
+        }
+        if (exceptionsInto != null) {
+            x.setExceptionsInto(exceptionsInto.clone());
+        }
+        x.enable = enable;
+        x.initially = initially;
+        x.deferrable = deferrable;
+    }
+
+    public OraclePrimaryKey clone() {
+        OraclePrimaryKey x = new OraclePrimaryKey();
+        cloneTo(x);
+        return x;
+    }
 }

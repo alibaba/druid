@@ -48,7 +48,7 @@ public class SQLServerUpdateTest3 extends TestCase {
         		"\n\t\t)" +
         		"\n\t\tAND Sales.SalesPerson.SalesPersonID = so.SalesPersonID" +
         		"\n\tGROUP BY so.SalesPersonID" +
-        		"\n)";
+        		"\n);";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

@@ -43,4 +43,8 @@ public interface WallVisitor extends SQLASTVisitor {
     boolean isSqlEndOfComment();
 
     void setSqlEndOfComment(boolean sqlEndOfComment);
+
+    void addWallUpdateCheckItem(WallUpdateCheckItem item);
+
+    List<WallUpdateCheckItem> getUpdateCheckItems();
 }

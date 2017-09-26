@@ -614,7 +614,7 @@ public class MonitorDaoJdbcImpl implements MonitorDao {
     }
 
     protected long getSqlHash(String sql) {
-        return Utils.murmurhash2_64(sql);
+        return Utils.fnv_64(sql);
     }
 
     static void setParam(PreparedStatement stmt, int paramIndex, String value) throws SQLException {

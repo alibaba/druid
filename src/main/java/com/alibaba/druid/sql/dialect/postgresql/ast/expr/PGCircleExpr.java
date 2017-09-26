@@ -22,6 +22,14 @@ public class PGCircleExpr extends PGExprImpl {
 
     private SQLExpr value;
 
+    public PGCircleExpr clone() {
+        PGCircleExpr x = new PGCircleExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        return x;
+    }
+
     public SQLExpr getValue() {
         return value;
     }

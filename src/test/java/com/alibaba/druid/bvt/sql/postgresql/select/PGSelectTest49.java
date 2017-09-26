@@ -37,35 +37,31 @@ public class PGSelectTest49 extends TestCase {
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
         SQLStatement stmt = stmtList.get(0);
 
-        assertEquals("WITH\n" +
-                "\tsel\n" +
-                "\tAS\n" +
-                "\t(\n" +
+        System.out.println(stmt);
+
+        assertEquals("WITH sel AS (\n" +
                 "\t\tSELECT unnest(ARRAY[4275]) AS gdid, unnest(ARRAY[1]) AS gdnumber\n" +
                 "\t)\n" +
                 "UPDATE goods_detail\n" +
                 "SET gd_number = gd_number - gdnumber\n" +
                 "FROM sel\n" +
-                "WHERE gd_id = gdid", SQLUtils.toPGString(stmt));
+                "WHERE gd_id = gdid;", SQLUtils.toPGString(stmt));
         
-        assertEquals("with\n" +
-                "\tsel\n" +
-                "\tas\n" +
-                "\t(\n" +
+        assertEquals("with sel as (\n" +
                 "\t\tselect unnest(ARRAY[4275]) as gdid, unnest(ARRAY[1]) as gdnumber\n" +
                 "\t)\n" +
                 "update goods_detail\n" +
                 "set gd_number = gd_number - gdnumber\n" +
                 "from sel\n" +
-                "where gd_id = gdid", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                "where gd_id = gdid;", SQLUtils.toPGString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
 
         assertEquals(1, stmtList.size());
 
         SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(dbType);
         stmt.accept(visitor);
 
-//        System.out.println("Tables : " + visitor.getTables());
-//        System.out.println("fields : " + visitor.getColumns());
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getColumns());
 //        System.out.println("coditions : " + visitor.getConditions());
 
         assertEquals(4, visitor.getColumns().size());

@@ -29,7 +29,7 @@ public class SQLServerInsertTest1 extends TestCase {
         		"VALUES ( dbo.CreateNewPoint(x, y) );";
 
         String expect = "INSERT INTO Cities (Location)" + //
-                        "\nVALUES (dbo.CreateNewPoint(x, y))";
+                        "\nVALUES (dbo.CreateNewPoint(x, y));";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

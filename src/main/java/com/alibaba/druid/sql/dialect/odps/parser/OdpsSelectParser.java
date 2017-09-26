@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.odps.ast.OdpsLateralViewTableSource;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.ast.OdpsValuesTableSource;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectListCache;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -35,6 +36,12 @@ public class OdpsSelectParser extends SQLSelectParser {
     public OdpsSelectParser(SQLExprParser exprParser){
         super(exprParser.getLexer());
         this.exprParser = exprParser;
+    }
+
+    public OdpsSelectParser(SQLExprParser exprParser, SQLSelectListCache selectListCache){
+        super(exprParser.getLexer());
+        this.exprParser = exprParser;
+        this.selectListCache = selectListCache;
     }
 
     @Override
@@ -90,7 +97,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             accept(Token.BY);
             this.exprParser.exprList(queryBlock.getDistributeBy(), queryBlock);
 
-            if (identifierEquals("SORT")) {
+            if (lexer.identifierEquals("SORT")) {
                 lexer.nextToken();
                 accept(Token.BY);
                 
@@ -168,7 +175,7 @@ public class OdpsSelectParser extends SQLSelectParser {
             return parseLateralView(tableSource);
         }
         
-        if (identifierEquals("LATERAL")) {
+        if (lexer.identifierEquals("LATERAL")) {
             lexer.nextToken();
             return parseLateralView(tableSource);
         }
@@ -178,7 +185,9 @@ public class OdpsSelectParser extends SQLSelectParser {
 
     protected SQLTableSource parseLateralView(SQLTableSource tableSource) {
         accept(Token.VIEW);
-        tableSource.setAlias(null);
+        if ("LATERAL".equalsIgnoreCase(tableSource.getAlias())) {
+            tableSource.setAlias(null);
+        }
         OdpsLateralViewTableSource lateralViewTabSrc = new OdpsLateralViewTableSource();
         lateralViewTabSrc.setTableSource(tableSource);
         

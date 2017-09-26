@@ -123,7 +123,7 @@ public class OracleCreateTableTest49 extends OracleTest {
 
         Assert.assertEquals(1, statementList.size());
 
-        Assert.assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
+        assertEquals("CREATE TABLE \"SC_001\".\"TB_001\" (\n" +
                         "\t\"ID\" NUMBER NOT NULL ENABLE,\n" +
                         "\t\"GMT_CREATE\" DATE,\n" +
                         "\t\"GMT_MODIFIED\" DATE,\n" +
@@ -186,8 +186,7 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\tCHUNK 8192\n" +
                         "\tNOCACHE\n" +
                         ")\n" +
-                        "PARTITION BY RANGE (\"GMT_CREATE\")\n" +
-                        "(\n" +
+                        "PARTITION BY RANGE (\"GMT_CREATE\") (\n" +
                         "\tPARTITION \"P2008\" VALUES LESS THAN (TO_DATE(' 2009-01-01 00:00:00', 'SYYYY-MM-DD HH24:MI:SS', 'NLS_CALENDAR=GREGORIAN'))\n" +
                         "\t\tPCTFREE 10\n" +
                         "\t\tPCTUSED 40\n" +
@@ -197,6 +196,10 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\t\tTABLESPACE \"APP_DATA1K\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -210,6 +213,10 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\t\tTABLESPACE \"APP_DATA1K\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -223,6 +230,10 @@ public class OracleCreateTableTest49 extends OracleTest {
                         "\t\tTABLESPACE \"APPDATA1M\"\n" +
                         "\t\tSTORAGE (\n" +
                         "\t\t\tINITIAL 65536\n" +
+                        "\t\t\tNEXT 1048576\n" +
+                        "\t\t\tMINEXTENTS 1\n" +
+                        "\t\t\tMAXEXTENTS 2147483645\n" +
+                        "\t\t\tPCTINCREASE 0\n" +
                         "\t\t\tFREELISTS 1\n" +
                         "\t\t\tFREELIST GROUPS 1\n" +
                         "\t\t\tBUFFER_POOL DEFAULT\n" +
@@ -243,6 +254,6 @@ public class OracleCreateTableTest49 extends OracleTest {
 
         Assert.assertEquals(44, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("SC_001.TB_001", "ID")));
+        Assert.assertTrue(visitor.containsColumn("SC_001.TB_001", "ID"));
     }
 }

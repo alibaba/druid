@@ -15,26 +15,18 @@
  */
 package com.alibaba.druid.sql;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.DruidRuntimeException;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2OutputVisitor;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.h2.visitor.H2OutputVisitor;
+import com.alibaba.druid.sql.dialect.h2.visitor.H2SchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveOutputVisitor;
+import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsOutputVisitor;
@@ -49,15 +41,20 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisito
 import com.alibaba.druid.sql.parser.*;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.sql.visitor.VisitorFeature;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.druid.util.StringUtils;
-import com.alibaba.druid.util.Utils;
+import com.alibaba.druid.util.*;
 
 public class SQLUtils {
+    private final static SQLParserFeature[] FORMAT_DEFAULT_FEATURES = {
+            SQLParserFeature.KeepComments,
+            SQLParserFeature.EnableSQLBinaryOpExprGroup
+    };
+
     public static FormatOption DEFAULT_FORMAT_OPTION = new FormatOption(true, true);
-    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION = new FormatOption(false, true);
+    public static FormatOption DEFAULT_LCASE_FORMAT_OPTION
+            = new FormatOption(false, true);
 
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
@@ -75,6 +72,7 @@ public class SQLUtils {
         visitor.setUppCase(option.isUppCase());
         visitor.setPrettyFormat(option.isPrettyFormat());
         visitor.setParameterized(option.isParameterized());
+        visitor.setFeatures(option.features);
 
         sqlObject.accept(visitor);
 
@@ -99,7 +97,11 @@ public class SQLUtils {
     }
 
     public static String toMySqlString(SQLObject sqlObject) {
-        return toMySqlString(sqlObject, null);
+        return toMySqlString(sqlObject, (FormatOption) null);
+    }
+
+    public static String toMySqlString(SQLObject sqlObject, VisitorFeature... features) {
+        return toMySqlString(sqlObject, new FormatOption(features));
     }
 
     public static String toMySqlString(SQLObject sqlObject, FormatOption option) {
@@ -130,8 +132,16 @@ public class SQLUtils {
         return format(sql, JdbcConstants.ODPS);
     }
 
+    public static String formatHive(String sql) {
+        return format(sql, JdbcConstants.HIVE);
+    }
+
     public static String formatOdps(String sql, FormatOption option) {
         return format(sql, JdbcConstants.ODPS, option);
+    }
+
+    public static String formatHive(String sql, FormatOption option) {
+        return format(sql, JdbcConstants.HIVE, option);
     }
 
     public static String formatSQLServer(String sql) {
@@ -241,11 +251,8 @@ public class SQLUtils {
 
     public static String format(String sql, String dbType, List<Object> parameters, FormatOption option) {
         try {
-            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, true);
-            parser.setKeepComments(true);
-
+            SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, FORMAT_DEFAULT_FEATURES);
             List<SQLStatement> statementList = parser.parseStatementList();
-
             return toSQLString(statementList, dbType, parameters, option);
         } catch (ParserException ex) {
             LOG.warn("format error", ex);
@@ -277,31 +284,34 @@ public class SQLUtils {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
         if (parameters != null) {
-            visitor.setParameters(parameters);
+            visitor.setInputParameters(parameters);
         }
 
         if (option == null) {
             option = DEFAULT_FORMAT_OPTION;
         }
-        visitor.setUppCase(option.isUppCase());
-        visitor.setPrettyFormat(option.isPrettyFormat());
-        visitor.setParameterized(option.isParameterized());
+        visitor.setFeatures(option.features);
 
         if (tableMapping != null) {
             visitor.setTableMapping(tableMapping);
         }
 
-        boolean printStmtSeperator = !JdbcConstants.ORACLE.equals(dbType);
+        boolean printStmtSeperator;
+        if (JdbcConstants.SQL_SERVER.equals(dbType)) {
+            printStmtSeperator = false;
+        } else {
+            printStmtSeperator = !JdbcConstants.ORACLE.equals(dbType);
+        }
 
         for (int i = 0, size = statementList.size(); i < size; i++) {
             SQLStatement stmt = statementList.get(i);
 
             if (i > 0) {
-                if (printStmtSeperator) {
+                SQLStatement preStmt = statementList.get(i - 1);
+                if (printStmtSeperator && !preStmt.isAfterSemi()) {
                     visitor.print(";");
                 }
 
-                SQLStatement preStmt = statementList.get(i - 1);
                 List<String> comments = preStmt.getAfterCommentsDirect();
                 if (comments != null){
                     for (int j = 0; j < comments.size(); ++j) {
@@ -309,7 +319,7 @@ public class SQLUtils {
                         if (j != 0) {
                             visitor.println();
                         }
-                        visitor.print(comment);
+                        visitor.printComment(comment);
                     }
                 }
 
@@ -325,18 +335,14 @@ public class SQLUtils {
                 List<String> comments = stmt.getBeforeCommentsDirect();
                 if (comments != null){
                     for(String comment : comments) {
-                        visitor.println(comment);
+                        visitor.printComment(comment);
+                        visitor.println();
                     }
                 }
             }
             stmt.accept(visitor);
 
             if (i == size - 1) {
-                Boolean semi = (Boolean) stmt.getAttribute("format.semi");
-                if (semi != null && semi.booleanValue() && printStmtSeperator) {
-                    visitor.print(";");
-                }
-
                 List<String> comments = stmt.getAfterCommentsDirect();
                 if (comments != null){
                     for (int j = 0; j < comments.size(); ++j) {
@@ -344,7 +350,7 @@ public class SQLUtils {
                         if (j != 0) {
                             visitor.println();
                         }
-                        visitor.print(comment);
+                        visitor.printComment(comment);
                     }
                 }
             }
@@ -369,8 +375,7 @@ public class SQLUtils {
         }
 
         if (JdbcConstants.MYSQL.equals(dbType) //
-                || JdbcConstants.MARIADB.equals(dbType) //
-                || JdbcConstants.H2.equals(dbType)) {
+                || JdbcConstants.MARIADB.equals(dbType)) {
             return new MySqlOutputVisitor(out);
         }
 
@@ -390,6 +395,18 @@ public class SQLUtils {
             return new OdpsOutputVisitor(out);
         }
 
+        if (JdbcConstants.H2.equals(dbType)) {
+            return new H2OutputVisitor(out);
+        }
+
+        if (JdbcConstants.HIVE.equals(dbType)) {
+            return new HiveOutputVisitor(out);
+        }
+
+        if (JdbcConstants.ELASTIC_SEARCH.equals(dbType)) {
+            return new MySqlOutputVisitor(out);
+        }
+
         return new SQLASTOutputVisitor(out, dbType);
     }
 
@@ -404,8 +421,7 @@ public class SQLUtils {
         }
 
         if (JdbcConstants.MYSQL.equals(dbType) || //
-                JdbcConstants.MARIADB.equals(dbType) || //
-                JdbcConstants.H2.equals(dbType)) {
+                JdbcConstants.MARIADB.equals(dbType)) {
             return new MySqlSchemaStatVisitor();
         }
 
@@ -425,6 +441,18 @@ public class SQLUtils {
             return new OdpsSchemaStatVisitor();
         }
 
+        if (JdbcConstants.H2.equals(dbType)) {
+            return new H2SchemaStatVisitor();
+        }
+
+        if (JdbcConstants.HIVE.equals(dbType)) {
+            return new HiveSchemaStatVisitor();
+        }
+
+        if (JdbcConstants.ELASTIC_SEARCH.equals(dbType)) {
+            return new MySqlSchemaStatVisitor();
+        }
+
         return new SchemaStatVisitor();
     }
 
@@ -432,7 +460,7 @@ public class SQLUtils {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> stmtList = parser.parseStatementList();
         if (parser.getLexer().token() != Token.EOF) {
-            throw new DruidRuntimeException("syntax error : " + sql);
+            throw new ParserException("syntax error : " + sql);
         }
         return stmtList;
     }
@@ -441,7 +469,7 @@ public class SQLUtils {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType, keepComments);
         List<SQLStatement> stmtList = parser.parseStatementList();
         if (parser.getLexer().token() != Token.EOF) {
-            throw new DruidRuntimeException("syntax error : " + sql);
+            throw new ParserException("syntax error. " + sql);
         }
         return stmtList;
     }
@@ -638,13 +666,15 @@ public class SQLUtils {
     }
 
     public static class FormatOption {
-
-        private boolean ucase = true;
-        private boolean prettyFormat = true;
-        private boolean parameterized = false;
+        private int features = VisitorFeature.of(VisitorFeature.OutputUCase
+                , VisitorFeature.OutputPrettyFormat);
 
         public FormatOption() {
 
+        }
+
+        public FormatOption(VisitorFeature... features) {
+            this.features = VisitorFeature.of(features);
         }
 
         public FormatOption(boolean ucase) {
@@ -656,45 +686,55 @@ public class SQLUtils {
         }
 
         public FormatOption(boolean ucase, boolean prettyFormat, boolean parameterized) {
-            this.ucase = ucase;
-            this.prettyFormat = prettyFormat;
-            this.parameterized = parameterized;
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputUCase, ucase);
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputPrettyFormat, prettyFormat);
+            this.features = VisitorFeature.config(this.features, VisitorFeature.OutputParameterized, parameterized);
+        }
+
+        public boolean isDesensitize() {
+            return isEnabled(VisitorFeature.OutputDesensitize);
+        }
+
+        public void setDesensitize(boolean val) {
+            config(VisitorFeature.OutputDesensitize, val);
         }
 
         public boolean isUppCase() {
-            return ucase;
+            return isEnabled(VisitorFeature.OutputUCase);
         }
 
         public void setUppCase(boolean val) {
-            this.ucase = val;
+            config(VisitorFeature.OutputUCase, val);
         }
 
         public boolean isPrettyFormat() {
-            return prettyFormat;
+            return isEnabled(VisitorFeature.OutputPrettyFormat);
         }
 
         public void setPrettyFormat(boolean prettyFormat) {
-            this.prettyFormat = prettyFormat;
+            config(VisitorFeature.OutputPrettyFormat, prettyFormat);
         }
 
         public boolean isParameterized() {
-            return parameterized;
+            return isEnabled(VisitorFeature.OutputParameterized);
         }
 
         public void setParameterized(boolean parameterized) {
-            this.parameterized = parameterized;
+            config(VisitorFeature.OutputParameterized, parameterized);
+        }
+
+        public void config(VisitorFeature feature, boolean state) {
+            features = VisitorFeature.config(features, feature, state);
+        }
+
+        public final boolean isEnabled(VisitorFeature feature) {
+            return VisitorFeature.isEnabled(this.features, feature);
         }
     }
 
     public static String refactor(String sql, String dbType, Map<String, String> tableMapping) {
         List<SQLStatement> stmtList = parseStatements(sql, dbType);
         return SQLUtils.toSQLString(stmtList, dbType, null, null, tableMapping);
-    }
-
-    public static boolean containsIndexDDL(String sql, String dbType) {
-        List<SQLStatement> stmtList = parseStatements(sql, dbType);
-
-        return false;
     }
 
     public static long hash(String sql, String dbType) {
@@ -711,7 +751,7 @@ public class SQLUtils {
             }
 
             if (token == Token.ERROR) {
-                return Utils.murmurhash2_64(sql);
+                return Utils.fnv_64(sql);
             }
 
             if (buf.length() != 0) {
@@ -777,15 +817,70 @@ public class SQLUtils {
     }
 
     public static String normalize(String name) {
+        return normalize(name, null);
+    }
+
+    public static String normalize(String name, String dbType) {
+        if (name == null) {
+            return null;
+        }
+
         if (name.length() > 2) {
             char c0 = name.charAt(0);
             char x0 = name.charAt(name.length() - 1);
             if ((c0 == '"' && x0 == '"') || (c0 == '`' && x0 == '`')) {
-                name = name.substring(1, name.length() - 1);
+                String normalizeName = name.substring(1, name.length() - 1);
+
+                if (JdbcConstants.ORACLE.equals(dbType)) {
+                    if (OracleUtils.isKeyword(normalizeName)) {
+                        return name;
+                    }
+                } else if (JdbcConstants.MYSQL.equals(dbType)) {
+                    if (MySqlUtils.isKeyword(normalizeName)) {
+                        return name;
+                    }
+                } else if (JdbcConstants.POSTGRESQL.equals(dbType)) {
+                    if (PGUtils.isKeyword(normalizeName)) {
+                        return name;
+                    }
+                }
+
+                return normalizeName;
             }
         }
 
         return name;
+    }
+
+    public static boolean nameEquals(SQLName a, SQLName b) {
+        if (a == b) {
+            return true;
+        }
+
+        if (a == null || b == null) {
+            return false;
+        }
+
+        return a.nameHashCode64() == b.nameHashCode64();
+    }
+
+    public static boolean nameEquals(String a, String b) {
+        if (a == b) {
+            return true;
+        }
+
+        if (a == null || b == null) {
+            return false;
+        }
+
+        if (a.equalsIgnoreCase(b)) {
+            return true;
+        }
+
+        String normalize_a = normalize(a);
+        String normalize_b = normalize(b);
+
+        return normalize_a.equalsIgnoreCase(normalize_b);
     }
 
     public static boolean isValue(SQLExpr expr) {
@@ -811,53 +906,40 @@ public class SQLUtils {
         return false;
     }
 
-    public static SQLCaseExpr decodeToCase(SQLMethodInvokeExpr x) {
-        if (x == null) {
+    public static boolean replaceInParent(SQLExpr expr, SQLExpr target) {
+        if (expr == null) {
+            return false;
+        }
+
+        SQLObject parent = expr.getParent();
+
+        if (parent instanceof SQLReplaceable) {
+            return ((SQLReplaceable) parent).replace(expr, target);
+        }
+
+        return false;
+    }
+
+    public static String desensitizeTable(String tableName) {
+        if (tableName == null) {
             return null;
         }
 
-        if (!"decode".equalsIgnoreCase(x.getMethodName())) {
-            throw new IllegalArgumentException(x.getMethodName());
-        }
+        tableName = normalize(tableName);
+        long hash = FnvHash.hashCode64(tableName);
+        return Utils.hex_t(hash);
+    }
 
-        List<SQLExpr> parameters = x.getParameters();
-        SQLCaseExpr caseExpr = new SQLCaseExpr();
-
-        caseExpr.setValueExpr(parameters.get(0));
-
-        for (int i = 1; i + 1 < parameters.size(); i += 2) {
-            SQLCaseExpr.Item item = new SQLCaseExpr.Item();
-            SQLExpr conditionExpr = parameters.get(i);
-
-            item.setConditionExpr(conditionExpr);
-
-            SQLExpr valueExpr = parameters.get(i + 1);
-
-            if (valueExpr instanceof SQLMethodInvokeExpr) {
-                SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) valueExpr;
-                if ("decode".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
-                    valueExpr = decodeToCase(methodInvokeExpr);
-                }
-            }
-
-            item.setValueExpr(valueExpr);
-            caseExpr.addItem(item);
-        }
-
-        if (parameters.size() % 2 == 0) {
-            SQLExpr defaultExpr = parameters.get(parameters.size() - 1);
-
-            if (defaultExpr instanceof SQLMethodInvokeExpr) {
-                SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) defaultExpr;
-                if ("decode".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
-                    defaultExpr = decodeToCase(methodInvokeExpr);
-                }
-            }
-
-            caseExpr.setElseExpr(defaultExpr);
-        }
-
-        return caseExpr;
+    /**
+     * 重新排序建表语句，解决建表语句的依赖关系
+     * @param sql
+     * @param dbType
+     * @return
+     */
+    public static String sort(String sql, String dbType) {
+        List stmtList = SQLUtils.parseStatements(sql, JdbcConstants.ORACLE);
+        SQLCreateTableStatement.sort(stmtList);
+        return SQLUtils.toSQLString(stmtList, dbType);
     }
 }
 

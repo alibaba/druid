@@ -49,7 +49,10 @@ public class OracleTruncateTableTest extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY_NEW")));
+        Assert.assertTrue(visitor
+                .getTables()
+                .containsKey(
+                        new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY_NEW")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
 

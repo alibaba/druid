@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
+import com.alibaba.druid.sql.ast.statement.SQLReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -32,11 +33,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.ast.SQLLimit;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
@@ -104,7 +102,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlDeleteStatement().accept(adapter);
         new MySqlInsertStatement().accept(adapter);
         new MySqlLoadXmlStatement().accept(adapter);
-        new MySqlReplaceStatement().accept(adapter);
+        new SQLReplaceStatement().accept(adapter);
         new SQLStartTransactionStatement().accept(adapter);
         new MySqlShowColumnsStatement().accept(adapter);
         new MySqlShowDatabasesStatement().accept(adapter);
@@ -119,9 +117,7 @@ public class MySqlASTVisitorAdapterTest extends TestCase {
         new MySqlOutFileExpr().accept(adapter);
         new MySqlUpdateStatement().accept(adapter);
         new MySqlSetTransactionStatement().accept(adapter);
-        new MySqlSetNamesStatement().accept(adapter);
         new MySqlShowMasterLogsStatement().accept(adapter);
-        new MySqlSetCharSetStatement().accept(adapter);
         new MySqlShowAuthorsStatement().accept(adapter);
         new MySqlShowCollationStatement().accept(adapter);
         new MySqlShowBinLogEventsStatement().accept(adapter);

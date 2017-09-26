@@ -17,12 +17,12 @@ public class MySql57Test extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         
-        Assert.assertEquals("ALTER TABLE t1" //
+        assertEquals("ALTER TABLE t1" //
                 + "\n\tALGORITHM = INPLACE," //
-                + "\n\tCHANGE COLUMN c1 c1 VARCHAR(255)", SQLUtils.toMySqlString(stmt));
+                + "\n\tCHANGE COLUMN c1 c1 VARCHAR(255);", SQLUtils.toMySqlString(stmt));
         
-        Assert.assertEquals("alter table t1" //
+        assertEquals("alter table t1" //
                             + "\n\tALGORITHM = INPLACE," //
-                            + "\n\tchange column c1 c1 VARCHAR(255)", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
+                            + "\n\tchange column c1 c1 VARCHAR(255);", SQLUtils.toMySqlString(stmt, SQLUtils.DEFAULT_LCASE_FORMAT_OPTION));
     }
 }

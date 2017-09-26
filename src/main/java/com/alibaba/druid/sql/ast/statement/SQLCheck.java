@@ -57,4 +57,10 @@ public class SQLCheck extends SQLConstraintImpl implements SQLTableElement {
             expr = expr.clone();
         }
     }
+
+    public SQLCheck clone() {
+        SQLCheck x = new SQLCheck();
+        cloneTo(x);
+        return x;
+    }
 }

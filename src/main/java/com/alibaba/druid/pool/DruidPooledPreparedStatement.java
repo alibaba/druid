@@ -40,6 +40,7 @@ import java.util.Calendar;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
@@ -623,6 +624,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     public ResultSetMetaData getMetaData() throws SQLException {
         checkOpen();
 
+        if (!conn.holder.isUnderlyingAutoCommit()) {
+            conn.createTransactionInfo();
+        }
+
         try {
             return stmt.getMetaData();
         } catch (Throwable t) {
@@ -688,6 +693,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     @Override
     public ParameterMetaData getParameterMetaData() throws SQLException {
         checkOpen();
+
+        if (!conn.holder.isUnderlyingAutoCommit()) {
+            conn.createTransactionInfo();
+        }
 
         try {
             return stmt.getParameterMetaData();

@@ -16,17 +16,21 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.ast.*;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.FnvHash;
 
-public class SQLSelectItem extends SQLObjectImpl {
+public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
     protected SQLExpr expr;
     protected String  alias;
+
     protected boolean connectByRoot = false;
+
+    protected transient long aliasHashCode64;
 
     public SQLSelectItem(){
 
@@ -60,10 +64,10 @@ public class SQLSelectItem extends SQLObjectImpl {
     }
 
     public void setExpr(SQLExpr expr) {
-        this.expr = expr;
         if (expr != null) {
             expr.setParent(this);
         }
+        this.expr = expr;
     }
 
     public String computeAlias() {
@@ -77,6 +81,14 @@ public class SQLSelectItem extends SQLObjectImpl {
         }
 
         return SQLUtils.normalize(alias);
+    }
+
+    public SQLDataType computeDataType() {
+        if (expr == null) {
+            return null;
+        }
+
+        return expr.computeDataType();
     }
 
     public String getAlias() {
@@ -141,9 +153,72 @@ public class SQLSelectItem extends SQLObjectImpl {
         SQLSelectItem x = new SQLSelectItem();
         x.alias = alias;
         if (expr != null) {
-            x.expr = expr.clone();
+            x.setExpr(expr.clone());
         }
         x.connectByRoot = connectByRoot;
         return x;
+    }
+
+    @Override
+    public boolean replace(SQLExpr expr, SQLExpr target) {
+        if (expr == expr) {
+            setExpr(target);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean match(String alias) {
+        if (alias == null) {
+            return false;
+        }
+
+        long hash = FnvHash.hashCode64(alias);
+        return match(hash);
+    }
+
+    public long alias_hash() {
+        if (this.aliasHashCode64 == 0) {
+            this.aliasHashCode64 = FnvHash.hashCode64(alias);
+        }
+        return aliasHashCode64;
+    }
+
+    public boolean match(long alias_hash) {
+        long hash = alias_hash();
+
+        if (hash == alias_hash) {
+            return true;
+        }
+
+        if (expr instanceof SQLAllColumnExpr) {
+            SQLTableSource resolvedTableSource = ((SQLAllColumnExpr) expr).getResolvedTableSource();
+            if (resolvedTableSource != null
+                    && resolvedTableSource.findColumn(alias_hash) != null) {
+                return true;
+            }
+            return false;
+        }
+
+        if (expr instanceof SQLIdentifierExpr) {
+            return ((SQLIdentifierExpr) expr).nameHashCode64() == alias_hash;
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            String ident = ((SQLPropertyExpr) expr).getName();
+            if ("*".equals(ident)) {
+                SQLTableSource resolvedTableSource = ((SQLPropertyExpr) expr).getResolvedTableSource();
+                if (resolvedTableSource != null
+                        && resolvedTableSource.findColumn(alias_hash) != null) {
+                    return true;
+                }
+                return false;
+            }
+
+            return ((SQLPropertyExpr) expr).nameHashCode64() == alias_hash;
+        }
+
+        return false;
     }
 }

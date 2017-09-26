@@ -34,6 +34,19 @@ public class OracleIntervalExpr extends SQLExprImpl implements SQLLiteralExpr, O
 
     }
 
+    public OracleIntervalExpr clone() {
+        OracleIntervalExpr x = new OracleIntervalExpr();
+        if (value != null) {
+            x.setValue(value.clone());
+        }
+        x.type = type;
+        x.precision = precision;
+        x.factionalSecondsPrecision = factionalSecondsPrecision;
+        x.toType = toType;
+        x.toFactionalSecondsPrecision = toFactionalSecondsPrecision;
+        return x;
+    }
+
     public SQLExpr getValue() {
         return this.value;
     }

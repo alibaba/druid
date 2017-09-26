@@ -71,8 +71,8 @@ public class OracleCreateProcedureTest1 extends OracleTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dept_temp")));
 
 //        Assert.assertEquals(7, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
-        Assert.assertEquals(1, visitor.getRelationships().size());
+        Assert.assertEquals(1, visitor.getConditions().size());
+        Assert.assertEquals(0, visitor.getRelationships().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
     }

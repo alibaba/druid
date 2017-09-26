@@ -16,27 +16,27 @@
 package com.alibaba.druid.bvt.sql.postgresql;
 
 import com.alibaba.druid.sql.PGTest;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 
 public class PGSetTest3 extends PGTest {
     public void testSet() throws Exception {
-        Class<?> type = PGSetStatement.class;
+        Class<?> type = SQLSetStatement.class;
 
         String sql = "SET TIME ZONE 'Europe/Rome';";
-        String expectedSql = "SET TIME ZONE 'Europe/Rome'";
-        String expectedPattern = "SET TIME ZONE ?";
+        String expectedSql = "SET TIME ZONE 'Europe/Rome';";
+        String expectedPattern = "SET TIME ZONE ?;";
         testParseSql(sql, expectedSql, expectedPattern, type);
 
         sql = "SET configuration_parameter TO DEFAULT;";
-        expectedSql = "SET configuration_parameter TO DEFAULT";
+        expectedSql = "SET configuration_parameter TO DEFAULT;";
         testParseSql(sql, expectedSql, expectedSql, type);
 
         sql = "SET search_path TO my_schema, public;";
-        expectedSql = "SET search_path TO my_schema, public";
+        expectedSql = "SET search_path TO my_schema, public;";
         testParseSql(sql, expectedSql, expectedSql, type);
 
         sql = "SET search_path =  my_schema, public;";
-        expectedSql = "SET search_path TO my_schema, public";
+        expectedSql = "SET search_path TO my_schema, public;";
         testParseSql(sql, expectedSql, expectedSql, type);
 
         sql = "SET a=1";

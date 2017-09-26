@@ -16,7 +16,8 @@
 package com.alibaba.druid.sql.ast;
 
 public interface SQLName extends SQLExpr {
-    String getSimpleName();
-
+    String  getSimpleName();
     SQLName clone();
+    long    nameHashCode64();
+    long    hashCode64();
 }

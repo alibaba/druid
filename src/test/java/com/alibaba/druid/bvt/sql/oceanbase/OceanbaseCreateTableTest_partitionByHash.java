@@ -40,7 +40,7 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
                     + "\n\tid INT,"
                     + "\n\tname VARCHAR(5)"
                     + "\n)"
-                    + "\nPARTITION BY HASH (id) PARTITIONS 2",
+                    + "\nPARTITION BY HASH (id) PARTITIONS 2;",
                                 result);
         }
         {
@@ -49,7 +49,7 @@ public class OceanbaseCreateTableTest_partitionByHash extends MysqlTest {
                     + "\n\tid INT,"
                     + "\n\tname VARCHAR(5)"
                     + "\n)"
-                    + "\npartition by hash (id) partitions 2",
+                    + "\npartition by hash (id) partitions 2;",
                                 result);
         }
         

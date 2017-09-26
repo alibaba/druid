@@ -21,7 +21,9 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.SQLLimit;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
@@ -33,11 +35,9 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     protected List<SQLHint> hints;
 
-    protected List<SQLExpr>              distributeBy = new ArrayList<SQLExpr>();
-    protected List<SQLSelectOrderByItem> sortBy = new ArrayList<SQLSelectOrderByItem>(2);
-
     public OdpsSelectQueryBlock(){
-
+        distributeBy = new ArrayList<SQLExpr>();
+        sortBy = new ArrayList<SQLSelectOrderByItem>(2);
     }
 
     public SQLOrderBy getOrderBy() {
@@ -48,13 +48,7 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
         this.orderBy = orderBy;
     }
 
-    public List<SQLExpr> getDistributeBy() {
-        return distributeBy;
-    }
 
-    public List<SQLSelectOrderByItem> getSortBy() {
-        return sortBy;
-    }
 
     @Override
     public int hashCode() {
@@ -121,5 +115,13 @@ public class OdpsSelectQueryBlock extends SQLSelectQueryBlock {
 
     public String toString() {
         return SQLUtils.toOdpsString(this);
+    }
+
+    public void limit(int rowCount, int offset) {
+        if (offset > 0) {
+            throw new UnsupportedOperationException("not support offset");
+        }
+
+        setLimit(new SQLLimit(new SQLIntegerExpr(rowCount)));
     }
 }

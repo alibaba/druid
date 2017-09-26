@@ -44,7 +44,7 @@ public final class DruidConnectionHolder {
 
     private final static Log                    LOG                      = LogFactory.getLog(DruidConnectionHolder.class);
 
-    private final DruidAbstractDataSource       dataSource;
+    protected final DruidAbstractDataSource       dataSource;
     private final long                          connectionId;
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();

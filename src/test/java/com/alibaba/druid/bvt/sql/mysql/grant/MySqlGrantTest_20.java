@@ -41,7 +41,7 @@ public class MySqlGrantTest_20 extends MysqlTest {
         stmt.accept(visitor);
         
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("GRANT GRANT OPTION ON mydb.* TO 'someuser'@'somehost'", //
+        Assert.assertEquals("GRANT GRANT OPTION ON mydb.* TO 'someuser'@'somehost';", //
                             output);
 //
 //        System.out.println("Tables : " + visitor.getTables());

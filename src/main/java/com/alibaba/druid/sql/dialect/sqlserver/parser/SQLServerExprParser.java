@@ -15,14 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
-import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -31,21 +29,42 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserFeature;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.util.FnvHash;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLServerExprParser extends SQLExprParser {
+    public final static String[] AGGREGATE_FUNCTIONS;
 
-    public final static String[] AGGREGATE_FUNCTIONS = { "AVG", "COUNT", "MAX", "MIN", "ROW_NUMBER", "STDDEV", "SUM" };
+    public final static long[] AGGREGATE_FUNCTIONS_CODES;
+
+    static {
+        String[] strings = { "AVG", "COUNT", "MAX", "MIN", "ROW_NUMBER", "STDDEV", "SUM" };
+        AGGREGATE_FUNCTIONS_CODES = FnvHash.fnv1a_64_lower(strings, true);
+        AGGREGATE_FUNCTIONS = new String[AGGREGATE_FUNCTIONS_CODES.length];
+        for (String str : strings) {
+            long hash = FnvHash.fnv1a_64_lower(str);
+            int index = Arrays.binarySearch(AGGREGATE_FUNCTIONS_CODES, hash);
+            AGGREGATE_FUNCTIONS[index] = str;
+        }
+    }
 
     public SQLServerExprParser(Lexer lexer){
         super(lexer);
         this.dbType = JdbcConstants.SQL_SERVER;
         this.aggregateFunctions = AGGREGATE_FUNCTIONS;
+        this.aggregateFunctionHashCodes = AGGREGATE_FUNCTIONS_CODES;
     }
 
     public SQLServerExprParser(String sql){
         this(new SQLServerLexer(sql));
+        this.lexer.nextToken();
+        this.dbType = JdbcConstants.SQL_SERVER;
+    }
+
+    public SQLServerExprParser(String sql, SQLParserFeature... features){
+        this(new SQLServerLexer(sql, features));
         this.lexer.nextToken();
         this.dbType = JdbcConstants.SQL_SERVER;
     }
@@ -67,8 +86,22 @@ public class SQLServerExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
-        if (lexer.token() == Token.DOTDOT) {
+        final Token token = lexer.token();
+        if (token == Token.DOTDOT) {
             expr = nameRest((SQLName) expr);
+        } else if (lexer.identifierEquals(FnvHash.Constants.VALUE)
+                && expr instanceof SQLIdentifierExpr) {
+            SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
+            if (identExpr.nameHashCode64() == FnvHash.Constants.NEXT) {
+                lexer.nextToken();
+                accept(Token.FOR);
+
+                SQLName name = this.name();
+                SQLSequenceExpr seq = new SQLSequenceExpr();
+                seq.setSequence(name);
+                seq.setFunction(SQLSequenceExpr.Function.NextVal);
+                expr = seq;
+            }
         }
 
         return super.primaryRest(expr);
@@ -143,7 +176,7 @@ public class SQLServerExprParser extends SQLExprParser {
     }
     
     protected SQLServerOutput parserOutput() {
-        if (identifierEquals("OUTPUT")) {
+        if (lexer.identifierEquals("OUTPUT")) {
             lexer.nextToken();
             SQLServerOutput output = new SQLServerOutput();
 
@@ -192,6 +225,7 @@ public class SQLServerExprParser extends SQLExprParser {
 
     public SQLColumnDefinition createColumnDefinition() {
         SQLColumnDefinition column = new SQLColumnDefinition();
+        column.setDbType(dbType);
         return column;
     }
 
@@ -220,7 +254,7 @@ public class SQLServerExprParser extends SQLExprParser {
                     column.setDefaultExpr(new SQLNullExpr());
                 } else {
                     accept(Token.FOR);
-                    identifierEquals("REPLICATION ");
+                    acceptIdentifier("REPLICATION ");
                     identity.setNotForReplication(true);
                 }
             }

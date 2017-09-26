@@ -27,4 +27,11 @@ public class SQLColumnPrimaryKey extends SQLConstraintImpl implements SQLColumnC
         visitor.endVisit(this);
     }
 
+    public SQLColumnPrimaryKey clone() {
+        SQLColumnPrimaryKey x = new SQLColumnPrimaryKey();
+
+        super.cloneTo(x);
+
+        return x;
+    }
 }
