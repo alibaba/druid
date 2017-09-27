@@ -235,6 +235,7 @@ druid.lang = function() {
     'SQLStatWhiteList':['SQL Stat - White List', 'SQL防御统计 - 白名单'],
     'SQLStatBlackList':['SQL Stat - Black List', 'SQL防御统计 - 黑名单'],
 		/**session-detail*/
+		'PrincipalOnly':['Principal Only', 'Principal过滤'],
 		'SESSIONID':['SESSIONID', 'SESSIONID'],
 		'UserAgent':['UserAgent', 'UserAgent'],
 		'Principal':['Principal', 'Principal'],
