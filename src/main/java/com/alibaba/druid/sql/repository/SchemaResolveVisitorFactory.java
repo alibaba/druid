@@ -503,6 +503,10 @@ class SchemaResolveVisitorFactory {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
+            if (x.nameHashCode64() == FnvHash.Constants.ROWNUM) {
+                return false;
+            }
+
             resolve(this, x);
             return true;
         }
