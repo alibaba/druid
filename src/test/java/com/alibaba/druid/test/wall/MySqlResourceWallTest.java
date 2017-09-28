@@ -104,6 +104,24 @@ public class MySqlResourceWallTest extends TestCase {
         Assert.assertTrue(provider.checkValid(sql));
 
 
+        sql = "lock table dsdfsdf read";
+        result = provider.check(sql);
+        if (result.getViolations().size() > 0) {
+            Violation violation = result.getViolations().get(0);
+            System.out.println("error () : " + violation.getMessage());
+        }
+        Assert.assertTrue(provider.checkValid(sql));
+
+
+        sql = "lock table dsdfsdf read local";
+        result = provider.check(sql);
+        if (result.getViolations().size() > 0) {
+            Violation violation = result.getViolations().get(0);
+            System.out.println("error () : " + violation.getMessage());
+        }
+        Assert.assertTrue(provider.checkValid(sql));
+
+
     }
 
 }
