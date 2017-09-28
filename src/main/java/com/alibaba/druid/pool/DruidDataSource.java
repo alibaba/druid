@@ -186,6 +186,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         configFromPropety(System.getProperties());
     }
 
+    public boolean isAsyncInit() {
+        return asyncInit;
+    }
+
+    public void setAsyncInit(boolean asyncInit) {
+        this.asyncInit = asyncInit;
+    }
+
     public void configFromPropety(Properties properties) {
         {
             String property = properties.getProperty("druid.name");
@@ -818,6 +826,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             SQLException connectError = null;
 
+            boolean asyncInit = this.asyncInit && createScheduler == null;
             if (!asyncInit) {
                 try {
                     // init connections
@@ -2211,7 +2220,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 try {
                     boolean emptyWait = true;
 
-                    if (createError != null && poolingCount == 0 && !discardChanged) {
+                    if (createError != null
+                            && poolingCount == 0
+                            && !discardChanged) {
+                        emptyWait = false;
+                    }
+
+                    if (emptyWait
+                            && asyncInit && createCount.get() < initialSize) {
                         emptyWait = false;
                     }
 
