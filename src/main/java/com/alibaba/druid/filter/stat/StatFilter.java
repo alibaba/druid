@@ -453,7 +453,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.decrementRunningCount();
             sqlStat.addExecuteTime(statement.getLastExecuteType(), firstResult, nanos);
             statement.setLastExecuteTimeNano(nanos);
-            if ((!statement.isFirstResultSet()) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
+            if ((!firstResult) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
                 try {
                     int updateCount = statement.getUpdateCount();
                     sqlStat.addUpdateCount(updateCount);
