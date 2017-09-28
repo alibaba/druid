@@ -20,8 +20,10 @@ import com.alibaba.druid.sql.ast.*;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.FnvHash;
+import com.alibaba.druid.util.JdbcConstants;
 
 public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
 
@@ -220,5 +222,13 @@ public class SQLSelectItem extends SQLObjectImpl implements SQLReplaceable {
         }
 
         return false;
+    }
+
+    public String toString() {
+        String dbType = null;
+        if (parent instanceof OracleSQLObject) {
+            dbType = JdbcConstants.ORACLE;
+        }
+        return SQLUtils.toSQLString(this, dbType);
     }
 }
